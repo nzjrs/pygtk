@@ -877,6 +877,7 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GdkWindow);
 #endif
     register_tp(GdkAtom);
+
     pyg_register_boxed_custom(GTK_TYPE_TREE_PATH,
 			      PyGtkTreePath_from_value,
 			      PyGtkTreePath_to_value);
