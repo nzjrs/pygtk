@@ -3278,7 +3278,6 @@ ignore
   gtk_item_factory_set_translate_func
   gtk_item_factory_create_items_ac
   gtk_item_factory_create_menu_entries
-  gtk_menu_attach_to_widget
   gtk_menu_bar_append
   gtk_menu_bar_insert
   gtk_menu_bar_prepend
@@ -3805,6 +3804,71 @@ _wrap_gtk_menu_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
     pygobject_register_wrapper((PyObject *)self);
     return 0;
+}
+%%
+override gtk_menu_attach_to_widget kwargs
+static void
+pygtk_menu_detach (GtkWidget *attach_widget, GtkMenu *menu)
+{
+    PyObject *func;
+    PyObject *ret;
+
+    func = g_object_get_data (G_OBJECT (menu), "pygtk_menu_detach_func");
+
+    if (!func)
+	return;
+
+    pyg_block_threads ();
+    ret = PyObject_CallFunction (func, "OO",
+				 pygobject_new ((GObject *) menu),
+				 pygobject_new ((GObject *) attach_widget));
+    pyg_unblock_threads ();
+
+    if (ret == NULL) {
+	PyErr_Print ();
+	PyErr_Clear ();
+	Py_XDECREF (ret);
+    }
+    else
+	Py_DECREF (ret);
+}
+static PyObject *
+_wrap_gtk_menu_attach_to_widget (PyGObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "attach_widget", "detach_func", NULL };
+    PyGObject *py_attach_widget;
+    PyObject *detach_func;
+    GtkWidget *attach_widget;
+
+    if (!PyArg_ParseTupleAndKeywords (args, kwargs,
+				      "O!O:GtkMenu.attach_to_widget",
+				      kwlist, &PyGtkWidget_Type,
+				      &py_attach_widget, &detach_func))
+	return NULL;
+
+    attach_widget = GTK_WIDGET (py_attach_widget->obj);
+
+    if (!PyCallable_Check (detach_func) && detach_func != Py_None) {
+	PyErr_SetString (PyExc_TypeError, "second argument not callable");
+	return NULL;
+    }
+
+    if (detach_func != Py_None) {
+	Py_INCREF (detach_func);
+	g_object_set_data_full (self->obj,
+				"pygtk_menu_detach_func",
+				detach_func,
+				pyg_destroy_notify);
+    }
+    else
+	g_object_set_data (self->obj, "pygtk_menu_detach_func", NULL);
+
+    gtk_menu_attach_to_widget (GTK_MENU (self->obj), attach_widget,
+			       (GtkMenuDetachFunc) pygtk_menu_detach);
+
+    Py_INCREF (Py_None);
+    return Py_None;
 }
 %%
 ignore gtk_check_menu_item_new_with_label gtk_check_menu_item_new_with_mnemonic
