@@ -2902,9 +2902,10 @@ _wrap_gtk_image_menu_item_new(PyGObject *self, PyObject *args,PyObject *kwargs)
     PyObject *py_accel_group = Py_None;
     GtkAccelGroup *accel_group= NULL;
 
-    if (!PyArg_ParseTuple(args, kwargs, "|zO:GtkImageMenuItem.__init__",kwlist,
-			  &stock_id, &py_accel_group))
-	return NULL;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|zO:GtkImageMenuItem.__init__",kwlist,
+				     &stock_id, &py_accel_group))
+	return -1;
     if (pygobject_check(py_accel_group, &PyGtkAccelGroup_Type))
 	accel_group = GTK_ACCEL_GROUP(pygobject_get(py_accel_group));
 
