@@ -63,7 +63,7 @@ static void connect_many(const gchar *handler_name, GtkObject *obj,
 	PyErr_Clear();
 	return;
     }
-    if (!PyCallable_Check(callback))
+    if (!PyCallable_Check(callback) && !PyTuple_Check(callback))
 	return;
 
     if (connect_object) {

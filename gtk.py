@@ -430,7 +430,8 @@ class GtkWidget(GtkObject):
 	def set_parent_window(self, parent):
 		_gtk.gtk_widget_set_parent_window(self._o, parent)
 	def set_scroll_adjustments(self, hadj, vadj):
-		_gtk.gtk_widget_set_scroll_adjustments(self._o,hadj._o,vadj._o)
+		return _gtk.gtk_widget_set_scroll_adjustments(self._o, hadj._o,
+							      vadj._o)
 	def set_sensitive(self, s):
 		_gtk.gtk_widget_set_sensitive(self._o, s)
 	def set_state(self, s):
@@ -786,8 +787,12 @@ class GtkTreeItem(GtkItem):
 		else:
 			self._o = _gtk.gtk_tree_item_new_with_label(label)
 	def __getattr__(self, attr):
+		def subtree_wrap(obj):
+			o = _gtk.gtk_tree_item_get_subtree(obj)
+			if o == None: return None
+			return _obj2inst(o)
 		attrs = {
-			'subtree': _gtk.gtk_tree_item_get_subtree,
+			'subtree': subtree_wrap,
 			}
 		if attrs.has_key(attrs):
 			return attrs[attr](self._o)
@@ -1707,7 +1712,8 @@ class GtkNotebook(GtkContainer):
 		_gtk.gtk_notebook_set_menu_label(self._o, child._o,
 						menu_label._o)
 	def set_menu_label_text(self, child, menu_text):
-		_gtk.gtk_notebook_set_menu_label(self._o, child._o, menu_text)
+		_gtk.gtk_notebook_set_menu_label_text(self._o, child._o,
+						      menu_text)
 	def query_tab_label_packing(self, child):
 		# returns (expand,fill,pack_type)
 		return _gtk.gtk_notebook_query_tab_label_packing(self._o,
@@ -1900,27 +1906,35 @@ class GtkTree(GtkContainer):
 
 class GtkToolbar(GtkContainer):
 	get_type = _gtk.gtk_toolbar_get_type
+	class __wrap_cb:
+		def __init__(self, cb):
+			self.cb = cb
+		def __call__(self, widget):
+			return self.cb(_obj2inst(widget))
 	def __init__(self, orientation=ORIENTATION_HORIZONTAL,
 		     style=TOOLBAR_ICONS, _obj=None):
 		if _obj: self._o = _obj; return
 		self._o = _gtk.gtk_toolbar_new(orientation, style)
         def append_item(self, text, tooltip, tp, icon, callback):
 		return _obj2inst(_gtk.gtk_toolbar_append_item(
-			self._o, text, tooltip, tp, icon._o, callback))
+			self._o, text, tooltip, tp, icon._o,
+			self.__wrap_cb(callback)))
 	def append_space(self):
 		_gtk.gtk_toolbar_append_space(self._o)
 	def append_widget(self, w, tooltip, tp):
 		_gtk.gtk_toolbar_append_widget(self._o, w._o, tooltip, tp)
 	def insert_item(self, text, tooltip, tp, icon, callback, pos):
 		return _obj2inst(_gtk.gtk_toolbar_insert_item(
-			self._o, text, tooltip, tp, icon._o, callback, pos))
+			self._o, text, tooltip, tp, icon._o,
+			self.__wrap_cb(callback), pos))
 	def insert_space(self, pos):
 		_gtk.gtk_toolbar_insert_space(self._o, pos)
 	def insert_widget(self, w, tooltip, tp, pos):
 		_gtk.gtk_toolbar_insert_widget(self._o, w._o, tooltip, tp, pos)
 	def prepend_item(self, text, tooltip, tp, icon, callback):
 		return _obj2inst(_gtk.gtk_toolbar_prepend_item(
-			self._o, text, tooltip, tp, icon._o, callback))
+			self._o, text, tooltip, tp, icon._o,
+			self.__wrap_cb(callback)))
 	def prepend_space(self):
 		_gtk.gtk_toolbar_prepend_space(self._o)
 	def prepend_widget(self, w, tooltip, tp):

@@ -2824,7 +2824,12 @@ static PyObject *GtkArg_AsPyObject(GtkArg *arg) {
     return GtkArgs_AsTuple(GTK_VALUE_ARGS(*arg).n_args,
 			   GTK_VALUE_ARGS(*arg).args);
   case GTK_TYPE_OBJECT:
-    return PyGtk_New(GTK_VALUE_OBJECT(*arg));
+    if (GTK_VALUE_OBJECT(*arg) != NULL)
+      return PyGtk_New(GTK_VALUE_OBJECT(*arg));
+    else {
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
   case GTK_TYPE_POINTER:
     return PyCObject_FromVoidPtr(GTK_VALUE_POINTER(*arg), NULL);
   case GTK_TYPE_BOXED:
@@ -4413,7 +4418,7 @@ static PyObject *_wrap_gtk_clist_get_text(PyObject *self, PyObject *args) {
 }
 
 static PyObject *_wrap_gtk_clist_get_pixmap(PyObject *self, PyObject *args) {
-  PyObject *o, *mask;
+  PyObject *o, *pixmap, *mask;
   int r, c;
   GdkPixmap *p;
   GdkBitmap *m;
@@ -4425,17 +4430,23 @@ static PyObject *_wrap_gtk_clist_get_pixmap(PyObject *self, PyObject *args) {
     PyErr_SetString(PyExc_ValueError, "can't get pixmap value");
     return NULL;
   }
+  if (p)
+    pixmap = PyGdkWindow_New(p);
+  else {
+    Py_INCREF(Py_None);
+    pixmap = Py_None;
+  }
   if (m)
     mask = PyGdkWindow_New(m);
   else {
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(NN)", PyGdkWindow_New(p), mask);
+  return Py_BuildValue("(NN)", pixmap, mask);
 }
 
 static PyObject *_wrap_gtk_clist_get_pixtext(PyObject *self, PyObject *args) {
-  PyObject *o, *mask;
+  PyObject *o, *pixmap, *mask;
   int r, c;
   guint8 spacing;
   char *text;
@@ -4450,14 +4461,19 @@ static PyObject *_wrap_gtk_clist_get_pixtext(PyObject *self, PyObject *args) {
     PyErr_SetString(PyExc_ValueError, "can't get pixtext value");
     return NULL;
   }
+  if (p)
+    pixmap = PyGdkWindow_New(p);
+  else {
+    Py_INCREF(Py_None);
+    pixmap = Py_None;
+  }
   if (m)
     mask = PyGdkWindow_New(m);
   else {
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(siNN)", text, (int)spacing,
-		       PyGdkWindow_New(p), mask);
+  return Py_BuildValue("(siNN)", text, (int)spacing, pixmap, mask);
 }
 
 static PyObject *_wrap_gtk_clist_prepend(PyObject *self, PyObject *args) {
@@ -6047,7 +6063,7 @@ static PyObject *_wrap_gtk_ctree_node_get_text(PyObject *self, PyObject *args) {
 }
 
 static PyObject *_wrap_gtk_ctree_node_get_pixmap(PyObject *self, PyObject *args) {
-  PyObject *ctree, *node, *mask;
+  PyObject *ctree, *node, *pixmap, *mask;
   int col;
   GdkPixmap *p;
   GdkBitmap *m;
@@ -6060,17 +6076,23 @@ static PyObject *_wrap_gtk_ctree_node_get_pixmap(PyObject *self, PyObject *args)
     PyErr_SetString(PyExc_ValueError, "can't get pixmap value");
     return NULL;
   }
+  if (p)
+    pixmap = PyGdkWindow_New(p);
+  else {
+    Py_INCREF(Py_None);
+    pixmap = Py_None;
+  }
   if (m)
     mask = PyGdkWindow_New(m);
   else {
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(NN)", PyGdkWindow_New(p), mask);
+  return Py_BuildValue("(NN)", pixmap, mask);
 }
 
 static PyObject *_wrap_gtk_ctree_node_get_pixtext(PyObject *self, PyObject *args) {
-  PyObject *ctree, *node, *mask;
+  PyObject *ctree, *node, *pixmap, *mask;
   int col;
   guint8 spacing;
   char *text;
@@ -6086,14 +6108,19 @@ static PyObject *_wrap_gtk_ctree_node_get_pixtext(PyObject *self, PyObject *args
     PyErr_SetString(PyExc_ValueError, "can't get pixtext value");
     return NULL;
   }
+  if (p)
+    pixmap = PyGdkWindow_New(p);
+  else {
+    Py_INCREF(Py_None);
+    pixmap = Py_None;
+  }
   if (m)
     mask = PyGdkWindow_New(m);
   else {
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(siNN)", text, (int)spacing,
-		       PyGdkWindow_New(p), mask);
+  return Py_BuildValue("(siNN)", text, (int)spacing, pixmap, mask);
 }
 
 static PyObject *_wrap_gtk_ctree_get_node_info(PyObject *self, PyObject *args) {

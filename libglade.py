@@ -39,7 +39,7 @@ class GladeXML(_gtk.GtkData):
 		for key, value in dict.items():
 			if type(value) == type(()) and len(value) >= 2:
 				hdict[key] = (self.__cnv(value[0]).__call__,
-					      value[1])
+					      value[1:])
 			else:
 				hdict[key] = self.__cnv(value).__call__
 		_libglade.glade_xml_signal_autoconnect(self._o, hdict)

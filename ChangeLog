@@ -1,3 +1,28 @@
+2000-03-03  James Henstridge  <james@daa.com.au>
+
+	The following is from Paul Clifford <paul@plasma.demon.co.uk>
+
+	* libglade.py (GladeXML.signal_autoconnect): pass all the extra
+	arguments to autoconnect.
+
+	* libglademodule.c (connect_many): don't exit if the handler is
+	a tuple instead of a function.
+
+	The following fixes are from John Ehresman <jpe@archaeopteryx.com>
+	
+	* gtk.py (GtkWidget.set_scroll_adjustments): return the value to
+	user.
+
+	* gtkmodule.c (GtkArg_AsPyObject): check if GtkObject is not NULL.
+	(_wrap_gtk_clist_get_pixmap, _gtk_clist_get_pixtext): check that
+	returned pixmap is not NULL.
+	(_wrap_gtk_ctree_node_get_pixmap, _gtk_ctree_node_get_pixtext): check
+	that returned pixmap is not NULL.
+
+	* gtk.py (GtkToolbar): wrap callbacks when inserting a toolbar item.
+	(GtkNotebook.set_menu_label_text): fixed typo
+	(GtkTreeItem.__getattr__): wrap subtree attribute.
+
 2000-02-21  James Henstridge  <james@daa.com.au>
 
 	* gtk.py (GtkTable.resize): added missing function.  Patch from
