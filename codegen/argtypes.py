@@ -210,7 +210,7 @@ class EnumArg(ArgType):
 	return '    return PyInt_FromLong(%(func)s);'
 
 class FlagsArg(ArgType):
-    flag = '    if (pyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
+    flag = '    if (%(default)spyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
 	   '        return NULL;\n'
     def __init__(self, flagname, typecode):
 	self.flagname = flagname
@@ -219,11 +219,15 @@ class FlagsArg(ArgType):
 		    extracode, arglist):
 	if pdflt:
 	    varlist.add(self.flagname, pname + ' = ' + pdflt)
+            default = "py_%s && " % (pname,)
 	else:
 	    varlist.add(self.flagname, pname)
+            default = ""
 	varlist.add('PyObject', '*py_' + pname + ' = NULL')
 	parselist.append('&py_' + pname)
-	extracode.append(self.flag % {'typecode':self.typecode, 'name':pname})
+        extracode.append(self.flag % {'default':default,
+                                      'typecode':self.typecode,
+                                      'name':pname})
 	arglist.append(pname)
 	return 'O'
     def write_return(self, ptype, varlist):
