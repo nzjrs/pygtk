@@ -1864,13 +1864,13 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
 	
 	if(extra_data != NULL) {
 	     if(PyString_Check(extra_data)) {
-	          ent.extra_data = PyString_AsString(extra_data);
-	     } else if(pygobject_check(dest, &PyGdkPixbuf_Type)) {
-	          ent.extra_data = GDK_PIXBUF(self->obj)
+	         ent.extra_data = PyString_AsString(extra_data);
+	     } else if(pygobject_check(extra_data, &PyGdkPixbuf_Type)) {
+		 ent.extra_data = GDK_PIXBUF(pygobject_get(extra_data));
 	     } else {
-                  PyErr_SetString(PyExc_TypeError, 
-                        "last argument must be a GdkPixBuf or a string");
-		  return NULL;
+		 PyErr_SetString(PyExc_TypeError, 
+				 "last argument must be a GdkPixBuf or a string");
+		 return NULL;
 	     }
 	}
 	gtk_item_factory_create_item(ifact, &ent, cb, 1);
