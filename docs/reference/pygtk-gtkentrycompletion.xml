@@ -69,6 +69,33 @@
 	<methodparam><parameter
 	role="keyword">column</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--get-text-column">get_text_column</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--set-inline-completion">set_inline_completion</link></methodname>
+	<methodparam><parameter
+	role="keyword">inline_completion</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--get-inline-completion">get_inline_completion</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--set-popup-completion">set_popup_completion</link></methodname>
+	<methodparam><parameter
+	role="keyword">popup_completion</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--get-popup-completion">get_popup_completion</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -94,6 +121,14 @@
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"inline-completion"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the common prefix should be
+inserted automatically. Default value: <literal>FALSE</literal>. Available
+in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"minimum-key-length"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Minimum length of the search key in order to look up
@@ -106,6 +141,21 @@
 	      <entry>The <link 
 linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> to 
 find matches in.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"popup-completion"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the completions should be
+shown in a popup window. Default value: <literal>TRUE</literal>. Available
+in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"text-column"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The column of the model containing the strings. Allowed
+values: >= -1. Default value: -1. Available in GTK+ 2.6 and above.</entry>
 	    </row>
 
 	  </tbody>
@@ -125,6 +175,17 @@ find matches in.</entry>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>completion</parameter></methodparam>
             <methodparam><parameter>index</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkentrycompletion--insert-prefix">insert-prefix</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>completion</parameter></methodparam>
+            <methodparam><parameter>prefix</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -612,7 +673,143 @@ install a <link
 linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
 in the entry completion and set a match function using the <link
 linkend="method-gtkentrycompletion--set-match-func"><methodname>set_match_func</methodname>()</link>
-method to display the completion strings.</para>
+method to display the completion strings. In GTK+ 2.6 the "text-column"
+property is set to the value of <parameter>column</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-text-column">
+      <title>gtk.EntryCompletion.get_text_column</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_text_column</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The column containing the text
+strings.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_text_column</methodname>() method returns
+the value of the "text-column" property. The "text-column" property contains
+the index of the column in the completion model to get strings from. See the
+<link
+linkend="method-gtkentrycompletion--set-text-column"><methodname>set_text_column</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-inline-completion">
+      <title>gtk.EntryCompletion.set_inline_completion</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_inline_completion</methodname>
+	  <methodparam><parameter role="keyword">inline_completion</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">inline_completion</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> do inline
+completion</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_inline_completion</methodname>() method sets
+the "inline-completion" property to the value of
+<parameter>inline_completion</parameter>. If
+<parameter>inline_completion</parameter> is <literal>TRUE</literal>, the
+common prefix of the possible completions should be automatically inserted
+in the entry.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-inline-completion">
+      <title>gtk.EntryCompletion.get_inline_completion</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_inline_completion</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if automatic inline
+completion is enabled.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_inline_completion</methodname>() method
+returns the value of the "inline-completion" property. If the value of the
+"inline-completion" property is <literal>TRUE</literal> the common prefix of
+possible completions is automatically inserted in the entry.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-popup-completion">
+      <title>gtk.EntryCompletion.set_popup_completion</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_popup_completion</methodname>
+	  <methodparam><parameter role="keyword">popup_completion</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">popup_completion</parameter>&nbsp;:</term>
+	  <listitem><simpara>If <literal>TRUE</literal> do popup
+completion.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_popup_completion</methodname>() method sets
+the "popup-completion" property to the value of
+<parameter>popup_completion</parameter>. If
+<parameter>popup_completion</parameter> is <literal>TRUE</literal> the
+completions should be presented in a popup window.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-popup-completion">
+      <title>gtk.EntryCompletion.get_popup_completion</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_popup_completion</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if completions should
+be displayed in a popup.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_popup_completion</methodname>() method
+returns the value of the "popup-completion" property. If the value of
+"popup-completion" property is <literal>TRUE</literal> the completions
+should be presented in a popup window.</para>
 
     </refsect2>
 
@@ -657,8 +854,64 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
+      <note>
+        <para>This signal is available in GTK+ 2.4 and above.</para>
+      </note>
+
       <para>The "action-activated" signal is emitted when an action item is
 selected from the popup action list.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkentrycompletion--insert-prefix">
+      <title>The "insert-prefix"  Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>completion</parameter></methodparam>
+	  <methodparam><parameter>prefix</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>completion</parameter>&nbsp;:</term>
+	  <listitem><simpara>the entry completion that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>prefix</parameter>&nbsp;:</term>
+	  <listitem><simpara> the common prefix of all possible
+completions</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.6 and above.</para>
+      </note>
+
+      <para>The "insert-prefix" signal is emitted when the inline
+auto-completion is triggered. The default behavior is to make the entry
+display the whole prefix and select the newly inserted part.</para>
+
+      <para>Applications may connect to this signal in order to insert only
+a smaller part of the prefix into the entry - e.g. the entry used in the
+<link
+linkend="class-gtkfilechooser"><classname>gtk.FileChooser</classname></link>
+inserts only the part of the prefix up to the next '/'.</para>
 
     </refsect2>
 
@@ -706,6 +959,10 @@ method</simpara></listitem>
 any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.4 and above.</para>
+      </note>
 
       <para>The "match-selected" signal is emitted when a completion string
 was selected from the completion list. <parameter>iter</parameter> points at
