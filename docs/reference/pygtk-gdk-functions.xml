@@ -14,6 +14,13 @@
     <programlisting>
 <methodsynopsis language="python">
 	<methodname><link
+linkend="function-gdk--atom-intern">gtk.gdk.atom_intern</link></methodname>
+	<methodparam><parameter
+		       role="keyword">name</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">only_if_exists</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
 linkend="function-gdk--pointer-grab">gtk.gdk.pointer_grab</link></methodname>
 	<methodparam><parameter
 		       role="keyword">window</parameter></methodparam>
@@ -165,6 +172,46 @@ module but are not directly associated with a specific class.</para>
 
   <refsect1>
     <title>Functions</title>
+
+    <refsect2 id="function-gdk--atom-intern">
+      <title>gtk.gdk.atom_intern</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.atom_intern</methodname>
+	  <methodparam><parameter
+			 role="keyword">name</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">only_if_exists</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">only_if_exists</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, do not create a new
+atom, but just return the atom if it already exists.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the atom corresponding to
+<parameter>name</parameter>, or, if <parameter>only_if_exists</parameter> is
+<literal>TRUE</literal>, and an atom does not already exist for the string,
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.gdk.atom_intern</function>() function returns
+an atom corresponding to the string specified by
+<parameter>name</parameter>. This method will create the atom if it does not
+already exist and if <parameter>only_if_exists</parameter> is
+<literal>FALSE</literal>. If <parameter>only_if_exists</parameter> is
+<literal>TRUE</literal> and the atom does not exist, this method returns
+<literal>None</literal>.</para>
+
+    </refsect2>
 
     <refsect2 id="function-gdk--pointer-grab">
       <title>gtk.gdk.pointer_grab</title>
