@@ -6,13 +6,16 @@ from definitions import *
 class IncludeParser(scmexpr.Parser):
     """A simple parser that follows include statements automatically"""
     def include(self, filename):
-	if filename[0] != '/':
-	    afile = os.path.join(os.path.dirname(self.filename),filename)
+	if filename == '-':
+	    fp = sys.stdin
 	else:
-	    afile = filename
-	if not os.path.exists(afile):
-	    afile = filename
-	fp = open(afile)
+	    if filename[0] != '/':
+		afile = os.path.join(os.path.dirname(self.filename),filename)
+	    else:
+		afile = filename
+	    if not os.path.exists(afile):
+		afile = filename
+	    fp = open(afile)
 	self.startParsing(scmexpr.parse(fp))
 
 class DefsParser(IncludeParser):
