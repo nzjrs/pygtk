@@ -4,15 +4,15 @@ AC_PREREQ(2.52)
 dnl the pygtk version number
 m4_define(pygtk_major_version, 1)
 m4_define(pygtk_minor_version, 99)
-m4_define(pygtk_micro_version, 6)
+m4_define(pygtk_micro_version, 7)
 m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
 
 dnl versions of packages we require ...
-m4_define(glib_required_version,     1.3.12)
-m4_define(pango_required_version,    0.23)
-m4_define(atk_required_version,      0.8)
-m4_define(gtk_required_version,      1.3.12)
-m4_define(libglade_required_version, 1.99.5)
+m4_define(glib_required_version,     1.3.13)
+m4_define(pango_required_version,    0.24)
+m4_define(atk_required_version,      0.10)
+m4_define(gtk_required_version,      1.3.13)
+m4_define(libglade_required_version, 1.99.6)
 
 AC_INIT(pygtk, pygtk_version,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-python&component=pygtk])
@@ -125,8 +125,8 @@ if test "x$GCC" = xyes; then
   esac
 
   case " $CFLAGS " in
-  *[\	\ ]-ansi[\	\ ]*) ;;
-  *) CFLAGS="$CFLAGS -ansi" ;;
+  *[\	\ ]-std=c9x[\	\ ]*) ;;
+  *) CFLAGS="$CFLAGS -std=c9x" ;;
   esac
 fi
 changequote([,])dnl

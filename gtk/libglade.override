@@ -23,9 +23,9 @@ ignore
 %%
 override glade_xml_signal_connect
 static void
-connect_one(const gchar *handler_name, GtkObject *obj,
+connect_one(const gchar *handler_name, GObject *obj,
             const gchar *signal_name, const gchar *signal_data,
-            GtkObject *connect_object, gboolean after, gpointer user_data)
+            GObject *connect_object, gboolean after, gpointer user_data)
 {
     GClosure *closure = NULL;
     PyObject *callback = PyTuple_GetItem((PyObject *)user_data, 0);
@@ -34,7 +34,7 @@ connect_one(const gchar *handler_name, GtkObject *obj,
     if (connect_object) {
         PyObject *other;
 
-        other = pygobject_new((GObject *)connect_object);
+        other = pygobject_new(connect_object);
 	closure = pyg_closure_new(callback, extra, other);
     } else {
 	closure = pyg_closure_new(callback, extra, NULL);
@@ -80,9 +80,9 @@ _wrap_glade_xml_signal_connect(PyGObject *self, PyObject *args)
 %%
 override glade_xml_signal_autoconnect kwargs
 static void
-connect_many(const gchar *handler_name, GtkObject *obj,
+connect_many(const gchar *handler_name, GObject *obj,
 	     const gchar *signal_name, const gchar *signal_data,
-	     GtkObject *connect_object, gboolean after, gpointer user_data)
+	     GObject *connect_object, gboolean after, gpointer user_data)
 {
     PyObject *handler_dict = user_data;
     PyObject *tuple;
