@@ -1,7 +1,37 @@
 2001-09-18  James Henstridge  <james@daa.com.au>
 
+	* pygobject.h (pyg_type_wrapper_new): export this function.
+
+	* codegen/argtypes.py (GTypeArg.write_return): wrap GType return
+	values as PyGTypeWrappers rather than ints.
+
+	* codegen/codegen.py (write_source): pass the typecode macros to
+	pygobject_register_class and pyg_register_interface rather than
+	references to the get_type functions.
+
+	* pygobject.h (_PyGObject_Functions): fix up prototypes.
+
 	* gobjectmodule.c (check_bases): check if the base class is an
 	extensionclass before poking around in class->bases.
+	(pyg_type_*): don't bother storing the _get_type() function for
+	lazy initialisation.  Instead, just store the GType.  Also, remove
+	code for coercing them into numbers.
+	(pygobject_register_class): take the type, rather that get_type
+	routine as an argument.
+	(pyg_register_interface): same here.
+	(pyg_type_from_object): don't accept types that convert to ints as
+	being equivalent to GTypes.
+	(pyg_register_boxed): set the __gtype__ attribute to a
+	PyGTypeWrapper.
+	(pyg_type_register): set __gtype__ to a PyGTypeWrapper.
+	(pyg_type_name): use pyg_type_from_name
+	(pyg_type_from_name): return a PyGTypeWrapper object.
+	(pyg_type_parent): update.
+	(pyg_type_is_a): update.
+	(pyg_type_children): update.
+	(pyg_type_interfaces): update.
+	(initgobject): set __gtype__ attributes to PyGTypeWrapper objects.
+	(initgobject): make type constants PyGTypeWrapper objects.
 
 2001-09-17  James Henstridge  <james@daa.com.au>
 

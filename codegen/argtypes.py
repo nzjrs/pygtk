@@ -385,8 +385,7 @@ class AtomArg(IntArg):
         return '    return PyGdkAtom_New(%(func)s);'
 
 class GTypeArg(ArgType):
-    gtype = '    %(name)s = pyg_type_from_object(py_%(name)s);\n' + \
-            '    if (!%(name)s)\n' + \
+    gtype = '    if ((%(name)s = pyg_type_from_object(py_%(name)s)) == 0)\n' +\
             '        return NULL;\n'
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
@@ -397,7 +396,7 @@ class GTypeArg(ArgType):
 	arglist.append(pname)
 	return 'O'
     def write_return(self, ptype, varlist):
-	return '    return PyInt_FromLong(%(func)s);'
+	return '    return pyg_type_wrapper_new(%(func)s);'
 
 # simple GError handler.
 # XXXX - must get codegen to handle real GError stuff

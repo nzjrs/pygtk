@@ -729,9 +729,8 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
         fp.write('    pyg_register_boxed(d, "' + boxed.name +
                  '", ' + boxed.typecode + ', &Py' + boxed.c_name + '_Type);\n')
     for interface in parser.interfaces:
-        uclass = string.lower(string.replace(interface.typecode, '_TYPE_', '_', 1))
         fp.write('    pyg_register_interface(d, "' + interface.name +
-                 '", '+ uclass + '_get_type, &Py' + interface.c_name +
+                 '", '+ interface.typecode + ', &Py' + interface.c_name +
                  '_Type);\n')
     objects = parser.objects[:]
     pos = 0
@@ -749,16 +748,15 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
         if obj.parent != None:
             bases.append(obj.parent)
         bases = bases + obj.implements
-        uclass = string.lower(string.replace(obj.typecode, '_TYPE_', '_', 1))
         if bases:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
-                     '", ' + uclass + '_get_type, &Py' + obj.c_name +
+                     '", ' + obj.typecode + ', &Py' + obj.c_name +
                      '_Type, Py_BuildValue("(' + 'O' * len(bases) + ')", ' +
                      string.join(map(lambda s: '&Py'+s+'_Type', bases), ', ') +
                      '));\n')
         else:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
-                     '", ' + uclass + '_get_type, &Py' + obj.c_name +
+                     '", ' + obj.typecode + ', &Py' + obj.c_name +
                      '_Type, NULL);\n')
     fp.write('}\n')
 
