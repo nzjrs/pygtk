@@ -4488,4 +4488,162 @@ _wrap_gtk_file_chooser_widget_new(PyGObject *self, PyObject *args,
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+%%
+override gtk_file_filter_filter kwargs
+static PyObject *
+_wrap_gtk_file_filter_filter(PyGObject *self, PyObject *args,
+			     PyObject *kwargs)
+{
+    static char *kwlist[] = { "filter_info", NULL };
+    GtkFileFilterInfo filter_info = { 0, NULL, NULL, NULL, NULL };
+    PyObject *py_filter_info, *obj;
+    PyObject *pyret = Py_False;
+    int size;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:GtkFileFilter.filter", kwlist,
+				     &PyTuple_Type, &py_filter_info))
+        return NULL;
+
+    size = PyTuple_Size(py_filter_info);
+    if (size != 4) {
+	PyErr_SetString(PyExc_RuntimeError,
+                        "filter_info tuple must contain 4 items"
+			" each of type string or None");
+	return NULL;
+    }
+
+    if ((obj = PyTuple_GetItem(py_filter_info, 0)) != Py_None) {
+	if (!PyString_Check(obj))
+	    goto error;
+	filter_info.filename = PyString_AsString(obj);
+	filter_info.contains |= GTK_FILE_FILTER_FILENAME;
+    }
+    if ((obj = PyTuple_GetItem(py_filter_info, 1)) != Py_None) {
+	if (!PyString_Check(obj))
+	    goto error;
+	filter_info.uri = PyString_AsString(obj);
+	filter_info.contains |= GTK_FILE_FILTER_URI;
+    }
+    if ((obj = PyTuple_GetItem(py_filter_info, 2)) != Py_None) {
+	if (!PyString_Check(obj))
+	    goto error;
+	filter_info.display_name = PyString_AsString(obj);
+	filter_info.contains |= GTK_FILE_FILTER_DISPLAY_NAME;
+    }
+    if ((obj = PyTuple_GetItem(py_filter_info, 3)) != Py_None) {
+	if (!PyString_Check(obj))
+	    goto error;
+	filter_info.mime_type = PyString_AsString(obj);
+	filter_info.contains |= GTK_FILE_FILTER_MIME_TYPE;
+    }
+
+    if (gtk_file_filter_filter(GTK_FILE_FILTER(self->obj), &filter_info))
+	pyret = Py_True;
+    Py_INCREF(pyret);
+    return pyret;
+
+ error:
+    PyErr_SetString(PyExc_TypeError, "filter_info 4-tuple items"
+		    " must be of type string or None");
+    return NULL;
+}
+%%
+override gtk_file_filter_add_custom args
+static gboolean
+pygtk_file_filter_add_custom_cb(const GtkFileFilterInfo *filter_info,
+				gpointer user_data)
+{
+    PyGtkCustomNotify *cunote = user_data;
+    gboolean ret = FALSE;
+    PyObject *retobj, *py_filter_info, *py_obj;
  
+    g_assert(cunote->func);
+
+    pyg_block_threads();
+
+    py_filter_info = PyTuple_New(4);
+
+    if (filter_info->filename
+	&& (filter_info->contains & GTK_FILE_FILTER_FILENAME)) {
+	py_obj = PyString_FromString(filter_info->filename);
+    } else {
+	Py_INCREF(Py_None);
+	py_obj = Py_None;
+    }
+    PyTuple_SetItem(py_filter_info, 0, py_obj);
+    if (filter_info->uri
+	&& (filter_info->contains & GTK_FILE_FILTER_URI)) {
+	py_obj = PyString_FromString(filter_info->uri);
+    } else {
+	Py_INCREF(Py_None);
+	py_obj = Py_None;
+    }
+    PyTuple_SetItem(py_filter_info, 1, py_obj);
+    if (filter_info->display_name
+	&& (filter_info->contains & GTK_FILE_FILTER_DISPLAY_NAME)) {
+	py_obj = PyString_FromString(filter_info->display_name);
+    } else {
+	Py_INCREF(Py_None);
+	py_obj = Py_None;
+    }
+    PyTuple_SetItem(py_filter_info, 2, py_obj);
+    if (filter_info->mime_type
+	&& (filter_info->contains & GTK_FILE_FILTER_MIME_TYPE)) {
+	py_obj = PyString_FromString(filter_info->mime_type);
+    } else {
+	Py_INCREF(Py_None);
+	py_obj = Py_None;
+    }
+    PyTuple_SetItem(py_filter_info, 3, py_obj);
+ 
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NO)", py_filter_info,
+				     cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(N)", py_filter_info);
+    }
+
+    if (retobj != NULL) {
+	ret = PyObject_IsTrue(retobj);
+        Py_DECREF(retobj);
+    } else {
+	PyErr_Print();
+    }
+ 
+    pyg_unblock_threads();
+    return ret;
+}
+static PyObject *
+_wrap_gtk_file_filter_add_custom(PyGObject *self, PyObject *args)
+{
+    PyObject *pyfunc, *pyflags, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+    GtkFileFilterFlags flags;
+ 
+    if (!PyArg_ParseTuple(args,
+                          "OO|O:GtkEntryCompletion.set_match_func",
+                          &pyflags, &pyfunc, &pyarg))
+        return NULL;
+ 
+    if (pyg_enum_get_value(GTK_TYPE_FILE_FILTER_FLAGS, pyflags,
+			   (gint *)&flags))
+        return NULL;
+
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+
+    gtk_file_filter_add_custom(GTK_FILE_FILTER(self->obj), flags,
+			       pygtk_file_filter_add_custom_cb,
+			       cunote, pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
