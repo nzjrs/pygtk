@@ -345,15 +345,24 @@ class DocbookDocWriter(DocWriter):
         return string.join(sgml, '')
     
     def write_class_header(self, obj_name, fp):
-        fp.write('<sect1 id="' + self.make_class_ref(obj_name) + '">\n')
-        fp.write('  <title>' + self.pyname(obj_name) + '</title>\n\n')
+        fp.write('<refentry id="' + self.make_class_ref(obj_name) + '">\n')
+        fp.write('  <refmeta>\n')
+        fp.write('    <refentrytitle>%s</refentrytitle>\n'
+                 % self.pyname(obj_name))
+        fp.write('    <manvolnum>3</manvolnum>\n')
+        fp.write('    <refmiscinfo>PyGTK Docs</refmiscinfo>\n')
+        fp.write('  </refmeta>\n\n')
+        fp.write('  <refnamediv>\n')
+        fp.write('    <refname>%s</refname><refpurpose></refpurpose>\n'
+                 % self.pyname(obj_name))
+        fp.write('  </refnamediv>\n\n')
     def write_class_footer(self, obj_name, fp):
-        fp.write('</sect1>\n')
+        fp.write('</refentry>\n')
     def write_heading(self, text, fp):
-        fp.write('  <sect2>\n')
+        fp.write('  <refsect1>\n')
         fp.write('    <title>' + text + '</title>\n\n')
     def close_section(self, fp):
-        fp.write('  </sect2>\n')
+        fp.write('  </refsect1>\n')
 
     def write_heirachy(self, obj_name, ancestry, fp):
         fp.write('<synopsis>')
@@ -412,7 +421,7 @@ class DocbookDocWriter(DocWriter):
         fp.write('\n\n\n')
 
     def write_method(self, meth_def, func_doc, fp):
-        fp.write('  <sect3 id="' + self.make_method_ref(meth_def) + '">\n')
+        fp.write('  <refsect2 id="' + self.make_method_ref(meth_def) + '">\n')
         fp.write('    <title>' + self.pyname(meth_def.of_object) + '.' +
                  meth_def.name + '</title>\n\n')
         prototype = self.create_method_prototype(meth_def)
@@ -448,23 +457,23 @@ class DocbookDocWriter(DocWriter):
             fp.write('  </variablelist>\n')
         if func_doc and func_doc.description:
             fp.write(self.reformat_text(func_doc.description))
-        fp.write('  </sect3>\n\n\n')
+        fp.write('  </refsect2>\n\n\n')
 
     def output_toc(self, files, fp=sys.stdout):
         if self.use_xml:
             fp.write('<?xml version="1.0" standalone="no"?>\n')
-            fp.write('<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
+            fp.write('<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
             fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [\n')
         else:
-            fp.write('<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [\n')
+            fp.write('<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1.2//EN" [\n')
         for filename, obj_def in files:
             fp.write('  <!ENTITY ' + string.translate(obj_def.c_name,
                                                       self.__transtable) +
                      ' SYSTEM "' + filename + '" >\n')
         fp.write(']>\n\n')
 
-        fp.write('<article id="index">\n\n')
-        fp.write('  <articleinfo>\n')
+        fp.write('<book id="index">\n\n')
+        fp.write('  <bookinfo>\n')
         fp.write('    <title>PyGTK Docs</title>\n')
         fp.write('    <authorgroup>\n')
         fp.write('      <author>\n')
@@ -472,18 +481,21 @@ class DocbookDocWriter(DocWriter):
         fp.write('        <surname>Henstridge</surname>\n')
         fp.write('      </author>\n')
         fp.write('    </authorgroup>\n')
-        fp.write('  </articleinfo>\n\n')
+        fp.write('  </bookinfo>\n\n')
 
-        fp.write('  <sect1>\n')
+        fp.write('  <chapter id="class-heirachy">\n')
         fp.write('    <title>Class Heirachy</title>\n')
         fp.write('    <para>Not done yet</para>\n')
-        fp.write('  </sect1>\n')
+        fp.write('  </chapter>\n\n')
 
+        fp.write('  <reference id="class-docs">\n')
+        fp.write('    <title>Class Documentation</title>\n')
         for filename, obj_def in files:
             fp.write('&' +string.translate(obj_def.c_name, self.__transtable)+
                      ';\n')
 
-        fp.write('</article>\n')
+        fp.write('  </reference>\n')
+        fp.write('</book>\n')
 
 if __name__ == '__main__':
     try:

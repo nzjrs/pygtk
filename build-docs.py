@@ -1,6 +1,6 @@
 import sys, os
 
-use_xml = 0
+use_xml = 1
 
 sys.path.insert(0, 'codegen')
 
