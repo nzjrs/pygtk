@@ -702,7 +702,7 @@ static PyObject *_wrap_gdk_imlib_get_rgb_height(PyObject *self, PyObject *args) 
     if(!PyArg_ParseTuple(args,"O!:gdk_imlib_get_rgb_height",
 			 &PyGdkImlibImage_Type, &image)) 
         return NULL;
-    return PyInt_FromLong(PyGdkImlibImage_Get(image)->rgb_width);
+    return PyInt_FromLong(PyGdkImlibImage_Get(image)->rgb_height);
 }
 
 static PyObject *_wrap_gdk_imlib_get_filename(PyObject *self, PyObject *args) {
