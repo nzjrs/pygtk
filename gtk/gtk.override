@@ -7787,6 +7787,7 @@ _wrap_gtk_text_tag_table_add(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
 override gtk_text_tag_table_remove kwargs
 static PyObject *
 _wrap_gtk_text_tag_table_remove(PyGObject *self, PyObject *args,
@@ -7821,6 +7822,48 @@ _wrap_gtk_text_tag_table_remove(PyGObject *self, PyObject *args,
 
     gtk_text_tag_table_remove(table, tag);
 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_text_view_set_border_window_size kwargs
+static PyObject *
+_wrap_gtk_text_view_set_border_window_size(PyGObject *self, PyObject *args,
+					   PyObject *kwargs)
+{
+    static char *kwlist[] = { "type", "size", NULL };
+    PyObject *py_type = NULL;
+    int size;
+    GtkTextWindowType type;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "Oi:GtkTextView.set_border_window_size",
+				     kwlist, &py_type, &size))
+        return NULL;
+
+    if (size < 0) {
+        PyErr_SetString(PyExc_ValueError, "size must be >= 0");
+	return NULL;
+    }
+
+    if (pyg_enum_get_value(GTK_TYPE_TEXT_WINDOW_TYPE, py_type, (gint *)&type))
+        return NULL;
+
+    switch (type)
+    {
+    case GTK_TEXT_WINDOW_LEFT:
+    case GTK_TEXT_WINDOW_RIGHT:
+    case GTK_TEXT_WINDOW_TOP:
+    case GTK_TEXT_WINDOW_BOTTOM:
+	gtk_text_view_set_border_window_size(GTK_TEXT_VIEW(self->obj), type,
+					     size);
+    default:
+        PyErr_SetString(PyExc_ValueError, "type must be one of: "
+			"gtk.TEXT_WINDOW_LEFT, gtk.TEXT_WINDOW_RIGHT, "
+			"gtk.TEXT_WINDOW_TOP or gtk.TEXT_WINDOW_BOTTOM");
+	return NULL;
+    }
+	
     Py_INCREF(Py_None);
     return Py_None;
 }
