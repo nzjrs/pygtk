@@ -65,6 +65,9 @@ init_gtk(void)
     g_thread_init(NULL);
 #endif
 
+    /* set the default python encoding to utf-8 */
+    PyUnicode_SetDefaultEncoding("utf-8");
+
     /* initialise GTK ... */
     av = PySys_GetObject("argv");
     argc = PyList_Size(av);

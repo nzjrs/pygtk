@@ -8647,43 +8647,43 @@
   (parameter (type-and-name guint* info))
 )
 
-(function gtk_selection_owner_set
+(method selection_owner_set
+  (of-object Widget (Gtk))
   (c-name gtk_selection_owner_set)
   (return-type gboolean)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkAtom selection))
   (parameter (type-and-name guint32 time))
 )
 
-(function gtk_selection_add_target
+(method selection_add_target
+  (of-object Widget (Gtk))
   (c-name gtk_selection_add_target)
   (return-type none)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkAtom selection))
   (parameter (type-and-name GdkAtom target))
   (parameter (type-and-name guint info))
 )
 
-(function gtk_selection_add_targets
+(method selection_add_targets
+  (of-object Widget (Gtk))
   (c-name gtk_selection_add_targets)
   (return-type none)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkAtom selection))
   (parameter (type-and-name const-GtkTargetEntry* targets))
   (parameter (type-and-name guint ntargets))
 )
 
-(function gtk_selection_clear_targets
+(method selection_clear_targets
+  (of-object Widget (Gtk))
   (c-name gtk_selection_clear_targets)
   (return-type none)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkAtom selection))
 )
 
-(function gtk_selection_convert
+(method selection_convert
+  (of-object Widget (Gtk))
   (c-name gtk_selection_convert)
   (return-type gint)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkAtom selection))
   (parameter (type-and-name GdkAtom target))
   (parameter (type-and-name guint32 time))
@@ -8712,23 +8712,23 @@
   (return-type guchar*)
 )
 
-(function gtk_selection_remove_all
+(method selection_remove_all
+  (of-object Widget (Gtk))
   (c-name gtk_selection_remove_all)
   (return-type none)
-  (parameter (type-and-name GtkWidget* widget))
 )
 
-(function gtk_selection_clear
+(method selection_clear
+  (of-object Widget (Gtk))
   (c-name gtk_selection_clear)
   (return-type gint)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkEventSelection* event))
 )
 
-(function gtk_selection_request
+(method selection_request
+  (of-object Widget (Gtk))
   (c-name gtk_selection_request)
   (return-type gint)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkEventSelection* event))
 )
 
@@ -8739,17 +8739,17 @@
   (parameter (type-and-name GdkEventProperty* event))
 )
 
-(function gtk_selection_notify
+(method selection_notify
+  (of-object Widget (Gtk))
   (c-name gtk_selection_notify)
   (return-type gint)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkEventSelection* event))
 )
 
-(function gtk_selection_property_notify
+(method selection_property_notify
+  (of-object Widget (Gtk))
   (c-name gtk_selection_property_notify)
   (return-type gint)
-  (parameter (type-and-name GtkWidget* widget))
   (parameter (type-and-name GdkEventProperty* event))
 )
 
@@ -8778,87 +8778,87 @@
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtksignal.h
 
-(function gtk_signal_lookup
+(function signal_lookup
   (c-name gtk_signal_lookup)
   (return-type guint)
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name GtkType object_type))
 )
 
-(function gtk_signal_name
+(function signal_name
   (c-name gtk_signal_name)
   (return-type gchar*)
   (parameter (type-and-name guint signal_id))
 )
 
-(function gtk_signal_n_emissions
+(method  signal_n_emissions
+  (of-object Object (Gtk))
   (c-name gtk_signal_n_emissions)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint signal_id))
 )
 
-(function gtk_signal_n_emissions_by_name
+(method signal_n_emissions_by_name
+  (of-object Object (Gtk))
   (c-name gtk_signal_n_emissions_by_name)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
 )
 
-(function gtk_signal_emit_stop
+(method emit_stop
+  (of-object Object (Gtk))
   (c-name gtk_signal_emit_stop)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint signal_id))
 )
 
-(function gtk_signal_emit_stop_by_name
+(method emit_stop_by_name
+  (of-object Object (Gtk))
   (c-name gtk_signal_emit_stop_by_name)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
 )
 
-(function gtk_signal_connect
+(method connect
+  (of-object Object (Gtk))
   (c-name gtk_signal_connect)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name gpointer func_data))
 )
 
-(function gtk_signal_connect_after
+(method connect_after
+  (of-object Object (Gtk))
   (c-name gtk_signal_connect_after)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name gpointer func_data))
 )
 
-(function gtk_signal_connect_object
+(method connect_object
+  (of-object Object (Gtk))
   (c-name gtk_signal_connect_object)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name GtkObject* slot_object))
 )
 
-(function gtk_signal_connect_object_after
+(method connect_object_after
+  (of-object Object (Gtk))
   (c-name gtk_signal_connect_object_after)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name GtkObject* slot_object))
 )
 
-(function gtk_signal_connect_full
+(method connect_full
+  (of-object Object (Gtk))
   (c-name gtk_signal_connect_full)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name GtkCallbackMarshal marshal))
@@ -8868,118 +8868,118 @@
   (parameter (type-and-name gint after))
 )
 
-(function gtk_signal_connect_object_while_alive
+(method connect_object_while_alive
+  (of-object Object (Gtk))
   (c-name gtk_signal_connect_object_while_alive)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* signal))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name GtkObject* alive_object))
 )
 
-(function gtk_signal_connect_while_alive
+(method connect_while_alive
+  (of-object Object (Gtk))
   (c-name gtk_signal_connect_while_alive)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* signal))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name gpointer func_data))
   (parameter (type-and-name GtkObject* alive_object))
 )
 
-(function gtk_signal_disconnect
+(method disconnect
+  (of-object Object (Gtk))
   (c-name gtk_signal_disconnect)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint handler_id))
 )
 
-(function gtk_signal_disconnect_by_func
+(method signal_disconnect_by_func
+  (of-object Object (Gtk))
   (c-name gtk_signal_disconnect_by_func)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_disconnect_by_data
+(method disconnect_by_data
+  (of-object Object (Gtk))
   (c-name gtk_signal_disconnect_by_data)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_handler_block
+(method signal_handler_block
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_block)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint handler_id))
 )
 
-(function gtk_signal_handler_block_by_func
+(method signal_handler_block_by_func
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_block_by_func)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_handler_block_by_data
+(method signal_handler_block_by_data
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_block_by_data)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_handler_unblock
+(method signal_handler_unblock
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_unblock)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint handler_id))
 )
 
-(function gtk_signal_handler_unblock_by_func
+(method signal_handler_unblock_by_func
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_unblock_by_func)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_handler_unblock_by_data
+(method signal_handler_unblock_by_data
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_unblock_by_data)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_handler_pending
+(method signal_handler_pending
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_pending)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint signal_id))
   (parameter (type-and-name gboolean may_be_blocked))
 )
 
-(function gtk_signal_handler_pending_by_func
+(method signal_handler_pending_by_func
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_pending_by_func)
   (return-type guint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint signal_id))
   (parameter (type-and-name gboolean may_be_blocked))
   (parameter (type-and-name GtkSignalFunc func))
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_handler_pending_by_id
+(method signal_handler_pending_by_id
+  (of-object Object (Gtk))
   (c-name gtk_signal_handler_pending_by_id)
   (return-type gint)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint handler_id))
   (parameter (type-and-name gboolean may_be_blocked))
 )
 
-(function gtk_signal_add_emission_hook
+(function signal_add_emission_hook
   (c-name gtk_signal_add_emission_hook)
   (return-type guint)
   (parameter (type-and-name guint signal_id))
@@ -8987,7 +8987,7 @@
   (parameter (type-and-name gpointer data))
 )
 
-(function gtk_signal_add_emission_hook_full
+(function signal_add_emission_hook_full
   (c-name gtk_signal_add_emission_hook_full)
   (return-type guint)
   (parameter (type-and-name guint signal_id))
@@ -8996,25 +8996,25 @@
   (parameter (type-and-name GDestroyNotify destroy))
 )
 
-(function gtk_signal_remove_emission_hook
+(function signal_remove_emission_hook
   (c-name gtk_signal_remove_emission_hook)
   (return-type none)
   (parameter (type-and-name guint signal_id))
   (parameter (type-and-name guint hook_id))
 )
 
-(function gtk_signal_query
+(function signal_query
   (c-name gtk_signal_query)
   (return-type GtkSignalQuery*)
   (parameter (type-and-name guint signal_id))
 )
 
-(function gtk_signal_init
+(function signal_init
   (c-name gtk_signal_init)
   (return-type none)
 )
 
-(function gtk_signal_new
+(function signal_new
   (c-name gtk_signal_new)
   (return-type guint)
   (parameter (type-and-name const-gchar* name))
@@ -9027,7 +9027,7 @@
   (varargs t)
 )
 
-(function gtk_signal_newv
+(function signal_newv
   (c-name gtk_signal_newv)
   (return-type guint)
   (parameter (type-and-name const-gchar* name))
@@ -9040,45 +9040,45 @@
   (parameter (type-and-name GtkType* params))
 )
 
-(function gtk_signal_emit
+(method emit
+  (of-object Object (Gtk))
   (c-name gtk_signal_emit)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint signal_id))
   (varargs t)
 )
 
-(function gtk_signal_emit_by_name
+(method emit_by_name
+  (of-object Object (Gtk))
   (c-name gtk_signal_emit_by_name)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
   (varargs t)
 )
 
-(function gtk_signal_emitv
+(method emitv
+  (of-object Object (Gtk))
   (c-name gtk_signal_emitv)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name guint signal_id))
   (parameter (type-and-name GtkArg* params))
 )
 
-(function gtk_signal_emitv_by_name
+(method emitv_by_name
+  (of-object Object (Gtk))
   (c-name gtk_signal_emitv_by_name)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name GtkArg* params))
 )
 
-(function gtk_signal_handlers_destroy
+(method signal_handlers_destroy
+  (of-object Object (Gtk))
   (c-name gtk_signal_handlers_destroy)
   (return-type none)
-  (parameter (type-and-name GtkObject* object))
 )
 
-(function gtk_signal_set_funcs
+(function signal_set_funcs
   (c-name gtk_signal_set_funcs)
   (return-type none)
   (parameter (type-and-name GtkSignalMarshal marshal_func))
@@ -9091,6 +9091,7 @@
 
 (function gtk_socket_new
   (c-name gtk_socket_new)
+  (is-constructor-of GtkSocket)
   (return-type GtkWidget*)
 )
 
@@ -9119,15 +9120,16 @@
   (of-object SpinButton (Gtk))
   (c-name gtk_spin_button_configure)
   (return-type none)
-  (parameter (type-and-name GtkAdjustment* adjustment))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
   (parameter (type-and-name gfloat climb_rate))
   (parameter (type-and-name guint digits))
 )
 
 (function gtk_spin_button_new
   (c-name gtk_spin_button_new)
+  (is-constructor-of GtkSpinButton)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
   (parameter (type-and-name gfloat climb_rate))
   (parameter (type-and-name guint digits))
 )
@@ -9231,6 +9233,7 @@
 
 (function gtk_statusbar_new
   (c-name gtk_statusbar_new)
+  (is-constructor-of GtkStatusbar)
   (return-type GtkWidget*)
 )
 
@@ -9268,28 +9271,28 @@
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkstock.h
 
-(function gtk_stock_add
+(function stock_add
   (c-name gtk_stock_add)
   (return-type none)
   (parameter (type-and-name const-GtkStockItem* item))
   (parameter (type-and-name guint n_items))
 )
 
-(function gtk_stock_add_static
+(function stock_add_static
   (c-name gtk_stock_add_static)
   (return-type none)
   (parameter (type-and-name const-GtkStockItem* item))
   (parameter (type-and-name guint n_items))
 )
 
-(function gtk_stock_lookup
+(function stock_lookup
   (c-name gtk_stock_lookup)
   (return-type gboolean)
   (parameter (type-and-name const-gchar* stock_id))
   (parameter (type-and-name GtkStockItem* item))
 )
 
-(function gtk_stock_list_items
+(function stock_list_items
   (c-name gtk_stock_list_items)
   (return-type GSList*)
 )
@@ -9317,6 +9320,7 @@
 
 (function gtk_style_new
   (c-name gtk_style_new)
+  (is-constructor-of GtkStyle)
   (return-type GtkStyle*)
 )
 
@@ -9392,10 +9396,10 @@
   (parameter (type-and-name const-gchar* detail))
 )
 
-(function gtk_draw_hline
+(method draw_hline
+  (of-object Style (Gtk))
   (c-name gtk_draw_hline)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name gint x1))
@@ -9403,10 +9407,10 @@
   (parameter (type-and-name gint y))
 )
 
-(function gtk_draw_vline
+(method draw_vline
+  (of-object Style (Gtk))
   (c-name gtk_draw_vline)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name gint y1))
@@ -9414,10 +9418,10 @@
   (parameter (type-and-name gint x))
 )
 
-(function gtk_draw_shadow
+(method draw_shadow
+  (of-object Style (Gtk))
   (c-name gtk_draw_shadow)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9427,10 +9431,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_polygon
+(method draw_polygon
+  (of-object Style (Gtk))
   (c-name gtk_draw_polygon)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9439,10 +9443,10 @@
   (parameter (type-and-name gboolean fill))
 )
 
-(function gtk_draw_arrow
+(method draw_arrow
+  (of-object Style (Gtk))
   (c-name gtk_draw_arrow)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9454,10 +9458,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_diamond
+(method draw_diamond
+  (of-object Style (Gtk))
   (c-name gtk_draw_diamond)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9467,10 +9471,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_oval
+(method draw_oval
+  (of-object Style (Gtk))
   (c-name gtk_draw_oval)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9480,10 +9484,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_string
+(method draw_string
+  (of-object Style (Gtk))
   (c-name gtk_draw_string)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name gint x))
@@ -9491,10 +9495,10 @@
   (parameter (type-and-name const-gchar* string))
 )
 
-(function gtk_draw_box
+(method draw_box
+  (of-object Style (Gtk))
   (c-name gtk_draw_box)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9504,10 +9508,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_flat_box
+(method draw_flat_box
+  (of-object Style (Gtk))
   (c-name gtk_draw_flat_box)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9517,10 +9521,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_check
+(method draw_check
+  (of-object Style (Gtk))
   (c-name gtk_draw_check)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9530,10 +9534,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_option
+(method draw_option
+  (of-object Style (Gtk))
   (c-name gtk_draw_option)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9543,10 +9547,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_cross
+(method draw_cross
+  (of-object Style (Gtk))
   (c-name gtk_draw_cross)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9556,10 +9560,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_ramp
+(method draw_ramp
+  (of-object Style (Gtk))
   (c-name gtk_draw_ramp)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9570,10 +9574,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_tab
+(method draw_tab
+  (of-object Style (Gtk))
   (c-name gtk_draw_tab)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9583,10 +9587,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_shadow_gap
+(method draw_shadow_gap
+  (of-object Style (Gtk))
   (c-name gtk_draw_shadow_gap)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9599,10 +9603,10 @@
   (parameter (type-and-name gint gap_width))
 )
 
-(function gtk_draw_box_gap
+(method draw_box_gap
+  (of-object Style (Gtk))
   (c-name gtk_draw_box_gap)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9615,10 +9619,10 @@
   (parameter (type-and-name gint gap_width))
 )
 
-(function gtk_draw_extension
+(method draw_extension
+  (of-object Style (Gtk))
   (c-name gtk_draw_extension)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9629,10 +9633,10 @@
   (parameter (type-and-name GtkPositionType gap_side))
 )
 
-(function gtk_draw_focus
+(method draw_focus
+  (of-object Style (Gtk))
   (c-name gtk_draw_focus)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name gint x))
   (parameter (type-and-name gint y))
@@ -9640,10 +9644,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_draw_slider
+(method draw_slider
+  (of-object Style (Gtk))
   (c-name gtk_draw_slider)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9654,10 +9658,10 @@
   (parameter (type-and-name GtkOrientation orientation))
 )
 
-(function gtk_draw_handle
+(method draw_handle
+  (of-object Style (Gtk))
   (c-name gtk_draw_handle)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9668,10 +9672,10 @@
   (parameter (type-and-name GtkOrientation orientation))
 )
 
-(function gtk_paint_hline
+(method paint_hline
+  (of-object Style (Gtk))
   (c-name gtk_paint_hline)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GdkRectangle* area))
@@ -9682,10 +9686,10 @@
   (parameter (type-and-name gint y))
 )
 
-(function gtk_paint_vline
+(method paint_vline
+  (of-object Style (Gtk))
   (c-name gtk_paint_vline)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GdkRectangle* area))
@@ -9696,10 +9700,10 @@
   (parameter (type-and-name gint x))
 )
 
-(function gtk_paint_shadow
+(method paint_shadow
+  (of-object Style (Gtk))
   (c-name gtk_paint_shadow)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9712,10 +9716,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_polygon
+(method paint_polygon
+  (of-object Style (Gtk))
   (c-name gtk_paint_polygon)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9727,10 +9731,10 @@
   (parameter (type-and-name gboolean fill))
 )
 
-(function gtk_paint_arrow
+(method paint_arrow
+  (of-object Style (Gtk))
   (c-name gtk_paint_arrow)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9745,10 +9749,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_diamond
+(method paint_diamond
+  (of-object Style (Gtk))
   (c-name gtk_paint_diamond)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9761,10 +9765,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_oval
+(method paint_oval
+  (of-object Style (Gtk))
   (c-name gtk_paint_oval)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9777,10 +9781,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_string
+(method paint_string
+  (of-object Style (Gtk))
   (c-name gtk_paint_string)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GdkRectangle* area))
@@ -9791,10 +9795,10 @@
   (parameter (type-and-name const-gchar* string))
 )
 
-(function gtk_paint_box
+(method paint_box
+  (of-object Style (Gtk))
   (c-name gtk_paint_box)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9807,10 +9811,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_flat_box
+(method paint_flat_box
+  (of-object Style (Gtk))
   (c-name gtk_paint_flat_box)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9823,10 +9827,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_check
+(method paint_check
+  (of-object Style (Gtk))
   (c-name gtk_paint_check)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9839,10 +9843,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_option
+(method paint_option
+  (of-object Style (Gtk))
   (c-name gtk_paint_option)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9855,10 +9859,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_cross
+(method paint_cross
+  (of-object Style (Gtk))
   (c-name gtk_paint_cross)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9871,10 +9875,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_ramp
+(method paint_ramp
+  (of-object Style (Gtk))
   (c-name gtk_paint_ramp)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9888,10 +9892,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_tab
+(method paint_tab
+  (of-object Style (Gtk))
   (c-name gtk_paint_tab)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9904,10 +9908,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_shadow_gap
+(method paint_shadow_gap
+  (of-object Style (Gtk))
   (c-name gtk_paint_shadow_gap)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9923,10 +9927,10 @@
   (parameter (type-and-name gint gap_width))
 )
 
-(function gtk_paint_box_gap
+(method paint_box_gap
+  (of-object Style (Gtk))
   (c-name gtk_paint_box_gap)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9942,10 +9946,10 @@
   (parameter (type-and-name gint gap_width))
 )
 
-(function gtk_paint_extension
+(method paint_extension
+  (of-object Style (Gtk))
   (c-name gtk_paint_extension)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9959,10 +9963,10 @@
   (parameter (type-and-name GtkPositionType gap_side))
 )
 
-(function gtk_paint_focus
+(method paint_focus
+  (of-object Style (Gtk))
   (c-name gtk_paint_focus)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GdkRectangle* area))
   (parameter (type-and-name GtkWidget* widget))
@@ -9973,10 +9977,10 @@
   (parameter (type-and-name gint height))
 )
 
-(function gtk_paint_slider
+(method paint_slider
+  (of-object Style (Gtk))
   (c-name gtk_paint_slider)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -9990,10 +9994,10 @@
   (parameter (type-and-name GtkOrientation orientation))
 )
 
-(function gtk_paint_handle
+(method paint_handle
+  (of-object Style (Gtk))
   (c-name gtk_paint_handle)
   (return-type none)
-  (parameter (type-and-name GtkStyle* style))
   (parameter (type-and-name GdkWindow* window))
   (parameter (type-and-name GtkStateType state_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -10018,6 +10022,7 @@
 
 (function gtk_table_new
   (c-name gtk_table_new)
+  (is-constructor-of GtkTable)
   (return-type GtkWidget*)
   (parameter (type-and-name guint rows))
   (parameter (type-and-name guint columns))
@@ -10041,10 +10046,10 @@
   (parameter (type-and-name guint right_attach))
   (parameter (type-and-name guint top_attach))
   (parameter (type-and-name guint bottom_attach))
-  (parameter (type-and-name GtkAttachOptions xoptions))
-  (parameter (type-and-name GtkAttachOptions yoptions))
-  (parameter (type-and-name guint xpadding))
-  (parameter (type-and-name guint ypadding))
+  (parameter (type-and-name GtkAttachOptions xoptions) (default "GTK_EXPAND|GTK_FILL"))
+  (parameter (type-and-name GtkAttachOptions yoptions) (default "GTK_EXPAND|GTK_FILL"))
+  (parameter (type-and-name guint xpadding) (default "0"))
+  (parameter (type-and-name guint ypadding) (default "0"))
 )
 
 (method attach_defaults
@@ -10106,6 +10111,7 @@
 
 (function gtk_tearoff_menu_item_new
   (c-name gtk_tearoff_menu_item_new)
+  (is-constructor-of GtkTearoffMenuItem)
   (return-type GtkWidget*)
 )
 
@@ -10120,6 +10126,7 @@
 
 (function gtk_text_new
   (c-name gtk_text_new)
+  (is-constructor-of GtkText)
   (return-type GtkWidget*)
   (parameter (type-and-name GtkAdjustment* hadj))
   (parameter (type-and-name GtkAdjustment* vadj))
@@ -10221,6 +10228,7 @@
 
 (function gtk_text_buffer_new
   (c-name gtk_text_buffer_new)
+  (is-constructor-of GtkTextBuffer)
   (return-type GtkTextBuffer*)
   (parameter (type-and-name GtkTextTagTable* table))
 )
@@ -11068,6 +11076,7 @@
 
 (function gtk_text_tag_new
   (c-name gtk_text_tag_new)
+  (is-constructor-of GtkTextTag)
   (return-type GtkTextTag*)
   (parameter (type-and-name const-gchar* name))
 )
@@ -11129,6 +11138,7 @@
 
 (function gtk_text_tag_table_new
   (c-name gtk_text_tag_table_new)
+  (is-constructor-of GtkTextTagTable)
   (return-type GtkTextTagTable*)
 )
 
@@ -11178,11 +11188,13 @@
 
 (function gtk_text_view_new
   (c-name gtk_text_view_new)
+  (is-constructor-of GtkTextView)
   (return-type GtkWidget*)
 )
 
 (function gtk_text_view_new_with_buffer
   (c-name gtk_text_view_new_with_buffer)
+  (is-constructor-of GtkTextView)
   (return-type GtkWidget*)
   (parameter (type-and-name GtkTextBuffer* buffer))
 )
@@ -11423,6 +11435,7 @@
 
 (function gtk_tips_query_new
   (c-name gtk_tips_query_new)
+  (is-constructor-of GtkTipsQuery)
   (return-type GtkWidget*)
 )
 
@@ -11464,11 +11477,13 @@
 
 (function gtk_toggle_button_new
   (c-name gtk_toggle_button_new)
+  (is-constructor-of GtkToggleButton)
   (return-type GtkWidget*)
 )
 
 (function gtk_toggle_button_new_with_label
   (c-name gtk_toggle_button_new_with_label)
+  (is-constructor-of GtkToggleButton)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* label))
 )
@@ -11510,6 +11525,7 @@
 
 (function gtk_toolbar_new
   (c-name gtk_toolbar_new)
+  (is-constructor-of GtkToolbar)
   (return-type GtkWidget*)
   (parameter (type-and-name GtkOrientation orientation))
   (parameter (type-and-name GtkToolbarStyle style))
@@ -11701,6 +11717,7 @@
 
 (function gtk_tooltips_new
   (c-name gtk_tooltips_new)
+  (is-constructor-of GtkTooltips)
   (return-type GtkTooltips*)
 )
 
@@ -11763,6 +11780,7 @@
 
 (function gtk_tree_new
   (c-name gtk_tree_new)
+  (is-constructor-of GtkTree)
   (return-type GtkWidget*)
 )
 
@@ -11877,11 +11895,13 @@
 
 (function gtk_tree_item_new
   (c-name gtk_tree_item_new)
+  (is-constructor-of GtkTreeItem)
   (return-type GtkWidget*)
 )
 
 (function gtk_tree_item_new_with_label
   (c-name gtk_tree_item_new_with_label)
+  (is-constructor-of GtkTreeItem)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* label))
 )
@@ -12646,10 +12666,10 @@
   (parameter (type-and-name const-GtkTypeInfo* gtkinfo))
 )
 
-(method class
-  (of-object Type (Gtk))
+(function type_class
   (c-name gtk_type_class)
   (return-type gpointer)
+  (parameter (type-and-name GtkType type))
 )
 
 (method new
@@ -12700,6 +12720,7 @@
 
 (function gtk_vbutton_box_new
   (c-name gtk_vbutton_box_new)
+  (is-constructor-of GtkVButtonBox)
   (return-type GtkWidget*)
 )
 
@@ -12736,9 +12757,10 @@
 
 (function gtk_vbox_new
   (c-name gtk_vbox_new)
+  (is-constructor-of GtkVBox)
   (return-type GtkWidget*)
-  (parameter (type-and-name gboolean homogeneous))
-  (parameter (type-and-name gint spacing))
+  (parameter (type-and-name gboolean homogeneous) (default "FALSE"))
+  (parameter (type-and-name gint spacing) (default "0"))
 )
 
 
@@ -12752,9 +12774,10 @@
 
 (function gtk_viewport_new
   (c-name gtk_viewport_new)
+  (is-constructor-of GtkViewport)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* hadjustment))
-  (parameter (type-and-name GtkAdjustment* vadjustment))
+  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok))
 )
 
 (method get_hadjustment
@@ -12773,14 +12796,14 @@
   (of-object Viewport (Gtk))
   (c-name gtk_viewport_set_hadjustment)
   (return-type none)
-  (parameter (type-and-name GtkAdjustment* adjustment))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
 )
 
 (method set_vadjustment
   (of-object Viewport (Gtk))
   (c-name gtk_viewport_set_vadjustment)
   (return-type none)
-  (parameter (type-and-name GtkAdjustment* adjustment))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
 )
 
 (method set_shadow_type
@@ -12801,6 +12824,7 @@
 
 (function gtk_vpaned_new
   (c-name gtk_vpaned_new)
+  (is-constructor-of GtkVPaned)
   (return-type GtkWidget*)
 )
 
@@ -12815,6 +12839,7 @@
 
 (function gtk_vruler_new
   (c-name gtk_vruler_new)
+  (is-constructor-of GtkVRuler)
   (return-type GtkWidget*)
 )
 
@@ -12829,8 +12854,9 @@
 
 (function gtk_vscale_new
   (c-name gtk_vscale_new)
+  (is-constructor-of GtkVScale)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
 )
 
 
@@ -12839,8 +12865,9 @@
 
 (function gtk_vscrollbar_new
   (c-name gtk_vscrollbar_new)
+  (is-constructor-of GtkVScrollbar)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
 )
 
 
@@ -12854,6 +12881,7 @@
 
 (function gtk_vseparator_new
   (c-name gtk_vseparator_new)
+  (is-constructor-of GtkVSeparator)
   (return-type GtkWidget*)
 )
 
@@ -12868,6 +12896,7 @@
 
 (function gtk_widget_new
   (c-name gtk_widget_new)
+  (is-constructor-of GtkWidget)
   (return-type GtkWidget*)
   (parameter (type-and-name GtkType type))
   (parameter (type-and-name const-gchar* first_arg_name))
@@ -12876,6 +12905,7 @@
 
 (function gtk_widget_newv
   (c-name gtk_widget_newv)
+  (is-constructor-of GtkWidget)
   (return-type GtkWidget*)
   (parameter (type-and-name GtkType type))
   (parameter (type-and-name guint nargs))
@@ -13148,8 +13178,8 @@
   (of-object Widget (Gtk))
   (c-name gtk_widget_set_scroll_adjustments)
   (return-type gboolean)
-  (parameter (type-and-name GtkAdjustment* hadjustment))
-  (parameter (type-and-name GtkAdjustment* vadjustment))
+  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok))
 )
 
 (method reparent
@@ -13480,61 +13510,61 @@
   (return-type none)
 )
 
-(function gtk_widget_push_style
+(function widget_push_style
   (c-name gtk_widget_push_style)
   (return-type none)
   (parameter (type-and-name GtkStyle* style))
 )
 
-(function gtk_widget_push_colormap
+(function widget_push_colormap
   (c-name gtk_widget_push_colormap)
   (return-type none)
   (parameter (type-and-name GdkColormap* cmap))
 )
 
-(function gtk_widget_push_composite_child
+(function widget_push_composite_child
   (c-name gtk_widget_push_composite_child)
   (return-type none)
 )
 
-(function gtk_widget_pop_composite_child
+(function widget_pop_composite_child
   (c-name gtk_widget_pop_composite_child)
   (return-type none)
 )
 
-(function gtk_widget_pop_style
+(function widget_pop_style
   (c-name gtk_widget_pop_style)
   (return-type none)
 )
 
-(function gtk_widget_pop_colormap
+(function widget_pop_colormap
   (c-name gtk_widget_pop_colormap)
   (return-type none)
 )
 
-(function gtk_widget_set_default_style
+(function widget_set_default_style
   (c-name gtk_widget_set_default_style)
   (return-type none)
   (parameter (type-and-name GtkStyle* style))
 )
 
-(function gtk_widget_set_default_colormap
+(function widget_set_default_colormap
   (c-name gtk_widget_set_default_colormap)
   (return-type none)
   (parameter (type-and-name GdkColormap* colormap))
 )
 
-(function gtk_widget_get_default_style
+(function widget_get_default_style
   (c-name gtk_widget_get_default_style)
   (return-type GtkStyle*)
 )
 
-(function gtk_widget_get_default_colormap
+(function widget_get_default_colormap
   (c-name gtk_widget_get_default_colormap)
   (return-type GdkColormap*)
 )
 
-(function gtk_widget_get_default_visual
+(function widget_get_default_visual
   (c-name gtk_widget_get_default_visual)
   (return-type GdkVisual*)
 )
@@ -13552,13 +13582,13 @@
   (return-type GtkTextDirection)
 )
 
-(function gtk_widget_set_default_direction
+(function widget_set_default_direction
   (c-name gtk_widget_set_default_direction)
   (return-type none)
   (parameter (type-and-name GtkTextDirection dir))
 )
 
-(function gtk_widget_get_default_direction
+(function widget_get_default_direction
   (c-name gtk_widget_get_default_direction)
   (return-type GtkTextDirection)
 )
@@ -13607,8 +13637,9 @@
 
 (function gtk_window_new
   (c-name gtk_window_new)
+  (is-constructor-of GtkWindow)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkWindowType type))
+  (parameter (type-and-name GtkWindowType type) (default "GTK_WINDOW_TOPLEVEL"))
 )
 
 (method set_title
@@ -13706,7 +13737,7 @@
   (parameter (type-and-name gboolean modal))
 )
 
-(function gtk_window_list_toplevels
+(function window_list_toplevels
   (c-name gtk_window_list_toplevels)
   (return-type GList*)
 )
