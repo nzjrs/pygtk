@@ -2895,7 +2895,7 @@ pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
     pyg_block_threads();
 
     py_model = pygobject_new((GObject *)model);
-    py_column = pygobject_new((GObject *)column);
+    py_column = PyInt_FromLong(column);
     py_key = PyString_FromString(key);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
 
