@@ -119,6 +119,39 @@ linkend="method-gtktreestore--iter-depth">iter_depth</link></methodname>
 	<methodname><link
 linkend="method-gtktreestore--clear">clear</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreestore--iter-is-valid">iter_is_valid</link></methodname>
+	<methodparam><parameter
+		       role="keyword">iter</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreestore--reorder">reorder</link></methodname>
+	<methodparam><parameter
+		       role="keyword">parent</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">new_order</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreestore--swap">swap</link></methodname>
+	<methodparam><parameter
+		       role="keyword">a</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">b</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreestore--move-after">move_after</link></methodname>
+	<methodparam><parameter
+		       role="keyword">iter</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">position</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreestore--move-before">move_before</link></methodname>
+	<methodparam><parameter
+		       role="keyword">iter</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">position</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -139,14 +172,15 @@ linkend="method-gtktreestore--clear">clear</link></methodname>
 linkend="class-gtktreestore"><classname>gtk.TreeStore</classname></link> is
 a model for multi-columned tree widgets. A <link
 linkend="class-gtktreestore"><classname>gtk.TreeStore</classname></link> is
-a subclass of <link
-linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> and
+a subclass of <link linkend="class-gobject">gobject.GObject</link> and
 implements the <link
-linkend="class-gtktreedragsource"><classname>gtk.TreeDragSource</classname></link>, 
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
 <link
-linkend="class-gtktreedragdest"><classname>gtk.TreeDragDest</classname></link> 
+linkend="class-gtktreedragsource"><classname>gtk.TreeDragSource</classname></link>,
+<link
+linkend="class-gtktreedragdest"><classname>gtk.TreeDragDest</classname></link>
 and <link
-linkend="class-gtktreesortable"><classname>gtk.TreeSortable</classname></link> 
+linkend="class-gtktreesortable"><classname>gtk.TreeSortable</classname></link>
 interfaces.</para>
 
   </refsect1>
@@ -631,10 +665,189 @@ for anything on the root level, 1 for anything down a level, etc.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>clear</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
 
       <para>The <methodname>clear</methodname>() method removes all rows
 from the treestore.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreestore--iter-is-valid">
+      <title>gtk.TreeStore.iter_is_valid</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>iter_is_valid</methodname>
+	  <methodparam><parameter role="keyword">iter</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if
+	  <parameter>iter</parameter> is valid for the tree
+	  store,</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>iter_is_valid</methodname>() method returns
+<literal>TRUE</literal> if <parameter>iter</parameter> is a valid <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link> for
+the tree store.</para>
+
+      <warning>
+	<para>This function is slow. Only use it for debugging and/or
+testing purposes.</para>
+      </warning>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreestore--reorder">
+      <title>gtk.TreeStore.reorder</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>reorder</methodname>
+	  <methodparam><parameter role="keyword">parent</parameter></methodparam>
+	  <methodparam><parameter role="keyword">new_order</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">parent</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">new_order</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of integers mapping the new position of
+	  each child to its old position before the re-ordering,
+	  i.e. <parameter>new_order</parameter><literal>[newpos] =
+	  oldpos</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>reorder</methodname>() method reorders the
+children of the tree store node pointed to by <parameter>parent</parameter>
+to match the order of the list of row numbers contained in
+<parameter>new_order</parameter>. Note that this method only works with
+unsorted stores.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreestore--swap">
+      <title>gtk.TreeStore.swap</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>swap</methodname>
+	  <methodparam><parameter role="keyword">a</parameter></methodparam>
+	  <methodparam><parameter role="keyword">b</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">a</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">b</parameter>&nbsp;:</term>
+	  <listitem><simpara>another <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>swap</methodname>() method swaps the tree store
+nodes pointed to by <parameter>a</parameter> and <parameter>b</parameter> in
+the same level of the tree store. Note that this method only works with
+unsorted stores.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreestore--move-after">
+      <title>gtk.TreeStore.move_after</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>move_after</methodname>
+	  <methodparam><parameter role="keyword">iter</parameter></methodparam>
+	  <methodparam><parameter role="keyword">position</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">position</parameter>&nbsp;:</term>
+	  <listitem><simpara>a second <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>move_after</methodname>() method moves the tree
+store node specified by <parameter>iter</parameter> to the position after
+the node specified by
+<parameter>position</parameter>. <parameter>iter</parameter> and
+<parameter>position</parameter> should be in the same level. Note that this
+method only works with unsorted stores. If <parameter>position</parameter>
+is <literal>None</literal>, <parameter>iter</parameter> will be moved to the
+start of the level.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreestore--move-before">
+      <title>gtk.TreeStore.move_before</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>move_before</methodname>
+	  <methodparam><parameter role="keyword">iter</parameter></methodparam>
+	  <methodparam><parameter role="keyword">position</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">position</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The move_before() method moves the tree store node pointed to by
+<parameter>iter</parameter> to the position before the node specified by
+<parameter>position</parameter>. <parameter>iter</parameter> and
+<parameter>position</parameter> should be in the same level. Note that this
+method only works with unsorted stores. If <parameter>position</parameter>
+is <literal>None</literal>, <parameter>iter</parameter> will be moved to the
+end of the level.</para>
 
     </refsect2>
 
