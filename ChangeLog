@@ -1,3 +1,18 @@
+2003-01-17  Jon Trowbridge  <trow@ximian.com>
+
+	* pygobject.c (pygobject_dealloc): In my fix for bug #102756 on
+	2003-01-08, I should have used calls to pyg_unblock_threads()/
+	pyg_block_threads() instead of directly calling the
+	Py_BEGIN_ALLOW_THREADS/Py_END_ALLOW_THREADS macros.  The macros
+	don't update our local thread lock counts, causing problems in
+	cases where the finalization of one object triggers the
+	finalization of another.  (When I say "problems", I of course mean
+	"horrible crashes".)
+
+	* gtk/gtk-types.c (pygtk_style_helper_dealloc,
+	pygtk_style_helper_setitem, pygtk_tree_model_row_dealloc,
+	pygtk_tree_model_row_iter_dealloc): See above.
+
 2003-01-16  Johan Dahlin  <jdahlin@async.com.br>
 
 	* gtk/libglade.override (connect_many) Use PyObject_GetAttrString
