@@ -1,3 +1,13 @@
+2001-06-09  James Henstridge  <james@daa.com.au>
+
+	* codegen/codegen.py (write_interface): remove the constructor
+	from interfaces.  It is now provided by GInterface.
+	(write_source): use pyg_register_interface to register interfaces.
+
+	* gobjectmodule.c (PyGInterface_Type): add a GInterface class that
+	is the base of all interfaces.  It prevents subclassing of
+	interface objects, etc.
+
 2001-06-08  James Henstridge  <james@daa.com.au>
 
 	* gobjectmodule.c (pyg_register_boxed): function to register a new

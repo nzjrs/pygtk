@@ -357,13 +357,6 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
 def write_interface(parser, interface, overrides, fp=sys.stdout):
     fp.write('\n/* ----------- ' + interface.c_name + ' ----------- */\n\n')
     methods = []
-    if not hasattr(overrides, 'no_constructor_written'):
-        fp.write(noconstructor)
-    overrides.no_constructor_written = 1
-    methods.append(methdeftmpl %
-                   { 'name':  '__init__',
-                     'cname': 'pygobject_no_constructor',
-                     'flags': 'METH_VARARGS'})
     for meth in parser.find_methods(interface):
         if overrides.is_ignored(meth.c_name):
             continue
@@ -450,8 +443,10 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('    ExtensionClassImported;\n')
     fp.write(overrides.get_init() + '\n')
     for interface in parser.interfaces:
-        fp.write('    PyExtensionClass_Export(d, "' + interface.c_name +
-                 '", Py' + interface.c_name + '_Type);\n')
+        uclass = string.lower(argtypes._to_upper_str(interface.c_name)[1:])
+        fp.write('    pyg_register_interface(d, "' + interface.c_name +
+                 '", '+ uclass + '_get_type, &Py' + interface.c_name +
+                 '_Type);\n')
     objects = parser.objects[:]
     pos = 0
     while pos < len(objects):
