@@ -74,6 +74,11 @@ linkend="method-gtkcellrenderer--start-editing">start_editing</link></methodname
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtkcellrenderer--editing-canceled">editing_canceled</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtkcellrenderer--set-fixed-size">set_fixed_size</link></methodname>
 	<methodparam><parameter
 		       role="keyword">width</parameter></methodparam>
@@ -204,15 +209,52 @@ cellrenderer</entry>
   </refsect1>
 
   <refsect1>
+    <title>Signal Prototypes</title>
+
+    <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkcellrenderer--editing-canceled">editing-canceled</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>cellrenderer</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
     <title>Description</title>
 
-    <para>The gtk.CellRenderer is a base class that provides the common
-attributes and methods for its subclasses (<link
-linkend="class-gtkcellrendererpixbuf"><classname>gtk.CellRendererPixbuf</classname></link>, 
+    <para>The <link
+linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+is a base class for a set of objects used for rendering a cell to a <link
+linkend="class-gdkdrawable"><classname>gtk.gdk.Drawable</classname></link>. The
 <link
-linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link> 
+linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+provides the common attributes and methods for its subclasses (<link
+linkend="class-gtkcellrendererpixbuf"><classname>gtk.CellRendererPixbuf</classname></link>,
+<link
+linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
 and <link
 linkend="class-gtkcellrenderertoggle"><classname>gtk.CellRendererToggle</classname></link>).</para>
+
+    <para>The primary use of a <link
+    linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+    is for drawing a certain graphical elements on a <link
+    linkend="class-gdkdrawable"><classname>gtk.gdk.Drawable</classname></link>. Typically,
+    one cell renderer is used to draw many cells on the screen. To this
+    extent, it isn't expected that a CellRenderer keep any permanent state
+    around. Instead, any state is set just prior to use using the GObjects
+    property system. Then, the cell is measured using the <link
+    linkend="method-gtkcellrenderer--get-size"><methodname>get_size</methodname>()</link>
+    method. Finally, the cell is rendered in the correct location using the
+    <link
+    linkend="method-gtkcellrenderer--render"><methodname>render</methodname>()</link>
+    method.</para>
 
   </refsect1>
 
@@ -480,6 +522,26 @@ the editing of a cell.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkcellrenderer--editing-canceled">
+      <title>gtk.CellRenderer.editing_canceled</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>editing_canceled</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>editing_canceled</methodname>() method causes
+      the cell renderer to emit the "editing-canceled" signal. This method
+      is for use only by implementations of cell renderers that need to
+      notify the client program that an editing process was canceled and the
+      changes were not committed.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkcellrenderer--set-fixed-size">
       <title>gtk.CellRenderer.set_fixed_size</title>
 
@@ -529,6 +591,54 @@ cell</simpara>
       <para>The <methodname>get_fixed_size</methodname>() method retrieves a
 tuple containing the fixed <parameter>width</parameter> and
 <parameter>height</parameter> of the cell.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Signals</title>
+
+    <refsect2 id="signal-gtkcellrenderer--editing-canceled">
+      <title>The "editing-canceled" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>cellrenderer</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>cellrenderer</parameter>&nbsp;:</term>
+	  <listitem><simpara>the cellrenderer that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in GTK+ 2.4 and above.</para>
+      </note>
+
+      <para>The "editing-canceled" signal is emitted when the user cancels
+      the process of editing a cell. For example, an editable cell renderer
+      could be written to cancel editing when the user presses Escape. Also
+      see the <link
+      linkend="method-gtkcellrenderer--editing-canceled"><methodname>editing_canceled</methodname>()</link>
+      method.</para>
 
     </refsect2>
 
