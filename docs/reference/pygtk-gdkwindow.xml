@@ -5,7 +5,7 @@
 <refentry id="class-gdkwindow">
   <refnamediv>
     <refname>gtk.gdk.Window</refname>
-    <refpurpose>onscreen display areas in the target window
+    <refpurpose>on-screen display areas in the target window
 system</refpurpose>
   </refnamediv>
 
@@ -615,6 +615,18 @@ END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gdkwindow--set-accept-focus">set_accept_focus</link></methodname>
 	<methodparam><parameter role="keyword">accept_focus</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkwindow--enable-synchronized-configure">enable_synchronized_configure</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkwindow--configure-finished">configure_finished</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkwindow--set-focus-on-map">set_focus_on_map</link></methodname>
+	<methodparam><parameter role="keyword">focus_on_map</parameter></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -1434,7 +1446,7 @@ function)</simpara>
       </methodsynopsis></programlisting>
 
       <para>The <methodname>show</methodname>() method maps the window so
-it's visible onscreen and also raises it to the top of the window stack
+it's visible on-screen and also raises it to the top of the window stack
 (moves the window to the front of the Z-order). This method is opposite to
 the <link
 linkend="method-gdkwindow--hide"><methodname>hide</methodname>()</link>
@@ -1802,7 +1814,7 @@ window focus</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>focus</methodname>() method sets keyboard focus
-to the window. If the window is not onscreen this will not work. In most
+to the window. If the window is not on-screen this will not work. In most
 cases, the <link
 linkend="method-gtkwindow--present"><methodname>gtk.Window.present</methodname>()</link> 
 method should be used on a <link
@@ -1834,13 +1846,18 @@ than calling this method.</para>
       <para>The <methodname>set_user_data</methodname>() method stores the
 underlying GTK+ widget of the PyGTK widget that is specified by
 <parameter>user_data</parameter> as the user data of the window. In general
-GTK+ stores the widget that owns a GdkWindow as user data on a
-GtkWindow. So, custom widget implementations in PyGTK should use this method
-to provide that capability. If GTK+ receives an event for a <link
+GTK+ stores the widget that owns a <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> as
+user data on a <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link>. So,
+custom widget implementations in <literal>PyGTK</literal> should use this
+method to provide that capability. If <literal>GTK+</literal> receives an
+event for a <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>, and
-the user data for the window is set, GTK+ will assume the user data is a
-<link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>,
-and forward the event to that widget.</para>
+the user data for the window is set, <literal>GTK+</literal> will assume the
+user data is a <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>, and
+forward the event to that widget.</para>
 
       <para>In PyGTK 2.4 and above this method will raise the TypeError
 exception if <parameter>user_data</parameter> is not a <link
@@ -2038,7 +2055,7 @@ direction</simpara></listitem>
 contents of the window, both pixels and children, by the horizontal and
 vertical amounts specified by <parameter>dx</parameter> and
 <parameter>dy</parameter> respectively. The window itself does not move.
-Portions of the window that the scroll operation brings in from offscreen
+Portions of the window that the scroll operation brings in from off-screen
 areas are invalidated. The invalidated region may be bigger than what would
 strictly be necessary. (For X11, a minimum area will be invalidated if the
 window has no subwindows, or if the edges of the window's parent do not
@@ -2541,14 +2558,14 @@ to</simpara></listitem>
 
       <para>The <methodname>begin_paint_rect</methodname>() method indicates
 that you are beginning the process of redrawing the area specified by
-<parameter>rectangle</parameter>. A backing store (offscreen buffer) large
+<parameter>rectangle</parameter>. A backing store (off-screen buffer) large
 enough to contain <parameter>rectangle</parameter> will be created. The
 backing store will be initialized with the background color or background
 pixmap for window. Then, all drawing operations performed on the window will
 be diverted to the backing store. When you call the <link
 linkend="method-gdkwindow--end-paint"><methodname>end_paint</methodname>()</link> 
 method, the backing store will be copied to the window, making it visible
-onscreen. Only the part of window contained in region will be modified; that
+on-screen. Only the part of window contained in region will be modified; that
 is, drawing operations are clipped to <parameter>rectangle</parameter>. The
 net result of all this is to remove flicker, because the user sees the
 finished product appear all at once when you call the <link
@@ -2578,12 +2595,12 @@ programmer, so you can avoid doing that work yourself.</para>
   </variablelist>
 <para>
 Indicates that you are beginning the process of redrawing <parameter>region</parameter>.
-A backing store (offscreen buffer) large enough to contain <parameter>region</parameter>
+A backing store (off-screen buffer) large enough to contain <parameter>region</parameter>
 will be created. The backing store will be initialized with the
 background color or background pixmap for the window. Then, all
 drawing operations performed on the window will be diverted to the
 backing store.  When you call <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link>, the backing
-store will be copied to the window, making it visible onscreen. Only
+store will be copied to the window, making it visible on-screen. Only
 the part of the window contained in <parameter>region</parameter> will be modified; that is,
 drawing operations are clipped to <parameter>region</parameter>.
 </para>
@@ -2613,7 +2630,7 @@ calls around expose events on a widget-by-widget basis by calling
 If you call this function multiple times before calling the
 matching <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link>, the backing stores are pushed onto
 a stack. <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link> copies the topmost backing store
-onscreen, subtracts the topmost region from all other regions in
+on-screen, subtracts the topmost region from all other regions in
 the stack, and pops the stack. All drawing operations affect only
 the topmost backing store in the stack. One matching call to
 <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link> is required for each call to
@@ -2632,7 +2649,7 @@ END NOT IMPLEMENTED -->
       <para>The <methodname>end_paint</methodname>() method indicates that
 the backing store created by the most recent call to the <link
 linkend="method-gdkwindow--begin-paint-rect"><methodname>begin_paint_rect</methodname>()</link> 
-method should be copied onscreen and deleted, leaving the next-most-recent
+method should be copied on-screen and deleted, leaving the next-most-recent
 backing store or no backing store at all as the active paint region. It is
 an error to call this function without a matching call to the <link
 linkend="method-gdkwindow--begin-paint-rect"><methodname>begin_paint_rect</methodname>()</link> 
@@ -4217,7 +4234,7 @@ and the underlying window system primitive coordinates for
 If you bypass the GDK layer and use windowing system primitives to
 draw directly onto a <link linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>, then you need to deal with two
 details: there may be an offset between GDK coordinates and windowing
-system coordinates, and GDK may have redirected drawing to a offscreen
+system coordinates, and GDK may have redirected drawing to a off-screen
 pixmap as the result of a <link linkend="method-gdkwindow- -begin-paint-region"><function>gtk.gdk.Window.begin_paint_region()</function></link> calls.
 This function allows retrieving the information you need to compensate
 for these effects.
@@ -4258,6 +4275,88 @@ doesn't want to receive input focus.</para>
       <para>On X, it is the responsibility of the window manager to
 interpret this hint. ICCCM-compliant window manager usually respect
 it.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkwindow--enable-synchronized-configure">
+      <title>gtk.gdk.Window.enable_synchronized_configure</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>enable_synchronized_configure</methodname>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>enable_synchronized_configure</methodname>()
+method indicates that the application will cooperate with the window system
+in synchronizing the window repaint with the window manager during resizing
+operations. After an application calls this method, it must call the <link
+linkend="method-gdkwindow--configure-finished"><methodname>configure_finished</methodname>()</link>
+method every time it has finished all processing associated with a set of
+Configure events. Toplevel GTK+ windows automatically use this
+protocol.</para>
+
+      <para>On X, calling this function makes window participate in the
+_NET_WM_SYNC_REQUEST window manager protocol.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkwindow--configure-finished">
+      <title>gtk.gdk.Window.configure_finished</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>configure_finished</methodname>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>configure_finished</methodname>() method signals
+to the window system that the application has finished handling all the
+Configure events it has received. Window Managers can use this to better
+synchronize the frame repaint with the application. GTK+ applications will
+automatically call this function when appropriate.</para>
+
+      <para>This function can only be called if the <link
+      linkend="method-gdkwindow--use-configure"><methodname>use_configure</methodname>()</link>
+      method was called previously.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkwindow--set-focus-on-map">
+      <title>gtk.gdk.Window.set_focus_on_map</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_focus_on_map</methodname>
+	  <methodparam><parameter role="keyword">focus_on_map</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">focus_on_map</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> the window should
+receive input focus when mapped.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_focus_on_map</methodname>() method sets the
+a hint for the desktop environment to the value specified by
+<parameter>focus_on_map</parameter>. If <parameter>focus_on_map</parameter>
+is <literal>TRUE</literal> the window sets a hint for the desktop
+environment indicating that it would like to receive input focus when
+mapped.</para>
+
+      <para>On X, it is the responsibility of the window manager to
+interpret this hint. Window managers following the <ulink
+url="http://www.freedesktio.org">freedesktop.org</ulink> window manager
+extension specification should respect it.</para>
 
     </refsect2>
 
@@ -4477,7 +4576,7 @@ System backend, a native window handle is an Xlib
       <para>The <function>gtk.gdk.process_all_updates</function>() function
 calls the <link
 linkend="method-gdkwindow--process-updates"><methodname>process_updates</methodname>()</link> 
-method fo each <link
+method for each <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> in
 the application.</para>
 
