@@ -191,8 +191,8 @@ $build_gtk               && echo     gtk
 $build_libglade          && echo     gtk.glade
 echo
 
-if test ! $build_atk || ! $build_pango \
-        ! $build_gtk !! ! $build_gtk; then
+if test ! $build_atk || ! $build_pango || \
+        ! $build_gtk || ! $build_libglade; then
   echo "The following modules will NOT be built:"
   echo
   $build_atk               || echo     atk
