@@ -5,6 +5,13 @@
 
 ; object definitions ...
 
+(define-boxed AccelGroup
+  (in-module "Gtk")
+  (parent "GObject")
+  (c-name "GtkAccelGroup")
+  (gtype-id "GTK_TYPE_ACCEL_GROUP")
+)
+
 (define-object IconFactory
   (in-module "Gtk")
   (parent "GObject")
@@ -901,14 +908,6 @@
 
 
 ;; Boxed types ...
-
-(define-boxed AccelGroup
-  (in-module "Gtk")
-  (c-name "GtkAccelGroup")
-  (gtype-id "GTK_TYPE_ACCEL_GROUP")
-  (copy-func "gtk_accel_group_ref")
-  (release-func "gtk_accel_group_unref")
-)
 
 (define-boxed TextIter
   (in-module "Gtk")
@@ -14328,15 +14327,6 @@
 (define-method get_iter_root
   (of-object "GtkTreeModel")
   (c-name "gtk_tree_model_get_iter_root")
-  (return-type "gboolean")
-  (parameters
-    '("GtkTreeIter*" "iter")
-  )
-)
-
-(define-method get_first
-  (of-object "GtkTreeModel")
-  (c-name "gtk_tree_model_get_first")
   (return-type "gboolean")
   (parameters
     '("GtkTreeIter*" "iter")
