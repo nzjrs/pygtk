@@ -1296,22 +1296,24 @@ _wrap_gtk_list_store_insert_before(PyGObject *self, PyObject *args,
                                    PyObject *kwargs)
 {
     static char *kwlist[] = { "sibling", "row", NULL };
-    PyObject *sibling;
-    GtkTreeIter iter;
+    PyObject *py_sibling;
+    GtkTreeIter iter, *sibling = NULL;
     PyObject *row = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O|O:GtkListStore.insert_before",
-                                     kwlist, &sibling, &row)) {
+                                     kwlist, &py_sibling, &row)) {
         return NULL;
     }
 
-    if (!pyg_boxed_check(sibling, GTK_TYPE_TREE_ITER)) {
-        PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+    if (pyg_boxed_check(py_sibling, GTK_TYPE_TREE_ITER))
+        sibling = pyg_boxed_get(py_sibling, GtkTreeIter);
+    else if (py_sibling != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+                        "sibling must be a GtkTreeIter or None");
         return NULL;
     }
-    gtk_list_store_insert_before(GTK_LIST_STORE(self->obj), &iter,
-                                 pyg_boxed_get(sibling, GtkTreeIter));
+    gtk_list_store_insert_before(GTK_LIST_STORE(self->obj), &iter, sibling);
 
     /* optionally set items in the new row */
     if (row != Py_None &&
@@ -1327,20 +1329,22 @@ _wrap_gtk_list_store_insert_after(PyGObject *self, PyObject *args,
                                   PyObject *kwargs)
 {
     static char *kwlist[] = { "sibling", "row", NULL };
-    PyObject *sibling;
-    GtkTreeIter iter;
+    PyObject *py_sibling;
+    GtkTreeIter iter, *sibling = NULL;
     PyObject *row = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O|O:GtkListStore.insert_after",
-                                     kwlist, &sibling, &row))
+                                     kwlist, &py_sibling, &row))
         return NULL;
-    if (!pyg_boxed_check(sibling, GTK_TYPE_TREE_ITER)) {
-        PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+    if (pyg_boxed_check(py_sibling, GTK_TYPE_TREE_ITER))
+        sibling = pyg_boxed_get(py_sibling, GtkTreeIter);
+    else if (py_sibling != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+                        "sibling must be a GtkTreeIter or None");
         return NULL;
     }
-    gtk_list_store_insert_after(GTK_LIST_STORE(self->obj), &iter,
-                                pyg_boxed_get(sibling, GtkTreeIter));
+    gtk_list_store_insert_after(GTK_LIST_STORE(self->obj), &iter, sibling);
 
     /* optionally set items in the new row */
     if (row != Py_None &&
