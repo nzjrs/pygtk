@@ -4,6 +4,42 @@
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdk.h
 
+(define-function pointer_grab
+  (c-name "gdk_pointer_grab")
+  (return-type "GdkGrabStatus")
+  (parameters
+    '("GdkWindow*" "window")
+    '("gboolean" "owner_events" (null-ok) (default "FALSE"))
+    '("GdkEventMask" "event_mask" (null-ok) (default "0"))
+    '("GdkWindow*" "confine_to" (null-ok) (default "NULL"))
+    '("GdkCursor*" "cursor" (null-ok) (default "NULL"))
+    '("guint32" "time" (null-ok) (default "GDK_CURRENT_TIME"))
+  )
+)
+
+(define-function pointer_ungrab
+  (c-name "gdk_pointer_ungrab")
+  (return-type "none")
+  (parameters
+    '("guint32" "time" (null-ok) (default "GDK_CURRENT_TIME"))
+  )
+)
+
+(define-function keyboard_grab
+  (c-name "gdk_keyboard_grab")
+  (return-type "GdkGrabStatus")
+  (parameters
+    '("GdkWindow*" "window")
+    '("gboolean" "owner_events" (null-ok) (default "FALSE"))
+    '("guint32" "time" (null-ok) (default "GDK_CURRENT_TIME"))
+  )
+)
+
+(define-function pointer_is_grabbed
+  (c-name "gdk_pointer_is_grabbed")
+  (return-type "gboolean")
+)
+
 (define-function screen_width
   (c-name "gdk_screen_width")
   (return-type "gint")
@@ -216,7 +252,7 @@
   (return-type "none")
   (parameters
     '("GdkDragAction" "action")
-    '("guint32" "time")
+    '("guint32" "time" (null-ok) (default "GDK_CURRENT_TIME"))
   )
 )
 
@@ -226,7 +262,7 @@
   (return-type "none")
   (parameters
     '("gboolean" "ok")
-    '("guint32" "time")
+    '("guint32" "time" (null-ok) (default "GDK_CURRENT_TIME"))
   )
 )
 
@@ -236,7 +272,7 @@
   (return-type "none")
   (parameters
     '("gboolean" "success")
-    '("guint32" "time")
+    '("guint32" "time" (null-ok) (default "GDK_CURRENT_TIME"))
   )
 )
 
@@ -2223,7 +2259,7 @@
   (c-name "gdk_window_focus")
   (return-type "none")
   (parameters
-    '("guint32" "timestamp")
+    '("guint32" "timestamp" (null-ok) (default "GDK_CURRENT_TIME"))
   )
 )
 
