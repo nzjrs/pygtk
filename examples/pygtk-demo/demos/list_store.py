@@ -42,7 +42,7 @@ def create_model ():
 	store.set (iter, COLUMN_FIXED, item[0],
                    COLUMN_NUMBER, item[1],
                    COLUMN_SEVERITY, item[2],
-                   COLUMN_DESCRIPTION, item[3], -1)
+                   COLUMN_DESCRIPTION, item[3])
     return store
 
 def add_columns (treeview):

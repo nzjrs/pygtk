@@ -31,7 +31,7 @@ static struct _PyGtk_FunctionStruct functions = {
 DL_EXPORT(void)
 init_gtk(void)
 {
-    PyObject *m, *d, *v, *tuple;
+    PyObject *m, *d, *tuple;
     PyObject *av;
     int argc, i;
     char **argv;
