@@ -1,4 +1,4 @@
-/* -*- Mode: C; c-basic-offset: 4 -*- */
+/* -*- Mode: C; c-basic-offset: 2 -*- */
 /* PyGTK - python bindings for GTK+
  * Copyright (C) 1997-1999 James Henstridge <james@daa.com.au>
  *
@@ -4851,6 +4851,16 @@ PyObject *_wrap_gtk_drag_begin(PyObject *self, PyObject *args) {
 
 #include "gtkmodule_impl.c"
 
+static PyObject *_wrap_gdk_char_width(PyObject *self, PyObject *args) {
+  PyObject *font;
+  char ch;
+  
+  if (!PyArg_ParseTuple(args, "O!c:gdk_char_width", &PyGdkFont_Type, &font, &ch))
+    return NULL;
+
+  return Py_BuildValue("i", gdk_char_width(PyGdkFont_Get(font), ch));
+}
+
 static PyObject *_wrap_gdk_flush(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, ":gdk_flush"))
     return NULL;
@@ -6081,6 +6091,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_ctree_node_get_row_data", _wrap_gtk_ctree_node_get_row_data, 1 },
     { "gtk_ctree_base_nodes", _wrap_gtk_ctree_base_nodes, 1 },
 #include "gtkmodule_defs.c"
+    { "gdk_char_width", _wrap_gdk_char_width, 1 },
     { "gdk_flush", _wrap_gdk_flush, 1 },
     { "gdk_pixmap_new", _wrap_gdk_pixmap_new, 1 },
     { "gdk_pixmap_create_from_xpm", _wrap_gdk_pixmap_create_from_xpm, 1 },

@@ -2706,6 +2706,9 @@ def threads_enter():
 def threads_leave():
 	_gtk.gdk_threads_leave()
 
+def gdk_char_width(font, char):
+	return _gtk.gdk_char_width(font, char)
+
 def gdk_flush():
 	_gtk.gdk_flush()
 
