@@ -83,7 +83,7 @@ _wrap_gdk_draw_text(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "font", "gc", "x", "y", "text",NULL};
     PyGObject *gc;
-    PyObject *drawable, *font;
+    PyObject *font;
     int x, y, len;
     char *text;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -974,7 +974,7 @@ _wrap_gtk_input_add_full(PyObject *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_accel_group_new
 static PyObject *
-_wrap_gtk_accel_group_new(PyGtk_Object *self, PyObject *args)
+_wrap_gtk_accel_group_new(PyGObject *self, PyObject *args)
 {
     GtkAccelGroup *accel_group;
     PyObject *ret;
@@ -990,7 +990,7 @@ _wrap_gtk_accel_group_new(PyGtk_Object *self, PyObject *args)
 %%
 override gtk_widget_get_window
 static PyObject *
-_wrap_gtk_widget_get_window(PyGtk_Object *self, PyObject *args)
+_wrap_gtk_widget_get_window(PyGObject *self, PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ":GtkWidget.get_window"))
 	return NULL;
@@ -1002,7 +1002,7 @@ _wrap_gtk_widget_get_window(PyGtk_Object *self, PyObject *args)
 %%
 override gtk_box_query_child_packing kwargs
 static PyObject *
-_wrap_gtk_box_query_child_packing(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_box_query_child_packing(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
     static char *kwlist[] = { "child", NULL };
@@ -1053,7 +1053,7 @@ _wrap_gtk_button_box_get_child_ipadding_default(PyObject *self, PyObject *args)
 %%
 override gtk_button_box_get_child_size
 static PyObject *
-_wrap_gtk_button_box_get_child_size(PyGtk_Object *self, PyObject *args)
+_wrap_gtk_button_box_get_child_size(PyGObject *self, PyObject *args)
 {
     int mw, mh;
 
@@ -1065,7 +1065,7 @@ _wrap_gtk_button_box_get_child_size(PyGtk_Object *self, PyObject *args)
 %%
 override gtk_button_box_get_child_ipadding
 static PyObject *
-_wrap_gtk_button_box_get_child_ipadding(PyGtk_Object *self, PyObject *args)
+_wrap_gtk_button_box_get_child_ipadding(PyGObject *self, PyObject *args)
 {
     int ipx, ipy;
 
@@ -1079,7 +1079,7 @@ ignore gtk_clist_new
 %%
 override gtk_clist_new_with_titles kwargs
 static PyObject *
-_wrap_gtk_clist_new_with_titles(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_clist_new_with_titles(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
 {
     static char *kwlist[] = { "count", "titles", NULL };
@@ -1127,7 +1127,7 @@ _wrap_gtk_clist_new_with_titles(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_clist_get_text kwargs
 static PyObject *
-_wrap_gtk_clist_get_text(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_clist_get_text(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "row", "column", NULL };
     int r, c;
@@ -1145,7 +1145,7 @@ _wrap_gtk_clist_get_text(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_clist_get_pixmap kwargs
 static PyObject *
-_wrap_gtk_clist_get_pixmap(PyGtk_Object *self, PyObject *args, PyObject*kwargs)
+_wrap_gtk_clist_get_pixmap(PyGObject *self, PyObject *args, PyObject*kwargs)
 {
     static char *kwlist[] = { "row", "column", NULL };
     PyObject *pixmap, *mask;
@@ -1177,7 +1177,7 @@ _wrap_gtk_clist_get_pixmap(PyGtk_Object *self, PyObject *args, PyObject*kwargs)
 %%
 override gtk_clist_get_pixtext kwargs
 static PyObject *
-_wrap_gtk_clist_get_pixtext(PyGtk_Object *self, PyObject*args, PyObject*kwargs)
+_wrap_gtk_clist_get_pixtext(PyGObject *self, PyObject*args, PyObject*kwargs)
 {
     static char *kwlist[] = { "row", "column", NULL };
     PyObject *pixmap, *mask;
@@ -1212,7 +1212,7 @@ _wrap_gtk_clist_get_pixtext(PyGtk_Object *self, PyObject*args, PyObject*kwargs)
 %%
 override gtk_clist_prepend kwargs
 static PyObject *
-_wrap_gtk_clist_prepend(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_clist_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "text", NULL };
     int col, i;
@@ -1250,7 +1250,7 @@ _wrap_gtk_clist_prepend(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_clist_append kwargs
 static PyObject *
-_wrap_gtk_clist_append(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_clist_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "text", NULL };
     int col, i;
@@ -1288,7 +1288,7 @@ _wrap_gtk_clist_append(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_clist_insert kwargs
 static PyObject *
-_wrap_gtk_clist_insert(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_clist_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "row", "text", NULL };
     int col, row, i;
@@ -1326,7 +1326,7 @@ _wrap_gtk_clist_insert(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_clist_set_row_data kwargs
 static PyObject *
-_wrap_gtk_clist_set_row_data(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_clist_set_row_data(PyGObject *self, PyObject *args,
 			     PyObject *kwargs)
 {
     static char *kwlist[] = { "row", "data", NULL };
@@ -1344,7 +1344,7 @@ _wrap_gtk_clist_set_row_data(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_clist_get_row_data kwargs
 static PyObject *
-_wrap_gtk_clist_get_row_data(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_clist_get_row_data(PyGObject *self, PyObject *args,
 			     PyObject *kwargs)
 {
     static char *kwlist[] = { "row", NULL };
@@ -1362,7 +1362,7 @@ _wrap_gtk_clist_get_row_data(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_clist_find_row_from_data kwargs
 static PyObject *
-_wrap_gtk_clist_find_row_from_data(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_clist_find_row_from_data(PyGObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
     static char *kwlist[] = { "data", NULL };
@@ -1378,7 +1378,7 @@ _wrap_gtk_clist_find_row_from_data(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_clist_get_selection_info kwargs
 static PyObject *
-_wrap_gtk_clist_get_selection_info(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_clist_get_selection_info(PyGObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
     static char *kwlist[] = { "x", "y", NULL };
@@ -1399,7 +1399,7 @@ _wrap_gtk_clist_get_selection_info(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_combo_set_popdown_strings kwargs
 static PyObject *
-_wrap_gtk_combo_set_popdown_strings(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_combo_set_popdown_strings(PyGObject *self, PyObject *args,
 				    PyObject *kwargs)
 {
     static char *kwlist[] = { "strings", NULL };
@@ -1435,7 +1435,7 @@ _wrap_gtk_combo_set_popdown_strings(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_curve_get_vector kwargs
 static PyObject *
-_wrap_gtk_curve_get_vector(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_curve_get_vector(PyGObject *self, PyObject *args,
 			   PyObject *kwargs)
 {
     static char *kwlist[] = { "size", NULL };
@@ -1459,7 +1459,7 @@ _wrap_gtk_curve_get_vector(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_curve_set_vector kwargs
 static PyObject *
-_wrap_gtk_curve_set_vector(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_curve_set_vector(PyGObject *self, PyObject *args,
 			   PyObject *kwargs)
 {
     static char *kwlist[] = { "vector", NULL };
@@ -1496,7 +1496,7 @@ _wrap_gtk_curve_set_vector(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_editable_insert_text kwargs
 static PyObject *
-_wrap_gtk_editable_insert_text(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_editable_insert_text(PyGObject *self, PyObject *args,
 			       PyObject *kwargs)
 {
     static char *kwlist[] = { "text", NULL };
@@ -1518,7 +1518,7 @@ pygtk_item_factory_cb(PyObject *callback, guint action, GtkWidget *widget)
 
     pygtk_block_threads();
     ret = PyObject_CallFunction(callback, "iO", action,
-				PyGtk_New((GtkObject *)widget));
+				pygobject_new((GObject *)widget));
     if (ret == NULL) {
 	if (PyGtk_FatalExceptions)
 	    gtk_main_quit();
@@ -1531,7 +1531,7 @@ pygtk_item_factory_cb(PyObject *callback, guint action, GtkWidget *widget)
     pygtk_unblock_threads();
 }
 static PyObject *
-_wrap_gtk_item_factory_create_items(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
 				    PyObject *kwargs)
 {
     static char *kwlist[] = { "entries", NULL };
@@ -1589,7 +1589,7 @@ pygtk_menu_position(GtkMenu *menu, int *x, int *y, PyObject *func)
     pygtk_unblock_threads();
 }
 static PyObject *
-_wrap_gtk_menu_popup(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "parent_menu_shell", "parent_menu_item", "func",
 		       "button", "activate_time", NULL };
@@ -1632,7 +1632,7 @@ _wrap_gtk_menu_popup(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_pixmap_get
 static PyObject *
-_wrap_gtk_pixmap_get(PyGtk_Object *self, PyObject *args)
+_wrap_gtk_pixmap_get(PyGObject *self, PyObject *args)
 {
     PyObject *pypixmap, *pymask;
     GdkPixmap *pixmap;
@@ -1661,7 +1661,7 @@ ignore gtk_button_new_with_label
 %%
 override gtk_button_new kwargs
 static PyObject *
-_wrap_gtk_button_new(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "label", NULL };
     gchar *text = NULL;
@@ -1686,7 +1686,7 @@ ignore gtk_toggle_button_new_with_label
 %%
 override gtk_toggle_button_new kwargs
 static PyObject *
-_wrap_gtk_toggle_button_new(PyGtk_Object *self, PyObject*args, PyObject*kwargs)
+_wrap_gtk_toggle_button_new(PyGObject *self, PyObject*args, PyObject*kwargs)
 {
     static char *kwlist[] = { "label", NULL };
     gchar *text = NULL;
@@ -1712,7 +1712,7 @@ ignore gtk_check_button_new_with_label
 %%
 override gtk_check_button_new kwargs
 static PyObject *
-_wrap_gtk_check_button_new(PyGtk_Object *self, PyObject *args, PyObject*kwargs)
+_wrap_gtk_check_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 {
     static char *kwlist[] = { "label", NULL };
     gchar *text = NULL;
@@ -1737,7 +1737,7 @@ ignore-glob gtk_radio_button_new_*
 %%
 override gtk_radio_button_new kwargs
 static PyObject *
-_wrap_gtk_radio_button_new(PyGtk_Object *self, PyObject *args, PyObject*kwargs)
+_wrap_gtk_radio_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 {
     static char *kwlist[] = { "group", "label", NULL };
     PyObject *py_group = Py_None;
@@ -1783,7 +1783,7 @@ ignore gtk_list_item_new_with_label
 %%
 override gtk_list_item_new kwargs
 static PyObject *
-_wrap_gtk_list_item_new(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_list_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "label", NULL };
     gchar *text = NULL;
@@ -1808,7 +1808,7 @@ ignore gtk_tree_item_new_with_label
 %%
 override gtk_tree_item_new kwargs
 static PyObject *
-_wrap_gtk_tree_item_new(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_tree_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "label", NULL };
     gchar *text = NULL;
@@ -1833,7 +1833,7 @@ ignore gtk_menu_item_new_with_label
 %%
 override gtk_menu_item_new kwargs
 static PyObject *
-_wrap_gtk_menu_item_new(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_menu_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "label", NULL };
     gchar *text = NULL;
@@ -1858,7 +1858,7 @@ ignore gtk_check_menu_item_new_with_label
 %%
 override gtk_check_menu_item_new kwargs
 static PyObject *
-_wrap_gtk_check_menu_item_new(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_check_menu_item_new(PyGObject *self, PyObject *args,
 			      PyObject *kwargs)
 {
     static char *kwlist[] = { "label", NULL };
@@ -1885,7 +1885,7 @@ ignore gtk_radio_menu_item_new_with_label
 %%
 override gtk_radio_menu_item_new kwargs
 static PyObject *
-_wrap_gtk_radio_menu_item_new(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_radio_menu_item_new(PyGObject *self, PyObject *args,
 			      PyObject *kwargs)
 {
     static char *kwlist[] = { "group", "label", NULL };
@@ -1942,7 +1942,7 @@ ignore gtk_ctree_new
 %%
 override gtk_ctree_new_with_titles kwargs
 static PyObject*
-_wrap_gtk_ctree_new_with_titles(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_new_with_titles(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
 {
     static char *kwlist[] = { "columns", "tree_column", "titles", NULL };
@@ -1993,7 +1993,7 @@ _wrap_gtk_ctree_new_with_titles(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_ctree_insert_node kwargs
 static PyObject *
-_wrap_gtk_ctree_insert_node(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
 			    PyObject *kwargs)
 {
     static char *kwlist[] = { "parent", "sibling", "text", "spacing",
@@ -2087,7 +2087,7 @@ ignore gtk_ctree_find_by_row_data_custom gtk_ctree_find_all_by_row_data_custom
 %%
 override gtk_ctree_find_by_row_data kwargs
 static PyObject *
-_wrap_gtk_ctree_find_by_row_data(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_find_by_row_data(PyGObject *self, PyObject *args,
 				 PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "data", NULL };
@@ -2113,7 +2113,7 @@ _wrap_gtk_ctree_find_by_row_data(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_ctree_find_all_by_row_data kwargs
 static PyObject *
-_wrap_gtk_ctree_find_all_by_row_data(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_find_all_by_row_data(PyGObject *self, PyObject *args,
 				     PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "data", NULL };
@@ -2150,7 +2150,7 @@ _wrap_gtk_ctree_find_all_by_row_data(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_ctree_node_get_text kwargs
 static PyObject *
-_wrap_gtk_ctree_node_get_text(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_node_get_text(PyGObject *self, PyObject *args,
 			      PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "column", NULL };
@@ -2172,7 +2172,7 @@ _wrap_gtk_ctree_node_get_text(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_ctree_node_get_pixmap kwargs
 static PyObject *
-_wrap_gtk_ctree_node_get_pixmap(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_node_get_pixmap(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "column", NULL };
@@ -2208,7 +2208,7 @@ _wrap_gtk_ctree_node_get_pixmap(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_ctree_node_get_pixtext kwargs
 static PyObject *
-_wrap_gtk_ctree_node_get_pixtext(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_node_get_pixtext(PyGObject *self, PyObject *args,
 				 PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "column", NULL };
@@ -2246,7 +2246,7 @@ _wrap_gtk_ctree_node_get_pixtext(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_ctree_get_node_info kwargs
 static PyObject *
-_wrap_gtk_ctree_get_node_info(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_get_node_info(PyGObject *self, PyObject *args,
 			      PyObject *kwargs)
 {
     static char *kwlist[] = { "node", NULL };
@@ -2303,7 +2303,7 @@ ignore gtk_ctree_node_set_row_data_full
 %%
 override gtk_ctree_node_set_row_data kwargs
 static PyObject *
-_wrap_gtk_ctree_node_set_row_data(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_node_set_row_data(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "data", NULL };
@@ -2323,7 +2323,7 @@ _wrap_gtk_ctree_node_set_row_data(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_ctree_node_get_row_data kwargs
 static PyObject *
-_wrap_gtk_ctree_node_get_row_data(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_ctree_node_get_row_data(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
     static char *kwlist[] = { "node", NULL };
@@ -2344,7 +2344,7 @@ ignore gtk_tree_remove_items
 %%
 override gtk_toolbar_append_item kwargs
 static PyObject *
-_wrap_gtk_toolbar_append_item(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_toolbar_append_item(PyGObject *self, PyObject *args,
 			      PyObject *kwargs)
 {
     static char *kwlist[] = { "text", "tooltip_text", "tooltip_private_text",
@@ -2379,7 +2379,7 @@ _wrap_gtk_toolbar_append_item(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_toolbar_prepend_item kwargs
 static PyObject *
-_wrap_gtk_toolbar_prepend_item(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_toolbar_prepend_item(PyGObject *self, PyObject *args,
 			       PyObject *kwargs)
 {
     static char *kwlist[] = { "text", "tooltip_text", "tooltip_private_text",
@@ -2414,7 +2414,7 @@ _wrap_gtk_toolbar_prepend_item(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_toolbar_insert_item kwargs
 static PyObject *
-_wrap_gtk_toolbar_insert_item(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_toolbar_insert_item(PyGObject *self, PyObject *args,
 			      PyObject *kwargs)
 {
     static char *kwlist[] = { "text", "tooltip_text", "tooltip_private_text",
@@ -2452,7 +2452,7 @@ _wrap_gtk_toolbar_insert_item(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_toolbar_append_element kwargs
 static PyObject *
-_wrap_gtk_toolbar_append_element(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_toolbar_append_element(PyGObject *self, PyObject *args,
 				 PyObject *kwargs)
 {
     static char *kwlist[] = { "type", "widget", "text", "tooltip_text",
@@ -2505,7 +2505,7 @@ _wrap_gtk_toolbar_append_element(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_toolbar_prepend_element kwargs
 static PyObject *
-_wrap_gtk_toolbar_prepend_element(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_toolbar_prepend_element(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
     static char *kwlist[] = { "type", "widget", "text", "tooltip_text",
@@ -2558,7 +2558,7 @@ _wrap_gtk_toolbar_prepend_element(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_toolbar_insert_element kwargs
 static PyObject *
-_wrap_gtk_toolbar_insert_element(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_toolbar_insert_element(PyGObject *self, PyObject *args,
 				 PyObject *kwargs)
 {
     static char *kwlist[] = { "type", "widget", "text", "tooltip_text",
@@ -2612,7 +2612,7 @@ _wrap_gtk_toolbar_insert_element(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_notebook_query_tab_label_packing kwargs
 static PyObject *
-_wrap_gtk_notebook_query_tab_label_packing(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_notebook_query_tab_label_packing(PyGObject *self, PyObject *args,
 					   PyObject *kwargs)
 {
     static char *kwlist[] = { "child", NULL };
@@ -2636,7 +2636,7 @@ _wrap_gtk_notebook_query_tab_label_packing(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_list_insert_items kwargs
 static PyObject *
-_wrap_gtk_list_insert_items(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_list_insert_items(PyGObject *self, PyObject *args,
 			    PyObject *kwargs)
 {
     static char *kwlist[] = { "items", "position", NULL };
@@ -2665,7 +2665,7 @@ _wrap_gtk_list_insert_items(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_list_append_items kwargs
 static PyObject *
-_wrap_gtk_list_append_items(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_list_append_items(PyGObject *self, PyObject *args,
 			    PyObject *kwargs)
 {
     static char *kwlist[] = { "items", NULL };
@@ -2693,7 +2693,7 @@ _wrap_gtk_list_append_items(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_list_prepend_items kwargs
 static PyObject *
-_wrap_gtk_list_prepend_items(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_list_prepend_items(PyGObject *self, PyObject *args,
 			     PyObject *kwargs)
 {
     static char *kwlist[] = { "items", NULL };
@@ -2721,7 +2721,7 @@ _wrap_gtk_list_prepend_items(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_list_remove_items kwargs
 static PyObject *
-_wrap_gtk_list_remove_items(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_list_remove_items(PyGObject *self, PyObject *args,
 			    PyObject *kwargs)
 {
     static char *kwlist[] = { "items", NULL };
@@ -2752,7 +2752,7 @@ ignore gtk_list_remove_items_no_unref
 %%
 override gtk_color_selection_set_color kwargs
 static PyObject *
-_wrap_gtk_color_selection_set_color(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_color_selection_set_color(PyGObject *self, PyObject *args,
 				    PyObject *kwargs)
 {
     static char *kwlist[] = { "red", "green", "blue", "alpha", NULL };
@@ -2771,7 +2771,7 @@ _wrap_gtk_color_selection_set_color(PyGtk_Object *self, PyObject *args,
 %%
 override gtk_color_selection_get_color
 static PyObject *
-_wrap_gtk_color_selection_get_color(PyGtk_Object *self, PyObject *args)
+_wrap_gtk_color_selection_get_color(PyGObject *self, PyObject *args)
 {
     double value[4];
 
@@ -2786,7 +2786,7 @@ _wrap_gtk_color_selection_get_color(PyGtk_Object *self, PyObject *args)
 %%
 override gtk_calendar_get_date
 static PyObject *
-_wrap_gtk_calendar_get_date(PyGtk_Object *self, PyObject *args)
+_wrap_gtk_calendar_get_date(PyGObject *self, PyObject *args)
 {
     guint year, month, day;
 
@@ -2798,7 +2798,7 @@ _wrap_gtk_calendar_get_date(PyGtk_Object *self, PyObject *args)
 %%
 override gtk_drag_dest_set kwargs
 static PyObject *
-_wrap_gtk_drag_dest_set(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_drag_dest_set(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "flags", "targets", "actions", NULL };
     PyObject *py_flags, *py_targets, *py_actions;
@@ -2843,7 +2843,7 @@ _wrap_gtk_drag_dest_set(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_drag_source_set kwargs
 static PyObject *
-_wrap_gtk_drag_source_set(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_drag_source_set(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "start_button_mask", "targets", "actions", NULL };
     PyObject *py_sbmask, *py_targets, *py_actions;
@@ -2889,7 +2889,7 @@ _wrap_gtk_drag_source_set(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
 %%
 override gtk_drag_begin kwargs
 static PyObject *
-_wrap_gtk_drag_begin(PyGtk_Object *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "targets", "actions", "button", "event", NULL };
     PyObject *py_targets, *py_actions, *event;
@@ -2943,7 +2943,7 @@ ignore
 %%
 override gtk_selection_add_targets kwargs
 static PyObject *
-_wrap_gtk_selection_add_targets(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_selection_add_targets(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
 {
     static char *kwlist[] = { "selection", "targets", NULL };

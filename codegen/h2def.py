@@ -125,6 +125,7 @@ def find_enum_defs(buf, enums=[]):
         isflags = string.find(vals, '<<') >= 0
         entries = []
         for val in splitter.split(vals):
+            if not string.strip(val): continue
             entries.append(string.split(val)[0])
         enums.append((name, isflags, entries))
         
