@@ -22,7 +22,7 @@ Requires: python >= 1.5.2
 %description
 PyGTK is an extension module for python that gives you access to the GTK+
 widget set.  Just about anything you can write in C with GTK+ you can write
-in python with PyGTK (within reason), but with all of benefits of python.
+in python with PyGTK (within reason), but with all the benefits of python.
 
 %package glarea
 Summary: A wrapper for the GtkGLArea widget for use with PyGTK
