@@ -347,6 +347,10 @@ linkend="method-gdkpixbuf--composite-color-simple">composite_color_simple</link>
 	<methodparam><parameter
 		       role="keyword">color2</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkpixbuf--get-pixels-array">get_pixels_array</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -357,6 +361,41 @@ linkend="method-gdkpixbuf--composite-color-simple">composite_color_simple</link>
 linkend="function-gdk--pixbuf-new-from-file">gtk.gdk.pixbuf_new_from_file</link></methodname>
 	<methodparam><parameter
 		       role="keyword">filename</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--pixbuf-new-from-file-at-size">gtk.gdk.pixbuf_new_from_file_at_size</link></methodname>
+	<methodparam><parameter
+		       role="keyword">filename</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">width</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">height</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--pixbuf-new-from-data">gtk.gdk.pixbuf_new_from_data</link></methodname>
+	<methodparam><parameter
+		       role="keyword">data</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">colorspace</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">has_alpha</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">bits_per_sample</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">width</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">height</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">rowstride</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--pixbuf-new-from-array">gtk.gdk.pixbuf_new_from_array</link></methodname>
+	<methodparam><parameter
+		       role="keyword">array</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">colorspace</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">bits_per_sample</parameter></methodparam>
       </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gdk--pixbuf-new-from-xpm-data">gtk.gdk.pixbuf_new_from_xpm_data</link></methodname>
@@ -371,6 +410,14 @@ linkend="function-gdk--pixbuf-new-from-inline">gtk.gdk.pixbuf_new_from_inline</l
 		       role="keyword">data</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">copy_pixels</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--pixbuf-get-formats">gtk.gdk.pixbuf_get_formats</link></methodname>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--pixbuf-get-file-info">gtk.gdk.pixbuf_get_file_info</link></methodname>
+	<methodparam><parameter
+		       role="keyword">filename</parameter></methodparam>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -411,6 +458,79 @@ this to work.</entry>
 
 	</tbody>
       </tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"bits-per-sample"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>The number of bits per sample. Available in GTK+ 2.4
+and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"colorspace"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>The colorspace in which the samples are interpreted.Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"has-alpha"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>If <literal>TRUE</literal>,the pixbuf has an alpha
+channel. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"height"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>The number of rows of the pixbuf. Available in GTK+ 2.4
+and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"n-channels"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>The number of samples per pixel. Available in GTK+ 2.4
+and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"pixels"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>A pointer to the pixel data of the pixbuf. Available
+in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"rowstride"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>The number of bytes between the start of a row and
+the start of the next row. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"width"</entry>
+	      <entry>Read-Write-Construct Only</entry>
+	      <entry>The number of columns of the pixbuf. Available in GTK+ 2.4
+and above.</entry>
+	    </row>
+
+	  </tbody>
+	</tgroup>
       </informaltable>
     </blockquote>
 
@@ -2137,6 +2257,35 @@ method for a more powerful but complicated interface.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gdkpixbuf--get-pixels-array">
+      <title>gtk.gdk.Pixbuf.get_pixels_array</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_pixels_array</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a Numeric Python array containing the pixel
+	  data of the pixbuf</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_pixels_array</methodname>() method returns a
+Numeric Python array containing the pixel data of the pixbuf.</para>
+
+      <note>
+	<para>PyGTK must be compiled with Numeric Python support for this
+method to be available.</para>
+      </note>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -2179,6 +2328,198 @@ instead.</para>
 
     </refsect2>
 
+    <refsect2 id="function-gdk--pixbuf-new-from-file-at-size">
+      <title>gtk.gdk.pixbuf_new_from_file_at_size</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.gdk.pixbuf_new_from_file_at_size</methodname>
+          <methodparam><parameter
+	    role="keyword">filename</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">width</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">height</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+          <listitem><simpara>the name of the file containing the image to
+load</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">width</parameter>&nbsp;:</term>
+          <listitem><simpara> The width the image should
+          have</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+          <listitem><simpara> The height the image should
+          have</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a new <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link> or
+<literal>None</literal> on error.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.pixbuf_new_from_file_at_size</function>()
+function returns a new <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+containing an image loaded from the file specified by
+<parameter>filename</parameter> with it scaled to the size specified by
+<parameter>width</parameter> and <parameter>height</parameter>. The image
+file format is detected automatically. The application will block until the
+image is done loading.  This function can be used by applications in which
+blocking is acceptable while an image is being loaded (small images in
+general). Applications that need progressive loading should use a <link
+linkend="class-gdkpixbufloader"><classname>gtk.gdk.PixbufLoader</classname></link>
+instead.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--pixbuf-new-from-data">
+      <title>gtk.gdk.pixbuf_new_from_data</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.gdk.pixbuf_new_from_data</methodname>
+          <methodparam><parameter
+	    role="keyword">data</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">colorspace</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">has_alpha</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">bits_per_sample</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">width</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">height</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">rowstride</parameter></methodparam>
+	</methodsynopsis><methodsynopsis language="python">
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+          <listitem><simpara>a string containing image data in 8-bit/sample
+          packed format.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+          role="keyword">colorspace</parameter>&nbsp;:</term>
+          <listitem><simpara>the colorspace for the image
+          data.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+          role="keyword">has_alpha</parameter>&nbsp;:</term>
+          <listitem><simpara>If <literal>TRUE</literal>, the data has an
+          opacity channel.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+          role="keyword">bits_per_sample</parameter>&nbsp;:</term>
+          <listitem><simpara>the number of bits per
+          sample.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">width</parameter>&nbsp;:</term>
+          <listitem><simpara>the width of the image in pixels.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">height</parameter>&nbsp;:</term>
+          <listitem><simpara>the height of the image in pixels.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+          role="keyword">rowstride</parameter>&nbsp;:</term>
+          <listitem><simpara>the distance in bytes between row
+          starts.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.pixbuf_new_from_data</function>() function
+returns a new pixbuf created from the string specified by
+<parameter>data</parameter>. <parameter>data</parameter> must be RGB image
+data with 8 bits per sample. <parameter>colorspace</parameter> must be
+<literal>gtk.gdk.COLORSPACE_RGB</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--pixbuf-new-from-array">
+      <title>gtk.gdk.pixbuf_new_from_array</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.gdk.pixbuf_new_from_array</methodname>
+          <methodparam><parameter
+	    role="keyword">array</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">colorspace</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">bits_per_sample</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">array</parameter>&nbsp;:</term>
+          <listitem><simpara>a string containing image data in 8-bit/sample
+          packed format.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+          role="keyword">colorspace</parameter>&nbsp;:</term>
+          <listitem><simpara>the colorspace for the image
+          data.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+          role="keyword">bits_per_sample</parameter>&nbsp;:</term>
+          <listitem><simpara>the number of bits per
+          sample.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.pixbuf_new_from_array</function>()
+function returns a new pixbuf created from the Numeric Python array
+specified by <parameter>array</parameter>. <parameter>array</parameter> must
+be a 3 or 4 dimensional array (4 if the image has an alpha channel) with
+<parameter>bits_per_sample</parameter> bits per sample.
+<parameter>colorspace</parameter> must be
+<literal>gtk.gdk.COLORSPACE_RGB</literal>.</para>
+
+      <note>
+	<para>PyGTK must be compiled with the Numeric Python module to
+support this function.</para>
+      </note>
+
+    </refsect2>
+
     <refsect2 id="function-gdk--pixbuf-new-from-xpm-data">
       <title>gtk.gdk.pixbuf_new_from_xpm_data</title>
 
@@ -2191,17 +2532,20 @@ instead.</para>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">data</parameter>&nbsp;:</term>
-          <listitem><simpara></simpara></listitem>
+          <listitem><simpara>a list of strings containing the XPM image
+data</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a list of strings containing the XPM image
-data</simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link></simpara></listitem>
         </varlistentry>
       </variablelist>
 
       <para>The <function>gtk.gdk.pixbuf_new_from_xpm_data</function>()
-function returns a new pixbuf by parsing <literal>XPM</literal> data in memory spcified by
+function returns a new <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link> by
+parsing <literal>XPM</literal> data in memory specified by
 <parameter>data</parameter>. <parameter>data</parameter> is a list of
 strings containing the <literal>XPM</literal> data.</para>
 
@@ -2267,6 +2611,81 @@ sample invocation would be:</para>
 data, you don't need to copy the pixel data unless you intend to write to
 it, so you can pass <literal>FALSE</literal> for
 <parameter>copy_pixels</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--pixbuf-get-formats">
+      <title>gtk.gdk.pixbuf_get_formats</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.pixbuf_get_formats</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a list of image formats as Python
+	  dicts</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.gdk.pixbuf_get_formats</function>() function
+returns a list of the supported image formats as a Python dict. The members
+of the image format dict are:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of the image format.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>description</parameter>&nbsp;:</term>
+	  <listitem><simpara>a description of the image
+	  format.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>mime_types</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of the mime types this image
+	  matches.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>extensions</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of typical filename extensions for the
+	  image format.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>is_writable</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> the image can be
+	  written to a file</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--pixbuf-get-file-info">
+      <title>gtk.gdk.pixbuf_get_file_info</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.pixbuf_get_file_info</methodname>
+	  <methodparam><parameter
+			 role="keyword">filename</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of the file to check</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>an image format as a Python dict</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.gdk.pixbuf_get_file_info</function>() function
+reads enough of the file specified by <parameter>filename</parameter> to
+determine its image format and then returns the image format information in
+a Python dict. See the <link
+linkend="function-gdk--pixbuf-get-formats"><function>gtk.gdk.pixbuf_get_formats</function>()</link>
+function for more details on the image format dict.</para>
 
     </refsect2>
 
