@@ -20,6 +20,13 @@ class FunctionDoc:
 	self.params.append((name, description))
     def append_to_last_param(self, extra):
 	self.params[-1] = (self.params[-1][0], self.params[-1][1] + extra)
+    def append_to_named_param(self, name, extra):
+        for i in range(len(self.params)):
+            if self.params[i][0] == name:
+                self.params[i] = (name, self.params[i][1] + extra)
+                return
+        # fall through to adding extra parameter ...
+        self.add_param(name, extra)
     def append_description(self, extra):
 	self.description = self.description + extra
     def append_return(self, extra):
@@ -142,7 +149,6 @@ def parse_tmpl(fp, doc_dict):
                     cur_doc = FunctionDoc()
                     cur_doc.set_name(sect_name)
                     doc_dict[sect_name] = cur_doc
-
         elif line == '<!-- # Unused Parameters # -->\n':
             cur_doc = None # don't worry about unused params.
         elif cur_doc:
@@ -150,7 +156,11 @@ def parse_tmpl(fp, doc_dict):
                 if string.strip(line[10:]):
                     cur_doc.append_return(line[10:])
             elif line[0] == '@':
-                pass
+                pos = string.find(line, ':')
+                if pos >= 0:
+                    cur_doc.append_to_named_param(line[1:pos], line[pos+1:])
+                else:
+                    cur_doc.append_description(line)
             else:
                 cur_doc.append_description(line)
 
