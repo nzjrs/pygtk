@@ -12,3 +12,8 @@ p.addExcludeGlob('*_interp')
 p.addExcludeGlob('*_visual')
 p.startParsing()
 
+p = generate.FilteringParser(input='generate/gtkgl.defs',
+			     prefix='gtkgl',
+			     typeprefix='&')
+p.addExcludeFile('generate/gtkgl.ignore')
+p.startParsing()

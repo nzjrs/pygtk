@@ -10,8 +10,11 @@ AM_INIT_PYEXEC_MOD
 AM_CHECK_PYMOD(thread,,extra_mods=gthread,extra_mods=)
 
 AM_PATH_GTK(1.2.1,,,$extra_mods)
-AM_PATH_GDK_IMLIB(1.8, [BUILD_IMLIB=], [BUILD_IMLIB="#"])
-AC_SUBST(BUILD_IMLIB)
+AM_PATH_GDK_IMLIB(1.8, build_imlib=true, build_imlib=false)
+AM_CONDITIONAL(BUILD_IMLIB, $build_imlib)
+
+AM_PATH_GTKGL(build_gtkgl=true, build_gtkgl=false)
+AM_CONDITIONAL(BUILD_GTKGL, $build_gtkgl)
 
 AC_OUTPUT(Makefile generate/Makefile pyglade/Makefile)
 

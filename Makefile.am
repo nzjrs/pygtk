@@ -1,9 +1,24 @@
 SUBDIRS = generate pyglade
 
-INCLUDES= $(PYTHON_INCLUDES) $(PYTHON_CFLAGS) $(GTK_CFLAGS) $(GDK_IMLIB_CFLAGS)
+INCLUDES= $(PYTHON_INCLUDES) $(PYTHON_CFLAGS) $(GTK_CFLAGS) \
+	$(GDK_IMLIB_CFLAGS) $(GTKGL_CFLAGS)
 
-## BUILD_IMLIB == # if imlib wasn't found
-pyexec_PROGRAMS = _gtkmodule$(SO) @BUILD_IMLIB@ _gdkimlibmodule$(SO)
+if BUILD_IMLIB
+imlib_libs = _gdkimlibmodule$(SO)
+imlib_mods = GdkImlib.py
+else
+imlib_libs =
+imlib_mods =
+endif
+if BUILD_GTKGL
+gtkgl_libs = _gtkglmodule$(SO)
+gtkgl_mods = GtkGL.py
+else
+gtkgl_libs =
+gtkgl_mods =
+endif
+
+pyexec_PROGRAMS = _gtkmodule$(SO) $(imlib_libs) $(gtkgl_libs)
 EXTRA_PROGRAMS =
 
 _gtkmodule__SO__SOURCES = gtkmodule.c
@@ -15,7 +30,14 @@ _gdkimlibmodule__SO__SOURCES = gdkimlibmodule.c
 _gdkimlibmodule__SO__LDADD = $(GDK_IMLIB_LIBS)
 _gdkimlibmodule__SO__LINK = $(PYTHON_LINK)
 
-python_PYTHON = gtk.py Gtkinter.py GTK.py GDK.py GtkExtra.py GdkImlib.py
+_gtkglmodule__SO__SOURCES = gtkglmodule.c
+_gtkglmodule__SO__LDADD = $(GTKGL_LIBS) $(GTK_LIBS)
+_gtkglmodule__SO__LINK = $(PYTHON_LINK)
+
+pkginclude_HEADERS = pygtk.h pygdkimlib.h
+
+python_PYTHON = gtk.py Gtkinter.py GTK.py GDK.py GtkExtra.py \
+	$(imlib_mods) $(gtkgl_mods)
 noinst_PYTHON = mkgtk.py description.py
 
 # stuff to automatically generate gtkmodule_*.c
@@ -29,10 +51,13 @@ GTKMODULE_DEFS = generate/gtk.defs \
   generate/gtkmenus.defs  generate/gtkmisc.defs \
   generate/gtkranges.defs generate/gtkdnd.defs
 
-$(srcdir)/gtkmodule_defs.c $(srcdir)/gtkmodule_impl.c: $(srcdir)/mkgtk.py $(GENERATE) $(GTKMODULE_DEFS)
+$(srcdir)/gtkmodule_defs.c $(srcdir)/gtkmodule_impl.c $(srcdir)/gtkgl_defs.c $(srcdir)/gtkgl_impl.c: $(srcdir)/mkgtk.py $(GENERATE) $(GTKMODULE_DEFS) generate/gtkgl.defs
 	cd $(srcdir) && $(PYTHON) mkgtk.py
 
+
 gtkmodule.o: gtkmodule.c gtkmodule_defs.c gtkmodule_impl.c
+
+gtkglmodule.o: gtkglmodule.c gtkgl_defs.c gtkgl_impl.c
 
 EXTRA_DIST = \
 	pygtk.spec \
