@@ -32,6 +32,12 @@ dg.add_tmpldirs([
 ])
     
 
+# gojbect docs ...
+sys.stderr.write('loading gobject defs ...')
+sys.stderr.flush()
+dg.add_docs('gobject.defs', None, 'gobject')
+sys.stderr.write('done.\n')
+
 # pango docs ...
 sys.stderr.write('loading pango defs ...')
 sys.stderr.flush()

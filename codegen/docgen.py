@@ -7,6 +7,38 @@ import definitions
 import override
 import docextract
 
+class Node:
+    def __init__(self, name, interfaces=[]):
+        self.name = name
+        self.interfaces = interfaces
+        self.subclasses = []
+    def add_child(self, node):
+        self.subclasses.append(node)
+
+def build_object_tree(objects):
+    # reorder objects so that parent classes come first ...
+    objects = objects[:]
+    pos = 0
+    while pos < len(objects):
+        parent = objects[pos].parent
+        for i in range(pos+1, len(objects)):
+            if objects[i].c_name == parent:
+                objects.insert(i+1, objects[pos])
+                del objects[pos]
+                break
+        else:
+            pos = pos + 1
+
+    root = Node(None)
+    nodes = { None: root }
+    for obj_def in objects:
+        parent_node = nodes[obj_def.parent]
+        node = Node(obj_def.c_name, obj_def.implements)
+        parent_node.add_child(node)
+        nodes[node.name] = node
+
+    return root
+
 class DocWriter:
     def __init__(self):
 	# parse the defs file
@@ -36,6 +68,9 @@ class DocWriter:
         for obj in self.parser.boxes:
             if not self.classmap.has_key(obj.c_name):
                 self.classmap[obj.c_name] = '%s.%s' % (module_name, obj.name)
+        for obj in self.parser.pointers:
+            if not self.classmap.has_key(obj.c_name):
+                self.classmap[obj.c_name] = '%s.%s' % (module_name, obj.name)
 
     def pyname(self, name):
         return self.classmap.get(name, name)
@@ -44,6 +79,13 @@ class DocWriter:
         return cmp(self.pyname(obja.c_name), self.pyname(objb.c_name))
     def output_docs(self, output_prefix):
         files = []
+
+        # class heirachy
+        heirachy = build_object_tree(self.parser.objects)
+        filename = self.create_filename('heirachy', output_prefix)
+        fp = open(filename, 'w')
+        self.write_full_heirachy(heirachy, fp)
+        fp.close()
 
 	obj_defs = self.parser.objects + self.parser.interfaces + \
                    self.parser.boxes + self.parser.pointers
@@ -168,6 +210,19 @@ class DocWriter:
 	return output_prefix + '-' + string.lower(obj_name) + '.txt'
     def create_toc_filename(self, output_prefix):
         return self.create_filename(self, 'docs', output_prefix)
+
+    def write_full_heirachy(self, heirachy, fp):
+        def handle_node(node, fp, indent=''):
+            for child in node.subclasses:
+                fp.write(indent + node.name)
+                if node.interfaces:
+                    fp.write(' (implements ')
+                    fp.write(string.join(node.interfaces, ', '))
+                    fp.write(')\n')
+                else:
+                    fp.write('\n')
+                handle_node(child, fp, indent + '  ')
+        handle_node(heirachy, fp)
 
     # these need to handle default args ...
     def create_constructor_prototype(self, func_def):
@@ -361,6 +416,34 @@ class DocbookDocWriter(DocWriter):
         lines.insert(0, '<para>')
         lines.append('</para>')
         return string.join(lines, '\n')
+
+    # write out heirachy
+    def write_full_heirachy(self, heirachy, fp):
+        def handle_node(node, fp, indent=''):
+            if node.name:
+                fp.write('%s<link linkend="%s">%s</link>' %
+                         (indent, self.make_class_ref(node.name),
+                          self.pyname(node.name)))
+                if node.interfaces:
+                    fp.write(' (implements ')
+                    for i in range(len(node.interfaces)):
+                        fp.write('<link linkend="%s">%s</link>' %
+                                 (self.make_class_ref(node.interfaces[i]),
+                                  self.pyname(node.interfaces[i])))
+                        if i != len(node.interfaces) - 1:
+                            fp.write(', ')
+                    fp.write(')\n')
+                else:
+                    fp.write('\n')
+
+                indent = indent + '  '
+            node.subclasses.sort(lambda a,b:
+                                 cmp(self.pyname(a.name), self.pyname(b.name)))
+            for child in node.subclasses:
+                handle_node(child, fp, indent)
+        fp.write('<synopsis>')
+        handle_node(heirachy, fp)
+        fp.write('</synopsis>\n')
 
     # these need to handle default args ...
     def create_constructor_prototype(self, func_def):
