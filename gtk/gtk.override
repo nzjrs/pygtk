@@ -1535,6 +1535,12 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
 				     cunote->data);
     else
 	retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+
+    if (retobj == NULL) {
+	PyErr_Print();
+	PyErr_Clear();
+    }
+    
     Py_DECREF(pypath);
     Py_XDECREF(retobj);
 }
@@ -1580,6 +1586,12 @@ pygtk_tree_selection_marshal(GtkTreeSelection *selection,
 				     cunote->data);
     else
 	retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+
+    if (retobj == NULL) {
+	PyErr_Print();
+	PyErr_Clear();
+    }
+    
     Py_DECREF(pypath);
     if (retobj) {
 	if(retobj == Py_None);
