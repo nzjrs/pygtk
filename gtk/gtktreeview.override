@@ -159,11 +159,11 @@ pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
     pyiter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,
                            TRUE, TRUE);
     if (cunote->data)
-        retobj = PyEval_CallFunction(cunote->func, "(OOOOO)",
+        retobj = PyEval_CallFunction(cunote->func, "(NNNNN)",
                                      pytreecolumn, pycell,
                                      pytreemodel, pyiter, cunote->data);
     else
-        retobj = PyEval_CallFunction(cunote->func, "(OOOO)",
+        retobj = PyEval_CallFunction(cunote->func, "(NNNN)",
                                      pytreecolumn, pycell,
                                      pytreemodel, pyiter);
 
