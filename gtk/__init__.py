@@ -21,17 +21,12 @@
 
 # this can go when things are a little further along
 try:
-    import ltihooks
-    del ltihooks
+    import ltihooks, sys
+    sys.path.insert(1, 'gobject')
+    del ltihooks, sys
 except ImportError:
     pass
 
-# TRUE and FALSE constants ...
-import __builtin__
-if not hasattr(__builtin__, 'True'):
-    __builtin__.True = (1 == 1)
-    __builtin__.False = (1 != 1)
-del __builtin__
 
 FALSE = False
 TRUE  = True
@@ -94,7 +89,6 @@ class _Deprecated:
         # as the one found in exceptions.
         self.warn(message, DeprecationWarning)
         return self.func(*args, **kwargs)
-
 
 # old names compatibility ...
 mainloop = _Deprecated(main, 'mainloop')

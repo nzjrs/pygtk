@@ -32,11 +32,11 @@ VERSION = "%d.%d.%d" % (MAJOR_VERSION,
                         MINOR_VERSION,
                         MICRO_VERSION)
 
-GOBJECT_REQUIRED  = '2.2.0'
+GOBJECT_REQUIRED  = '2.4.0'
 ATK_REQUIRED      = '1.0.0'
 PANGO_REQUIRED    = '1.0.0'
-GTK_REQUIRED      = '2.2.0'
-LIBGLADE_REQUIRED = '2.0.0'
+GTK_REQUIRED      = '2.4.0'
+LIBGLADE_REQUIRED = '2.3.6'
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
@@ -57,9 +57,9 @@ INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
 
 str_version = sys.version[:3]
 version = map(int, str_version.split('.'))
-if version < [2, 2]:
+if version < [2, 3]:
     raise SystemExit, \
-          "Python 2.2 or higher is required, %s found" % str_version
+          "Python 2.3 or higher is required, %s found" % str_version
 
 class PyGtkInstallLib(InstallLib):
     def run(self):

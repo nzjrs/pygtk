@@ -4275,11 +4275,14 @@ pygdk_filter_func_marshal(GdkXEvent *xevent,
 			  GdkEvent *event,
 			  PyGtkCustomNotify *cunote)
 {
+    PyGILState_STATE state;
     PyObject *ret;
     PyObject *pyevent;
     int retval;
     
     pyg_block_threads();
+    state = PyGILState_Ensure();
+    
     pyevent = pyg_boxed_new(GDK_TYPE_EVENT, event, TRUE, TRUE);
 
     if (cunote->data)
@@ -4295,6 +4298,7 @@ pygdk_filter_func_marshal(GdkXEvent *xevent,
 	retval = PyInt_AsLong(ret);
     }
     
+    PyGILState_Release(state);
     pyg_unblock_threads();
 
     return retval;

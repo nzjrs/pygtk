@@ -1,4 +1,4 @@
- * -*- Mode: C; c-basic-offset: 4 -*-
+/* -*- Mode: C; c-basic-offset: 4 -*-
  * pygtk- Python bindings for the GTK toolkit.
  * Copyright (C) 1998-2003  James Henstridge
  *
@@ -1522,12 +1522,13 @@ override pango_attr_list_filter kwargs
 static gboolean
 pypango_attr_list_filter_cb(PangoAttribute *attr, gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *retobj, *py_attr;
     gboolean ret = FALSE;
     
-
     pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_attr = pypango_attr_new(pango_attribute_copy(attr),
 			       attr->start_index, attr->end_index);
@@ -1545,6 +1546,7 @@ pypango_attr_list_filter_cb(PangoAttribute *attr, gpointer data)
         PyErr_Print();
     }
 
+    PyGILState_Release(state);
     pyg_unblock_threads();
     return ret;
 }
@@ -1616,12 +1618,13 @@ static gboolean
 pypango_fontset_foreach_cb(PangoFontset *fontset, PangoFont *font,
 				 gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *retobj, *py_font, *py_fontset;
     gboolean ret = FALSE;
     
-
     pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_fontset = pygobject_new((GObject *)fontset);
     py_font = pygobject_new((GObject *)font);
@@ -1640,6 +1643,7 @@ pypango_fontset_foreach_cb(PangoFontset *fontset, PangoFont *font,
         PyErr_Print();
     }
 
+    PyGILState_Release(state);
     pyg_unblock_threads();
     return ret;
 }
