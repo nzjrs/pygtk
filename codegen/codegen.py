@@ -568,11 +568,15 @@ class GObjectWrapper(Wrapper):
         if constructor.params:
             mandatory_arguments = [param for param in constructor.params if not param.optional]
             optional_arguments = [param for param in constructor.params if param.optional]
-            arg_names = py_str_list_to_c([param.pname for param in
+            arg_names = py_str_list_to_c([param.argname for param in
                                           mandatory_arguments + optional_arguments])
+            prop_names = py_str_list_to_c([param.pname for param in
+                                          mandatory_arguments + optional_arguments])
+
             print >> out, "    GParameter params[%i];" % len(constructor.params)
             print >> out, "    PyObject *parsed_args[%i] = {NULL, };" % len(constructor.params)
             print >> out, "    char *arg_names[] = %s;" % arg_names
+            print >> out, "    char *prop_names[] = %s;" % prop_names
             print >> out, "    guint nparams, i;"
             print >> out
             print >> out, "    if (!PyArg_ParseTupleAndKeywords(args, kwargs, ",
@@ -589,7 +593,7 @@ class GObjectWrapper(Wrapper):
             print >> out, "        return -1;"
             print >> out
             print >> out, "    memset(params, 0, sizeof(GParameter)*%i);" % len(constructor.params)
-            print >> out, "    if (!pyg_parse_constructor_args(obj_type, arg_names, arg_names,"
+            print >> out, "    if (!pyg_parse_constructor_args(obj_type, arg_names, prop_names,"
             print >> out, "                                    params, &nparams, parsed_args))"
             print >> out, "        return -1;"
             print >> out, "    self->obj = g_object_newv(obj_type, nparams, params);"

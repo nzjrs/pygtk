@@ -18,9 +18,10 @@ class Parameter(object):
 
 # Parameter for property based constructors
 class Property(object):
-    def __init__(self, pname, optional):
+    def __init__(self, pname, optional, argname):
         self.pname = pname
         self.optional = optional
+        self.argname = argname
 
 
 class Definition:
@@ -368,10 +369,13 @@ class FunctionDef(Definition):
                 for prop in arg[1:]:
                     pname = prop[0]
                     optional = False
+                    argname = pname
                     for farg in prop[1:]:
                         if farg[0] == 'optional':
                             optional = True
-                    self.params.append(Property(pname, optional))
+                        elif farg[0] == 'argname':
+                            argname = farg[1]
+                    self.params.append(Property(pname, optional, argname))
             elif arg[0] == 'varargs':
                 self.varargs = arg[1] in ('t', '#t')
             elif arg[0] == 'deprecated':
