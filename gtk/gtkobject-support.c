@@ -31,11 +31,13 @@ void
 pygtk_custom_destroy_notify(gpointer user_data)
 {
     PyGtkCustomNotify *cunote = user_data;
+    PyGILState_STATE state;
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
     Py_XDECREF(cunote->func);
     Py_XDECREF(cunote->data);
-    pyg_unblock_threads();
+    PyGILState_Release(state);
+    
     g_free(cunote);
 }
 

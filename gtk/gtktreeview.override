@@ -172,13 +172,14 @@ pygtk_cell_data_func_marshal (GtkCellLayout *cell_layout,
                               GtkTreeModel *tree_model,
                               GtkTreeIter *iter, gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *retobj;
     PyObject *pycelllayout, *pycell, *pytreemodel, *pyiter;
 
     g_assert (cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     pycelllayout = pygobject_new((GObject *)cell_layout);
     pycell = pygobject_new((GObject *)cell);
@@ -199,7 +200,7 @@ pygtk_cell_data_func_marshal (GtkCellLayout *cell_layout,
     } else
         Py_DECREF(retobj);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
 }
 
 static PyObject *
@@ -576,12 +577,13 @@ pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
                                      GtkTreeIter *iter,
                                      gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *py_model, *py_path, *py_iter, *retobj;
 
     g_assert(cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_model = pygobject_new((GObject *)model);
     py_path = pygtk_tree_path_to_pyobject(path);
@@ -600,7 +602,7 @@ pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
 
     Py_XDECREF(retobj);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
 }
 static PyObject *
 _wrap_gtk_tree_selection_selected_foreach(PyGObject *self, PyObject *args)
@@ -631,13 +633,14 @@ pygtk_tree_selection_marshal(GtkTreeSelection *selection,
                              gboolean path_currently_selected,
                              gpointer data)
 {
+    PyGILState_STATE state;
     gboolean retval = FALSE;
     PyGtkCustomNotify *cunote = data;
     PyObject *pypath, *retobj;
 
     g_assert(cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     pypath = pygtk_tree_path_to_pyobject(path);
     if (cunote->data)
@@ -663,7 +666,7 @@ pygtk_tree_selection_marshal(GtkTreeSelection *selection,
         Py_DECREF(retobj);
     }
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
 
     return retval;
 }
@@ -1006,13 +1009,14 @@ static gint
 pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
                             GtkTreeIter *iter2, gpointer user_data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = user_data;
     PyObject *py_model, *py_iter2, *py_iter1, *retobj;
     gint ret = 0;
 
     g_assert(cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_model = pygobject_new((GObject *)model);
     py_iter1 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter1, TRUE, TRUE);
@@ -1034,7 +1038,7 @@ pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
     }
     Py_XDECREF(retobj);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
     return ret;
 }
 static PyObject *
@@ -1894,13 +1898,14 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
                            GtkTreeIter *iter,
                            gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *py_model, *py_path, *py_iter, *retobj;
     gboolean ret;
 
     g_assert(cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_model = pygobject_new((GObject *)model);
     py_path = pygtk_tree_path_to_pyobject(path);
@@ -1920,7 +1925,7 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
         ret = TRUE;
     }
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
     return ret;
 }
 static PyObject *
@@ -2395,13 +2400,14 @@ static gboolean
 pygtk_tree_model_filter_visible_cb(GtkTreeModel *model, GtkTreeIter *iter,
 				   gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *py_model, *py_iter, *retobj;
     gboolean ret = FALSE;
 
     g_assert(cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_model = pygobject_new((GObject *)model);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
@@ -2420,7 +2426,7 @@ pygtk_tree_model_filter_visible_cb(GtkTreeModel *model, GtkTreeIter *iter,
     }
     Py_XDECREF(retobj);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
     return ret;    
 }
 static PyObject *
@@ -2729,12 +2735,13 @@ static void
 pygtk_filter_modify_func_marshal(GtkTreeModel *model, GtkTreeIter *iter,
                                  GValue *value, gint column, gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *py_value, *py_model, *py_iter;
 
     g_assert (cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_model = pygobject_new((GObject *)model);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
@@ -2755,7 +2762,7 @@ pygtk_filter_modify_func_marshal(GtkTreeModel *model, GtkTreeIter *iter,
 
     Py_XDECREF(py_value);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
 }
 
 static PyObject *
@@ -2822,6 +2829,7 @@ pygtk_column_drag_func_marshal(GtkTreeView *tree_view,
                                GtkTreeViewColumn *next_column,
                                gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *py_tree_view, *py_column, *py_prev_column, *py_next_column;
     PyObject *retobj;
@@ -2829,7 +2837,7 @@ pygtk_column_drag_func_marshal(GtkTreeView *tree_view,
 
     g_assert (cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_tree_view = pygobject_new((GObject *)tree_view);
     py_column = pygobject_new((GObject *)column);
@@ -2854,7 +2862,7 @@ pygtk_column_drag_func_marshal(GtkTreeView *tree_view,
     }
     Py_XDECREF(retobj);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
     return ret;    
 }
 static PyObject *
@@ -2904,6 +2912,7 @@ pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
                                     GtkTreeIter *iter,
                                     gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *py_model, *py_column, *py_key, *py_iter;
     PyObject *retobj;
@@ -2911,7 +2920,7 @@ pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
 
     g_assert (cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_model = pygobject_new((GObject *)model);
     py_column = PyInt_FromLong(column);
@@ -2933,7 +2942,7 @@ pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
     }
     Py_XDECREF(retobj);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
     return ret;    
 }
 

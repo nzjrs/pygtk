@@ -1527,7 +1527,6 @@ pypango_attr_list_filter_cb(PangoAttribute *attr, gpointer data)
     PyObject *retobj, *py_attr;
     gboolean ret = FALSE;
     
-    pyg_block_threads();
     state = PyGILState_Ensure();
 
     py_attr = pypango_attr_new(pango_attribute_copy(attr),
@@ -1547,7 +1546,6 @@ pypango_attr_list_filter_cb(PangoAttribute *attr, gpointer data)
     }
 
     PyGILState_Release(state);
-    pyg_unblock_threads();
     return ret;
 }
 static PyObject *
@@ -1623,7 +1621,6 @@ pypango_fontset_foreach_cb(PangoFontset *fontset, PangoFont *font,
     PyObject *retobj, *py_font, *py_fontset;
     gboolean ret = FALSE;
     
-    pyg_block_threads();
     state = PyGILState_Ensure();
 
     py_fontset = pygobject_new((GObject *)fontset);
@@ -1644,7 +1641,6 @@ pypango_fontset_foreach_cb(PangoFontset *fontset, PangoFont *font,
     }
 
     PyGILState_Release(state);
-    pyg_unblock_threads();
     return ret;
 }
 static PyObject *

@@ -943,9 +943,9 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    return -1;
 	}
 	/* FIXME: Is this even remotely correct ? */
-	pyg_unblock_threads();
+	Py_BEGIN_ALLOW_THREADS;
 	event->any.window = g_object_ref(GDK_WINDOW(((PyGObject*)value)->obj));
-	pyg_block_threads();
+	Py_END_ALLOW_THREADS;
 	return 0;
     } else if (attr[0] == 's' && !strcmp(attr, "send_event")) {
 	INT_CHECK();
@@ -3992,9 +3992,9 @@ _wrap_gdk_window_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
 
 #ifdef PLATFORM_WIN32
-    pyg_unblock_threads();
+    Py_BEGIN_ALLOW_THREADS;
     g_object_ref(self->obj);
-    pyg_block_threads();
+    Py_END_ALLOW_THREADS;
 #endif /* PLATFORM_WIN32 */
     
     pygobject_register_wrapper((PyObject *)self);
@@ -4280,7 +4280,6 @@ pygdk_filter_func_marshal(GdkXEvent *xevent,
     PyObject *pyevent;
     int retval;
     
-    pyg_block_threads();
     state = PyGILState_Ensure();
     
     pyevent = pyg_boxed_new(GDK_TYPE_EVENT, event, TRUE, TRUE);
@@ -4299,7 +4298,6 @@ pygdk_filter_func_marshal(GdkXEvent *xevent,
     }
     
     PyGILState_Release(state);
-    pyg_unblock_threads();
 
     return retval;
 }
@@ -4322,11 +4320,11 @@ _wrap_gdk_window_add_filter(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(cunote->func);
     Py_XINCREF(cunote->data);
 
-    pyg_unblock_threads();
+    Py_BEGIN_ALLOW_THREADS;
     g_object_weak_ref(G_OBJECT(self->obj),
 		      (GWeakNotify) pygtk_custom_destroy_notify,
 		      cunote);
-    pyg_block_threads();
+    Py_END_ALLOW_THREADS;
     
     gdk_window_add_filter (GDK_WINDOW(self->obj),
 			   (GdkFilterFunc)pygdk_filter_func_marshal,

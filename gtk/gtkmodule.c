@@ -90,17 +90,18 @@ static gboolean
 python_do_pending_calls(gpointer data)
 {
     gboolean quit = FALSE;
+    PyGILState_STATE state;
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
+
     if (PyErr_CheckSignals() == -1) {
 	PyErr_SetNone(PyExc_KeyboardInterrupt);
 	quit = TRUE;
     }
-    pyg_unblock_threads();
-
     if (quit && gtk_main_level() > 0)
 	gtk_main_quit();
     
+    PyGILState_Release(state);
     return TRUE;
 }
 

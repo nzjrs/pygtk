@@ -118,7 +118,6 @@ pygtk_generic_cell_renderer_get_size (GtkCellRenderer *cell,
 
     g_return_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell));
 
-    pyg_block_threads();
     state = PyGILState_Ensure();
 
     self = pygobject_new((GObject *)cell);
@@ -136,7 +135,6 @@ pygtk_generic_cell_renderer_get_size (GtkCellRenderer *cell,
 	Py_DECREF(py_widget);
 	Py_DECREF(py_cell_area);
 	PyGILState_Release(state);
-	pyg_unblock_threads();
 	return;
     }
     Py_DECREF(py_widget);
@@ -147,14 +145,12 @@ pygtk_generic_cell_renderer_get_size (GtkCellRenderer *cell,
 	PyErr_Clear();
 	Py_DECREF(py_ret);
 	PyGILState_Release(state);
-	pyg_unblock_threads();
 	g_warning("could not parse return value of get_size() method.  "
 		  "Should be of form (x_offset, y_offset, width, height)");
 	return;
     }
 
     PyGILState_Release(state);
-    pyg_unblock_threads();
 
     /* success */
     if (x_offset)
@@ -186,7 +182,6 @@ pygtk_generic_cell_renderer_render (GtkCellRenderer      *cell,
 
     g_return_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell));
 
-    pyg_block_threads();
     state = PyGILState_Ensure();
 
     self = pygobject_new((GObject *)cell);
@@ -213,7 +208,6 @@ pygtk_generic_cell_renderer_render (GtkCellRenderer      *cell,
     Py_DECREF(py_expose_area);
 
     PyGILState_Release(state);
-    pyg_unblock_threads();
 }
 
 static gboolean
@@ -232,7 +226,6 @@ pygtk_generic_cell_renderer_activate (GtkCellRenderer      *cell,
 
     g_return_val_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell), FALSE);
 
-    pyg_block_threads();
     state = PyGILState_Ensure();
 
     self = pygobject_new((GObject *)cell);
@@ -262,7 +255,6 @@ out:
     Py_DECREF(py_background_area);
     Py_DECREF(py_cell_area);
     PyGILState_Release(state);
-    pyg_unblock_threads();
     return ret;
 }
 
@@ -283,7 +275,6 @@ pygtk_generic_cell_renderer_start_editing (GtkCellRenderer      *cell,
 
     g_return_val_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell), NULL);
 
-    pyg_block_threads();
     state = PyGILState_Ensure();
 
     self = pygobject_new((GObject *)cell);
@@ -306,7 +297,6 @@ pygtk_generic_cell_renderer_start_editing (GtkCellRenderer      *cell,
 	Py_DECREF(py_background_area);
 	Py_DECREF(py_cell_area);
 	PyGILState_Release(state);
-	pyg_unblock_threads();
 	return NULL;
     }
     Py_DECREF(py_event);
@@ -324,7 +314,6 @@ pygtk_generic_cell_renderer_start_editing (GtkCellRenderer      *cell,
     }
     Py_DECREF(py_ret);
     PyGILState_Release(state);
-    pyg_unblock_threads();
     return ret;
 }
 

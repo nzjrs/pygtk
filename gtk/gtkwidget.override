@@ -333,9 +333,9 @@ _wrap_gtk_widget__set_window(PyGObject *self, PyGObject *value, void *closure)
 	return -1;
     }
     
-    pyg_unblock_threads();
+    Py_BEGIN_ALLOW_THREADS;
     GTK_WIDGET(self->obj)->window = g_object_ref(GDK_WINDOW(value->obj));
-    pyg_block_threads();
+    Py_END_ALLOW_THREADS;
 
     return 0;
 }

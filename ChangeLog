@@ -1,3 +1,21 @@
+2004-08-03  Johan Dahlin  <johan@gnome.org>
+
+	* gtk/pygtktreemodel.c: Clean up most functions here to have only
+	one return path.
+
+	* gobject/pygobject.c (pygobject_emit): Protect g_value_unset by
+	UNBLOCK/BLOCK_THREADS since it might call pygobject_free which
+	will result in a deadlock.
+
+	* gobject/gobjectmodule.c (pyg_thread_init): New function, move
+	thread initalization stuff in here.
+
+	* All over the place: Kill pyg_block/unblock_threads and use
+	PyGILState and Py_BEGIN/END_ALLOW_THREADS.
+
+	unblock [code] block calls are replaced by Py_BEGIN/END and
+	block [code] unblock calls are replaced by PyGILState.
+
 2004-08-03  Xavier Ordoquy  <xordoquy@linovia.com>
 
 	* autogen.sh: Takes ACLOCAL_FLAGS into account.

@@ -1103,9 +1103,10 @@ override gtk_text_tag_table_foreach kwargs
 static void
 pygtk_text_tag_table_foreach_cb(GtkTextTag *tag, gpointer user_data)
 {
+    PyGILState_STATE state;
     PyObject *callback, *args, *ret;
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
     callback = PyTuple_GetItem((PyObject *)user_data, 0);
     args = Py_BuildValue("(NO)",
 			 pygobject_new((GObject *)tag),
@@ -1114,7 +1115,7 @@ pygtk_text_tag_table_foreach_cb(GtkTextTag *tag, gpointer user_data)
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
-    pyg_unblock_threads();
+    PyGILState_Release(state);
 }
 static PyObject *
 _wrap_gtk_text_tag_table_foreach(PyGObject *self, PyObject *args,
@@ -1146,10 +1147,12 @@ override gtk_text_iter_forward_find_char kwargs
 gboolean
 pygtk_find_char_pred(gunichar ch, gpointer user_data)
 {
+    PyGILState_STATE state;
     PyObject *pred, *args, *pyret = Py_False;
     gboolean ret;
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
+
 #if !defined(Py_UNICODE_SIZE) || Py_UNICODE_SIZE == 2
     if (ch > 0xffff) {
         PyErr_SetString(PyExc_RuntimeError,
@@ -1168,7 +1171,7 @@ pygtk_find_char_pred(gunichar ch, gpointer user_data)
     ret = (pyret == Py_True) ? TRUE : FALSE;
 
     Py_XDECREF(pyret);
-    pyg_unblock_threads();
+    PyGILState_Release(state);
 
     return ret;
 }

@@ -488,12 +488,13 @@ static void
 pygtk_container_for_common_marshal(GtkWidget *widget,
 				   gpointer data)
 {
+    PyGILState_STATE state;
     PyGtkCustomNotify *cunote = data;
     PyObject *py_widget, *retobj;
 
     g_assert(cunote->func);
 
-    pyg_block_threads();
+    state = PyGILState_Ensure();
 
     py_widget = pygobject_new((GObject*)widget);
     if (cunote->data)
@@ -509,7 +510,7 @@ pygtk_container_for_common_marshal(GtkWidget *widget,
 
     Py_XDECREF(retobj);
 
-    pyg_unblock_threads();
+    PyGILState_Release(state);
 }
 static PyObject *
 pygtk_container_for_common(PyGObject *self, PyObject *args, unsigned for_index)
