@@ -6,6 +6,15 @@ import string
 import types
 from cStringIO import StringIO
 
+class error(Exception):
+    def __init__(self, filename, lineno, msg):
+        Exception.__init__(self, msg)
+        self.filename = filename
+        self.lineno = lineno
+        self.msg = msg
+    def __str__(self):
+        return '%s:%d: error: %s' % (self.filename, self.lineno, self.msg)
+
 trans = [' '] * 256
 for i in range(256):
     if chr(i) in string.letters + string.digits + '_':
@@ -14,26 +23,36 @@ for i in range(256):
         trans[i] = '_'
 trans = string.join(trans, '')
 
-def parse(fp):
+def parse(filename):
+    if isinstance(filename, str):
+        fp = open(filename, 'r')
+    else: # if not string, assume it is some kind of iterator
+        fp = filename
+        filename = getattr(fp, 'name', '<unknown>')
     whitespace = ' \t\n\r\x0b\x0c'
     nonsymbol = whitespace + '();\'"'
     stack = []
+    openlines = []
+    lineno = 0
     for line in fp:
         pos = 0
+        lineno += 1
         while pos < len(line):
             if line[pos] in whitespace: # ignore whitespace
                 pass
             elif line[pos] == ';': # comment
                 break
             elif line[pos:pos+2] == "'(":
-                pos += 1
-                stack.append(())
+                pass # the open parenthesis will be handled next iteration
             elif line[pos] == '(':
                 stack.append(())
+                openlines.append(lineno)
             elif line[pos] == ')':
-                assert len(stack) != 0, 'parentheses do not match'
+                if len(stack) == 0:
+                    raise error(filename, lineno, 'close parenthesis found when none open')
                 closed = stack[-1]
                 del stack[-1]
+                del openlines[-1]
                 if stack:
                     stack[-1] += (closed,)
                 else:
@@ -58,6 +77,8 @@ def parse(fp):
                     else:
                         chars.append(line[endpos])
                     endpos += 1
+                if endpos >= len(line):
+                    raise error(filename, lineno, "unclosed quoted string")
                 pos = endpos
                 stack[-1] += (''.join(chars),)
             else: # symbol/number
@@ -73,36 +94,23 @@ def parse(fp):
                 stack[-1] += (symbol,)
             pos += 1
     if len(stack) != 0:
-        raise IOError, "parentheses don't match"
-
+        msg = '%d unclosed parentheses found at end of ' \
+              'file (opened on line(s) %s)' % (len(stack),
+                                               ', '.join(map(str, openlines)))
+        raise error(filename, lineno, msg)
 
 class Parser:
-    def __init__(self, arg):
+    def __init__(self, filename):
         """Argument is either a string, a parse tree, or file object"""
-        if type(arg) == types.StringType:
-            self.filename = arg
-            self.parseTree = parse(open(arg))
-        elif type(arg) == types.TupleType:
-            self.filename = '<none>'
-            self.parseTree = arg
-        elif type(arg) == types.FileType:
-            self.filename = arg.name
-            self.parseTree = parse(arg)
-        else:
-            raise TypeError, 'second arg must be string, tuple or file'
-    def startParsing(self, arg=None):
-        if type(arg) == types.StringType:
-            statements = parse(open(arg, 'r'))
-        elif arg:
-            statements = arg
-        else:
-            statements = self.parseTree
+        self.filename = filename
+    def startParsing(self, filename=None):
+        statements = parse(filename or self.filename)
         for statement in statements:
             self.handle(statement)
     def handle(self, tup):
         cmd = string.translate(tup[0], trans)
         if hasattr(self, cmd):
-            apply(getattr(self, cmd), tup[1:])
+            getattr(self, cmd)(*tup[1:])
         else:
             self.unknown(tup)
     def unknown(self, tup):
