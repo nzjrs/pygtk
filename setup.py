@@ -11,15 +11,15 @@
 
 PyGTK is a set of bindings for the GTK widget set. It provides an object oriented interface that is slightly higher level than the C one. It automatically does all the type casting and reference counting that you would have to do normally with the C API. You can find out more on the official homepage, http://www.daa.com.au/~james/pygtk/"""
 
-from commands import getoutput
 from distutils.command.build import build
 from distutils.core import setup
+import glob
 import os
 import sys
 
-from dsextras import list_files, have_pkgconfig, GLOBAL_INC, GLOBAL_MACROS
-from dsextras import InstallLib, BuildExt, PkgConfigExtension
-from dsextras import Template, TemplateExtension
+from dsextras import getoutput, have_pkgconfig, list_files, \
+     GLOBAL_INC, GLOBAL_MACROS, InstallLib, BuildExt, \
+     PkgConfigExtension, Template, TemplateExtension
 
 MAJOR_VERSION = 1
 MINOR_VERSION = 99
@@ -40,10 +40,14 @@ PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
 
 GLOBAL_INC += ['.', 'gtk']
-GLOBAL_MACROS += [('VERSION', '"%s"' % VERSION),
-                  ('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
+GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('PYGTK_MINOR_VERSION', MINOR_VERSION),
                   ('PYGTK_MICRO_VERSION', MICRO_VERSION)]
+
+if sys.platform == 'win32':
+    GLOBAL_MACROS.append(('VERSION', '\\\"%s\\\"' % VERSION))
+else:
+    GLOBAL_MACROS.append(('VERSION', '"%s"' % VERSION))
 
 DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
 CODEGEN_DIR = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'codegen')
@@ -143,6 +147,8 @@ gtk = TemplateExtension(name='gtk', pkc_name='gtk+-2.0',
                         override='gtk/gtk.override',
                         defs='gtk/gtk.defs')
 gtk.templates.append(gdk_template)
+if sys.platform == 'win32':
+    gtk.sources.append('gtk/gtk-fake-win32.c')
 
 gtkgl = TemplateExtension(name='gtkgl', pkc_name='gtkgl-2.0',
                              pkc_version=LIBGLADE_REQUIRED,
@@ -202,6 +208,19 @@ if gtk.can_build():
 if libglade.can_build():
     ext_modules.append(libglade)
     data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
+    
+    if sys.platform == 'win32':
+        # We suppose the libglade and xml DLLs are somewhere in the PATH
+        dlls = []
+        for path in os.environ['PATH'].split(";"):
+            dlls += glob.glob(os.path.normpath(
+                              os.path.join(path,"libglade*.dll")))
+            dlls += glob.glob(os.path.normpath(
+                              os.path.join(path,"libxml2*.dll")))
+        # We want to install those DLLs in (guess what ?) the DLLs python
+        # directory
+        data_files.append(("DLLs", dlls))
+    
 if gtkgl.can_build():
     ext_modules.append(gtkgl)
     data_files.append((DEFS_DIR, ('gtk/gtkgl.defs',)))
