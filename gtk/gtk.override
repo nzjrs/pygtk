@@ -678,19 +678,6 @@ _wrap_gtk_window_set_geometry_hints(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
-override gtk_accel_group_new
-static PyObject *
-_wrap_gtk_accel_group_new(PyGObject *self, PyObject *args)
-{
-    GtkAccelGroup *accel_group;
-
-    if (!PyArg_ParseTuple(args, ":GtkAccelGroup.__init__"))
-	return NULL;
-
-    accel_group = gtk_accel_group_new();
-    return pyg_boxed_new(GTK_TYPE_ACCEL_GROUP, accel_group, FALSE, TRUE);
-}
-%%
 override gtk_box_query_child_packing kwargs
 static PyObject *
 _wrap_gtk_box_query_child_packing(PyGObject *self, PyObject *args,
@@ -2122,8 +2109,6 @@ ignore
   gtk_set_locale
   gtk_accel_group_ref
   gtk_accel_group_unref
-  gtk_accel_group_lock
-  gtk_accel_group_unlock
   gtk_accel_groups_activate
   gtk_accel_group_activate
   gtk_accel_group_attach

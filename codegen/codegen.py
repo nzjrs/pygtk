@@ -136,19 +136,20 @@ boxedmethtmpl = 'static PyObject *\n' + \
                 '%(extracode)s\n' + \
                 '%(handleret)s\n' + \
                 '}\n\n'
-boxedmethcalltmpl = '%(cname)s(pyg_boxed_get(self, %(typename))%(arglist)s)'
+boxedmethcalltmpl = '%(cname)s(pyg_boxed_get(self, %(typename)s)%(arglist)s)'
 
 boxedconsttmpl = 'static PyObject *\n' + \
-                 '_wrap_%(cname)s(PyObject *self, PyObject *args, PyObject *kwargs)\n' + \
+                 '_wrap_%(cname)s(PyGBoxed *self, PyObject *args, PyObject *kwargs)\n' + \
                  '{\n' + \
                  '%(varlist)s' + \
                  '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.__init__"%(parselist)s))\n' + \
                  '        return NULL;\n' + \
                  '%(extracode)s\n' + \
                  '    self->gtype = %(typecode)s;\n' + \
-                 '    self->boxed = (GObject *)%(cname)s(%(arglist)s);\n' + \
-                 '    if (!self->obj) {\n' + \
-                 '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n' + \
+                 '    self->free_on_dealloc = FALSE;\n' + \
+                 '    self->boxed = %(cname)s(%(arglist)s);\n' + \
+                 '    if (!self->boxed) {\n' + \
+                 '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' + \
                  '        return NULL;\n' + \
                  '    }\n' + \
                  '    self->free_on_dealloc = TRUE;\n' + \
@@ -471,7 +472,6 @@ def write_boxed_method(objname, methobj, fp=sys.stdout):
 	'cname':    methobj.c_name,
 	'varlist':  varlist,
 	'typename': objname,
-	'cast':     argtypes._to_upper_str(objname)[1:]
     }
 
     # create the keyword argument name list ...
@@ -512,7 +512,6 @@ def write_boxed_constructor(objname, funcobj, fp=sys.stdout):
 	'varlist': varlist,
 	'typename': objname,
         'typecode': argtypes._enum_name(objname),
-	'cast':    argtypes._to_upper_str(objname)[1:],
     }
 
     # create the keyword argument name list ...
@@ -560,7 +559,7 @@ def write_boxed_getattr(parser, boxedobj, fp=sys.stdout):
     return funcname
 
 def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
-    fp.write('\n/* ----------- ' + objobj.c_name + ' ----------- */\n\n')
+    fp.write('\n/* ----------- ' + boxedobj.c_name + ' ----------- */\n\n')
     constructor = parser.find_constructor(boxedobj, overrides)
     methods = []
     if constructor:
@@ -581,6 +580,7 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
 	except:
 	    sys.stderr.write('Could not write constructor for ' +
 			     boxedobj.c_name + '\n')
+	    #traceback.print_exc()
     for meth in parser.find_methods(boxedobj):
         if overrides.is_ignored(meth.c_name):
             continue
@@ -609,12 +609,12 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
     fp.write('};\n\n')
 
     # write the type template
-    dict = { 'class': boxedobj.c_name }
-    if objobj.fields:
+    dict = { 'typename': boxedobj.c_name }
+    if boxedobj.fields:
         dict['getattr'] = write_boxed_getattr(parser, boxedobj, fp)
     else:
         dict['getattr'] = '0'
-    dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
+    dict['methods'] = 'METHOD_CHAIN(_Py' + dict['typename'] + '_methods)'
     fp.write(boxedtmpl % dict)
 
 
@@ -653,15 +653,15 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write(overrides.get_headers())
     fp.write('\n\n')
     fp.write('/* ---------- forward type declarations ---------- */\n')
-    for obj in parser.boxed:
+    for obj in parser.boxes:
         fp.write('PyExtensionClass Py' + obj.c_name + '_Type;\n')
     for obj in parser.objects:
         fp.write('PyExtensionClass Py' + obj.c_name + '_Type;\n')
     for interface in parser.interfaces:
         fp.write('PyExtensionClass Py' + interface.c_name + '_Type;\n')
     fp.write('\n')
-    for boxed in parser.boxed:
-        write_class(parser, boxed, overrides, fp)
+    for boxed in parser.boxes:
+        write_boxed(parser, boxed, overrides, fp)
         fp.write('\n')
     for obj in parser.objects:
         write_class(parser, obj, overrides, fp)
@@ -677,7 +677,7 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('    ExtensionClassImported;\n')
     fp.write(overrides.get_init() + '\n')
 
-    for boxed in parser.boxed:
+    for boxed in parser.boxes:
         typecode = argtypes._enum_name(boxed.c_name)
         fp.write('    pyg_register_boxed(d, "' + boxed.c_name +
                  '", ' + typecode + ', &Py' + boxed.c_name + '_Type);\n')
@@ -718,7 +718,7 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('}\n')
 
 def register_types(parser):
-    for boxed in parser.boxed:
+    for boxed in parser.boxes:
         argtypes.matcher.register_boxed(boxed.c_name)
     for obj in parser.objects:
         if obj.parent != (None, None):

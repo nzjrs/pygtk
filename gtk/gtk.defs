@@ -757,6 +757,16 @@
 )
 
 
+;; Boxed types ...
+
+(boxed AccelGroup
+  (in-module Gtk)
+  (c-name GtkAccelGroup)
+  (copy-func gtk_accel_group_ref)
+  (release-func gtk_accel_group_unref)
+)
+
+
 ;; Enumerations and flags ...
 
 (flags AccelFlags
@@ -1608,7 +1618,8 @@
   (return-type guint)
 )
 
-(function GtkAccelGroup
+(function gtk_accel_group_new
+  (is-constructor-of GtkAccelGroup)
   (c-name gtk_accel_group_new)
   (return-type GtkAccelGroup*)
 )

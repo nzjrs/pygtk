@@ -581,7 +581,6 @@ matcher.register('FILE*', arg)
 
 # enums, flags, objects
 
-matcher.register_boxed('GtkAccelGroup')
 matcher.register_custom_boxed('GdkFont', 'PyGdkFont_Type',
                               'PyGdkFont_Get', 'PyGdkFont_New')
 matcher.register_custom_boxed('GdkColor', 'PyGdkColor_Type',

@@ -227,72 +227,6 @@ PyGtkTreeIter_New(GtkTreeIter *iter)
     return (PyObject *)self;
 }
 
-static PyObject *
-pygtk_accel_group_new(PyGBoxed *self, PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ":GtkAccelGroup.lock"))
-	return NULL;
-
-    self->boxed = gtk_accel_group_new();
-    self->gtype = GTK_TYPE_ACCEL_GROUP;
-    self->free_on_dealloc = TRUE;
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyObject *
-pygtk_accel_group_lock(PyGBoxed *self, PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ":GtkAccelGroup.lock"))
-	return NULL;
-    gtk_accel_group_lock(pyg_boxed_get(self, GtkAccelGroup));
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyObject *
-pygtk_accel_group_unlock(PyGBoxed *self, PyObject *args)
-{
-    if (!PyArg_ParseTuple(args, ":GtkAccelGroup.unlock"))
-	return NULL;
-    gtk_accel_group_unlock(pyg_boxed_get(self, GtkAccelGroup));
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef pygtk_accel_group_methods[] = {
-    { "__init__", (PyCFunction)pygtk_accel_group_new, METH_VARARGS },
-    { "lock", (PyCFunction)pygtk_accel_group_lock, METH_VARARGS },
-    { "unlock", (PyCFunction)pygtk_accel_group_unlock, METH_VARARGS },
-    { NULL, NULL, 0 }
-};
-
-PyExtensionClass PyGtkAccelGroup_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GtkAccelGroup",
-    sizeof(PyGBoxed),
-    0,
-    (destructor)0,
-    (printfunc)0,
-    (getattrfunc)0,
-    (setattrfunc)0,
-    (cmpfunc)0,
-    (reprfunc)0,
-    0,
-    0,
-    0,
-    (hashfunc)0,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    (getattrofunc)0,
-    (setattrofunc)0,
-    0L,0L,
-    NULL,
-    METHOD_CHAIN(pygtk_accel_group_methods),
-    0,
-};
-
 #if 0
 typedef struct {
     PyObject_HEAD
@@ -3741,8 +3675,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
     pyg_boxed_register(tp, Py##x##_from_value, Py##x##_to_value)
 
     ExtensionClassImported;
-    pyg_register_boxed(moddict, "GtkAccelGroup", GTK_TYPE_ACCEL_GROUP,
-		       &PyGtkAccelGroup_Type);
 #if 0
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
