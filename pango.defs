@@ -1316,6 +1316,21 @@
   (return-type "gboolean")
 )
 
+(define-method set_auto_dir
+  (of-object "PangoLayout")
+  (c-name "pango_layout_set_auto_dir")
+  (return-type "none")
+  (parameters
+    '("gboolean" "auto_dir")
+  )
+)
+
+(define-method get_auto_dir
+  (of-object "PangoLayout")
+  (c-name "pango_layout_get_auto_dir")
+  (return-type "gboolean")
+)
+
 (define-method set_alignment
   (of-object "PangoLayout")
   (c-name "pango_layout_set_alignment")
@@ -1777,6 +1792,7 @@
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-types.h
 
 (define-function pango_language_from_string
+  (is-constructor-of "PangoLanguage")
   (c-name "pango_language_from_string")
   (return-type "PangoLanguage*")
   (parameters
@@ -1784,13 +1800,38 @@
   )
 )
 
+(define-function pango_language_from_string
+  (c-name "pango_language_from_string1")
+  (return-type "PangoLanguage*")
+  (parameters
+    '("const-char*" "language")
+  )
+  (deprecated "use pango.Language instead")
+)
+
 (define-function pango_language_matches
-  (c-name "pango_language_matches")
+  (c-name "pango_language_matches1")
   (return-type "gboolean")
   (parameters
     '("PangoLanguage*" "language" (null-ok))
     '("const-char*" "range_list")
   )
+  (deprecated "use pango.Language.matches instead")
+)
+
+(define-method matches
+  (of-object "PangoLanguage")
+  (c-name "pango_language_matches")
+  (return-type "gboolean")
+  (parameters
+    '("const-char*" "range_list")
+  )
+)
+
+(define-method to_string
+  (of-object "PangoLanguage")
+  (c-name "pango_language_to_string")
+  (return-type "const-char*")
 )
 
 (define-function PIXELS

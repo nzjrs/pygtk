@@ -1675,3 +1675,59 @@ _wrap_pango_fontset_foreach(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override pango_language_from_string1 kwargs
+static PyObject *
+_wrap_pango_language_from_string1(PyGObject *self, PyObject *args,
+			       PyObject *kwargs)
+{
+    static char *kwlist[] = { "language", NULL };
+    char *language;
+    PangoLanguage *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s:pango_language_from_string",
+				     kwlist, &language))
+        return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning,
+		   "use pango.Language instead") < 0)
+        return NULL;
+
+    ret = pango_language_from_string(language);
+    /* pyg_boxed_new handles NULL checking */
+    return pyg_boxed_new(PANGO_TYPE_LANGUAGE, ret, TRUE, TRUE);
+}
+
+%%
+override pango_language_matches1 kwargs
+static PyObject *
+_wrap_pango_language_matches1(PyGObject *self, PyObject *args,
+			       PyObject *kwargs)
+{
+    static char *kwlist[] = { "language", "range_list", NULL };
+    PyObject *py_language = Py_None, *py_ret;
+    char *range_list;
+    int ret;
+    PangoLanguage *language = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "Os:pango_language_matches",
+				     kwlist, &py_language, &range_list))
+        return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning,
+		   "use pango.Language.matches instead") < 0)
+        return NULL;
+
+    if (pyg_boxed_check(py_language, PANGO_TYPE_LANGUAGE))
+        language = pyg_boxed_get(py_language, PangoLanguage);
+    else if (py_language != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+			"language should be a PangoLanguage or None");
+        return NULL;
+    }
+
+    ret = pango_language_matches(language, range_list);
+    py_ret = ret ? Py_True : Py_False;
+    Py_INCREF(py_ret);
+    return py_ret;
+}
