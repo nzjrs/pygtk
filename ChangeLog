@@ -1,5 +1,16 @@
 2001-09-18  Matt Wilson  <msw@redhat.com>
 
+	* gtk/gtk.defs (gtk_dialog_new_with_buttons): note the defaults in
+	the definition.
+
+	* gtk/gtk.override (_wrap_gtk_dialog_new_with_buttons): implement
+	a full-featured constructor for GtkDialog that will allow flags
+	(as well as other parameters) to be passed in during object
+	construction.  The form is a bit different than the C version,
+	which uses varargs.  To pass a list of buttons at construction
+	time, pass a tuple of text/id pairs as the 4th argument or in the
+	buttons keyword.
+
 	* gtk/gtk.defs (CTree): add selection to the fields
 	(GtkCTree::insert_node): note the defaults in the definition.
 	(GtkCTree::base_nodes): added base_nodes method back into GtkCTree

@@ -3597,5 +3597,77 @@ _wrap_gtk_text_buffer_get_iter_at_mark(PyGObject *self, PyObject *args, PyObject
 				     GTK_TEXT_MARK(mark->obj));
     return pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE);
 }
+%%
+ignore gtk_dialog_new
+%%
+override gtk_dialog_new_with_buttons kwargs
+static PyObject *
+_wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    gchar *title = NULL;
+    PyGObject *py_window = NULL;
+    PyObject *py_buttons = Py_None;
+    GtkDialogFlags flags = 0;
+    int len, i;
+    
+    static char *kwlist[] = { "title", "parent", "flags", "buttons", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|sOdO!:GtkDialog.__init__", kwlist,
+				     &title, &py_window, &flags,
+				     &PyTuple_Type, &py_buttons))
+        return NULL;
+
+    if (py_window != NULL && py_window != (PyGObject *) Py_None
+	&& !pygobject_check(py_window, &PyGtkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "window must be a GtkWindow or None");
+	return NULL;
+    }
+
+    if (py_buttons != Py_None)
+	len = PyTuple_Size(py_buttons);
+    else
+	len = 0;
+    
+    if (len % 2) {
+	PyErr_SetString(PyExc_RuntimeError, "buttons tuple must contain text/response id pairs");
+	return NULL;
+    }
+
+    self->obj = (GObject *)
+	gtk_dialog_new_with_buttons(title,
+				    (py_window && py_window != Py_None) ? GTK_WINDOW(py_window->obj) : NULL,
+				    flags, NULL);
+    
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkDialog object");
+        return NULL;
+    }
+
+    for (i = 0; i < len; i += 2) {
+	PyObject *text = PyTuple_GetItem(py_buttons, i);
+	PyObject *id = PyTuple_GetItem(py_buttons, i + 1);
+	if (!PyString_Check(text)) {
+	    gtk_object_destroy(GTK_OBJECT(self->obj));
+	    self->obj = NULL;
+	    PyErr_SetString(PyExc_RuntimeError, "first member of each text/response id pair must be a string");
+	    return NULL;
+	}
+	if (!PyInt_Check(id)) {
+	    gtk_object_destroy(GTK_OBJECT(self->obj));
+	    self->obj = NULL;
+	    PyErr_SetString(PyExc_RuntimeError, "second member of each text/response id pair must be a number");
+	    return NULL;
+	}
+	gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
+			      PyInt_AsLong(id));
+    }
+	
+    gtk_object_ref(GTK_OBJECT(self->obj));
+    gtk_object_sink(GTK_OBJECT(self->obj));
+    pygobject_register_wrapper((PyObject *)self);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 
 
