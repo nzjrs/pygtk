@@ -279,54 +279,20 @@ on the dialog.</para>
     <para>If you add buttons to <link
 linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> using
 <link
-linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>, 
+linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>,
 <link
-linkend="method-gtkdialog--add-button"><methodname>add_button</methodname>()</link>, 
+linkend="method-gtkdialog--add-button"><methodname>add_button</methodname>()</link>,
 or <link
-linkend="method-gtkdialog--add-action-widget"><methodname>add_action_widget</methodname>()</link>, 
+linkend="method-gtkdialog--add-action-widget"><methodname>add_action_widget</methodname>()</link>,
 clicking the button will emit a signal called "response" with a response ID
 that you specified. PyGTK will never assign a meaning to positive response
 IDs; these are entirely user-defined. But for convenience, you can use the
-pre-defined response IDs (these all have values less than zero):</para>
-
-    <itemizedlist>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_NONE</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_REJECT</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_ACCEPT</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_DELETE_EVENT</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_OK</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_CANCEL</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_CLOSE</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_YES</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_NO</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_APPLY</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_HELP</literal></simpara>
-      </listitem>
-    </itemizedlist>
+pre-defined <xref linkend="gtk-response-type-constants"></xref> (these all
+have values less than zero).</para>
 
     <para>If a dialog receives a delete event, the "response" signal will be
-emitted with a response ID of <literal>gtk.RESPONSE_NONE</literal>.</para>
+emitted with a response ID of
+<literal>gtk.RESPONSE_DELETE_EVENT</literal>.</para>
 
     <para>If you want to block waiting for a dialog to return before
 returning control flow to your code, you can call <link
@@ -383,56 +349,22 @@ linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link></simpara></li
 linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> with the
 title text specified by <parameter>title</parameter> (or
 <literal>None</literal> for the default title; see <link
-linkend="method-gtkwindow--set-title"><methodname>gtk.Window.set_title</methodname>()</link>) 
+linkend="method-gtkwindow--set-title"><methodname>gtk.Window.set_title</methodname>()</link>)
 and transient parent window specified by <parameter>parent</parameter> (or
 <literal>None</literal> for none; see <link
-linkend="method-gtkwindow--set-transient-for"><methodname>gtk.Window.set_transient_for</methodname>()</link>). 
+linkend="method-gtkwindow--set-transient-for"><methodname>gtk.Window.set_transient_for</methodname>()</link>).
 The <parameter>flags</parameter> argument can be used to make the dialog
 modal (<literal>gtk.DIALOG_MODAL</literal>) and/or to have it destroyed
 along with its transient parent
 (<literal>gtk.DIALOG_DESTROY_WITH_PARENT</literal>) and/or remove the
-separator (<literal>gtk.DIALOG_NO_SEPARATOR</literal>). After
+separator (<literal>gtk.DIALOG_NO_SEPARATOR</literal>) (see the <xref
+linkend="gtk-dialog-flag-constants"></xref> for more information). After
 <parameter>flags</parameter>, a tuple of button text/response ID pairs
 should be listed, or <literal>None</literal> (the default value) is no
 buttons are needed. The button text can be either a stock ID such as
 <literal>gtk.STOCK_OK</literal>, or some arbitrary text.  A response ID can
-be any positive number, or one of the pre-defined values:</para>
-
-    <itemizedlist>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_NONE</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_REJECT</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_ACCEPT</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_DELETE_EVENT</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_OK</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_CANCEL</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_CLOSE</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_YES</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_NO</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_APPLY</literal></simpara>
-      </listitem>
-      <listitem>
-	<simpara><literal>gtk.RESPONSE_HELP</literal></simpara>
-      </listitem>
-    </itemizedlist>
+be any positive number, or one of the pre-defined <xref
+linkend="gtk-response-type-constants"></xref>.</para>
 
     <para>If the user clicks one of these dialog buttons, the <link
 linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> will emit
