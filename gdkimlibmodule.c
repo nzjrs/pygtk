@@ -18,12 +18,24 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <Python.h>
 #include <gtk/gtk.h>
 #include <gdk_imlib.h>
 
 #ifdef HAVE_NUMPY
-#include <arrayobject.h>
+#  if defined(HAVE_ARRAYOBJECT_H)
+#    include <arrayobject.h>
+#  elif defined(HAVE_EXTESNSIONS_ARRAYOBJECT_H)
+#    include <Extensions/arrayobject.h>
+#  elif defined(HAVE_NUMERIC_ARRAYOBJECT_H)
+#    include <Numeric/arrayobject.h>
+#  else
+#    error "arrayobject.h not found, but HAVE_NUMPY defined"
+#  endif
 #endif
 
 #include "pygtk.h"

@@ -1,9 +1,13 @@
 AC_INIT(gtkmodule.c)
+AM_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE(pygtk, 0.6.5)
 
-AM_PATH_PYTHON
-AM_INIT_PYEXEC_MOD
+AC_DISABLE_STATIC
+AC_PROG_LIBTOOL
+
+AM_PATH_PYTHON(module)
+AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 AM_CHECK_PYMOD(thread,,extra_mods=gthread,extra_mods=)
 
@@ -21,7 +25,15 @@ AM_CONDITIONAL(BUILD_LIBGLADE, $build_libglade)
 dnl checks to see if Numeric Python is installed.
 save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
-AC_CHECK_HEADER(arrayobject.h, AC_DEFINE(HAVE_NUMPY))
+AC_CHECK_HEADER(arrayobject.h,
+  [AC_DEFINE(HAVE_NUMPY)
+   AC_DEFINE(HAVE_ARRAYOBJECT_H)],
+  [AC_CHECK_HEADER(Extensions/arrayobject.h,
+    [AC_DEFINE(HAVE_NUMPY)
+     AC_DEFINE(HAVE_EXTENSIONS_ARRAYOBJECT_H)],
+    [AC_CHECK_HEADER(Numeric/arrayobject.h,
+      [AC_DEFINE(HAVE_NUMPY)
+       AC_DEFINE(HAVE_NUMERIC_ARRAYOBJECT_H)])])])
 CPPFLAGS="$save_CPPFLAGS"
 
 AC_OUTPUT(Makefile generate/Makefile pyglade/Makefile)
