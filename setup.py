@@ -26,7 +26,7 @@ from dsextras import getoutput, have_pkgconfig, list_files, \
      PkgConfigExtension, Template, TemplateExtension
 
 MAJOR_VERSION = 2
-MINOR_VERSION = 1
+MINOR_VERSION = 2
 MICRO_VERSION = 0
 
 VERSION = "%d.%d.%d" % (MAJOR_VERSION,
