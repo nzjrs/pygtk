@@ -1,3 +1,10 @@
+2003-01-23  Johan Dahlin  <jdahlin@async.com.br>
+ 
+ 	* gtk/gtkmodule.c (init_gtk): Added a timeout that calls
+ 	python_do_pending_calls every 100 ms.
+ 	(python_do_pending_calls): Call PyErr_CheckSignals, so Ctrl-C
+ 	works as expected inside of gtk_main(). Fixes #72333        
+
 2003-01-21  Johan Dahlin  <jdahlin@async.com.br>
 
 	* dsextras.py (Template.generate): Import codegen here instead,

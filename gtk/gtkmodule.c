@@ -9,6 +9,7 @@
 /* include this first, before NO_IMPORT_PYGOBJECT is defined */
 #include <pygobject.h>
 #include "pygtk-private.h"
+#include <pyerrors.h>
 
 void _pygtk_register_boxed_types(PyObject *moddict);
 void pygtk_register_classes(PyObject *d);
@@ -32,6 +33,17 @@ sink_gtkobject(GObject *object)
 	g_object_ref(object);
 	gtk_object_sink(GTK_OBJECT(object));
     }
+}
+
+static gboolean
+python_do_pending_calls(gpointer data)
+{
+    if (PyErr_CheckSignals() == -1) {
+	PyErr_SetNone(PyExc_KeyboardInterrupt);
+	gtk_main_quit();
+    }
+    
+    return TRUE;
 }
 
 DL_EXPORT(void)
@@ -153,5 +165,6 @@ init_gtk(void)
 
     if (PyErr_Occurred())
 	Py_FatalError("can't initialise module _gtk");
-
+    
+    gtk_timeout_add(100, python_do_pending_calls, NULL);
 }
