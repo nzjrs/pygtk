@@ -17,7 +17,7 @@
       <constructorsynopsis language="python">
 	<methodname><link linkend="constructor-gtkcomboboxentry">gtk.ComboBoxEntry</link></methodname>
 	<methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>
-	<methodparam><parameter role="keyword">column</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter role="keyword">column</parameter><initializer>-1</initializer></methodparam>
       </constructorsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcomboboxentry--set-text-column">set_text_column</link></methodname>
@@ -159,7 +159,7 @@ function is equivalent to:</para>
     <programlisting><constructorsynopsis language="python">
 	<methodname>gtk.ComboBoxEntry</methodname>
 	<methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>
-	<methodparam><parameter role="keyword">column</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter role="keyword">column</parameter><initializer>-1</initializer></methodparam>
       </constructorsynopsis></programlisting>
     <variablelist>
       <varlistentry>
@@ -197,11 +197,15 @@ retrieve strings. If <parameter>model</parameter> was not specified it
 defaults to <literal>None</literal> but you can change the model using the
 <link
 linkend="method-gtkcombobox--set-model"><methodname>gtk.ComboBox.set_model()</methodname></link>
-method. If <parameter>column</parameter> was not specified it defaults to 0
-but you can change it using the <link
+method. If <parameter>column</parameter> was not specified it defaults to -1
+meaning the text column is unset but you can change it using the <link
 linkend="method-gtkcomboboxentry--set-text-column"><methodname>set_text_column</methodname>()</link>
-method. A ValueError exception is thrown if <parameter>column</parameter> is
-outside the range of column numbers for <parameter>model</parameter>.</para>
+method. Once the text column is set either in the constructor or using the
+<link
+linkend="method-gtkcomboboxentry--set-text-column"><methodname>set_text_column</methodname>()</link>
+method it cannot be changed. A ValueError exception is thrown if
+<parameter>column</parameter> is outside the range of column numbers for
+<parameter>model</parameter>.</para>
 
   </refsect1>
 
@@ -230,10 +234,11 @@ outside the range of column numbers for <parameter>model</parameter>.</para>
       </note>
 
       <para>The <methodname>set_text_column</methodname>() method sets the
-"text-column" property to the value of
-<parameter>tree_column</parameter>. The value of
-<parameter>tree_column</parameter> is the number of the tree model column
-used as the data source for the strings of the combo box entry.</para>
+"text-column" property to the value of <parameter>tree_column</parameter>
+only if the text column has not been set (that is, "text-column" is -1). The
+value of <parameter>tree_column</parameter> is the number of the tree model
+column used as the data source for the strings of the combo box
+entry.</para>
 
     </refsect2>
 
