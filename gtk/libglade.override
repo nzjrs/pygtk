@@ -148,6 +148,38 @@ _wrap_glade_xml_signal_autoconnect(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
+override glade_xml_get_widget_prefix kwargs
+static PyObject *
+_wrap_glade_xml_get_widget_prefix(PyGObject *self, PyObject *args,
+				  PyObject *kwargs)
+{
+    static char *kwlist[] = { "name", NULL };
+    char *name;
+    GList *ret, *tmp;
+    PyObject *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s:GladeXML.get_widget_prefix", kwlist,
+				     &name))
+	return NULL;
+    ret = glade_xml_get_widget_prefix(GLADE_XML(self->obj), name);
+    py_ret = PyList_New(0);
+    for (tmp = ret; tmp != NULL; tmp = tmp->next) {
+	GtkWidget *widget = tmp->data;
+	PyObject *py_widget = pygobject_new((GObject *)widget);
+
+	if (!py_widget) {
+	    g_list_free(ret);
+	    Py_DECREF(py_ret);
+	    return NULL;
+	}
+	PyList_Append(py_ret, py_widget);
+	Py_DECREF(py_widget);
+    }
+    g_list_free(ret);
+    return py_ret;
+}
+%%
 override glade_bindtextdomain kwargs
 static PyObject *
 _wrap_glade_bindtextdomain(PyObject *self, PyObject *args, PyObject *kwargs)
