@@ -1458,12 +1458,19 @@ _wrap_gtk_list_store_reorder(PyGObject *self, PyObject *args)
     new_order = g_new0(gint, store->length);
     for (i = 0; i < store->length; i++) {
 	PyObject *item = PyList_GetItem(list, i);
+	int index;
 	if (!PyInt_Check(item)) {
 	    PyErr_SetString(PyExc_TypeError, "all items must be of type int");
 	    g_free(new_order);
 	    return NULL;
-	}	    
-	new_order[i] = PyInt_AsLong(item);
+	}
+	index = PyInt_AsLong(item);
+	if (index < 0 || index >= store->length) {
+	    PyErr_SetString(PyExc_ValueError, "position index out of range");
+	    g_free(new_order);
+	    return NULL;
+	}
+	new_order[i] = index;
 	Py_DECREF(item);
     }
     gtk_list_store_reorder(GTK_LIST_STORE(self->obj), new_order);
@@ -2568,6 +2575,66 @@ _wrap_gtk_tree_view_column_cell_get_position(PyGObject *self, PyObject *args,
 					       &start, &width))
 	return Py_BuildValue("(ii)", start, width);
 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_store_reorder kwargs
+static PyObject *
+_wrap_gtk_tree_store_reorder(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "parent", "new_order", NULL };
+    PyObject *list, *pyparent;
+    gint *new_order;
+    GtkTreeStore *store;
+    GtkTreeIter *parent = NULL;
+    int i, slen;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OO!:gtk.TreeStore.reorder", kwlist,
+				     &pyparent, &PyList_Type, &list))
+	return NULL;
+
+    if (pyparent != Py_None) {
+	if (!pyg_boxed_check(pyparent, GTK_TYPE_TREE_ITER)) {
+	    parent = pyg_boxed_get(pyparent, GtkTreeIter);
+	} else {
+	    PyErr_SetString(PyExc_TypeError,
+			    "parent must be a valid gtk.TreeIter or None");
+	    return NULL;
+	}
+    }
+    store = GTK_TREE_STORE(self->obj);
+    slen = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self->obj), parent);
+    if (PyList_Size(list) < slen) {
+        PyErr_SetString(PyExc_TypeError,
+			"list size must be >= the number of "
+			"children of parent");
+        return NULL;
+    }
+
+    new_order = g_new0(gint, slen);
+    for (i = 0; i < slen; i++) {
+	PyObject *item = PyList_GetItem(list, i);
+	int index;
+	if (!PyInt_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError, "all items must be of type int");
+	    g_free(new_order);
+	    return NULL;
+	}
+	index = PyInt_AsLong(item);
+	if (index < 0 || index >= slen) {
+	    PyErr_SetString(PyExc_ValueError, "position index out of range");
+	    g_free(new_order);
+	    return NULL;
+	}
+	new_order[i] = index;
+	Py_DECREF(item);
+    }
+    gtk_tree_store_reorder(GTK_TREE_STORE(self->obj), parent, new_order);
+
+    g_free(new_order);
+    
     Py_INCREF(Py_None);
     return Py_None;
 }
