@@ -1,5 +1,20 @@
 2002-07-13  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtk.override (GtkListStore.tp_as_mapping): explicitly define
+	this, as PyType_Ready doesn't seem to inherit special methods from
+	secondary bases correctly.
+	(GtkTreeStore.tp_as_mapping): same here.
+
+	* gtk/gtk-types.c (PyGdkRectangle_to_value): fix up argument
+	ordering bug.
+
+	* gtk/gtk.override (_wrap_gtk_tree_model_tp_as_mapping): move
+	these mapping behaviours to the GtkTreeModel wrapper.
+
+	* gtk/gtk-types.c (PyGtkTreeModelRow_Type): rename from
+	GtkListStoreRow, and extend so that it can handle setting cells
+	for tree stores.
+
 	* build-docs.py (dg): parse template dirs for additional
 	documentation.
 

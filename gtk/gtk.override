@@ -1383,6 +1383,40 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     return ret;
 }
 %%
+override-slot GtkTreeModel.tp_as_mapping
+static int
+_wrap_gtk_tree_model_tp_length(PyGObject *self)
+{
+    return gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self->obj), NULL);
+}
+static PyObject *
+_wrap_gtk_tree_model_tp_getitem(PyGObject *self, PyObject *item)
+{
+    GtkTreePath *path;
+    GtkTreeIter iter;
+    PyObject *ret = NULL;
+
+    path = pygtk_tree_path_from_pyobject(item);
+    if (!path) {
+	PyErr_SetString(PyExc_TypeError,
+			"could not parse subscript as a tree path");
+	return  NULL;
+    }
+    if (gtk_tree_model_get_iter(GTK_TREE_MODEL(self->obj), &iter, path)) {
+	ret = _pygtk_tree_model_row_new(GTK_TREE_MODEL(self->obj), &iter);
+    } else {
+	PyErr_SetString(PyExc_IndexError, "could not find tree path");
+	ret = NULL;
+    }
+    gtk_tree_path_free(path);
+    return ret;
+}
+static PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping = {
+    (inquiry)_wrap_gtk_tree_model_tp_length,
+    (binaryfunc)_wrap_gtk_tree_model_tp_getitem,
+    (objobjargproc)0
+};
+%%
 override gtk_tree_sortable_get_sort_column_id noargs
 static PyObject *
 _wrap_gtk_tree_sortable_get_sort_column_id(PyGObject *self)
@@ -1700,38 +1734,8 @@ _wrap_gtk_list_store_append(PyGObject *self)
 }
 %%
 override-slot GtkListStore.tp_as_mapping
-static int
-_wrap_gtk_list_store_tp_length(PyGObject *self)
-{
-    return gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self->obj), NULL);
-}
-static PyObject *
-_wrap_gtk_list_store_tp_getitem(PyGObject *self, PyObject *item)
-{
-    GtkTreePath *path;
-    GtkTreeIter iter;
-    PyObject *ret = NULL;
-
-    path = pygtk_tree_path_from_pyobject(item);
-    if (!path) {
-	PyErr_SetString(PyExc_TypeError,
-			"could not parse subscript as a tree path");
-	return  NULL;
-    }
-    if (gtk_tree_model_get_iter(GTK_TREE_MODEL(self->obj), &iter, path)) {
-	ret = _pygtk_list_store_row_new(GTK_LIST_STORE(self->obj), &iter);
-    } else {
-	PyErr_SetString(PyExc_IndexError, "could not find tree path");
-	ret = NULL;
-    }
-    gtk_tree_path_free(path);
-    return ret;
-}
-static PyMappingMethods _wrap_gtk_list_store_tp_as_mapping = {
-    (inquiry)_wrap_gtk_list_store_tp_length,
-    (binaryfunc)_wrap_gtk_list_store_tp_getitem,
-    (objobjargproc)0
-};
+staticforward PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping;
+#define _wrap_gtk_list_store_tp_as_mapping _wrap_gtk_tree_model_tp_as_mapping
 %%
 ignore gtk_tree_store_newv
 %%
@@ -1992,6 +1996,10 @@ _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
     gtk_tree_store_append(GTK_TREE_STORE(self->obj), &iter, parent);
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
+%%
+override-slot GtkTreeStore.tp_as_mapping
+staticforward PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping;
+#define _wrap_gtk_tree_store_tp_as_mapping _wrap_gtk_tree_model_tp_as_mapping
 %%
 override gtk_tree_model_get_iter_first noargs
 static PyObject *
