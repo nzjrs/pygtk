@@ -34,10 +34,45 @@ ignore
   pango_attribute_equal
   pango_attr_list_ref
   pango_attr_list_unref
+  pango_coverage_ref
+  pango_coverage_unref
   pango_font_description_copy
   pango_font_description_equal
   pango_font_description_free
   pango_font_descriptions_free
   pango_font_map_free_families
+  pango_font_metrics_ref
+  pango_font_metrics_unref
   pango_glyph_string_free
   pango_tab_array_free
+%%
+ignore pango_font_description_from_string
+%%
+override pango_font_description_new kwargs
+static PyObject *
+_wrap_pango_font_description_new(PyGBoxed *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "str", NULL };
+    char *str = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|z:PangoFontDescription.__init__",
+				     kwlist, &str))
+	return NULL;
+
+    self->gtype = PANGO_TYPE_FONT_DESCRIPTION;
+    self->free_on_dealloc = FALSE;
+    if (str)
+	self->boxed = pango_font_description_from_string(str);
+    else
+	self->boxed = pango_font_description_new();
+    if (!self->boxed) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not create PangoFontDescription object");
+	return NULL;
+    }
+    self->free_on_dealloc = TRUE;
+    Py_INCREF(Py_None);
+    return Py_None;
+}

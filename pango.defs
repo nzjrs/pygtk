@@ -15,6 +15,20 @@
   (gtype-id "PANGO_TYPE_FONT")
 )
 
+(define-object FontFace
+  (in-module "Pango")
+  (parent "GObject")
+  (c-name "PangoFontFace")
+  (gtype-id "PANGO_TYPE_FONT_FACE")
+)
+
+(define-object FontFamily
+  (in-module "Pango")
+  (parent "GObject")
+  (c-name "PangoFontFamily")
+  (gtype-id "PANGO_TYPE_FONT_FAMILY")
+)
+
 (define-object FontMap
   (in-module "Pango")
   (parent "GObject")
@@ -28,7 +42,7 @@
   (c-name "PangoLayout")
   (gtype-id "PANGO_TYPE_LAYOUT")
 )
-  
+
 
 ;; boxed definitions ...
 
@@ -60,6 +74,14 @@
   (copy-func "pango_font_description_copy")
   (release-func "pango_font_description_free")
 )
+
+;(define-boxed FontMetrics
+;  (in-module "Pango")
+;  (c-name "PangoFontMetrics")
+;  (gtype-id "PANGO_TYPE_FONT_METRICS")
+;  (copy-func "pango_font_metrics_ref")
+;  (release-func "pango_font_metrics_unref")
+;)  
 
 (define-boxed GlyphString
   (in-module "Pango")
@@ -191,6 +213,20 @@
   )
 )
 
+(define-flags FontMask
+  (in-module "Pango")
+  (c-name "PangoFontMask")
+  (gtype-id "PANGO_TYPE_FONT_MASK")
+  (values
+    '("family" "PANGO_FONT_MASK_FAMILY")
+    '("style" "PANGO_FONT_MASK_STYLE")
+    '("variant" "PANGO_FONT_MASK_VARIANT")
+    '("weight" "PANGO_FONT_MASK_WEIGHT")
+    '("stretch" "PANGO_FONT_MASK_STRETCH")
+    '("size" "PANGO_FONT_MASK_SIZE")
+  )
+)
+
 (define-enum Alignment
   (in-module "Pango")
   (c-name "PangoAlignment")
@@ -251,6 +287,15 @@
   (of-object "PangoColor")
   (c-name "pango_color_free")
   (return-type "none")
+)
+
+(define-method parse
+  (of-object "PangoColor")
+  (c-name "pango_color_parse")
+  (return-type "gboolean")
+  (parameters
+    '("const-char*" "spec")
+  )
 )
 
 (define-function pango_attr_type_register
@@ -415,7 +460,7 @@
 (define-function pango_attr_list_new
   (c-name "pango_attr_list_new")
   (return-type "PangoAttrList*")
-  (is-constructor-of PangoAttrList)
+  (is-constructor-of "PangoAttrList")
 )
 
 (define-method ref
@@ -522,8 +567,7 @@
   (c-name "pango_attr_iterator_get_font")
   (return-type "none")
   (parameters
-    '("PangoFontDescription*" "base")
-    '("PangoFontDescription*" "current")
+    '("PangoFontDescription*" "desc")
     '("PangoLanguage**" "language")
     '("GSList**" "extra_attrs")
   )
@@ -599,7 +643,7 @@
 (define-function pango_context_new
   (c-name "pango_context_new")
   (return-type "PangoContext*")
-  (is-constructor-of PangoContext)
+  (is-constructor-of "PangoContext")
 )
 
 (define-method add_font_map
@@ -611,23 +655,12 @@
   )
 )
 
-(define-method list_fonts
-  (of-object "PangoContext")
-  (c-name "pango_context_list_fonts")
-  (return-type "none")
-  (parameters
-    '("const-char*" "family")
-    '("PangoFontDescription***" "descs")
-    '("int*" "n_descs")
-  )
-)
-
 (define-method list_families
   (of-object "PangoContext")
   (c-name "pango_context_list_families")
   (return-type "none")
   (parameters
-    '("gchar***" "families")
+    '("PangoFontFamily***" "families")
     '("int*" "n_families")
   )
 )
@@ -644,11 +677,10 @@
 (define-method get_metrics
   (of-object "PangoContext")
   (c-name "pango_context_get_metrics")
-  (return-type "none")
+  (return-type "PangoFontMetrics*")
   (parameters
     '("const-PangoFontDescription*" "desc")
     '("PangoLanguage*" "language")
-    '("PangoFontMetrics*" "metrics")
   )
 )
 
@@ -697,11 +729,11 @@
   (return-type "PangoDirection")
 )
 
-(define-method itemize
-  (of-object "PangoContext")
+(define-function itemize
   (c-name "pango_itemize")
   (return-type "GList*")
   (parameters
+    '("PangoContext*" "context")
     '("const-char*" "text")
     '("int" "start_index")
     '("int" "length")
@@ -712,12 +744,100 @@
 
 
 
+;; From /opt/gtk2/include/pango-1.0/pango/pango-coverage.h
+
+(define-method ref
+  (of-object "PangoCoverage")
+  (c-name "pango_coverage_ref")
+  (return-type "PangoCoverage*")
+)
+
+(define-method unref
+  (of-object "PangoCoverage")
+  (c-name "pango_coverage_unref")
+  (return-type "none")
+)
+
+(define-method copy
+  (of-object "PangoCoverage")
+  (c-name "pango_coverage_copy")
+  (return-type "PangoCoverage*")
+)
+
+(define-method get
+  (of-object "PangoCoverage")
+  (c-name "pango_coverage_get")
+  (return-type "PangoCoverageLevel")
+  (parameters
+    '("int" "index")
+  )
+)
+
+(define-method set
+  (of-object "PangoCoverage")
+  (c-name "pango_coverage_set")
+  (return-type "none")
+  (parameters
+    '("int" "index")
+    '("PangoCoverageLevel" "level")
+  )
+)
+
+(define-method max
+  (of-object "PangoCoverage")
+  (c-name "pango_coverage_max")
+  (return-type "none")
+  (parameters
+    '("PangoCoverage*" "other")
+  )
+)
+
+(define-method to_bytes
+  (of-object "PangoCoverage")
+  (c-name "pango_coverage_to_bytes")
+  (return-type "none")
+  (parameters
+    '("guchar**" "bytes")
+    '("int*" "n_bytes")
+  )
+)
+
+(define-function coverage_from_bytes
+  (c-name "pango_coverage_from_bytes")
+  (is-constructor-of "PangoCoverage")
+  (return-type "PangoCoverage*")
+  (parameters
+    '("guchar*" "bytes")
+    '("int" "n_bytes")
+  )
+)
+
+
+
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-font.h
+
+(define-function pango_font_description_new
+  (c-name "pango_font_description_new")
+  (is-constructor-of "PangoFontDescription")
+  (return-type "PangoFontDescription*")
+)
 
 (define-method copy
   (of-object "PangoFontDescription")
   (c-name "pango_font_description_copy")
   (return-type "PangoFontDescription*")
+)
+
+(define-method copy_static
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_copy_static")
+  (return-type "PangoFontDescription*")
+)
+
+(define-method hash
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_hash")
+  (return-type "guint")
 )
 
 (define-method equal
@@ -744,9 +864,147 @@
   )
 )
 
+(define-method set_family
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_family")
+  (return-type "none")
+  (parameters
+    '("const-char*" "family")
+  )
+)
+
+(define-method set_family_static
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_family_static")
+  (return-type "none")
+  (parameters
+    '("const-char*" "family")
+  )
+)
+
+(define-method set_style
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_style")
+  (return-type "none")
+  (parameters
+    '("PangoStyle" "style")
+  )
+)
+
+(define-method get_style
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_style")
+  (return-type "PangoStyle")
+)
+
+(define-method set_variant
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_variant")
+  (return-type "none")
+  (parameters
+    '("PangoVariant" "variant")
+  )
+)
+
+(define-method get_variant
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_variant")
+  (return-type "PangoVariant")
+)
+
+(define-method set_weight
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_weight")
+  (return-type "none")
+  (parameters
+    '("PangoWeight" "weight")
+  )
+)
+
+(define-method get_weight
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_weight")
+  (return-type "PangoWeight")
+)
+
+(define-method set_stretch
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_stretch")
+  (return-type "none")
+  (parameters
+    '("PangoStretch" "stretch")
+  )
+)
+
+(define-method get_stretch
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_stretch")
+  (return-type "PangoStretch")
+)
+
+(define-method set_size
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_size")
+  (return-type "none")
+  (parameters
+    '("gint" "size")
+  )
+)
+
+(define-method get_size
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_size")
+  (return-type "gint")
+)
+
+(define-method get_set_fields
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_set_fields")
+  (return-type "PangoFontMask")
+)
+
+(define-method unset_fields
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_unset_fields")
+  (return-type "none")
+  (parameters
+    '("PangoFontMask" "to_unset")
+  )
+)
+
+(define-method merge
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_merge")
+  (return-type "none")
+  (parameters
+    '("const-PangoFontDescription*" "desc_to_merge")
+    '("gboolean" "replace_existing")
+  )
+)
+
+(define-method merge_static
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_merge_static")
+  (return-type "none")
+  (parameters
+    '("const-PangoFontDescription*" "desc_to_merge")
+    '("gboolean" "replace_existing")
+  )
+)
+
+(define-method better_match
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_better_match")
+  (return-type "gboolean")
+  (parameters
+    '("const-PangoFontDescription*" "old_match")
+    '("const-PangoFontDescription*" "new_match")
+  )
+)
+
 (define-function pango_font_description_from_string
   (c-name "pango_font_description_from_string")
-  (is-constructor-of PangoFontDescription)
+  (is-constructor-of "PangoFontDescription")
   (return-type "PangoFontDescription*")
   (parameters
     '("const-char*" "str")
@@ -763,6 +1021,74 @@
   (of-object "PangoFontDescription")
   (c-name "pango_font_description_to_filename")
   (return-type "char*")
+)
+
+(define-method ref
+  (of-object "PangoFontMetrics")
+  (c-name "pango_font_metrics_ref")
+  (return-type "PangoFontMetrics*")
+)
+
+(define-method unref
+  (of-object "PangoFontMetrics")
+  (c-name "pango_font_metrics_unref")
+  (return-type "none")
+)
+
+(define-method get_ascent
+  (of-object "PangoFontMetrics")
+  (c-name "pango_font_metrics_get_ascent")
+  (return-type "int")
+)
+
+(define-method get_descent
+  (of-object "PangoFontMetrics")
+  (c-name "pango_font_metrics_get_descent")
+  (return-type "int")
+)
+
+(define-method get_approximate_char_width
+  (of-object "PangoFontMetrics")
+  (c-name "pango_font_metrics_get_approximate_char_width")
+  (return-type "int")
+)
+
+(define-method get_approximate_digit_width
+  (of-object "PangoFontMetrics")
+  (c-name "pango_font_metrics_get_approximate_digit_width")
+  (return-type "int")
+)
+
+(define-function pango_font_metrics_new
+  (c-name "pango_font_metrics_new")
+  (is-constructor-of "PangoFontMetrics")
+  (return-type "PangoFontMetrics*")
+)
+
+(define-function pango_font_family_get_type
+  (c-name "pango_font_family_get_type")
+  (return-type "GType")
+)
+
+(define-method list_faces
+  (of-object "PangoFontFamily")
+  (c-name "pango_font_family_list_faces")
+  (return-type "none")
+  (parameters
+    '("PangoFontFace***" "faces")
+    '("int*" "n_faces")
+  )
+)
+
+(define-function pango_font_face_get_type
+  (c-name "pango_font_face_get_type")
+  (return-type "GType")
+)
+
+(define-method describe
+  (of-object "PangoFontFace")
+  (c-name "pango_font_face_describe")
+  (return-type "PangoFontDescription*")
 )
 
 (define-function pango_font_get_type
@@ -798,10 +1124,9 @@
 (define-method get_metrics
   (of-object "PangoFont")
   (c-name "pango_font_get_metrics")
-  (return-type "none")
+  (return-type "PangoFontMetrics*")
   (parameters
     '("PangoLanguage*" "language")
-    '("PangoFontMetrics*" "metrics")
   )
 )
 
@@ -820,11 +1145,6 @@
 
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-fontmap.h
 
-(define-function pango_font_map_get_type
-  (c-name "pango_font_map_get_type")
-  (return-type "GType")
-)
-
 (define-method load_font
   (of-object "PangoFontMap")
   (c-name "pango_font_map_load_font")
@@ -834,33 +1154,13 @@
   )
 )
 
-(define-method list_fonts
-  (of-object "PangoFontMap")
-  (c-name "pango_font_map_list_fonts")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "family")
-    '("PangoFontDescription***" "descs")
-    '("int*" "n_descs")
-  )
-)
-
 (define-method list_families
   (of-object "PangoFontMap")
   (c-name "pango_font_map_list_families")
   (return-type "none")
   (parameters
-    '("gchar***" "families")
+    '("PangoFontFamily***" "families")
     '("int*" "n_families")
-  )
-)
-
-(define-function pango_font_map_free_families
-  (c-name "pango_font_map_free_families")
-  (return-type "none")
-  (parameters
-    '("gchar**" "families")
-    '("int" "n_families")
   )
 )
 
@@ -870,7 +1170,7 @@
 
 (define-function pango_glyph_string_new
   (c-name "pango_glyph_string_new")
-  (is-constructor-of PangoGlyphString)
+  (is-constructor-of "PangoGlyphString")
   (return-type "PangoGlyphString*")
 )
 
@@ -881,6 +1181,11 @@
   (parameters
     '("gint" "new_len")
   )
+)
+
+(define-function pango_glyph_string_get_type
+  (c-name "pango_glyph_string_get_type")
+  (return-type "GType")
 )
 
 (define-method copy
@@ -1039,7 +1344,7 @@
 
 (define-function pango_layout_new
   (c-name "pango_layout_new")
-  (is-constructor-of PangoLayout)
+  (is-constructor-of "PangoLayout")
   (return-type "PangoLayout*")
   (parameters
     '("PangoContext*" "context")
@@ -1595,7 +1900,7 @@
 
 (define-function pango_tab_array_new_with_positions
   (c-name "pango_tab_array_new_with_positions")
-  (is-constructor-of PangoTabArray)
+  (is-constructor-of "PangoTabArray")
   (return-type "PangoTabArray*")
   (parameters
     '("gint" "size")
@@ -1604,6 +1909,11 @@
     '("gint" "first_position")
   )
   (varargs #t)
+)
+
+(define-function pango_tab_array_get_type
+  (c-name "pango_tab_array_get_type")
+  (return-type "GType")
 )
 
 (define-method copy
@@ -1674,6 +1984,14 @@
 
 
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-types.h
+
+(define-function pango_language_from_string
+  (c-name "pango_language_from_string")
+  (return-type "PangoLanguage*")
+  (parameters
+    '("const-char*" "language")
+  )
+)
 
 (define-method matches
   (of-object "PangoLanguage")
