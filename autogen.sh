@@ -12,8 +12,6 @@ FILE=gtk
 
 DIE=0
 
-test -z "$AUTOMAKE" && AUTOMAKE=automake-1.6
-test -z "$ACLOCAL" && ACLOCAL=aclocal-1.6
 test -z "$AUTOCONF" && AUTOCONF=autoconf
 test -z "$AUTOHEADER" && AUTOHEADER=autoheader
 
@@ -27,19 +25,27 @@ test -z "$AUTOHEADER" && AUTOHEADER=autoheader
 
 (libtool --version) < /dev/null > /dev/null 2>&1 || {
         echo
-        echo "You must have libtool installed to compile gnome-xml."
+        echo "You must have libtool installed to compile $PROJECT."
         echo "Get ftp://ftp.gnu.org/gnu/libtool/libtool-1.4.tar.gz"
         echo "(or a newer version if it is available)"
         DIE=1
 }
 
-($AUTOMAKE --version) < /dev/null > /dev/null 2>&1 || {
-	echo
-	echo "You must have automake installed to compile $PROJECT."
-	echo "Get ftp://ftp.cygnus.com/pub/home/tromey/automake-1.2d.tar.gz"
-	echo "(or a newer version if it is available)"
-	DIE=1
-}
+if test -z "$AUTOMAKE"; then
+  if automake-1.7 --version < /dev/null > /dev/null 2>&1; then
+    AUTOMAKE=automake-1.7
+    ACLOCAL=aclocal-1.7
+  elif automake-1.6 --version < /dev/null > /dev/null 2>&1; then
+    AUTOMAKE=automake-1.6
+    ACLOCAL=aclocal-1.6
+  else
+    echo
+    echo "You must have automake installed to compile $PROJECT."
+    echo "Get ftp://ftp.gnu.org/pub/gnu/automake/automake-1.7.2.tar.gz"
+    echo "(or a newer version if it is available)"
+    DIE=1
+  fi
+fi
 
 if test "$DIE" -eq 1; then
 	exit 1
