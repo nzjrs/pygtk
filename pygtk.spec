@@ -67,6 +67,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_prefix}/bin/pygtk-codegen-2.0
 %dir %{_prefix}/include/pygtk
 %{_prefix}/include/pygtk/*.h
+%{_prerix}/lib/pkgconfig/pygtk-2.0.pc
 %dir %{_prefix}/share/pygtk
 %dir %{_prefix}/share/pygtk/1.2
 %dir %{_prefix}/share/pygtk/1.2/codegen
