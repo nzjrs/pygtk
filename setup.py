@@ -215,6 +215,7 @@ if libglade.can_build():
     data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
 
 if '--enable-threading' in sys.argv:
+    sys.argv.remove('--enable-threading')
     try:
         import thread
     except ImportError:
