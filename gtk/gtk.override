@@ -3583,3 +3583,33 @@ _wrap_gtk_color_selection_palette_to_string(PyGObject *self, PyObject *args,
 
     return ret;
 }
+
+%%
+override gtk_binding_entry_remove kwargs
+static PyObject *
+_wrap_gtk_binding_entry_remove(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "class_type", "keyval", "modifiers", NULL };
+    int keyval;
+    PyObject *py_modifiers = NULL;
+    GdkModifierType modifiers;
+    PyObject *class;
+    GType class_type;
+    GtkBindingSet *bset = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OiO:gtk_binding_entry_remove",
+				     kwlist, &class, &keyval, &py_modifiers))
+        return NULL;
+    if (pyg_flags_get_value(GDK_TYPE_MODIFIER_TYPE, py_modifiers, (gint *)&modifiers))
+        return NULL;
+
+    class_type = pyg_type_from_object(class);
+    if (class_type == 0)
+        return NULL;
+
+    bset = gtk_binding_set_by_class(gtk_type_class(class_type));
+    gtk_binding_entry_remove(bset, keyval, modifiers);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
