@@ -96,6 +96,8 @@ EXTRA_DIST += \
   THREADS \
   config.h.win32 \
   makefile.msc \
+  setup.py \
+  MANIFEST.in \
   examples/atk/atk-demo.py \
   examples/gobject/signal.py \
   examples/gobject/properties.py \
