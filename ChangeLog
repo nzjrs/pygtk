@@ -1,3 +1,15 @@
+2004-09-25  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* tests/gtype.py (GTypeTest.testGObjectInvalidSignalOverride): New
+	test with test case in #153718.
+
+	* gobject/gobjectmodule.c (pyg_type_register):
+	PyDict_GetItemString returnes a borrowed reference, therefore
+	remove Py_DECREF(gsignals) and Py_DECREF(gproperties) everywhere.
+
+	Fixes bug 153718: exception in overriden gsignals causes ref count
+	problems.
+
 2004-09-24  James Henstridge  <james@jamesh.id.au>
 
 	* gtk/gdk.override (_wrap_gdk_color_parse): initialise the
