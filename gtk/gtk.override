@@ -3694,9 +3694,7 @@ ignore
   gtk_menu_insert
   gtk_menu_prepend
   gtk_radio_menu_item_group
-  gtk_radio_menu_item_set_group
   gtk_radio_button_group
-  gtk_radio_button_set_group
   gtk_entry_new
   gtk_entry_select_region
 %%
@@ -4192,6 +4190,26 @@ _wrap_gtk_radio_button_get_group(PyGObject *self) {
         Py_DECREF(gtk_obj);
     }
     return py_list;
+}
+%%
+override gtk_radio_button_set_group kwargs
+static PyObject *
+_wrap_gtk_radio_button_set_group(PyGObject *self, PyObject *args,
+				 PyObject *kwargs) {
+    static char *kwlist[] = { "group", NULL };
+    PyObject *py_group;
+    GSList *list;
+    GtkRadioButton *group;
+
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"O!:GtkRadioButton.set_group",
+                                     kwlist, &PyGtkRadioButton_Type,
+				     &py_group))
+        return NULL;
+    group = GTK_RADIO_BUTTON(pygobject_get(py_group));
+    list = gtk_radio_button_get_group(group);
+    gtk_radio_button_set_group(GTK_RADIO_BUTTON(self->obj), list);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 %%
 ignore gtk_list_item_new_with_label
@@ -7019,7 +7037,7 @@ _wrap_gtk_misc_get_padding(PyGObject *self)
 
     gtk_misc_get_padding(GTK_MISC(self->obj), &xpad, &ypad);
     return
-Py_BuildValue("(dd)", xpad, ypad);
+Py_BuildValue("(ii)", xpad, ypad);
 }
 %%
 override gtk_ruler_get_range noargs
@@ -7492,6 +7510,229 @@ _wrap_gtk_text_attributes__get_draw_bg(PyObject *self, void *closure)
         ? Py_True : Py_False;
     Py_INCREF(ret);
     return ret;
+}
+%%
+override gtk_image_get_pixmap noargs
+static PyObject *
+_wrap_gtk_image_get_pixmap(PyGObject *self)
+{
+    GdkPixmap *pixmap;
+    GdkBitmap *mask;
+    GtkImageType type;
+
+    type = gtk_image_get_storage_type(GTK_IMAGE(self->obj));
+    if (!(type == GTK_IMAGE_PIXMAP || type == GTK_IMAGE_EMPTY)) {
+	 PyErr_SetString(PyExc_ValueError, "image should be a GdkPixmap or empty");
+        return NULL;
+    }
+    gtk_image_get_pixmap(GTK_IMAGE(self->obj), &pixmap, &mask);
+    return Py_BuildValue("(OO)", pygobject_new((GObject *)pixmap),
+			 pygobject_new((GObject *)mask));
+}
+%%
+override gtk_image_get_image noargs
+static PyObject *
+_wrap_gtk_image_get_image(PyGObject *self)
+{
+    GdkImage *image;
+    GdkBitmap *mask;
+    GtkImageType type;
+
+    type = gtk_image_get_storage_type(GTK_IMAGE(self->obj));
+    if (!(type == GTK_IMAGE_IMAGE || type == GTK_IMAGE_EMPTY)) {
+	 PyErr_SetString(PyExc_ValueError, "image should be a GdkImage or empty");
+        return NULL;
+    }
+    gtk_image_get_image(GTK_IMAGE(self->obj), &image, &mask);
+    return Py_BuildValue("(OO)", pygobject_new((GObject *)image),
+			 pygobject_new((GObject *)mask));
+}
+%%
+override gtk_image_get_stock noargs
+static PyObject *
+_wrap_gtk_image_get_stock(PyGObject *self)
+{
+    gchar *stock_id;
+    GtkIconSize size;
+    GtkImageType type;
+
+    type = gtk_image_get_storage_type(GTK_IMAGE(self->obj));
+    if (!(type == GTK_IMAGE_STOCK || type == GTK_IMAGE_EMPTY)) {
+	 PyErr_SetString(PyExc_ValueError, "image should be a stock icon or empty");
+        return NULL;
+    }
+    gtk_image_get_stock(GTK_IMAGE(self->obj), &stock_id, &size);
+
+    if (stock_id) {
+	return Py_BuildValue("(OO)",
+			     PyString_FromString(stock_id),
+			     PyInt_FromLong(size));
+    } else {
+	Py_INCREF(Py_None);
+	return Py_BuildValue("(OO)", Py_None, PyInt_FromLong(size));
+    }
+}
+%%
+override gtk_image_get_icon_set noargs
+static PyObject *
+_wrap_gtk_image_get_icon_set(PyGObject *self)
+{
+    GtkIconSet *icon_set;
+    GtkIconSize size;
+    GtkImageType type;
+
+    type = gtk_image_get_storage_type(GTK_IMAGE(self->obj));
+    if (!(type == GTK_IMAGE_ICON_SET || type == GTK_IMAGE_EMPTY)) {
+	 PyErr_SetString(PyExc_ValueError, "image should be a GtkIconSet or empty");
+        return NULL;
+    }
+    gtk_image_get_icon_set(GTK_IMAGE(self->obj), &icon_set, &size);
+    return Py_BuildValue("(OO)", pygobject_new((GObject *)icon_set),
+			 PyInt_FromLong(size));
+}
+%%
+override gtk_image_get noargs
+static PyObject *
+_wrap_gtk_image_get(PyGObject *self)
+{
+    return _wrap_gtk_image_get_image(self);
+}
+%%
+override gtk_image_get_pixbuf noargs
+static PyObject *
+_wrap_gtk_image_get_pixbuf(PyGObject *self)
+{
+    GdkPixbuf *ret;
+    GtkImageType type;
+
+    type = gtk_image_get_storage_type(GTK_IMAGE(self->obj));
+    if (!(type == GTK_IMAGE_PIXBUF || type == GTK_IMAGE_EMPTY)) {
+	 PyErr_SetString(PyExc_ValueError, "image should be a GdkPixbuf or empty");
+        return NULL;
+    }
+    ret = gtk_image_get_pixbuf(GTK_IMAGE(self->obj));
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
+%%
+override gtk_image_get_animation noargs
+static PyObject *
+_wrap_gtk_image_get_animation(PyGObject *self)
+{
+    GdkPixbufAnimation *ret;
+    GtkImageType type;
+
+    type = gtk_image_get_storage_type(GTK_IMAGE(self->obj));
+    if (!(type == GTK_IMAGE_ANIMATION || type == GTK_IMAGE_EMPTY)) {
+	 PyErr_SetString(PyExc_ValueError, "image should be a GdkPixbufAnimation or empty");
+        return NULL;
+    }
+
+    ret = gtk_image_get_animation(GTK_IMAGE(self->obj));
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
+%%
+override gtk_radio_button_set_group kwargs
+static PyObject *
+_wrap_gtk_radio_button_set_group(PyGObject *self, PyObject *args,
+				 PyObject *kwargs) {
+    static char *kwlist[] = { "group", NULL };
+    PyObject *py_group;
+    GSList *list;
+    GtkRadioButton *group;
+
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"O!:GtkRadioButton.set_group",
+                                     kwlist, &PyGtkRadioButton_Type,
+				     &py_group))
+        return NULL;
+    group = GTK_RADIO_BUTTON(pygobject_get(py_group));
+    list = gtk_radio_button_get_group(group);
+    if (list == gtk_radio_button_get_group(GTK_RADIO_BUTTON(self->obj))) {
+        PyErr_SetString(PyExc_ValueError, "radio button already in group");
+        return NULL;
+    }
+    gtk_radio_button_set_group(GTK_RADIO_BUTTON(self->obj), list);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_radio_menu_item_get_group noargs
+static PyObject *
+_wrap_gtk_radio_menu_item_get_group(PyGObject *self) {
+    PyObject *py_list;
+    GSList *list, *tmp;
+    PyObject *gtk_obj;
+
+    list = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(self->obj));
+
+    if ((py_list = PyList_New(0)) == NULL) {
+        return NULL;
+    }
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+        gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+        if (gtk_obj == NULL) {
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_Append(py_list, gtk_obj);
+        Py_DECREF(gtk_obj);
+    }
+    return py_list;
+}
+%%
+override gtk_radio_menu_item_set_group kwargs
+static PyObject *
+_wrap_gtk_radio_menu_item_set_group(PyGObject *self, PyObject *args,
+				    PyObject *kwargs) {
+    static char *kwlist[] = { "group", NULL };
+    PyObject *py_group;
+    GSList *list;
+    GtkRadioMenuItem *group;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:GtkRadioMenuItem.set_group",
+                                     kwlist, &PyGtkRadioMenuItem_Type,
+				     &py_group))
+        return NULL;
+    group = GTK_RADIO_MENU_ITEM(pygobject_get(py_group));
+    list = gtk_radio_menu_item_get_group(group);
+    if (list == gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(self->obj))) {
+        PyErr_SetString(PyExc_ValueError, "radio menu item already in group");
+        return NULL;
+    }
+    gtk_radio_menu_item_set_group(GTK_RADIO_MENU_ITEM(self->obj), list);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_scrolled_window_get_policy  noargs
+static PyObject *
+_wrap_gtk_scrolled_window_get_policy(PyGObject *self)
+{
+    GtkPolicyType hscrollbar_policy, vscrollbar_policy;
+
+    gtk_scrolled_window_get_policy(GTK_SCROLLED_WINDOW(self->obj),
+				   &hscrollbar_policy, &vscrollbar_policy);
+    return Py_BuildValue("(ii)", hscrollbar_policy, vscrollbar_policy);
+}
+%%
+override gtk_text_buffer_get_iter_at_child_anchor kwargs
+static PyObject *
+_wrap_gtk_text_buffer_get_iter_at_child_anchor(PyGObject *self, PyObject *args,
+					       PyObject *kwargs)
+{
+    static char *kwlist[] = { "anchor", NULL };
+    PyGObject *anchor;
+    GtkTextIter iter;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkTextBuffer.get_iter_at_child_anchor", kwlist, &PyGtkTextChildAnchor_Type, &anchor))
+        return NULL;
+
+    gtk_text_buffer_get_iter_at_child_anchor(GTK_TEXT_BUFFER(self->obj),
+					     &iter,
+					     GTK_TEXT_CHILD_ANCHOR(anchor->obj));
+    return pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE);
 }
 %%
 ignore-win32
