@@ -1,3 +1,23 @@
+1999-04-08  James Henstridge  <james@daa.com.au>
+
+	* gtk.py (threads_enter,threads_leave): export these two new functions.
+
+	* gtkmodule.c: applied a modified version of Duncan Grisby's threading
+	patch.  The changes were mainly inlining some of the code with macros
+	and making it so that the extra code was not added unless python
+	was compiled with thread support.  Also added wrappers for
+	gdk_thread_enter and gdk_thread_leave.
+
+	* gtk.py (GtkList.{,un}select_item): fixed small bug reported by
+	Ben Darnell.
+
+	* gtkmodule.c: fixed some small bugs in gtk_ctree stuff.  Thanks go
+	to Chi-Deok Hwang.  Also fixed the bug in gtk_clist where I copy
+	and pasted from.
+
+	* gtk.py (GtkNotebook.set_tab_label_text): Small typo.  Fix from
+	Toby D. Reeves.
+
 1999-03-13  James Henstridge  <james@daa.com.au>
 
 	* examples/testgtk/testgtk.py: Applied some fixes from Chi-Deok Hwang

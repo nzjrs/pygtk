@@ -21,6 +21,31 @@
 #include <sysmodule.h>
 #include <gtk/gtk.h>
 
+/* The threading hacks are based on ones supplied by Duncan Grisby
+ * of AT&T Labs Cambridge */
+#ifdef WITH_THREAD
+/* this code may need to be updated if python is changed.  It should work
+ * for python 1.4 and 1.5.x.  Check ceval.h for changes. */
+static PyThreadState *_save;
+static int _blockcount = 1;
+
+/* recusive versions of thread block and unblock routines */
+#  define PyGTK_BLOCK_THREADS \
+    if (_blockcount == 0) {   \
+      Py_BLOCK_THREADS;       \
+    }                         \
+    _blockcount++;
+#  define PyGTK_UNBLOCK_THREADS \
+    _blockcount--;              \
+    if (_blockcount == 0) {     \
+      Py_UNBLOCK_THREADS;       \
+    }                           \
+    g_assert(_blockcount >= 0);
+#else /* !WITH_THREADS */
+#  define PyGTK_BLOCK_THREADS
+#  define PyGTK_UNBLOCK_THREADS
+#endif
+
 static gboolean PyGtk_FatalExceptions = FALSE;
 
 typedef struct {
@@ -2176,7 +2201,9 @@ static PyTypeObject PyGtkCTreeNode_Type = {
 
 /* destroy notify for PyObject */
 static void PyGtk_DestroyNotify(gpointer data) {
+  PyGTK_BLOCK_THREADS
   Py_DECREF((PyObject *)data);
+  PyGTK_UNBLOCK_THREADS
 }
 static void PyGtk_CallbackMarshal(GtkObject *o, gpointer d, guint nargs,
 				  GtkArg *args);
@@ -2809,10 +2836,12 @@ static void PyGtk_CallbackMarshal(GtkObject *o, gpointer data, guint nargs,
 				  GtkArg *args) {
   PyObject *func = data, *ret, *a, *params;
 
+  PyGTK_BLOCK_THREADS
   a = GtkArgs_AsTuple(nargs, args);
   if (a == NULL) {
     PyErr_Clear();
     fprintf(stderr, "can't decode params -- callback not run\n");
+    PyGTK_UNBLOCK_THREADS
     return;
   }
   if (o == NULL)
@@ -2842,10 +2871,12 @@ static void PyGtk_CallbackMarshal(GtkObject *o, gpointer data, guint nargs,
       PyErr_Print();
       PyErr_Clear();
     }
+    PyGTK_UNBLOCK_THREADS
     return;
   }
   GtkRet_FromPyObject(&args[nargs], ret);
   Py_DECREF(ret);
+  PyGTK_UNBLOCK_THREADS
 }
 
 
@@ -2856,6 +2887,7 @@ void PyGtk_SignalMarshal(GtkObject *object, /*gpointer*/ PyObject *func,
                                                  GtkType return_type) {
     PyObject *arg_list, *params, *ret;
 
+    PyGTK_BLOCK_THREADS
     ret = PyTuple_New(1);
     PyTuple_SetItem(ret, 0, PyGtk_New(object));
     arg_list = GtkArgs_AsTuple(nparams, args);
@@ -2881,15 +2913,19 @@ void PyGtk_SignalMarshal(GtkObject *object, /*gpointer*/ PyObject *func,
 	    PyErr_Print();
 	    PyErr_Clear();
 	}
+	PyGTK_UNBLOCK_THREADS
 	return;
     }
     GtkRet_FromPyObject(&args[nparams], ret);
     Py_DECREF(ret);
+    PyGTK_UNBLOCK_THREADS
 }
 
 static
 void PyGtk_SignalDestroy(/*gpointer*/ PyObject *func) {
+    PyGTK_BLOCK_THREADS
     Py_DECREF(func);
+    PyGTK_UNBLOCK_THREADS
 }
 
 /* simple callback handler -- this one actually looks at the return type */
@@ -2898,6 +2934,7 @@ static void PyGtk_HandlerMarshal(gpointer a, PyObject *func, int nargs,
                                                           GtkArg *args) {
   PyObject *ret;
 
+  PyGTK_BLOCK_THREADS
   ret = PyObject_CallObject(func, NULL);
   if (ret == NULL) {
     if (PyGtk_FatalExceptions)
@@ -2907,6 +2944,7 @@ static void PyGtk_HandlerMarshal(gpointer a, PyObject *func, int nargs,
       PyErr_Clear();
     }
     *GTK_RETLOC_BOOL(args[0]) = FALSE;
+    PyGTK_UNBLOCK_THREADS
     return;
   }
   if (ret == Py_None || (PyInt_Check(ret) && PyInt_AsLong(ret) == 0))
@@ -2914,6 +2952,7 @@ static void PyGtk_HandlerMarshal(gpointer a, PyObject *func, int nargs,
   else
     *GTK_RETLOC_BOOL(args[0]) = TRUE;
   Py_DECREF(ret);
+  PyGTK_UNBLOCK_THREADS
 }
 
 /* callback for input handlers */
@@ -2921,6 +2960,7 @@ static void PyGtk_InputMarshal(gpointer a, PyObject *func, int nargs,
 			                                GtkArg *args) {
   PyObject *tuple, *ret;
 
+  PyGTK_BLOCK_THREADS
   tuple = Py_BuildValue("(ii)", GTK_VALUE_INT(args[0]),
 			GTK_VALUE_FLAGS(args[1]));
   ret = PyObject_CallObject(func, tuple);
@@ -2934,6 +2974,7 @@ static void PyGtk_InputMarshal(gpointer a, PyObject *func, int nargs,
     }
   } else
     Py_DECREF(ret);
+  PyGTK_UNBLOCK_THREADS
 }
 
 static GtkArg *PyDict_AsGtkArgs(PyObject *dict, GtkType type, gint *nargs) {
@@ -3224,7 +3265,13 @@ static PyObject * _wrap_gtk_init(PyObject *self, PyObject *args) {
 static PyObject *_wrap_gtk_main(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, ":gtk_main"))
         return NULL;
+    PyGTK_UNBLOCK_THREADS
     gtk_main();
+    PyGTK_BLOCK_THREADS
+#ifdef WITH_THREAD
+    g_assert(_blockcount == 1);
+    _blockcount = 1;
+#endif
 
     if (PyErr_Occurred())
         return NULL;
@@ -3233,11 +3280,18 @@ static PyObject *_wrap_gtk_main(PyObject *self, PyObject *args) {
 }
 
 static PyObject *_wrap_gtk_main_iteration(PyObject *self, PyObject *args) {
-    int block = 1;
+    int block = 1, ret;
 
     if(!PyArg_ParseTuple(args,"|i:gtk_main_iteration", &block)) 
         return NULL;
-    return PyInt_FromLong(gtk_main_iteration_do(block));
+    PyGTK_UNBLOCK_THREADS
+    ret = gtk_main_iteration_do(block);
+    PyGTK_BLOCK_THREADS
+#ifdef WITH_THREAD    
+    g_assert(_blockcount == 1);
+    _blockcount = 1;
+#endif
+    return PyInt_FromLong(ret);
 }
 
 static PyObject *
@@ -3860,7 +3914,7 @@ static PyObject *_wrap_gtk_clist_get_pixmap(PyObject *self, PyObject *args) {
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(OO)", PyGdkWindow_New(p), PyGdkWindow_New(m));
+  return Py_BuildValue("(OO)", PyGdkWindow_New(p), mask);
 }
 
 static PyObject *_wrap_gtk_clist_get_pixtext(PyObject *self, PyObject *args) {
@@ -5278,7 +5332,7 @@ static PyObject *_wrap_gtk_ctree_find_all_by_row_data(PyObject *self, PyObject *
 
 static PyObject *_wrap_gtk_ctree_move(PyObject *self, PyObject *args) {
   PyObject *ctree, *node, *py_parent, *py_sibling;
-  GtkCTreeNode *parent, *sibling;
+  GtkCTreeNode *parent = NULL, *sibling = NULL;
 
   if (!PyArg_ParseTuple(args, "O!O!OO:gtk_ctree_move", &PyGtk_Type, &ctree,
 			&PyGtkCTreeNode_Type, &node, &py_parent, &py_sibling))
@@ -5337,7 +5391,7 @@ static PyObject *_wrap_gtk_ctree_node_get_pixmap(PyObject *self, PyObject *args)
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(OO)", PyGdkWindow_New(p), PyGdkWindow_New(m));
+  return Py_BuildValue("(OO)", PyGdkWindow_New(p), mask);
 }
 
 static PyObject *_wrap_gtk_ctree_node_get_pixtext(PyObject *self, PyObject *args) {
@@ -5456,6 +5510,22 @@ static PyObject *_wrap_gtk_ctree_base_nodes(PyObject *self, PyObject *args) {
   return ret;
 }
 
+static PyObject *_wrap_gdk_threads_enter(PyObject *self, PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":gdk_threads_enter"))
+    return NULL;
+  gdk_threads_enter();
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject *_wrap_gdk_threads_leave(PyObject *self, PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":gdk_threads_leave"))
+    return NULL;
+  gdk_threads_enter();
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_signal_connect", _wrap_gtk_signal_connect, 1 },
     { "gtk_signal_connect_after", _wrap_gtk_signal_connect_after, 1 },
@@ -5571,6 +5641,8 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gdk_draw_segments", _wrap_gdk_draw_segments, 1 },
     { "gdk_draw_lines", _wrap_gdk_draw_lines, 1 },
     { "gdk_color_alloc", _wrap_gdk_color_alloc, 1 },
+    { "gdk_threads_enter", _wrap_gdk_threads_enter, 1 },
+    { "gdk_threads_leave", _wrap_gdk_threads_leave, 1 },
     { NULL, NULL }
 };
 

@@ -1461,9 +1461,9 @@ class GtkList(GtkContainer):
 	def clear_items(self, start, end):
 		_gtk.gtk_list_clear_items(self._o, start, end)
 	def select_item(self, item):
-		_gtk.gtk_list_select_item(self._o, item._o)
+		_gtk.gtk_list_select_item(self._o, item)
 	def unselect_item(self, item):
-		_gtk.gtk_list_unselect_item(self._o, item._o)
+		_gtk.gtk_list_unselect_item(self._o, item)
 	def select_child(self, child):
 		_gtk.gtk_list_select_child(self._o, child._o)
 	def unselect_child(self, child):
@@ -1635,7 +1635,8 @@ class GtkNotebook(GtkContainer):
 		_gtk.gtk_notebook_set_tab_label(self._o, child._o,
 						tab_label._o)
 	def set_tab_label_text(self, child, tab_text):
-		_gtk.gtk_notebook_set_tab_label(self._o, child._o, tab_text)
+		_gtk.gtk_notebook_set_tab_label_text(self._o, child._o,
+						     tab_text)
 	def query_menu_label(self, child):
 		print "query_menu_label deprecated -- use get_menu_label"
 		return self.get_menu_label(child)
@@ -2593,3 +2594,9 @@ def screen_width_mm():
 	return _gtk.gdk_screen_width_mm()
 def screen_height_mm():
 	return _gtk.gdk_screen_height_mm()
+
+# thread support -- place calls to these arround gtk code in threads ...
+def threads_enter():
+	_gtk.gdk_threads_enter()
+def threads_leave():
+	_gtk.gdk_threads_leave()
