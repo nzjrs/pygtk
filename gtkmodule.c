@@ -1954,8 +1954,28 @@ static PyObject *PyGdkGC_set_dashes(PyGdkGC_Object *self, PyObject *args) {
   return Py_None;
 }
 
+static PyObject *PyGdkGC_set_clip_rectangle(PyGdkGC_Object *self, PyObject *args) {
+    int x, y, width, height;
+    PyObject *gc;
+    GdkRectangle clip;
+
+    if (!PyArg_ParseTuple(args, "iiii:gdk_gc_set_clip_rectangle", &x, &y, &width, &height))
+        return NULL;
+
+    clip.x = x;
+    clip.y = y;
+    clip.width = width;
+    clip.height = height;
+
+    gdk_gc_set_clip_rectangle(self->obj, &clip);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef PyGdkGC_methods[] = {
   {"set_dashes", (PyCFunction)PyGdkGC_set_dashes, METH_VARARGS, NULL},
+  {"set_clip_rectangle", (PyCFunction)PyGdkGC_set_clip_rectangle, METH_VARARGS, NULL},
   {NULL, 0, 0, NULL}
 };
 

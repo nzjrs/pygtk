@@ -471,6 +471,101 @@ static PyTypeObject PyGdkPixbuf_Type = {
 };
 
 static PyObject *
+PyGdkPixbufAnimation_New(GdkPixbufAnimation *animation)
+{
+    PyGdkPixbufAnimation_Object *self;
+
+    if (animation == NULL) {
+	PyErr_SetString(PyExc_RuntimeError, "couldn't create animation");
+	return NULL;
+    }
+
+    self = (PyGdkPixbufAnimation_Object *)PyObject_NEW
+	(PyGdkPixbufAnimation_Object, &PyGdkPixbufAnimation_Type);
+
+    if (self == NULL)
+	return NULL;
+    self->animation = gdk_pixbuf_animation_ref(animation);
+    return (PyObject *)self;
+}
+
+static void
+pygdk_pixbuf_animation_dealloc(PyGdkPixbufAnimation_Object *self)
+{
+    gdk_pixbuf_animation_unref(self->animation);
+    PyMem_DEL(self);
+}
+
+static int
+pygdk_pixbuf_animation_compare(PyGdkPixbufAnimation_Object *self,
+			       PyGdkPixbufAnimation_Object *v)
+{
+    if (self->animation == v->animation) return 0;
+    if (self->animation > v->animation) return -1;
+    return 1;
+}
+
+static long
+pygdk_pixbuf_animation_hash(PyGdkPixbufAnimation_Object *self)
+{
+    return (long)self->animation;
+}
+
+static PyObject *
+pygdk_pixbuf_animation_getattr(PyGdkPixbufAnimation_Object *self, char *attr)
+{
+    if (!strcmp(attr, "width"))
+	return PyInt_FromLong(gdk_pixbuf_animation_get_width(self->animation));
+    else if (!strcmp(attr, "height"))
+	return PyInt_FromLong(gdk_pixbuf_animation_get_height(
+							self->animation));
+    else if (!strcmp(attr, "frames")) {
+	GList *frames = gdk_pixbuf_animation_get_frames(self->animation);
+	GList *tmp;
+	PyObject *py_frames = PyList_New(0);
+
+	for (tmp = frames; tmp != NULL; tmp = tmp->next) {
+	    GdkPixbufFrame *frame = tmp->data;
+	    PyObject *py_frame;
+
+	    py_frame = Py_BuildValue("(Niiii)",
+				     gdk_pixbuf_frame_get_pixbuf(frame),
+				     gdk_pixbuf_frame_get_x_offset(frame),
+				     gdk_pixbuf_frame_get_y_offset(frame),
+				     gdk_pixbuf_frame_get_delay_time(frame),
+				     gdk_pixbuf_frame_get_action(frame));
+	    PyList_Append(py_frames, py_frame);
+	    Py_DECREF(py_frame);
+	}
+	return py_frames;
+    } else if (!strcmp(attr, "num_frames"))
+	return PyInt_FromLong(gdk_pixbuf_animation_get_num_frames(
+							self->animation));
+}
+
+static PyTypeObject PyGdkPixbufAnimation_Type = {
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,
+    "GdkPixbufAnimation",
+    sizeof(PyGdkPixbufAnimation_Object),
+    0,
+    (destructor)pygdk_pixbuf_animation_dealloc,
+    (printfunc)0,
+    (getattrfunc)pygdk_pixbuf_animation_getattr,
+    (setattrfunc)0,
+    (cmpfunc)pygdk_pixbuf_animation_compare,
+    (reprfunc)0,
+    0,
+    0,
+    0,
+    (hashfunc)pygdk_pixbuf_animation_hash,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    0L,0L,0L,0L,
+    NULL
+};
+
+static PyObject *
 pygdk_pixbuf_new(PyObject *self, PyObject *args)
 {
     GdkColorspace colorspace;
@@ -602,6 +697,25 @@ pygdk_pixbuf_new_from_array(PyObject *self, PyObject *args)
 }
 #endif
 
+static PyObject *
+pygdk_pixbuf_animation_new_from_file(PyObject *self, PyObject *args)
+{
+    char *filename;
+    GdkPixbufAnimation *animation;
+    PyObject *ret;
+
+    if (!PyArg_ParseTuple(args, "s:gdkpixbuf.GdkPixbufAnimation", &filename))
+	return NULL;
+    animation = gdk_pixbuf_animation_new_from_file(filename);
+    if (!animation) {
+	PyErr_SetString(PyExc_RuntimeError, "could not create new animation");
+	return NULL;
+    }
+    ret = PyGdkPixbufAnimation_New(animation);
+    gdk_pixbuf_animation_unref(animation);
+    return ret;
+}
+
 static PyMethodDef gdkpixbuf_functions[] = {
     { "GdkPixbuf", pygdk_pixbuf_new, METH_VARARGS, NULL },
     { "new_from_file", pygdk_pixbuf_new_from_file, METH_VARARGS, NULL },
@@ -609,11 +723,13 @@ static PyMethodDef gdkpixbuf_functions[] = {
 #ifdef HAVE_NUMPY
     { "new_from_array", pygdk_pixbuf_new_from_array, METH_VARARGS, NULL },
 #endif
+    { "GdkPixbufAnimation", pygdk_pixbuf_animation_new_from_file, METH_VARARGS, NULL },
     { NULL, NULL }
 };
 
 static struct _PyGdkPixbuf_FunctionStruct functions = {
-    &PyGdkPixbuf_Type, PyGdkPixbuf_New
+    &PyGdkPixbuf_Type, PyGdkPixbuf_New,
+    &PyGdkPixbufAnimation_Type, PyGdkPixbufAnimation_New
 };
 
 void
