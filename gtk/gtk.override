@@ -268,6 +268,62 @@ _wrap_gtk_style__get_bg_pixmap(PyGObject *self, void *closure)
     return _pygtk_style_helper_new(style, STYLE_PIXMAP_ARRAY, style->bg_pixmap);
 }
 %%
+override gtk_paint_polygon kwargs
+static PyObject *
+_wrap_gtk_paint_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "window", "state_type", "shadow_type", "area", "widget", "detail", "points", "fill", NULL };
+    PyObject *window, *py_state_type, *py_shadow_type;
+    GtkStateType state_type;
+    GtkShadowType shadow_type;
+    GdkRectangle area;
+    PyObject *widget;
+    const gchar *detail;
+    PyObject *py_points;
+    gint npoints, i;
+    GdkPoint *points;
+    gboolean fill;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				    "O!OO(iiii)O!zOi:GdkDrawable.draw_polygon",
+				     kwlist, &PyGdkWindow_Type, &window,
+				     &py_state_type, &py_shadow_type,
+				     &area.x,&area.y, &area.width,&area.height,
+				     &PyGtkWidget_Type, &widget, &detail,
+				     &py_points, &fill))
+	return NULL;
+    if (pyg_enum_get_value(GTK_TYPE_STATE_TYPE, py_state_type,
+			   (gint *)&state_type))
+	return NULL;
+    if (pyg_enum_get_value(GTK_TYPE_SHADOW_TYPE, py_shadow_type,
+			   (gint *)&shadow_type))
+	return NULL;
+    if (!PySequence_Check(py_points)) {
+	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
+	return NULL;
+    }
+    npoints = PySequence_Length(py_points);
+    points = g_new(GdkPoint, npoints);
+    for (i = 0; i < npoints; i++) {
+	PyObject *item = PySequence_GetItem(py_points, i);
+	Py_DECREF(item);
+	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence members must be 2-tuples");
+	    g_free(points);
+	    return NULL;
+	}
+    }
+    gtk_paint_polygon(GTK_STYLE(self->obj), GDK_WINDOW(pygobject_get(window)),
+		      state_type, shadow_type, &area,
+		      GTK_WIDGET(pygobject_get(widget)), detail,
+		      points, npoints, fill);
+    g_free(points);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override-attr GtkSelectionData.data
 static PyObject *
 _wrap_gtk_selection_data__get_data(PyGObject *self, void *closure)
@@ -319,6 +375,48 @@ _wrap_gtk_selection_data_get_text(PyObject *self)
 	PyObject *py_ret = PyUnicode_DecodeUTF8(ret, strlen(ret), "strict");
 	g_free(ret);
 	return py_ret;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_selection_data_get_targets noargs
+static PyObject *
+_wrap_gtk_selection_data_get_targets(PyObject *self)
+{
+    GdkAtom *targets;
+    gint n_atoms;
+
+    if (gtk_selection_data_get_targets(pyg_boxed_get(self, GtkSelectionData),
+				       &targets, &n_atoms)) {
+	PyObject *ret;
+	gint i;
+
+	ret = PyTuple_New(n_atoms);
+	for (i = 0; i < n_atoms; i++)
+	    PyTuple_SetItem(ret, i, PyGdkAtom_New(targets[i]));
+	g_free(targets);
+	return ret;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_get_row_drag_data noargs
+static PyObject *
+_wrap_gtk_tree_get_row_drag_data(PyObject *self)
+{
+    GtkTreeModel *tree_model;
+    GtkTreePath *path;
+
+    if (gtk_tree_get_row_drag_data(pyg_boxed_get(self, GtkSelectionData),
+				   &tree_model, &path)) {
+	PyObject *ret = Py_BuildValue("(NN)",
+				      pygobject_new((GObject *)tree_model),
+				      pygtk_tree_path_to_pyobject(path));
+
+	gtk_tree_path_free(path);
+	return ret;
     }
     Py_INCREF(Py_None);
     return Py_None;
@@ -5009,3 +5107,65 @@ _wrap_gtk_ruler_get_range(PyGObject *self)
 			&max_size);
     return Py_BuildValue("(dddd)", lower, upper, position, max_size);
 }
+%%
+gtk_im_context_get_preedit_string noargs
+static PyObject *
+_wrap_gtk_im_context_get_preedit_string(PyGObject *self)
+{
+    gchar *str;
+    PangoAttrList *attrs;
+    gint cursor_pos;
+    PyObject *ret;
+
+    gtk_im_context_get_preedit_string(GTK_IM_CONTEXT(self->obj),
+				      &str, &attrs, &cursor_pos);
+
+    ret = Py_BuildValue("(sNi)", str,
+			pyg_boxed_new(PANGO_TYPE_ATTR_LIST, attrs, FALSE,TRUE),
+			cursor_pos);
+    g_free(str);
+
+    return ret;
+}
+%%
+override gtk_im_context_filter_keypress kwargs
+static PyObject *
+_wrap_gtk_im_context_filter_keypress(PyGObject *self, PyObject *args,
+				     PyObject *kwargs)
+{
+    static char *kwlist[] = { "key", NULL };
+    PyObject *key;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkIMContext.filter_keypress", kwlist,
+				     &key))
+	return NULL;
+
+    if (!pyg_boxed_check(key, GDK_TYPE_EVENT)) {
+	PyErr_SetString(PyExc_TypeError, "key must be a GdkEvent");
+	return NULL;
+    }
+
+    return PyInt_FromLong(gtk_im_context_filter_keypress
+			    (GTK_IM_CONTEXT(self->obj),
+			     pyg_boxed_get(key, GdkEventKey)));
+}
+%%
+override gtk_im_context_get_surrounding noargs
+static PyObject *
+_wrap_gtk_im_context_get_surrounding(PyGObject *self)
+{
+    gchar *text;
+    gint cursor_index;
+
+    if (gtk_im_context_get_surrounding(GTK_IM_CONTEXT(self->obj),
+				       &text, &cursor_index)) {
+	PyObject *ret = Py_BuildValue("(si)", text, cursor_index);
+
+	g_free(text);
+	return ret;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
