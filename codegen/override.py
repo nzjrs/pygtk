@@ -11,7 +11,6 @@ import string
 import sys
 
 def class2cname(klass, method):
-    print >> sys.stderr, klass, method
     c_name = ''
     for c in klass:
         if c.isupper():
