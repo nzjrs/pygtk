@@ -1695,7 +1695,7 @@
   (c-name "gdk_bitmap_create_from_data")
   (return-type "GdkBitmap*")
   (parameters
-    '("GdkWindow*" "window")
+    '("GdkWindow*" "window" (null-ok))
     '("const-guchar*" "data")
     '("gint" "width")
     '("gint" "height")
@@ -2991,6 +2991,15 @@
   (of-object "GdkPixbuf")
   (c-name "gdk_pixbuf_get_rowstride")
   (return-type "int")
+)
+
+(define-method get_option
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_option")
+  (return-type "const-char*")
+  (parameters
+    '("const-char*" "key")
+  )
 )
 
 (define-function gdk_pixbuf_new
