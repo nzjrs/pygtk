@@ -796,7 +796,7 @@ _wrap_gdk_event_getattr(PyObject *self, char *attr)
     return NULL;
 }
 %%
-override_attr GdkDevice.axes
+override-attr GdkDevice.axes
 GdkDevice *device = GDK_DEVICE(self->obj);
 PyObject *ret;
 gint i;
@@ -809,7 +809,7 @@ for (i = 0; i < device->num_axes; i++)
 					  device->axes[i].max));
 return ret;
 %%
-override_attr GdkDevice.keys
+override-attr GdkDevice.keys
 GdkDevice *device = GDK_DEVICE(self->obj);
 PyObject *ret;
 gint i;
@@ -933,7 +933,7 @@ _wrap_gdk_device_get_axis(PyGObject *self, PyObject *args, PyObject *kwargs)
 %%
 ignore gtk_selection_data_copy gtk_selection_data_free
 %%
-override_attr GtkSelectionData.data
+override-attr GtkSelectionData.data
 if (pyg_boxed_get(self, GtkSelectionData)->length >= 0) {
     return PyString_FromStringAndSize(
 			pyg_boxed_get(self, GtkSelectionData)->data,
@@ -1625,7 +1625,7 @@ _wrap_gdk_drag_find_window(PyGObject *self, PyObject *args, PyObject *kwargs)
 			 protocol);
 }
 %%
-override_attr GdkDragContext.targets
+override-attr GdkDragContext.targets
 PyObject *atom, *ret = PyList_New(0);
 GList *tmp;
 if (ret == NULL)

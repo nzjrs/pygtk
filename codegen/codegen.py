@@ -583,7 +583,7 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
                                                         'varlist': varlist,
                                                         'code': code }
         except:
-            sys.stderr.write("couldn't write check for " + objobj.c_name +
+            sys.stderr.write("couldn't write check for " + boxedobj.c_name +
                              '.' + fname + '\n')
 	    #traceback.print_exc()
     funcname = '_wrap_' + string.lower(uline) + '_getattr'

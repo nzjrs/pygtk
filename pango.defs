@@ -28,6 +28,13 @@
 
 ;; boxed definitions ...
 
+(boxed AttrList
+  (in-module Pango)
+  (c-name PangoAttrList)
+  (copy-func pango_attr_list_ref)
+  (release-func pango_attr_list_unref)
+)
+
 (boxed Color
   (in-module Pango)
   (c-name PangoColor)
@@ -38,11 +45,39 @@
   (field (type-and-name guint16 blue))
 )
 
-(boxed AttrList
+(boxed FontDescription
   (in-module Pango)
-  (c-name PangoAttrList)
-  (copy-func pango_attr_list_ref)
-  (release-func pango_attr_list_unref)
+  (c-name PangoFontDescription)
+  (copy-func pango_font_description_copy)
+  (release-func pango_font_description_free)
+  (field (type-and-name char* family_name))
+  (field (type-and-name PangoStyle style))
+  (field (type-and-name PangoVariant variant))
+  (field (type-and-name PangoWeight weight))
+  (field (type-and-name PangoStretch stretch))
+  (field (type-and-name int size))
+)
+
+(boxed GlyphString
+  (in-module Pango)
+  (c-name PangoGlyphString)
+  (copy-func pango_glyph_string_copy)
+  (release-func pango_glyph_string_free)
+  (field (type-and-name gint num_glyphs))
+  (field (type-and-name PangoGlyphInfo* glyphs))
+  (field (type-and-name gint* log_clusters))
+)
+
+(boxed Language
+  (in-module Pango)
+  (c-name PangoLanguage)
+)
+
+(boxed TabArray
+  (in-module Pango)
+  (c-name PangoTabArray)
+  (copy-func pango_tab_array_copy)
+  (release-func pango_tab_array_free)
 )
 
 
@@ -305,6 +340,7 @@
 (function pango_attr_list_new
   (c-name pango_attr_list_new)
   (return-type PangoAttrList*)
+  (is-constructor-of PangoAttrList)
 )
 
 (method ref
@@ -404,7 +440,7 @@
   (parameter (type-and-name GSList** extra_attrs))
 )
 
-(function pango_parse_markup
+(function parse_markup
   (c-name pango_parse_markup)
   (return-type gboolean)
   (parameter (type-and-name const-char* markup_text))
@@ -420,7 +456,7 @@
 
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-break.h
 
-(function pango_break
+(function break
   (c-name pango_break)
   (return-type none)
   (parameter (type-and-name const-gchar* text))
@@ -429,7 +465,7 @@
   (parameter (type-and-name PangoLogAttr* attrs))
 )
 
-(function pango_find_paragraph_boundary
+(function find_paragraph_boundary
   (c-name pango_find_paragraph_boundary)
   (return-type none)
   (parameter (type-and-name const-gchar* text))
@@ -438,7 +474,7 @@
   (parameter (type-and-name gint* next_paragraph_start))
 )
 
-(function pango_get_log_attrs
+(function get_log_attrs
   (c-name pango_get_log_attrs)
   (return-type none)
   (parameter (type-and-name const-char* text))
@@ -448,7 +484,7 @@
   (parameter (type-and-name PangoLogAttr* log_attrs))
 )
 
-(function pango_default_break
+(function default_break
   (c-name pango_default_break)
   (return-type none)
   (parameter (type-and-name const-gchar* text))
@@ -464,6 +500,7 @@
 (function pango_context_new
   (c-name pango_context_new)
   (return-type PangoContext*)
+  (is-constructor-of PangoContext)
 )
 
 (method add_font_map
@@ -545,151 +582,15 @@
   (return-type PangoDirection)
 )
 
-(function pango_itemize
+(method itemize
+  (of-object Context (Pango))
   (c-name pango_itemize)
   (return-type GList*)
-  (parameter (type-and-name PangoContext* context))
   (parameter (type-and-name const-char* text))
   (parameter (type-and-name int start_index))
   (parameter (type-and-name int length))
   (parameter (type-and-name PangoAttrList* attrs))
   (parameter (type-and-name PangoAttrIterator* cached_iter))
-)
-
-
-
-;; From /opt/gtk2/include/pango-1.0/pango/pango-coverage.h
-
-(method ref
-  (of-object Coverage (Pango))
-  (c-name pango_coverage_ref)
-  (return-type PangoCoverage*)
-)
-
-(method unref
-  (of-object Coverage (Pango))
-  (c-name pango_coverage_unref)
-  (return-type none)
-)
-
-(method copy
-  (of-object Coverage (Pango))
-  (c-name pango_coverage_copy)
-  (return-type PangoCoverage*)
-)
-
-(method get
-  (of-object Coverage (Pango))
-  (c-name pango_coverage_get)
-  (return-type PangoCoverageLevel)
-  (parameter (type-and-name int index))
-)
-
-(method set
-  (of-object Coverage (Pango))
-  (c-name pango_coverage_set)
-  (return-type none)
-  (parameter (type-and-name int index))
-  (parameter (type-and-name PangoCoverageLevel level))
-)
-
-(method max
-  (of-object Coverage (Pango))
-  (c-name pango_coverage_max)
-  (return-type none)
-  (parameter (type-and-name PangoCoverage* other))
-)
-
-(method to_bytes
-  (of-object Coverage (Pango))
-  (c-name pango_coverage_to_bytes)
-  (return-type none)
-  (parameter (type-and-name guchar** bytes))
-  (parameter (type-and-name int* n_bytes))
-)
-
-(function pango_coverage_from_bytes
-  (c-name pango_coverage_from_bytes)
-  (return-type PangoCoverage*)
-  (parameter (type-and-name guchar* bytes))
-  (parameter (type-and-name int n_bytes))
-)
-
-
-
-;; From /opt/gtk2/include/pango-1.0/pango/pango-engine.h
-
-(function script_engine_list
-  (c-name script_engine_list)
-  (return-type none)
-  (parameter (type-and-name PangoEngineInfo** engines))
-  (parameter (type-and-name int* n_engines))
-)
-
-(function script_engine_load
-  (c-name script_engine_load)
-  (return-type PangoEngine*)
-  (parameter (type-and-name const-char* id))
-)
-
-(function script_engine_unload
-  (c-name script_engine_unload)
-  (return-type none)
-  (parameter (type-and-name PangoEngine* engine))
-)
-
-
-
-;; From /opt/gtk2/include/pango-1.0/pango/pango-enum-types.h
-
-(function pango_underline_get_type
-  (c-name pango_underline_get_type)
-  (return-type GType)
-)
-
-(function pango_coverage_level_get_type
-  (c-name pango_coverage_level_get_type)
-  (return-type GType)
-)
-
-(function pango_style_get_type
-  (c-name pango_style_get_type)
-  (return-type GType)
-)
-
-(function pango_variant_get_type
-  (c-name pango_variant_get_type)
-  (return-type GType)
-)
-
-(function pango_weight_get_type
-  (c-name pango_weight_get_type)
-  (return-type GType)
-)
-
-(function pango_stretch_get_type
-  (c-name pango_stretch_get_type)
-  (return-type GType)
-)
-
-(function pango_alignment_get_type
-  (c-name pango_alignment_get_type)
-  (return-type GType)
-)
-
-(function pango_wrap_mode_get_type
-  (c-name pango_wrap_mode_get_type)
-  (return-type GType)
-)
-
-(function pango_tab_align_get_type
-  (c-name pango_tab_align_get_type)
-  (return-type GType)
-)
-
-(function pango_direction_get_type
-  (c-name pango_direction_get_type)
-  (return-type GType)
 )
 
 
@@ -724,6 +625,7 @@
 
 (function pango_font_description_from_string
   (c-name pango_font_description_from_string)
+  (is-constructor-of PangoFontDescription)
   (return-type PangoFontDescription*)
   (parameter (type-and-name const-char* str))
 )
@@ -829,6 +731,7 @@
 
 (function pango_glyph_string_new
   (c-name pango_glyph_string_new)
+  (is-constructor-of PangoGlyphString)
   (return-type PangoGlyphString*)
 )
 
@@ -837,6 +740,12 @@
   (c-name pango_glyph_string_set_size)
   (return-type none)
   (parameter (type-and-name gint new_len))
+)
+
+(method copy
+  (of-object GlyphString (Pango))
+  (c-name pango_glyph_string_copy)
+  (return-type PangoGlyphString*)
 )
 
 (method free
@@ -899,7 +808,7 @@
   (parameter (type-and-name int* trailing))
 )
 
-(function pango_shape
+(function shape
   (c-name pango_shape)
   (return-type none)
   (parameter (type-and-name const-gchar* text))
@@ -908,7 +817,7 @@
   (parameter (type-and-name PangoGlyphString* glyphs))
 )
 
-(function pango_reorder_items
+(function reorder_items
   (c-name pango_reorder_items)
   (return-type GList*)
   (parameter (type-and-name GList* logical_items))
@@ -918,7 +827,7 @@
 
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-indic.h
 
-(function pango_indic_shift_vowels
+(function indic_shift_vowels
   (c-name pango_indic_shift_vowels)
   (return-type none)
   (parameter (type-and-name PangoIndicScript* script))
@@ -926,7 +835,7 @@
   (parameter (type-and-name gunichar* end))
 )
 
-(function pango_indic_compact
+(function indic_compact
   (c-name pango_indic_compact)
   (return-type none)
   (parameter (type-and-name PangoIndicScript* script))
@@ -935,7 +844,7 @@
   (parameter (type-and-name int* cluster))
 )
 
-(function pango_indic_convert_vowels
+(function indic_convert_vowels
   (c-name pango_indic_convert_vowels)
   (return-type none)
   (parameter (type-and-name PangoIndicScript* script))
@@ -945,7 +854,7 @@
   (parameter (type-and-name gboolean has_standalone_vowels))
 )
 
-(function pango_indic_split_out_characters
+(function indic_split_out_characters
   (c-name pango_indic_split_out_characters)
   (return-type none)
   (parameter (type-and-name PangoIndicScript* script))
@@ -954,35 +863,6 @@
   (parameter (type-and-name gunichar** wc))
   (parameter (type-and-name int* n_glyph))
   (parameter (type-and-name PangoGlyphString* glyphs))
-)
-
-
-
-;; From /opt/gtk2/include/pango-1.0/pango/pango-item.h
-
-(function pango_item_new
-  (c-name pango_item_new)
-  (return-type PangoItem*)
-)
-
-(method copy
-  (of-object Item (Pango))
-  (c-name pango_item_copy)
-  (return-type PangoItem*)
-)
-
-(method free
-  (of-object Item (Pango))
-  (c-name pango_item_free)
-  (return-type none)
-)
-
-(method split
-  (of-object Item (Pango))
-  (c-name pango_item_split)
-  (return-type PangoItem*)
-  (parameter (type-and-name int split_index))
-  (parameter (type-and-name int split_offset))
 )
 
 
@@ -996,6 +876,7 @@
 
 (function pango_layout_new
   (c-name pango_layout_new)
+  (is-constructor-of PangoLayout)
   (return-type PangoLayout*)
   (parameter (type-and-name PangoContext* context))
 )
@@ -1473,6 +1354,7 @@
 
 (function pango_tab_array_new_with_positions
   (c-name pango_tab_array_new_with_positions)
+  (is-constructor-of PangoTabArray)
   (return-type PangoTabArray*)
   (parameter (type-and-name gint size))
   (parameter (type-and-name gboolean positions_in_pixels))
@@ -1549,101 +1431,4 @@
   (parameter (type-and-name const-char* range_list))
 )
 
-
-
-;; From /opt/gtk2/include/pango-1.0/pango/pango-utils.h
-
-(function pango_split_file_list
-  (c-name pango_split_file_list)
-  (return-type char**)
-  (parameter (type-and-name const-char* str))
-)
-
-(function pango_read_line
-  (c-name pango_read_line)
-  (return-type gint)
-  (parameter (type-and-name FILE* stream))
-  (parameter (type-and-name GString* str))
-)
-
-(function pango_skip_space
-  (c-name pango_skip_space)
-  (return-type gboolean)
-  (parameter (type-and-name const-char** pos))
-)
-
-(function pango_scan_word
-  (c-name pango_scan_word)
-  (return-type gboolean)
-  (parameter (type-and-name const-char** pos))
-  (parameter (type-and-name GString* out))
-)
-
-(function pango_scan_string
-  (c-name pango_scan_string)
-  (return-type gboolean)
-  (parameter (type-and-name const-char** pos))
-  (parameter (type-and-name GString* out))
-)
-
-(function pango_scan_int
-  (c-name pango_scan_int)
-  (return-type gboolean)
-  (parameter (type-and-name const-char** pos))
-  (parameter (type-and-name int* out))
-)
-
-(function pango_config_key_get
-  (c-name pango_config_key_get)
-  (return-type char*)
-  (parameter (type-and-name const-char* key))
-)
-
-(function pango_parse_style
-  (c-name pango_parse_style)
-  (return-type gboolean)
-  (parameter (type-and-name const-char* str))
-  (parameter (type-and-name PangoFontDescription* desc))
-  (parameter (type-and-name gboolean warn))
-)
-
-(function pango_parse_variant
-  (c-name pango_parse_variant)
-  (return-type gboolean)
-  (parameter (type-and-name const-char* str))
-  (parameter (type-and-name PangoFontDescription* desc))
-  (parameter (type-and-name gboolean warn))
-)
-
-(function pango_parse_weight
-  (c-name pango_parse_weight)
-  (return-type gboolean)
-  (parameter (type-and-name const-char* str))
-  (parameter (type-and-name PangoFontDescription* desc))
-  (parameter (type-and-name gboolean warn))
-)
-
-(function pango_parse_stretch
-  (c-name pango_parse_stretch)
-  (return-type gboolean)
-  (parameter (type-and-name const-char* str))
-  (parameter (type-and-name PangoFontDescription* desc))
-  (parameter (type-and-name gboolean warn))
-)
-
-(function pango_log2vis_get_embedding_levels
-  (c-name pango_log2vis_get_embedding_levels)
-  (return-type gboolean)
-  (parameter (type-and-name gunichar* str))
-  (parameter (type-and-name int len))
-  (parameter (type-and-name PangoDirection* pbase_dir))
-  (parameter (type-and-name guint8* embedding_level_list))
-)
-
-(function pango_get_mirror_char
-  (c-name pango_get_mirror_char)
-  (return-type gboolean)
-  (parameter (type-and-name gunichar ch))
-  (parameter (type-and-name gunichar* mirrored_ch))
-)
 

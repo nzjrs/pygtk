@@ -23,7 +23,7 @@ class Overrides:
 	    self.__parse_override(buf)
     def __parse_override(self, buffer):
 	pos = string.find(buffer, '\n')
-	if pos:
+	if pos >= 0:
 	    line = buffer[:pos]
 	    rest = buffer[pos+1:]
 	else:
@@ -41,7 +41,7 @@ class Overrides:
 	    if 'kwargs' in words[1:]:
 		self.kwargs[func] = 1
 	    self.overrides[func] = rest
-        elif words[0] == 'override_attr':
+        elif words[0] == 'override-attr':
             attr = words[1]
             self.override_attrs[attr] = rest
         elif words[0] == 'headers':

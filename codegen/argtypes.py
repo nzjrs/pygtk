@@ -441,7 +441,7 @@ class GTypeArg(ArgType):
             '        return NULL;\n'
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
-        varlist.add(self.enumname, pname)
+        varlist.add('GType', pname)
 	varlist.add('PyObject', '*py_' + pname + ' = NULL')
 	parselist.append('&py_' + pname)
 	extracode.append(self.gtype % {'name': pname})
