@@ -2105,7 +2105,7 @@ class GtkSpinButton(GtkEntry):
 	def set_adjustment(self, adj):
 		_gtk.gtk_spin_button_set_adjustment(self._o, adj._o)
 	def get_adjustment(self):
-		return _obj2inst(_gtk.gtk_spin_button_get_adjustment(sel._o))
+		return _obj2inst(_gtk.gtk_spin_button_get_adjustment(self._o))
 	def set_digits(self, digits):
 		_gtk.gtk_spin_button_set_digits(self._o, digits)
 	def get_value_as_float(self):
