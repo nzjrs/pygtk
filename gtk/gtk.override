@@ -2761,7 +2761,7 @@ pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
     PyGtkCustomNotify *cunote = data;
     PyObject *retobj;
     PyObject *pytreecolumn, *pycell, *pytreemodel, *pyiter;
-    
+
     g_assert (cunote->func);
 
     pyg_block_threads();
@@ -2822,6 +2822,49 @@ _wrap_gtk_tree_view_column_set_cell_data_func (PyGObject *self, PyObject *args,
 
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_tree_view_insert_column_with_data_func kwargs
+static PyObject *
+_wrap_gtk_tree_view_insert_column_with_data_func (PyGObject *self,
+						  PyObject *args,
+						  PyObject *kwargs)
+{
+    int position;
+    gchar *title;
+    PyObject *pycell,*pyfunc, *pyarg = NULL;
+    GtkCellRenderer *cell;
+    PyGtkCustomNotify *cunote;
+    gint retval;
+    
+    if (!PyArg_ParseTuple(args,
+			  "isOO|O:GtkTreeView.insert_column_with_data_func",
+			  &position, &title, &pycell, &pyfunc, &pyarg))
+	return NULL;
+    
+    if (pygobject_check(pycell, &PyGtkCellRenderer_Type))
+	cell = GTK_CELL_RENDERER(pygobject_get(pycell));
+    else {
+	PyErr_SetString(PyExc_TypeError,
+			"first argument must be a GtkCellRenderer");
+	return NULL;
+    }
+
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+    
+    retval = gtk_tree_view_insert_column_with_data_func (
+	GTK_TREE_VIEW (self->obj),
+	position,
+	title,
+	cell,
+	pygtk_cell_data_func_marshal,
+	cunote,
+	pygtk_custom_destroy_notify);
+    return PyInt_FromLong(retval);
 }
 %%
 override gtk_tree_view_column_set_attributes kwargs
@@ -3390,7 +3433,6 @@ arg_error:
 ignore-glob
   _*
   *_get_type
-  gtk_accelerator_*
   gtk_arg_*
   gtk_args_*
   gtk_draw_*
@@ -6758,6 +6800,53 @@ _wrap_gtk_stock_add(PyGObject *self, PyObject *args, PyObject *kwargs)
  error:
     g_free(items);
     return NULL;
+}
+%%
+override gtk_stock_list_ids noargs
+static PyObject *
+_wrap_gtk_stock_list_ids(PyGObject *self)
+{
+    GSList *ids;
+    PyObject *list;
+    int i = 0;
+    
+    ids = gtk_stock_list_ids();
+
+    list = PyList_New(g_slist_length(ids));
+    for (; ids; ids = ids->next, i++) {
+	PyObject *py_item;
+
+	PyList_SetItem(list, i, PyString_FromString(ids->data));
+	g_free(ids->data);
+    }
+    g_slist_free(ids);
+
+    return list;
+}
+%%
+override gtk_stock_lookup args
+static PyObject *
+_wrap_gtk_stock_lookup(PyGObject *self, PyObject *args)
+{
+    gchar *stock_id;
+    GtkStockItem item;
+    
+    if (!PyArg_ParseTuple(args, "s:gtk.stock_lookup",
+			  &stock_id)) {
+	return NULL;
+    }
+
+    if(gtk_stock_lookup(stock_id, &item)) {
+	return Py_BuildValue("zziiz",
+			     item.stock_id,
+			     item.label,
+			     item.modifier,
+			     item.keyval,
+			     item.translation_domain);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 %%
 override gtk_layout_get_size noargs
