@@ -2059,8 +2059,9 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
     len = PyList_Size(list);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyList_GetItem(list, i);
-
-	if (!PyArg_ParseTuple(item, "zzOiz|O", &(ent.path), &(ent.accelerator),
+	cb = Py_None;
+	memset(&ent, 0, sizeof(GtkItemFactoryEntry));
+	if (!PyArg_ParseTuple(item, "s|zOizO", &(ent.path), &(ent.accelerator),
 			      &cb, &(ent.callback_action), &(ent.item_type),
 			      &extra_data)) {
 	    return NULL;
