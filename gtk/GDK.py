@@ -311,12 +311,6 @@ SCROLL_DOWN  = 1
 SCROLL_LEFT  = 2
 SCROLL_RIGHT = 3
 
-# GtkCornerType:
-CORNER_TOP_LEFT     = 0
-CORNER_BOTTOM_LEFT  = 1
-CORNER_TOP_RIGHT    = 2
-CORNER_BOTTOM_RIGHT = 3
-
 
 # these are the Key Symbols for GDK
 # they were created with sed -n 's/#define GDK)\([^ ]*\)/\1 =/p' <gdkkeysyms.h
