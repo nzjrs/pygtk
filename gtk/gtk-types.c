@@ -1548,7 +1548,7 @@ _pygtk_register_boxed_types(PyObject *moddict)
     PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type)
 #define register_tp2(x, tp) Py##x##_Type.ob_type = &PyType_Type; \
     PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type); \
-    pyg_boxed_register(tp, Py##x##_from_value, Py##x##_to_value)
+    pyg_register_boxed_custom(tp, Py##x##_from_value, Py##x##_to_value)
 
     ExtensionClassImported;
 #if 0
@@ -1560,7 +1560,7 @@ _pygtk_register_boxed_types(PyObject *moddict)
 #endif
     register_tp(GdkAtom);
     register_tp(GtkCTreeNode);
-    pyg_boxed_register(GTK_TYPE_TREE_PATH,
-		       PyGtkTreePath_from_value,
-		       PyGtkTreePath_to_value);
+    pyg_register_boxed_custom(GTK_TYPE_TREE_PATH,
+			      PyGtkTreePath_from_value,
+			      PyGtkTreePath_to_value);
 }
