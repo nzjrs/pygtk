@@ -40,7 +40,9 @@ def load_module(module):
     source_buffer.delete(start, end)
 
     iter = source_buffer.get_iter_at_offset(0)
-    source_buffer.insert(iter, open(mod.__file__, 'r').read())
+    filename = mod.__file__
+    if filename[-4:] == '.pyc': filename = filename[:-1]
+    source_buffer.insert(iter, open(filename, 'r').read())
 
 def selection_cb(selection):
     sel = selection.get_selected()

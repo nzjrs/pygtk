@@ -12,10 +12,10 @@ INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
 #glmodule = glmodule.la
 #endif
 
-pysitedir = $(PYTHON_SITE)
+pysitedir = $(PYTHON_SITE)/gtk
 pysite_PYTHON = __init__.py GTK.py GDK.py
 
-pyexecdir = $(PYTHON_SITE_EXEC)
+pyexecdir = $(PYTHON_SITE_EXEC)/gtk
 pyexec_LTLIBRARIES = _gtkmodule.la #$(imlibmodule) $(libglademodule) $(glmodule)
 
 _gtkmodule_la_LDFLAGS = -module -avoid-version
