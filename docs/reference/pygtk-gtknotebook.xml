@@ -813,10 +813,9 @@ the contents of the page.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter
-role="keyword">tab_label</parameter>&nbsp;:</term>
-	  <listitem><simpara>the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> to be
-used as the label for the page.</simpara></listitem>
+role="keyword">tab_label</parameter>&nbsp;:</term> <listitem><simpara>the
+<link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> to
+be used as the label for the page.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">position</parameter>&nbsp;:</term>
@@ -837,8 +836,9 @@ into the notebook at the location specified by
 <parameter>position</parameter> (0 is the first page).
 <parameter>child</parameter> is the widget to use as the contents of the
 page and <parameter>tab_label</parameter> specifies the widget to be used as
-the tab label. If position is -1 the page is appended to the
-notebook.</para>
+the tab label. If <parameter>position</parameter> is -1 the page is appended
+to the notebook. In PyGTK 2.4 and above if <parameter>tab_label</parameter>
+is <literal>None</literal> a default label if "page N" is used.</para>
 
     </refsect2>
 
@@ -864,11 +864,10 @@ linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> to use as
 the contents of the page.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
-	  <term><parameter
-role="keyword">tab_label</parameter>&nbsp;:</term>
-	  <listitem><simpara>the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> to be
-used as the label for the page.</simpara></listitem>
+	  <term><parameter role="keyword">tab_label</parameter>&nbsp;:</term>
+          <listitem><simpara>the
+<link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> to
+be used as the label for the page.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter
@@ -1336,13 +1335,15 @@ page</simpara></listitem>
 	  <term><parameter
 role="keyword">tab_label</parameter>&nbsp;:</term>
 	  <listitem><simpara>the tab label widget to
-use.</simpara></listitem>
+use or <literal>None</literal>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>set_tab_label</methodname>() method replaces
-the tab label for the notebook page containing <parameter>child</parameter>
-with the widget specified by <parameter>tab_label</parameter>.</para>
+      <para>The <methodname>set_tab_label</methodname>() method replaces the
+tab label for the notebook page containing <parameter>child</parameter> with
+the widget specified by <parameter>tab_label</parameter>. If
+<parameter>tab_label</parameter> is <literal>None</literal> a default label
+is used containing "page N".</para>
 
     </refsect2>
 
