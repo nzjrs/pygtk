@@ -453,6 +453,7 @@ class GObjectWrapper(Wrapper):
         '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' \
         '        return -1;\n' \
         '    }\n' \
+        '%(aftercreate)s' \
         '    pygobject_register_wrapper((PyObject *)self);\n' \
         '    return 0;\n' \
         '}\n\n'
@@ -484,6 +485,8 @@ class GObjectWrapper(Wrapper):
 
     def get_initial_constructor_substdict(self):
         substdict = Wrapper.get_initial_constructor_substdict(self)
+        if argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkWindow'):
+            substdict['aftercreate'] = "    g_object_ref(self->obj); /* we don't own the first reference of windows */\n"
         return substdict
 
     def get_initial_method_substdict(self, method):

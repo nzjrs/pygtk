@@ -5618,7 +5618,7 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
 	gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
 			      PyInt_AsLong(id));
     }
-	
+    g_object_ref(self->obj); /* we don't own the first reference of windows */
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -5671,6 +5671,7 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkMessageDialog object");
         return -1;
     }
+    g_object_ref(self->obj); /* we don't own the first reference of windows */
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }

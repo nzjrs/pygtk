@@ -1,3 +1,14 @@
+2002-08-19  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk.override (_wrap_gtk_dialog_new_with_buttons): ref the
+	widget after constructing it.
+
+	* codegen/codegen.py
+	(GObjectWrapper.get_initial_constructor_substdict): add special
+	case code to ref() GtkWindow instances in their constructor, as we
+	don't own the initial reference (it is managed internally by
+	gtk+).  This fixes bug #90213.
+
 2002-08-18  James Henstridge  <james@daa.com.au>
 
 	* pygtk.spec.in: update spec file.
