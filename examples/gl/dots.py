@@ -10,7 +10,7 @@ import string, sys
 from OpenGL.GL import *
 
 import gtk
-from gtk import gl
+import gtk.gl
 
 MY_LIST=1
 NUMDOTS = 500

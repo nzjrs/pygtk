@@ -4,8 +4,9 @@
 # a few GtkHScale widgets for the rotation, rather than the keyboard.
 
 from OpenGL.GL import *
-import gobject, gtk
-from gtk import gl
+import gobject
+import gtk
+import gtk.gl
 
 import math
 

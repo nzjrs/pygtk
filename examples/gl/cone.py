@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.2
 
 import gtk
-from gtk import gl
+import gtk.gl
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
