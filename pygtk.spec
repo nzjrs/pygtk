@@ -1,7 +1,7 @@
 %define py_prefix /usr
 # py_ver should only be 3 characters (1.5.1 == 1.5)
 %define py_ver 1.5
-%define ver 0.5.6
+%define ver 0.5.8
 
 Summary: Python bindings for the GTK+ widget set.
 Name: pygtk
