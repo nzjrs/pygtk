@@ -2176,8 +2176,8 @@ class GtkEditable(GtkWidget):
 		return GtkWidget.__getattr__(self, attr)
 	def select_region(self, start, end):
 		_gtk.gtk_editable_select_region(self._o, start, end)
-	def insert_text(self, new_text):
-		return _gtk.gtk_editable_insert_text(self._o, new_text)
+	def insert_text(self, new_text, pos=0):
+		return _gtk.gtk_editable_insert_text(self._o, new_text, pos)
 	def delete_text(self, start, end):
 		_gtk.gtk_editable_delete_text(self._o, start, end)
 	def get_chars(self, start, end):

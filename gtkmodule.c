@@ -4934,8 +4934,8 @@ static PyObject *_wrap_gtk_editable_insert_text(PyObject *self, PyObject *args) 
     PyGtk_Object *o;
     char *text;
     int len, pos;
-    if (!PyArg_ParseTuple(args, "O!s#:gtk_editable_insert_text",
-			  &PyGtk_Type, &o, &text, &len))
+    if (!PyArg_ParseTuple(args, "O!s#i:gtk_editable_insert_text",
+			  &PyGtk_Type, &o, &text, &len, &pos))
         return NULL;
     gtk_editable_insert_text(GTK_EDITABLE(PyGtk_Get(o)), text, len, &pos);
     return PyInt_FromLong(pos);
