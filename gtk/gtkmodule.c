@@ -40,6 +40,8 @@ void pygdk_add_constants(PyObject *module, const gchar *strip_prefix);
 extern PyMethodDef pygtk_functions[];
 extern PyMethodDef pygdk_functions[];
 
+PyObject *PyGtkDeprecationWarning;
+
 static struct _PyGtk_FunctionStruct functions = {
     VERSION,
 
@@ -152,6 +154,10 @@ init_gtk(void)
 			 o=PyCObject_FromVoidPtr(&functions, NULL));
     Py_DECREF(o);
 	
+    PyGtkDeprecationWarning = PyErr_NewException("gtk.GtkDeprecationWarning",
+						 PyExc_DeprecationWarning, NULL);
+    PyDict_SetItemString(d, "DeprecationWarning", PyGtkDeprecationWarning);
+
     stock_ids = gtk_stock_list_ids();
     strcpy(buf, "STOCK_");
     for (cur = stock_ids; cur; cur = stock_ids) {
@@ -184,6 +190,7 @@ init_gtk(void)
 	stock_ids = cur->next;
 	g_slist_free_1(cur);
     }
+    
     /* namespace all the gdk stuff in gtk.gdk ... */
     m = Py_InitModule("gtk.gdk", pygdk_functions);
     d = PyModule_GetDict(m);
@@ -210,6 +217,6 @@ init_gtk(void)
     add_atom(SELECTION_TYPE_WINDOW);
     add_atom(SELECTION_TYPE_STRING);
 #undef add_atom
-
+    
     gtk_timeout_add(100, python_do_pending_calls, NULL);
 }

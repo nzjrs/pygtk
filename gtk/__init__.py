@@ -59,12 +59,9 @@ gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
 gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
 # Warnings
-from warnings import warn as _warn
-
-class GtkDeprecationWarning(DeprecationWarning):
-    pass
-
 class _Deprecated:
+    from warnings import warn
+    warn = staticmethod(warn)
     def __init__(self, func, oldname, module=''):
         self.func = func
         self.oldname = oldname
@@ -73,12 +70,17 @@ class _Deprecated:
             self.module = 'gtk.' + module
         else:
             self.module = 'gtk'
-
+            
+    def __repr__(self):
+        return '<deprecated function %s at 0x%x>' % (self.oldname, id(self))
+    
     def __call__(self, *args, **kwargs):
         message = 'gtk.%s is deprecated, use %s.%s instead' % (self.oldname,
                                                                self.module,
                                                                self.name)
-        _warn(message, GtkDeprecationWarning)
+        # DeprecationWarning is imported from _gtk, so it's not the same
+        # as the one found in exceptions.
+        self.warn(message, DeprecationWarning)
         return self.func(*args, **kwargs)
 
 # old names compatibility ...
@@ -92,3 +94,4 @@ create_pixmap_from_xpm = _Deprecated(gdk.pixmap_create_from_xpm,
                                      'pixmap_create_from_xpm', 'gdk')
 create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
                                        'pixmap_create_from_xpm_d', 'gdk')
+del _Deprecated
