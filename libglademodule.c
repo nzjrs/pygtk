@@ -208,7 +208,7 @@ static PyMethodDef libgladeMethods[] = {
 };
 
 void init_libglade(void) {
-    PyObject *m, *d;
+    PyObject *m;
 
     m = Py_InitModule("_libglade", libgladeMethods);
 

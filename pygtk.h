@@ -187,6 +187,7 @@ staticforward PyTypeObject PyGtkCTreeNode_Type;
 #define PyGdkColor_Check(v) ((v)->ob_type == &PyGdkColor_Type)
 #define PyGdkEvent_Check(v) ((v)->ob_type == &PyGdkEvent_Type)
 #define PyGdkWindow_Check(v) ((v)->ob_type == &PyGdkWindow_Type)
+#define PyGdkBitmap_Check(v) ((v)->ob_type == &PyGdkWindow_Type)
 #define PyGdkGC_Check(v) ((v)->ob_type == &PyGdkGC_Type)
 #define PyGdkColormap_Check(v) ((v)->ob_type == &PyGdkColormap_Type)
 #define PyGdkDragContext_Check(v) ((v)->ob_type == &PyGdkDragContext_Type)

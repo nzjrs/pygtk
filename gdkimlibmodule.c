@@ -86,7 +86,7 @@ static PyTypeObject PyGdkImlibImage_Type = {
 
 
 static PyObject *_wrap_gdk_imlib_init(PyObject *self, PyObject *args) {
-    static called = 0;
+    static int called = 0;
 
     if (called) {
         Py_INCREF(Py_None);

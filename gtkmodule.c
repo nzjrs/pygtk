@@ -232,10 +232,16 @@ static PyObject *
 PyGtkStyle_New(GtkStyle *obj) {
   PyGtkStyle_Object *self;
 
+  if (!obj) {
+    Py_INCREF(Py_None);
+    return Py_None;
+  }    
+  
   self = (PyGtkStyle_Object *)PyObject_NEW(PyGtkStyle_Object,
                                            &PyGtkStyle_Type);
   if (self == NULL)
     return NULL;
+
   self->obj = obj;
   gtk_style_ref(self->obj);
   return (PyObject *)self;
@@ -575,8 +581,6 @@ static PyMethodDef PyGtkStyle_methods[] = {
 
 static PyObject *PyGtkStyle_GetAttr(PyGtkStyle_Object *self, char *attr) {
   GtkStyle *style = self->obj;
-  PyObject *ret;
-  int i;
 
   if (!strcmp(attr, "__members__"))
     return Py_BuildValue("[sssssssssssssssssssss]", "base", "base_gc", "bg",
@@ -1347,7 +1351,7 @@ static PyObject *PyGdkWindow_PropertyGet(PyGdkWindow_Object *self,
     if (gdk_property_get(self->obj, property, type, 0, 9999, pdelete,
 			 &atype, &aformat, &alength, &data)) {
 	/* success */
-	PyObject *pdata;
+	PyObject *pdata = NULL;
 	gint i;
 	guint16 *data16;
 	guint32 *data32;
@@ -1385,7 +1389,7 @@ static PyObject *PyGdkWindow_PropertyChange(PyGdkWindow_Object *self,
     gint format;
     PyObject *py_mode, *pdata;
     GdkPropMode mode;
-    guchar *data;
+    guchar *data = NULL;
     gint nelements;
 
     if (!PyArg_ParseTuple(args, "iiiOO:GdkWindow.property_change", &property,
@@ -2383,7 +2387,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     GTK_VALUE_INT(*arg) = 0;
     break;
   case GTK_TYPE_BOOL:
-    if (tmp = PyNumber_Int(obj))
+    if ((tmp = PyNumber_Int(obj)))
       GTK_VALUE_BOOL(*arg) = (PyInt_AsLong(tmp) != 0);
     else {
       PyErr_Clear();
@@ -2392,7 +2396,8 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_CHAR:
-    if (tmp = PyObject_Str(obj))
+  case GTK_TYPE_UCHAR:
+    if ((tmp = PyObject_Str(obj)))
       GTK_VALUE_CHAR(*arg) = PyString_AsString(tmp)[0];
     else {
       PyErr_Clear();
@@ -2409,7 +2414,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
       return -1;
     break;
   case GTK_TYPE_INT:
-    if (tmp = PyNumber_Int(obj))
+    if ((tmp = PyNumber_Int(obj)))
       GTK_VALUE_INT(*arg) = PyInt_AsLong(tmp);
     else {
       PyErr_Clear();
@@ -2418,7 +2423,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_UINT:
-    if (tmp = PyNumber_Int(obj))
+    if ((tmp = PyNumber_Int(obj)))
       GTK_VALUE_UINT(*arg) = PyInt_AsLong(tmp);
     else {
       PyErr_Clear();
@@ -2427,7 +2432,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_LONG:
-    if (tmp = PyNumber_Int(obj))
+    if ((tmp = PyNumber_Int(obj)))
       GTK_VALUE_LONG(*arg) = PyInt_AsLong(tmp);
     else {
       PyErr_Clear();
@@ -2436,7 +2441,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_ULONG:
-    if (tmp = PyNumber_Int(obj))
+    if ((tmp = PyNumber_Int(obj)))
       GTK_VALUE_ULONG(*arg) = PyInt_AsLong(tmp);
     else {
       PyErr_Clear();
@@ -2445,7 +2450,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_FLOAT:
-    if (tmp = PyNumber_Float(obj))
+    if ((tmp = PyNumber_Float(obj)))
       GTK_VALUE_FLOAT(*arg) = PyFloat_AsDouble(tmp);
     else {
       PyErr_Clear();
@@ -2454,7 +2459,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_DOUBLE:
-    if (tmp = PyNumber_Float(obj))
+    if ((tmp = PyNumber_Float(obj)))
       GTK_VALUE_DOUBLE(*arg) = PyFloat_AsDouble(tmp);
     else {
       PyErr_Clear();
@@ -2463,7 +2468,7 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_STRING:
-    if (tmp = PyObject_Str(obj))
+    if ((tmp = PyObject_Str(obj)))
       GTK_VALUE_STRING(*arg) = PyString_AsString(tmp);
     else {
       PyErr_Clear();
@@ -2594,6 +2599,7 @@ static PyObject *GtkArg_AsPyObject(GtkArg *arg) {
     Py_INCREF(Py_None);
     return Py_None;
   case GTK_TYPE_CHAR:
+  case GTK_TYPE_UCHAR:
     return PyString_FromStringAndSize(&GTK_VALUE_CHAR(*arg), 1);
   case GTK_TYPE_BOOL:
     return PyInt_FromLong(GTK_VALUE_BOOL(*arg));
@@ -2681,7 +2687,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
   case GTK_TYPE_INVALID:
     break;
   case GTK_TYPE_BOOL:
-    if (tmp = PyNumber_Int(py_ret)) {
+    if ((tmp = PyNumber_Int(py_ret))) {
       *GTK_RETLOC_BOOL(*ret) = (PyInt_AsLong(tmp) != 0);
       Py_DECREF(tmp);
     } else {
@@ -2690,7 +2696,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_CHAR:
-    if (tmp = PyObject_Str(py_ret)) {
+    if ((tmp = PyObject_Str(py_ret))) {
       *GTK_RETLOC_CHAR(*ret) = PyString_AsString(tmp)[0];
       Py_DECREF(tmp);
     } else {
@@ -2711,7 +2717,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_INT:
-    if (tmp = PyNumber_Int(py_ret)) {
+    if ((tmp = PyNumber_Int(py_ret))) {
       *GTK_RETLOC_INT(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
     } else {
@@ -2720,7 +2726,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_UINT:
-    if (tmp = PyNumber_Int(py_ret)) {
+    if ((tmp = PyNumber_Int(py_ret))) {
       *GTK_RETLOC_UINT(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
     } else {
@@ -2729,7 +2735,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_LONG:
-    if (tmp = PyNumber_Int(py_ret)) {
+    if ((tmp = PyNumber_Int(py_ret))) {
       *GTK_RETLOC_LONG(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
     } else {
@@ -2738,7 +2744,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_ULONG:
-    if (tmp = PyNumber_Int(py_ret)) {
+    if ((tmp = PyNumber_Int(py_ret))) {
       *GTK_RETLOC_ULONG(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
     } else {
@@ -2747,7 +2753,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_FLOAT:
-    if (tmp = PyNumber_Float(py_ret)) {
+    if ((tmp = PyNumber_Float(py_ret))) {
       *GTK_RETLOC_FLOAT(*ret) = PyFloat_AsDouble(tmp);
       Py_DECREF(tmp);
     } else {
@@ -2756,7 +2762,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_DOUBLE:
-    if (tmp = PyNumber_Float(py_ret)) {
+    if ((tmp = PyNumber_Float(py_ret))) {
       *GTK_RETLOC_DOUBLE(*ret) = PyFloat_AsDouble(tmp);
       Py_DECREF(tmp);
     } else {
@@ -2765,7 +2771,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     }
     break;
   case GTK_TYPE_STRING:
-    if (tmp = PyObject_Str(py_ret)) {
+    if ((tmp = PyObject_Str(py_ret))) {
       *GTK_RETLOC_STRING(*ret) = g_strdup(PyString_AsString(py_ret));
       Py_DECREF(tmp);
     } else {
@@ -3170,6 +3176,7 @@ static GtkArg *PyDict_AsGtkArgs(PyObject *dict, GtkType type, gint *nargs) {
     return arg;
 }
 
+#if 0 /* not used */
 static void PyGtk_object_set(GtkObject *o, PyObject *dict) {
     int i = 0;
     PyObject *key, *item;
@@ -3203,6 +3210,7 @@ static void PyGtk_object_set(GtkObject *o, PyObject *dict) {
         gtk_object_setv(o, 1, &arg);
     }
 }
+#endif /* not used */
 
 static GtkArg *PyDict_AsContainerArgs(PyObject *dict,GtkType type,gint *nargs){
     PyObject *key, *item;
@@ -3643,7 +3651,7 @@ static PyObject *_wrap_gtk_object_set(PyObject *self, PyObject *args) {
 
 static PyObject *_wrap_gtk_object_new(PyObject *self, PyObject *args) {
     GtkType type;
-    gint nargs, i;
+    gint nargs;
     GtkArg *arg;
     PyObject *dict;
     GtkObject *obj;
@@ -4108,6 +4116,16 @@ static PyObject *_wrap_gtk_clist_get_selection(PyObject *self, PyObject *args) {
   }
   return ret;
 }
+
+static PyObject *_wrap_gtk_clist_get_rows(PyObject *self, PyObject *args) {
+  PyObject *clist;
+
+  if (!PyArg_ParseTuple(args, "O!:gtk_clist_get_rows", &PyGtk_Type,
+			&clist))
+    return NULL;
+  return PyInt_FromLong(GTK_CLIST(PyGtk_Get(clist))->rows);
+}
+
 static PyObject *_wrap_gtk_clist_new_with_titles(PyObject *self, PyObject *args) {
 	int c, i;
 	PyObject *l, *item;
@@ -4362,6 +4380,7 @@ static PyObject *_wrap_gtk_clist_get_column_width(PyObject *self, PyObject *args
 	return PyInt_FromLong(-1);
 }
 
+
 static PyObject *
 _wrap_gtk_combo_set_popdown_strings(PyObject *self, PyObject *args) {
   PyObject *obj, *list, *item;
@@ -4540,9 +4559,12 @@ static void PyGtk_MenuPosition(GtkMenu *menu, int *x, int *y, PyObject *func) {
 	    PyErr_Print();
 	    PyErr_Clear();
 	}
-        if (ret) Py_DECREF(ret);
-    } else
+        if (ret) {
+	  Py_DECREF(ret);
+	}
+    } else {
         Py_DECREF(ret);
+    }
     PyGTK_UNBLOCK_THREADS
 }
 static PyObject *_wrap_gtk_menu_popup(PyObject *self, PyObject *args) {
@@ -4699,7 +4721,6 @@ static PyObject *_wrap_gtk_toolbar_append_item(PyObject *self, PyObject *args) {
   char *text, *tooltip, *tip_private;
   GtkWidget *ret;
   PyObject *callback;
-  GList *tmp_list;
   if (!PyArg_ParseTuple(args, "O!zzzO!O|gtk_toolbar_append_item",
 			&PyGtk_Type, &t, &text, &tooltip, &tip_private,
 		       &PyGtk_Type, &icon, &callback))
@@ -6077,6 +6098,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_clist_find_row_from_data", _wrap_gtk_clist_find_row_from_data, 1 },
     { "gtk_clist_get_selection_info", _wrap_gtk_clist_get_selection_info, 1 },
     { "gtk_clist_get_column_width", _wrap_gtk_clist_get_column_width, 1 },
+    { "gtk_clist_get_rows", _wrap_gtk_clist_get_rows, 1 },
     { "gtk_combo_set_popdown_strings", _wrap_gtk_combo_set_popdown_strings,1 },
     { "gtk_curve_get_vector", _wrap_gtk_curve_get_vector, 1 },
     { "gtk_curve_set_vector", _wrap_gtk_curve_set_vector, 1 },

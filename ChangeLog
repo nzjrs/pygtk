@@ -1,3 +1,28 @@
+1999-12-15  Matt Wilson  <msw@redhat.com>
+
+	* gtk.py (GtkCList.__getattr__): added 'rows' attribute.
+
+	* gtkmodule.c (_wrap_gtk_clist_get_rows): added wrapper to get
+	number of rows in a clist
+
+	* gtkmodule.c (PyGtkStyle_New): If the GtkStyle passed in is NULL,
+	return a None object.  This is a bit of a hack, but without it
+	you'll fail NULL assertions when you attach to the style_set
+	signal.
+
+	* generate/gtkmisc.defs (gtk_pixmap_new): mask is null-ok.
+
+	* generate/gtklists.defs (gtk_clist_set_pixmap): likewise.
+
+	* pygtk.h (PyGdkBitmap_Check): define PyGdkBitmap_Check to be the
+	same as PyGdkWindow_Check.
+
+	* gtkmodule.c: -Wall cleanups
+
+	* libglademodule.c (init_libglade): removed unused variable
+
+	* gdkimlibmodule.c (_wrap_gdk_imlib_init): s/static/static int/
+
 1999-12-12  Matt Wilson  <msw@redhat.com>
 
 	* generate/generate.py (FunctionDefsParser.define_func): added new
