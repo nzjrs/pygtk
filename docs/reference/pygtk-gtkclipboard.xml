@@ -42,24 +42,22 @@
 	<methodparam><parameter role="keyword">text</parameter></methodparam>
 	<methodparam><parameter role="keyword">len</parameter><initializer>-1</initializer></methodparam>
       </methodsynopsis>
-<!-- NOT IMPLEMENTED
       <methodsynopsis language="python">
-	<methodname><link linkend="method-gtkclipboard- -request-contents">request_contents</link></methodname>
+	<methodname><link linkend="method-gtkclipboard--request-contents">request_contents</link></methodname>
 	<methodparam><parameter role="keyword">target</parameter></methodparam>
 	<methodparam><parameter role="keyword">callback</parameter></methodparam>
 	<methodparam><parameter role="keyword">user_data</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-	<methodname><link linkend="method-gtkclipboard- -request-text">request_text</link></methodname>
+	<methodname><link linkend="method-gtkclipboard--request-text">request_text</link></methodname>
 	<methodparam><parameter role="keyword">callback</parameter></methodparam>
 	<methodparam><parameter role="keyword">user_data</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-	<methodname><link linkend="method-gtkclipboard- -request-targets">request_targets</link></methodname>
+	<methodname><link linkend="method-gtkclipboard--request-targets">request_targets</link></methodname>
 	<methodparam><parameter role="keyword">callback</parameter></methodparam>
 	<methodparam><parameter role="keyword">user_data</parameter></methodparam>
       </methodsynopsis>
-END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--wait-for-contents">wait_for_contents</link></methodname>
 	<methodparam><parameter role="keyword">target</parameter></methodparam>
@@ -70,13 +68,9 @@ END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--wait-is-text-available">wait_is_text_available</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
-<!-- NOT IMPLEMENTED
       <methodsynopsis language="python">
-	<methodname><link linkend="method-gtkclipboard- -wait-for-targets">wait_for_targets</link></methodname>
-	<methodparam><parameter role="keyword">targets</parameter></methodparam>
-	<methodparam><parameter role="keyword">n_targets</parameter></methodparam>
+	<methodname><link linkend="method-gtkclipboard--wait-for-targets">wait_for_targets</link></methodname>
       </methodsynopsis>
-END NOT IMPLEMENTED -->
     </classsynopsis>
 
   </refsect1>
@@ -427,8 +421,7 @@ length.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-    <refsect2 id="method-gtkclipboard- -request-contents">
+    <refsect2 id="method-gtkclipboard--request-contents">
       <title>gtk.Clipboard.request_contents</title>
 
       <programlisting><methodsynopsis language="python">
@@ -440,15 +433,15 @@ length.</para>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">target</parameter>&nbsp;:</term>
-	  <listitem><simpara>an atom representing the form into which the clipboard
-owner should convert the selection.</simpara></listitem>
+	  <listitem><simpara>a <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>
+or string representing the form that the clipboard owner should convert
+the selection to.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">callback</parameter>&nbsp;:</term>
-	  <listitem><simpara>A function to call when the results are received
-(or the retrieval fails). If the retrieval fails
-the length field of <parameter>selection_data</parameter> will be
-negative.</simpara></listitem>
+	  <listitem><simpara>a function to call when the results are received
+(or the retrieval fails).</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
@@ -460,14 +453,28 @@ negative.</simpara></listitem>
 	<para>This method is available in PyGTK 2.4 and above.</para>
       </note>
 
-      <para>
-Requests the contents of clipboard as the given target.
-When the results of the result are later received the supplied callback
-will be called.
-</para>  </refsect2>
+      <para>The <methodname>request_contents</methodname>() method requests
+the contents of clipboard in the form specified by
+<parameter>target</parameter>.  When the results of the request are later
+received the function specified by <parameter>callback</parameter> will be
+invoked and passed the data specified by
+<parameter>user_data</parameter>. The signature of
+<parameter>callback</parameter> is:</para>
 
+      <programlisting>
+  def callback(clipboard, selection_data, data):
+</programlisting>
 
-    <refsect2 id="method-gtkclipboard- -request-text">
+      <para>where <parameter>clipboard</parameter> is the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+that invoked callback and <parameter>selection_data</parameter> is the <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
+containing the target data and <parameter>data</parameter> is
+<parameter>user_data</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--request-text">
       <title>gtk.Clipboard.request_text</title>
 
       <programlisting><methodsynopsis language="python">
@@ -484,7 +491,8 @@ one way or the other.)</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
-	  <listitem><simpara>user data to pass to <parameter>callback</parameter>.</simpara></listitem>
+	  <listitem><simpara>user data to pass to
+<parameter>callback</parameter>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -492,20 +500,28 @@ one way or the other.)</simpara></listitem>
 	<para>This method is available in PyGTK 2.4 and above.</para>
       </note>
 
-      <para>
-Requests the contents of the clipboard as text. When the text is
-later received, it will be converted to UTF-8 if necessary, and
-<parameter>callback</parameter> will be called. 
-</para>
-      <para>
-The <parameter>text</parameter> parameter to <parameter>callback</parameter> will contain the resulting text if
-the request succeeded, or <literal>None</literal> if it failed. This could happen for
-various reasons, in particular if the clipboard was empty or if the
-contents of the clipboard could not be converted into text form.
-</para>  </refsect2>
+      <para>The <methodname>request_text</methodname>() method requests the
+contents of the clipboard as text. When the text is later received, it will
+be converted to UTF-8 if necessary, and <parameter>callback</parameter> will
+be called with the data specified by <parameter>user_data</parameter>. The
+signature of <parameter>callback</parameter> is:</para>
 
+      <programlisting>
+  def callback(clipboard, text, data):
+</programlisting>
 
-    <refsect2 id="method-gtkclipboard- -request-targets">
+      <para>where <parameter>clipboard</parameter> is the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+that <parameter>text</parameter> is retrieved from and
+<parameter>data</parameter> is <parameter>user_data</parameter>.
+<parameter>text</parameter> will contain the resulting text if the request
+succeeded, or the empty string if it failed. This could happen for various
+reasons, in particular if the clipboard was empty or if the contents of the
+clipboard could not be converted into text form.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--request-targets">
       <title>gtk.Clipboard.request_targets</title>
 
       <programlisting><methodsynopsis language="python">
@@ -522,7 +538,8 @@ one way or the other.)</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
-	  <listitem><simpara>user data to pass to <parameter>callback</parameter>.</simpara></listitem>
+	  <listitem><simpara>user data to pass to
+<parameter>callback</parameter>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -530,18 +547,26 @@ one way or the other.)</simpara></listitem>
 	<para>This method is available in PyGTK 2.4 and above.</para>
       </note>
 
-      <para>
-Requests the contents of the clipboard as list of supported targets. 
-When the list is later received, <parameter>callback</parameter> will be called. 
-</para>
-      <para>
-The <parameter>targets</parameter> parameter to <parameter>callback</parameter> will contain the resulting targets if
-the request succeeded, or <literal>None</literal> if it failed.
-</para>
-      <para>
-Since: 2.4
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <para>The <methodname>request_targets</methodname>() method requests
+the contents of the clipboard as list of supported targets.  When the list
+is later received, <parameter>callback</parameter> will be called with the
+data specified by <parameter>user_data</parameter>. The signature of
+<parameter>callback</parameter> is:</para>
+
+      <programlisting>
+  def callback(clipboard, targets, data):
+</programlisting>
+
+      <para>where <parameter>clipboard</parameter> is the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+that <parameter>targets</parameter> is retrieved
+from. <parameter>targets</parameter> is a tuple containing the <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> objects
+corresponding to the targets of clipboard. <parameter>targets</parameter>
+will contain the resulting targets if the request succeeded, or an empty
+tuple if it failed.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gtkclipboard--wait-for-contents">
       <title>gtk.Clipboard.wait_for_contents</title>
@@ -637,31 +662,17 @@ since it doesn't need to retrieve the actual text.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-    <refsect2 id="method-gtkclipboard- -wait-for-targets">
+    <refsect2 id="method-gtkclipboard--wait-for-targets">
       <title>gtk.Clipboard.wait_for_targets</title>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>wait_for_targets</methodname>
-	  <methodparam><parameter role="keyword">targets</parameter></methodparam>
-	  <methodparam><parameter role="keyword">n_targets</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
-	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
-	  <listitem><simpara>location to store an array of targets. The result
-stored here must be freed with <methodname>g_free()</methodname>.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter role="keyword">n_targets</parameter>&nbsp;:</term>
-	  <listitem><simpara>location to store number of items in <parameter>targets</parameter>.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara><literal>TRUE</literal> if any targets are present on the clipboard,
-otherwise <literal>FALSE</literal>.
-
-Since: 2.4</simpara></listitem>
+	  <listitem><simpara>reutns a tuple containing any targets that are
+present on the clipboard or <literal>None</literal>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -669,14 +680,15 @@ Since: 2.4</simpara></listitem>
 	<para>This method is available in PyGTK 2.4 and above.</para>
       </note>
 
-      <para>
-Returns a list of targets that are present on the clipboard, or <literal>None</literal>
-if there aren't any targets available. The returned list must be 
-freed with <methodname>g_free()</methodname>.
-This function waits for the data to be received using the main 
-loop, so events, timeouts, etc, may be dispatched during the wait.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <para>The <methodname>wait_for_targets</methodname>() method returns a
+tuple containing the targets (as <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> objects)
+that are present on the clipboard, or <literal>None</literal> if there
+aren't any targets available. This function waits for the data to be
+received using the main loop, so events, timeouts, etc, may be dispatched
+during the wait.</para>
+
+    </refsect2>
 
   </refsect1>
 
