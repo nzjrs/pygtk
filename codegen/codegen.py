@@ -507,8 +507,8 @@ def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
         return '0'
     getsets = []
     for ftype, fname in objobj.fields:
-        funcname = getterprefix + fname
-        settername = setterprefix + fname
+        gettername = '0'
+        settername = '0'
         attrname = objobj.c_name + '.' + fname
         if overrides.attr_is_overriden(attrname):
             lineno, filename = overrides.getstartline(attrname)
@@ -516,25 +516,29 @@ def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
             fp.setline(lineno, filename)
             fp.write(code)
             fp.resetline()
-            # if no setter was in the code block ...
-            if string.find(code, setterprefix + fname) < 0:
-                settername = '0'
+            if string.find(code, getterprefix + fname) >= 0:
+                gettername = getterprefix + fname
+            if string.find(code, setterprefix + fname) >= 0:
+                settername = setterprefix + fname
+        if gettername == '0':
+            try:
+                funcname = getterprefix + fname
+                info = argtypes.WrapperInfo()
+                handler = argtypes.matcher.get(ftype)
+                handler.write_return(ftype, info)
+                fp.write(gettertmpl %
+                         { 'funcname': funcname,
+                           'varlist': info.varlist,
+                           'field': castmacro+'(self->obj)->' + fname,
+                           'codeafter': info.get_codeafter() })
+                gettername = funcname
+            except:
+                sys.stderr.write("Could not write getter for %s.%s: %s\n"
+                                 % (objobj.c_name, fname, exc_info()))
+        if gettername != '0' or settername != '0':
             getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
-                           (fixname(fname), funcname, settername))
-            continue
-        try:
-            info = argtypes.WrapperInfo()
-            handler = argtypes.matcher.get(ftype)
-            handler.write_return(ftype, info)
-            fp.write(gettertmpl % { 'funcname': funcname,
-                                    'varlist': info.varlist,
-                                    'field': castmacro+'(self->obj)->' + fname,
-                                    'codeafter': info.get_codeafter() })
-            getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
-                           (fixname(fname), funcname))
-        except:
-            sys.stderr.write("Could not write check for %s.%s: %s\n"
-                             % (objobj.c_name, fname, exc_info()))
+                           (fixname(fname), gettername, settername))
+
     if not getsets:
         return '0'
     fp.write('static PyGetSetDef %s[] = {\n' % getsets_name)
@@ -619,6 +623,8 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
     for slot in slots_list:
         slotname = '%s.%s' % (objobj.c_name, slot)
         slotfunc = '_wrap_%s_%s' % (string.lower(castmacro), slot)
+        if slot[:6] == 'tp_as_':
+            slotfunc = '&' + slotfunc
         if overrides.slot_is_overriden(slotname):
             lineno, filename = overrides.getstartline(slotname)
             fp.setline(lineno, filename)
@@ -673,6 +679,8 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
     for slot in slots_list:
         slotname = '%s.%s' % (interface.c_name, slot)
         slotfunc = '_wrap_%s_%s' % (string.lower(castmacro), slot)
+        if slot[:6] == 'tp_as_':
+            slotfunc = '&' + slotfunc
         if overrides.slot_is_overriden(slotname):
             lineno, filename = overrides.getstartline(slotname)
             fp.setline(lineno, filename)
@@ -776,35 +784,38 @@ def write_boxed_getsets(parser, boxedobj, overrides, fp=sys.stdout):
 
     getsets = []
     for ftype, fname in boxedobj.fields:
-        funcname = getterprefix + fname
         attrname = boxedobj.c_name + '.' + fname
-        settername = setterprefix + fname
+        gettername = '0'
+        settername = '0'
         if overrides.attr_is_overriden(attrname):
             lineno, filename = overrides.getstartline(attrname)
             code = overrides.attr_override(attrname)
             fp.setline(lineno, filename)
             fp.write(code)
             fp.resetline()
-            # if no setter was in the code block ...
-            if string.find(code, setterprefix + fname) < 0:
-                settername = '0'
+            if string.find(code, getterprefix + fname) >= 0:
+                gettername = getterprefix + fname
+            if string.find(code, setterprefix + fname) >= 0:
+                settername = setterprefix + fname
+        if gettername == '0':
+            try:
+                funcname = getterprefix + fname
+                info =  argtypes.WrapperInfo()
+                handler = argtypes.matcher.get(ftype)
+                handler.write_return(ftype, info)
+                field = 'pyg_boxed_get(self, ' + boxedobj.c_name + ')->' + fname
+                fp.write(boxedgettertmpl %
+                         { 'funcname': funcname,
+                           'varlist': info.varlist,
+                           'field': field,
+                           'codeafter': info.get_codeafter() })
+                gettername = funcname
+            except:
+                sys.stderr.write("Could not write getter for %s.%s: %s\n"
+                                 % (boxedobj.c_name, fname, exc_info()))
+        if gettername != '0' or settername != '0':
             getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
-                           (fixname(fname), funcname, settername))
-            continue
-        try:
-            info =  argtypes.WrapperInfo()
-            handler = argtypes.matcher.get(ftype)
-            handler.write_return(ftype, info)
-            field = 'pyg_boxed_get(self, ' + boxedobj.c_name + ')->' + fname
-            fp.write(boxedgettertmpl % { 'funcname': funcname,
-                                         'varlist': info.varlist,
-                                         'field': field,
-                                         'codeafter': info.get_codeafter() })
-            getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
-                           (fixname(fname), funcname))
-        except:
-            sys.stderr.write("Could not write check for %s.%s: %s\n"
-                             % (boxedobj.c_name, fname, exc_info()))
+                           (fixname(fname), gettername, settername))
 
     if not getsets:
         return '0'
@@ -878,6 +889,8 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
         slotfunc = '_wrap_%s_%s' % \
                    (string.lower(string.replace(boxedobj.typecode,
                                                 '_TYPE_', '_', 1)), slot)
+        if slot[:6] == 'tp_as_':
+            slotfunc = '&' + slotfunc
         if overrides.slot_is_overriden(slotname):
             lineno, filename = overrides.getstartline(slotname)
             fp.setline(lineno, filename)
@@ -973,38 +986,46 @@ def write_pointer_getsets(parser, pointerobj, overrides, fp=sys.stdout):
     typecode = pointerobj.typecode
     uline = string.replace(typecode, '_TYPE_', '_', 1)
     getsets_name = string.lower(uline) + '_getsets'
-    funcprefix = '_wrap_' + string.lower(uline) + '__get_'
+    getterprefix = '_wrap_' + string.lower(uline) + '__get_'
+    setterprefix = '_wrap_' + string.lower(uline) + '__set_'
 
     if not pointerobj.fields:
         return '0'
 
     getsets = []
     for ftype, fname in pointerobj.fields:
-        funcname = funcprefix + fname
         attrname = pointerobj.c_name + '.' + fname
+        gettername = '0'
+        settername = '0'
         if overrides.attr_is_overriden(attrname):
             lineno, filename = overrides.getstartline(attrname)
             code = overrides.attr_override(attrname)
             fp.setline(lineno, filename)
             fp.write(code)
             fp.resetline()
-            getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
-                           (fixname(fname), funcname))
-            continue
-        try:
-            info =  argtypes.WrapperInfo()
-            handler = argtypes.matcher.get(ftype)
-            handler.write_return(ftype, info)
-            field = 'pyg_pointer_get(self, ' + pointerobj.c_name + ')->' + fname
-            fp.write(boxedgettertmpl % { 'funcname': funcname,
-                                         'varlist': info.varlist,
-                                         'field': field,
-                                         'codeafter': info.get_codeafter() })
-            getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
-                           (fixname(fname), funcname))
-        except:
-            sys.stderr.write("Could not write check for %s.%s: %s\n"
-                             % (pointerobj.c_name, fname, exc_info()))
+            if string.find(code, getterprefix + fname) >= 0:
+                gettername = getterprefix + fname
+            if string.find(code, setterprefix + fname) >= 0:
+                settername = setterprefix + fname
+        if gettername == '0':
+            try:
+                funcname = getterprefix + fname
+                info =  argtypes.WrapperInfo()
+                handler = argtypes.matcher.get(ftype)
+                handler.write_return(ftype, info)
+                field = 'pyg_pointer_get(self, ' + pointerobj.c_name + ')->' + fname
+                fp.write(boxedgettertmpl %
+                         { 'funcname': funcname,
+                           'varlist': info.varlist,
+                           'field': field,
+                           'codeafter': info.get_codeafter() })
+                gettername = funcname
+            except:
+                sys.stderr.write("Could not write check for %s.%s: %s\n"
+                                 % (pointerobj.c_name, fname, exc_info()))
+        if gettername != '0' or settername != '0':
+            getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
+                           (fixname(fname), gettername, settername))
 
     if not getsets:
         return '0'
@@ -1078,6 +1099,8 @@ def write_pointer(parser, pointerobj, overrides, fp=sys.stdout):
         slotfunc = '_wrap_%s_%s' % \
                    (string.lower(string.replace(pointerobj.typecode,
                                                 '_TYPE_', '_', 1)), slot)
+        if slot[:6] == 'tp_as_':
+            slotfunc = '&' + slotfunc
         if overrides.slot_is_overriden(slotname):
             lineno, filename = overrides.getstartline(slotname)
             fp.setline(lineno, filename)

@@ -1,5 +1,20 @@
 2002-03-16  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtk.override (_wrap_gtk_widget_get_pointer): return a
+	GdkRectangle instance.
+
+	* gtk/gdk.override: implement setters for GdkRectangle attributes.
+
+	* codegen/codegen.py (write_getsets): allow people to override the
+	setter without having to override the getter too.
+	(write_boxed_getsets): same here.
+
+	* gtk/gdk.override: implement sequence behaviour for GdkRectangle
+	wrapper.
+
+	* gtk/gdk-types.defs (Rectangle): add a GdkRectangle boxed type
+	definition.
+
 	* pango.override (_wrap_pango_font_description_tp_compare):
 	override the compare slot to use pango_font_description_equal.
 	(_wrap_pango_font_description_tp_hash): and the hash function.
