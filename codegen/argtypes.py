@@ -189,31 +189,53 @@ class IntArg(ArgType):
         info.codeafter.append('    return PyInt_FromLong(ret);')
 
 class ULongArg(ArgType):
-    dflt = ('    if (py_%(name)s && PyLong_Check(py_%(name)s))\n'
-            '        %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
-            '    else if (py_%(name)s) {\n'
-            '        PyErr_SetString(PyExc_TypeError, "%(name)s must be an int");\n'
-            '        return NULL;\n'
-            '    }\n')
-    before = ('    if (py_%(name)s && PyLong_Check(py_%(name)s))\n'
-            '        %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
-            '    else {\n'
-            '        PyErr_SetString(PyExc_TypeError, "%(name)s must be an int");\n'
-            '        return NULL;\n'
-            '    }\n')
+    dflt = '    if (py_%(name)s)\n' \
+           '        %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
+    before = '    %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
     def write_param(self, ptype, pname, pdflt, pnull, info):
         if pdflt:
-            info.varlist.add('unsigned int', pname + ' = ' + pdflt)
+            info.varlist.add('gulong', pname + ' = ' + pdflt)
             info.codebefore.append(self.dflt % {'name':pname})            
         else:
-            info.varlist.add('unsigned int', pname)
+            info.varlist.add('gulong', pname)
             info.codebefore.append(self.before % {'name':pname})            
         info.varlist.add('PyObject', "*py_" + pname + ' = NULL')
         info.arglist.append(pname)
-        info.add_parselist('O', ['&py_' + pname], [pname])
+        info.add_parselist('O!', ['&PyLong_Type', '&py_' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
-        info.varlist.add('unsigned int', 'ret')
+        info.varlist.add('gulong', 'ret')
         info.codeafter.append('    return PyLong_FromUnsignedLong(ret);')
+
+class Int64Arg(ArgType):
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pdflt:
+	    info.varlist.add('gint64', pname + ' = ' + pdflt)
+	else:
+	    info.varlist.add('gint64', pname)
+	info.arglist.append(pname)
+        info.add_parselist('L', ['&' + pname], [pname])
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add('gint64', 'ret')
+        info.codeafter.append('    return PyLong_FromLongLong(ret);')
+
+class UInt64Arg(ArgType):
+    dflt = '    if (py_%(name)s)\n' \
+           '        %(name)s = PyLong_AsUnsignedLongLong(py_%(name)s);\n'
+    before = '    %(name)s = PyLong_AsUnsignedLongLong(py_%(name)s);\n'
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+        if pdflt:
+            info.varlist.add('guint64', pname + ' = ' + pdflt)
+            info.codebefore.append(self.dflt % {'name':pname})            
+        else:
+            info.varlist.add('guint64', pname)
+            info.codebefore.append(self.before % {'name':pname})            
+        info.varlist.add('PyObject', "*py_" + pname + ' = NULL')
+        info.arglist.append(pname)
+        info.add_parselist('O!', ['&PyLong_Type', '&py_' + pname], [pname])
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add('guint64', 'ret')
+        info.codeafter.append('    return PyLong_FromUnsignedLongLong(ret);')
+        
 
 class DoubleArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
@@ -333,16 +355,8 @@ class ObjectArg(ArgType):
             '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n'
             '        return NULL;\n'
             '    }\n')
-    dflt = ('    if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n'
-            '        %(name)s = %(cast)s(py_%(name)s->obj);\n'
-            '    else if (py_%(name)s) {\n'
-            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n'
-            '        return NULL;\n'
-            '    }\n')
-    check = ('    if (!pygobject_check(%(name)s, &Py%(type)s_Type)) {\n'
-             '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n'
-             '        return NULL;\n'
-             '    }\n')
+    dflt = '    if (py_%(name)s)\n' \
+           '        %(name)s = %(cast)s(py_%(name)s->obj);\n'
     def __init__(self, objname, parent, typecode):
 	self.objname = objname
 	self.cast = string.replace(typecode, '_TYPE_', '_', 1)
@@ -368,17 +382,15 @@ class ObjectArg(ArgType):
 		info.varlist.add(self.objname, '*' + pname + ' = ' + pdflt)
 		info.varlist.add('PyGObject', '*py_' + pname + ' = NULL')
 		info.codebefore.append(self.dflt % {'name':pname,
-                                                    'cast':self.cast,
-                                                    'type':self.objname}) 
+                                                    'cast':self.cast}) 
 		info.arglist.append(pname)
-                info.add_parselist('O', ['&py_' + pname], [pname])
+                info.add_parselist('O', ['&Py%s_Type' % self.objname,
+                                         '&py_' + pname], [pname])
 	    else:
 		info.varlist.add('PyGObject', '*' + pname)
-		info.codebefore.append(self.check % {'name':pname,
-                                                     'cast':self.cast,
-                                                     'type':self.objname}) 
 		info.arglist.append('%s(%s->obj)' % (self.cast, pname))
-                info.add_parselist('O', ['&' + pname], [pname])
+                info.add_parselist('O!', ['&Py%s_Type' % self.objname,
+                                          '&' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
         if ptype[-1] == '*': ptype = ptype[:-1]
         info.varlist.add(ptype, '*ret')
@@ -713,7 +725,6 @@ matcher.register('gint8', arg)
 matcher.register('guint16', arg)
 matcher.register('gint16', arg)
 matcher.register('gint32', arg)
-matcher.register('GtkType', arg)
 
 # If the system maxint is smaller than unsigned int, we need to use
 # Long objects with PyLong_AsUnsignedLong
@@ -725,6 +736,14 @@ else:
 
 arg = ULongArg()
 matcher.register('gulong', arg)
+
+arg = Int64Arg()
+matcher.register('gint64', arg)
+matcher.register('long-long', arg)
+
+arg = UInt64Arg()
+matcher.register('guint64', arg)
+matcher.register('unsigned-long-long', arg)
 
 arg = DoubleArg()
 matcher.register('double', arg)
