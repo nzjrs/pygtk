@@ -16,7 +16,7 @@ def destroy(*args):
 tt = GtkTooltips()
 tt.set_delay(500)
 
-window = new(GtkWindow, type=WINDOW_TOPLEvEL, title="Hello World",
+window = new(GtkWindow, type=WINDOW_TOPLEVEL, title="Hello World",
 	     allow_grow=FALSE, allow_shrink=FALSE, border_width=10)
 window.connect("destroy", destroy)
 

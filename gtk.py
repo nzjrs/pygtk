@@ -174,11 +174,18 @@ class GtkItemFactory(GtkObject):
 	parse_rc = _gtk.gtk_item_factory_parse_rc
 	parse_rc_string = _gtk.gtk_item_factory_parse_rc_string
 	def get_widget(self, path):
-		return _obj2inst(_gtk.gtk_item_factory_get_widget(self._o,
-								  path))
+		ret = _gtk.gtk_item_factory_get_widget(self._o, path)
+		if ret:
+			return _obj2inst(ret)
+		else:
+			return ret
 	def get_widget_by_action(self, action):
-		return _obj2inst(_gtk.gtk_item_factory_get_widget_by_action(
-			self._o, action))
+		ret = _gtk.gtk_item_factory_get_widget_by_action(self._o,
+								 action)
+		if ret:
+			return _obj2inst(ret)
+		else:
+			return ret
 	class __wrap_cb:
 		def __init__(self, cb):
 			self.cb = cb
@@ -525,9 +532,6 @@ class GtkToggleButton(GtkButton):
 	    raise AttributeError, attr
 	def set_mode(self, di):
 		_gtk.gtk_toggle_button_set_mode(self._o, di)
-	def set_state(self, state):
-		print "GtkToggleButton.set_state deprecated -- use set_active"
-		self.set_active(state)
 	def set_active(self, active):
 		_gtk.gtk_toggle_button_set_active(self._o, active)
 	def get_active(self):
@@ -649,9 +653,6 @@ class GtkCheckMenuItem(GtkMenuItem):
 		raise AttributeError, attr
 	def set_show_toggle(self, always):
 		_gtk.gtk_check_menu_item_set_show_toggle(self._o, always)
-	def set_state(self, state):
-		print "GtkCheckMenuItem.set_state is deprecated -- use set_active"
-		self.set_active(state)
 	def set_active(self, active):
 		_gtk.gtk_check_menu_item_set_active(self._o, active)
 	def toggled(self, obj=None):
@@ -2488,17 +2489,31 @@ def atom_name(atom):
 	return _gtk.gdk_atom_name(atom)
 
 # pixmap loading
-def create_pixmap_from_xpm(window, bg, xpm):
-	if hasattr(window, '_o'):
-		window.realize()
-		window = window.get_window()
-	return _gtk.gdk_pixmap_create_from_xpm(window, bg, xpm)
+def create_pixmap_from_xpm(object, bg, xpm):
+	if type(object) == _gtk.GdkWindowType:
+		return _gtk.gdk_pixmap_create_from_xpm(object, bg, xpm)
+	else:
+		if hasattr(object, 'get_colormap'):
+			cmap = object.get_colormap()
+		elif hasattr(object, 'colormap'):
+			cmap = object.colormap
+		else:
+			cmap = object
+		return _gtk.gdk_pixmap_colormap_create_from_xpm(None, cmap,
+								bg, xpm)
 # use XPM data ...
-def create_pixmap_from_xpm_d(window, bg, xpm_d):
-	if hasattr(window, '_o'):
-		window.realize()
-		window = window.get_window()
-	return _gtk.gdk_pixmap_create_from_xpm_d(window, bg, xpm_d)
+def create_pixmap_from_xpm_d(object, bg, xpm_d):
+	if type(object) == _gtk.GdkWindowType:
+		return _gtk.gdk_pixmap_create_from_xpm_d(object, bg, xpm_d)
+	else:
+		if hasattr(object, 'get_colormap'):
+			cmap = object.get_colormap()
+		elif hasattr(object, 'colormap'):
+			cmap = object.colormap
+		else:
+			cmap = object
+		return _gtk.gdk_pixmap_colormap_create_from_xpm_d(None, cmap,
+								  bg, xpm_d)
 def create_pixmap(window, width, height, depth=-1):
 	if (hasattr(window, '_o')):
 	        window.realize()

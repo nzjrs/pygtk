@@ -121,7 +121,7 @@ class _MessageBox(GtkDialog):
 		if modal:
 			grab_add(self)
 		hbox = GtkHBox(spacing=5)
-		hbox.border_width(5)
+		hbox.set_border_width(5)
 		self.vbox.pack_start(hbox)
 		hbox.show()
 		if pixmap:
@@ -166,7 +166,7 @@ class _EntryDialog(GtkDialog):
 		if modal:
 			grab_add(self)
 		box = GtkVBox(spacing=10)
-		box.border_width(10)
+		box.set_border_width(10)
 		self.vbox.pack_start(box)
 		box.show()
 		if message:

@@ -1233,9 +1233,9 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
   GdkModifierType p_mask;
 
   if (!strcmp(key, "__members__"))
-    return Py_BuildValue("[sssssssssss]", "children", "colormap", "height",
-			 "parent", "pointer", "pointer_state", "toplevel",
-			 "type", "width", "x", "y");
+    return Py_BuildValue("[ssssssssssss]", "children", "colormap", "depth",
+			 "height", "parent", "pointer", "pointer_state",
+			 "toplevel", "type", "width", "x", "y");
   if (!strcmp(key, "width")) {
     gdk_window_get_size(win, &x, NULL);
     return PyInt_FromLong(x);
@@ -1278,6 +1278,11 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
   }
   if (!strcmp(key, "type"))
     return PyInt_FromLong(gdk_window_get_type(win));
+  if (!strcmp(key, "depth")) {
+    gdk_window_get_geometry(win, NULL, NULL, NULL, NULL, &x);
+    return PyInt_FromLong(x);
+  }
+
   return Py_FindMethod(PyGdkWindow_methods, (PyObject *)self, key);
 }
 
@@ -3814,6 +3819,38 @@ static PyObject *_wrap_gtk_item_factory_create_items(PyObject *self,PyObject *ar
   return Py_None;
 }
 
+static PyObject *_wrap_gtk_item_factory_get_widget(PyObject *self, PyObject *args) {
+    char *path;
+    PyObject *ifactory;
+    GtkWidget *ret;
+
+    if (!PyArg_ParseTuple(args, "O!s:gtk_item_factory_get_widget",
+			  &PyGtk_Type, &ifactory, &path))
+        return NULL;
+    ret = gtk_item_factory_get_widget(GTK_ITEM_FACTORY(PyGtk_Get(ifactory)),
+				      path);
+    if (ret)
+      return PyGtk_New((GtkObject *)ret);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gtk_item_factory_get_widget_by_action(PyObject *self, PyObject *args) {
+    int action;
+    PyObject *ifactory;
+    GtkWidget *ret;
+
+    if (!PyArg_ParseTuple(args, "O!i:gtk_item_factory_get_widget_by_action",
+			  &PyGtk_Type, &ifactory, &action))
+        return NULL;
+    ret = gtk_item_factory_get_widget_by_action(
+			GTK_ITEM_FACTORY(PyGtk_Get(ifactory)), action);
+    if (ret)
+      return PyGtk_New((GtkObject *)ret);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static void PyGtk_MenuPosition(GtkMenu *menu, int *x, int *y, PyObject *func) {
     PyObject *ret;
     ret = PyObject_CallFunction(func, "(O)", PyGtk_New(GTK_OBJECT(menu)));
@@ -4137,29 +4174,39 @@ PyObject *_wrap_gtk_drag_begin(PyObject *self, PyObject *args) {
 
 static PyObject *_wrap_gdk_pixmap_new(PyObject *self, PyObject *args) {
   GdkPixmap *pix;
-  PyObject *win, *ret;
+  GdkWindow *win = NULL;
+  PyObject *py_win, *ret;
   int w, h, d;
-  if (!PyArg_ParseTuple(args, "O!iii:gdk_pixmap_new", &PyGdkWindow_Type, &win,
-		       &w, &h, &d))
+  if (!PyArg_ParseTuple(args, "Oiii:gdk_pixmap_new", &py_win, &w, &h, &d))
     return NULL;
-  pix = gdk_pixmap_new(PyGdkWindow_Get(win), w, h, d);
+  if (PyGdkWindow_Check(py_win)) win = PyGdkWindow_Get(py_win);
+  else if (py_win != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "first argument must be a GdkWindow or None");
+    return NULL;
+  }
+  pix = gdk_pixmap_new(win, w, h, d);
+  if (!pix) {
+    PyErr_SetString(PyExc_ValueError, "invalid parameters");
+    return NULL;
+  }
   ret = PyGdkWindow_New(pix);
   gdk_pixmap_unref(pix);
   return ret;
 }
+
 static PyObject *_wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args) {
   GdkPixmap *pix;
   GdkBitmap *mask;
   PyObject *parent_win, *colour, *ret;
-  GdkColor *col;
+  GdkColor *col = NULL;
   gchar *fname;
 
   if (!PyArg_ParseTuple(args, "O!Os:gdk_pixmap_create_from_xpm",
 			&PyGdkWindow_Type, &parent_win, &colour, &fname))
     return NULL;
-  if (colour == Py_None)             col = NULL;
-  else if (PyGdkColor_Check(colour)) col = PyGdkColor_Get(colour);
-  else {
+  if (PyGdkColor_Check(colour)) col = PyGdkColor_Get(colour);
+  else if (colour != Py_None) {
     PyErr_SetString(PyExc_TypeError,
 		    "second argument must be a colour or None");
     return NULL;
@@ -4180,7 +4227,7 @@ static PyObject *_wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *ar
   GdkPixmap *pix;
   GdkBitmap *mask;
   PyObject *parent_win, *colour, *ret, *py_lines;
-  GdkColor *col;
+  GdkColor *col = NULL;
   int len, i;
   char **data;
 
@@ -4188,9 +4235,8 @@ static PyObject *_wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *ar
 			&PyGdkWindow_Type, &parent_win, &colour,
 			&PyList_Type, &py_lines))
     return NULL;
-  if (colour == Py_None)             col = NULL;
-  else if (PyGdkColor_Check(colour)) col = PyGdkColor_Get(colour);
-  else {
+  if (PyGdkColor_Check(colour)) col = PyGdkColor_Get(colour);
+  else if (colour != Py_None) {
     PyErr_SetString(PyExc_TypeError,
 		    "second argument must be a colour or None");
     return NULL;
@@ -4208,6 +4254,101 @@ static PyObject *_wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *ar
   }
   pix = gdk_pixmap_create_from_xpm_d(PyGdkWindow_Get(parent_win), &mask, col,
 				     data);
+  g_free(data);
+  if (pix == NULL) {
+    PyErr_SetString(PyExc_IOError, "can't load pixmap");
+    return NULL;
+  }
+  ret =  Py_BuildValue("(OO)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
+  gdk_pixmap_unref(pix);
+  gdk_bitmap_unref(mask);
+  return ret;
+}
+
+static PyObject *_wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args) {
+  GdkPixmap *pix;
+  GdkBitmap *mask;
+  GdkWindow *win = NULL;
+  GdkColor *colour = NULL;
+  GdkColormap *cmap = NULL;
+  PyObject *py_win, *py_colour, *py_cmap, *ret;
+  gchar *fname;
+
+  if (!PyArg_ParseTuple(args, "OOOs:gdk_pixmap_colormap_create_from_xpm",
+			&py_win, &py_cmap, &py_colour, &fname))
+    return NULL;
+  if (PyGdkWindow_Check(py_win))   win = PyGdkWindow_Get(py_win);
+  else if (py_win != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "first argument must be a GdkWindow or None");
+    return NULL;
+  }
+  if (PyGdkColormap_Check(py_cmap)) cmap = PyGdkColormap_Get(py_cmap);
+  else if (py_cmap != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "second argument must be a GdkColourmap or None");
+    return NULL;
+  }
+  if (PyGdkColor_Check(py_colour)) colour = PyGdkColor_Get(py_colour);
+  else if (py_colour != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "third argument must be a GdkColour or None");
+    return NULL;
+  }
+  pix = gdk_pixmap_colormap_create_from_xpm(win, cmap, &mask, colour, fname);
+  if (pix == NULL) {
+    PyErr_SetString(PyExc_IOError, "can't load pixmap");
+    return NULL;
+  }
+  ret =  Py_BuildValue("(OO)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
+  gdk_pixmap_unref(pix);
+  gdk_bitmap_unref(mask);
+  return ret;
+}
+
+static PyObject *_wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args) {
+  GdkPixmap *pix;
+  GdkBitmap *mask;
+  GdkWindow *win = NULL;
+  GdkColormap *cmap = NULL;
+  GdkColor *colour = NULL;
+  PyObject *py_win, *py_cmap, *py_colour, *ret, *py_lines;
+  int len, i;
+  char **data;
+
+  if (!PyArg_ParseTuple(args, "OOOO!:gdk_pixmap_colormap_create_from_xpm_d",
+			&py_win, &py_cmap, &py_colour, &PyList_Type,&py_lines))
+    return NULL;
+  if (PyGdkWindow_Check(py_win))   win = PyGdkWindow_Get(py_win);
+  else if (py_win != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "first argument must be a GdkWindow or None");
+    return NULL;
+  }
+  if (PyGdkColormap_Check(py_cmap)) cmap = PyGdkColormap_Get(py_cmap);
+  else if (py_cmap != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "second argument must be a GdkColourmap or None");
+    return NULL;
+  }
+  if (PyGdkColor_Check(py_colour)) colour = PyGdkColor_Get(py_colour);
+  else if (py_colour != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "third argument must be a GdkColour or None");
+    return NULL;
+  }
+  len = PyList_Size(py_lines);
+  data = g_new(char *, len);
+  for (i = 0; i < len; i++) {
+    PyObject *item = PyList_GetItem(py_lines, i);
+    if (!PyString_Check(item)) {
+      PyErr_SetString(PyExc_TypeError, "list items must be strings");
+      g_free(data);
+      return NULL;
+    }
+    data[i] = PyString_AsString(item);
+  }
+  pix = gdk_pixmap_colormap_create_from_xpm_d(win, cmap, &mask, colour, data);
   g_free(data);
   if (pix == NULL) {
     PyErr_SetString(PyExc_IOError, "can't load pixmap");
@@ -4970,6 +5111,8 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_editable_insert_text", _wrap_gtk_editable_insert_text, 1 },
     { "gtk_frame_new", _wrap_gtk_frame_new, 1 },
     { "gtk_item_factory_create_items", _wrap_gtk_item_factory_create_items,1 },
+    { "gtk_item_factory_get_widget", _wrap_gtk_item_factory_get_widget, 1 },
+    { "gtk_item_factory_get_widget_by_action", _wrap_gtk_item_factory_get_widget_by_action, 1 },
     { "gtk_menu_popup", _wrap_gtk_menu_popup, 1 },
     { "gtk_pixmap_new_from_xpm", _wrap_gtk_pixmap_new_from_xpm, 1 },
     { "gtk_pixmap_get", _wrap_gtk_pixmap_get, 1 },
@@ -5015,6 +5158,8 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gdk_pixmap_new", _wrap_gdk_pixmap_new, 1 },
     { "gdk_pixmap_create_from_xpm", _wrap_gdk_pixmap_create_from_xpm, 1 },
     { "gdk_pixmap_create_from_xpm_d", _wrap_gdk_pixmap_create_from_xpm_d, 1 },
+    { "gdk_pixmap_colormap_create_from_xpm", _wrap_gdk_pixmap_colormap_create_from_xpm, 1 },
+    { "gdk_pixmap_colormap_create_from_xpm_d", _wrap_gdk_pixmap_colormap_create_from_xpm_d, 1 },
     { "gdk_draw_polygon", _wrap_gdk_draw_polygon, 1 },
     { "gdk_draw_text", _wrap_gdk_draw_text, 1 },
     { "gdk_draw_points", _wrap_gdk_draw_points, 1 },

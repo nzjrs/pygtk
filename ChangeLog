@@ -1,3 +1,30 @@
+1999-02-04  James Henstridge  <james@daa.com.au>
+
+	* gtk.py (create_pixmap_from_xpm,create_pixmap_from_xpm_d): altered
+	these functions to use the gdk_pixmap_colormap_create variants if
+	the first argument is a GtkWidget or GtkStyle.  This means you
+	don't have to realise the widget before creating pixmaps from it.
+	(GtkCheckMenuItem.set_state, GtkToggleButton.set_state): removed
+	these compatibility routines so they don't mask GtkWidget.set_state.
+
+	* gtkmodule.c: moved gtk_item_factory_get_widget here so I can catch
+	NULL returns and convert them to None returns.  Also added the
+	depth attribute to GdkWindow objects.
+	Also added gdk_pixmap_colormap_create_* variants.  These can be used
+	if you only have a colormap reference, rather than a window.
+
+	* GtkExtra.py: there were a couple of calls to
+	GtkContainer.border_width which is deprecated.
+
+	* examples/testgtk/testgtk.py: fixes to dnd code in this example.  I
+	hadn't looked at it since Owen made the dnd changes.
+
+	* examples/simple/tooltip2.py: fixed small bug pointed out by Markus
+	Oberhumer.
+
+	* pyglade/build.py (clist_new): fixes to make it parse after clist
+	changes.
+
 1999-02-02  James Henstridge  <james@daa.com.au>
 
 	* generate/gtklists.defs, gtk.py: added GtkCList.focus_row.

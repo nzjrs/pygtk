@@ -299,11 +299,11 @@ def clist_new(node):
 		clist.column_titles_show()
 	mode = node.get('selection_mode', SELECTION_SINGLE)
 	clist.set_selection_mode(mode)
-	shadow = node.get('shadow_type', SHADOW_IN)
-	clist.set_border(shadow)
-	hpol = node.get('hscrollbar_policy', POLICY_ALWAYS)
-	vpol = node.get('vscrollbar_policy', POLICY_ALWAYS)
-	clist.set_policy(hpol, vpol)
+	#shadow = node.get('shadow_type', SHADOW_IN)
+	#clist.set_border(shadow)
+	#hpol = node.get('hscrollbar_policy', POLICY_ALWAYS)
+	#vpol = node.get('vscrollbar_policy', POLICY_ALWAYS)
+	#clist.set_policy(hpol, vpol)
 	return clist
 def tree_new(node):
 	tree = GtkTree()

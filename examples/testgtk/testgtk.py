@@ -707,7 +707,7 @@ def create_list(_button):
 		list = GtkList()
 		list.set_selection_mode(SELECTION_MULTIPLE)
 		list.set_selection_mode(SELECTION_BROWSE)
-		scrolled_win.add(list)
+		scrolled_win.add_with_viewport(list)
 		list.show()
 
 		list_items = ("hello", "world", "blah", "foo", "bar", "argh")
@@ -893,6 +893,7 @@ def create_color_selection(_button):
 		win.connect("delete_event", delete_event)
 
 		win.cancel_button.connect("clicked", win.hide)
+		win.ok_button.connect("clicked", win.hide)
 	wins["color_selection"].show()
 
 def create_file_selection(_button):
@@ -1212,19 +1213,24 @@ def create_panes(_button):
 
 def create_dnd(_button):
 	if not wins.has_key("dnd"):
+		targets = [
+			('text/plain', 0, -1)
+		]
+		
 		# note that these two functions don't use any global variables
 		# to communicate.  In fact, try openning two copies of
 		# testgtk.py (or the C version) and drag between them.
-		def dnd_drop(button, event):
-			msg = "Drop data of type %s was:\n\n%s" % \
-				(event.data_type, event.data)
-			GtkExtra.message_box("Drop", msg,
-				("Continue with life in\n" +
-				"spite of this oppression",))
-		def dnd_drag_request(button, event):
+		def dnd_drag_data_get(w, context, selection_data, info, time):
 			dnd_string = "Bill Gates demands royalties for\n" + \
 				     "your use of his innovation."
-			button.dnd_data_set(event, dnd_string)
+			selection_data.set(selection_data.target, 8,dnd_string)
+		def dnd_drag_data_received(w, context, x, y, data, info, time):
+			if data and data.format == 8:
+				msg = "Drop data of type %s was:\n\n%s" % \
+				      (data.target, data.data)
+				GtkExtra.message_box("Drop", msg,
+					("Continue with life in\n" +
+					"spite of this oppression",))
 		win = GtkWindow(WINDOW_TOPLEVEL)
 		wins["dnd"] = win
 		win.connect("delete_event", lambda win,_e: win.hide())
@@ -1252,8 +1258,9 @@ def create_dnd(_button):
 		box3.pack_start(button)
 		button.show()
 		button.realize()
-		button.connect("drag_request_event", dnd_drag_request)
-		button.dnd_drag_set(TRUE, ['text/plain'])
+		button.connect('drag_data_get', dnd_drag_data_get)
+		button.drag_source_set(GDK.BUTTON1_MASK|GDK.BUTTON3_MASK,
+				       targets, GDK.ACTION_COPY)
 
 		frame = GtkFrame("Drop")
 		box2.pack_start(frame)
@@ -1268,8 +1275,8 @@ def create_dnd(_button):
 		box3.pack_start(button)
 		button.show()
 		button.realize()
-		button.connect("drop_data_available_event", dnd_drop)
-		button.dnd_drop_set(TRUE, ['text/plain'], FALSE)
+		button.connect('drag_data_received', dnd_drag_data_received)
+		button.drag_dest_set(DEST_DEFAULT_ALL, targets,GDK.ACTION_COPY)
 
 		separator = GtkHSeparator()
 		box1.pack_start(separator, expand=FALSE)
