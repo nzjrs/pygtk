@@ -4131,15 +4131,6 @@ static PyObject *_wrap_gtk_clist_get_selection(PyObject *self, PyObject *args) {
   return ret;
 }
 
-static PyObject *_wrap_gtk_clist_get_rows(PyObject *self, PyObject *args) {
-  PyObject *clist;
-
-  if (!PyArg_ParseTuple(args, "O!:gtk_clist_get_rows", &PyGtk_Type,
-			&clist))
-    return NULL;
-  return PyInt_FromLong(GTK_CLIST(PyGtk_Get(clist))->rows);
-}
-
 static PyObject *_wrap_gtk_clist_new_with_titles(PyObject *self, PyObject *args) {
 	int c, i;
 	PyObject *l, *item;
@@ -6123,7 +6114,6 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_clist_find_row_from_data", _wrap_gtk_clist_find_row_from_data, 1 },
     { "gtk_clist_get_selection_info", _wrap_gtk_clist_get_selection_info, 1 },
     { "gtk_clist_get_column_width", _wrap_gtk_clist_get_column_width, 1 },
-    { "gtk_clist_get_rows", _wrap_gtk_clist_get_rows, 1 },
     { "gtk_combo_set_popdown_strings", _wrap_gtk_combo_set_popdown_strings,1 },
     { "gtk_curve_get_vector", _wrap_gtk_curve_get_vector, 1 },
     { "gtk_curve_set_vector", _wrap_gtk_curve_set_vector, 1 },
