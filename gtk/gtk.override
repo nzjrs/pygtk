@@ -2179,7 +2179,7 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
 	    return NULL;
 	}
     }
-    self->obj = (GObject *)gtk_list_store_new(len, column_types);
+    self->obj = (GObject *)gtk_list_store_newv(len, column_types);
     g_free(column_types);
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError,
@@ -2330,7 +2330,7 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
 	    return NULL;
 	}
     }
-    self->obj = (GObject *)gtk_tree_store_new(len, column_types);
+    self->obj = (GObject *)gtk_tree_store_newv(len, column_types);
     g_free(column_types);
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError,
