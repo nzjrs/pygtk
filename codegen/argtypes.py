@@ -433,7 +433,15 @@ class BoxedArg(ArgType):
 	    info.codebefore.append(self.check % {'name':  pname,
                                                  'typename': self.typename,
                                                  'typecode': self.typecode})
-        info.arglist.append(pname)
+        if ptype[-1] == '*':
+            typename = ptype[:-1]
+            if typename[:6] == 'const-': typename = typename[6:]
+            if typename != self.typename:
+                info.arglist.append('(%s *)%s' % (ptype[:-1], pname))
+            else:
+                info.arglist.append(pname)
+        else:
+            info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname])
     ret_tmpl = '    /* pyg_boxed_new handles NULL checking */\n' \
                '    return pyg_boxed_new(%(typecode)s, %(ret)s, %(copy)s, TRUE);'
