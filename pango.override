@@ -272,7 +272,7 @@ _wrap_pango_attr_style_new(PyObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrStyle", kwlist,
 				     &py_style))
 	return NULL;
-    if (!pyg_enum_get_value(PANGO_TYPE_STYLE, py_style, (gint *)&style))
+    if (pyg_enum_get_value(PANGO_TYPE_STYLE, py_style, (gint *)&style))
 	return NULL;
 
     return pypango_attr_new(pango_attr_style_new(style));
@@ -289,7 +289,7 @@ _wrap_pango_attr_weight_new(PyObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrWeight", kwlist,
 				     &py_weight))
 	return NULL;
-    if (!pyg_enum_get_value(PANGO_TYPE_WEIGHT, py_weight, (gint *)&weight))
+    if (pyg_enum_get_value(PANGO_TYPE_WEIGHT, py_weight, (gint *)&weight))
 	return NULL;
 
     return pypango_attr_new(pango_attr_weight_new(weight));
@@ -306,7 +306,7 @@ _wrap_pango_attr_variant_new(PyObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrVariant",
 				     kwlist, &py_variant))
 	return NULL;
-    if (!pyg_enum_get_value(PANGO_TYPE_VARIANT, py_variant, (gint *)&variant))
+    if (pyg_enum_get_value(PANGO_TYPE_VARIANT, py_variant, (gint *)&variant))
 	return NULL;
 
     return pypango_attr_new(pango_attr_variant_new(variant));
@@ -323,7 +323,7 @@ _wrap_pango_attr_stretch_new(PyObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrStretch",
 				     kwlist, &py_stretch))
 	return NULL;
-    if (!pyg_enum_get_value(PANGO_TYPE_STRETCH, py_stretch, (gint *)&stretch))
+    if (pyg_enum_get_value(PANGO_TYPE_STRETCH, py_stretch, (gint *)&stretch))
 	return NULL;
 
     return pypango_attr_new(pango_attr_stretch_new(stretch));
@@ -359,8 +359,8 @@ _wrap_pango_attr_underline_new(PyObject *self, PyObject *args,PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrUnderline",
 				     kwlist, &py_underline))
 	return NULL;
-    if (!pyg_enum_get_value(PANGO_TYPE_UNDERLINE, py_underline,
-			    (gint *)&underline))
+    if (pyg_enum_get_value(PANGO_TYPE_UNDERLINE, py_underline,
+			   (gint *)&underline))
 	return NULL;
 
     return pypango_attr_new(pango_attr_underline_new(underline));
@@ -876,8 +876,8 @@ _wrap_pango_layout_get_pixel_extents(PyGObject *self)
 {
     PangoRectangle ink_rect, logical_rect;
 
-    pango_layout_get_extents(PANGO_LAYOUT(self->obj),
-			     &ink_rect, &logical_rect);
+    pango_layout_get_pixel_extents(PANGO_LAYOUT(self->obj),
+				   &ink_rect, &logical_rect);
 
     return Py_BuildValue("((iiii)(iiii))",
 			 ink_rect.x, ink_rect.y,

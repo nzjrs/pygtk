@@ -1,5 +1,10 @@
 2002-11-16  James Henstridge  <james@daa.com.au>
 
+	* pango.override: fix up calls to pyg_enum_get_value() so that it
+	doesn't throw an exception when it shouldn't.
+	(_wrap_pango_layout_get_pixel_extents): call get_pixel_extents()
+	like it is supposed to.  Fixes bug #93569.
+
 	* pygtype.c (pyg_value_from_pyobject): if python object is None,
 	set GValue to NULL for boxed, pointer and GObject types.
 	(pyg_value_as_pyobject): convert G_TYPE_POINTER values to
