@@ -4117,3 +4117,14 @@ _wrap_gtk_color_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+%%
+override gtk_color_button_get_color noargs
+static PyObject *
+_wrap_gtk_color_button_get_color(PyGObject *self)
+{
+    PyObject *py_color;
+    GdkColor color = {0, 0, 0, 0};
+ 
+    gtk_color_button_get_color(GTK_COLOR_BUTTON(self->obj), &color);
+    return pyg_boxed_new(GDK_TYPE_COLOR, &color, TRUE, TRUE);
+}
