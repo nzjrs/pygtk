@@ -721,7 +721,7 @@ pygtk_generic_tree_model_ref_node(GtkTreeModel *tree_model, GtkTreeIter *iter)
     self = pygobject_new((GObject *)tree_model);
 
 #ifdef DEBUG_TREE_MODEL
-    g_message("unref_node(%p)", iter);
+    g_message("ref_node(%p)", iter);
 #endif
     py_iter = (PyObject *)iter->user_data;
     if (py_iter == NULL)
