@@ -9,7 +9,7 @@ pixmap = None
 
 def configure_event(widget, event):
 	global pixmap
-	win = widget.get_window()
+	win = widget.window
 	pixmap = create_pixmap(win, win.width, win.height, -1)
 	draw_rectangle(pixmap, widget.get_style().white_gc, TRUE,
 		       0, 0, win.width, win.height)
@@ -35,8 +35,7 @@ def button_press_event(widget, event):
 
 def motion_notify_event(widget, event):
 	if event.is_hint:
-		x, y = event.window.pointer
-		state = event.window.pointer_state
+		x, y, state = event.window.get_pointer()
 	else:
 		x = event.x; y = event.y
 		state = event.state
@@ -71,7 +70,7 @@ def main():
 
 	button = GtkButton("Quit")
 	vbox.pack_start(button, expand=FALSE, fill=FALSE)
-	button.connect("clicked", win.destroy)
+	button.connect("clicked", lambda widget, win=win: win.destroy())
 	button.show()
 	win.show()
 	mainloop()
