@@ -1392,6 +1392,24 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     return ret;
 }
 %%
+override gtk_tree_sortable_get_sort_column_id noargs
+static PyObject *
+_wrap_gtk_tree_sortable_get_sort_column_id(PyGObject *self)
+{
+    gboolean ret;
+    gint sort_column_id;
+    GtkSortType order;
+	
+    ret = gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(self->obj),
+					       &sort_column_id, &order);
+
+    /* if we don't have a sort column set, return (None, None) */
+    if (ret)
+	return Py_BuildValue("(ii)", sort_column_id, order);
+    else
+	return Py_BuildValue("(OO)", Py_None, Py_None);
+}
+%%
 override gtk_tree_sortable_set_sort_func
 static gint
 pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
@@ -1515,6 +1533,8 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+ignore gtk_list_store_set_valist
 %%
 override gtk_list_store_set
 static PyObject *
@@ -1719,6 +1739,8 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+ignore gtk_tree_store_set_valist
 %%
 override gtk_tree_store_set
 static PyObject *
@@ -2218,7 +2240,8 @@ _wrap_gtk_tree_view_column_set_attributes(PyGObject *self, PyObject *args,
 		return NULL;
 	    }
 	    gtk_tree_view_column_add_attribute(GTK_TREE_VIEW_COLUMN(self->obj),
-					       cell, attr, PyInt_AsLong(item));
+					       cell, attr,
+					       PyInt_AsLong(item));
 	}
     }
     Py_INCREF(Py_None);
@@ -2678,6 +2701,7 @@ ignore
   gtk_widget_getv
   gtk_widget_set
   gtk_widget_setv
+  gtk_widget_style_get_valist
   gtk_widget_destroyed
   gtk_container_get_toplevels
   gtk_container_add_child_arg_type
