@@ -2406,6 +2406,8 @@ ignore
   gtk_binding_set_clear
   gtk_init
   gtk_init_check
+  gtk_init_abi_check
+  gtk_init_check_abi_check
   gtk_exit
   gtk_set_locale
   gtk_accel_group_ref
@@ -2471,6 +2473,7 @@ ignore
   gtk_widget_getv
   gtk_widget_set
   gtk_widget_setv
+  gtk_widget_destroyed
   gtk_container_get_toplevels
   gtk_container_add_child_arg_type
   gtk_container_query_child_args
@@ -2479,13 +2482,12 @@ ignore
   gtk_container_foreach
   gtk_container_foreach_full
   gtk_container_forall
-  gtk_container_child_getv
-  gtk_container_child_setv
   gtk_container_add_with_args
   gtk_container_addv
   gtk_container_child_set
-  gtk_container_arg_set
-  gtk_container_arg_get
+  gtk_container_child_get
+  gtk_container_child_set_valist
+  gtk_container_child_get_valist
   gtk_clist_set_row_data_full
   gtk_window_add_embedded_xid
   gtk_window_remove_embedded_xid
@@ -4293,6 +4295,123 @@ _wrap_gtk_drag_dest_set(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
+override gtk_drag_dest_find_target kwargs
+static PyObject *
+_wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
+				PyObject *kwargs)
+{
+    static char *kwlist[] = { "context", "target_list", NULL };
+    PyObject *context, *py_target_list;
+    gint i, n_targets;
+    GtkTargetEntry *targets;
+    GtkTargetList *target_list;
+    GdkAtom atom;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!O:GtkWidget.drag_dest_find_target",
+				     kwlist, &PyGdkDragContext_Type, &context,
+				     &py_target_list))
+	return NULL;
+    if (!PySequence_Check(py_target_list)) {
+	PyErr_SetString(PyExc_TypeError, "target_list must be a sequence");
+	return NULL;
+    }
+    n_targets = PySequence_Length(py_target_list);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+	PyObject *item = PySequence_GetItem(py_target_list, i);
+	Py_DECREF(item);
+	if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+			      &targets[i].flags, &targets[i].info)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "list items should be of form (string,int,int)");
+	    g_free(targets);
+	    return NULL;
+	}
+    }
+    target_list = gtk_target_list_new(targets, n_targets);
+    g_free(targets);
+
+    atom = gtk_drag_dest_find_target(GTK_WIDGET(self->obj),
+				     GDK_DRAG_CONTEXT(pygobject_get(context)),
+				     target_list);
+    gtk_target_list_unref(target_list);
+
+    return PyGdkAtom_New(atom);
+}
+%%
+override gtk_drag_dest_get_target_list noargs
+static PyObject *
+_wrap_gtk_drag_dest_get_target_list(PyGObject *self)
+{
+    GtkTargetList *target_list;
+    PyObject *ret;
+    GList *tmp;
+
+    target_list = gtk_drag_dest_get_target_list(GTK_WIDGET(self->obj));
+
+    if (!target_list) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+
+    ret = PyList_New(0);
+    for (tmp = target_list->list; tmp != NULL; tmp = tmp->next) {
+	GtkTargetPair *pair = tmp->data;
+	PyObject *item;
+
+	item = Py_BuildValue("(Nii)", PyGdkAtom_New(pair->target),
+			     pair->flags, pair->info);
+	PyList_Append(ret, item);
+	Py_DECREF(item);
+    }
+    gtk_target_list_unref(target_list);
+    return ret;
+}
+%%
+override gtk_drag_dest_set_target_list kwargs
+static PyObject *
+_wrap_gtk_drag_dest_set_target_list(PyGObject *self, PyObject *args,
+				    PyObject *kwargs)
+{
+    static char *kwlist[] = { "target_list", NULL };
+    PyObject *py_target_list;
+    gint i, n_targets;
+    GtkTargetEntry *targets;
+    GtkTargetList *target_list;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkWidget.drag_dest_set_target_list",
+				     kwlist, &py_target_list))
+	return NULL;
+    if (!PySequence_Check(py_target_list)) {
+	PyErr_SetString(PyExc_TypeError, "target_list must be a sequence");
+	return NULL;
+    }
+    n_targets = PySequence_Length(py_target_list);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+	PyObject *item = PySequence_GetItem(py_target_list, i);
+	Py_DECREF(item);
+	if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+			      &targets[i].flags, &targets[i].info)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "list items should be of form (string,int,int)");
+	    g_free(targets);
+	    return NULL;
+	}
+    }
+    target_list = gtk_target_list_new(targets, n_targets);
+    g_free(targets);
+
+    gtk_drag_dest_set_target_list(GTK_WIDGET(self->obj), target_list);
+    gtk_target_list_unref(target_list);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_drag_source_set kwargs
 static PyObject *
 _wrap_gtk_drag_source_set(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -4391,6 +4510,7 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
 %%
 ignore
   gtk_drag_source_handle_event gtk_drag_dest_handle_event
+  gtk_selection_clear
   gtk_selection_request gtk_selection_notify gtk_selection_property_notify
   gtk_selection_incr_event
 %%
