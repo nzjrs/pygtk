@@ -4545,3 +4545,52 @@ _wrap_gdk_window_at_pointer(PyObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gdk_display_store_clipboard kwargs
+static PyObject *
+_wrap_gdk_display_store_clipboard(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "clipboard_window", "time_", "targets", NULL };
+    PyGObject *pyclipboard_window;
+    guint32 time_;
+    PyObject *pytargets;
+    GdkAtom *targets;
+    int tlen, i;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!iO:GdkDIsplay.store_clipboard", kwlist,
+				     &PyGdkWindow_Type, &pyclipboard_window,
+                                     &time_, &pytargets))
+	return NULL;
+
+    if (!pytargets || pytargets == Py_None) {
+        tlen = 0;
+        targets = NULL;
+    } else {
+        if (!PySequence_Check(pytargets)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "targets must be a sequence of target strings"
+                            "or GdkAtoms or None");
+            return NULL;
+        }
+        tlen = PySequence_Size(pytargets);
+        targets = g_new0(GdkAtom, tlen);
+        for (i = 0; i < tlen; i++) {
+            PyObject *item = PySequence_GetItem(pytargets, i);
+            targets[i] = pygdk_atom_from_pyobject(item);
+            if (PyErr_Occurred()) {
+                Py_DECREF(item);
+                g_free(targets);
+                return NULL;
+            }
+            Py_DECREF(item);
+        }
+        g_free(targets);
+    }
+    gdk_display_store_clipboard(GDK_DISPLAY(self->obj),
+                                GDK_WINDOW(pyclipboard_window->obj),
+                                time_, targets, tlen);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
