@@ -6,6 +6,7 @@ in python for use with the new tree widget in gtk 2.0.'''
 description = 'Tree Model'
 
 import gtk
+import gobject
 
 # to create a new GtkTreeModel from python, you must derive from
 # TreeModel.
@@ -37,8 +38,7 @@ class MyTreeModel(gtk.TreeModel):
 	return 1
     def on_get_column_type(self, index):
 	'''returns the type of a column in the model'''
-	STRING_TYPE = 14 # XXXX have to fix this up at some point
-	return STRING_TYPE
+	return gobject.TYPE_STRING
     def on_get_path(self, node):
 	'''returns the tree path (a tuple of indices at the various
 	levels) for a particular node.'''
