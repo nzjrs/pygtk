@@ -883,8 +883,54 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     default:
 	break;
     }
-    PyErr_SetString(PyExc_AttributeError, attr);
-    return NULL;
+
+    return Py_FindMethod(_PyGdkEvent_methods, self, attr);
+}
+%%
+override gdk_event_get_axis args
+static PyObject *
+_wrap_gdk_event_get_axis(PyGObject *self, PyObject *args)
+{
+    GdkEvent *event = pyg_boxed_get(self, GdkEvent);
+    gint axis_use;
+    gdouble value;
+
+    if (!PyArg_ParseTuple(args, "d:gdk.event_get_axis",
+			  &axis_use))
+	return NULL;
+				     
+    if (gdk_event_get_axis(event, axis_use, &value)) {
+	return PyFloat_FromDouble(value);
+    } else {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+}
+%%
+override gdk_event_get_coords noargs
+static PyObject *
+_wrap_gdk_event_get_coords(PyGObject *self)
+{
+    GdkEvent *event = pyg_boxed_get(self, GdkEvent);
+    gdouble x, y;
+
+    if (gdk_event_get_coords(event, &x, &y))
+	return Py_BuildValue("(dd)", x, y);
+    else
+	return Py_BuildValue("()");
+}
+%%
+override gdk_event_get_root_coords noargs
+static PyObject *
+_wrap_gdk_event_get_root_coords(PyGObject *self)
+{
+    GdkEvent *event = pyg_boxed_get(self, GdkEvent);
+    gdouble x, y;
+
+    if (gdk_event_get_root_coords(event, &x, &y))
+	return Py_BuildValue("(dd)", x, y);
+    else
+	return Py_BuildValue("()");
 }
 %%
 override-attr GdkDevice.axes
