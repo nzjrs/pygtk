@@ -79,6 +79,12 @@ linkend="method-gtkcellrenderer--editing-canceled">editing_canceled</link></meth
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtkcellrenderer--stop-editing">stop_editing</link></methodname>
+	<methodparam><parameter
+		       role="keyword">canceled</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtkcellrenderer--set-fixed-size">set_fixed_size</link></methodname>
 	<methodparam><parameter
 		       role="keyword">width</parameter></methodparam>
@@ -217,6 +223,18 @@ cellrenderer</entry>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>cellrenderer</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkcellrenderer--editing-started">editing-started</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>cellrenderer</parameter></methodparam>
+            <methodparam><parameter>editable</parameter></methodparam>
+            <methodparam><parameter>path</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -534,11 +552,48 @@ the editing of a cell.</para>
 	<para>This method is available in PyGTK 2.4 and above.</para>
       </note>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.6 and above. Use the
+<link
+linkend="method-gtkcellrenderer--stop-editing"><methodname>stop_editing</methodname>()</link>
+method instead.</para>
+      </warning>
+
       <para>The <methodname>editing_canceled</methodname>() method causes
-      the cell renderer to emit the "editing-canceled" signal. This method
-      is for use only by implementations of cell renderers that need to
-      notify the client program that an editing process was canceled and the
-      changes were not committed.</para>
+the cell renderer to emit the "editing-canceled" signal. This method is for
+use only by implementations of cell renderers that need to notify the client
+program that an editing process was canceled and the changes were not
+committed.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcellrenderer--stop-editing">
+      <title>gtk.CellRenderer.stop_editing</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>stop_editing</methodname>
+	  <methodparam><parameter
+			 role="keyword">canceled</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">canceled</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> the editing has been
+canceled</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>stop_editing</methodname>() method informs the
+cell renderer that the editing is stopped. If
+<parameter>canceled</parameter> is <literal>TRUE</literal>, the cell
+renderer will emit the "editing-canceled" signal. This method should be
+called by cell renderer implementations in response to the "editing-done"
+signal of <link
+linkend="class-gtkcelleditable"><classname>gtk.CellEditable</classname></link>.</para>
 
     </refsect2>
 
@@ -639,6 +694,76 @@ any)</simpara></listitem>
       see the <link
       linkend="method-gtkcellrenderer--editing-canceled"><methodname>editing_canceled</methodname>()</link>
       method.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkcellrenderer--editing-started">
+      <title>The "editing-started" gtk.CellRenderer Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>cellrenderer</parameter></methodparam>
+            <methodparam><parameter>editable</parameter></methodparam>
+            <methodparam><parameter>path</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>cellrenderer</parameter>&nbsp;:</term>
+	  <listitem><simpara>the cellrenderer that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>editable</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gtkcelleditable"><classname>gtk.CellEditable</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>path</parameter>&nbsp;:</term>
+	  <listitem><simpara>he path identifying the edited
+cell</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in GTK+ 2.6 and above.</para>
+      </note>
+
+      <para>The "editing-started" signal is emitted when a cell starts to be
+edited. The intended use of this signal is to do special setup on
+<parameter>editable</parameter>, e.g. adding a <link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+or setting up additional columns in a <link
+linkend="class-gtkcombobox"><classname>gtk.ComboBox</classname></link>.</para>
+
+      <para>Note that GTK+ doesn't guarantee that cell renderers will
+continue to use the same kind of widget for editing in future releases,
+therefore you should check the type of editable before doing any specific
+setup, as in the following example:</para>
+
+      <programlisting>
+def text_editing_started(cell, editable, path, data):
+  if isinstance(editable, gtk.Entry):
+      # ... create a GtkEntryCompletion
+      completion = gtk.EntryCompletion()
+      editable.set_completion(completion)
+      ...
+  ...
+</programlisting>
 
     </refsect2>
 
