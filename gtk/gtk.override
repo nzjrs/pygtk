@@ -5648,7 +5648,7 @@ _wrap_gtk_adjustment_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     GType obj_type = pyg_type_from_object((PyObject *) self);
     GParameter params[6];
-    PyObject *parsed_args[6] = {NULL, }, *value = NULL;
+    PyObject *parsed_args[6] = {NULL, };
     char *kwlist[] = {"value", "lower", "upper", "step_incr",
                       "page_incr", "page_size", NULL };
     char *arg_names[] = {"lower", "upper", "step_incr",
@@ -5659,12 +5659,12 @@ _wrap_gtk_adjustment_new(PyGObject *self, PyObject *args, PyObject *kwargs)
  
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "|OOOOOO:gtk.Adjustment.__init__" ,
-                                     kwlist , &value, &parsed_args[0],
+                                     kwlist ,
+                                     &parsed_args[5], &parsed_args[0],
                                      &parsed_args[1], &parsed_args[2],
                                      &parsed_args[3], &parsed_args[4]))
         return -1;
 
-    parsed_args[5] = value;
     memset(params, 0, sizeof(GParameter)*6);
     if (!pyg_parse_constructor_args(obj_type, arg_names, prop_names,
                                     params, &nparams, parsed_args))
