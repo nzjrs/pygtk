@@ -1005,10 +1005,10 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     case GDK_KEY_PRESS:         /*GdkEventKey               key*/
     case GDK_KEY_RELEASE:       /*GdkEventKey               key*/
         if (!strcmp(attr, "__members__"))
-            return Py_BuildValue("[sssssss]",
+            return Py_BuildValue("[sssssssss]",
                                  "type", "window", "send_event",
                                  "time", "state", "keyval", "string",
-				 "hardware_keycode");
+				 "hardware_keycode", "group");
         if (!strcmp(attr, "time"))
             return PyInt_FromLong(event->key.time);
         if (!strcmp(attr, "state"))
@@ -1020,6 +1020,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
                                               event->key.length);
         if (!strcmp(attr, "hardware_keycode"))
             return PyInt_FromLong(event->key.hardware_keycode);
+        if (!strcmp(attr, "group"))
+            return PyInt_FromLong(event->key.group);
         break;
     case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
     case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
