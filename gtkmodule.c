@@ -5464,9 +5464,9 @@ static PyObject *_wrap_gtk_ctree_base_nodes(PyObject *self, PyObject *args) {
 static PyObject *_wrap_gdk_threads_enter(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, ":gdk_threads_enter"))
     return NULL;
-  PyGTK_UNBLOCK_THREADS
+  Py_BEGIN_ALLOW_THREADS
   gdk_threads_enter();
-  PyGTK_BLOCK_THREADS
+  Py_END_ALLOW_THREADS
   Py_INCREF(Py_None);
   return Py_None;
 }
