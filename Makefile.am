@@ -100,6 +100,7 @@ EXTRA_DIST += \
   MANIFEST.in \
   PKG-INFO \
   PKG-INFO.in \
+  ChangeLog.pre-2-0 \
   examples/atk/atk-demo.py \
   examples/gobject/signal.py \
   examples/gobject/properties.py \
