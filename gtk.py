@@ -1636,6 +1636,9 @@ class GtkMenu(GtkMenuShell):
 		_gtk.gtk_menu_set_title(self._o, title)
 	def reorder_child(self, child, position):
 		_gtk.gtk_menu_reorder_child(self._o, child._o, position)
+	def ensure_uline_accel_group(self):
+		return GtkAccelGroup(
+			_obj=_gtk.gtk_menu_ensure_uline_accel_group(self._o))
 
 class GtkNotebook(GtkContainer):
 	get_type = _gtk.gtk_notebook_get_type
@@ -1827,6 +1830,15 @@ class GtkScrolledWindow(GtkBin):
 		if hadj: hadj = hadj._o
 		if vadj: vadj = vadj._o
 		self._o = _gtk.gtk_scrolled_window_new(hadj, vadj)
+	def __getattr__(self, attr):
+		attrs = {
+			'hscrollbar': _gtk.gtk_scrolled_window_get_hscrollbar,
+			'vscrollbar': _gtk.gtk_scrolled_window_get_vscrollbar
+		}
+		if attrs.has_attr(attr):
+			return _obj2inst(attrs[attr](self._o))
+		else:
+			return GtkBin.__getattr__(self, attr)
 	def get_hadjustment(self):
 		return _obj2inst(_gtk.gtk_scrolled_window_get_hadjustment(
 			self._o))
@@ -1924,26 +1936,53 @@ class GtkToolbar(GtkContainer):
 		     style=TOOLBAR_ICONS, _obj=None):
 		if _obj: self._o = _obj; return
 		self._o = _gtk.gtk_toolbar_new(orientation, style)
+	def append_element(self, type, widget, text, tooltip, tp, icon,
+			   callback):
+		if widget: widget = widget._o
+		if icon: icon = icon._o
+		if callback: callback = self.__wrap_cb(callback)
+		return _obj2inst(_gtk.gtk_toolbar_append_element(
+			self._o, type, widget, text, tooltip, tp, icon,
+			callback))
         def append_item(self, text, tooltip, tp, icon, callback):
+		if icon: icon = icon._o
+		if callback: callback = self.__wrap_cb(callback)
 		return _obj2inst(_gtk.gtk_toolbar_append_item(
-			self._o, text, tooltip, tp, icon._o,
-			self.__wrap_cb(callback)))
+			self._o, text, tooltip, tp, icon, callback))
 	def append_space(self):
 		_gtk.gtk_toolbar_append_space(self._o)
 	def append_widget(self, w, tooltip, tp):
 		_gtk.gtk_toolbar_append_widget(self._o, w._o, tooltip, tp)
+	def insert_element(self, type, widget, text, tooltip, tp, icon,
+			   callback, pos):
+		if widget: widget = widget._o
+		if icon: icon = icon._o
+		if callback: callback = self.__wrap_cb(callback)
+		return _obj2inst(_gtk.gtk_toolbar_insert_element(
+			self._o, type, widget, text, tooltip, tp, icon,
+			callback, pos))
 	def insert_item(self, text, tooltip, tp, icon, callback, pos):
+		if icon: icon = icon._o
+		if callback: callback = self.__wrap_cb(callback)
 		return _obj2inst(_gtk.gtk_toolbar_insert_item(
-			self._o, text, tooltip, tp, icon._o,
-			self.__wrap_cb(callback), pos))
+			self._o, text, tooltip, tp, icon, callback, pos))
 	def insert_space(self, pos):
 		_gtk.gtk_toolbar_insert_space(self._o, pos)
 	def insert_widget(self, w, tooltip, tp, pos):
 		_gtk.gtk_toolbar_insert_widget(self._o, w._o, tooltip, tp, pos)
+	def prepend_element(self, type, widget, text, tooltip, tp, icon,
+			    callback):
+		if widget: widget = widget._o
+		if icon: icon = icon._o
+		if callback: callback = self.__wrap_cb(callback)
+		return _obj2inst(_gtk.gtk_toolbar_prepend_element(
+			self._o, type, widget, text, tooltip, tp, icon,
+			callback))
 	def prepend_item(self, text, tooltip, tp, icon, callback):
+		if icon: icon = icon._o
+		if callback: callback = self.__wrap_cb(callback)
 		return _obj2inst(_gtk.gtk_toolbar_prepend_item(
-			self._o, text, tooltip, tp, icon._o,
-			self.__wrap_cb(callback)))
+			self._o, text, tooltip, tp, icon, callback))
 	def prepend_space(self):
 		_gtk.gtk_toolbar_prepend_space(self._o)
 	def prepend_widget(self, w, tooltip, tp):
@@ -2444,6 +2483,11 @@ class GtkRuler(GtkWidget):
 	get_type = _gtk.gtk_ruler_get_type
 	def __init__(self, _obj=None):
 		if _obj: self._o = _obj; return
+	def __getattr__(self, attr):
+		if attr == 'position':
+			return _gtk.gtk_ruler_get_position(self._o)
+		else:
+			return GtkWidget.__getattr__(self, attr)
 	def set_metric(self, metric):
 		_gtk.gtk_ruler_set_metric(self._o, metric)
 	def set_range(self, lo, up, pos, max):

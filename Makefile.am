@@ -58,7 +58,7 @@ gdkpixbufmodule_la_LIBADD = $(GDK_PIXBUF_LIBS)
 
 pkginclude_HEADERS = pygtk.h pygdkimlib.h pygdkpixbuf.h
 
-python_PYTHON = gtk.py Gtkinter.py GTK.py GDK.py GtkExtra.py \
+python_PYTHON = gtk.py GTK.py GDK.py GtkExtra.py \
 	$(imlib_mods) $(gtkgl_mods) $(libglade_mods)
 noinst_PYTHON = mkgtk.py description.py
 

@@ -1288,6 +1288,12 @@ PyGdkEvent_GetAttr(PyGdkEvent_Object *self, char *attr) {
     Py_INCREF(ret);
     return ret;
   }
+  if (!strcmp(attr, "__members__")) {
+    PyObject *members = PyDict_Keys(self->attrs);
+
+    PyList_Sort(members);
+    return members;
+  }
   PyErr_SetString(PyExc_AttributeError, attr);
   return NULL;
 }
@@ -5241,6 +5247,115 @@ static PyObject *_wrap_gtk_toolbar_insert_item(PyObject *self, PyObject *args) {
   return PyGtk_New((GtkObject *)ret);
 }
 
+static PyObject *
+_wrap_gtk_toolbar_append_element(PyObject *self, PyObject *args)
+{
+  PyGtk_Object *t, *icon;
+  GtkToolbarChildType type;
+  char *text, *tooltip, *tip_private;
+  GtkWidget *widget = NULL, *ret;
+  PyObject *py_widget, *callback;
+
+  if (!PyArg_ParseTuple(args, "O!iOzzzO!O:gtk_toolbar_append_element",
+			&PyGtk_Type, &t, &type, &py_widget, &text,
+			&tooltip, &tip_private,	&PyGtk_Type, &icon,
+			&callback))
+    return NULL;
+  if (PyGtk_Check(py_widget))
+    widget = GTK_WIDGET(PyGtk_Get(py_widget));
+  else if (py_widget != Py_None) {
+    PyErr_SetString(PyExc_TypeError, "third argument not a GtkWidget or None");
+    return NULL;
+  }
+  if (!PyCallable_Check(callback) && callback != Py_None) {
+    PyErr_SetString(PyExc_TypeError, "seventh argument not callable");
+    return NULL;
+  }
+  if (callback != Py_None) Py_INCREF(callback);
+  ret = gtk_toolbar_append_element(GTK_TOOLBAR(PyGtk_Get(t)), type, widget,
+				   text, tooltip, tip_private,
+				   GTK_WIDGET(PyGtk_Get(icon)), NULL, NULL);
+  if (callback != Py_None) {
+    gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
+			    PyGtk_CallbackMarshal, callback,
+			    PyGtk_DestroyNotify, FALSE, FALSE);
+  }
+  return PyGtk_New((GtkObject *)ret);
+}
+
+static PyObject *
+_wrap_gtk_toolbar_prepend_element(PyObject *self, PyObject *args)
+{
+  PyGtk_Object *t, *icon;
+  GtkToolbarChildType type;
+  char *text, *tooltip, *tip_private;
+  GtkWidget *widget = NULL, *ret;
+  PyObject *py_widget, *callback;
+
+  if (!PyArg_ParseTuple(args, "O!iOzzzO!Oi:gtk_toolbar_prepend_element",
+			&PyGtk_Type, &t, &type, &py_widget, &text,
+			&tooltip, &tip_private,	&PyGtk_Type, &icon,
+			&callback))
+    return NULL;
+  if (PyGtk_Check(py_widget))
+    widget = GTK_WIDGET(PyGtk_Get(py_widget));
+  else if (py_widget != Py_None) {
+    PyErr_SetString(PyExc_TypeError, "third argument not a GtkWidget or None");
+    return NULL;
+  }
+  if (!PyCallable_Check(callback) && callback != Py_None) {
+    PyErr_SetString(PyExc_TypeError, "seventh argument not callable");
+    return NULL;
+  }
+  if (callback != Py_None) Py_INCREF(callback);
+  ret = gtk_toolbar_prepend_element(GTK_TOOLBAR(PyGtk_Get(t)), type, widget,
+				    text, tooltip, tip_private,
+				    GTK_WIDGET(PyGtk_Get(icon)), NULL, NULL);
+  if (callback != Py_None) {
+    gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
+			    PyGtk_CallbackMarshal, callback,
+			    PyGtk_DestroyNotify, FALSE, FALSE);
+  }
+  return PyGtk_New((GtkObject *)ret);
+}
+
+static PyObject *
+_wrap_gtk_toolbar_insert_element(PyObject *self, PyObject *args)
+{
+  PyGtk_Object *t, *icon;
+  GtkToolbarChildType type;
+  char *text, *tooltip, *tip_private;
+  GtkWidget *widget = NULL, *ret;
+  PyObject *py_widget, *callback;
+  int pos;
+  if (!PyArg_ParseTuple(args, "O!iOzzzO!Oi:gtk_toolbar_insert_element",
+			&PyGtk_Type, &t, &type, &py_widget, &text,
+			&tooltip, &tip_private,	&PyGtk_Type, &icon,
+			&callback, &pos))
+    return NULL;
+  if (PyGtk_Check(py_widget))
+    widget = GTK_WIDGET(PyGtk_Get(py_widget));
+  else if (py_widget != Py_None) {
+    PyErr_SetString(PyExc_TypeError, "third argument not a GtkWidget or None");
+    return NULL;
+  }
+  if (!PyCallable_Check(callback) && callback != Py_None) {
+    PyErr_SetString(PyExc_TypeError, "seventh argument not callable");
+    return NULL;
+  }
+  if (callback != Py_None) Py_INCREF(callback);
+  ret = gtk_toolbar_insert_element(GTK_TOOLBAR(PyGtk_Get(t)), type, widget,
+				   text, tooltip, tip_private,
+				   GTK_WIDGET(PyGtk_Get(icon)), NULL, NULL,
+				   pos);
+  if (callback != Py_None) {
+    gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
+			    PyGtk_CallbackMarshal, callback,
+			    PyGtk_DestroyNotify, FALSE, FALSE);
+  }
+  return PyGtk_New((GtkObject *)ret);
+}
+
 static PyObject *_wrap_gtk_drag_dest_set(PyObject *self, PyObject *args) {
   PyObject *widget, *py_flags, *py_actions, *py_list;
   GtkDestDefaults flags;
@@ -6800,6 +6915,9 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_toolbar_append_item", _wrap_gtk_toolbar_append_item, 1 },
     { "gtk_toolbar_prepend_item", _wrap_gtk_toolbar_prepend_item, 1 },
     { "gtk_toolbar_insert_item", _wrap_gtk_toolbar_insert_item, 1 },
+    { "gtk_toolbar_append_element", _wrap_gtk_toolbar_append_element, 1 },
+    { "gtk_toolbar_prepend_element", _wrap_gtk_toolbar_prepend_element, 1 },
+    { "gtk_toolbar_insert_element", _wrap_gtk_toolbar_insert_element, 1 },
     { "gtk_label_get", _wrap_gtk_label_get, 1 },
     { "gtk_color_selection_get_color", _wrap_gtk_color_selection_get_color,1 },
     { "gtk_color_selection_set_color", _wrap_gtk_color_selection_set_color,1 },

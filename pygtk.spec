@@ -1,7 +1,7 @@
 %define py_prefix /usr
 # py_ver should only be 3 characters (1.5.1 == 1.5)
 %define py_ver 1.5
-%define ver 0.6.7
+%define ver 0.6.8
 
 # you may want to remove some of the sub packages depending on what you
 # have installed on your system when building this package.
@@ -66,7 +66,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
 %{py_prefix}/lib/python%{py_ver}/site-packages/gtk.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/Gtkinter.py*
 %{py_prefix}/lib/python%{py_ver}/site-packages/GtkExtra.py*
 %{py_prefix}/lib/python%{py_ver}/site-packages/GTK.py*
 %{py_prefix}/lib/python%{py_ver}/site-packages/GDK.py*
