@@ -2033,18 +2033,20 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
 	gtk_tree_view_column_set_title(tvc, title);
     if (cell)
 	gtk_tree_view_column_set_cell_renderer(tvc, cell);
-    while (PyDict_Next(kwargs, &i, &key, &item)) {
-	gchar *attr = PyString_AsString(key);
+    if (kwargs) {
+	while (PyDict_Next(kwargs, &i, &key, &item)) {
+	    gchar *attr = PyString_AsString(key);
 
-	if (!PyInt_Check(item)) {
-	    gchar err[128];
-	    g_snprintf(err, sizeof(err),"%s must be an integer column number",
-		       attr);
-	    PyErr_SetString(PyExc_TypeError, err);
-	    g_object_unref(G_OBJECT(tvc));
-	    return NULL;
+	    if (!PyInt_Check(item)) {
+		gchar err[128];
+		g_snprintf(err, sizeof(err),
+			   "%s must be an integer column number", attr);
+		PyErr_SetString(PyExc_TypeError, err);
+		g_object_unref(G_OBJECT(tvc));
+		return NULL;
+	    }
+	    gtk_tree_view_column_add_attribute(tvc, attr, PyInt_AsLong(item));
 	}
-	gtk_tree_view_column_add_attribute(tvc, attr, PyInt_AsLong(item));
     }
     self->obj = (GObject *)tvc;
     gtk_object_ref(GTK_OBJECT(self->obj));
@@ -2593,7 +2595,7 @@ _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-ignore gtk_toggle_button_new_with_label
+ignore gtk_toggle_button_new_with_label gtk_toggle_button_new_with_mnemonic
 %%
 override gtk_toggle_button_new kwargs
 static PyObject *
@@ -2607,7 +2609,7 @@ _wrap_gtk_toggle_button_new(PyGObject *self, PyObject*args, PyObject*kwargs)
 				     &text))
 	return NULL;
     if (text)
-	self->obj = (GObject *)gtk_toggle_button_new_with_label(text);
+	self->obj = (GObject *)gtk_toggle_button_new_with_mnemonic(text);
     else
 	self->obj = (GObject *)gtk_toggle_button_new();
     if (!self->obj) {
@@ -2621,7 +2623,7 @@ _wrap_gtk_toggle_button_new(PyGObject *self, PyObject*args, PyObject*kwargs)
     return Py_None;
 }
 %%
-ignore gtk_check_button_new_with_label
+ignore gtk_check_button_new_with_label gtk_check_button_new_with_mnemonic
 %%
 override gtk_check_button_new kwargs
 static PyObject *
@@ -2634,7 +2636,7 @@ _wrap_gtk_check_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 				     kwlist, &text))
 	return NULL;
     if (text)
-	self->obj = (GObject *)gtk_check_button_new_with_label(text);
+	self->obj = (GObject *)gtk_check_button_new_with_mnemonic(text);
     else
 	self->obj = (GObject *)gtk_check_button_new();
     if (!self->obj) {
@@ -2679,9 +2681,9 @@ _wrap_gtk_radio_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 	    self->obj = (GObject *)gtk_radio_button_new(group->group);
     } else {
 	if (group == NULL)
-	    self->obj = (GObject *)gtk_radio_button_new_with_label(NULL,label);
+	    self->obj = (GObject *)gtk_radio_button_new_with_mnemonic(NULL,label);
 	else
-	    self->obj = (GObject *)gtk_radio_button_new_with_label
+	    self->obj = (GObject *)gtk_radio_button_new_with_mnemonic
 		(group->group, label);
     }
     if (!self->obj) {
@@ -2722,34 +2724,7 @@ _wrap_gtk_list_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-ignore gtk_tree_item_new_with_label
-%%
-override gtk_tree_item_new kwargs
-static PyObject *
-_wrap_gtk_tree_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "label", NULL };
-    gchar *text = NULL;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|z:GtkTreeItem.__init__",
-				     kwlist, &text))
-	return NULL;
-    if (text)
-	self->obj = (GObject *)gtk_tree_item_new_with_label(text);
-    else
-	self->obj = (GObject *)gtk_tree_item_new();
-    if (!self->obj) {
-	PyErr_SetString(PyExc_RuntimeError, "could not create GtkTreeItem object");
-	return NULL;
-    }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
-    pygobject_register_wrapper((PyObject *)self);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-ignore gtk_menu_item_new_with_label
+ignore gtk_menu_item_new_with_label gtk_menu_item_new_with_mnemonic
 %%
 override gtk_menu_item_new kwargs
 static PyObject *
@@ -2762,7 +2737,7 @@ _wrap_gtk_menu_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 				     kwlist, &text))
 	return NULL;
     if (text)
-	self->obj = (GObject *)gtk_menu_item_new_with_label(text);
+	self->obj = (GObject *)gtk_menu_item_new_with_mnemonic(text);
     else
 	self->obj = (GObject *)gtk_menu_item_new();
     if (!self->obj) {
@@ -2776,7 +2751,7 @@ _wrap_gtk_menu_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-ignore gtk_check_menu_item_new_with_label
+ignore gtk_check_menu_item_new_with_label gtk_check_menu_item_new_with_mnemonic
 %%
 override gtk_check_menu_item_new kwargs
 static PyObject *
@@ -2791,7 +2766,7 @@ _wrap_gtk_check_menu_item_new(PyGObject *self, PyObject *args,
 				     &text))
 	return NULL;
     if (text)
-	self->obj = (GObject *)gtk_check_menu_item_new_with_label(text);
+	self->obj = (GObject *)gtk_check_menu_item_new_with_mnemonic(text);
     else
 	self->obj = (GObject *)gtk_check_menu_item_new();
     if (!self->obj) {
@@ -2805,7 +2780,7 @@ _wrap_gtk_check_menu_item_new(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
-ignore gtk_radio_menu_item_new_with_label
+ignore gtk_radio_menu_item_new_with_label gtk_radio_menu_item_new_with_mnemonic
 %%
 override gtk_radio_menu_item_new kwargs
 static PyObject *
@@ -2838,10 +2813,10 @@ _wrap_gtk_radio_menu_item_new(PyGObject *self, PyObject *args,
 	    self->obj = (GObject *)gtk_radio_menu_item_new(group->group);
     } else {
 	if (group == NULL)
-	    self->obj = (GObject *)gtk_radio_menu_item_new_with_label(NULL,
-									text);
+	    self->obj = (GObject *)gtk_radio_menu_item_new_with_mnemonic(NULL,
+									 text);
 	else
-	    self->obj = (GObject *)gtk_radio_menu_item_new_with_label
+	    self->obj = (GObject *)gtk_radio_menu_item_new_with_mnemonic
 		(group->group, text);
     }
     if (!self->obj) {
@@ -3939,16 +3914,29 @@ _wrap_gtk_text_buffer_get_iter_at_line(PyGObject *self, PyObject *args, PyObject
     return PyGtkTextIter_New(&iter);
 }
 %%
-override gtk_text_buffer_get_last_iter
+override gtk_text_buffer_get_start_iter
 static PyObject *
-_wrap_gtk_text_buffer_get_last_iter(PyGObject *self, PyObject *args)
+_wrap_gtk_text_buffer_get_start_iter(PyGObject *self, PyObject *args)
 {
     GtkTextIter iter;
 
-    if (!PyArg_ParseTuple(args, ":GtkTextBuffer.get_last_iter"))
+    if (!PyArg_ParseTuple(args, ":GtkTextBuffer.get_start_iter"))
         return NULL;
 
-    gtk_text_buffer_get_last_iter(GTK_TEXT_BUFFER(self->obj), &iter);
+    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(self->obj), &iter);
+    return PyGtkTextIter_New(&iter);
+}
+%%
+override gtk_text_buffer_get_end_iter
+static PyObject *
+_wrap_gtk_text_buffer_get_end_iter(PyGObject *self, PyObject *args)
+{
+    GtkTextIter iter;
+
+    if (!PyArg_ParseTuple(args, ":GtkTextBuffer.get_end_iter"))
+        return NULL;
+
+    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(self->obj), &iter);
     return PyGtkTextIter_New(&iter);
 }
 %%
