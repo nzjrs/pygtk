@@ -3880,9 +3880,14 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
 
 	action = gtk_action_new(entry.name, entry.label, entry.tooltip,
 				entry.stock_id);
+	if (action == NULL) {
+	    PyErr_SetString(PyExc_RuntimeError,
+			    "could not create GtkAction object");
+	    return NULL;
+	}
 	    
 	py_action = pygobject_new((GObject *)action);
-	if (action && callback != Py_None && PyCallable_Check(callback)) {
+	if (callback != Py_None && PyCallable_Check(callback)) {
 	    closure = pyg_closure_new(callback, NULL, NULL);
 	    g_signal_connect_closure(action, "activate", closure, FALSE);
 	    pygobject_watch_closure(py_action, closure);
@@ -3929,17 +3934,23 @@ _wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyOb
         memset(&entry, 0, sizeof(entry));
         callback = Py_None;
 	
-        if (!PyArg_ParseTuple(item, "s|zzzzO", &(entry.name), &(entry.stock_id),
+        if (!PyArg_ParseTuple(item, "s|zzzzOi", &(entry.name), &(entry.stock_id),
 			      &(entry.label), &(entry.accelerator), &(entry.tooltip),
-			      &callback)) {
+			      &callback, &(entry.is_active))) {
             return NULL;
         }
 
 	action = gtk_toggle_action_new(entry.name, entry.label, entry.tooltip,
 				       entry.stock_id);
-	    
+	if (action == NULL) {
+	    PyErr_SetString(PyExc_RuntimeError,
+			    "could not create GtkToggleAction object");
+	    return NULL;
+	}
+
+	gtk_toggle_action_set_active(action, entry.is_active);
 	py_action = pygobject_new((GObject *)action);
-	if (action && callback != Py_None && PyCallable_Check(callback)) {
+	if (callback != Py_None && PyCallable_Check(callback)) {
 	    closure = pyg_closure_new(callback, NULL, NULL);
 	    g_signal_connect_closure(action, "activate", closure, FALSE);
 	    pygobject_watch_closure(py_action, closure);
@@ -3958,19 +3969,23 @@ _wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyOb
 %%
 override gtk_action_group_add_radio_actions kwargs
 static PyObject *
-_wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
+					  PyObject *kwargs)
 {
-    static char *kwlist[] = { "entries", NULL };
+    static char *kwlist[] = { "entries", "value", "on_change", NULL };
     PyObject *entries;
     int len, i;
     PyObject *item;
     GtkRadioActionEntry entry;
-    GtkRadioAction *action;
-    PyObject *callback, *py_action;
+    GtkRadioAction *action, *first_action = NULL;
+    PyObject *callback = Py_None, *py_action;
     GClosure *closure;
+    GSList * group = NULL;
+    gint value = 0;
     
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkActionGroup.add_radio_actions",
-				     kwlist, &entries))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|iO:GtkActionGroup.add_radio_actions",
+				     kwlist, &entries, &value, &callback))
         return NULL;
     
     if (!PySequence_Check(entries)) {
@@ -3986,22 +4001,32 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args, PyObj
         memset(&entry, 0, sizeof(entry));
         callback = Py_None;
 	
-        if (!PyArg_ParseTuple(item, "s|zzzziO", &(entry.name), &(entry.stock_id),
-			      &(entry.label), &(entry.accelerator), &(entry.tooltip),
-			      &(entry.value), &callback)) {
+        if (!PyArg_ParseTuple(item, "s|zzzzi", &(entry.name),
+			      &(entry.stock_id),
+			      &(entry.label), &(entry.accelerator),
+			      &(entry.tooltip),
+			      &(entry.value))) {
             return NULL;
         }
 
 	action = gtk_radio_action_new(entry.name, entry.label, entry.tooltip,
 				      entry.stock_id, entry.value);
-	    
-	py_action = pygobject_new((GObject *)action);
-	if (action && callback != Py_None && PyCallable_Check(callback)) {
-	    closure = pyg_closure_new(callback, NULL, NULL);
-	    g_signal_connect_closure(action, "activate", closure, FALSE);
-	    pygobject_watch_closure(py_action, closure);
+	if (action == NULL) {
+	    PyErr_SetString(PyExc_RuntimeError,
+			    "could not create GtkRadioAction object");
+	    return NULL;
 	}
-	
+
+	if (i == 0)
+	    first_action = action;
+
+	gtk_radio_action_set_group(action, group);
+	group = gtk_radio_action_get_group(action);
+
+	if (value == entry.value)
+	    gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(action), TRUE);
+
+	py_action = pygobject_new((GObject *)action);
 	gtk_action_group_add_action_with_accel (GTK_ACTION_GROUP(self->obj),
 						GTK_ACTION(action),
 						entry.accelerator);
@@ -4009,6 +4034,13 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args, PyObj
 	g_object_unref (action);
 	
     }
+
+    if (callback != Py_None && PyCallable_Check(callback)) {
+	closure = pyg_closure_new(callback, NULL, NULL);
+	g_signal_connect_closure(first_action, "changed", closure, FALSE);
+	pygobject_watch_closure(py_action, closure);
+    }
+	
     Py_INCREF(Py_None);
     return Py_None;
 }
