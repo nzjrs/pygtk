@@ -138,6 +138,24 @@ END NOT IMPLEMENTED -->
 	<methodname><link linkend="method-gdkdisplay--get-default-group">get_default_group</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdisplay--supports-selection-notification">supports_selection_notification</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdisplay--supports-clipboard-persistence">supports_clipboard_persistence</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdisplay--request-selection-notification">request_selection_notification</link></methodname>
+	<methodparam><parameter role="keyword">selection</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdisplay--store-clipboard">store_clipboard</link></methodname>
+	<methodparam><parameter role="keyword">clipboard_window</parameter></methodparam>
+	<methodparam><parameter role="keyword">time_</parameter></methodparam>
+	<methodparam><parameter role="keyword">targets</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
 <programlisting>
@@ -708,114 +726,8 @@ the core pointer device for the given display</para>
 linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link> that
 the pointer is on, the current location coordinates of the pointer and the
 current modifier mask for the display. The returned modifier mask is a
-combination of:</para>
-
-      <variablelist>
-        <varlistentry>
-          <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
-          <listitem>
-            <simpara>The Shift key.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.LOCK_MASK</literal></term>
-          <listitem>
-            <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be CapsLock or ShiftLock).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
-          <listitem>
-            <simpara>The Control key. </simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD1_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this modifier, but
-normally it is the Alt key).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD2_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD3_MASK</literal></term>
-          <listitem>
-            <simpara>The sixth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD4_MASK</literal></term>
-          <listitem>
-            <simpara>The seventh modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD5_MASK</literal></term>
-          <listitem>
-            <simpara>The eighth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
-          <listitem>
-            <simpara>The first mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
-          <listitem>
-            <simpara>The second mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
-          <listitem>
-            <simpara>The third mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
-          <listitem>
-            <simpara>Differentiates between (keyval, modifiers) pairs from
-key press and release events.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
-          <listitem>
-            <simpara>all of the above</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-
-      <para></para>
+combination of the <link linkend="gdk-modifier-constants">GDK Modifier
+Constants</link>.</para>
 
     </refsect2>
 
@@ -1062,6 +974,127 @@ display. This window is implicitly created by <literal>GDK</literal>.  See
 the <link
 linkend="method-gdkwindow--set-group"><methodname>gtk.gdk.Window.set_group()</methodname></link>
 method for more information.</para>
+
+    </refsect2>
+
+     <refsect2 id="method-gdkdisplay--supports-selection-notification">
+      <title>gtk.gdk.Display.supports_selection_notification</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_default_group</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if
+<literal>gtk.gdk.EventOwnerChange</literal> events will be
+sent.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>supports_selection_notification</methodname>()
+method returns <literal>TRUE</literal> if
+<literal>gtk.gdk.EventOwnerChange</literal> events will be sent when the
+owner of a selection changes.</para>
+
+    </refsect2>
+
+     <refsect2 id="method-gdkdisplay--supports-clipboard-persistence">
+      <title>gtk.gdk.Display.supports_clipboard_persistence</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>supports_clipboard_persistence</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the display
+supports clipboard persistence.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>supports_clipboard_persistence</methodname>()
+method Returns whether the specified display supports clipboard persistence;
+i.e. if it's possible to store the clipboard data after an application has
+quit. On X11 this checks if a clipboard daemon is running.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkdisplay--request-selection-notification">
+      <title>gtk.gdk.Display.request_selection_notification</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>request_selection_notification</methodname>
+	  <methodparam><parameter role="keyword">selection</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">selection</parameter>&nbsp;:</term>
+	  <listitem><simpara>The string (or <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>) naming
+the selection for which ownership change notification is
+requested</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>request_selection_notification</methodname>()
+method requests that <literal>gtk.gdk.EventOwnerChange</literal> events will
+be sent for changes in ownership of the atom specified by
+<parameter>selection</parameter>.</para>
+
+    </refsect2>
+
+     <refsect2 id="method-gdkdisplay--store-clipboard">
+      <title>gtk.gdk.Display.store_clipboard</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>store_clipboard</methodname>
+	  <methodparam><parameter role="keyword">clipboard_window</parameter></methodparam>
+	  <methodparam><parameter role="keyword">time</parameter></methodparam>
+	  <methodparam><parameter role="keyword">targets</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">clipboard_window</parameter>&nbsp;:</term>
+	  <listitem><simpara> a <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+belonging to the clipboard owner</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">time</parameter>&nbsp;:</term>
+	  <listitem><simpara>a timestamp</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of targets that should be saved, or
+<literal>None</literal> if all available targets should be
+saved.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>store_clipboard</methodname>() method issues a
+request to the the clipboard manager to store the clipboard data. On X11,
+this is a special program that works according to the freedesktop clipboard
+specification, available at <ulink
+url="http://www.freedesktop.org/Standards/clipboard-manager-spec">http://www.freedesktop.org/Standards/clipboard-manager-spec</ulink>.</para>
 
     </refsect2>
 
