@@ -227,6 +227,7 @@ ignore
   gtk_toggle_button_new_with_label
   gtk_toggle_button_new_with_mnemonic
   gtk_toggle_tool_button_new_from_stock
+  gtk_tool_button_new_from_stock
   gtk_trace_referencing
   gtk_tree_remove_items
   gtk_true 
@@ -5287,6 +5288,57 @@ _wrap_gtk_toggle_tool_button_new(PyGObject *self, PyObject *args,
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError,
 			"could not create GtkToggleToolButton object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gtk_tool_button_new kwargs
+static int
+_wrap_gtk_tool_button_new(PyGObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist1[] = { "stock_id", NULL };
+    static char *kwlist2[] = { "icon_widget", "label", NULL };
+    PyGObject *py_icon_widget = NULL;
+    GtkWidget *icon_widget = NULL;
+    char *label = NULL;
+    char *stock_id = NULL;
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs,
+				    "s:GtkToolButton.__init__", kwlist1,
+				    &stock_id)) {
+	self->obj = (GObject *)gtk_tool_button_new_from_stock(stock_id);
+    } else {
+	PyErr_Clear();
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+					 "|Oz:GtkToolButton.__init__", kwlist2,
+					 &py_icon_widget, &label)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "Usage: one of:\n"
+			    "  gtk.ToolButton(icon_widget=None, label=None)\n"
+			    "  gtk.ToolButton(stock_id)");
+	    return -1;
+	}
+
+	if (py_icon_widget && (PyObject *)py_icon_widget != Py_None) {
+	    if (!pygobject_check(py_icon_widget, &PyGtkWidget_Type)) {
+		PyErr_SetString(PyExc_TypeError,
+			    "Usage: one of:\n"
+			    "  gtk.ToolButton(icon_widget=None, label=None)\n"
+			    "  gtk.ToolButton(stock_id)");
+		return -1;
+	    }
+	    icon_widget = GTK_WIDGET(py_icon_widget->obj);
+	}
+	self->obj = (GObject *)gtk_tool_button_new(icon_widget, label);
+    }
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkToolButton object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
