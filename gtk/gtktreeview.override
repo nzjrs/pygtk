@@ -2303,3 +2303,66 @@ _wrap_gtk_tree_view_get_dest_row_at_pos(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_tree_view_map_expanded_rows kwargs
+
+typedef struct {
+    PyObject *func;
+    PyObject *user_data;
+} _map_expanded_rows_data_t;
+
+static void map_expanded_rows_cb(GtkTreeView *tree_view, GtkTreePath *path,
+			         gpointer user_data)
+{
+    PyObject *py_path, *py_view, *ret;
+    _map_expanded_rows_data_t *data =
+	(_map_expanded_rows_data_t *) user_data;
+
+    /* If exception is pending, just return */
+    if (PyErr_Occurred())
+        return;
+
+    py_path = pygtk_tree_path_to_pyobject(path);
+    if (py_path == NULL)
+        return;
+    py_view = pygobject_new((GObject *)tree_view);
+    if (py_view == NULL) {
+        Py_DECREF(py_path);
+        return;
+    }
+    if (data->user_data)
+	ret = PyObject_CallFunction(data->func, "NNO", py_view, py_path, data->user_data);
+    else
+	ret = PyObject_CallFunction(data->func, "NN", py_view, py_path);
+    Py_XDECREF(ret);
+}
+
+static PyObject *
+_wrap_gtk_tree_view_map_expanded_rows(PyGObject *self, PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL };
+    _map_expanded_rows_data_t data = { NULL, NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:GtkTreeView.map_expanded_rows",
+                                     kwlist,
+                                     &data.func, &data.user_data))
+        return NULL;
+	
+    if (!PyCallable_Check(data.func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be callable");
+	return NULL;
+    }
+
+    gtk_tree_view_map_expanded_rows(GTK_TREE_VIEW(self->obj), map_expanded_rows_cb,
+                                    &data);
+    Py_XDECREF(data.user_data);
+
+    /* Return NULL if exception occurred in the callback */
+    if (PyErr_Occurred())
+        return NULL;
+				    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
