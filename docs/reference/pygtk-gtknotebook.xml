@@ -25,7 +25,7 @@ linkend="method-gtknotebook--append-page">append_page</link></methodname>
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">tab_label</parameter></methodparam>
+		       role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -33,9 +33,9 @@ linkend="method-gtknotebook--append-page-menu">append_page_menu</link></methodna
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">tab_label</parameter></methodparam>
+		       role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter
-		       role="keyword">menu_label</parameter></methodparam>
+		       role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -43,7 +43,7 @@ linkend="method-gtknotebook--prepend-page">prepend_page</link></methodname>
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">tab_label</parameter></methodparam>
+		       role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -51,9 +51,9 @@ linkend="method-gtknotebook--prepend-page-menu">prepend_page_menu</link></method
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">tab_label</parameter></methodparam>
+		       role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter
-		       role="keyword">menu_label</parameter></methodparam>
+		       role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -61,9 +61,9 @@ linkend="method-gtknotebook--insert-page">insert_page</link></methodname>
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">tab_label</parameter></methodparam>
+		       role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter
-		       role="keyword">position</parameter></methodparam>
+		       role="keyword">position</parameter><initializer>-1</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -71,11 +71,11 @@ linkend="method-gtknotebook--insert-page-menu">insert_page_menu</link></methodna
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">tab_label</parameter></methodparam>
+		       role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter
-		       role="keyword">menu_label</parameter></methodparam>
+		       role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter
-		       role="keyword">position</parameter></methodparam>
+		       role="keyword">position</parameter><initializer>-1</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -176,7 +176,7 @@ linkend="method-gtknotebook--set-tab-label">set_tab_label</link></methodname>
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">tab_label</parameter></methodparam>
+		       role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -204,7 +204,7 @@ linkend="method-gtknotebook--set-menu-label">set_menu_label</link></methodname>
 	<methodparam><parameter
 		       role="keyword">child</parameter></methodparam>
 	<methodparam><parameter
-		       role="keyword">menu_label</parameter></methodparam>
+		       role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -624,7 +624,7 @@ widget with no pages.</para>
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">tab_label</parameter></methodparam>
+			 role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -638,7 +638,7 @@ the contents of the page.</simpara></listitem>
 role="keyword">tab_label</parameter>&nbsp;:</term>
 	  <listitem><simpara>the <link
 linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> to be
-used as the label for the page,</simpara></listitem>
+used as the label for the page.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -649,9 +649,14 @@ used as the label for the page,</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>append_page</methodname>() method appends a page
-to the notebook using the widget specified by
-<parameter>child</parameter> and the widget specified by
-<parameter>tab_label</parameter> as the label on the tab.</para>
+to the notebook using the widget specified by <parameter>child</parameter>
+and the widget specified by <parameter>tab_label</parameter> as the label on
+the tab.</para>
+
+      <para>In PyGTK 2.4 and above <parameter>tab_label</parameter> can be
+<literal>None</literal> to use a default label. Also if
+<parameter>tab_label</parameter> is not specified it will default to
+<literal>None</literal>.</para>
 
     </refsect2>
 
@@ -663,9 +668,9 @@ to the notebook using the widget specified by
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">tab_label</parameter></methodparam>
+			 role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	  <methodparam><parameter
-			 role="keyword">menu_label</parameter></methodparam>
+			 role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -702,6 +707,16 @@ contents of the page; <parameter>tab_label</parameter> specifies the widget
 to be used as the tab label; and, <parameter>menu_label</parameter>
 specifies the widget to use in the popup menu.</para>
 
+      <para>In PyGTK 2.4 and above <parameter>tab_label</parameter> can be
+<literal>None</literal> to use a default label. If
+<parameter>tab_label</parameter> is a <link
+linkend="class-gtklabel"><classname>gtk.Label</classname></link> or
+<literal>None</literal> and <parameter>menu_label</parameter> is
+<literal>None</literal> then the menu label will have the same text as the
+tab label. Otherwise, <parameter>menu_label</parameter> must be specified
+and not <literal>None</literal>. These parameters will default to
+<literal>None</literal> in PyGTK 2.4 as well.</para>
+
     </refsect2>
 
   <refsect2 id="method-gtknotebook--prepend-page">
@@ -712,7 +727,7 @@ specifies the widget to use in the popup menu.</para>
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">tab_label</parameter></methodparam>
+			 role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -741,6 +756,11 @@ page to the notebook. <parameter>child</parameter> specifies the widget to
 use as the contents of the page and <parameter>tab_label</parameter>
 specifies the widget to be used as the tab label.</para>
 
+      <para>In PyGTK 2.4 and above <parameter>tab_label</parameter> can be
+<literal>None</literal> to use a default label. Also if
+<parameter>tab_label</parameter> is not specified it will default to
+<literal>None</literal>.</para>
+
     </refsect2>
 
   <refsect2 id="method-gtknotebook--prepend-page-menu">
@@ -751,9 +771,9 @@ specifies the widget to be used as the tab label.</para>
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">tab_label</parameter></methodparam>
+			 role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	  <methodparam><parameter
-			 role="keyword">menu_label</parameter></methodparam>
+			 role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -790,6 +810,16 @@ contents of the page; <parameter>tab_label</parameter> specifies the widget
 to use as the tab label; and, <parameter>menu_label</parameter> specifies
 the widget to use in the popup menu.</para>
 
+      <para>In PyGTK 2.4 and above <parameter>tab_label</parameter> can be
+<literal>None</literal> to use a default label. If
+<parameter>tab_label</parameter> is a <link
+linkend="class-gtklabel"><classname>gtk.Label</classname></link> or
+<literal>None</literal> and <parameter>menu_label</parameter> is
+<literal>None</literal> then the menu label will have the same text as the
+tab label. Otherwise, <parameter>menu_label</parameter> must be specified
+and not <literal>None</literal>. These parameters will default to
+<literal>None</literal> in PyGTK 2.4 as well.</para>
+
     </refsect2>
 
   <refsect2 id="method-gtknotebook--insert-page">
@@ -800,9 +830,9 @@ the widget to use in the popup menu.</para>
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">tab_label</parameter></methodparam>
+			 role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	  <methodparam><parameter
-			 role="keyword">position</parameter></methodparam>
+			 role="keyword">position</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -840,6 +870,14 @@ the tab label. If <parameter>position</parameter> is -1 the page is appended
 to the notebook. In PyGTK 2.4 and above if <parameter>tab_label</parameter>
 is <literal>None</literal> a default label if "page N" is used.</para>
 
+      <para>In PyGTK 2.4 and above <parameter>tab_label</parameter> can be
+<literal>None</literal> to use a default label. Also if
+<parameter>tab_label</parameter> is not specified it will default to
+<literal>None</literal>.</para>
+
+      <para>In Pygtk 2.4 and above <parameter>position</parameter> will
+default to -1 if not specified.</para>
+
     </refsect2>
 
   <refsect2 id="method-gtknotebook--insert-page-menu">
@@ -850,11 +888,11 @@ is <literal>None</literal> a default label if "page N" is used.</para>
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">tab_label</parameter></methodparam>
+			 role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	  <methodparam><parameter
-			 role="keyword">menu_label</parameter></methodparam>
+			 role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
 	  <methodparam><parameter
-			 role="keyword">position</parameter></methodparam>
+			 role="keyword">position</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -896,6 +934,19 @@ widget to use as the contents of the page; <parameter>tab_label</parameter>
 specifies the widget to use as the tab label; and
 <parameter>menu_label</parameter> specifies the widget to use as the label
 in the popup menu.</para>
+
+      <para>In PyGTK 2.4 and above <parameter>tab_label</parameter> can be
+<literal>None</literal> to use a default label. If
+<parameter>tab_label</parameter> is a <link
+linkend="class-gtklabel"><classname>gtk.Label</classname></link> or
+<literal>None</literal> and <parameter>menu_label</parameter> is
+<literal>None</literal> then the menu label will have the same text as the
+tab label. Otherwise, <parameter>menu_label</parameter> must be specified
+and not <literal>None</literal>. These parameters will default to
+<literal>None</literal> in PyGTK 2.4 as well.</para>
+
+      <para>In Pygtk 2.4 and above <parameter>position</parameter> will
+default to -1 if not specified.</para>
 
     </refsect2>
 
@@ -1323,7 +1374,7 @@ tab label widget for the page containing the widget
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">tab_label</parameter></methodparam>
+			 role="keyword">tab_label</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -1341,9 +1392,12 @@ use or <literal>None</literal>.</simpara></listitem>
 
       <para>The <methodname>set_tab_label</methodname>() method replaces the
 tab label for the notebook page containing <parameter>child</parameter> with
-the widget specified by <parameter>tab_label</parameter>. If
-<parameter>tab_label</parameter> is <literal>None</literal> a default label
-is used containing "page N".</para>
+the widget specified by <parameter>tab_label</parameter>.</para>
+
+      <para>In PyGTK 2.4 and above <parameter>tab_label</parameter> can be
+<literal>None</literal> to use a default label. Also if
+<parameter>tab_label</parameter> is not specified it will default to
+<literal>None</literal>.</para>
 
     </refsect2>
 
@@ -1446,7 +1500,7 @@ has not been set (it defaults to the tab label), this method returns
 	  <methodparam><parameter
 			 role="keyword">child</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">menu_label</parameter></methodparam>
+			 role="keyword">menu_label</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -1465,6 +1519,13 @@ label</simpara></listitem>
       <para>The <methodname>set_menu_label</methodname>() replaces the menu
 label for the page containing <parameter>child</parameter> with the widget
 specified by <parameter>menu_label</parameter>.</para>
+
+      <para>In PyGTK 2.4 and above <parameter>menu_label</parameter> can be
+<literal>None</literal> to use a default label. Also if
+<parameter>menu_label</parameter> is not specified it will default to
+<literal>None</literal>. See the <link
+linkend="method-gtknotebook--append-page-menu"><methodname>append_page_menu</methodname>()</link>
+method for more information.</para>
 
     </refsect2>
 
