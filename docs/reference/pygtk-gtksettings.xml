@@ -107,48 +107,52 @@ linkend="function-gtk--settings-get-for-screen">gtk.settings_get_for_screen</lin
 	      <entry>"gtk-alternative-button-order"</entry>
 	      <entry>Read-Write</entry>
               <entry>If <literal>TRUE</literal>, buttons in dialogs should
-use the alternative button order. Available in GTK+ 2.4 and above.</entry>
+use the alternative button order. Available in GTK+ 2.6 and above. Default
+value: <literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-button-images"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, stock icons should be shown
-in buttons. Available in GTK+ 2.4 and above.</entry>
+in buttons. Available in GTK+ 2.4 and above.
+Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-can-change-accels"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the menu accelerators can
-be changed by pressing a key over the menu item.</entry>
+be changed by pressing a key over the menu item. Default
+value: <literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-color-palette"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The palette to use in the color selector</entry>
+	      <entry>The palette to use in the color selector.
+Default value: "black:white:gray50:red:purple:blue:light blue:green:yellow:orange:lavender:brown:goldenrod4:dodger blue:pink:light green:gray10:gray30:gray75:gray90"</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-cursor-blink"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the cursor should
-blink</entry>
+blink. Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-cursor-blink-time"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The length of the cursor blink cycle, in
-milliseconds</entry>
+milliseconds. Allowed values: >= 100. Default value: 1200</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-dnd-drag-threshold"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The number of pixels the cursor can move before
-dragging starts</entry>
+dragging starts. Allowed values: >= 1. Default value: 8</entry>
 	    </row>
 
 	    <row valign="top">
@@ -156,52 +160,65 @@ dragging starts</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The maximum distance allowed between two clicks for
 them to be considered a double click (in pixels). Available in GTK+ 2.4
-and above.</entry>
+and above. Allowed values: >= 0. Default value: 5</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-double-click-time"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The maximum time allowed between two clicks for them to
-be considered a double click (in milliseconds)</entry>
+be considered a double click (in milliseconds). Allowed values: >= 0.
+Default value: 250</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-entry-select-on-focus"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, select the contents of an
-entry when it is focused.</entry>
+entry when it is focused. Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-font-name"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The name of the default font to use</entry>
+	      <entry>The name of the default font to use.
+Default value: "Sans 10"</entry>
 	    </row>
 
 	    <row valign="top">
-		       <entry>"gtk-icon-sizes"</entry>
+              <entry>"gtk-icon-sizes"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The list of icon sizes
-(gtk-menu=16,16;gtk-button=20,20...</entry>
+(gtk-menu=16,16;gtk-button=20,20...).
+Default value: <literal>None</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-icon-theme-name"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The name of the icon theme to use.  Available in
+GTK+ 2.4 and above. Default value: "hicolor"</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-key-theme-name"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The name of the key theme RC file to load</entry>
+	      <entry>The name of the key theme RC file to load.
+Default value: <literal>None</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-menu-bar-accel"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The keybinding to activate the menu bar</entry>
+	      <entry>The keybinding to activate the menu bar.
+Default value: "F10"</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-menu-bar-popup-delay"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The delay before the submenus of a menu bar appear.
+Allowed values: >= 0. Default value: 0
 Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
@@ -209,41 +226,47 @@ Available in GTK+ 2.2 and above.</entry>
 	      <entry>"gtk-menu-images"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal> images should be shown in
-menus. Available in GTK+ 2.4 and above.</entry>
+menus. Default value: <literal>TRUE</literal>. Available in GTK+ 2.4 and
+above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-menu-popdown-delay"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The time before hiding a submenu when the pointer is
-moving toward the submenu. Available in GTK+ 2.2 and above.</entry>
+moving toward the submenu. Allowed values: >= 0. Default value: 1000.
+Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-menu-popup-delay"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Minimum time the pointer must stay over a menu item
-before the submenu appears. Available in GTK+ 2.2 and above.</entry>
+before the submenu appears. Allowed values: >= 0. Default value: 225.
+Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-modules"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The list of currently active GTK modules.  Available in
-GTK+ 2.4 and above.</entry>
+	      <entry>The list of currently active GTK modules.
+Default value: <literal>None</literal>. Available in GTK+ 2.6 and
+above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-split-cursor"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, two cursors should be
-displayed for mixed left-to-right and right-to-left text</entry>
+displayed for mixed left-to-right and right-to-left text.
+Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-theme-name"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The name of the theme RC file to load</entry>
+	      <entry>The name of the theme RC file to load.
+Default value: "Default"</entry>
 	    </row>
 
 	    <row valign="top">
@@ -255,7 +278,8 @@ displayed for mixed left-to-right and right-to-left text</entry>
 <literal>gtk.ICON_SIZE_LARGE_TOOLBAR</literal>,
 <literal>gtk.ICON_SIZE_BUTTON</literal>,
 <literal>gtk.ICON_SIZE_DND</literal> or
-<literal>gtk.ICON_SIZE_DIALOG</literal></entry>
+<literal>gtk.ICON_SIZE_DIALOG</literal>.
+Default value: <literal>gtk.ICON_SIZE_LARGE_TOOLBAR</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -264,42 +288,46 @@ displayed for mixed left-to-right and right-to-left text</entry>
 	      <entry>The toolbar display style - one of:
 <literal>gtk.TOOLBAR_ICONS</literal>, <literal>gtk.TOOLBAR_TEXT</literal>,
 <literal>gtk.TOOLBAR_BOTH</literal> or
-<literal>gtk.TOOLBAR_BOTH_HORIZ</literal></entry>
+<literal>gtk.TOOLBAR_BOTH_HORIZ</literal>.
+Default value: <literal>gtk.TOOLBAR_BOTH</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-xft-antialias"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Whether to antialias Xft fonts; 0=no, 1=yes, -1=default.
-Available in GTK+ 2.4 and above.</entry>
+Default value: -1. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-xft-dpi"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Resolution for Xft, in 1024 * dots/inch. -1 to use
-default value. Available in GTK+ 2.4 and above.</entry>
+default value. Allowed values: [-1,1048576]. Default value: -1. Available in
+GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-xft-hinting"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Whether to hint Xft fonts; 0=no, 1=yes, -1=default.
-Available in GTK+ 2.4 and above.</entry>
+Default value: -1. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-xft-hintstyle"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>What degree of hinting to use; none, slight, medium,
-or full. Available in GTK+ 2.4 and above.</entry>
+or full. Default value: <literal>None</literal>. Available in GTK+ 2.4 and
+above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"gtk-xft-rgba"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Type of subpixel antialiasing; none, rgb, bgr, vrgb, vbgr.
-Available in GTK+ 2.4 and above.</entry>
+Default value: <literal>None</literal>. Available in GTK+ 2.4 and
+above.</entry>
 	    </row>
 
 	  </tbody>
