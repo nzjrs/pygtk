@@ -3836,6 +3836,19 @@ static PyObject *_wrap_gtk_pixmap_get(PyObject *self, PyObject *args) {
 		       mask ? PyGdkWindow_New(mask) : Py_None);
 }
 
+static PyObject *_wrap_gtk_preview_draw_row(PyObject *self, PyObject *args) {
+  PyObject *preview;
+  char *data;
+  int dummy_len, x, y, width;
+
+  if (!PyArg_ParseTuple(args, "O!s#iii:gtk_preview_draw_row", &PyGtk_Type,
+			&preview, &data, &dummy_len, &x, &y, &width))
+    return NULL;
+  gtk_preview_draw_row(GTK_PREVIEW(PyGtk_Get(preview)), data, x, y, width);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject *_wrap_gtk_radio_menu_item_new(PyObject *self, PyObject *args) {
     PyGtk_Object *g = NULL;
     GSList *l = NULL;
@@ -4896,6 +4909,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_menu_popup", _wrap_gtk_menu_popup, 1 },
     { "gtk_pixmap_new_from_xpm", _wrap_gtk_pixmap_new_from_xpm, 1 },
     { "gtk_pixmap_get", _wrap_gtk_pixmap_get, 1 },
+    { "gtk_preview_draw_row", _wrap_gtk_preview_draw_row, 1 },
     { "gtk_radio_menu_item_new", _wrap_gtk_radio_menu_item_new, 1 },
     { "gtk_radio_menu_item_new_with_label", _wrap_gtk_radio_menu_item_new_with_label, 1 },
     { "gtk_radio_button_new", _wrap_gtk_radio_button_new, 1 },
