@@ -22,5 +22,10 @@ filter.add_mime_type("image/jpeg")
 filter.add_mime_type("image/gif")
 dialog.add_filter(filter)
 
-if dialog.run() == gtk.RESPONSE_OK:
+response = dialog.run()
+dialog.destroy()
+if response == gtk.RESPONSE_OK:
     print dialog.get_filename(), 'selected'
+elif response == gtk.RESPONSE:
+    print 'Closed, no files selected'
+    

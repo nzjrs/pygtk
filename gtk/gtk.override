@@ -3882,3 +3882,23 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_ui_manager_add_ui_from_string kwargs
+static PyObject *
+_wrap_gtk_ui_manager_add_ui_from_string(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "buffer", NULL };
+    char *buffer;
+    int length, ret;
+    GError *error = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:GtkUIManager.add_ui_from_string",
+				     kwlist, &buffer, &length))
+        return NULL;
+    
+    ret = gtk_ui_manager_add_ui_from_string(GTK_UI_MANAGER(self->obj),
+					    buffer, length, &error);
+    if (pyg_error_check(&error))
+        return NULL;
+    return PyInt_FromLong(ret);
+}
