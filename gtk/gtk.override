@@ -431,7 +431,7 @@ _wrap_gtk_widget_draw(PyGObject *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "rect", NULL };
     GdkRectangle rect;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(hhhh):GtkWidget.draw",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(iiii):GtkWidget.draw",
 				     kwlist, &(rect.x), &(rect.y),
 				     &(rect.width), &(rect.height)))
         return NULL;
@@ -494,7 +494,7 @@ _wrap_gtk_widget_size_allocate(PyGObject *self, PyObject *args,
     GtkAllocation allocation;
 
     if(!PyArg_ParseTupleAndKeywords(args, kwargs,
-				    "(hhhh):GtkWidget.size_allocate", kwlist,
+				    "(iiii):GtkWidget.size_allocate", kwlist,
 				    &(allocation.x), &(allocation.y),
 				    &(allocation.width), &(allocation.height)))
         return NULL;

@@ -145,7 +145,7 @@ _wrap_gdk_draw_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
     for (i = 0; i < npoints; i++) {
 	PyObject *item = PySequence_GetItem(py_points, i);
 	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
+	if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
 	    PyErr_Clear();
 	    PyErr_SetString(PyExc_TypeError,
 			    "sequence members must be 2-tuples");
@@ -215,7 +215,7 @@ _wrap_gdk_draw_points(PyGObject *self, PyObject *args, PyObject *kwargs)
     for (i = 0; i < npoints; i++) {
 	PyObject *item = PySequence_GetItem(py_points, i);
 	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
+	if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
 	    PyErr_Clear();
 	    PyErr_SetString(PyExc_TypeError,
 			    "sequence members must be 2-tuples");
@@ -256,7 +256,7 @@ _wrap_gdk_draw_segments(PyGObject *self, PyObject *args, PyObject *kwargs)
     for (i = 0; i < nsegs; i++) {
 	PyObject *item = PySequence_GetItem(py_segs, i);
 	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hhhh", &segs[i].x1, &segs[i].y1,
+	if (!PyArg_ParseTuple(item, "iiii", &segs[i].x1, &segs[i].y1,
 			      &segs[i].x2, &segs[i].y2)) {
 	    PyErr_Clear();
 	    PyErr_SetString(PyExc_TypeError,
@@ -297,7 +297,7 @@ _wrap_gdk_draw_lines(PyGObject *self, PyObject *args, PyObject *kwargs)
     for (i = 0; i < npoints; i++) {
 	PyObject *item = PySequence_GetItem(py_points, i);
 	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
+	if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
 	    PyErr_Clear();
 	    PyErr_SetString(PyExc_TypeError,
 			    "sequence members must be 2-tuples");

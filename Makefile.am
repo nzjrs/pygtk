@@ -76,6 +76,7 @@ EXTRA_DIST += \
   examples/atk/atk-demo.py \
   examples/gobject/signal.py \
   examples/gobject/properties.py \
+  examples/pango/utf8-demo.py \
   examples/pygtk-demo/pygtk-demo.py \
   examples/pygtk-demo/demos/__init__.py \
   examples/pygtk-demo/demos/appwindow.py \

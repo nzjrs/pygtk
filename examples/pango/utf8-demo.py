@@ -1,5 +1,5 @@
 # order is important here (for now)
-import ltihooks, ExtensionClass, gobject, gtk
+import gobject, gtk
 
 # string taken from pango examples directory and converted from utf8
 # to python unicode string escapes
@@ -49,11 +49,12 @@ Difference among chinese characters in GB, JIS, KSC, BIG5:\u200E
  BIG5\t--\t\u5143\u6C23\t\u958B\u767C
 
 '''
-w = gtk.GtkWindow()
+w = gtk.Window()
 w.set_border_width(10)
-l = gtk.GtkLabel(hellos)
+l = gtk.Label(hellos)
 w.add(l)
 l.show()
 w.show()
 
 gtk.main()
+
