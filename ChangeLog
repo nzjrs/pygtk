@@ -1,5 +1,15 @@
 2005-01-16  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* gobject/gobjectmodule.c (pyg_type_register): Use tp_base field
+	of each base type to compare with PyGInterface_Type, instead of
+	PyObject_IsSubclass, because we don't want a class defined as
+	class Foo(GObject, SomeInterface) to be itself considered an
+	interface when in turn it is subclassed.
+	(pyg_type_register): Make "Interface type %s has no python
+	implementation support" a warning instead of exception.  This
+	really isn't a fatal error and some programs seem to be using
+	interfaces in weird ways.
+
 	* codegen/reversewrapper.py (ReverseWrapper.generate): Rename
 	variable PyGILState_STATE state to __py_state to avoid possible
 	name collision with function parameters.
