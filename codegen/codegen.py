@@ -765,7 +765,7 @@ def write_enums(parser, prefix, fp=sys.stdout):
                 fp.write('  pyg_flags_add(module, "%s", strip_prefix, %s);\n' % (enum.name, enum.typecode))
             
     fp.write('\n')
-    fp.write('  if (!PyErr_Occurred())\n')
+    fp.write('  if (PyErr_Occurred())\n')
     fp.write('    PyErr_Print();\n') 
     fp.write('}\n\n')
 
