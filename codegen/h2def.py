@@ -100,6 +100,21 @@ def find_obj_defs(buf, objdefs=[]):
             objdefs.append(t)
         pos = m.end()
 
+    # now find all structures that look like they might represent a class inherited from GTypeInterface:
+    pat = re.compile("struct _(" + obj_name_pat + ")Class\s*{\s*" +
+                     "GTypeInterface\s+", re.MULTILINE)
+    pos = 0
+    while pos < len(buf):
+        m = pat.search(buf, pos)
+        if not m: break
+        t = (m.group(1), '')
+        t2 = (m.group(1)+'Class', 'GTypeInterface')
+        # if we find an object structure together with a corresponding
+        # class structure, then we have probably found a GtkObject subclass.
+        if t2 in maybeobjdefs:
+            objdefs.append(t)
+        pos = m.end()
+
     pat = re.compile("typedef struct\s+[_\w]*\s*{\s*" +
                      "(" + obj_name_pat + ")Class\s+[^}]*}\s*" +
                      "(" + obj_name_pat + ")Class\s*;", re.MULTILINE)
