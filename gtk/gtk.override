@@ -108,6 +108,7 @@ ignore
   gtk_false
   gtk_file_chooser_dialog_new_with_backend
   gtk_file_chooser_error_quark
+  gtk_file_chooser_dialog_widget_new_with_backend
   gtk_file_system_error_quark
   gtk_file_paths_copy
   gtk_file_paths_free
@@ -4458,3 +4459,33 @@ _wrap_gtk_file_chooser_list_shortcut_folders(PyGObject *self)
     g_slist_free(slist);
     return py_list;
 }
+%%
+override gtk_file_chooser_widget_new kwargs
+static int
+_wrap_gtk_file_chooser_widget_new(PyGObject *self, PyObject *args,
+				  PyObject *kwargs)
+{
+    static char *kwlist[] = { "action", "backend", NULL };
+    PyObject *py_action = NULL;
+    gchar * backend = NULL;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|Oz:GtkFileChooserWidget.__init__",
+				     kwlist, &py_action, &backend))
+        return -1;
+    if (py_action && pyg_enum_get_value(GTK_TYPE_FILE_CHOOSER_ACTION,
+					py_action, (gint *)&action))
+        return -1;
+    self->obj = (GObject *)gtk_file_chooser_widget_new_with_backend(action,
+								    backend);
+ 
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkFileChooserWidget object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+ 
