@@ -553,12 +553,8 @@ class Wrapper:
             for name, cname in virtuals:
                 do_name = 'do_' + name
                 if cname is None:
-                    self.fp.write('''
-    if ((o = PyDict_GetItemString(pyclass->tp_dict, "%(do_name)s"))
-        && !PyObject_TypeCheck(o, &PyCFunction_Type)) {
-        PyErr_SetString(PyExc_NotImplementedError, "overriding %(do_name)s is currently not supported");
-        return -1;
-    }\n''' % vars())
+                    self.fp.write('\n    /* overriding %(do_name)s '
+                                  'is currently not supported */\n' % vars())
                 else:
                     self.fp.write('''
     if ((o = PyDict_GetItemString(pyclass->tp_dict, "%(do_name)s"))
