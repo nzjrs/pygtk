@@ -1411,6 +1411,7 @@ _wrap_gtk_list_store_reorder(PyGObject *self, PyObject *args)
     gint *new_order;
     GtkListStore *store;
     int i;
+    int length;
     
     if (!PyArg_ParseTuple(args, "O:GtkListStore.reorder", &list))
 	return NULL;
@@ -1420,13 +1421,15 @@ _wrap_gtk_list_store_reorder(PyGObject *self, PyObject *args)
         return NULL;
     }
     store = GTK_LIST_STORE(self->obj);
-    if (PyList_Size(list) < store->length) {
+    length = gtk_tree_model_iter_n_children (GTK_TREE_MODEL(store), NULL);
+
+    if (PyList_Size(list) < length) {
         PyErr_SetString(PyExc_TypeError, "list must at least have the same size as the number of items in the store");
         return NULL;
     }
 
-    new_order = g_new0(gint, store->length);
-    for (i = 0; i < store->length; i++) {
+    new_order = g_new0(gint, length);
+    for (i = 0; i < length; i++) {
 	PyObject *item = PyList_GetItem(list, i);
 	int index;
 	if (!PyInt_Check(item)) {
@@ -1435,7 +1438,7 @@ _wrap_gtk_list_store_reorder(PyGObject *self, PyObject *args)
 	    return NULL;
 	}
 	index = PyInt_AsLong(item);
-	if (index < 0 || index >= store->length) {
+	if (index < 0 || index >= length) {
 	    PyErr_SetString(PyExc_ValueError, "position index out of range");
 	    g_free(new_order);
 	    return NULL;
