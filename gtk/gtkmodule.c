@@ -36,13 +36,6 @@ init_gtk(void)
     /* initialise gobject */
     init_pygobject();
 
-    /* initialise gthread if appropriate ... */
-#ifdef ENABLE_PYGTK_THREADING
-    /* it is required that this function be called to enable the thread
-     * safety functions */
-    g_thread_init(NULL);
-#endif
-
     /* set the default python encoding to utf-8 */
     PyUnicode_SetDefaultEncoding("utf-8");
 

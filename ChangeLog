@@ -1,5 +1,13 @@
 2002-01-07  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtkmodule.c (init_gtk): get rid of g_thread_init() call --
+	this occurs in gobjectmodule now.
+
+	* gtk/gdk.override (pygdk_unblock_threads): give the function the
+	right name (duh).
+
+	* configure.in (AM_PATH_GLIB_2_0): add $extra_mods
+
 	* gobjectmodule.c (initgobject): initialise GThread if threading
 	is enabled at compile time (this doesn't initialise GDK threading
 	though -- you need to run gtk.gdk.threads_init for that).

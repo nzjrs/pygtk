@@ -55,28 +55,26 @@ static void
 pygdk_block_threads (void)
 {
     gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));
-    g_assert(functions.block_threads == pyg_block_threads);
+
     if (counter == INITIAL_LOCK_COUNT) {
 	PyThreadState *_save;
+
 	_save = g_static_private_get(&pythreadstate_key);
-	if(functions.gdk_threads_leave)
-	    functions.gdk_threads_leave();
 	Py_BLOCK_THREADS;
     }                                                                     
     counter--;
     g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);
 }
 static void
-pyg_unblock_threads (void)
+pygdk_unblock_threads (void)
 {
     gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));
-    g_assert(functions.unblock_threads == pyg_unblock_threads);
+
     counter++;
     if (counter == INITIAL_LOCK_COUNT) {
 	PyThreadState *_save;
+
 	Py_UNBLOCK_THREADS;
-	if(functions.gdk_threads_enter)
-	    functions.gdk_threads_enter();
 	g_static_private_set(&pythreadstate_key, _save, NULL);
     }
     g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);
