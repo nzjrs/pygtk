@@ -52,7 +52,29 @@ linkend="function-gobject--signal-new">gobject.signal_new</link></methodname>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gobject--signal-list-names">gobject.signal_list_names</link></methodname>
-	<methodparam><parameter>type</parameter></methodparam>
+	<methodparam><parameter role="keyword">type</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--signal-list-ids">gobject.signal_list_ids</link></methodname>
+	<methodparam><parameter role="keyword">type</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--signal-lookup">gobject.signal_lookup</link></methodname>
+	<methodparam><parameter role="keyword">name</parameter></methodparam>
+	<methodparam><parameter role="keyword">type</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--signal-name">gobject.signal_name</link></methodname>
+	<methodparam><parameter role="keyword">signal_id</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--signal-query1">gobject.signal_query</link></methodname>
+	<methodparam><parameter role="keyword">name</parameter></methodparam>
+	<methodparam><parameter role="keyword">type</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--signal-query2">gobject.signal_query</link></methodname>
+	<methodparam><parameter role="keyword">signal_id</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gobject--list-properties">gobject.list_properties</link></methodname>
@@ -421,11 +443,11 @@ boolean, use:</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>gobject.signal_list_names</methodname>
-	  <methodparam><parameter>type</parameter></methodparam>
+	  <methodparam><parameter role="keyword">type</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
-	  <term><parameter>type</parameter>&nbsp;:</term>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
 	  <listitem><simpara>a GObject type, type ID or
 instance</simpara></listitem>
 	</varlistentry>
@@ -440,9 +462,232 @@ instance</simpara></listitem>
 returns a list of the names of the signals that are supported by the
 specified GObject <parameter>type</parameter></para>
 
+      <note>
+        <para>The type keyword is available in PyGTK 2.6 and above.</para>
+      </note>
+
     </refsect2>
 
-    <refsect2 id="function-gobject--list-properties">
+    <refsect2 id="function-gobject--signal-list-ids">
+      <title>gobject.signal_list_ids</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gobject.signal_list_ids</methodname>
+	  <methodparam><parameter role="keyword">type</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>a GObject type, type ID or
+instance</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a list of the signal ids supported by
+<parameter>type</parameter></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gobject.signal_list_ids</function>() function
+returns a list of the integer ids of the signals that are supported by the
+GObject specified by <parameter>type</parameter></para>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--signal-lookup">
+      <title>gobject.signal_lookup</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gobject.signal_lookup</methodname>
+	  <methodparam><parameter role="keyword">name</parameter></methodparam>
+	  <methodparam><parameter role="keyword">type</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of a signal for
+<parameter>type</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>a GObject type, type ID or
+instance</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the integer id of a signal supported by
+<parameter>type</parameter></simpara> or 0.</listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gobject.signal_lookup</function>() function
+returns the id of the signal with the name specified by
+<parameter>name</parameter> that is supported by the GObject specified
+specified by<parameter>type</parameter>. 0 is returned if the signal is not
+found.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--signal-name">
+      <title>gobject.signal_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gobject.signal_name</methodname>
+	  <methodparam><parameter role="keyword">signal_id</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">signal_id</parameter>&nbsp;:</term>
+	  <listitem><simpara>an integer signal id</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the name of the signal or
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gobject.signal_name</function>() function returns
+the name of the signal that has the signal id specified by
+<parameter>id</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--signal-query1">
+      <title>gobject.signal_query</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gobject.signal_query</methodname>
+          <methodparam><parameter role="keyword">name</parameter></methodparam>
+	  <methodparam><parameter role="keyword">type</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of a signal for
+<parameter>type</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>a GObject type, type ID or
+instance</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 6-tuple containing signal information or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gobject.signal_query</function>() function returns
+a 6-tuple containing information about the signal with the name specified by
+<parameter>name</parameter> that is supported by the GObject specified by
+<parameter>type</parameter>. If the signal is not found
+<literal>None</literal> is returned.</para>
+
+      <para>The signal information 6-tuple contains:</para>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>the integer signal id</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the signal name</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the GType that the signal is registered for</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the signal flags (see the <link
+linkend="gobject-signal-constants">Signal Flag Constants</link>)</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the GType of the return from the signal callback
+function</simpara>
+        </listitem>
+        <listitem>
+          <simpara>a tuple containing the GTypes of the parameters that are
+passed to the signal callback function. Note that these may not correspond
+exactly to the <literal>PyGTK</literal> signal callback parameters.</simpara>
+        </listitem>
+      </itemizedlist>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--signal-query2">
+      <title>gobject.signal_query</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gobject.signal_query</methodname>
+          <methodparam><parameter role="keyword">signal_id</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">signal_id</parameter>&nbsp;:</term>
+	  <listitem><simpara>the integer id of a signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 6-tuple containing signal information or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gobject.signal_query</function>() function returns
+a 6-tuple containing information about the signal with the id specified by
+<parameter>signal_id</parameter>. If the signal is not found
+<literal>None</literal> is returned.</para>
+
+      <para>The signal information 6-tuple contains:</para>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>the integer signal id</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the signal name</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the GType that the signal is registered for</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the signal flags (see the <link
+linkend="gobject-signal-constants">Signal Flag Constants</link>)</simpara>
+        </listitem>
+        <listitem>
+          <simpara>the GType of the return from the signal callback
+function</simpara>
+        </listitem>
+        <listitem>
+          <simpara>a tuple containing the GTypes of the parameters that are
+passed to the signal callback function. Note that these may not correspond
+exactly to the <literal>PyGTK</literal> signal callback parameters.</simpara>
+        </listitem>
+      </itemizedlist>
+
+    </refsect2>
+
+   <refsect2 id="function-gobject--list-properties">
       <title>gobject.list_properties</title>
 
       <programlisting><methodsynopsis language="python">
