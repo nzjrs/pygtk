@@ -28,15 +28,19 @@ linkend="method-gtkaccelgroup--lock">lock</link></methodname>
 	<methodname><link
 linkend="method-gtkaccelgroup--unlock">unlock</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
-<!-- NOT IMPLEMENTED
 <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gtkaccelgroup- -connect">connect</link></methodname>
-	<methodparam><parameter>accel_key</parameter></methodparam>
-	<methodparam><parameter>accel_mods</parameter></methodparam>
-	<methodparam><parameter>accel_flags</parameter></methodparam>
-	<methodparam><parameter>closure</parameter></methodparam>
+linkend="method-gtkaccelgroup--connect">connect</link></methodname>
+	<methodparam><parameter
+		       role="keyword">accel_key</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">accel_mods</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">accel_flags</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">callback</parameter></methodparam>
   </methodsynopsis>
+<!-- NOT IMPLEMENTED
 <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkaccelgroup- -connect-by-path">connect_by_path</link></methodname>
@@ -237,8 +241,9 @@ object.</para>
 
       <para>The <methodname>lock</methodname>() method locks the accelerator
 group. preventing its accelerators from being changed during runtime. Refer
-to <!-- FIXME --> <function>gtk.accel_map_change_entry()</function> about
-runtime accelerator changes.</para>
+to <link
+linkend="function-gtk--accel-map-change-entry"><function>gtk.accel_map_change_entry</function>()</link>
+about runtime accelerator changes.</para>
 
       <para>If called more than once, the accelerator group remains locked
 until <link
@@ -261,57 +266,191 @@ for this accelerator group.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-
-    <refsect2 id="method-gtkaccelgroup- -connect">
+    <refsect2 id="method-gtkaccelgroup--connect">
       <title>gtk.AccelGroup.connect</title>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>connect</methodname>
-	  <methodparam><parameter>accel_key</parameter></methodparam>
-	  <methodparam><parameter>accel_mods</parameter></methodparam>
-	  <methodparam><parameter>accel_flags</parameter></methodparam>
-	  <methodparam><parameter>closure</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">accel_key</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">accel_mods</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">accel_flags</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">callback</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
-	  <term><parameter>accel_key</parameter>&nbsp;:</term>
+	  <term><parameter
+		       role="keyword">accel_key</parameter>&nbsp;:</term>
 	  <listitem><simpara>key value of the
 accelerator</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
-	  <term><parameter>accel_mods</parameter>&nbsp;:</term>
+	  <term><parameter
+		       role="keyword">accel_mods</parameter>&nbsp;:</term>
 	  <listitem><simpara>modifier combination of the
 accelerator</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
-	  <term><parameter>accel_flags</parameter>&nbsp;:</term>
+	  <term><parameter
+		       role="keyword">accel_flags</parameter>&nbsp;:</term>
 	  <listitem><simpara>a flag mask to configure this
 accelerator</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
-	  <term><parameter>closure</parameter>&nbsp;:</term>
-	  <listitem><simpara>closure to be executed upon accelerator
-activation</simpara></listitem>
+	  <term><parameter role="keyword">callback</parameter>&nbsp;:</term>
+	  <listitem><simpara>a function or method to be executed upon
+accelerator activation</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-    <para>The connect() method installs an accelerator in this group. When the
-accelerator group is being activated,
-<parameter>closure</parameter> will be invoked if the
-<parameter>accel_key</parameter> and <parameter>accel_mods</parameter> match those of this connection.
-</para>
-      <para>
-The signature used for the <parameter>closure</parameter> is that of
-<literal>GtkAccelGroupActivate</literal>.
-</para>
-      <para>
-Note that, due to implementation details, a single closure can only be
-connected to one accelerator group.
-</para>
+      <para>The <methodname>connect</methodname>() method installs an
+accelerator in the accelerator group. When the accelerator group is being
+activated, the function (or method) specified by
+<parameter>callback</parameter> will be invoked if the accelerator key and
+modifier key match those specified by <parameter>accel_key</parameter> and
+<parameter>accel_mods</parameter>.</para>
+
+      <note>
+	<para>This method is only available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The
+value of <parameter>modifier</parameter> is a combination of:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
+          <listitem>
+            <simpara>The Shift key.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.LOCK_MASK</literal></term>
+          <listitem>
+            <simpara>A Lock key (depending on the modifier mapping of the X
+server this may either be CapsLock or ShiftLock).</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
+          <listitem>
+            <simpara>The Control key. </simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.MOD1_MASK</literal></term>
+          <listitem>
+            <simpara>The fourth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this modifier, but
+normally it is the Alt key).</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.MOD2_MASK</literal></term>
+          <listitem>
+            <simpara>The fifth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.MOD3_MASK</literal></term>
+          <listitem>
+            <simpara>The sixth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.MOD4_MASK</literal></term>
+          <listitem>
+            <simpara>The seventh modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.MOD5_MASK</literal></term>
+          <listitem>
+            <simpara>The eighth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
+          <listitem>
+            <simpara>The first mouse button.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
+          <listitem>
+            <simpara>The second mouse button.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
+          <listitem>
+            <simpara>The third mouse button.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
+          <listitem>
+            <simpara>The fourth mouse button.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
+          <listitem>
+            <simpara>The fifth mouse button.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
+          <listitem>
+            <simpara>Differentiates between (keyval, modifiers) pairs from
+key press and release events.</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
+          <listitem>
+            <simpara>all of the above</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para> <parameter>accel_flags</parameter> is a combination of
+<literal>gtk.ACCEL_VISIBLE</literal> and
+<literal>gtk.ACCEL_LOCKED</literal>.</para>
+
+      <para>The <parameter>callback</parameter> function is defined as:</para>
+
+      <programlisting>
+  def callback(accel_group, acceleratable, keyval, modifier)
+</programlisting>
+
+      <para>where <parameter>accel_group</parameter> is the accelerator
+group, <parameter>acceleratable</parameter> is the object that the
+<parameter>accel_group</parameter> is attached to (e.g. a <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link>),
+<parameter>keyval</parameter> is the accelerator key and
+<parameter>modifier</parameter> is the key
+modifier. <parameter>callback</parameter> returns <literal>TRUE</literal> if
+the accelerator was handled by <parameter>callback</parameter>.</para>
+
+      <note><para>Due to implementation details, a single function or method
+can only be connected to one accelerator group.</para>
+      </note>
 
   </refsect2>
 
+<!-- NOT IMPLEMENTED
 
     <refsect2 id="method-gtkaccelgroup- -connect-by-path">
       <title>gtk.AccelGroup.connect_by_path</title>
@@ -401,8 +540,9 @@ accelerator</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>TRUE if there was an accelerator which was
-removed, FALSE otherwise</simpara></listitem>
+	  <listitem><simpara><literal>TRUE</literal> if there was an
+	  accelerator which was removed, <literal>FALSE</literal>
+	  otherwise</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -1113,6 +1253,11 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the accelerator
+was handled</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
