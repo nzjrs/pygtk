@@ -1438,3 +1438,42 @@ _wrap_gdk_window_get_children(PyGObject *self, PyObject *args)
     g_list_free(children);
     return list;
 }
+%%
+override gdk_pixbuf_render_pixmap_and_mask kwargs
+static PyObject *
+_wrap_gdk_pixbuf_render_pixmap_and_mask(PyGObject *self, PyObject *args,
+					PyObject *kwargs)
+{
+    static char *kwlist[] = { "alpha_threshold", NULL};
+    int alpha_threshold = 127;
+    GdkPixmap *pixmap;
+    GdkBitmap *mask;
+    PyObject *pypixmap, *pymask, *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|i:GdkPixbuf.render_pixmap_and_mask", kwlist,
+				     &alpha_threshold))
+	return NULL;
+    gdk_pixbuf_render_pixmap_and_mask(GDK_PIXBUF(self->obj), &pixmap, &mask,
+				      alpha_threshold);
+
+    if (pixmap) {
+	pypixmap = pygobject_new((GObject *) pixmap);
+	gdk_pixmap_unref(pixmap);
+    } else {
+	Py_INCREF(Py_None);
+	pypixmap = Py_None;
+    }
+
+    if (mask) {
+	pymask = pygobject_new((GObject *) mask);
+	gdk_bitmap_unref(mask);
+    } else {
+	Py_INCREF(Py_None);
+	pymask = Py_None;
+    }
+    
+    ret = Py_BuildValue("(NN)", pypixmap, pymask);
+    return ret;
+}
+

@@ -3470,7 +3470,7 @@
     '("gint" "row")
     '("gint" "column")
     '("GdkPixmap*" "pixmap")
-    '("GdkBitmap*" "mask")
+    '("GdkBitmap*" "mask" (null-ok) (default "NULL"))
   )
 )
 
@@ -5612,6 +5612,15 @@
   (c-name "gtk_entry_new")
   (is-constructor-of GtkEntry)
   (return-type "GtkWidget*")
+)
+
+(define-function gtk_entry_new_with_max_length
+  (c-name "gtk_entry_new_with_max_length")
+  (is-constructor-of GtkEntry)
+  (return-type "GtkWidget*")
+  (parameters
+    '("guint16" "max" (default "0"))
+  )
 )
 
 (define-method set_visibility
