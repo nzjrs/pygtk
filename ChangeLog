@@ -1,3 +1,40 @@
+2001-03-18  James Henstridge  <james@daa.com.au>
+
+	* gtk/pygtktreemodel.c (pygtk_tree_model_class_init): signals are
+	now created in the gtktreemodel.c, so we don't need to.
+
+	* gtk/gtk.defs (Adjustment): make parent GtkObject, as GtkData is
+	gone.
+	(GtkText): remove from binding.
+
+	* codegen/codegen.py (write_source): pass in the get_type function
+	when registering classes.
+	(gettypetmpl): remove template.
+	(write_class): remove get_type method generator.  Handled by __gtype__ 
+
+	* gobjectmodule.c (initgobject): add argument to g_type_init call.
+	(pyg_value_from_pyobject): use G_VALUE_HOLDS_* rather than
+	G_IS_VALUE_*.
+	(pyg_value_as_pyobject): same here.
+	(pygobject_register_class): add an argument that takes the
+	get_type function for the GObject.  This is used to add a
+	__gtype__ attribute to the class (the get_type function is not
+	actually called until __gtype__ is accessed).
+
+2001-02-03  James Henstridge  <james@daa.com.au>
+
+	* gtk/pygtktreemodel.c (*): s/tree_node/user_data/
+
+	* gtk/gtk-types.c (pygtk_text_iter_forward_to_line_end): rename
+	function.
+	(pygtk_tree_iter_compare): fix compare function.
+	(pygtk_tree_iter_hash): fix hash function.
+
+2000-12-16  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk-types.c (pygtk_text_iter_forward_to_delimiters): rename
+	function.
+
 2000-12-14  James Henstridge  <james@daa.com.au>
 
 	* examples/testgtk/demos/menu.py (main): destroy window on

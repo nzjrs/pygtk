@@ -265,14 +265,6 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 	else
 	    return -1;
 	break;
-    case GTK_TYPE_SIGNAL:
-	if (PyCallable_Check(obj)) {
-	    Py_INCREF(obj);
-	    GTK_VALUE_SIGNAL(*arg).f = NULL;
-	    GTK_VALUE_SIGNAL(*arg).d = obj;
-	} else
-	    return -1;
-	break;
     }
     return 0;
 }
@@ -341,9 +333,6 @@ pygtk_arg_as_pyobject(GtkArg *arg)
 		return fs->fromarg(GTK_VALUE_BOXED(*arg));
 	    return PyCObject_FromVoidPtr(GTK_VALUE_BOXED(*arg), NULL);
 	}
-    case GTK_TYPE_SIGNAL:
-	Py_INCREF((PyObject *)GTK_VALUE_SIGNAL(*arg).d);
-	return (PyObject *)GTK_VALUE_SIGNAL(*arg).d;
     default:
 	g_assert_not_reached();
 	break;

@@ -5,7 +5,6 @@ SUBDIRS = codegen gtk
 
 INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS)
 
-pyexecdir = $(PYTHON_SITE_EXEC)
 pyexec_LTLIBRARIES = ExtensionClass.la gobjectmodule.la
 
 ExtensionClass_la_LDFLAGS = -module -avoid-version

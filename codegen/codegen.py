@@ -49,13 +49,6 @@ consttmpl = 'static PyObject *\n' + \
 
 methdeftmpl = '    { "%(name)s", (PyCFunction)%(cname)s, %(flags)s },\n'
 
-gettypetmpl = 'static PyObject *\n' + \
-              '_wrap_%(uclass)s_get_type(PyObject *self, PyObject *args)\n' + \
-              '{\n' + \
-              '    if (!PyArg_ParseTuple(args, ":%(class)s.get_type"))\n' + \
-              '        return NULL;\n' + \
-              '    return PyInt_FromLong(%(uclass)s_get_type());\n' + \
-              '}\n\n'
 getattrtmpl = 'static PyObject *\n' + \
               '%(getattr)s(PyGObject *self, char *attr)\n' + \
               '{\n' + \
@@ -325,14 +318,6 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
                        { 'name':  '__init__',
                          'cname': 'pygobject_no_constructor',
                          'flags': 'METH_VARARGS'})
-    # do the get_type routine as class method ...
-    uclass = string.lower(argtypes._to_upper_str(objobj.c_name)[1:])
-    fp.write(gettypetmpl % { 'class':  objobj.c_name,
-                             'uclass': uclass })
-    methods.append(methdeftmpl %
-                   { 'name':  'get_type',
-                     'cname': '_wrap_' + uclass + '_get_type',
-                     'flags': 'METH_VARARGS|METH_CLASS_METHOD'})
     for meth in parser.find_methods(objobj):
         if overrides.is_ignored(meth.c_name):
             continue
@@ -379,8 +364,6 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
                    { 'name':  '__init__',
                      'cname': 'pygobject_no_constructor',
                      'flags': 'METH_VARARGS'})
-    # do the get_type routine as class method ...
-    uclass = string.lower(argtypes._to_upper_str(interface.c_name)[1:])
     for meth in parser.find_methods(interface):
         if overrides.is_ignored(meth.c_name):
             continue
@@ -481,15 +464,17 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
         if obj.parent != (None, None):
             bases.append(obj.parent[1] + obj.parent[0])
         bases = bases + obj.implements
+        uclass = string.lower(argtypes._to_upper_str(obj.c_name)[1:])
         if bases:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
-                     '", &Py' + obj.c_name +
+                     '", ' + uclass + '_get_type, &Py' + obj.c_name +
                      '_Type, Py_BuildValue("(' + 'O' * len(bases) + ')", ' +
                      string.join(map(lambda s: '&Py'+s+'_Type', bases), ', ') +
                      '));\n')
         else:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
-                     '", &Py' + obj.c_name + '_Type, NULL);\n')
+                     '", ' + uclass + '_get_type, &Py' + obj.c_name +
+                     '_Type, NULL);\n')
     fp.write('}\n')
 
 def register_types(parser):

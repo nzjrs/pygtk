@@ -3363,11 +3363,11 @@ pygtk_text_iter_forward_to_end(PyGtkTextIter_Object *self, PyObject *args)
 }
 
 static PyObject *
-pygtk_text_iter_forward_to_newline(PyGtkTextIter_Object *self, PyObject *args)
+pygtk_text_iter_forward_to_line_end(PyGtkTextIter_Object *self, PyObject *args)
 {
-    if (!PyArg_ParseTuple(args, ":GtkTextIter.forward_to_newline"))
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.forward_to_line_end"))
 	return NULL;
-    return PyInt_FromLong(gtk_text_iter_forward_to_newline(&self->iter));
+    return PyInt_FromLong(gtk_text_iter_forward_to_line_end(&self->iter));
 }
 
 static PyObject *
@@ -3505,7 +3505,7 @@ static PyMethodDef pygtk_text_iter_methods[] = {
     { "set_line_offset", (PyCFunction)pygtk_text_iter_set_line_offset, METH_VARARGS },
     { "set_line_index", (PyCFunction)pygtk_text_iter_set_line_index, METH_VARARGS },
     { "forward_to_end", (PyCFunction)pygtk_text_iter_forward_to_end, METH_VARARGS },
-    { "forward_to_newline", (PyCFunction)pygtk_text_iter_forward_to_newline, METH_VARARGS },
+    { "forward_to_line_end", (PyCFunction)pygtk_text_iter_forward_to_line_end, METH_VARARGS },
     { "forward_to_tag_toggle", (PyCFunction)pygtk_text_iter_forward_to_tag_toggle, METH_VARARGS },
     { "backward_to_tag_toggle", (PyCFunction)pygtk_text_iter_backward_to_tag_toggle, METH_VARARGS },
     { "forward_search", (PyCFunction)pygtk_text_iter_forward_search, METH_VARARGS },
@@ -3550,14 +3550,24 @@ pygtk_tree_iter_dealloc(PyGtkTreeIter_Object *self)
 static int
 pygtk_tree_iter_compare(PyGtkTreeIter_Object *self, PyGtkTreeIter_Object *v)
 {
-    if (self->iter.tree_node == v->iter.tree_node) return 0;
-    if (self->iter.tree_node > v->iter.tree_node) return -1;
+    if (self->iter.stamp == v->iter.stamp &&
+	self->iter.user_data == v->iter.user_data &&
+	self->iter.user_data2 == v->iter.user_data2 &&
+	self->iter.user_data3 == v->iter.user_data3) return 0;
+    if (self->iter.stamp > v->iter.stamp ||
+	(self->iter.stamp == v->iter.stamp &&
+	 (self->iter.user_data > v->iter.user_data ||
+	  (self->iter.user_data == v->iter.user_data &&
+	   (self->iter.user_data2 > v->iter.user_data2 ||
+	    (self->iter.user_data2 == v->iter.user_data2 &&
+	     self->iter.user_data3 > v->iter.user_data3)))))) return -1;
     return 1;
 }
+
 static long
 pygtk_tree_iter_hash(PyGtkTreeIter_Object *self)
 {
-    return (long)self->iter.tree_node;
+    return (long)self->iter.user_data;
 }
 
 PyTypeObject PyGtkTreeIter_Type = {
