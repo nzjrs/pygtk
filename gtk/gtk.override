@@ -4907,3 +4907,33 @@ _wrap_gtk_clipboard_request_targets(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_icon_size_lookup_for_settings kwargs
+static PyObject *
+_wrap_gtk_icon_size_lookup_for_settings(PyGObject *self, PyObject *args,
+					PyObject *kwargs)
+{
+    static char *kwlist[] = { "settings", "icon_size", NULL };
+    PyObject *py_settings, *py_icon_size;
+    GtkSettings *settings;
+    GtkIconSize icon_size;
+    gint width, height;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!O:icon_size_lookupfor settings",
+                                     kwlist, &PyGtkSettings_Type,
+				     &py_settings, &py_icon_size))
+        return NULL;
+
+    if (pyg_enum_get_value(GTK_TYPE_ICON_SIZE, py_icon_size,
+                           (gint *) &icon_size))
+        return NULL;
+
+    settings = GTK_SETTINGS(pygobject_get(py_settings));
+    if (gtk_icon_size_lookup_for_settings(settings, icon_size,
+					  &width, &height))
+	return Py_BuildValue("(ii)", width, height);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
