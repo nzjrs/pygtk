@@ -1,7 +1,7 @@
 # require automake-1.7
 AUTOMAKE_OPTIONS = 1.7
 
-SUBDIRS = codegen gtk docs tests
+SUBDIRS = codegen gobject gtk docs examples tests 
 
 CLEANFILES =
 EXTRA_DIST = $(defs_DATA)
@@ -10,15 +10,21 @@ pyexec_LTLIBRARIES =
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA =
 
-pkgincludedir = $(includedir)/pygtk-2.0
-pkginclude_HEADERS = pygobject.h
-
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pygtk-2.0.pc
 
-INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS) $(ATK_CFLAGS)
-COMMONDEFS = pango-types.defs atk-types.defs gtk/gdk-types.defs \
-	     gtk/gtk-types.defs
+INCLUDES = \
+	$(PYTHON_INCLUDES) \
+	$(GLIB_CFLAGS) \
+	$(PANGO_CFLAGS) \
+	$(ATK_CFLAGS) \
+	-I$(top_srcdir)/gobject
+
+COMMONDEFS = \
+	atk-types.defs \
+	pango-types.defs \
+	gtk/gdk-types.defs \
+	gtk/gtk-types.defs
 
 pkgpythondir = $(pythondir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
@@ -39,30 +45,12 @@ uninstall-local:
 
 pkgpython_PYTHON = dsextras.py
 
-pkgpyexec_LTLIBRARIES = \
-  gobject.la \
-  pango.la \
-  atk.la
+pkgpyexec_LTLIBRARIES = atk.la pango.la 
 
 common_ldflags = -module -avoid-version
 if PLATFORM_WIN32
 common_ldflags += -no-undefined
 endif
-
-# gobject module
-gobject_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgobject
-gobject_la_LIBADD = $(GLIB_LIBS)
-gobject_la_SOURCES = \
-		gobjectmodule.c \
-		pygboxed.c \
-		pygenum.c \
-		pygenum.h \
-		pygflags.c \
-		pygflags.h \
-		pygobject.c \
-		pygobject.h \
-		pygobject-private.h \
-		pygtype.c
 
 # pango module
 pango_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpango
@@ -111,70 +99,7 @@ EXTRA_DIST += \
   MANIFEST.in \
   PKG-INFO \
   PKG-INFO.in \
-  ChangeLog.pre-2-0 \
-  examples/atk/atk-demo.py \
-  examples/gobject/signal.py \
-  examples/gobject/properties.py \
-  examples/gtk/filechooser.py \
-  examples/gtk/widget.py \
-  examples/gtk/uimanager.py \
-  examples/pango/utf8-demo.py \
-  examples/pygtk-demo/pygtk-demo.py \
-  examples/pygtk-demo/gtk-logo-rgb.gif \
-  examples/pygtk-demo/floppybuddy.gif \
-  examples/pygtk-demo/alphatest.png \
-  examples/pygtk-demo/demos/__init__.py \
-  examples/pygtk-demo/demos/appwindow.py \
-  examples/pygtk-demo/demos/buttonbox.py \
-  examples/pygtk-demo/demos/colorsel.py \
-  examples/pygtk-demo/demos/dialogs.py \
-  examples/pygtk-demo/demos/dndpixmap.py \
-  examples/pygtk-demo/demos/dnd.py \
-  examples/pygtk-demo/demos/editable_cells.py \
-  examples/pygtk-demo/demos/itemfactory.py \
-  examples/pygtk-demo/demos/list_store.py \
-  examples/pygtk-demo/demos/menu.py \
-  examples/pygtk-demo/demos/panes.py \
-  examples/pygtk-demo/demos/sizegroup.py \
-  examples/pygtk-demo/demos/stock_browser.py \
-  examples/pygtk-demo/demos/toolbar.py \
-  examples/pygtk-demo/demos/treemodel.py \
-  examples/ide/gtkcons.py \
-  examples/ide/gtkdb.py \
-  examples/ide/edit.py \
-  examples/ide/browse.py \
-  examples/ide/minibreak.xpm \
-  examples/ide/README \
-  examples/ide/gtkprof.py \
-  examples/ide/pyide.py \
-  examples/ide/break.xpm \
-  examples/ide/return.xpm \
-  examples/ide/next.xpm \
-  examples/ide/continue.xpm \
-  examples/ide/step.xpm \
-  examples/ide/edit.xpm \
-  examples/ide/run.xpm \
-  examples/ide/quit.xpm \
-  examples/simple/hello.py \
-  examples/simple/simple.py \
-  examples/simple/tooltip.py \
-  examples/simple/scribble.py \
-  examples/simple/dnd.py \
-  examples/simple/dndpixmap.py \
-  examples/simple/README \
-  examples/neil/TAppli.py \
-  examples/neil/TAppli2.py \
-  examples/neil/TAppli3.py \
-  examples/neil/TAppli4.py \
-  examples/neil/TAppli5.py \
-  examples/neil/bomb.xpm \
-  examples/neil/gtk-logo.xpm \
-  examples/neil/question.xpm \
-  examples/neil/notebook.py \
-  examples/neil/README \
-  examples/glade/README \
-  examples/glade/glade-demo.py \
-  examples/glade/test.glade
+  ChangeLog.pre-2-0
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`

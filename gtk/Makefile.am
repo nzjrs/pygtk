@@ -16,7 +16,7 @@ EXTRA_DIST += makefile.msc gtk-fake-win32.c
 pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 pkginclude_HEADERS = pygtk.h
 
-INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES)
+INCLUDES = -I$(top_srcdir)/gobject $(PYTHON_INCLUDES) 
 COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs \
   $(top_srcdir)/atk-types.defs $(top_srcdir)/pango-types.defs
 
