@@ -1303,26 +1303,69 @@ _wrap_gtk_list_store_set_value(PyGObject *self, PyObject *args,
 ignore
   gtk_list_store_setv
 %%
-  override gtk_list_store_insert kwargs
+override gtk_list_store_insert kwargs
 static PyObject *
 _wrap_gtk_list_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "position", "row", NULL };
     GtkTreeIter iter;
     gint position;
-    PyObject *row = Py_None;
+    PyObject *items = Py_None;
+    gint n_columns;
+    gint *columns;
+    GValue *values;
+    gint i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|O:GtkListStore.insert",
-                                     kwlist, &position, &row)) {
+                                     kwlist, &position, &items)) {
         return NULL;
     }
-    gtk_list_store_insert(GTK_LIST_STORE(self->obj), &iter, position);
 
-    /* optionally set items in the new row */
-    if (row != Py_None &&
-        _pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
-        return NULL;
+    if (!PySequence_Check(items)) {
+	PyErr_SetString(PyExc_TypeError, "expecting a sequence");
+	return NULL;
+    }
+    
+    n_columns = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj));
+    if (PySequence_Length(items) != n_columns) {
+	PyErr_SetString(PyExc_ValueError, "row sequence has wrong length");
+	return NULL;
+    }
 
+    columns = g_new0(gint, n_columns);
+    values = g_new0(GValue, n_columns);
+    for (i = 0; i < n_columns; i++) {
+	PyObject *item;
+
+	item = PySequence_GetItem(items, i);
+	if (!item)
+	    return NULL;
+
+	g_value_init(&values[i], gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj), i));
+	
+	if (pyg_value_from_pyobject(&values[i], item)) {
+	    Py_DECREF(item);
+	    PyErr_SetString(PyExc_TypeError,
+			    "value is of wrong type for this column");
+	    return NULL;
+	}
+
+	columns[i] = i;
+	    
+	Py_DECREF(item);
+    }
+
+    gtk_list_store_insert_with_valuesv(GTK_LIST_STORE(self->obj), &iter, position,
+				       columns,
+				       values,
+				       n_columns);
+    
+    for (i = 0; i < n_columns; i++) {
+	g_value_unset(&values[i]);
+    }
+    g_free(values);
+    g_free(columns);
+    
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
