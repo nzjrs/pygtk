@@ -1364,6 +1364,47 @@ _wrap_gtk_list_store_remove(PyGObject *self, PyObject *args, PyObject *kwargs)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
 }
 %%
+override gtk_list_store_reorder args
+static PyObject *
+_wrap_gtk_list_store_reorder(PyGObject *self, PyObject *args)
+{
+    PyObject *list;
+    gint *new_order;
+    GtkListStore *store;
+    int i;
+    
+    if (!PyArg_ParseTuple(args, "O:GtkListStore.reorder", &list))
+	return NULL;
+
+    if (!PyList_Check(list)) {
+        PyErr_SetString(PyExc_TypeError, "first argument should be a list");
+        return NULL;
+    }
+    store = GTK_LIST_STORE(self->obj);
+    if (PyList_Size(list) < store->length) {
+        PyErr_SetString(PyExc_TypeError, "list must at least have the same size as the number of items in the store");
+        return NULL;
+    }
+
+    new_order = g_new0(gint, store->length);
+    for (i = 0; i < store->length; i++) {
+	PyObject *item = PyList_GetItem(list, i);
+	if (!PyInt_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError, "all items must be of type int");
+	    g_free(new_order);
+	    return NULL;
+	}	    
+	new_order[i] = PyInt_AsLong(item);
+	Py_DECREF(item);
+    }
+    gtk_list_store_reorder(GTK_LIST_STORE(self->obj), new_order);
+
+    g_free(new_order);
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 ignore gtk_tree_store_newv
 %%
 override gtk_tree_store_new
