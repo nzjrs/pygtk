@@ -12,7 +12,7 @@ import string
 def escape_text(unescaped_text):
     escaped_text = unescaped_text
     escaped_text = string.replace(escaped_text, '<', '&lt;')
-    escaped_text = string.replace(escaped_text, '<', '&gt;')
+    escaped_text = string.replace(escaped_text, '>', '&gt;')
     escaped_text = string.replace(escaped_text, '&', '&amp;')
     escaped_text = string.replace(escaped_text, '\'', '&apos;')
     escaped_text = string.replace(escaped_text, '\"', '&quot;')
