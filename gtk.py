@@ -2771,3 +2771,26 @@ def _window_foreign_new(xid):
 	return _gtk.gdk_window_foreign_new(xid)
 def _root_window():
 	return _gtk.gdk_get_root_win()
+def _window_new(parent, attribs):
+	""" Creates a new gdk window which must be destroyed with an
+	explicit call to the _destroy() method.  parent is the new 
+	window's parent PyGdkWindow or None if the window should be a 
+	child of the root window.  attribs must be a dictionary of 
+	attribute values for the window; the following attribs must 
+	be specified:
+	  window_type -- GDK.WINDOW_TOPLEVEL, GDK.WINDOW_CHILD
+	                 GDK.WINDOW_DIALOG, GDK.WINDOW_TEMP
+	                 GDK.WINDOW_PIXMAP, or GDK.WINDOW_FOREIGN
+	  event_mask -- the events to get
+	  width -- width of window
+	  height -- height of window
+	The following attributes are optional:
+	  wmclass -- GDK.INPUT_OUTPUT or GDK.INPUT_ONLY
+	  x -- x offset from parent
+	  y -- y offset from parent
+	  colormap -- PyGdkColormap to use to interpret colors
+	  override_redirect -- see gdk / X documentation
+	"""
+	
+	return _gtk.gdk_window_new(parent, attribs)
+

@@ -477,7 +477,10 @@ static PyObject *PyGtkStyleHelper_GetItem(PyGtkStyleHelper_Object *self,
   case STYLE_GC_ARRAY:
     {
       GdkGC **array = (GdkGC **)self->array;
-      return PyGdkGC_New(array[pos]);
+      if (array[pos])
+	return PyGdkGC_New(array[pos]);
+      Py_INCREF(Py_None);
+      return Py_None;
     }
   case STYLE_PIXMAP_ARRAY:
     {
@@ -650,10 +653,18 @@ static PyObject *PyGtkStyle_GetAttr(PyGtkStyle_Object *self, char *attr) {
     return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->text_gc);
   if (!strcmp(attr, "base_gc"))
     return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->base_gc);
-  if (!strcmp(attr, "black_gc"))
-    return PyGdkGC_New(style->black_gc);
-  if (!strcmp(attr, "white_gc"))
-    return PyGdkGC_New(style->white_gc);
+  if (!strcmp(attr, "black_gc")) {
+      if (style->black_gc)
+	  return PyGdkGC_New(style->black_gc);
+      Py_INCREF(Py_None);
+      return Py_None;
+  }
+  if (!strcmp(attr, "white_gc")) {
+      if (style->white_gc)
+	  return PyGdkGC_New(style->white_gc);
+      Py_INCREF(Py_None);
+      return Py_None;
+  }
   if (!strcmp(attr, "bg_pixmap"))
     return PyGtkStyleHelper_New(style, STYLE_PIXMAP_ARRAY, style->bg_pixmap);
   if (!strcmp(attr, "colormap")) {
@@ -1771,103 +1782,113 @@ static PyMethodDef PyGdkWindow_methods[] = {
   {"pointer_ungrab", (PyCFunction)PyGdkWindow_PointerUngrab, METH_VARARGS, NULL},
   {"keyboard_grab", (PyCFunction)PyGdkWindow_KeyboardGrab, METH_VARARGS, NULL},
   {"keyboard_ungrab", (PyCFunction)PyGdkWindow_KeyboardUngrab, METH_VARARGS, NULL},
-  {"_show", (PyCFunction)PyGdkWindow_Show, METH_VARARGS, NULL},
-  {"_hide", (PyCFunction)PyGdkWindow_Hide, METH_VARARGS, NULL},
+  {"show", (PyCFunction)PyGdkWindow_Show, METH_VARARGS, NULL},
+  {"hide", (PyCFunction)PyGdkWindow_Hide, METH_VARARGS, NULL},
   {"_destroy", (PyCFunction)PyGdkWindow_Destroy, METH_VARARGS, NULL},
   {NULL, 0, 0, NULL}
 };
 
 static PyObject *
-PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
-  GdkWindow *win = PyGdkWindow_Get(self);
-  gint x, y;
-  GdkModifierType p_mask;
+PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key)
+{
+    GdkWindow *win = PyGdkWindow_Get(self);
+    gint x, y;
+    GdkModifierType p_mask;
 
-  if (!strcmp(key, "__members__"))
-    return Py_BuildValue("[ssssssssssssssss]", "children", "colormap",
-			 "depth", "deskrelative_origin", "height", "origin",
-			 "parent", "pointer", "pointer_state", "root_origin",
-			 "toplevel", "type", "width", "x", "xid", "y");
-  if (!strcmp(key, "width")) {
-    gdk_window_get_size(win, &x, NULL);
-    return PyInt_FromLong(x);
-  }
-  if (!strcmp(key, "height")) {
-    gdk_window_get_size(win, NULL, &y);
-    return PyInt_FromLong(y);
-  }
-  if (!strcmp(key, "x")) {
-    gdk_window_get_position(win, &x, NULL);
-    return PyInt_FromLong(x);
-  }
-  if (!strcmp(key, "y")) {
-    gdk_window_get_position(win, NULL, &y);
-    return PyInt_FromLong(y);
-  }
-  if (!strcmp(key, "colormap"))
-    return PyGdkColormap_New(gdk_window_get_colormap(win));
-  if (!strcmp(key, "pointer")) {
-    gdk_window_get_pointer(win, &x, &y, NULL);
-    return Py_BuildValue("(ii)", x, y);
-  }
-  if (!strcmp(key, "pointer_state")) {
-    gdk_window_get_pointer(win, NULL, NULL, &p_mask);
-    return PyInt_FromLong(p_mask);
-  }
-  if (!strcmp(key, "parent")) {
-      GdkWindow *par = gdk_window_get_parent(win);
-      if (par)
-	  return PyGdkWindow_New(par);
-      Py_INCREF(Py_None);
-      return Py_None;
-  }
-  if (!strcmp(key, "toplevel"))
-    return PyGdkWindow_New(gdk_window_get_toplevel(win));
-  if (!strcmp(key, "children")) {
-    GList *children, *tmp;
-    PyObject *ret;
-    children = gdk_window_get_children(win);
-    if ((ret = PyList_New(0)) == NULL)
-      return NULL;
-    for (tmp = children; tmp != NULL; tmp = tmp->next) {
-      PyObject *win = PyGdkWindow_New(tmp->data);
-      if (win == NULL) {
-	Py_DECREF(ret);
-	return NULL;
-      }
-      PyList_Append(ret, win);
-      Py_DECREF(win);
+    if (!strcmp(key, "__members__")) {
+	if (gdk_window_get_type(win) != GDK_WINDOW_PIXMAP)
+	    return Py_BuildValue("[sssss]", "colormap", "depth", "height",
+				 "type", "width");
+	else
+	    return Py_BuildValue("[ssssssssssssssss]", "children", "colormap",
+				 "depth", "deskrelative_origin", "height",
+				 "origin", "parent", "pointer",
+				 "pointer_state", "root_origin", "toplevel",
+				 "type", "width", "x", "xid", "y");
     }
-    g_list_free(children);
-    return ret;
-  }
-  if (!strcmp(key, "type"))
-    return PyInt_FromLong(gdk_window_get_type(win));
-  if (!strcmp(key, "depth")) {
-    gdk_window_get_geometry(win, NULL, NULL, NULL, NULL, &x);
-    return PyInt_FromLong(x);
-  }
-  if (!strcmp(key, "origin")) {
-    gint x, y;
-    gdk_window_get_origin(win, &x, &y);
-    return Py_BuildValue("(ii)", x, y);
-  }
-  if (!strcmp(key, "deskrelative_origin")) {
-    gint x, y;
-    gdk_window_get_deskrelative_origin(win, &x, &y);
-    return Py_BuildValue("(ii)", x, y);
-  }
-  if (!strcmp(key, "origin")) {
-    gint x, y;
-    gdk_window_get_root_origin(win, &x, &y);
-    return Py_BuildValue("(ii)", x, y);
-  }
+    if (!strcmp(key, "width")) {
+	gdk_window_get_size(win, &x, NULL);
+	return PyInt_FromLong(x);
+    }
+    if (!strcmp(key, "height")) {
+	gdk_window_get_size(win, NULL, &y);
+	return PyInt_FromLong(y);
+    }
+    if (!strcmp(key, "colormap"))
+	return PyGdkColormap_New(gdk_window_get_colormap(win));
+    if (!strcmp(key, "type"))
+	return PyInt_FromLong(gdk_window_get_type(win));
+    if (!strcmp(key, "depth")) {
+	gdk_window_get_geometry(win, NULL, NULL, NULL, NULL, &x);
+	return PyInt_FromLong(x);
+    }
 #ifdef WITH_XSTUFF
-  if (!strcmp(key, "xid"))
-      return PyInt_FromLong(GDK_WINDOW_XWINDOW(win));
+    if (!strcmp(key, "xid"))
+	return PyInt_FromLong(GDK_WINDOW_XWINDOW(win));
 #endif
 
-  return Py_FindMethod(PyGdkWindow_methods, (PyObject *)self, key);
+    if (gdk_window_get_type(win) != GDK_WINDOW_PIXMAP) {
+	if (!strcmp(key, "x")) {
+	    gdk_window_get_position(win, &x, NULL);
+	    return PyInt_FromLong(x);
+	}
+	if (!strcmp(key, "y")) {
+	    gdk_window_get_position(win, NULL, &y);
+	    return PyInt_FromLong(y);
+	}
+	if (!strcmp(key, "pointer")) {
+	    gdk_window_get_pointer(win, &x, &y, NULL);
+	    return Py_BuildValue("(ii)", x, y);
+	}
+	if (!strcmp(key, "pointer_state")) {
+	    gdk_window_get_pointer(win, NULL, NULL, &p_mask);
+	    return PyInt_FromLong(p_mask);
+	}
+	if (!strcmp(key, "parent")) {
+	    GdkWindow *par = gdk_window_get_parent(win);
+	    if (par)
+		return PyGdkWindow_New(par);
+	    Py_INCREF(Py_None);
+	    return Py_None;
+	}
+	if (!strcmp(key, "toplevel"))
+	    return PyGdkWindow_New(gdk_window_get_toplevel(win));
+	if (!strcmp(key, "children")) {
+	    GList *children, *tmp;
+	    PyObject *ret;
+	    children = gdk_window_get_children(win);
+	    if ((ret = PyList_New(0)) == NULL)
+		return NULL;
+	    for (tmp = children; tmp != NULL; tmp = tmp->next) {
+		PyObject *win = PyGdkWindow_New(tmp->data);
+		if (win == NULL) {
+		    Py_DECREF(ret);
+		    return NULL;
+		}
+		PyList_Append(ret, win);
+		Py_DECREF(win);
+	    }
+	    g_list_free(children);
+	    return ret;
+	}
+	if (!strcmp(key, "origin")) {
+	    gint x, y;
+	    gdk_window_get_origin(win, &x, &y);
+	    return Py_BuildValue("(ii)", x, y);
+	}
+	if (!strcmp(key, "deskrelative_origin")) {
+	    gint x, y;
+	    gdk_window_get_deskrelative_origin(win, &x, &y);
+	    return Py_BuildValue("(ii)", x, y);
+	}
+	if (!strcmp(key, "origin")) {
+	    gint x, y;
+	    gdk_window_get_root_origin(win, &x, &y);
+	    return Py_BuildValue("(ii)", x, y);
+	}
+    }
+
+    return Py_FindMethod(PyGdkWindow_methods, (PyObject *)self, key);
 }
 
 static PyTypeObject PyGdkWindow_Type = {
@@ -3833,7 +3854,7 @@ static PyObject *_wrap_gtk_set_locale(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, ":gtk_set_locale"))
         return NULL;
     locale = gtk_set_locale();
-    set_locale(LC_NUMERIC, "C");
+    setlocale(LC_NUMERIC, "C");
     return PyString_FromString(locale);
 }
 
