@@ -3051,6 +3051,34 @@ _wrap_gtk_tree_view_get_cursor(PyGObject *self, PyObject *args)
     return Py_BuildValue("(OO)", py_path, py_column);
 }
 %%
+override gtk_tree_view_get_columns noargs
+static PyObject *
+_wrap_gtk_tree_view_get_columns(PyGObject *self)
+{
+    GList *list, *tmp;
+    PyObject *py_list;
+
+    list = gtk_tree_view_get_columns(GTK_TREE_VIEW(self->obj));
+
+    if ((py_list = PyList_New(0)) == NULL) {
+	g_list_free(list);
+	return NULL;
+    }
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+	PyObject *gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+
+	if (gtk_obj == NULL) {
+	    g_list_free(list);
+	    Py_DECREF(py_list);
+	    return NULL;
+	}
+	PyList_Append(py_list, gtk_obj);
+	Py_DECREF(gtk_obj);
+    }
+    g_list_free(list);
+    return py_list;
+}
+%%
 override gtk_tree_selection_get_selected noargs
 static PyObject *
 _wrap_gtk_tree_selection_get_selected(PyGObject *self)
