@@ -26,19 +26,18 @@ from dsextras import getoutput, have_pkgconfig, list_files, \
      PkgConfigExtension, Template, TemplateExtension
 
 MAJOR_VERSION = 2
-MINOR_VERSION = 0
+MINOR_VERSION = 1
 MICRO_VERSION = 0
 
 VERSION = "%d.%d.%d" % (MAJOR_VERSION,
                         MINOR_VERSION,
                         MICRO_VERSION)
 
-GOBJECT_REQUIRED  = '2.0.0'
+GOBJECT_REQUIRED  = '2.2.0'
 ATK_REQUIRED      = '1.0.0'
 PANGO_REQUIRED    = '1.0.0'
-GTK_REQUIRED      = '2.0.0'
+GTK_REQUIRED      = '2.2.0'
 LIBGLADE_REQUIRED = '2.0.0'
-GTKGL_REQUIRED    = '1.99.0'
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
@@ -76,7 +75,7 @@ class PyGtkInstallLib(InstallLib):
         # Modify the base installation dir
         install_dir = os.path.join(self.install_dir, PYGTK_SUFFIX_LONG)
         self.set_install_dir(install_dir)
-                                          
+
         InstallLib.run(self)
 
     def install_templates(self):
@@ -93,7 +92,7 @@ class PyGtkInstallLib(InstallLib):
         open(file, 'w').write(PYGTK_SUFFIX_LONG)
         self.local_outputs.append(file)
         self.local_inputs.append('pygtk.pth')
-        
+
     def install_pygtk(self):
         """install pygtk.py in the right place."""
         self.copy_file('pygtk.py', self.install_dir)
@@ -103,10 +102,10 @@ class PyGtkInstallLib(InstallLib):
         self.local_inputs.append('pygtk.py')
 
 class PyGtkBuild(build):
-    enable_threading = 0
+    enable_threading = 1
 PyGtkBuild.user_options.append(('enable-threading', None,
                                 'enable threading support'))
-    
+
 # GObject
 gobject = PkgConfigExtension(name='gobject', pkc_name='gobject-2.0',
                              pkc_version=GOBJECT_REQUIRED,
@@ -134,7 +133,7 @@ gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
                         register=['atk-types.defs',
                                   'pango-types.defs',
                                   'gtk/gdk-types.defs'])
-# Gtk+         
+# Gtk+
 gtk = TemplateExtension(name='gtk', pkc_name='gtk+-2.0',
                         pkc_version=GTK_REQUIRED,
                         output='gtk._gtk',
@@ -154,15 +153,6 @@ gtk.templates.append(gdk_template)
 if sys.platform == 'win32':
     gtk.sources.append('gtk/gtk-fake-win32.c')
 
-gtkgl = TemplateExtension(name='gtkgl', pkc_name='gtkgl-2.0',
-                             pkc_version=LIBGLADE_REQUIRED,
-                             output='gtk.gtkgl',
-                             defs='gtk/gtkgl.defs',
-                             sources=['gtk/gtkglmodule.c',
-                                      'gtk/gtkgl.c'],
-                             register=['gtk/gtk-types.defs',
-                                       'gtk/gtkgl.defs'],
-                             override='gtk/gtkgl.override')
 # Libglade
 libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
                              pkc_version=LIBGLADE_REQUIRED,
@@ -182,7 +172,7 @@ py_modules.append('dsextras')
 if not have_pkgconfig():
     print "Error, could not find pkg-config"
     raise SystemExit
-    
+
 if gobject.can_build():
     ext_modules.append(gobject)
     data_files.append((INCLUDE_DIR, ('pygobject.h',)))
@@ -213,7 +203,7 @@ if gtk.can_build():
 if libglade.can_build():
     ext_modules.append(libglade)
     data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
-    
+
     if sys.platform == 'win32':
         # We suppose the libglade and xml DLLs are somewhere in the PATH
         dlls = []
@@ -225,11 +215,7 @@ if libglade.can_build():
         # We want to install those DLLs in (guess what ?) the DLLs python
         # directory
         data_files.append(("DLLs", dlls))
-    
-if gtkgl.can_build():
-    ext_modules.append(gtkgl)
-    data_files.append((DEFS_DIR, ('gtk/gtkgl.defs',)))
-    
+
 if '--enable-threading' in sys.argv:
     try:
         import thread
