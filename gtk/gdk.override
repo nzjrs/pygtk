@@ -3061,3 +3061,74 @@ _wrap_gdk_list_visuals(PyGObject *self)
 
     return list;
 }
+%%
+override gdk_window_new kwargs
+static int
+_wrap_gdk_window_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "parent", "width", "height", "window_type",
+			      "event_mask", "wclass", "title", "x", "y",
+			      "visual", "colormap", "cursor", "wmclass_name",
+			      "wmclass_class", "override_redirect", NULL };
+    GdkWindowAttr attr = { NULL, 0, -1, -1, 0, 0, -1, NULL, NULL, 0, NULL,
+			   NULL, NULL, -1 };
+    guint attr_mask = 0;
+    GdkWindow *parent = NULL;
+    PyGObject *py_parent = NULL, *py_visual = NULL, *py_colormap = NULL;
+    PyGObject *py_cursor = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "Oiiiii|siiO!O!Ossi:GdkWindow.__init__",
+				     kwlist, &py_parent, &attr.width,
+				     &attr.height, &attr.window_type,
+				     &attr.event_mask, &attr.wclass,
+				     &attr.title, &attr.x, &attr.y,
+				     &PyGdkVisual_Type, &py_visual,
+				     &PyGdkColormap_Type, &py_colormap,
+				     &py_cursor,
+				     &attr.wmclass_name, &attr.wmclass_class,
+				     &attr.override_redirect))
+	return -1;
+
+    if (py_parent && pygobject_check(py_parent, &PyGdkWindow_Type))
+        parent = GDK_WINDOW(py_parent->obj);
+    else if ((PyObject *)py_parent != Py_None) {
+        PyErr_SetString(PyExc_TypeError, "parent must be a GdkWindow or None");
+        return -1;
+    }
+    if (attr.title)
+	attr_mask |= GDK_WA_TITLE;
+    if (attr.x != -1)
+	attr_mask |= GDK_WA_X;
+    if (attr.y != -1)
+	attr_mask |= GDK_WA_Y;
+    if (py_visual) {
+	attr.visual = GDK_VISUAL(py_visual->obj);
+	attr_mask |= GDK_WA_VISUAL;
+    }
+    if (py_colormap) {
+	attr.colormap = GDK_COLORMAP(py_colormap->obj);
+	attr_mask |= GDK_WA_COLORMAP;
+    }
+    if (py_cursor) {
+	if (!pyg_boxed_check(py_cursor, GDK_TYPE_CURSOR)) {
+	    PyErr_SetString(PyExc_TypeError, "cursor should be a GdkCursor");
+	    return -1;
+	}
+	attr.cursor = pyg_boxed_get(py_cursor, GdkCursor);
+	attr_mask |= GDK_WA_CURSOR;
+    }
+    if (attr.wmclass_name && attr.wmclass_class)
+	attr_mask |= GDK_WA_WMCLASS;
+    if (attr.override_redirect != -1)
+	attr_mask |= GDK_WA_NOREDIR;
+
+    self->obj = (GObject *)gdk_window_new(parent, &attr, attr_mask);
+    if (!self->obj) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not create GdkWindow object");
+	return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
