@@ -1041,6 +1041,8 @@ _wrap_gtk_button_box_get_child_size(PyGObject *self)
     gint min_width;
     gint min_height;
 
+    if (PyErr_Warn(PyExc_DeprecationWarning, "don't use this") < 0)
+        return NULL;
     gtk_button_box_get_child_size(GTK_BUTTON_BOX(self->obj), &min_width, &min_height);
     return Py_BuildValue("(ii)", min_width, min_height);
 }
@@ -1052,6 +1054,8 @@ _wrap_gtk_button_box_get_child_ipadding(PyGObject *self)
     gint ipad_x;
     gint ipad_y;
 
+    if (PyErr_Warn(PyExc_DeprecationWarning, "don't use this") < 0)
+        return NULL;
     gtk_button_box_get_child_ipadding(GTK_BUTTON_BOX(self->obj), &ipad_x, &ipad_y);
     return Py_BuildValue("(ii)", ipad_x, ipad_y);
 }

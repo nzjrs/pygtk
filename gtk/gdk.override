@@ -2376,50 +2376,62 @@ _wrap_gdk_rectangle__set_height(PyGBoxed *self, PyObject *value, void *closure)
     return 0;
 }
 %%
-override gdk_rectangle_intersect args
+override gdk_rectangle_intersect kwargs
 static PyObject *
-_wrap_gdk_rectangle_intersect(PyGObject *self, PyObject *args)
+_wrap_gdk_rectangle_intersect(PyGObject *self, PyObject *args,
+			      PyObject *kwargs)
 {
+    static char *kwlist[] = { "src", NULL };
     PyObject *py_src;
-    GdkRectangle dest;
+    GdkRectangle src, dest = {0, 0, 0, 0};
     
-    if (!PyArg_ParseTuple(args, "O:GdkRectangle.intersect",
-                          &py_src)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkRectangle.intersect",
+				     kwlist, &py_src)) {
         return NULL;
     }
     
     if (!pyg_boxed_check(py_src, GDK_TYPE_RECTANGLE)) {
-        PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
-        return NULL;
+	if (!pygdk_rectangle_from_pyobject(py_src, &src)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "src must be a GdkRectangle or 4-tuple");
+	    return NULL;
+	}
+    } else {
+	src = *pyg_boxed_get(py_src, GdkRectangle);
     }
 
-    gdk_rectangle_intersect(pyg_boxed_get(self, GdkRectangle),
-                            pyg_boxed_get(py_src, GdkRectangle),
-                            &dest);
+    gdk_rectangle_intersect(pyg_boxed_get(self, GdkRectangle), &src, &dest);
                             
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
 }
 %%
-override gdk_rectangle_union args
+override gdk_rectangle_union kwargs
 static PyObject *
-_wrap_gdk_rectangle_union(PyGObject *self, PyObject *args)
+_wrap_gdk_rectangle_union(PyGObject *self, PyObject *args,
+			  PyObject *kwargs)
 {
+    static char *kwlist[] = { "src", NULL };
     PyObject *py_src;
-    GdkRectangle dest;
+    GdkRectangle src, dest;
     
-    if (!PyArg_ParseTuple(args, "O:GdkRectangle.union",
-                          &py_src)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkRectangle.union",
+				     kwlist, &py_src)) {
         return NULL;
     }
     
     if (!pyg_boxed_check(py_src, GDK_TYPE_RECTANGLE)) {
-        PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
-        return NULL;
+	if (!pygdk_rectangle_from_pyobject(py_src, &src)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "src must be a GdkRectangle or 4-tuple");
+	    return NULL;
+	}
+    } else {
+	src = *pyg_boxed_get(py_src, GdkRectangle);
     }
 
-    gdk_rectangle_union(pyg_boxed_get(self, GdkRectangle),
-                        pyg_boxed_get(py_src, GdkRectangle),
-                        &dest);
+    gdk_rectangle_union(pyg_boxed_get(self, GdkRectangle), &src, &dest);
                             
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
 }
@@ -2883,4 +2895,93 @@ _wrap_gdk_draw_layout(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gdk_pixbuf_animation_get_iter kwargs
+static PyObject *
+_wrap_gdk_pixbuf_animation_get_iter(PyGObject *self, PyObject *args,
+				    PyObject *kwargs)
+{
+    static char *kwlist[] = { "start_time", NULL };
+    GdkPixbufAnimationIter *ret;
+    double start_time = 0.0;
+    GTimeVal starttime, *starttimep;
 
+    if (!PyArg_ParseTupleAndKeywords(
+	    args, kwargs, "|d:GdkPixbufAnimation.get_iter",
+	    kwlist, &start_time))
+        return NULL;
+
+    if (start_time > 0.0) {
+	starttime.tv_sec = (glong) start_time;
+	starttime.tv_usec = (glong)((start_time - starttime.tv_sec)
+				    * G_USEC_PER_SEC);
+	starttimep = &starttime;
+    } else if (start_time == 0.0) {
+	starttimep = NULL;
+    } else {
+        PyErr_SetString(PyExc_ValueError, "start_time must be >= 0.0");
+        return NULL;
+    }
+
+    ret = gdk_pixbuf_animation_get_iter(GDK_PIXBUF_ANIMATION(self->obj),
+					starttimep);
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
+%%
+override gdk_pixbuf_animation_iter_advance kwargs
+static PyObject *
+_wrap_gdk_pixbuf_animation_iter_advance(PyGObject *self, PyObject *args,
+				    PyObject *kwargs)
+{
+    static char *kwlist[] = { "current_time", NULL };
+    gboolean ret;
+    double current_time = 0.0;
+    GTimeVal currenttime, *currenttimep;
+    PyObject *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(
+	    args, kwargs, "|d:GdkPixbufAnimationIter.advance",
+	    kwlist, &current_time))
+        return NULL;
+
+    if (current_time > 0.0) {
+	currenttime.tv_sec = (glong) current_time;
+	currenttime.tv_usec = (glong)((current_time - currenttime.tv_sec)
+				    * G_USEC_PER_SEC);
+	currenttimep = &currenttime;
+    } else if (current_time == 0.0) {
+	currenttimep = NULL;
+    } else {
+        PyErr_SetString(PyExc_ValueError, "current_time must be >= 0.0");
+        return NULL;
+    }
+
+    ret = gdk_pixbuf_animation_iter_advance(GDK_PIXBUF_ANIMATION_ITER(self->obj),
+					    currenttimep);
+
+    py_ret = ret ? Py_True : Py_False;
+    
+    Py_INCREF(py_ret);
+    return py_ret;
+}
+%%
+override gdk_rectangle_new kwargs
+static int
+_wrap_gdk_rectangle_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "x", "y", "width", "height", NULL };
+    GdkRectangle rect = {0, 0, 0, 0};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|iiii:GdkRectangle.__init__",
+				     kwlist, &(rect.x), &(rect.y),
+				     &(rect.width), &(rect.height)))
+	return -1;
+
+    self->boxed =  g_boxed_copy(GDK_TYPE_RECTANGLE, &rect);
+    self->free_on_dealloc = TRUE;
+    self->gtype = GDK_TYPE_RECTANGLE;
+    
+    return 0;
+}
