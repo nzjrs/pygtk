@@ -50,6 +50,15 @@ static struct _PyGtk_FunctionStruct functions = {
 };
 
 static void
+sink_gtkwindow(GObject *object)
+{
+    if (object->ref_count == 1
+	&& GTK_WINDOW(object)->has_user_ref_count) {
+	g_object_ref(object);
+    }
+}
+
+static void
 sink_gtkobject(GObject *object)
 {
     if (GTK_OBJECT_FLOATING(object)) {
@@ -90,6 +99,7 @@ init_gtk(void)
     init_pygobject();
     g_assert(pygobject_register_class != NULL);
 
+    pygobject_register_sinkfunc(GTK_TYPE_WINDOW, sink_gtkwindow);
     pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
 
     /* set the default python encoding to utf-8 */
