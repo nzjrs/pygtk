@@ -3347,3 +3347,80 @@ _wrap_gtk_accel_map_save_fd(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_color_selection_palette_from_string kwargs
+static PyObject *
+_wrap_gtk_color_selection_palette_from_string(PyGObject *self, PyObject *args,
+					      PyObject *kwargs)
+{
+    static char *kwlist[] = { "str", NULL };
+    gchar *str;
+    GdkColor *colors;
+    gint i, n_colors;
+    PyObject *py_list;
+
+    if (!PyArg_ParseTupleAndKeywords(
+	args, kwargs, "s:gtk.color_selection_palette_from_string",
+	kwlist, &str))
+        return NULL;
+
+    if (!gtk_color_selection_palette_from_string(str, &colors, &n_colors)) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+
+    if ((py_list = PyList_New(n_colors)) == NULL) {
+	g_free(colors);
+	return NULL;
+    }
+
+    for (i = 0; i < n_colors; i++) {
+	PyObject *item = pyg_boxed_new(GDK_TYPE_COLOR, &colors[i], TRUE, TRUE);
+
+	PyList_SetItem(py_list, i, item);
+    }
+    g_free(colors);
+
+    return py_list;
+}
+%%
+override gtk_color_selection_palette_to_string kwargs
+static PyObject *
+_wrap_gtk_color_selection_palette_to_string(PyGObject *self, PyObject *args,
+					      PyObject *kwargs)
+{
+    static char *kwlist[] = { "colors", NULL };
+    gchar *str;
+    GdkColor *colors;
+    gint i, n_colors;
+    PyObject *py_colors, *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(
+	args, kwargs, "O:gtk.color_selection_palette_to_string",
+	kwlist, &py_colors))
+        return NULL;
+
+    n_colors = PySequence_Length(py_colors);
+    if ((colors = g_new0(GdkColor, n_colors)) == NULL)
+	return NULL;
+
+    for (i = 0; i < n_colors; i++) {
+        PyObject *item = PySequence_GetItem(py_colors, i);
+	if (!pyg_boxed_check(item, GDK_TYPE_COLOR)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "colors must contain gtk.gdk.Colors");
+	    g_free(colors);
+	    Py_DECREF(item);
+	    return NULL;
+	}
+	colors[i] = *pyg_boxed_get(item, GdkColor);
+	Py_DECREF(item);
+    }
+
+    str = gtk_color_selection_palette_to_string(colors, n_colors);
+    ret = PyString_FromString(str);
+    g_free(colors);
+    g_free(str);
+
+    return ret;
+}
