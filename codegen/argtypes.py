@@ -95,7 +95,7 @@ class StringArg(ArgType):
 	else:
             info.add_parselist('s', ['&' + pname], [pname])
     def write_return(self, ptype, info):
-	if ptype in ('const-gchar*', 'const-char*', 'static_string'):
+        if ptype[:6] == 'const-' or ptype in ('static_string',):
 	    info.varlist.add('const gchar', '*ret')
             info.codeafter.append('    if (ret)\n' +
                                   '        return PyString_FromString(ret);\n'+
