@@ -10,6 +10,8 @@
 void _pygtk_register_boxed_types(PyObject *moddict);
 void pygtk_register_classes(PyObject *d);
 void pygdk_register_classes(PyObject *d);
+void pygtk_add_constants(PyObject *module, const gchar *strip_prefix);
+void pygdk_add_constants(PyObject *module, const gchar *strip_prefix);
 
 extern PyMethodDef pygtk_functions[];
 extern PyMethodDef pygdk_functions[];
@@ -76,6 +78,7 @@ init_gtk(void)
 
     _pygtk_register_boxed_types(d);
     pygtk_register_classes(d);
+    pygtk_add_constants(m, "GTK_");
 
     /* for addon libraries ... */
     PyDict_SetItemString(d, "_PyGtk_API",
@@ -86,7 +89,7 @@ init_gtk(void)
     d = PyModule_GetDict(m);
 
     pygdk_register_classes(d);
-    pyg_flags_add_constants(m, GDK_TYPE_EVENT_MASK, "GDK_");
+    pygdk_add_constants(m, "GDK_");
 
     if (PyErr_Occurred())
 	Py_FatalError("can't initialise module _gtk");

@@ -679,6 +679,17 @@ def write_functions(parser, overrides, prefix, fp=sys.stdout):
     fp.write(string.join(functions, ''))
     fp.write('};\n\n')
 
+def write_enums(parser, prefix, fp=sys.stdout):
+    fp.write('\n/* ----------- enums and flags ----------- */\n\n')
+    fp.write('void\n' + prefix + '_add_constants(PyObject *module, const gchar *strip_prefix)\n{\n')
+    for enum in parser.enums:
+        if enum.deftype == 'enum':
+            fp.write('    pyg_enum_add_constants(module, %s, strip_prefix);\n'
+                     % (enum.typecode,))
+        else:
+            fp.write('    pyg_flags_add_constants(module, %s, strip_prefix);\n'
+                     % (enum.typecode,))
+    fp.write('}\n\n')
 
 def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('/* -*- Mode: C; c-basic-offset: 4 -*- */\n\n')
@@ -704,6 +715,8 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
         fp.write('\n')
 
     write_functions(parser, overrides, prefix, fp)
+
+    write_enums(parser, prefix, fp)
 
     fp.write('/* intialise stuff extension classes */\n')
     fp.write('void\n' + prefix + '_register_classes(PyObject *d)\n{\n')

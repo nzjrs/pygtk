@@ -7,6 +7,10 @@ try:
 except ImportError:
     pass
 
+# TRUE and FALSE constants ...
+FALSE = 0
+TRUE  = 1
+
 # hack so that ltihooks is used when importing ExtensionClass ...
 import ExtensionClass
 del ExtensionClass
@@ -15,7 +19,6 @@ import gobject
 del gobject
 
 # load the required modules:
-from GTK import *
 import GDK
 from _gtk import *
 import gdk # this is created by the _gtk import

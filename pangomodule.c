@@ -8,6 +8,7 @@
 /* include any extra headers needed here */
 
 void pypango_register_classes(PyObject *d);
+void pypango_add_constants(PyObject *module, const gchar *strip_prefix);
 extern PyMethodDef pypango_functions[];
 
 DL_EXPORT(void)
@@ -23,6 +24,7 @@ initpango(void)
     init_pygobject();
 
     pypango_register_classes(d);
+    pypango_add_constants(m, "PANGO_");
 
     /* add anything else to the module dictionary (such as constants) */
 
