@@ -2654,6 +2654,16 @@ _wrap_gtk_tree_model_foreach(PyGObject *self, PyObject *args)
 ignore
   gtk_tree_view_new
 %%
+override gtk_tree_view_get_visible_rect noargs
+static PyObject *
+_wrap_gtk_tree_view_get_visible_rect(PyGObject *self)
+{
+    GdkRectangle visible_rect;
+
+    gtk_tree_view_get_visible_rect(GTK_TREE_VIEW(self->obj), &visible_rect);
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &visible_rect, TRUE, TRUE);
+}
+%%
 override gtk_tree_view_column_new kwargs
 static int
 _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
@@ -6109,6 +6119,22 @@ _wrap_gtk_text_buffer_set_text(PyGObject *self, PyObject *args, PyObject *kwargs
     return Py_None;
 }
 %%
+override gtk_text_buffer_get_selection_bounds noargs
+static PyObject *
+_wrap_gtk_text_buffer_get_selection_bounds(PyGObject *self, PyObject *args)
+{
+    GtkTextIter start, end;
+
+    if (!gtk_text_buffer_get_selection_bounds(GTK_TEXT_BUFFER(self->obj),
+					      &start, &end)) {
+	return Py_BuildValue ("()");
+    }
+    
+    return Py_BuildValue("(NN)",
+			 pyg_boxed_new(GTK_TYPE_TEXT_ITER, &start, TRUE, TRUE),
+                         pyg_boxed_new(GTK_TYPE_TEXT_ITER, &end, TRUE, TRUE));
+}
+%%
 override gtk_text_child_anchor_get_widgets noargs
 static PyObject *
 _wrap_gtk_text_child_anchor_get_widgets(PyGObject *self)
@@ -6128,6 +6154,16 @@ _wrap_gtk_text_child_anchor_get_widgets(PyGObject *self)
     }
     g_list_free(list);
     return ret;
+}
+%%
+override gtk_text_view_get_visible_rect noargs
+static PyObject *
+_wrap_gtk_text_view_get_visible_rect(PyGObject *self)
+{
+    GdkRectangle visible_rect;
+
+    gtk_text_view_get_visible_rect(GTK_TEXT_VIEW(self->obj), &visible_rect);
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &visible_rect, TRUE, TRUE);
 }
 %%
 override gtk_text_view_buffer_to_window_coords kwargs
