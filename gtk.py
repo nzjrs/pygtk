@@ -1977,6 +1977,29 @@ class GtkDrawingArea(GtkWidget):
 	def draw_lines(self, gc, points):
 		if not self.__win: self.__cache_win()
 		_gtk.gdk_draw_lines(self.__win, gc, points)
+	# these are the gdkrgb functions
+	def draw_rgb_image(self, gc, x, y, width, height,
+			   dither, buffer, rowstride):
+		if not self.__win: self.__cache_win()
+		_gtk.gdk_draw_rgb_image(self.__win, gc, x, y, width, height,
+					dither, buffer, rowstride)
+	def draw_rgb_32_image(self, gc, x, y, width, height,
+			      dither, buffer, rowstride):
+		if not self.__win: self.__cache_win()
+		_gtk.gdk_draw_rgb_32_image(self.__win, gc, x, y, width, height,
+					   dither, buffer, rowstride)
+	def draw_gray_image(self, gc, x, y, width, height,
+			    dither, buffer, rowstride):
+		if not self.__win: self.__cache_win()
+		_gtk.gdk_draw_gray_image(self.__win, gc, x, y, width, height,
+					 dither, buffer, rowstride)
+
+	# see the comment for draw_array closer to the bottom of this file.
+	if hasattr(_gtk, "gdk_draw_array"):
+		def draw_array(self, gc, x, y, dither, array):
+			if not self.__win: self.__cache_win()
+			_gtk.gdk_draw_array(self.__win, gc, x, y, dither,array)
+
 
 class GtkCurve(GtkDrawingArea):
 	get_type = _gtk.gtk_curve_get_type
@@ -2642,6 +2665,29 @@ def draw_segments(drawable, gc, segs):
 def draw_lines(drawable, gc, points):
 	_gtk.gdk_draw_lines(drawable, gc, points)
 
+# these are the gdkrgb functions
+def draw_rgb_image(drawable, gc, x, y, width, height,
+		   dither, buffer, rowstride):
+	_gtk.gdk_draw_rgb_image(drawable, gc, x, y, width, height,
+				dither, buffer, rowstride)
+def draw_rgb_32_image(drawable, gc, x, y, width, height,
+		   dither, buffer, rowstride):
+	_gtk.gdk_draw_rgb_32_image(drawable, gc, x, y, width, height,
+				   dither, buffer, rowstride)
+def draw_gray_image(drawable, gc, x, y, width, height,
+		   dither, buffer, rowstride):
+	_gtk.gdk_draw_gray_image(drawable, gc, x, y, width, height,
+				 dither, buffer, rowstride)
+
+# this function renders an unsigned byte (type code 'b') numpy array to a
+# drawable.  If it is a MxN or MxNx1 array, it is assumed to be a grey image.
+# If it is a MxNx3 or MxNx4 array, it is assumed to be an rgb image.
+# It should accept images that have been sliced along their first two axes,
+# if you want to only draw part of the image.
+if hasattr(_gtk, "gdk_draw_array"):
+	def draw_array(drawable, gc, x, y, dither, array):
+		_gtk.gdk_draw_array(drawable, gc, x, y, dither, array)
+
 
 # screen size
 def screen_width():
@@ -2662,6 +2708,12 @@ def threads_leave():
 
 def gdk_flush():
 	_gtk.gdk_flush()
+
+# these actually push/pop a visual/colormap pair.
+def push_rgb_visual():
+	_gtk.gtk_rgb_push_visual()
+def pop_visual():
+	_gtk.gtk_pop_visual()
 
 # these are prefixed with underscores, since they are low level, and
 # would break if pygtk was ported to windows.

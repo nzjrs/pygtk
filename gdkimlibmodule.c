@@ -797,12 +797,11 @@ static PyObject *_wrap_gdk_imlib_image_get_array(PyObject *self, PyObject *args)
 						       (char *)obj->rgb_data);
     if (ap_data == NULL)
 	return NULL;
-    /* this is necessary if you want to manipulate the rgb data after
-     * destroying the image.  It causes a reference imbalance, and
-     * I don't see when you would want to do this (you can always copy
-     * the array).
-     */
-    /* Py_INCREF(image); */
+    /* this makes sure the GdkImlibImage is not freed while someone has a
+     * reference to the new array. */
+    Py_INCREF(image);
+    ap_data->base = image;
+
     return PyArray_Return(ap_data);
 }
 #endif

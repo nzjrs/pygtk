@@ -1,3 +1,21 @@
+pygtk-0.6.2:
+	- Alright, threading should work correctly with multiple threads
+	  accessing GTK (assuming they use threads_enter/leave).  Thanks go
+	  to Matt Wilson and Paul Fisher for this code.
+	- A pygtk.h header file is now installed that should make it easier
+	  to write extensions to pygtk.
+	- There is now optional support for the gtkglarea widget and the
+	  libglade library now.
+	- There is support for gdkrgb functions for rendering rgb and greyscale
+	  image data to a drawable.
+	- Optional support for numpy arrays.  You can create a GdkImlibImage
+	  from a numpy array, and manipulate an image's data as an array.
+	  Also there is a gdk_draw_array wrapper that uses gdkrgb to render
+	  an array to a drawable.  The code for the imlib stuff is based on
+	  stuff submitted by Travis Oliphant.
+	- The GdkWindow type now has some methods for manipulating properties,
+	  and has an xid attribute for getting the X window ID of the window.
+
 pygtk-0.6.1:  22-May-1999
 	- Fixed a few bugs to do with the threading patches I applied in the
 	  last release.  Threading should now work correctly.

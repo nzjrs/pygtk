@@ -1,3 +1,22 @@
+1999-08-08  James Henstridge  <james@daa.com.au>
+
+	* NEWS: updated news file.
+
+	* configure.in: increased version number to 0.6.2.
+
+	* gdkimlibmodule.c (_wrap_gdk_imlib_image_get_array): make sure that
+	the image data is not freed while the returned array is in use, so
+	that we don't get into an inconsistent state.
+
+	* gtk.py: added gdkrgb functions to this file.
+
+	* gtkmodule.c: added the gdkrgb functions for drawing rgb and greyscale
+	images.
+	(gdk_draw_array): a new function that will draw a numpy array to a
+	drawable with gdkrgb.  It is written so that it can handle slicing
+	on the first two axes -- it does not handle non contiguous data on
+	the third axis.
+
 1999-08-04  Matt Wilson  <msw@redhat.com>
 
 	* GdkImlib.py (create_image_from_xpm): new wrapper for creating

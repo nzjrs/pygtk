@@ -20,6 +20,10 @@
 
 #include <Python.h>
 #include <sysmodule.h>
+#ifdef HAVE_NUMPY
+#include <arrayobject.h>
+#endif
+
 #include <gtk/gtk.h>
 
 #define WITH_XSTUFF
@@ -5821,6 +5825,154 @@ static PyObject *_wrap_gdk_threads_leave(PyObject *self, PyObject *args) {
   return Py_None;
 }
 
+/* gdkrgb stuff -- will be needed when gdk_pixbuf stuff is added */
+
+static PyObject *_wrap_gtk_rgb_push_visual(PyObject *self, PyObject *args) {
+    if (!PyArg_ParseTuple(args, ":gtk_rgb_push_visual"))
+	return NULL;
+    gtk_widget_push_colormap(gdk_rgb_get_cmap());
+    gtk_widget_push_visual(gdk_rgb_get_visual());
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gtk_pop_visual(PyObject *self, PyObject *args) {
+    if (!PyArg_ParseTuple(args, ":gtk_pop_visual"))
+	return NULL;
+    gtk_widget_pop_colormap();
+    gtk_widget_pop_visual();
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gdk_draw_rgb_image(PyObject *self, PyObject *args) {
+    PyObject *drawable, *gc, *py_dith;
+    gint x, y, width, height, rowstride = -1, len;
+    GdkRgbDither dith;
+    guchar *rgb_buf;
+
+    if (!PyArg_ParseTuple(args, "O!O!iiiiOs#|i:gdk_draw_rgb_image",
+			  &PyGdkWindow_Type, &drawable, &PyGdkGC_Type, &gc,
+			  &x, &y, &width, &height, &py_dith, &rgb_buf, &len,
+			  &rowstride))
+	return NULL;
+    if (PyGtkEnum_get_value(GTK_TYPE_GDK_RGB_DITHER, py_dith, (gint *)&dith))
+	return NULL;
+    if (rowstride == -1)
+	rowstride = width * 3;
+    gdk_draw_rgb_image(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), x, y,
+		       width, height, dith, rgb_buf, rowstride);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gdk_draw_rgb_32_image(PyObject *self, PyObject *args) {
+    PyObject *drawable, *gc, *py_dith;
+    gint x, y, width, height, rowstride = -1, len;
+    GdkRgbDither dith;
+    guchar *rgb_buf;
+
+    if (!PyArg_ParseTuple(args, "O!O!iiiiOs#|i:gdk_draw_rgb_32_image",
+			  &PyGdkWindow_Type, &drawable, &PyGdkGC_Type, &gc,
+			  &x, &y, &width, &height, &py_dith, &rgb_buf, &len,
+			  &rowstride))
+	return NULL;
+    if (PyGtkEnum_get_value(GTK_TYPE_GDK_RGB_DITHER, py_dith, (gint *)&dith))
+	return NULL;
+    if (rowstride == -1)
+	rowstride = width * 4;
+    gdk_draw_rgb_32_image(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), x, y,
+			  width, height, dith, rgb_buf, rowstride);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gdk_draw_gray_image(PyObject *self, PyObject *args) {
+    PyObject *drawable, *gc, *py_dith;
+    gint x, y, width, height, rowstride = -1, len;
+    GdkRgbDither dith;
+    guchar *buf;
+
+    if (!PyArg_ParseTuple(args, "O!O!iiiiOs#|i:gdk_draw_gray_image",
+			  &PyGdkWindow_Type, &drawable, &PyGdkGC_Type, &gc,
+			  &x, &y, &width, &height, &py_dith, &buf, &len,
+			  &rowstride))
+	return NULL;
+    if (PyGtkEnum_get_value(GTK_TYPE_GDK_RGB_DITHER, py_dith, (gint *)&dith))
+	return NULL;
+    if (rowstride == -1)
+	rowstride = width;
+    gdk_draw_gray_image(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), x, y,
+			width, height, dith, buf, rowstride);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+#ifdef HAVE_NUMPY
+/* this function renders an array to a drawable.  If it is a MxN or MxNx1
+ * array, it is considered to be a grey image.  If it is an MxNx3 or MxNx4
+ * array, it is considered to be an rgb image.  The second two axes of the
+ * array must be contiguous (ie. array->strides[1] == 1,3 or 4,
+ * array->strides[2] == 1).  The array->strides[0] is used to deduce the
+ * rowstride value for the data.  This allows you to draw a slice of the image
+ * data. */
+static PyObject *_wrap_gdk_draw_array(PyObject *self, PyObject *args) {
+    PyObject *drawable, *gc, *py_dith;
+    PyArrayObject *array;
+    gint x, y, width, height, rowstride = -1, len;
+    GdkRgbDither dith;
+    guchar *buf;
+
+    if (!PyArg_ParseTuple(args, "O!O!iiOO!:gdk_draw_array",
+			  &PyGdkWindow_Type, &drawable, &PyGdkGC_Type, &gc,
+			  &x, &y, &py_dith, &PyArray_Type, &array))
+	return NULL;
+    if (PyGtkEnum_get_value(GTK_TYPE_GDK_RGB_DITHER, py_dith, (gint *)&dith))
+	return NULL;
+    if (array->descr->type_num != PyArray_UBYTE) {
+	PyErr_SetString(PyExc_TypeError, "array data must be unsigned bytes");
+	return NULL;
+    }
+    if (array->nd < 2) {
+	PyErr_SetString(PyExc_TypeError, "array must have at least 2 axes");
+	return NULL;
+    }
+    width = array->dimensions[1];
+    height = array->dimensions[0];
+    buf = (guchar *)array->data;
+    rowstride = array->strides[0];
+    if (array->nd == 2 || array->nd == 3 && array->dimensions[2] == 1) {
+	/* grey image */
+	if (array->strides[1] != 1) {
+	    PyErr_SetString(PyExc_TypeError, "second axis must be contiguous");
+	    return NULL;
+	}
+	gdk_draw_gray_image(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), x, y,
+			    width, height, dith, buf, rowstride);
+    } else if (array->nd == 3 && array->dimensions[2] == 3) {
+	if (array->strides[1] != 3) {
+	    PyErr_SetString(PyExc_TypeError, "second axis must be contiguous");
+	    return NULL;
+	}
+	gdk_draw_rgb_image(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), x, y,
+			   width, height, dith, buf, rowstride);
+    } else if (array->nd == 3 && array->dimensions[2] == 4) {
+	if (array->strides[1] != 4) {
+	    PyErr_SetString(PyExc_TypeError, "second axis must be contiguous");
+	    return NULL;
+	}
+	gdk_draw_rgb_32_image(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), x, y,
+			      width, height, dith, buf, rowstride);
+    } else {
+	PyErr_SetString(PyExc_TypeError,
+			"array must be MxN or MxNxP where P is 1, 3 or 4");
+	return NULL;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+#endif
+
 static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_signal_connect", _wrap_gtk_signal_connect, 1 },
     { "gtk_signal_connect_after", _wrap_gtk_signal_connect_after, 1 },
@@ -5950,6 +6102,14 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gdk_window_foreign_new", _wrap_gdk_window_foreign_new, 1 },
     { "gdk_get_root_win", _wrap_gdk_get_root_win, 1 },
 #endif
+    { "gtk_rgb_push_visual", _wrap_gtk_rgb_push_visual, 1 },
+    { "gtk_pop_visual", _wrap_gtk_pop_visual, 1 },
+    { "gdk_draw_rgb_image", _wrap_gdk_draw_rgb_image, 1 },
+    { "gdk_draw_rgb_32_image", _wrap_gdk_draw_rgb_32_image, 1 },
+    { "gdk_draw_gray_image", _wrap_gdk_draw_gray_image, 1 },
+#ifdef HAVE_NUMPY
+    { "gdk_draw_array", _wrap_gdk_draw_array, 1 },
+#endif
     { NULL, NULL }
 };
 
@@ -5994,6 +6154,10 @@ void init_gtk() {
      PyObject *m, *d, *private;
      m = Py_InitModule("_gtk", _gtkmoduleMethods);
      d = PyModule_GetDict(m);
+
+#ifdef HAVE_NUMPY
+     import_array();
+#endif
 
      /* initialise the boxed_funcs hash_table */
      boxed_funcs = g_hash_table_new(g_direct_hash, g_direct_equal);
