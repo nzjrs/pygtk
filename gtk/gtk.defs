@@ -823,6 +823,9 @@
   (parent "GtkCList")
   (c-name "GtkCTree")
   (gtype-id "GTK_TYPE_CTREE")
+  (fields
+    '("GList*" "selection")
+  )
 )
 
 (define-object Calendar
@@ -4371,6 +4374,12 @@
   )
 )
 
+(define-method base_nodes
+  (of-object "GtkCTree")
+  (c-name "gtk_ctree_base_nodes")
+  (return-type "GList*")
+)
+
 (define-method insert_node
   (of-object "GtkCTree")
   (c-name "gtk_ctree_insert_node")
@@ -4379,13 +4388,13 @@
     '("GtkCTreeNode*" "parent")
     '("GtkCTreeNode*" "sibling")
     '("gchar*[]" "text")
-    '("guint8" "spacing")
-    '("GdkPixmap*" "pixmap_closed")
-    '("GdkBitmap*" "mask_closed")
-    '("GdkPixmap*" "pixmap_opened")
-    '("GdkBitmap*" "mask_opened")
-    '("gboolean" "is_leaf")
-    '("gboolean" "expanded")
+    '("guint8" "spacing" (default "5"))
+    '("GdkPixmap*" "pixmap_closed" (null-ok) (default "NULL"))
+    '("GdkBitmap*" "mask_closed" (null-ok) (default "NULL"))
+    '("GdkPixmap*" "pixmap_opened" (null-ok) (default "NULL"))
+    '("GdkBitmap*" "mask_opened" (null-ok) (default "NULL"))
+    '("gboolean" "is_leaf" (default "1"))
+    '("gboolean" "expanded" (default "0"))
   )
 )
 

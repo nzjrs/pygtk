@@ -2159,6 +2159,25 @@ ignore gtk_ctree_construct
 %%
 ignore gtk_ctree_new
 %%
+override-attr GtkCTree.selection
+GList *selection;
+GtkCTreeNode *node;
+PyObject *ret, *py_node;
+if ((ret = PyList_New(0)) == NULL)
+    return NULL;
+
+for (selection = GTK_CLIST(self->obj)->selection; selection != NULL;
+     selection = selection->next) {
+    node = selection->data;
+    if ((py_node = PyGtkCTreeNode_New(node)) == NULL) {
+        Py_DECREF(ret);
+        return NULL;
+    }
+    PyList_Append(ret, py_node);
+    Py_DECREF(py_node);
+}
+return ret;
+%%
 override gtk_ctree_new_with_titles kwargs
 static PyObject*
 _wrap_gtk_ctree_new_with_titles(PyGObject *self, PyObject *args,
@@ -2212,6 +2231,30 @@ _wrap_gtk_ctree_new_with_titles(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
+override gtk_ctree_base_nodes
+static PyObject*
+_wrap_gtk_ctree_base_nodes(PyGObject *self, PyObject *args)
+{
+    PyObject *ret;
+    GtkCTreeNode *node;
+    
+    /* the first row is always a base node */
+    node = GTK_CTREE_NODE(GTK_CLIST(self->obj)->row_list);
+    if ((ret = PyList_New(0)) == NULL)
+	return NULL;
+    while (node) {
+	PyObject *obj = PyGtkCTreeNode_New(node);
+	if (obj == NULL) {
+	    Py_DECREF(ret);
+	    return NULL;
+	}
+	PyList_Append(ret, obj);
+	Py_DECREF(obj);
+	node = GTK_CTREE_ROW(node)->sibling;
+    }
+    return ret;
+}
+%%
 override gtk_ctree_insert_node kwargs
 static PyObject *
 _wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
@@ -2221,16 +2264,19 @@ _wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
 			      "pixmap_closed", "mask_closed", "pixmap_opened",
 			      "mask_opened", "is_leaf", "expanded", NULL };
     PyObject *py_parent, *py_sibling, *py_text;
-    PyGObject *py_pixmap_closed, *py_mask_closed;
-    PyGObject *py_pixmap_opened, *py_mask_opened;
+    PyGObject *py_pixmap_closed = (PyGObject *) Py_None;
+    PyGObject *py_mask_closed = (PyGObject *) Py_None;
+    PyGObject *py_pixmap_opened = (PyGObject *) Py_None;
+    PyGObject *py_mask_opened = (PyGObject *) Py_None;
     GtkCTreeNode *parent = NULL, *sibling = NULL, *ret;
     gchar **text = NULL;
     GdkPixmap *pixmap_closed = NULL, *pixmap_opened = NULL;
     GdkBitmap *mask_closed = NULL, *mask_opened = NULL;
-    gint spacing, is_leaf, expanded, columns, i;
+    gint spacing = 5, is_leaf = 1, expanded = 0, columns, i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOOiOOOOii:GtkCTree.insert_node", kwlist,
+				     "OOO|iOOOOii:GtkCTree.insert_node",
+				     kwlist,
 				     &py_parent, &py_sibling, &py_text,
 				     &spacing, &py_pixmap_closed,
 				     &py_mask_closed, &py_pixmap_opened,
