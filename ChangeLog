@@ -1,3 +1,19 @@
+2004-04-15  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* pygboxed.c (PyGBoxed_Type, PyGPointer_Type): idem.
+
+	* pygobject.c (PyGObject_Type): idem.
+
+	* gobjectmodule.c (PyGInterface_Type): Typecast tp_free slot to
+	'freefunc' to avoid compiler warning.
+
+	* pygobject.h: Conditionally make an alias for function type
+	'destructor' called 'freefunc', for backward compatibility with
+	those poor souls still stuck with Python 2.2.
+
+	* codegen/codegen.py (Wrapper): change typecast of tp_free slot
+	from destructor to freefunc, for compatibility with Python 2.3.
+
 2004-04-15  John Finlay  <finlay@zippy.stooges.moeraki.com>
 
 	* gtk/gtk.defs Add defs for GtkRadioAction

@@ -94,7 +94,7 @@ class Wrapper:
         '    (initproc)%(tp_init)s,		/* tp_init */\n' \
         '    (allocfunc)%(tp_alloc)s,           /* tp_alloc */\n' \
         '    (newfunc)%(tp_new)s,               /* tp_new */\n' \
-        '    (destructor)%(tp_free)s,           /* tp_free */\n' \
+        '    (freefunc)%(tp_free)s,             /* tp_free */\n' \
         '    (inquiry)%(tp_is_gc)s              /* tp_is_gc */\n' \
         '};\n\n'
 
