@@ -84,7 +84,7 @@ class _Deprecated:
             self.module = 'gtk'
             
     def __repr__(self):
-        return '<deprecated function %s at 0x%x>' % (self.oldname, id(self))
+        return '<deprecated function %s>' % (self.oldname)
     
     def __call__(self, *args, **kwargs):
         message = 'gtk.%s is deprecated, use %s.%s instead' % (self.oldname,
@@ -107,4 +107,5 @@ create_pixmap_from_xpm = _Deprecated(gdk.pixmap_create_from_xpm,
                                      'pixmap_create_from_xpm', 'gdk')
 create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
                                        'pixmap_create_from_xpm_d', 'gdk')
+
 del _Deprecated
