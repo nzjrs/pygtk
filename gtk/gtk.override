@@ -3866,7 +3866,121 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
 				entry.stock_id);
 	    
 	py_action = pygobject_new((GObject *)action);
-	if (action && PyCallable_Check(callback)) {
+	if (action && callback != Py_None && PyCallable_Check(callback)) {
+	    closure = pyg_closure_new(callback, NULL, NULL);
+	    g_signal_connect_closure(action, "activate", closure, FALSE);
+	    pygobject_watch_closure(py_action, closure);
+	}
+	
+	gtk_action_group_add_action_with_accel (GTK_ACTION_GROUP(self->obj),
+						GTK_ACTION(action),
+						entry.accelerator);
+	
+	g_object_unref (action);
+	
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_action_group_add_toggle_actions kwargs
+static PyObject *
+_wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "entries", NULL };
+    PyObject *entries;
+    int len, i;
+    PyObject *item;
+    GtkToggleActionEntry entry;
+    GtkToggleAction *action;
+    PyObject *callback, *py_action;
+    GClosure *closure;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkActionGroup.add_toggle_actions",
+				     kwlist, &entries))
+        return NULL;
+    
+    if (!PySequence_Check(entries)) {
+        PyErr_SetString(PyExc_TypeError, "entries must be a sequence");
+        return NULL;
+    }
+
+    len = PySequence_Size(entries);
+    for (i = 0; i < len; i++) {
+	item = PySequence_GetItem(entries, i);
+        Py_DECREF(item);
+
+        memset(&entry, 0, sizeof(entry));
+        callback = Py_None;
+	
+        if (!PyArg_ParseTuple(item, "s|zzzzO", &(entry.name), &(entry.stock_id),
+			      &(entry.label), &(entry.accelerator), &(entry.tooltip),
+			      &callback)) {
+            return NULL;
+        }
+
+	action = gtk_toggle_action_new(entry.name, entry.label, entry.tooltip,
+				       entry.stock_id);
+	    
+	py_action = pygobject_new((GObject *)action);
+	if (action && callback != Py_None && PyCallable_Check(callback)) {
+	    closure = pyg_closure_new(callback, NULL, NULL);
+	    g_signal_connect_closure(action, "activate", closure, FALSE);
+	    pygobject_watch_closure(py_action, closure);
+	}
+	
+	gtk_action_group_add_action_with_accel (GTK_ACTION_GROUP(self->obj),
+						GTK_ACTION(action),
+						entry.accelerator);
+	
+	g_object_unref (action);
+	
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_action_group_add_radio_actions kwargs
+static PyObject *
+_wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "entries", NULL };
+    PyObject *entries;
+    int len, i;
+    PyObject *item;
+    GtkRadioActionEntry entry;
+    GtkRadioAction *action;
+    PyObject *callback, *py_action;
+    GClosure *closure;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkActionGroup.add_radio_actions",
+				     kwlist, &entries))
+        return NULL;
+    
+    if (!PySequence_Check(entries)) {
+        PyErr_SetString(PyExc_TypeError, "entries must be a sequence");
+        return NULL;
+    }
+
+    len = PySequence_Size(entries);
+    for (i = 0; i < len; i++) {
+	item = PySequence_GetItem(entries, i);
+        Py_DECREF(item);
+
+        memset(&entry, 0, sizeof(entry));
+        callback = Py_None;
+	
+        if (!PyArg_ParseTuple(item, "s|zzzziO", &(entry.name), &(entry.stock_id),
+			      &(entry.label), &(entry.accelerator), &(entry.tooltip),
+			      &(entry.value), &callback)) {
+            return NULL;
+        }
+
+	action = gtk_radio_action_new(entry.name, entry.label, entry.tooltip,
+				      entry.stock_id, entry.value);
+	    
+	py_action = pygobject_new((GObject *)action);
+	if (action && callback != Py_None && PyCallable_Check(callback)) {
 	    closure = pyg_closure_new(callback, NULL, NULL);
 	    g_signal_connect_closure(action, "activate", closure, FALSE);
 	    pygobject_watch_closure(py_action, closure);
@@ -3901,6 +4015,36 @@ _wrap_gtk_ui_manager_add_ui_from_string(PyGObject *self, PyObject *args, PyObjec
     if (pyg_error_check(&error))
         return NULL;
     return PyInt_FromLong(ret);
+}
+%%
+override gtk_action_group_list_actions noargs
+static PyObject *
+_wrap_gtk_action_group_list_actions(PyGObject *self)
+{
+    GList *l, *actions;
+    PyObject *item, *ret;
+
+    ret = PyList_New(0);
+    if (ret == NULL)
+	return NULL;
+    
+    actions = gtk_action_group_list_actions(GTK_ACTION_GROUP(self->obj));
+
+    for (l = actions; l; l = l->next) {
+        item = pygobject_new((GObject *) GTK_ACTION(l->data));
+
+        if (!item) {
+            Py_DECREF(ret);
+            return NULL;
+        }
+
+        PyList_Append(ret, item);
+        Py_DECREF(item);
+    }
+
+    g_list_free(actions);
+    
+    return ret;
 }
 %%
 override gtk_alignment_get_padding noargs
