@@ -28,12 +28,6 @@
   (c-name GtkModelSimple)
 )
 
-(object ListStore
-  (in-module Gtk)
-  (parent Object (Gtk))
-  (c-name GtkListStore)
-)
-
 (object ItemFactory
   (in-module Gtk)
   (parent Object (Gtk))
@@ -143,10 +137,23 @@
   (c-name GtkTreeSelection)
 )
 
+(interface TreeModel
+  (in-module Gtk)
+  (c-name GtkTreeModel)
+)
+
+(object ListStore
+  (in-module Gtk)
+  (parent Object (Gtk))
+  (c-name GtkListStore)
+  (implements GtkTreeModel)
+)
+
 (object TreeStore
   (in-module Gtk)
   (parent Object (Gtk))
   (c-name GtkTreeStore)
+  (implements GtkTreeModel)
 )
 
 (object TreeViewColumn
