@@ -101,6 +101,10 @@
 	<methodname><link linkend="method-gtktoolitem--get-proxy-menu-item">get_proxy_menu_item</link></methodname>
 	<methodparam><parameter role="keyword">menu_item_id</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolitem--rebuild-menu">rebuild_menu</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -139,7 +143,8 @@
 
 	      <entry>If <literal>TRUE</literal>, the toolbar item is
 considered important and the toolbar buttons show text in
-<literal>gtk.TOOLBAR_BOTH_HORIZ</literal> mode.</entry>
+<literal>gtk.TOOLBAR_BOTH_HORIZ</literal> mode. Default value:
+<literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -147,7 +152,8 @@ considered important and the toolbar buttons show text in
 	      <entry>Read-Write</entry>
 
 	      <entry>If <literal>TRUE</literal>, the toolbar item is visible
-when the toolbar is in a horizontal orientation.</entry>
+when the toolbar is in a horizontal orientation. Default value:
+<literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -155,7 +161,8 @@ when the toolbar is in a horizontal orientation.</entry>
 	      <entry>Read-Write</entry>
 
 	      <entry>If <literal>TRUE</literal>, the toolbar item is visible
-when the toolbar is in a vertical orientation.</entry>
+when the toolbar is in a vertical orientation. Default value:
+<literal>TRUE</literal></entry>
 	    </row>
 
 	  </tbody>
@@ -917,6 +924,25 @@ not inadvertently change a menu item that they did not create.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtktoolitem--rebuild-menu">
+      <title>gtk.ToolItem.rebuild_menu</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>rebuild_menu</methodname>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>rebuild_menu</methodname>() method ignals to the
+toolbar that the overflow menu item has changed. If the overflow menu is
+visible when this method it called, the menu will be rebuilt. The method
+must be called when the tool item changes what it will do in response to the
+"create_menu_proxy" signal.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -961,7 +987,10 @@ any)</simpara></listitem>
 	<para>This signal is available in GTK+ 2.4 and above.</para>
       </note>
 
-      <para>The "create-menu-proxy" signal is emitted when the toolbar is displaying an overflow menu. In response the tool item should either</para>
+      <para>The "create-menu-proxy" signal is emitted when the toolbar is
+displaying an overflow menu and is trying to determine if
+<parameter>toolitem</parameter> should appear in the overflow menu. In
+response <parameter>toolitem</parameter> should either</para>
 
       <itemizedlist>
 	<listitem>
@@ -982,6 +1011,12 @@ was not handled by the item. This means that the item will not appear in the
 overflow menu unless a later handler installs a menu item.</para>
 	</listitem>
       </itemizedlist>
+
+      <para>The toolbar may cache the result of this signal. When the tool
+item changes how it will respond to this signal it must call the <link
+linkend="method-gtktoolitem--rebuild-menu"><methodname>rebuild_menu</methodname>()</link>)
+method to invalidate the cache and ensure that the toolbar rebuilds its
+overflow menu.</para>
 
     </refsect2>
 
@@ -1085,7 +1120,7 @@ any)</simpara></listitem>
 of the toolbar that the item is a child of changes. For custom subclasses of
 <link
 linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>, the
-default handler of this signal use the methods:</para>
+default handler of this signal uses the methods:</para>
 
       <itemizedlist>
 	<listitem>
