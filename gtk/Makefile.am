@@ -5,15 +5,15 @@ pygtkexecdir = $(pyexecdir)/gtk
 
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA =
-EXTRA_DIST =
+EXTRA_DIST = $(defs_DATA)
 CLEANFILES =
 
 pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 pkginclude_HEADERS = pygtk.h
 
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) -Wall
-COMMONDEFS = gtk-types.defs gdk-types.defs ../atk-types.defs \
-	     ../pango-types.defs
+COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs $(top_srcdir)/atk-types.defs \
+	     $(top_srcdir)/pango-types.defs
 
 # gtk module
 pygtkexec_LTLIBRARIES = _gtkmodule.la
@@ -32,8 +32,8 @@ _gtkmodule_la_SOURCES = pygtk.h \
 # could use pattern rules.  Perhaps we should rename gtk-types.c.
 gtk-types.c:
 	:
-gdk.c: $(COMMONDEFS) gdk.override
-gtk.c: $(COMMONDEFS) gtk.override gtk-extrafuncs.defs
+gdk.c: $(srcdir)/gdk.defs $(COMMONDEFS) $(srcdir)/gdk.override
+gtk.c: $(srcdir)/gtk.defs $(COMMONDEFS) $(srcdir)/gtk.override $(srcdir)/gtk-extrafuncs.defs
 nodist__gtkmodule_la_SOURCES = gtk.c gdk.c
 CLEANFILES += gtk.c gdk.c
 defs_DATA += gtk.defs gtk-types.defs gtk-extrafuncs.defs gdk.defs \

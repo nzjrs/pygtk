@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = 1.5
 SUBDIRS = codegen gtk
 
 CLEANFILES =
-EXTRA_DIST =
+EXTRA_DIST = $(defs_DATA)
 pyexec_LTLIBRARIES =
 
 defsdir = $(pkgdatadir)/2.0/defs
@@ -124,8 +124,7 @@ EXTRA_DIST += \
   examples/neil/notebook.py \
   examples/neil/README \
   examples/glade/README \
-  examples/glade/test2.glade \
-  examples/glade/glade.py \
+  examples/glade/glade-demo.py \
   examples/glade/test.glade \
   examples/gl/README \
   examples/gl/cone.py \
