@@ -1963,7 +1963,7 @@ static PyTypeObject PyGtkCTreeNode_Type = {
 static void PyGtk_DestroyNotify(gpointer data) {
   Py_DECREF((PyObject *)data);
 }
-static void PyGtk_CallbackMarshal(GtkObject *o, gpointer d, int nargs,
+static void PyGtk_CallbackMarshal(GtkObject *o, gpointer d, guint nargs,
 				  GtkArg *args);
 static PyObject *GtkArgs_AsTuple(int nparams, GtkArg *args);
 static int GtkArgs_FromSequence(GtkArg *args, int nparams, PyObject *seq);
@@ -2541,7 +2541,7 @@ static int GtkArgs_FromSequence(GtkArg *args, int nparams, PyObject *seq) {
 }
 
 /* generic callback marshal */
-static void PyGtk_CallbackMarshal(GtkObject *o, gpointer data, int nargs,
+static void PyGtk_CallbackMarshal(GtkObject *o, gpointer data, guint nargs,
 				  GtkArg *args) {
   PyObject *func = data, *ret, *a, *params;
 
@@ -2559,6 +2559,15 @@ static void PyGtk_CallbackMarshal(GtkObject *o, gpointer data, int nargs,
     PyTuple_SetItem(ret, 0, PyGtk_New(o));
     params = PySequence_Concat(ret, a);
     Py_DECREF(ret); Py_DECREF(a);
+  }
+  if (PyTuple_Check(func)) {
+    a = PyTuple_GetItem(func, 1);
+    func = PyTuple_GetItem(func, 0);
+    if (PyTuple_Check(a)) {
+      ret = params;
+      params = PySequence_Concat(ret, a);
+      Py_DECREF(ret);
+    }
   }
   ret = PyObject_CallObject(func, params);
   Py_DECREF(params);
@@ -2782,7 +2791,9 @@ static PyObject *_wrap_gtk_signal_connect(PyObject *self, PyObject *args) {
       PyTuple_SetItem(tmp, 1, extra);
       func = tmp;
     }
-    signum = gtk_signal_connect(PyGtk_Get(obj), name, NULL, func);
+    signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
+				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
+				     func, PyGtk_DestroyNotify, FALSE, FALSE);
     return PyInt_FromLong(signum);
 }
 
@@ -2808,7 +2819,9 @@ static PyObject *_wrap_gtk_signal_connect_after(PyObject *self, PyObject *args) 
       PyTuple_SetItem(tmp, 1, extra);
       func = tmp;
     }
-    signum = gtk_signal_connect_after(PyGtk_Get(obj), name, NULL, func);
+    signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
+				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
+				     func, PyGtk_DestroyNotify, FALSE, TRUE);
     return PyInt_FromLong(signum);
 }
 
@@ -2947,7 +2960,7 @@ _wrap_gtk_timeout_add(PyObject *self, PyObject *args) {
         return NULL;
     }
     Py_INCREF(callback);
-    return PyInt_FromLong(gtk_timeout_add_interp(interval,
+    return PyInt_FromLong(gtk_timeout_add_full(interval, NULL,
         (GtkCallbackMarshal)PyGtk_HandlerMarshal, callback,
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
@@ -2962,7 +2975,7 @@ _wrap_gtk_idle_add(PyObject *self, PyObject *args) {
         return NULL;
     }
     Py_INCREF(callback);
-    return PyInt_FromLong(gtk_idle_add_interp(
+    return PyInt_FromLong(gtk_idle_add_full(GTK_PRIORITY_DEFAULT, NULL,
         (GtkCallbackMarshal)PyGtk_HandlerMarshal, callback, 
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
@@ -3885,6 +3898,7 @@ static PyObject *_wrap_gtk_text_insert_defaults(PyObject *self, PyObject *args) 
 static PyObject *_wrap_gtk_toolbar_append_item(PyObject *self, PyObject *args) {
   PyGtk_Object *t, *icon;
   char *text, *tooltip, *tip_private;
+  GtkWidget *ret;
   PyObject *callback;
   GList *tmp_list;
   if (!PyArg_ParseTuple(args, "O!zzzO!O|gtk_toolbar_append_item",
@@ -3898,64 +3912,64 @@ static PyObject *_wrap_gtk_toolbar_append_item(PyObject *self, PyObject *args) {
   Py_INCREF(callback);
   /* if you set sigfunc to NULL, no signal is connected, rather than
      the default signal handler being used */
-  gtk_toolbar_append_item(GTK_TOOLBAR(PyGtk_Get(t)), text, tooltip,
-			  tip_private, GTK_WIDGET(PyGtk_Get(icon)), NULL, NULL);
+  ret = gtk_toolbar_append_item(GTK_TOOLBAR(PyGtk_Get(t)), text, tooltip,
+				tip_private, GTK_WIDGET(PyGtk_Get(icon)),
+				NULL,NULL);
   if (callback != Py_None) {
-    tmp_list = g_list_last(gtk_container_children(GTK_CONTAINER(
-								PyGtk_Get(t))));
-    gtk_signal_connect(GTK_OBJECT(tmp_list->data), "clicked", NULL,
-		       callback);
+    gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
+			    PyGtk_CallbackMarshal, callback,
+			    PyGtk_DestroyNotify, FALSE, FALSE);
   }
-  Py_INCREF(Py_None);
-  return Py_None;
+  return PyGtk_New((GtkObject *)ret);
 }
 static PyObject *_wrap_gtk_toolbar_prepend_item(PyObject *self, PyObject *args) {
-	PyGtk_Object *t, *icon;
-	char *text, *tooltip, *tip_private;
-	PyObject *callback;
-	if (!PyArg_ParseTuple(args, "O!zzzO!O|gtk_toolbar_prepend_item",
+  PyGtk_Object *t, *icon;
+  char *text, *tooltip, *tip_private;
+  GtkWidget *ret;
+  PyObject *callback;
+  if (!PyArg_ParseTuple(args, "O!zzzO!O|gtk_toolbar_prepend_item",
 			&PyGtk_Type, &t, &text, &tooltip, &tip_private,
 			&PyGtk_Type, &icon, &callback))
-		return NULL;
-	if (!PyCallable_Check(callback) && callback != Py_None) {
-		PyErr_SetString(PyExc_TypeError,"sixth argument not callable");
-		return NULL;
-	}
-	Py_INCREF(callback);
-	gtk_toolbar_prepend_item(GTK_TOOLBAR(PyGtk_Get(t)), text, tooltip,
-		tip_private, GTK_WIDGET(PyGtk_Get(icon)), NULL, NULL);
-	if (callback != Py_None)
-		gtk_signal_connect(GTK_OBJECT(gtk_container_children(
-			GTK_CONTAINER(PyGtk_Get(t)))->data), "clicked", NULL,
-			callback);
-	Py_INCREF(Py_None);
-	return Py_None;
+    return NULL;
+  if (!PyCallable_Check(callback) && callback != Py_None) {
+    PyErr_SetString(PyExc_TypeError,"sixth argument not callable");
+    return NULL;
+  }
+  Py_INCREF(callback);
+  ret = gtk_toolbar_prepend_item(GTK_TOOLBAR(PyGtk_Get(t)), text,
+				 tooltip, tip_private,
+				 GTK_WIDGET(PyGtk_Get(icon)),
+				 NULL, NULL);
+  if (callback != Py_None)
+    gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
+			    PyGtk_CallbackMarshal, callback,
+			    PyGtk_DestroyNotify, FALSE, FALSE);
+  return PyGtk_New((GtkObject *)ret);
 }
 static PyObject *_wrap_gtk_toolbar_insert_item(PyObject *self, PyObject *args) {
-	PyGtk_Object *t, *icon;
-	char *text, *tooltip, *tip_private;
-	PyObject *callback;
-	int pos;
-	GList *tmp_list;
-	if (!PyArg_ParseTuple(args, "O!zzzO!Oi|gtk_toolbar_insert_item",
+  PyGtk_Object *t, *icon;
+  char *text, *tooltip, *tip_private;
+  GtkWidget *ret;
+  PyObject *callback;
+  int pos;
+  if (!PyArg_ParseTuple(args, "O!zzzO!Oi|gtk_toolbar_insert_item",
 			&PyGtk_Type, &t, &text, &tooltip, &tip_private,
 			&PyGtk_Type, &icon, &callback, &pos))
-		return NULL;
-	if (!PyCallable_Check(callback) && callback != Py_None) {
-		PyErr_SetString(PyExc_TypeError,"sixth argument not callable");
-		return NULL;
-	}
-	Py_INCREF(callback);
-	gtk_toolbar_insert_item(GTK_TOOLBAR(PyGtk_Get(t)), text, tooltip,
-		tip_private, GTK_WIDGET(PyGtk_Get(icon)), NULL, NULL, pos);
-	if (callback != Py_None) {
-		tmp_list = g_list_nth(gtk_container_children(GTK_CONTAINER(
-			PyGtk_Get(t))), pos);
-		gtk_signal_connect(GTK_OBJECT(tmp_list->data), "clicked", NULL,
-			callback);
-	}
-	Py_INCREF(Py_None);
-	return Py_None;
+    return NULL;
+  if (!PyCallable_Check(callback) && callback != Py_None) {
+    PyErr_SetString(PyExc_TypeError,"sixth argument not callable");
+    return NULL;
+  }
+  Py_INCREF(callback);
+  ret = gtk_toolbar_insert_item(GTK_TOOLBAR(PyGtk_Get(t)), text, tooltip,
+				tip_private, GTK_WIDGET(PyGtk_Get(icon)),
+				NULL, NULL, pos);
+  if (callback != Py_None) {
+    gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
+			    PyGtk_CallbackMarshal, callback,
+			    PyGtk_DestroyNotify, FALSE, FALSE);
+  }
+  return PyGtk_New((GtkObject *)ret);
 }
 
 static PyObject *_wrap_gtk_drag_dest_set(PyObject *self, PyObject *args) {

@@ -755,6 +755,10 @@ class GtkWindow(GtkBin):
 		_gtk.gtk_window_set_icon(self._o, pixmap, mask)
 	def set_icon_name(self, name):
 		_gtk.gtk_window_set_icon_name(self._o, name)
+	def set_transient_for(self, parent):
+		_gtk.gtk_window_set_transient_for(self._o, parent._o)
+	def set_default_size(self, width, height):
+		_gtk.gtk_window_set_default_size(self._o, width, height)
 	def set_modal(self, modal):
 		_gtk.gtk_window_set_modal(self._o, modal)
 
@@ -1763,22 +1767,22 @@ class GtkToolbar(GtkContainer):
 		if _obj: self._o = _obj; return
 		self._o = _gtk.gtk_toolbar_new(orientation, style)
         def append_item(self, text, tooltip, tp, icon, callback):
-		_gtk.gtk_toolbar_append_item(self._o, text, tooltip, tp,
-					     icon._o, callback)
+		return _obj2inst(_gtk.gtk_toolbar_append_item(
+			self._o, text, tooltip, tp, icon._o, callback))
 	def append_space(self):
 		_gtk.gtk_toolbar_append_space(self._o)
 	def append_widget(self, w, tooltip, tp):
 		_gtk.gtk_toolbar_append_widget(self._o, w._o, tooltip, tp)
 	def insert_item(self, text, tooltip, tp, icon, callback, pos):
-		_gtk.gtk_toolbar_insert_item(self._o, text, tooltip, tp,
-					     icon._o, callback, pos)
+		return _obj2inst(_gtk.gtk_toolbar_insert_item(
+			self._o, text, tooltip, tp, icon._o, callback, pos))
 	def insert_space(self, pos):
 		_gtk.gtk_toolbar_insert_space(self._o, pos)
 	def insert_widget(self, w, tooltip, tp, pos):
 		_gtk.gtk_toolbar_insert_widget(self._o, w._o, tooltip, tp, pos)
 	def prepend_item(self, text, tooltip, tp, icon, callback):
-		_gtk.gtk_toolbar_prepend_item(self._o, text, tooltip, tp,
-					      icon._o, callback)
+		return _obj2inst(_gtk.gtk_toolbar_prepend_item(
+			self._o, text, tooltip, tp, icon._o, callback))
 	def prepend_space(self):
 		_gtk.gtk_toolbar_prepend_space(self._o)
 	def prepend_widget(self, w, tooltip, tp):
@@ -1789,6 +1793,8 @@ class GtkToolbar(GtkContainer):
 		_gtk.gtk_toolbar_set_style(self._o, style)
 	def set_space_size(self, size):
 		_gtk.gtk_toolbar_set_space_size(self._o, size)
+	def set_space_style(self, style):
+		_gtk.gtk_toolbar_set_space_style(self._o, style)
 	def set_tooltips(self, enable):
 		_gtk.gtk_toolbar_set_tooltips(self._o, enable)
 	def set_button_relief(self, relief):

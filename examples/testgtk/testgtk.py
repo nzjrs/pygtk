@@ -850,7 +850,6 @@ def create_clist(_button):
 		for i in range(1, 7):
 			clist.set_column_width(0, 80)
 		clist.set_selection_mode(SELECTION_BROWSE)
-		clist.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
 		clist.set_column_justification(1, JUSTIFY_RIGHT)
 		clist.set_column_justification(2, JUSTIFY_CENTER)
 
@@ -1496,7 +1495,7 @@ def create_main_window():
 	scrolled_window.show()
 	box2 = GtkVBox()
 	box2.set_border_width(10)
-	scrolled_window.add(box2)
+	scrolled_window.add_with_viewport(box2)
 	box2.show()
 	k = buttons.keys()
 	k.sort()
