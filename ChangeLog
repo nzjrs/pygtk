@@ -1,3 +1,23 @@
+2004-07-04  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* gtk/gtk.defs (gtk_hbox_new): Change constructor to property based.
+
+	* gobjectmodule.c (pyg_parse_constructor_args): Helper function
+	invoked from the generated constructors.
+
+	* codegen/codegen.py (Wrapper.write_constructor): Delegate to
+	self.write_property_based_constructor() when appropriate.
+	(GObjectWrapper.write_property_based_constructor): New constructor
+	generator, that writes constructors that use g_object_newv and
+	pass constructor arguments as properties.
+
+	* codegen/definitions.py (Parameter): New Parameter class, to hold
+	the items in (parameter ...).  Emulates tuple for compatibility,
+	but is more extensible.
+	(Property): New property class, to hold (property ...) items.
+	(FunctionDef.__init__): Parse (property ...), for new property
+	based constructors.
+
 2004-07-04  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gtktreeview.override (_wrap_gtk_tree_store_new) Fix typo.

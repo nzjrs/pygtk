@@ -1,6 +1,7 @@
 import sys, os, string
 import getopt, traceback, keyword
 import defsparser, argtypes, override
+import definitions
 
 def exc_info():
     #traceback.print_exc()
@@ -223,11 +224,12 @@ class Wrapper:
         if function_obj.varargs:
             raise ValueError, "varargs functions not supported"
 
-        for ptype, pname, pdflt, pnull in function_obj.params:
-            if pdflt and '|' not in info.parsestr:
+        for param in function_obj.params:
+            if param.pdflt and '|' not in info.parsestr:
                 info.add_parselist('|', [], [])
-            handler = argtypes.matcher.get(ptype)
-            handler.write_param(ptype, pname, pdflt, pnull, info)
+            handler = argtypes.matcher.get(param.ptype)
+            handler.write_param(param.ptype, param.pname, param.pdflt,
+                                param.pnull, info)
 
         substdict['setreturn'] = ''
         if handle_return:
@@ -284,6 +286,16 @@ class Wrapper:
                     data = self.overrides.override(funcname)
                     self.write_function(funcname, data)
                 else:
+                    # ok, a hack to determine if we should use new-style constructores :P
+                    if getattr(self, 'write_property_based_constructor', None) is not None:
+                        if (len(constructor.params) == 0 or
+                            isinstance(constructor.params[0], definitions.Property)):
+                            # write_property_based_constructor is only
+                            # implemented in GObjectWrapper
+                            return self.write_property_based_constructor(constructor)
+                        else:
+                            print >> sys.stderr, "Warning: generating old-style constructor for",\
+                                  constructor.c_name
                     # write constructor from template ...
                     code = self.write_function_wrapper(constructor,
                         self.constructor_tmpl,
@@ -537,6 +549,65 @@ class GObjectWrapper(Wrapper):
         substdict = Wrapper.get_initial_method_substdict(self, method)
         substdict['cast'] = string.replace(self.objinfo.typecode, '_TYPE_', '_', 1)
         return substdict
+
+    def write_property_based_constructor(self, constructor):
+        out = self.fp
+        print >> out, "static int"
+        print >> out, '_wrap_%s(PyGObject *self, PyObject *args,'\
+              ' PyObject *kwargs)\n{' % constructor.c_name
+        print >> out, "    GType obj_type = pyg_type_from_object((PyObject *) self);"
+
+        def py_str_list_to_c(arg):
+            if arg:
+                return "{" + ", ".join(map(lambda s: '"' + s + '"', arg)) + ", NULL }"
+            else:
+                return "{ NULL }"
+
+        classname = '%s.%s' % (self.overrides.modulename, self.objinfo.name)
+
+        if constructor.params:
+            mandatory_arguments = [param for param in constructor.params if not param.optional]
+            optional_arguments = [param for param in constructor.params if param.optional]
+            arg_names = py_str_list_to_c([param.pname for param in
+                                          mandatory_arguments + optional_arguments])
+            print >> out, "    GParameter params[%i];" % len(constructor.params)
+            print >> out, "    PyObject *parsed_args[%i] = {NULL, };" % len(constructor.params)
+            print >> out, "    char *arg_names[] = %s;" % arg_names
+            print >> out, "    guint nparams, i;"
+            print >> out
+            print >> out, "    if (!PyArg_ParseTupleAndKeywords(args, kwargs, ",
+            template = '"'
+            if mandatory_arguments:
+                template += "O"*len(mandatory_arguments)
+            if optional_arguments:
+                template += "|" + "O"*len(optional_arguments)
+            template += ':%s.__init__"' % classname
+            print >> out, template, ", arg_names",
+            for i in range(len(constructor.params)):
+                print >> out, ", &parsed_args[%i]" % i,
+            print >> out, "))"
+            print >> out, "        return -1;"
+            print >> out
+            print >> out, "    memset(params, 0, sizeof(GParameter)*%i);" % len(constructor.params)
+            print >> out, "    if (!pyg_parse_constructor_args(obj_type, arg_names, arg_names,"
+            print >> out, "                                    params, &nparams, parsed_args))"
+            print >> out, "        return -1;"
+            print >> out, "    self->obj = g_object_newv(obj_type, nparams, params);"
+            print >> out, "    for (i = 0; i < nparams; ++i)"
+            print >> out, "        g_value_unset(&params[i].value);"
+        else:
+            print >> out, "    self->obj = g_object_newv(obj_type, 0, NULL);"
+
+        print >> out, \
+              '    if (!self->obj) {\n' \
+              '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' \
+              '        return -1;\n' \
+              '    }\n' \
+              '    pygobject_register_wrapper((PyObject *)self);\n' \
+              '    return 0;\n' \
+              '}\n\n' % { 'typename': classname }
+        return "_wrap_%s" % constructor.c_name
+
 
 class GInterfaceWrapper(GObjectWrapper):
     def get_initial_class_substdict(self):

@@ -4,6 +4,25 @@ import sys
 def get_valid_scheme_definitions(defs):
     return [x for x in defs if isinstance(x, tuple) and len(x) >= 2]
 
+# New Parameter class, wich emulates a tuple for compatibility reasons
+class Parameter(object):
+    def __init__(self, ptype, pname, pdflt, pnull, prop=None):
+        self.ptype = ptype
+        self.pname = pname
+        self.pdflt = pdflt
+        self.pnull = pnull
+        self.prop = prop
+    def __len__(self): return 4
+    def __getitem__(self, i):
+        return (self.ptype, self.pname, self.pdflt, self.pnull)[i]
+
+# Parameter for property based constructors
+class Property(object):
+    def __init__(self, pname, optional):
+        self.pname = pname
+        self.optional = optional
+
+
 class Definition:
     def __init__(self, *args):
 	"""Create a new defs object of this type.  The arguments are the
@@ -250,11 +269,12 @@ class MethodDef(Definition):
                     pdflt = None
                     pnull = 0
                     for farg in parg[2:]:
+                        assert isinstance(farg, tuple)
                         if farg[0] == 'default':
                             pdflt = farg[1]
                         elif farg[0] == 'null-ok':
                             pnull = 1
-                    self.params.append((ptype, pname, pdflt, pnull))
+                    self.params.append(Parameter(ptype, pname, pdflt, pnull))
             elif arg[0] == 'varargs':
                 self.varargs = arg[1] in ('t', '#t')
             elif arg[0] == 'deprecated':
@@ -340,7 +360,18 @@ class FunctionDef(Definition):
                             pdflt = farg[1]
                         elif farg[0] == 'null-ok':
                             pnull = 1
-                    self.params.append((ptype, pname, pdflt, pnull))
+                    self.params.append(Parameter(ptype, pname, pdflt, pnull))
+	    elif arg[0] == 'properties':
+                if self.is_constructor_of is None:
+                    print >> sys.stderr, "Warning: (properties ...) "\
+                          "is only valid for constructors"
+                for prop in arg[1:]:
+                    pname = prop[0]
+                    optional = False
+                    for farg in prop[1:]:
+                        if farg[0] == 'optional':
+                            optional = True
+                    self.params.append(Property(pname, optional))
             elif arg[0] == 'varargs':
                 self.varargs = arg[1] in ('t', '#t')
             elif arg[0] == 'deprecated':
