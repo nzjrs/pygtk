@@ -98,6 +98,8 @@ EXTRA_DIST += \
   setup.py \
   dsextras.py \
   MANIFEST.in \
+  PKG-INFO \
+  PKG-INFO.in \
   examples/atk/atk-demo.py \
   examples/gobject/signal.py \
   examples/gobject/properties.py \
