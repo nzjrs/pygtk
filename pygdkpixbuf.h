@@ -51,7 +51,7 @@ struct _PyGdkPixbuf_FunctionStruct *_PyGdkPixbuf_API;
 #define PyGdkPixbufAnimation_New (_PyGdkPixbuf_API->pixbuf_animation_new)
 
 #define init_pygdkpixbuf() { \
-    PyObject *pygtk = PyImport_ImportModule("_gdkpixbuf"); \
+    PyObject *pygtk = PyImport_ImportModule("gdkpixbuf"); \
     if (pygtk != NULL) { \
         PyObject *module_dict = PyModule_GetDict(pygtk); \
         PyObject *cobject = PyDict_GetItemString(module_dict, "_PyGdkPixbuf_API"); \
@@ -62,7 +62,7 @@ struct _PyGdkPixbuf_FunctionStruct *_PyGdkPixbuf_API;
             return; \
         } \
     } else { \
-        Py_FatalError("could not import _gdkpixbuf"); \
+        Py_FatalError("could not import gdkpixbuf"); \
         return; \
     } \
 }
