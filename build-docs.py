@@ -18,7 +18,21 @@ dg.add_sourcedirs([
     '../../pango',
     '../../atk',
     '../../gtk+',
-    '../../libglade'])
+    '../../libglade',
+])
+
+sys.stderr.write('extracting documentation from tmpl files ...\n')
+dg.add_tmpldirs([
+    '../../glib/docs/reference/glib/tmpl',
+    '../../glib/docs/reference/gobject/tmpl',
+    '../../pango/docs/tmpl',
+    '../../atk/docs/tmpl',
+    '../../gtk+/docs/reference/gdk-pixbuf/tmpl',
+    '../../gtk+/docs/reference/gdk/tmpl',
+    '../../gtk+/docs/reference/gtk/tmpl',
+    '../../libglade/doc/tmpl',
+])
+    
 
 # pango docs ...
 sys.stderr.write('loading pango defs ...')

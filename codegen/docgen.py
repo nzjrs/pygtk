@@ -16,7 +16,9 @@ class DocWriter:
         self.docs = {}
 
     def add_sourcedirs(self, source_dirs):
-        self.docs = docextract.extract(source_dirs, self.docs);
+        self.docs = docextract.extract(source_dirs, self.docs)
+    def add_tmpldirs(self, tmpl_dirs):
+        self.docs = docextract.extract_tmpl(tmpl_dirs, self.docs)
 
     def add_docs(self, defs_file, overrides_file, module_name):
         '''parse information about a given defs file'''
