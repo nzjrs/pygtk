@@ -434,6 +434,9 @@ linkend="function-gtk--window-set-default-icon-list">gtk.window_set_default_icon
 linkend="function-gtk--window-get-default-icon-list">gtk.window_get_default_icon_list</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--window-set-auto-startup-notification">gtk.window_set_auto_startup_notification</link></methodname>
+	<methodparam><parameter role="keyword">setting</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
 	<methodname><link linkend="function-gtk--window-list-toplevels">gtk.window_list_toplevels</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis></programlisting>
@@ -3528,6 +3531,44 @@ linkend="function-gtk--window-set-default-icon-list"><methodname>gtk.window_set_
 function. See the <link
 linkend="method-gtkwindow--set-icon-list"><methodname>set_icon_list</methodname>()</link> 
 method documentation for more details.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--window-set-auto-startup-notification">
+      <title>gtk.window_set_auto_startup_notification</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.window_set_auto_startup_notification</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword"setting</parameter>>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, automatically do
+	  startup notification</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The
+<function>gtk.window_set_auto_startup_notification</function>() function
+sets the auto startup notification setting to the value of <parameter>setting</parameter>. If <parameter>setting</parameter> is <literal>TRUE</literal> startup notification will be done automatically.</para>
+
+      <para>By default, after showing the first <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link> for each
+<link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>, GTK+
+calls the <link
+linkend="method-gdkscreen--notify-startup-complete"><methodname>gtk.Screen.notify_startup_complete</methodname>()</link>
+method. Call this function to disable the automatic startup
+notification. You might do this if your first window is a splash screen, and
+you want to delay notification until after your real main window has been
+shown. In that example, you would disable startup notification temporarily,
+show your splash screen, then re-enable it so that showing the main window
+would automatically result in notification.</para>
 
     </refsect2>
 
