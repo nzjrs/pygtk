@@ -102,7 +102,8 @@ linkend="method-gtkmenu--set-title">set_title</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkmenu--get-title">get_title</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkmenu--reorder-child">reorder_child</link></methodname>
@@ -163,10 +164,17 @@ linkend="method-gtkmenu--reorder-child">reorder_child</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"tearoff-state"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the menu is torn-off. Default
+value: <literal>FALSE</literal>. Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"tearoff-title"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>A title that may be displayed by the window manager
-when this menu is torn-off.</entry>
+when this menu is torn-off. Default value: "".</entry>
 	    </row>
 
 	  </tbody>
@@ -195,25 +203,28 @@ when this menu is torn-off.</entry>
 	      <entry>"bottom-attach"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The row number to attach the bottom of the child
-	      to.</entry>
+	      to. Allowed values: >= -1. Default value: -1.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"left-attach"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The column number to attach the left side of the child to.</entry>
+	      <entry>The column number to attach the left side of the child
+to. Allowed values: >= -1. Default value: -1.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"right-attach"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The column number to attach the right side of the child to.</entry>
+	      <entry>The column number to attach the right side of the child
+to. Allowed values: >= -1. Default value: -1.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"top-attach"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The row number to attach the top of the child to.</entry>
+	      <entry>The row number to attach the top of the child to. Allowed
+values: >= -1. Default value: -1.</entry>
 	    </row>
 
 	  </tbody>
@@ -241,20 +252,20 @@ when this menu is torn-off.</entry>
 	    <row valign="top">
 	      <entry>"horizontal-offset"</entry>
 	      <entry>Read</entry>
-	      <entry>When the menu is a submenu, position it this number of pixels offset horizontally.</entry>
+	      <entry>When the menu is a submenu, position it this number of pixels offset horizontally. Default value: -2.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"vertical-offset"</entry>
 	      <entry>Read</entry>
-	      <entry>When the menu is a submenu, position it this number of pixels offset vertically.</entry>
+	      <entry>When the menu is a submenu, position it this number of pixels offset vertically. Default value: 0.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"vertical-padding"</entry>
 	      <entry>Read</entry>
-	      <entry>Extra space at the top and bottom of the menu.
-</entry>
+	      <entry>Extra space at the top and bottom of the menu. Allowed
+values: >= 0. Default value: 1.</entry>
 	    </row>
 
 	  </tbody>
@@ -918,22 +929,8 @@ any)</simpara></listitem>
       </note>
 
       <para>The "move_scroll" signal is emitted when the user attempts to
-scroll the menu. <parameter>type</parameter> should be one of:
-<literal>gtk.SCROLL_JUMP</literal>,
-<literal>gtk.SCROLL_STEP_BACKWARD</literal>,
-<literal>gtk.SCROLL_STEP_FORWARD</literal>,
-<literal>gtk.SCROLL_PAGE_BACKWARD</literal>,
-<literal>gtk.SCROLL_PAGE_FORWARD</literal>,
-<literal>gtk.SCROLL_STEP_UP</literal>,
-<literal>gtk.SCROLL_STEP_DOWN</literal>,
-<literal>gtk.SCROLL_PAGE_UP</literal>,
-<literal>gtk.SCROLL_PAGE_DOWN</literal>,
-<literal>gtk.SCROLL_STEP_LEFT</literal>,
-<literal>gtk.SCROLL_STEP_RIGHT</literal>,
-<literal>gtk.SCROLL_PAGE_LEFT</literal>,
-<literal>gtk.SCROLL_PAGE_RIGHT</literal>,
-<literal>gtk.SCROLL_START</literal> or
-<literal>gtk.SCROLL_END</literal>.</para>
+scroll the menu. <parameter>type</parameter> should be one of the <link
+linkend="gtk-scroll-step-constants">Scroll Step Constants</link>.</para>
 
     </refsect2>
 
