@@ -263,6 +263,8 @@ class GdkWindow:
 	colormap = _
 	width = _ ; height = _
 	x = _     ; y = _
+	"""bit depth for this window/pixmap"""
+	depth = _
 	"""parent windows"""
 	parent = _
 	toplevel = _

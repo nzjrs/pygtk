@@ -832,8 +832,8 @@ class GtkFileSelection(GtkWindow):
 		_gtk.gtk_file_selection_set_filename(self._o, filename)
 	def get_filename(self):
 		return _gtk.gtk_file_selection_get_filename(self._o)
-	def complete(self):
-		_gtk.gtk_file_selection_complete(self._o)
+	def complete(self, pattern):
+		_gtk.gtk_file_selection_complete(self._o, pattern)
 	def show_fileop_buttons(self):
 		_gtk.gtk_file_selection_show_fileop_buttons(self._o)
 	def hide_fileop_buttons(self):
