@@ -47,6 +47,13 @@ linkend="function-gtk--bindings-activate">gtk.bindings_activate</link></methodna
 		       role="keyword">keyval</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">modifiers</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gtk--bindings-activate-event">gtk.bindings_activate_event</link></methodname>
+	<methodparam><parameter
+		       role="keyword">object</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">event</parameter></methodparam>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -408,7 +415,7 @@ linkend="class-gtkobject"><classname>gtk.Object</classname></link>.</para>
       <title>gtk.bindings_activate</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>add_action_widget</methodname>
+	  <methodname>gtk.bindings_activate</methodname>
 	  <methodparam><parameter
 			 role="keyword">object</parameter></methodparam>
 	  <methodparam><parameter
@@ -448,6 +455,44 @@ activates the bindings associated with the <link
 linkend="class-gtkobject"><classname>gtk.Object</classname></link> specified
 by object with the key value specified by <parameter>keyval</parameter> and
 the modifier mask specified by <parameter>modifiers</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--bindings-activate-event">
+      <title>gtk.bindings_activate_event</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.bindings_activate_event</methodname>
+	  <methodparam><parameter
+			 role="keyword">object</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">event</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">object</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gtkobject"><classname>gtk.Object</classname></link> to
+activate the bindings on</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">event</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if a matching key
+	  binding was found</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.bindings_activate_event</function>() function
+looks up key bindings for the <link
+linkend="class-gtkobject"><classname>gtk.Object</classname></link> specified
+by <parameter>object</parameter> to find one matching the key <link
+linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+specified by <parameter>event</parameter>, and if one was found, activate
+it.</para>
 
     </refsect2>
 
