@@ -186,7 +186,7 @@ if not have_pkgconfig():
 if gobject.can_build():
     ext_modules.append(gobject)
     data_files.append((INCLUDE_DIR, ('pygobject.h',)))
-    data_files.append((CODEGEN_DIR, list_files('codegen/*.py')))
+    data_files.append((CODEGEN_DIR, list_files(os.path.join('codegen', '*.py'))))
 else:
     print
     print 'ERROR: Nothing to do, gobject could not be found and is essential.'
@@ -205,7 +205,7 @@ if gtk.can_build():
         print ('* Numeric module could not be found, '
                'will build without Numeric support.')
     ext_modules.append(gtk)
-    data_files.append((INCLUDE_DIR, ('gtk/pygtk.h',)))
+    data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
     data_files.append((DEFS_DIR, ('gtk/gdk.defs', 'gtk/gdk-types.defs',
                                   'gtk/gtk.defs', 'gtk/gtk-types.defs',
                                   'gtk/gtk-extrafuncs.defs')))
