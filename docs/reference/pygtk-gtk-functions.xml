@@ -31,6 +31,23 @@ linkend="function-gtk--check-version">gtk.check_version</link></methodname>
 		       role="keyword">required_micro</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
+linkend="function-gtk--draw-insertion-cursor">gtk.draw_insertion_cursor</link></methodname>
+	<methodparam><parameter
+		       role="keyword">widget</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">drawable</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">area</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">location</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">is_primary</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">direction</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">draw_arrow</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
 linkend="function-gtk--get-default-language">gtk.get_default_language</link></methodname>
 	<methodparam></methodparam>
   </methodsynopsis><methodsynopsis language="python">
@@ -203,6 +220,87 @@ specified by <parameter>required_major</parameter>,
 <parameter>required_micro</parameter>. If the library is compatible this
 function returns <literal>None</literal>; otherwise it returns a string
 describing the mismatch.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--draw-insertion-cursor">
+      <title>gtk.draw_insertion_cursor</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.draw_insertion_cursor</methodname>
+	  <methodparam><parameter
+			 role="keyword">widget</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">drawable</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">area</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">location</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">is_primary</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">direction</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">draw_arrow</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">drawable</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gdkdrawable"><classname>gtk.gdk.Drawable</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">area</parameter>&nbsp;:</term>
+	  <listitem><simpara>the rectangle to which the output is clipped, or
+<literal>None</literal> if the output should not be clipped</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">location</parameter>&nbsp;:</term>
+	  <listitem><simpara>the location to draw the cursor
+	  (<parameter>location.width</parameter> is
+	  ignored)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">is_primary</parameter>&nbsp;:</term>
+	  <listitem><simpara> if <literal>TRUE</literal> the cursor should
+	  be the primary cursor color.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">direction</parameter>&nbsp;:</term>
+	  <listitem><simpara>the direction of the cursor; either
+	  <literal>gtk.TEXT_DIR_LTR</literal> or
+	  <literal>gtk.TEXT_DIR_RTL</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">draw_arrow</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> draw a directional
+	  arrow on the cursor. Should be <literal>FALSE</literal> unless the
+	  cursor is split.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.draw_insertion_cursor</function>() function
+draws a text caret on the <link
+linkend="class-gdkdrawable"><classname>gtk.gdk.Drawable</classname></link>
+specified by <parameter>drawable</parameter> at the position specified by
+<parameter>location</parameter>. <parameter>area</parameter> specifies a
+clipping rectangle or is <literal>None</literal> if the output should not be
+clipped. If <parameter>is_primary</parameter> is <literal>TRUE</literal> the
+cursor should be the primary cursor color. <parameter>direction</parameter>
+specifies whether the cursor is right-to-left or left-to-right. This is a
+convenience function for drawing the standard cursor shape.</para>
 
     </refsect2>
 
