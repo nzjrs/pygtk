@@ -37,8 +37,6 @@ GtkTreePath *pygtk_tree_path_from_pyobject(PyObject *object);
 
 GdkAtom pygdk_atom_from_pyobject(PyObject *object);
 
-static gboolean PyGtk_FatalExceptions = FALSE;
-
 typedef struct {
     PyObject *func, *data;
 } PyGtkCustomNotify;

@@ -2009,12 +2009,8 @@ pygtk_item_factory_cb(PyObject *callback, guint action, GtkWidget *widget)
     ret = PyObject_CallFunction(callback, "iO", action,
 				pygobject_new((GObject *)widget));
     if (ret == NULL) {
-	if (PyGtk_FatalExceptions)
-	    gtk_main_quit();
-	else {
-	    PyErr_Print();
-	    PyErr_Clear();
-	}
+	PyErr_Print();
+	PyErr_Clear();
     } else
 	Py_DECREF(ret);
     pygtk_unblock_threads();
@@ -2079,12 +2075,8 @@ pygtk_menu_position(GtkMenu *menu, int *x, int *y, PyObject *func)
     ret = PyObject_CallFunction(func, "Oii", pygobject_new((GObject *)menu),
                                 *x, *y);
     if (ret == NULL || !PyArg_ParseTuple(ret, "ii", x, y)) {
-        if (PyGtk_FatalExceptions)
-            gtk_main_quit();
-        else {
-            PyErr_Print();
-            PyErr_Clear();
-        }
+	PyErr_Print();
+	PyErr_Clear();
         if (ret) {
           Py_DECREF(ret);
         }

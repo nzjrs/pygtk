@@ -1,3 +1,25 @@
+2001-12-12  Matt Wilson  <msw@redhat.com>
+
+	* gobjectmodule.c (pyg_closure_marshal,
+	pyg_signal_class_closure_marshal): always print and clear the
+	exceptions in callback marshalers.  People who want to catch these
+	exceptions and make them fatal should use sys.excepthook.
+	(pyg_fatal_exceptions_notify, pyg_fatal_exceptions_notify_add,
+	pyg_fatal_exceptions_remove): remove now unused functions.  Also
+	remove them from the PyGObject_API.
+	
+	* gtk/pygtk.h (PyGtk_FatalExceptions): remove.
+
+	* gtk/pygtk-private.h (PyGtk_FatalExceptions): remove.
+
+	* gtk/gtkmodule.c (init_gtk): don't bother with
+	PYGTK_FATAL_EXCEPTIONS.
+	(pygtk_main_quit): remove unused code.
+
+	* gtk/gtk.override (_wrap_gtk_item_factory_create_items,
+	_wrap_gtk_menu_popup): likewise, always print and clear the
+	exception.
+
 2001-12-11  Matt Wilson  <msw@redhat.com>
 
 	* gtk/gtk.defs: added deprecation messages

@@ -58,7 +58,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define pygtk_destroy_notify (_PyGtk_API->destroy_notify)
 
 /* some variables */
-#define PyGtk_FatalExceptions (_PyGtk_API->fatalExceptions)
 #define PYGTK_VERSION (_PyGtk_API->pygtkVersion)
 
 /* a function to initialise the pygtk functions */

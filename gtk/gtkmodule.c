@@ -28,13 +28,6 @@ static struct _PyGtk_FunctionStruct functions = {
     &PyGdkAtom_Type,  PyGdkAtom_New,
 };
 
-static void
-pygtk_main_quit(void)
-{
-    if (gtk_main_level())
-	gtk_main_quit();
-} 
-
 DL_EXPORT(void)
 init_gtk(void)
 {
@@ -54,23 +47,6 @@ init_gtk(void)
      * safety functions */
     g_thread_init(NULL);
 #endif
-
-    m = PyImport_ImportModule("os");
-    if (m == NULL) {
-	Py_FatalError("couldn't import os");
-	return;
-    }
-    d = PyModule_GetDict(m);
-    Py_DECREF(m);
-    d = PyDict_GetItemString(d, "environ");
-    d = PyMapping_GetItemString(d, "PYGTK_FATAL_EXCEPTIONS");
-    if (d == NULL)
-	PyErr_Clear();
-    else {
-	PyGtk_FatalExceptions = TRUE;
-	pyg_fatal_exceptions_notify_add(pygtk_main_quit);
-	Py_DECREF(d);
-    }
 
     /* set the default python encoding to utf-8 */
     PyUnicode_SetDefaultEncoding("utf-8");

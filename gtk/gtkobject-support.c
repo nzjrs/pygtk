@@ -105,12 +105,8 @@ pygtk_handler_marshal(gpointer a, PyObject *func, int nargs, GtkArg *args)
     else
 	ret = PyObject_CallObject(func, NULL);
     if (ret == NULL) {
-	if (PyGtk_FatalExceptions)
-	    gtk_main_quit();
-	else {
-	    PyErr_Print();
-	    PyErr_Clear();
-	}
+	PyErr_Print();
+	PyErr_Clear();
 	*GTK_RETLOC_BOOL(args[0]) = FALSE;
 	PyGTK_UNBLOCK_THREADS
 	    return;
@@ -135,12 +131,8 @@ pygtk_input_marshal(gpointer a, PyObject *func, int nargs, GtkArg *args)
     ret = PyObject_CallObject(func, tuple);
     Py_DECREF(tuple);
     if (ret == NULL) {
-	if (PyGtk_FatalExceptions)
-	    gtk_main_quit();
-	else {
-	    PyErr_Print();
-	    PyErr_Clear();
-	}
+	PyErr_Print();
+	PyErr_Clear();
     } else
 	Py_DECREF(ret);
     PyGTK_UNBLOCK_THREADS
