@@ -41,7 +41,10 @@ pkgpyexec_LTLIBRARIES = \
   pango.la \
   atk.la
 
-common_ldflags = -module -avoid-version -no-undefined
+common_ldflags = -module -avoid-version
+if PLATFORM_WIN32
+common_ldflags += -no-undefined
+endif
 
 # gobject module
 gobject_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgobject

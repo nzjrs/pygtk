@@ -20,7 +20,10 @@ INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES)
 COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs \
   $(top_srcdir)/atk-types.defs $(top_srcdir)/pango-types.defs
 
-common_ldflags = -module -avoid-version -no-undefined
+common_ldflags = -module -avoid-version
+if PLATFORM_WIN32
+common_ldflags += -no-undefined
+endif
 
 # gtk module
 pygtkexec_LTLIBRARIES = _gtk.la

@@ -2109,8 +2109,8 @@ _wrap_gdk_pixbuf__get_pixel_array(PyGObject *self, void *closure)
     PyArrayObject *array;
     int dims[3] = { 0, 0, 3 };
 
-    dims[0] = gdk_pixbuf_get_width(pixbuf);
-    dims[1] = gdk_pixbuf_get_height(pixbuf);
+    dims[0] = gdk_pixbuf_get_height(pixbuf);
+    dims[1] = gdk_pixbuf_get_width(pixbuf);
     if (gdk_pixbuf_get_has_alpha(pixbuf))
         dims[2] = 4;
     array = (PyArrayObject *)PyArray_FromDimsAndData(3, dims, PyArray_UBYTE,
