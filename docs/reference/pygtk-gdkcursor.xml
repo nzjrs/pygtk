@@ -557,9 +557,9 @@ linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link></simpara>
       <para>Creates the new <link
 linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link> from
 a builtin cursor specified by <parameter>cursor_type</parameter>. To make
-the cursor invisible, use <link
-linkend="constructor-gdkcursor2">gtk.gdk.Cursor</link>() to create a cursor
-with no pixels in it.</para>
+the cursor invisible, see the description of the <link
+linkend="constructor-gdkcursor4">gtk.gdk.Cursor</link>() constructor that
+creates a cursor from a pixmap below.</para>
 
     </refsect2>
 
@@ -598,9 +598,10 @@ linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link> for
 the <link
 linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
 specified by <parameter>display</parameter> from a builtin cursor specified
-by <parameter>cursor_type</parameter>. To make the cursor invisible, use
-<link linkend="constructor-gdkcursor4">gtk.gdk.Cursor</link>() to create a
-cursor with no pixels in it.</para>
+by <parameter>cursor_type</parameter>. To make the cursor invisible, see the
+description of the <link
+linkend="constructor-gdkcursor4">gtk.gdk.Cursor</link>() constructor that
+creates a cursor from a pixmap below.</para>
 
     </refsect2>
 
@@ -653,7 +654,10 @@ specified by display using the <link
 linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
 specified by <parameter>source</parameter> as the icon image. The "hotspot"
 of the cursor will be located as the position specified by
-<parameter>x</parameter> and <parameter>y</parameter>.</para>
+<parameter>x</parameter> and <parameter>y</parameter>. To make the cursor
+invisible, see the description of the <link
+linkend="constructor-gdkcursor4">gtk.gdk.Cursor</link>() constructor that
+creates a cursor from a pixmap below</para>
 
     </refsect2>
 
@@ -744,7 +748,17 @@ by <parameter>y</parameter></simpara>
 	</listitem>
       </itemizedlist>
 
-      <para></para>
+      <para>To make the cursor invisible, create a cursor from an empty
+<link linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>
+as follows:</para>
+
+      <programlisting>
+  w = gtk.Window()
+  pixmap = gtk.gdk.Pixmap(w.window, 1, 1, 1)
+  color = gtk.gdk.Color()
+  cursor = gtk.gdk.Cursor(pixmap, pixmap, color, color, 0, 0)
+  w.window.set_cursor(cursor)
+</programlisting>
 
     </refsect2>
 
@@ -757,14 +771,13 @@ by <parameter>y</parameter></simpara>
       <title>gtk.gdk.Cursor.get_display</title>
 
       <programlisting><methodsynopsis language="python">
+	  <methodname>get_display</methodname>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <term><parameter
-	  role="keyword"></parameter>&nbsp;:</term> <listitem><simpara>the
-	  associated <link
-	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara></listitem>
+          <listitem><simpara>the associated <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -773,7 +786,9 @@ by <parameter>y</parameter></simpara>
       </note>
 
       <para>The <methodname>get_display</methodname>() method returns the
-display on which the cursor is defined.</para>
+<link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link> on
+which the cursor is defined.</para>
 
     </refsect2>
 
