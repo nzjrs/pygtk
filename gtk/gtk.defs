@@ -2278,10 +2278,10 @@
   (is-constructor-of GtkAlignment)
   (return-type "GtkWidget*")
   (parameters
-    '("gfloat" "xalign")
-    '("gfloat" "yalign")
-    '("gfloat" "xscale")
-    '("gfloat" "yscale")
+    '("gfloat" "xalign" (default "0.0"))
+    '("gfloat" "yalign" (default "0.0"))
+    '("gfloat" "xscale" (default "0.0"))
+    '("gfloat" "yscale" (default "0.0"))
   )
 )
 
@@ -2353,10 +2353,10 @@
   (c-name "gtk_aspect_frame_set")
   (return-type "none")
   (parameters
-    '("gfloat" "xalign")
-    '("gfloat" "yalign")
-    '("gfloat" "ratio")
-    '("gboolean" "obey_child")
+    '("gfloat" "xalign" (default "0.0"))
+    '("gfloat" "yalign" (default "0.0"))
+    '("gfloat" "ratio" (default "1.0"))
+    '("gboolean" "obey_child" (default "1"))
   )
 )
 
@@ -3114,7 +3114,7 @@
   (c-name "gtk_clist_construct")
   (return-type "none")
   (parameters
-    '("gint" "columns")
+    '("gint" "columns" (default "1"))
     '("gchar*[]" "titles")
   )
 )
@@ -3124,7 +3124,7 @@
   (is-constructor-of GtkCList)
   (return-type "GtkWidget*")
   (parameters
-    '("gint" "columns")
+    '("gint" "columns" (default "1"))
   )
 )
 
@@ -3133,7 +3133,7 @@
   (is-constructor-of GtkCList)
   (return-type "GtkWidget*")
   (parameters
-    '("gint" "columns")
+    '("gint" "columns" (default "1"))
     '("gchar*[]" "titles")
   )
 )
@@ -4342,8 +4342,8 @@
   (c-name "gtk_ctree_construct")
   (return-type "none")
   (parameters
-    '("gint" "columns")
-    '("gint" "tree_column")
+    '("gint" "columns" (default "1"))
+    '("gint" "tree_column" (default "0"))
     '("gchar*[]" "titles")
   )
 )
@@ -4353,8 +4353,8 @@
   (is-constructor-of GtkCTree)
   (return-type "GtkWidget*")
   (parameters
-    '("gint" "columns")
-    '("gint" "tree_column")
+    '("gint" "columns" (default "1"))
+    '("gint" "tree_column" (default "0"))
     '("gchar*[]" "titles")
   )
 )
@@ -4364,8 +4364,8 @@
   (is-constructor-of GtkCTree)
   (return-type "GtkWidget*")
   (parameters
-    '("gint" "columns")
-    '("gint" "tree_column")
+    '("gint" "columns" (default "1"))
+    '("gint" "tree_column" (default "0"))
   )
 )
 
@@ -6468,6 +6468,12 @@
   (return-type "GtkType")
 )
 
+(define-function gtk_image_new
+  (c-name "gtk_image_new")
+  (is-constructor-of GtkImage)
+  (return-type "GtkWidget*")
+)
+
 (define-function gtk_image_new_from_pixmap
   (c-name "gtk_image_new_from_pixmap")
   (is-constructor-of GtkImage)
@@ -6533,6 +6539,12 @@
   (parameters
     '("GdkPixbufAnimation*" "animation")
   )
+)
+
+(define-function construct
+  (c-name "gtk_image_new")
+  (is-constructor-of GtkImage)
+  (return-type "GtkWidget*")
 )
 
 (define-method set_from_pixmap
