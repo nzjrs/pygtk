@@ -41,15 +41,21 @@ pkgpyexec_LTLIBRARIES = \
   pangomodule.la \
   atkmodule.la
 
+if PLATFORM_WIN32
+common_ldflags = -module -avoid-version -no-undefined
+else
+common_ldflags = -module -avoid-version
+endif
+
 # gobject module
-gobjectmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initgobject
+gobjectmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgobject
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 gobjectmodule_la_SOURCES = \
   pygobject.h pygobject-private.h \
   gobjectmodule.c pygtype.c pygobject.c pygboxed.c
 
 # pango module
-pangomodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initpango
+pangomodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpango
 pangomodule_la_LIBADD = $(PANGO_LIBS)
 pangomodule_la_SOURCES = pangomodule.c
 nodist_pangomodule_la_SOURCES = pango.c
@@ -59,7 +65,7 @@ EXTRA_DIST += pango.override
 defs_DATA += pango.defs pango-types.defs
 
 # atk module
-atkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initatk
+atkmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initatk
 atkmodule_la_LIBADD = $(ATK_LIBS)
 atkmodule_la_SOURCES = atkmodule.c
 nodist_atkmodule_la_SOURCES = atk.c

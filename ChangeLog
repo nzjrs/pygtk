@@ -1,3 +1,23 @@
+2002-08-24  James Henstridge  <james@daa.com.au>
+
+	mingw32 patches from Cedric Gustin <cgustin@ibelgique.com>:
+	
+	* gtk/gtk.override: ignore more socket/plug functions on win32.
+
+	* gtk/gdk.override: gdk_pixmap_lookup is not implemented on win32.
+
+	* gtk/Makefile.am (common_ldflags): and here.
+
+	* pango.override (PyPangoAttribute_Type): initialise tp_alloc and
+	tp_new in the init() function, rather than in the structure
+	definition itself.
+
+	* Makefile.am (common_ldflags): pass -no-undefined if we are on
+	windows.
+
+	* configure.in: turn on win32 DLL support, and add OS_WIN32 and
+	PLATFORM_WIN32 conditionals for use in makefiles.
+
 2002-08-21  Jon K Hellan  <hellan@acm.org>
 
 	* codegen/argtypes.py (arg): More char* variants.

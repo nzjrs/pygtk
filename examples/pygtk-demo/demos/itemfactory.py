@@ -53,6 +53,9 @@ def main():
     
     item_factory = gtk.ItemFactory(gtk.MenuBar, '<main>', accelgroup)
     item_factory.create_items(menu_items)
+    # this is required so that the item factory doesn't get freed when
+    # it goes out of scope.
+    win.item_factory = item_factory
 
     menubar = item_factory.get_widget('<main>')
     box1.pack_start(menubar)

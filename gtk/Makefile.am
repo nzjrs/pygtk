@@ -20,10 +20,17 @@ INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES)
 COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs \
   $(top_srcdir)/atk-types.defs $(top_srcdir)/pango-types.defs
 
+if PLATFORM_WIN32
+common_ldflags = -module -avoid-version -no-undefined
+pygtk_win32_sources = gtk-fake-win32.c
+else
+common_ldflags = -module -avoid-version
+endif
+
 # gtk module
 pygtkexec_LTLIBRARIES = _gtkmodule.la
 _gtkmodule_la_CFLAGS = $(GTK_CFLAGS)
-_gtkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtk
+_gtkmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
 _gtkmodule_la_LIBADD = $(GTK_LIBS)
 _gtkmodule_la_SOURCES = \
   pygtk.h \
@@ -34,7 +41,8 @@ _gtkmodule_la_SOURCES = \
   pygtktreemodel.h \
   pygtktreemodel.c \
   pygtkcellrenderer.h \
-  pygtkcellrenderer.c
+  pygtkcellrenderer.c \
+  $(pygtk_win32_sources)
 # prevent the .defs.c rule from trying to generate gtk-types.c because
 # there is gtk-types.defs.  This is basically a hack and I really wish I
 # could use pattern rules.  Perhaps we should rename gtk-types.c.
@@ -54,8 +62,7 @@ glademodule_la = glademodule.la
 endif
 pygtkexec_LTLIBRARIES += $(glademodule_la)
 glademodule_la_CFLAGS = $(LIBGLADE_CFLAGS)
-glademodule_la_LDFLAGS = -module -avoid-version \
-			 -export-symbols-regex initglade
+glademodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
 glademodule_la_LIBADD = $(LIBGLADE_LIBS)
 glademodule_la_SOURCES = libglademodule.c
 libglade.c: $(COMMONDEFS) libglade.override
@@ -70,8 +77,7 @@ glmodule_la = glmodule.la
 endif
 pygtkexec_LTLIBRARIES += $(glmodule_la)
 glmodule_la_CFLAGS = $(GTKGL_CFLAGS)
-glmodule_la_LDFLAGS = -module -avoid-version \
-			 -export-symbols-regex initgl
+glmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgl
 glmodule_la_LIBADD = $(GTKGL_LIBS)
 glmodule_la_SOURCES = gtkglmodule.c
 libgl.c: $(COMMONDEFS) gtkgl.override
