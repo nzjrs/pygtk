@@ -1,7 +1,7 @@
 # require automake-1.6
 AUTOMAKE_OPTIONS = 1.6
 
-SUBDIRS = codegen gtk
+SUBDIRS = codegen gtk docs
 
 CLEANFILES =
 EXTRA_DIST = $(defs_DATA)
@@ -94,7 +94,6 @@ EXTRA_DIST += \
   pygtk-2.0.pc.in \
   MAPPING \
   THREADS \
-  build-docs.py \
   config.h.win32 \
   makefile.msc \
   examples/atk/atk-demo.py \

@@ -1,3 +1,128 @@
+pygtk-1.99.13:
+	- Support parallel install with pygtk >= 0.6.10
+	- fix initial reference handling for derived GObjects.  This
+	  also uncovered a few other reference leaks.
+	- Other reference leak fixes from Arjan.
+	- Support building out of the box on windows with mingw32 from
+	  Cedric Gustin.
+
+pygtk-1.99.12:  23-July-2002
+	- more win32 compat updates.
+	- simple tree model interfaces added.
+	- added generic cell renderer type.
+
+pygtk-1.99.11:  10-July-2002
+	- int64/uint64 arg handlers in code generator.
+	- some reference leak fixes.
+	- get signal handlers to participate in cyclic garbage
+	  collection (thanks to Arjan Molenaar).
+	- correctly reset LC_NUMERIC to "C" when initialising the gtk
+	  module.
+
+pygtk-1.99.10:  13-May-2002
+	- support new arg types in code generator.
+	- handle (caller-owns-return) in code generator.
+	- add gtk.compat module that provides similar naming to gtk
+	  1.2 modules.
+
+pygtk-1.99.9:  23-April-2002
+	- Some win32 compatibility fixes merged in from Hans.
+	- update defs file to match final gtk 2.0 APIs.
+	- added gtk.gl wrapper.
+	- refactored code generator, fixing a number of bugs in the
+	  process.
+
+pygtk-1.99.8:  18-March-2002
+	- Implement lots of stuff in Pango module.
+	- make class names include module name so that help() output
+	  looks nicer.
+	- lots of other functions added.
+
+pygtk-1.99.7:  31-January-2002
+	- add (broken) threading support.  Will need fixing one day.
+	- make safe for use with PyMalloc.
+	- split gobjectmodule.c into a number of files.
+
+pygtk-1.99.6:  24-December-2001
+	- add scripts for generating documentation for pygtk.
+	- add __gsignals__ and __gproperties__ sepcial class
+	  attributes for defining new signals and properties for an
+	  object.
+	- better support for GError.
+	- start of ATK wrapper (msw).
+
+pygtk-1.99.5:  26-November-2001
+	- lots of updates.
+
+pygtk-1.99.4:  29-October-2001
+	- fix up GObject last ref handling for derived types.
+	- other fixes.
+
+pygtk-1.99.3:  9-October-2001
+	- Rename the PyGtkTreeModel to PyGtkGenericTreeModel to avoid
+	  name conflicts.
+	- many method wrappers added.
+	- more reference fixes.
+	- adjust code generator so that it outputs #line directives.
+	- move defintions of types (as opposed to functions/methods)
+	  to separate files to improve compilation speed.
+
+pygtk-1.99.2:  29-September-2001
+	- switch from ExtensionClass to use Python 2.2's type/class
+	  unification.
+	- require Python 2.2a4
+
+pygtk-1.99.1:  20-September-2001
+	- always use the GType wrapper type to represent GTypes,
+	  rather than using ints.
+	- automatically populate modules with constants via
+	  introspection.
+	- Switch from gtk.GtkFoo naming to gtk.Foo.
+
+pygtk-1.99.0:  10-September-2001
+	- First cut tarball for 2.0 branch.  Lots and lots of changes
+	  (since branching in April 2000).
+	- Uses ExtensionClass, and implement GObject wrappers in C
+	  code, rather than the two stage wrapper like the 1.2 branch.
+
+
+---- GTK-1.2 branch ----
+
+pygtk-0.6.11:  23-August-2002
+	- Fix up libtool patch for older binutils'.
+	- a few bug fixes in some GtkWidget methods.
+
+pygtk-0.6.10:  22-August-2002
+	- Fix up segfaults when using with a Python compiled with
+	  pymalloc.
+	- various new wrapper functions added.
+	- Raise exception if gtk_init() fails.
+	- bug fixes.
+	- Support parallel install with PyGTK 2.0.
+
+pygtk-0.6.9:  3-Janyary-2002
+	- always check the return value of functions for NULL values.
+	  This fixes a number of problems which caused crashes on
+	  exit.
+	- add pygt_version and gtk_version variables.
+	- update to autoconf-2.52/automake-1.5
+	- many bug fixes (see ChangeLog).
+
+pygtk-0.6.8:  23-April-2001
+	- bug fixes to GtkNotebook, GtkCList.
+	- add some missing methods to GtkWidget
+	- a gdk-pixbuf wrapper module.
+	- install the code generator, so that other wrappers can use
+	  it as well.
+
+pygtk-0.6.7:  16-February-2001
+	- added --disable-thread configure argument to turn off thread
+	  support even when compiling with a threaded python.
+	- resets LC_NUMERIC back to "C" after calling gtk_set_locale,
+	  as this is the standard setting for python, no matter what
+	  the locale.
+	- various other bug fixes.
+
 pygtk-0.6.6:  7-April-2000
 	- switched over to using the CVS version of automake rather than
 	  my `pyautomake' patches, as CVS automake now has the python

@@ -45,7 +45,8 @@ class DocWriter:
     def output_docs(self, output_prefix):
         files = []
 
-	obj_defs = self.parser.objects + self.parser.interfaces
+	obj_defs = self.parser.objects + self.parser.interfaces + \
+                   self.parser.boxes + self.parser.pointers
 	obj_defs.sort(self.__compare)
 	for obj_def in obj_defs:
             filename = self.create_filename(obj_def.c_name, output_prefix)
@@ -54,17 +55,25 @@ class DocWriter:
                 self.output_object_docs(obj_def, fp)
             elif isinstance(obj_def, definitions.InterfaceDef):
                 self.output_interface_docs(obj_def, fp)
+            elif isinstance(obj_def, definitions.BoxedDef):
+                self.output_boxed_docs(obj_def, fp)
+            elif isinstance(obj_def, definitions.PointerDef):
+                self.output_boxed_docs(obj_def, fp)
 	    fp.close()
             files.append((os.path.basename(filename), obj_def))
 
         if files:
-            filename = self.create_filename('docs', output_prefix)
+            filename = self.create_toc_filename(output_prefix)
 	    fp = open(filename, 'w')
             self.output_toc(files, fp)
             fp.close()
             
     def output_object_docs(self, obj_def, fp=sys.stdout):
 	self.write_class_header(obj_def.c_name, fp)
+
+        self.write_heading('Synopsis', fp)
+        self.write_synopsis(obj_def, fp)
+        self.close_section(fp)
 
 	# construct the inheritence heirachy ...
 	ancestry = [ (obj_def.c_name, obj_def.implements) ]
@@ -107,6 +116,10 @@ class DocWriter:
     def output_interface_docs(self, int_def, fp=sys.stdout):
 	self.write_class_header(int_def.c_name, fp)
 
+        self.write_heading('Synopsis', fp)
+        self.write_synopsis(int_def, fp)
+        self.close_section(fp)
+
         methods = self.parser.find_methods(int_def)
         methods = filter(lambda meth, self=self:
                          not self.overrides.is_ignored(meth.c_name), methods)
@@ -118,6 +131,32 @@ class DocWriter:
 
         self.write_class_footer(int_def.c_name, fp)
 
+    def output_boxed_docs(self, box_def, fp=sys.stdout):
+	self.write_class_header(box_def.c_name, fp)
+
+        self.write_heading('Synopsis', fp)
+        self.write_synopsis(box_def, fp)
+        self.close_section(fp)
+
+        constructor = self.parser.find_constructor(box_def, self.overrides)
+        if constructor:
+            self.write_heading('Constructor', fp)
+            self.write_constructor(constructor,
+                                   self.docs.get(constructor.c_name, None),
+                                   fp)
+            self.close_section(fp)
+
+        methods = self.parser.find_methods(box_def)
+        methods = filter(lambda meth, self=self:
+                         not self.overrides.is_ignored(meth.c_name), methods)
+        if methods:
+            self.write_heading('Methods', fp)
+            for method in methods:
+                self.write_method(method, self.docs.get(method.c_name, None), fp)
+            self.close_section(fp)
+
+        self.write_class_footer(box_def.c_name, fp)
+
     def output_toc(self, files, fp=sys.stdout):
         fp.write('TOC\n\n')
         for filename, obj_def in files:
@@ -127,6 +166,8 @@ class DocWriter:
     def create_filename(self, obj_name, output_prefix):
 	'''Create output filename for this particular object'''
 	return output_prefix + '-' + string.lower(obj_name) + '.txt'
+    def create_toc_filename(self, output_prefix):
+        return self.create_filename(self, 'docs', output_prefix)
 
     # these need to handle default args ...
     def create_constructor_prototype(self, func_def):
@@ -152,6 +193,27 @@ class DocWriter:
         fp.write('\n' + text + '\n' + ('-' * len(text)) + '\n')
     def close_section(self, fp):
         pass
+    def write_synopsis(self, obj_def, fp):
+        fp.write('class %s' % obj_def.c_name)
+        if isinstance(obj_def, definitions.ObjectDef):
+            bases = []
+            if obj_def.parent: bases.append(obj_def.parent)
+            bases = bases = obj_def.implements
+            if bases:
+                fp.write('(%s)' % string.join(bases, ', '))
+        fp.write(':\n')
+
+        constructor = self.parser.find_constructor(obj_def, self.overrides)
+        if constructor:
+            prototype = self.create_constructor_prototype(constructor)
+            fp.write('    def %s\n' % prototype)
+        methods = self.parser.find_methods(obj_def)
+        methods = filter(lambda meth, self=self:
+                         not self.overrides.is_ignored(meth.c_name), methods)
+        for meth in methods:
+            prototype = self.create_method_prototype(meth)
+            fp.write('    def %s\n' % prototype)
+
     def write_heirachy(self, obj_name, ancestry, fp):
         indent = ''
         for name, interfaces in ancestry:
@@ -214,6 +276,11 @@ class DocbookDocWriter(DocWriter):
             return stem + '.xml'
         else:
             return stem + '.sgml'
+    def create_toc_filename(self, output_prefix):
+        if self.use_xml:
+            return self.create_filename('docs', output_prefix)
+        else:
+            return self.create_filename('docs', output_prefix)
 
     # make string -> reference translation func
     __transtable = [ '-' ] * 256
@@ -235,14 +302,14 @@ class DocbookDocWriter(DocWriter):
     def __format_function(self, match):
         info = self.parser.c_name.get(match.group(1), None)
         if info:
-            if info.__class__ == defsparser.FunctionDef:
+            if isinstance(info, defsparser.FunctionDef):
                 if info.is_constructor_of is not None:
                     # should have a link here
                     return '<function>%s()</function>' % \
                            self.pyname(info.is_constructor_of)
                 else:
                     return '<function>' + info.name + '()</function>'
-            if info.__class__ == defsparser.MethodDef:
+            if isinstance(info, defsparser.MethodDef):
                 return '<link linkend="' + self.make_method_ref(info) + \
                        '"><function>' + self.pyname(info.of_object) + '.' + \
                        info.name + '()</function></link>'
@@ -258,20 +325,24 @@ class DocbookDocWriter(DocWriter):
     def __format_symbol(self, match):
         info = self.parser.c_name.get(match.group(1), None)
         if info:
-            if info.__class__ == defsparser.FunctionDef:
+            if isinstance(info, defsparser.FunctionDef):
                 if info.is_constructor_of is not None:
                     # should have a link here
-                    return '<function>' + self.pyname(info.is_constructor_of) + \
-                           '</function>'
+                    return '<methodname>' + self.pyname(info.is_constructor_of) + \
+                           '</methodname>'
                 else:
                     return '<function>' + info.name + '</function>'
-            if info.__class__ == defsparser.MethodDef:
+            if isinstance(info, defsparser.MethodDef):
                 return '<link linkend="' + self.make_method_ref(info) + \
-                       '"><function>' + self.pyname(info.of_object) + '.' + \
-                       info.name + '</function></link>'
-            if info.__class__ == defsparser.ObjectDef:
+                       '"><methodname>' + self.pyname(info.of_object) + '.' + \
+                       info.name + '</methodname></link>'
+            if isinstance(info, defsparser.ObjectDef) or \
+                   isinstance(info, defsparser.InterfaceDef) or \
+                   isinstance(info, defsparser.BoxedDef) or \
+                   isinstance(info, defsparser.PointerDef):
                 return '<link linkend="' + self.make_class_ref(info.c_name) + \
-                       '"><type>' + self.pyname(info.c_name) + '</type></link>'
+                       '"><classname>' + self.pyname(info.c_name) + \
+                       '</classname></link>'
         # fall through through
         return '<literal>' + match.group(1) + '</literal>'
     
@@ -293,24 +364,23 @@ class DocbookDocWriter(DocWriter):
 
     # these need to handle default args ...
     def create_constructor_prototype(self, func_def):
-        sgml = [ '  <funcsynopsis>\n    <funcprototype>\n']
-        sgml.append('      <funcdef><function>')
-        sgml.append(self.pyname(func_def.is_constructor_of))
-        sgml.append('</function></funcdef>\n')
+        sgml = [ '  <constructorsynopsis language="python">\n']
+        sgml.append('    <methodname>__init__</methodname>\n')
         for type, name, dflt, null in func_def.params:
-            sgml.append('      <paramdef><parameter>')
+            sgml.append('    <methodparam><parameter>')
             sgml.append(name)
             sgml.append('</parameter>')
             if dflt:
-                sgml.append('=')
+                sgml.append('<initializer>')
                 sgml.append(dflt)
-            sgml.append('</paramdef>\n')
+                sgml.append('</initializer>')
+            sgml.append('</methodparam>\n')
         if not func_def.params:
-            sgml.append('      <paramdef></paramdef>')
-        sgml.append('    </funcprototype>\n  </funcsynopsis>\n')
+            sgml.append('    <methodparam></methodparam>')
+        sgml.append('  </constructorsynopsis>\n')
         return string.join(sgml, '')
     def create_function_prototype(self, func_def):
-        sgml = [ '  <funcsynopsis>\n    <funcprototype>\n']
+        sgml = [ '  <funcsynopsis language="python">\n    <funcprototype>\n']
         sgml.append('      <funcdef><function>')
         sgml.append(func_def.name)
         sgml.append('</function></funcdef>\n')
@@ -319,32 +389,42 @@ class DocbookDocWriter(DocWriter):
             sgml.append(name)
             sgml.append('</parameter>')
             if dflt:
-                sgml.append('=')
+                sgml.append('<initializer>')
                 sgml.append(dflt)
+                sgml.append('</initializer>')
             sgml.append('</paramdef>\n')
         if not func_def.params:
-            sgml.append('      <paramdef></paramdef>')
+            sgml.append('      <paramdef></paramdef')
         sgml.append('    </funcprototype>\n  </funcsynopsis>\n')
         return string.join(sgml, '')
-    def create_method_prototype(self, meth_def):
-        sgml = [ '  <funcsynopsis>\n    <funcprototype>\n']
-        sgml.append('      <funcdef><replaceable>instance</replaceable>.<function>')
-        sgml.append(meth_def.name)
-        sgml.append('</function></funcdef>\n')
+    def create_method_prototype(self, meth_def, addlink=0):
+        sgml = [ '  <methodsynopsis language="python">\n']
+        sgml.append('    <methodname>')
+        if addlink:
+            sgml.append('<link linkend="%s">' % self.make_method_ref(meth_def))
+        sgml.append(self.pyname(meth_def.name))
+        if addlink:
+            sgml.append('</link>')
+        sgml.append('</methodname>\n')
         for type, name, dflt, null in meth_def.params:
-            sgml.append('      <paramdef><parameter>')
+            sgml.append('    <methodparam><parameter>')
             sgml.append(name)
             sgml.append('</parameter>')
             if dflt:
-                sgml.append('=')
+                sgml.append('<initializer>')
                 sgml.append(dflt)
-            sgml.append('</paramdef>\n')
+                sgml.append('</initializer>')
+            sgml.append('</methodparam>\n')
         if not meth_def.params:
-            sgml.append('      <paramdef></paramdef>')
-        sgml.append('    </funcprototype>\n  </funcsynopsis>\n')
+            sgml.append('    <methodparam></methodparam>')
+        sgml.append('  </methodsynopsis>\n')
         return string.join(sgml, '')
     
     def write_class_header(self, obj_name, fp):
+        #if self.use_xml:
+        #    fp.write('<?xml version="1.0" standalone="no"?>\n')
+        #    fp.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
+        #    fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">\n')
         fp.write('<refentry id="' + self.make_class_ref(obj_name) + '">\n')
         fp.write('  <refmeta>\n')
         fp.write('    <refentrytitle>%s</refentrytitle>\n'
@@ -363,6 +443,31 @@ class DocbookDocWriter(DocWriter):
         fp.write('    <title>' + text + '</title>\n\n')
     def close_section(self, fp):
         fp.write('  </refsect1>\n')
+
+    def write_synopsis(self, obj_def, fp):
+        fp.write('<classsynopsis language="python">\n')
+        fp.write('  <ooclass><classname>%s</classname></ooclass>\n'
+                 % self.pyname(obj_def.c_name))
+        if isinstance(obj_def, definitions.ObjectDef):
+            if obj_def.parent:
+                fp.write('  <ooclass><classname><link linkend="%s">%s'
+                         '</link></classname></ooclass>\n'
+                         % (self.make_class_ref(obj_def.parent),
+                            self.pyname(obj_def.parent)))
+            for base in obj_def.implements:
+                fp.write('  <ooclass><classname><link linkend="%s">%s'
+                         '</link></classname></ooclass>\n'
+                         % (self.make_class_ref(base), self.pyname(base)))
+
+        constructor = self.parser.find_constructor(obj_def, self.overrides)
+        if constructor:
+            fp.write(self.create_constructor_prototype(constructor))
+        methods = self.parser.find_methods(obj_def)
+        methods = filter(lambda meth, self=self:
+                         not self.overrides.is_ignored(meth.c_name), methods)
+        for meth in methods:
+            fp.write(self.create_method_prototype(meth, addlink=1))
+        fp.write('</classsynopsis>\n\n')
 
     def write_heirachy(self, obj_name, ancestry, fp):
         fp.write('<synopsis>')
@@ -462,40 +567,58 @@ class DocbookDocWriter(DocWriter):
     def output_toc(self, files, fp=sys.stdout):
         if self.use_xml:
             fp.write('<?xml version="1.0" standalone="no"?>\n')
-            fp.write('<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
+            fp.write('<!DOCTYPE reference PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
             fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [\n')
+            for filename, obj_def in files:
+                fp.write('  <!ENTITY ' + string.translate(obj_def.c_name,
+                                                          self.__transtable) +
+                         ' SYSTEM "' + filename + '" >\n')
+            fp.write(']>\n\n')
+
+            fp.write('<reference id="class-reference">\n')
+            fp.write('  <title>Class Documentation</title>\n')
+            for filename, obj_def in files:
+                fp.write('&' + string.translate(obj_def.c_name,
+                                                self.__transtable) + ';\n')
+
+            fp.write('</reference>\n')
+            #fp.write('<reference id="class-reference" xmlns:xi="http://www.w3.org/2001/XInclude">\n')
+            #fp.write('  <title>Class Reference</title>\n')
+            #for filename, obj_def in files:
+            #    fp.write('  <xi:include href="%s"/>\n' % filename)
+            #fp.write('</reference>\n')
         else:
             fp.write('<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1.2//EN" [\n')
-        for filename, obj_def in files:
-            fp.write('  <!ENTITY ' + string.translate(obj_def.c_name,
-                                                      self.__transtable) +
-                     ' SYSTEM "' + filename + '" >\n')
-        fp.write(']>\n\n')
+            for filename, obj_def in files:
+                fp.write('  <!ENTITY ' + string.translate(obj_def.c_name,
+                                                          self.__transtable) +
+                         ' SYSTEM "' + filename + '" >\n')
+            fp.write(']>\n\n')
 
-        fp.write('<book id="index">\n\n')
-        fp.write('  <bookinfo>\n')
-        fp.write('    <title>PyGTK Docs</title>\n')
-        fp.write('    <authorgroup>\n')
-        fp.write('      <author>\n')
-        fp.write('        <firstname>James</firstname>\n')
-        fp.write('        <surname>Henstridge</surname>\n')
-        fp.write('      </author>\n')
-        fp.write('    </authorgroup>\n')
-        fp.write('  </bookinfo>\n\n')
+            fp.write('<book id="index">\n\n')
+            fp.write('  <bookinfo>\n')
+            fp.write('    <title>PyGTK Docs</title>\n')
+            fp.write('    <authorgroup>\n')
+            fp.write('      <author>\n')
+            fp.write('        <firstname>James</firstname>\n')
+            fp.write('        <surname>Henstridge</surname>\n')
+            fp.write('      </author>\n')
+            fp.write('    </authorgroup>\n')
+            fp.write('  </bookinfo>\n\n')
 
-        fp.write('  <chapter id="class-heirachy">\n')
-        fp.write('    <title>Class Heirachy</title>\n')
-        fp.write('    <para>Not done yet</para>\n')
-        fp.write('  </chapter>\n\n')
+            fp.write('  <chapter id="class-heirachy">\n')
+            fp.write('    <title>Class Heirachy</title>\n')
+            fp.write('    <para>Not done yet</para>\n')
+            fp.write('  </chapter>\n\n')
 
-        fp.write('  <reference id="class-docs">\n')
-        fp.write('    <title>Class Documentation</title>\n')
-        for filename, obj_def in files:
-            fp.write('&' +string.translate(obj_def.c_name, self.__transtable)+
-                     ';\n')
+            fp.write('  <reference id="class-reference">\n')
+            fp.write('    <title>Class Documentation</title>\n')
+            for filename, obj_def in files:
+                fp.write('&' + string.translate(obj_def.c_name,
+                                                self.__transtable) + ';\n')
 
-        fp.write('  </reference>\n')
-        fp.write('</book>\n')
+            fp.write('  </reference>\n')
+            fp.write('</book>\n')
 
 if __name__ == '__main__':
     try:
