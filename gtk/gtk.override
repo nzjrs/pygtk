@@ -7,6 +7,7 @@ headers
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
 #include "pygtktreemodel.h"
+#include "pygtkcellrenderer.h"
 
 /* from the gdk portion ... */
 extern PyTypeObject PyGdkColormap_Type;
@@ -20,10 +21,13 @@ extern PyTypeObject PyGdkDragContext_Type;
 
 %%
 init
+    PyGtkListStore_Type.tp_as_number  = PyGtkTreeModel_Type.tp_as_number;
     PyGtkListStore_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
     PyGtkListStore_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
+    PyGtkTreeStore_Type.tp_as_number  = PyGtkTreeModel_Type.tp_as_number;
     PyGtkTreeStore_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
     PyGtkTreeStore_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
+    PyPyGtkGenericTreeModel_Type.tp_as_number  = PyGtkTreeModel_Type.tp_as_number;
     PyPyGtkGenericTreeModel_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
     PyPyGtkGenericTreeModel_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
 %%
@@ -1390,6 +1394,38 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     g_value_unset(&value);
     return ret;
 }
+%%
+override-slot GtkTreeModel.tp_as_number
+static int
+_wrap_gtk_tree_model_tp_nonzero(PyGObject *self)
+{
+    return TRUE;
+}
+static PyNumberMethods _wrap_gtk_tree_model_tp_as_number = {
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (ternaryfunc)0,
+    (unaryfunc)0,
+    (unaryfunc)0,
+    (unaryfunc)0,
+    (inquiry)_wrap_gtk_tree_model_tp_nonzero,
+    (unaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (coercion)0,
+    (unaryfunc)0,
+    (unaryfunc)0,
+    (unaryfunc)0,
+    (unaryfunc)0,
+    (unaryfunc)0
+};
 %%
 override-slot GtkTreeModel.tp_as_mapping
 static int

@@ -13,7 +13,7 @@ EXTRA_DIST += makefile.msc gtk-fake-win32.c
 pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 pkginclude_HEADERS = pygtk.h
 
-INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) -Wall
+INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES)
 COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs $(top_srcdir)/atk-types.defs \
 	     $(top_srcdir)/pango-types.defs
 
@@ -22,13 +22,16 @@ pygtkexec_LTLIBRARIES = _gtkmodule.la
 _gtkmodule_la_CFLAGS = $(GTK_CFLAGS)
 _gtkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtk
 _gtkmodule_la_LIBADD = $(GTK_LIBS)
-_gtkmodule_la_SOURCES = pygtk.h \
-			pygtk-private.h \
-			gtkmodule.c \
-			gtkobject-support.c \
-			gtk-types.c \
-			pygtktreemodel.h \
-			pygtktreemodel.c
+_gtkmodule_la_SOURCES = \
+  pygtk.h \
+  pygtk-private.h \
+  gtkmodule.c \
+  gtkobject-support.c \
+  gtk-types.c \
+  pygtktreemodel.h \
+  pygtktreemodel.c \
+  pygtkcellrenderer.h \
+  pygtkcellrenderer.c
 # prevent the .defs.c rule from trying to generate gtk-types.c because
 # there is gtk-types.defs.  This is basically a hack and I really wish I
 # could use pattern rules.  Perhaps we should rename gtk-types.c.
