@@ -777,6 +777,8 @@ matcher.register('GdkRectangle*', GdkRectanglePtrArg())
 matcher.register('GtkAllocation*', GdkRectanglePtrArg())
 matcher.register('GdkRectangle', GdkRectangleArg())
 
+matcher.register('GdkNativeWindow', ULongArg())
+
 matcher.register_object('GObject', None, 'G_TYPE_OBJECT')
 
 del arg
