@@ -37,6 +37,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include <locale.h>
 
 #define WITH_XSTUFF
 #ifdef WITH_XSTUFF
@@ -3774,6 +3775,16 @@ static PyObject * _wrap_gtk_init(PyObject *self, PyObject *args) {
     return Py_None;
 }
 
+static PyObject *_wrap_gtk_set_locale(PyObject *self, PyObject *args) {
+    char *locale;
+
+    if (!PyArg_ParseTuple(args, ":gtk_set_locale"))
+        return NULL;
+    locale = gtk_set_locale();
+    set_locale(LC_NUMERIC, "C");
+    return PyString_FromString(locale);
+}
+
 static PyObject *_wrap_gtk_main(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, ":gtk_main"))
         return NULL;
@@ -6474,6 +6485,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_signal_handler_unblock_by_data", _wrap_gtk_signal_handler_unblock_by_data, 1 },
     { "gtk_signal_emitv_by_name", _wrap_gtk_signal_emitv_by_name, 1 },
     { "gtk_init", _wrap_gtk_init, 1 },
+    { "gtk_set_locale", _wrap_gtk_set_locale, 1 },
     { "gtk_main", _wrap_gtk_main, 1 },
     { "gtk_main_iteration", _wrap_gtk_main_iteration, 1 },
     { "gtk_events_pending", _wrap_gtk_events_pending, 1 },
