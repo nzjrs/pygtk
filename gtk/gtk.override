@@ -83,7 +83,6 @@ ignore
   gtk_accel_group_ref
   gtk_accel_group_remove
   gtk_accel_groups_activate
-  gtk_accel_groups_from_object
   gtk_accel_group_unlock_entry
   gtk_accel_group_unref
   gtk_action_group_add_actions_full
@@ -5397,3 +5396,38 @@ _wrap_gtk_entry_new(PyGObject * self, PyObject * args, PyObject * kwargs)
     pygobject_register_wrapper((PyObject *) self);
     return 0;
 }
+
+%%
+override gtk_accel_groups_from_object
+static PyObject *
+_wrap_gtk_accel_groups_from_object(PyGObject *self, PyObject *args)
+{
+    PyGObject *obj;
+    PyObject *py_list;
+    GSList *list, *tmp;
+    PyObject *item;
+
+    if (!PyArg_ParseTuple(args, "O!:accel_group_from_object",
+			  &PyGObject_Type, &obj))
+	return NULL;
+    
+    list = gtk_accel_groups_from_object(G_OBJECT(obj->obj));
+
+    if ((py_list = PyList_New(0)) == NULL) {
+        return NULL;
+    }
+    
+    for (tmp = list; tmp; tmp = tmp->next) {
+        item = pygobject_new(G_OBJECT(tmp->data));
+        if (item == NULL) {
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_Append(py_list, item);
+        Py_DECREF(item);
+    }
+    
+    return py_list;
+}
+
+
