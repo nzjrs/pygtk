@@ -1,10 +1,40 @@
 #!/usr/bin/env python
 # -*- Mode: Python; py-indent-offset: 4 -*-
-import sys, string
+import sys, os, string
 import getopt
 import defsparser, argtypes, override
 
 import traceback, keyword
+
+class FileOutput:
+    '''Simple wrapper for file object, that makes writing #line
+    statements easier.'''
+    def __init__(self, fp, filename=None):
+        self.fp = fp
+        self.lineno = 1
+        if filename:
+            self.filename = filename
+        else:
+            self.filename = self.fp.name
+    # handle writing to the file, and keep track of the line number ...
+    def write(self, str):
+        self.fp.write(str)
+        self.lineno = self.lineno + string.count(str, '\n')
+    def writelines(self, sequence):
+        for line in sequence:
+            self.write(line)
+    def close(self):
+        self.fp.close()
+    def flush(self):
+        self.fp.flush()
+
+    def setline(self, linenum, filename):
+        '''writes out a #line statement, for use by the C
+        preprocessor.'''
+        self.write('#line %d "%s"\n' % (linenum, filename))
+    def resetline(self):
+        '''resets line numbering to the original file'''
+        self.setline(self.lineno + 1, self.filename)
 
 # have to do return type processing
 functmpl = 'static PyObject *\n' + \
@@ -372,8 +402,11 @@ def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
         funcname = funcprefix + fname
         attrname = objobj.c_name + '.' + fname
         if overrides.attr_is_overriden(attrname):
+            lineno, filename = overrides.getstartline(attrname)
             code = overrides.attr_override(attrname)
+            fp.setline(lineno, filename)
             fp.write(code)
+            fp.resetline()
             getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
                            (fixname(fname), funcname))
             continue
@@ -411,7 +444,10 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
     if constructor:
 	try:
             if overrides.is_overriden(constructor.c_name):
+                lineno, filename = overrides.getstartline(constructor.c_name)
+                fp.setline(lineno, filename)
                 fp.write(overrides.override(constructor.c_name))
+                fp.resetline()
                 fp.write('\n\n')
             else:
                 write_constructor(objobj.c_name, castmacro, constructor, fp)
@@ -437,7 +473,10 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(meth.c_name):
+                lineno, filename = overrides.getstartline(meth.c_name)
+                fp.setline(lineno, filename)
                 fp.write(overrides.override(meth.c_name))
+                fp.resetline()
                 fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
@@ -478,7 +517,10 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(meth.c_name):
+                lineno, filename = overrides.getstartline(meth.c_name)
+                fp.setline(lineno, filename)
                 fp.write(overrides.override(meth.c_name))
+                fp.resetline()
                 fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
@@ -642,7 +684,10 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
     if constructor:
 	try:
             if overrides.is_overriden(constructor.c_name):
+                lineno, filename = overrides.getstartline(constructor.c_name)
+                fp.setline(lineno, filename)
                 fp.write(overrides.override(constructor.c_name))
+                fp.resetline()
                 fp.write('\n\n')
             else:
                 write_boxed_constructor(boxedobj.c_name, boxedobj.typecode,
@@ -658,7 +703,10 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(meth.c_name):
+                lineno, filename = overrides.getstartline(meth.c_name)
+                fp.setline(lineno, filename)
                 fp.write(overrides.override(meth.c_name))
+                fp.resetline()
                 fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
@@ -695,7 +743,10 @@ def write_functions(parser, overrides, prefix, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(func.c_name):
+                lineno, filename = overrides.getstartline(func.c_name)
+                fp.setline(lineno, filename)
                 fp.write(overrides.override(func.c_name))
+                fp.resetline()
                 fp.write('\n\n')
                 if overrides.wants_kwargs(func.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
@@ -728,10 +779,11 @@ def write_enums(parser, prefix, fp=sys.stdout):
                      % (enum.typecode,))
     fp.write('}\n\n')
 
-def write_source(parser, overrides, prefix, fp=sys.stdout):
+def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
     fp.write('/* -*- Mode: C; c-basic-offset: 4 -*- */\n\n')
     fp.write('#include <Python.h>\n\n\n')
     fp.write(overrides.get_headers())
+    fp.resetline()
     fp.write('\n\n')
     fp.write('/* ---------- forward type declarations ---------- */\n')
     for obj in parser.boxes:
@@ -758,6 +810,7 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('/* intialise stuff extension classes */\n')
     fp.write('void\n' + prefix + '_register_classes(PyObject *d)\n{\n')
     fp.write(overrides.get_init() + '\n')
+    fp.resetline()
 
     for boxed in parser.boxes:
         fp.write('    pyg_register_boxed(d, "' + boxed.name +
@@ -807,11 +860,12 @@ def register_types(parser):
 	else:
 	    argtypes.matcher.register_enum(enum.c_name, enum.typecode)
 
-if __name__ == '__main__':
+def main():
     o = override.Overrides()
     prefix = 'pygtk'
+    outfilename = None
     opts, args = getopt.getopt(sys.argv[1:], "o:p:r:",
-                               ["override=", "prefix=", "register="])
+                        ["override=", "prefix=", "register=", "outfilename="])
     for opt, arg in opts:
         if opt in ('-o', '--override'):
             o = override.Overrides(arg)
@@ -822,11 +876,18 @@ if __name__ == '__main__':
             p.startParsing()
             register_types(p)
             del p
+        elif opt == '--outfilename':
+            outfilename = arg
     if len(args) < 1:
         sys.stderr.write(
             'usage: codegen.py [-o overridesfile] [-p prefix] defsfile\n')
         sys.exit(1)
     p = defsparser.DefsParser(args[0])
+    if not outfilename:
+        outfilename = os.path.splitext(args[0])[0] + '.c'
     p.startParsing()
     register_types(p)
-    write_source(p, o, prefix)
+    write_source(p, o, prefix, FileOutput(sys.stdout, outfilename))
+
+if __name__ == '__main__':
+    main()

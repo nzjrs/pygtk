@@ -1,6 +1,25 @@
 2001-10-06  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtk.override (_wrap_gtk_list__get_selection): remove unused
+	variable (the line number on the gcc warning matched exactly!)
+
+	* codegen/codegen.py (write_source): reset line numbering after
+	writing headers and init overrides.
+	(main): add --outfilename argument, for specifying the final name
+	of the file -- output is not written to this file.  If argument is
+	not passed, derive from defs filename.
+
+	* codegen/override.py (Overrides.__parse_override): add #line
+	outputs for headers and init type overrides.
+
 	* codegen/codegen.py (main): pass the filename to overrides.
+	(FileOutput): wrapper class for file objects to keep track of line
+	numbers, so that #line statements can be written.
+	(write_class): write out #line statements for overriden
+	constructor and methods.
+	(write_getsets): write #line's for getsets.
+	(write_interface): write #line's for methods.
+	(write_boxed): write #line's for constructor and methods.
 
 	* codegen/override.py (Overrides.__init__): rewrite the code that
 	reads in the overrides file, so it only splits on lines with only

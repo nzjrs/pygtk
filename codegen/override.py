@@ -19,6 +19,7 @@ class Overrides:
 	if filename: self.__handle_file(filename)
 
     def __handle_file(self, filename):
+        self.filename = filename
         fp = open(filename, 'r')
 	# read all the components of the file ...
         bufs = []
@@ -69,9 +70,11 @@ class Overrides:
             self.override_attrs[attr] = rest
             self.startlines[attr] = startline + 1
         elif words[0] == 'headers':
-            self.headers = self.headers + '\n' + rest
+            self.headers = '%s\n#line %d "%s"\n%s' % \
+                           (self.headers, startline + 1, self.filename, rest)
         elif words[0] == 'init':
-            self.init = self.init + '\n' + rest
+            self.init = '%s\n#line %d "%s"\n%s' % \
+                        (self.init, startline + 1, self.filename, rest)
 
     def is_ignored(self, name):
 	if self.ignores.has_key(name):
@@ -85,7 +88,7 @@ class Overrides:
     def override(self, name):
 	return self.overrides[name]
     def getstartline(self, name):
-        return self.startlines[name]
+        return (self.startlines[name], self.filename)
     def wants_kwargs(self, name):
 	return self.kwargs.has_key(name)
     def attr_is_overriden(self, attr):
