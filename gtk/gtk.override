@@ -3712,7 +3712,7 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
                                      "|sOiO!s:GtkDialog.__init__", kwlist,
                                      &title, &py_window, &action,
                                      &PyTuple_Type, &py_buttons,
-				     backend))
+				     &backend))
         return -1;
 
     if (py_window != NULL && py_window != (PyGObject *) Py_None
@@ -3912,4 +3912,28 @@ _wrap_gtk_alignment_get_padding(PyGObject *self)
     gtk_alignment_get_padding(GTK_ALIGNMENT(self->obj), &top, &bottom, &left,
 			      &right);
     return Py_BuildValue("(iiii)", top, bottom, left, right);
+}
+%%
+override gtk_accel_group_connect_by_path kwargs
+static PyObject *
+_wrap_gtk_accel_group_connect_by_path(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "accel_path", "callback", NULL };
+    gchar *accel_path;
+    PyObject *py_callback;
+    GClosure *closure;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sO:GtkAccelGroup.connect_by_path", kwlist,
+				     &accel_path, &py_callback))
+        return NULL;
+    if (!PyCallable_Check(py_callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback argument not callable");
+	return NULL;
+    }
+    closure = pyg_closure_new(py_callback, NULL, NULL);
+    pygobject_watch_closure((PyObject *)self, closure);
+    gtk_accel_group_connect_by_path(GTK_ACCEL_GROUP(self->obj), accel_path,
+				    closure);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
