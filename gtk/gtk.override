@@ -1220,18 +1220,20 @@ override gtk_button_new kwargs
 static int
 _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "label", "stock", NULL };
+    static char *kwlist[] = { "label", "stock", "use_underline", NULL };
     gchar *text = NULL, *stock = NULL;
+    PyObject *py_use_underline = Py_True;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|zz:GtkButton.__init__",
-                                     kwlist, &text, &stock))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|zzO:OGtkButton.__init__",
+                                     kwlist, &text, &stock, &py_use_underline))
         return -1;
     if (stock)
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
                                  "label", stock, "use-stock", TRUE, NULL);
     else if (text)
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                                 "label", text, "use-underline", TRUE, NULL);
+                                 "label", text, "use-underline",
+                                 PyObject_IsTrue(py_use_underline), NULL);
     else
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
     if (!self->obj) {
