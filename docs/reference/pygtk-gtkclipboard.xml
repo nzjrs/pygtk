@@ -15,8 +15,8 @@
       <ooclass><classname><link linkend="class-gobject">gobject.GObject</link></classname></ooclass>
       <constructorsynopsis language="python">
 	<methodname><link linkend="constructor-gtkclipboard">gtk.Clipboard</link></methodname>
-	<methodparam><parameter role="keyword">display</parameter></methodparam>
-	<methodparam><parameter role="keyword">selection</parameter></methodparam>
+	<methodparam><parameter role="keyword">display</parameter><initializer>gtk.gdk.display_get_default()</initializer></methodparam>
+	<methodparam><parameter role="keyword">selection</parameter><initializer>"CLIPBOARD"</initializer></methodparam>
       </constructorsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--get-display">get_display</link></methodname>
@@ -72,6 +72,14 @@
 	<methodname><link linkend="method-gtkclipboard--wait-for-targets">wait_for_targets</link></methodname>
       </methodsynopsis>
     </classsynopsis>
+
+    <programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+        <methodname><link linkend="function-gtk--clipboard-get">gtk.clipbaord-get</link></methodname>
+        <methodparam><parameter role="keyword">selection</parameter><initializer>"CLIPBOARD"</initializer></methodparam>
+      </methodsynopsis></programlisting>
 
   </refsect1>
 
@@ -176,14 +184,15 @@ form for representing strings in <literal>GTK</literal>+.) </para>
 
     <programlisting><constructorsynopsis language="python">
 	<methodname>gtk.Clipboard</methodname>
-	<methodparam><parameter role="keyword">display</parameter></methodparam>
-	<methodparam><parameter role="keyword">selection</parameter></methodparam>
+	<methodparam><parameter role="keyword">display</parameter><initializer>gtk.gdk.display_get_default()</initializer></methodparam>
+	<methodparam><parameter role="keyword">selection</parameter><initializer>"CLIPBOARD"</initializer></methodparam>
       </constructorsynopsis></programlisting>
     <variablelist>
       <varlistentry>
 	<term><parameter role="keyword">display</parameter>&nbsp;:</term>
 	<listitem><simpara>the <link
-linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link> for which the clipboard is to be retrieved or created</simpara></listitem>
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+for which the clipboard is to be retrieved or created.</simpara></listitem>
       </varlistentry>
       <varlistentry>
 	<term><parameter role="keyword">selection</parameter>&nbsp;:</term>
@@ -228,6 +237,15 @@ underscore (because the ICCCM requires that nonstandard atoms are
 underscore-prefixed), and namespace it as well. For example, if your
 application called "Foo" has a special-purpose clipboard, you might call it
 "_FOO_SPECIAL_CLIPBOARD".</para>
+
+    <para>In PyGTK 2.4 and above, the <parameter>display</parameter>
+argument is optional and defaults to the default display returned from the
+<link
+linkend="function-gdk--display-get-default"><function>gtk.gdk.display_get_default</function>()</link>
+function.</para>
+
+    <para>In Pygtk 2.4 and above, the <parameter>selection</parameter>
+argument is optional and defaults to "CLIPBOARD".</para>
 
   </refsect1>
 
@@ -713,6 +731,50 @@ that are present on the clipboard, or <literal>None</literal> if there
 aren't any targets available. This function waits for the data to be
 received using the main loop, so events, timeouts, etc, may be dispatched
 during the wait.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gtk--clipboard-get">
+      <title>gtk.clipboard_get</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.clipboard_get</methodname>
+	  <methodparam><parameter
+			 role="keyword">selection</parameter><initializer>"CLIPBOARD"</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">selection</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string specifying a <link
+	  linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>. If
+	  not specified it defaults to "CLIPBOARD".</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the appropriate clipboard object or if no
+	clipboard already exists, a new one will be created. Once a
+	clipboard object has been created, it is persistent for all time and
+	cannot be freed.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.clipboard_get</function>() function returns
+the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+specified by selection for the default <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>. See
+the <link linkend="constructor-gtkclipboard">gtk.Clipboard</link>
+constructor for more information.</para>
 
     </refsect2>
 
