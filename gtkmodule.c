@@ -4586,7 +4586,7 @@ static PyObject *_wrap_gtk_clist_get_pixmap(PyObject *self, PyObject *args) {
   GdkPixmap *p;
   GdkBitmap *m;
 
-  if (!PyArg_ParseTuple(args, "O!iiO!:gtk_clist_get_pixmap", &PyGtk_Type,
+  if (!PyArg_ParseTuple(args, "O!ii:gtk_clist_get_pixmap", &PyGtk_Type,
 			&o, &r, &c))
     return NULL;
   if (!gtk_clist_get_pixmap(GTK_CLIST(PyGtk_Get(o)), r, c, &p, &m)) {

@@ -1676,7 +1676,7 @@ class GtkNotebook(GtkContainer):
 	def set_tab_hborder(self, tab_hborder):
 		_gtk.gtk_notebook_set_tab_hborder(self._o, tab_hborder)
 	def set_tab_vborder(self, tab_vborder):
-		_gtk.gtk_notebook_set_tab_hborder(self._o, tab_vborder)
+		_gtk.gtk_notebook_set_tab_vborder(self._o, tab_vborder)
 	def get_tab_pos(self):
 		return _gtk.gtk_notebook_get_tab_pos(self._o)
 	def set_tab_pos(self, pos):

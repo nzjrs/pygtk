@@ -1,0 +1,57 @@
+/* -*- Mode: C; c-basic-offset: 4 -*- */
+#ifndef _PYGDKPIXBUF_H_
+#define _PYGDKPIXBUF_H_
+
+#include <Python.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+
+struct _PyGdkPixbuf_FunctionStruct {
+  PyTypeObject *pixbuf_type;
+  PyObject *(* pixbuf_new)(GdkPixbuf *pixbuf);
+};
+
+typedef struct {
+  PyObject_HEAD
+  GdkPixbuf *pixbuf;
+} PyGdkPixbuf_Object;
+
+#define PyGdkPixbuf_Get(ob) (((PyGdkPixbuf_Object *)(ob))->pixbuf)
+
+#ifdef _INSIDE_PYGDKPIXBUF_
+
+#define PyGdkPixbuf_Check(ob) ((ob)->ob_type == &PyGdkPixbuf_Type)
+staticforward PyTypeObject PyGdkPixbuf_Type;
+static PyObject *PyGdkPixbuf_New(GdkPixbuf *pixbuf);
+
+#else
+
+#if defined(NO_IMPORT) || defined(NO_IMPORT_PYGDKPIXBUF)
+extern struct _PyGdkPixbuf_FunctionStruct *_PyGdkPixbuf_API;
+#else
+struct _PyGdkPixbuf_FunctionStruct *_PyGdkPixbuf_API;
+#endif
+
+#define PyGdkPixbuf_Check(ob) ((ob)->ob_type == _PyGdkPixbuf_API->pixbuf_type)
+#define PyGdkPixbuf_Type *(_PyGdkPixbuf_API->pixbuf_type)
+#define PyGdkPixbuf_New (_PyGdkPixbuf_API->pixbuf_new)
+
+#define init_pygdkpixbuf() { \
+    PyObject *pygtk = PyImport_ImportModule("_gdkpixbuf"); \
+    if (pygtk != NULL) { \
+        PyObject *module_dict = PyModule_GetDict(pygtk); \
+        PyObject *cobject = PyDict_GetItemString(module_dict, "_PyGdkPixbuf_API"); \
+        if (PyCObject_Check(cobject)) \
+            _PyGdkPixbuf_API = PyCObject_AsVoidPtr(cobject); \
+        else { \
+            Py_FatalError("could not find _PyGdkPixbuf_API object"); \
+            return; \
+        } \
+    } else { \
+        Py_FatalError("could not import _gdkpixbuf"); \
+        return; \
+    } \
+}
+
+#endif
+
+#endif /* !_PYGDKPIXBUF_H_ */

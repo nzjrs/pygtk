@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = 1.4a
 SUBDIRS = generate pyglade
 
 INCLUDES= $(PYTHON_INCLUDES) $(GTK_CFLAGS) $(GDK_IMLIB_CFLAGS) \
-	$(GTKGL_CFLAGS) $(LIBGLADE_CFLAGS)
+	$(GTKGL_CFLAGS) $(LIBGLADE_CFLAGS) $(GDK_PIXBUF_CFLAGS)
 
 if BUILD_IMLIB
 imlib_libs = _gdkimlibmodule.la
@@ -26,9 +26,15 @@ else
 libglade_libs =
 libglade_mods =
 endif
+if BUILD_PIXBUF
+pixbuf_libs = gdkpixbufmodule.la
+else
+pixbuf_libs =
+endif
 
 pyexecdir = $(PYTHON_SITE_EXEC)
-pyexec_LTLIBRARIES = _gtkmodule.la $(imlib_libs) $(gtkgl_libs) $(libglade_libs)
+pyexec_LTLIBRARIES = _gtkmodule.la $(imlib_libs) $(gtkgl_libs) \
+  $(libglade_libs) $(pixbuf_libs)
 
 _gtkmodule_la_LDFLAGS = -module -avoid-version
 _gtkmodule_la_SOURCES = gtkmodule.c
@@ -47,7 +53,11 @@ _libglademodule_la_LDFLAGS = -module -avoid-version
 _libglademodule_la_SOURCES = libglademodule.c
 _libglademodule_la_LIBADD = $(LIBGLADE_LIBS)
 
-pkginclude_HEADERS = pygtk.h pygdkimlib.h
+gdkpixbufmodule_la_LDFLAGS = -module -avoid-version
+gdkpixbufmodule_la_SOURCES = gdkpixbufmodule.c
+gdkpixbufmodule_la_LIBADD = $(GDK_PIXBUF_LIBS)
+
+pkginclude_HEADERS = pygtk.h pygdkimlib.h pygdkpixbuf.h
 
 pysitedir = $(PYTHON_SITE)
 pysite_PYTHON = gtk.py Gtkinter.py GTK.py GDK.py GtkExtra.py \
