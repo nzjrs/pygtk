@@ -2097,12 +2097,11 @@ identified.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>a tuple containing: a tree path, or
-<literal>None</literal>; a <link
-linkend="class-gtktreeviewcolumn"><classname>gtk.TreeViewColumn</classname></link> 
-object, or <literal>None</literal>; the X coordinate relative to the cell,
-or <literal>None</literal>; and, the Y coordinate relative to the cell, or
-<literal>None</literal></simpara></listitem>
+	  <listitem><simpara>a tuple containing: a tree path; a <link
+	  linkend="class-gtktreeviewcolumn"><classname>gtk.TreeViewColumn</classname></link>
+	  object; the X coordinate relative to the cell; and, the Y
+	  coordinate relative to the cell. If there is no path at the
+	  position <literal>None</literal> is returned.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -2134,7 +2133,8 @@ background</simpara>
 relative to the coordinates of an event on the treeview only when
 <literal>event.window==treeview.get_bin_window()</literal>. It is primarily
 used for popup menus. This method is only meaningful if the treeview is
-realized.</para>
+realized. This method returns <literal>None</literal> if there is no path at
+the position.</para>
 
     </refsect2>
 
