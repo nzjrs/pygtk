@@ -7,7 +7,6 @@ headers
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
 #include "pygtktreemodel.h"
-#include "pygtkcellrenderer.h"
 
 /* from the gdk portion ... */
 extern PyTypeObject PyGdkColormap_Type;
@@ -2596,7 +2595,7 @@ _wrap_gtk_ctree__get_selection(PyGObject *self, void *closure)
     for (selection = GTK_CLIST(self->obj)->selection; selection != NULL;
 	 selection = selection->next) {
 	node = selection->data;
-	if ((py_node = pyg_boxed_new(GTK_TYPE_CTREE_NODE, node, TRUE, TRUE)) == NULL) {
+	if ((py_node = pyg_pointer_new(GTK_TYPE_CTREE_NODE, node)) == NULL) {
 	    Py_DECREF(ret);
 	    return NULL;
 	}
@@ -2671,7 +2670,7 @@ _wrap_gtk_ctree_base_nodes(PyGObject *self, PyObject *args)
     if ((ret = PyList_New(0)) == NULL)
 	return NULL;
     while (node) {
-	PyObject *obj = pyg_boxed_new(GTK_TYPE_CTREE_NODE, node, TRUE, TRUE);
+	PyObject *obj = pyg_pointer_new(GTK_TYPE_CTREE_NODE, node);
 	if (obj == NULL) {
 	    Py_DECREF(ret);
 	    return NULL;
@@ -2692,7 +2691,7 @@ _wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
 			      "pixmap_closed", "mask_closed", "pixmap_opened",
 			      "mask_opened", "is_leaf", "expanded", NULL };
     PyObject *py_text;
-    PyGBoxed *py_parent, *py_sibling;
+    PyGPointer *py_parent, *py_sibling;
     PyGObject *py_pixmap_closed = (PyGObject *) Py_None;
     PyGObject *py_mask_closed = (PyGObject *) Py_None;
     PyGObject *py_pixmap_opened = (PyGObject *) Py_None;
@@ -2711,15 +2710,15 @@ _wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
 				     &py_mask_closed, &py_pixmap_opened,
 				     &py_mask_opened, &is_leaf, &expanded))
 	return NULL;
-    if (pyg_boxed_check(py_parent, GTK_TYPE_CTREE_NODE))
-	parent = pyg_boxed_get(py_parent, GtkCTreeNode);
-    else if (py_parent != (PyGBoxed *) Py_None) {
+    if (pyg_pointer_check(py_parent, GTK_TYPE_CTREE_NODE))
+	parent = pyg_pointer_get(py_parent, GtkCTreeNode);
+    else if ((PyObject *)py_parent != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "parent must be a CTreeNode or None");
 	return NULL;
     }
-    if (pyg_boxed_check(py_parent, GTK_TYPE_CTREE_NODE))
-	sibling = pyg_boxed_get(py_sibling, GtkCTreeNode);
-    else if (py_sibling != (PyGBoxed *) Py_None) {
+    if (pyg_pointer_check(py_parent, GTK_TYPE_CTREE_NODE))
+	sibling = pyg_pointer_get(py_sibling, GtkCTreeNode);
+    else if ((PyObject *)py_sibling != Py_None) {
 	PyErr_SetString(PyExc_TypeError,"sibling must be a CTreeNode or None");
 	return NULL;
     }
@@ -2777,7 +2776,7 @@ _wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
 				spacing, pixmap_closed, mask_closed,
 				pixmap_opened, mask_opened, is_leaf, expanded);
     g_free(text);
-    return pyg_boxed_new(GTK_TYPE_CTREE_NODE, ret, TRUE, TRUE);
+    return pyg_pointer_new(GTK_TYPE_CTREE_NODE, ret);
 }
 %%
 ignore gtk_ctree_find_by_row_data_custom gtk_ctree_find_all_by_row_data_custom
@@ -2789,22 +2788,22 @@ _wrap_gtk_ctree_find_by_row_data(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "node", "data", NULL };
     PyObject *data;
-    PyGBoxed *py_node;
+    PyGPointer *py_node;
     GtkCTreeNode *node = NULL, *ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                     "OO:GtkCTree.find_by_row_data", kwlist,
                                     &py_node, &data))
        return NULL;
-    if (pyg_boxed_check(py_node, GTK_TYPE_CTREE_NODE))
-	node = pyg_boxed_get(py_node, GtkCTreeNode);
-    else if (py_node != (PyGBoxed *) Py_None) {
+    if (pyg_pointer_check(py_node, GTK_TYPE_CTREE_NODE))
+	node = pyg_pointer_get(py_node, GtkCTreeNode);
+    else if ((PyObject *)py_node != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode or None");
 	return NULL;
     }
     ret = gtk_ctree_find_by_row_data(GTK_CTREE(self->obj), node, data);
     if (ret)
-	return pyg_boxed_new(GTK_TYPE_CTREE_NODE, ret, TRUE, TRUE);
+	return pyg_pointer_new(GTK_TYPE_CTREE_NODE, ret);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -2815,7 +2814,7 @@ _wrap_gtk_ctree_find_all_by_row_data(PyGObject *self, PyObject *args,
 				     PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "data", NULL };
-    PyGBoxed *py_node;
+    PyGPointer *py_node;
     PyObject *data, *list;
     GtkCTreeNode *node = NULL;
     GList *ret, *tmp;
@@ -2824,9 +2823,9 @@ _wrap_gtk_ctree_find_all_by_row_data(PyGObject *self, PyObject *args,
 				     "OO:GtkCTree.find_all_by_row_data",kwlist,
 				     &py_node, &data))
 	return NULL;
-    if (pyg_boxed_check(py_node, GTK_TYPE_CTREE_NODE))
-	node = pyg_boxed_get(py_node, GtkCTreeNode);
-    else if (py_node != (PyGBoxed *) Py_None) {
+    if (pyg_pointer_check(py_node, GTK_TYPE_CTREE_NODE))
+	node = pyg_pointer_get(py_node, GtkCTreeNode);
+    else if ((PyObject *)py_node != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode or None");
 	return NULL;
     }
@@ -2834,8 +2833,8 @@ _wrap_gtk_ctree_find_all_by_row_data(PyGObject *self, PyObject *args,
     if ((list = PyList_New(0)) == NULL)
 	return NULL;
     for (tmp = ret; tmp != NULL; tmp = tmp->next) {
-	PyObject *item = pyg_boxed_new(GTK_TYPE_CTREE_NODE,
-				       (GtkCTreeNode *) tmp->data, TRUE, TRUE);
+	PyObject *item = pyg_pointer_new(GTK_TYPE_CTREE_NODE,
+					 (GtkCTreeNode *) tmp->data);
 	if (item == NULL) {
 	    Py_DECREF(list);
 	    return NULL;
@@ -2853,7 +2852,7 @@ _wrap_gtk_ctree_node_get_text(PyGObject *self, PyObject *args,
 			      PyObject *kwargs)
 {
     static char *kwlist[] = { "node", "column", NULL };
-    PyGBoxed *node;
+    PyGPointer *node;
     int column;
     char *text = NULL;
 
@@ -2862,13 +2861,13 @@ _wrap_gtk_ctree_node_get_text(PyGObject *self, PyObject *args,
 				     &node, &column))
 	return NULL;
 
-    if (!pyg_boxed_check(node, GTK_TYPE_CTREE_NODE)) {
+    if (!pyg_pointer_check(node, GTK_TYPE_CTREE_NODE)) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode");
 	return NULL;
     }
     
     if (!gtk_ctree_node_get_text(GTK_CTREE(self->obj),
-				 pyg_boxed_get(node, GtkCTreeNode), column,
+				 pyg_pointer_get(node, GtkCTreeNode), column,
 				 &text)) {
 	PyErr_SetString(PyExc_ValueError, "can't get text value");
 	return NULL;
@@ -2892,13 +2891,13 @@ _wrap_gtk_ctree_node_get_pixmap(PyGObject *self, PyObject *args,
 				     &node, &column))
 	return NULL;
 
-    if (!pyg_boxed_check(node, GTK_TYPE_CTREE_NODE)) {
+    if (!pyg_pointer_check(node, GTK_TYPE_CTREE_NODE)) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode");
 	return NULL;
     }
     
     if (!gtk_ctree_node_get_pixmap(GTK_CTREE(self->obj),
-				   pyg_boxed_get(node, GtkCTreeNode), column,
+				   pyg_pointer_get(node, GtkCTreeNode), column,
 				   &pixmap, &mask)) {
 	PyErr_SetString(PyExc_ValueError, "can't get pixmap value");
 	return NULL;
@@ -2925,13 +2924,13 @@ _wrap_gtk_ctree_node_get_pixtext(PyGObject *self, PyObject *args,
 				     &node, &column))
 	return NULL;
 
-    if (!pyg_boxed_check(node, GTK_TYPE_CTREE_NODE)) {
+    if (!pyg_pointer_check(node, GTK_TYPE_CTREE_NODE)) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode");
 	return NULL;
     }
     
     if (!gtk_ctree_node_get_pixtext(GTK_CTREE(self->obj),
-				    pyg_boxed_get(node, GtkCTreeNode), column,
+				    pyg_pointer_get(node, GtkCTreeNode), column,
 				    &text, &spacing, &pixmap, &mask)) {
 	PyErr_SetString(PyExc_ValueError, "can't get pixtext value");
 	return NULL;
@@ -2958,12 +2957,12 @@ _wrap_gtk_ctree_get_node_info(PyGObject *self, PyObject *args,
 				     kwlist, &node))
 	return NULL;
 
-    if (!pyg_boxed_check(node, GTK_TYPE_CTREE_NODE)) {
+    if (!pyg_pointer_check(node, GTK_TYPE_CTREE_NODE)) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode");
 	return NULL;
     }
     
-    if (!gtk_ctree_get_node_info(GTK_CTREE(self->obj), pyg_boxed_get(node, GtkCTreeNode),
+    if (!gtk_ctree_get_node_info(GTK_CTREE(self->obj), pyg_pointer_get(node, GtkCTreeNode),
 				 &text, &spacing, &pixmap_closed, &mask_closed,
 				 &pixmap_opened, &mask_opened,
 				 &is_leaf, &expanded)) {
@@ -2993,15 +2992,15 @@ _wrap_gtk_ctree_node_set_row_data(PyGObject *self, PyObject *args,
 				     &node, &data))
 	return NULL;
 
-    if (!pyg_boxed_check(node, GTK_TYPE_CTREE_NODE)) {
+    if (!pyg_pointer_check(node, GTK_TYPE_CTREE_NODE)) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode");
 	return NULL;
     }
     
     Py_INCREF(data);
     gtk_ctree_node_set_row_data_full(GTK_CTREE(self->obj),
-				     pyg_boxed_get(node, GtkCTreeNode), data,
-				     (GtkDestroyNotify)pyg_destroy_notify);
+				     pyg_pointer_get(node, GtkCTreeNode), data,
+				     (GDestroyNotify)pyg_destroy_notify);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -3019,13 +3018,13 @@ _wrap_gtk_ctree_node_get_row_data(PyGObject *self, PyObject *args,
 				     &node))
 	return NULL;
 
-    if (!pyg_boxed_check(node, GTK_TYPE_CTREE_NODE)) {
+    if (!pyg_pointer_check(node, GTK_TYPE_CTREE_NODE)) {
 	PyErr_SetString(PyExc_TypeError, "node must be a CTreeNode");
 	return NULL;
     }
     
     data = gtk_ctree_node_get_row_data(GTK_CTREE(self->obj),
-				       pyg_boxed_get(node, GtkCTreeNode));
+				       pyg_pointer_get(node, GtkCTreeNode));
     if (!data) data = Py_None;
     Py_INCREF(data);
     return data;
@@ -3039,24 +3038,24 @@ _wrap_gtk_ctree_node_getattr(PyGBoxed *self, char *attr)
 	return Py_BuildValue("[ssssss]", "children", "expanded", "is_leaf",
 			     "level", "parent", "sibling");
     if (!strcmp(attr, "parent")) {
-	GtkCTreeNode *node = GTK_CTREE_ROW(pyg_boxed_get(self, GtkCTreeNode))->parent;
+	GtkCTreeNode *node = GTK_CTREE_ROW(pyg_pointer_get(self, GtkCTreeNode))->parent;
 	if (node)
-	    return pyg_boxed_new(GTK_TYPE_CTREE_NODE, node, TRUE, TRUE);
+	    return pyg_pointer_new(GTK_TYPE_CTREE_NODE, node);
 	Py_INCREF(Py_None);
 	return Py_None;
     } else if (!strcmp(attr, "sibling")) {
-	GtkCTreeNode *node = GTK_CTREE_ROW(pyg_boxed_get(self, GtkCTreeNode))->sibling;
+	GtkCTreeNode *node = GTK_CTREE_ROW(pyg_pointer_get(self, GtkCTreeNode))->sibling;
 	if (node)
-	    return pyg_boxed_new(GTK_TYPE_CTREE_NODE, node, TRUE, TRUE);
+	    return pyg_pointer_new(GTK_TYPE_CTREE_NODE, node);
 	Py_INCREF(Py_None);
 	return Py_None;
     } else if (!strcmp(attr, "children")) {
-	GtkCTreeNode *node = GTK_CTREE_ROW(pyg_boxed_get(self, GtkCTreeNode))->children;
+	GtkCTreeNode *node = GTK_CTREE_ROW(pyg_pointer_get(self, GtkCTreeNode))->children;
 	PyObject *ret = PyList_New(0);
 	if (ret == NULL)
 	    return NULL;
 	while (node) {
-	    PyObject *py_node = pyg_boxed_new(GTK_TYPE_CTREE_NODE, node, TRUE, TRUE);
+	    PyObject *py_node = pyg_pointer_new(GTK_TYPE_CTREE_NODE, node);
 	    if (py_node == NULL) {
 		Py_DECREF(ret);
 		return NULL;
@@ -3067,11 +3066,11 @@ _wrap_gtk_ctree_node_getattr(PyGBoxed *self, char *attr)
 	}
 	return ret;
     } else if (!strcmp(attr, "level"))
-	return PyInt_FromLong(GTK_CTREE_ROW(pyg_boxed_get(self, GtkCTreeNode))->level);
+	return PyInt_FromLong(GTK_CTREE_ROW(pyg_pointer_get(self, GtkCTreeNode))->level);
     else if (!strcmp(attr, "is_leaf"))
-	return PyInt_FromLong(GTK_CTREE_ROW(pyg_boxed_get(self, GtkCTreeNode))->is_leaf);
+	return PyInt_FromLong(GTK_CTREE_ROW(pyg_pointer_get(self, GtkCTreeNode))->is_leaf);
     else if (!strcmp(attr, "expanded"))
-	return PyInt_FromLong(GTK_CTREE_ROW(pyg_boxed_get(self, GtkCTreeNode))->expanded);
+	return PyInt_FromLong(GTK_CTREE_ROW(pyg_pointer_get(self, GtkCTreeNode))->expanded);
     PyErr_SetString(PyExc_AttributeError, attr);
     return NULL;
 }

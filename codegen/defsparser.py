@@ -22,6 +22,7 @@ class DefsParser(IncludeParser):
         self.interfaces = []
 	self.enums = []      # enums and flags
         self.boxes = []      # boxed types
+        self.pointers = []   # pointer types
 	self.functions = []  # functions and methods
 	self.c_name = {}     # hash of c names of functions
 	self.methods = {}    # hash of methods of particular objects
@@ -46,6 +47,10 @@ class DefsParser(IncludeParser):
         bdef = apply(BoxedDef, args)
         self.boxes.append(bdef)
         self.c_name[bdef.c_name] = bdef
+    def define_pointer(self, *args):
+        pdef = apply(PointerDef, args)
+        self.pointers.append(pdef)
+        self.c_name[pdef.c_name] = pdef
     def define_function(self, *args):
 	fdef = apply(FunctionDef, args)
 	self.functions.append(fdef)
@@ -76,6 +81,8 @@ class DefsParser(IncludeParser):
 	    enum.write_defs(fp)
         for boxed in self.boxes:
             boxed.write_defs(fp)
+        for pointer in self.pointers:
+            pointer.write_defs(fp)
 	for func in self.functions:
 	    func.write_defs(fp)
 

@@ -416,6 +416,48 @@ class CustomBoxedArg(ArgType):
                               '    Py_INCREF(Py_None);\n' +
                               '    return Py_None;')
 
+class PointerArg(ArgType):
+    # haven't done support for default args.  Is it needed?
+    check = ('    if (pyg_pointer_check(py_%(name)s, %(typecode)s))\n'
+             '        %(name)s = pyg_pointer_get(py_%(name)s, %(typename)s);\n'
+             '    else {\n'
+             '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s");\n'
+             '        return NULL;\n'
+             '    }\n')
+    null = ('    if (pyg_pointer_check(py_%(name)s, %(typecode)s))\n'
+            '        %(name)s = pyg_pointer_get(py_%(name)s, %(typename)s);\n'
+            '    else if (py_%(name)s != Py_None) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s or None");\n'
+            '        return NULL;\n'
+            '    }\n')
+    def __init__(self, ptype, typecode):
+	self.typename = ptype
+	self.typecode = typecode
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pnull:
+            info.varlist.add(self.typename, '*' + pname + ' = NULL')
+	    info.varlist.add('PyObject', '*py_' + pname + ' = Py_None')
+	    info.codebefore.append(self.null % {'name':  pname,
+                                                'typename': self.typename,
+                                                'typecode': self.typecode})
+	else:
+            info.varlist.add(self.typename, '*' + pname + ' = NULL')
+	    info.varlist.add('PyObject', '*py_' + pname)
+	    info.codebefore.append(self.check % {'name':  pname,
+                                                 'typename': self.typename,
+                                                 'typecode': self.typecode})
+        info.arglist.append(pname)
+        info.add_parselist('O', ['&py_' + pname], [pname])
+    def write_return(self, ptype, info):
+        if ptype[-1] == '*':
+            info.varlist.add(self.typename, '*ret')
+            info.codeafter.append('    /* pyg_pointer_new handles NULL checking */\n' +
+                                  '    return pyg_pointer_new(' + self.typecode + ', ret);')
+        else:
+            info.varlist.add(self.typename, 'ret')
+            info.codeafter.append('    /* pyg_pointer_new handles NULL checking */\n' +
+                                  '    return pyg_pointer_new(' + self.typecode + ', &ret);')
+
 class AtomArg(IntArg):
     atom = ('    %(name)s = pygdk_atom_from_pyobject(py_%(name)s);\n'
             '    if (PyErr_Occurred())\n'
@@ -546,6 +588,11 @@ class ArgMatcher:
         self.register('const-'+ptype+'*', arg)
     def register_custom_boxed(self, ptype, pytype, getter, new):
         arg = CustomBoxedArg(ptype, pytype, getter, new)
+	self.register(ptype+'*', arg)
+        self.register('const-'+ptype+'*', arg)
+    def register_pointer(self, ptype, typecode):
+        arg = PointerArg(ptype, typecode)
+        self.register(ptype, arg)
 	self.register(ptype+'*', arg)
         self.register('const-'+ptype+'*', arg)
 

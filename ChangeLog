@@ -1,3 +1,78 @@
+2002-02-05  James Henstridge  <james@daa.com.au>
+
+	* codegen/codegen.py (register_types): register pointer types as
+	well.
+
+	* codegen/argtypes.py (PointerArg): handling for pointer arg
+	types.
+	(ArgMatcher.register_pointer): add function to register pointer
+	types.
+
+	* gtk/gtk.override (_wrap_gtk_ctree__get_selection): GtkCTreeNode
+	is not a boxed type.
+	(_wrap_gtk_ctree_base_nodes): same.
+	(_wrap_gtk_ctree_insert_node): same.
+	(_wrap_gtk_ctree_find_by_row_data): same.
+	(_wrap_gtk_ctree_find_all_by_row_data): same.
+	(_wrap_gtk_ctree_node_get_text): same.
+	(_wrap_gtk_ctree_node_get_pixmap): same.
+	(_wrap_gtk_ctree_node_get_pixtext): same.
+	(_wrap_gtk_ctree_get_node_info): same.
+	(_wrap_gtk_ctree_node_set_row_data): same.
+	(_wrap_gtk_ctree_node_get_row_data): same here.
+	(_wrap_gtk_ctree_getattr): same here.
+
+	* codegen/codegen.py (write_source): register pointer types as
+	pointers.
+
+	* pango.override (_wrap_pango_font_description_new): ignore some
+	private (well, pango module API) functions.
+
+	* gtk/gtk-types.defs (CTreeNode): make this a pointer type.
+
+	* codegen/codegen.py (write_pointer_method): new method to write
+	methods for GPointer types.
+	(write_pointer_constructor): new function for writing constructor
+	for GPointer types.
+	(write_pointer_getsets): new function for writing getters for
+	pointer objects (this should be merged with the GObject and GBoxed
+	versions ...).
+	(write_pointer): add new function, which calls all the GPointer
+	related functions.
+	(write_source): write pointer types.
+
+	* gobjectmodule.c (initgobject): actually ready the GPointer type.
+
+	* gtk/gtk-types.defs (CTreeNode): get rid of fields here.  They
+	will be covered by the custom getattr() function, so no need to
+	duplicate.
+
+	* codegen/codegen.py (write_boxed_getsets): convert to use getsets
+	for boxed objects.
+	(write_boxed): use write_boxed_getsets() to write the getsets,
+	while allowing boxed objects to specify a getattr() function.
+
+2002-02-04  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (initgobject): add GPointer to the module dict.
+	(pygobject_api_functions): and to the API vtable.
+
+	* pygobject.h (pyg_constant_strip_prefix): and add it to the
+	public header.
+
+	* pygobject-private.h (pyg_pointer_new): add stuff to private
+	header ...
+
+	* pygboxed.c (PyGPointer): add code to handle base GPointer type.
+
+	* codegen/defsparser.py (DefsParser.__init__): add self.pointers
+	attribute.
+	(DefsParser.define_pointer): handle (define-pointer ...).
+	(DefsParser.write_defs): handle pointer types.
+
+	* codegen/definitions.py (PointerDef): new definition type for
+	G_TYPE_POINTER subclasses.
+
 2002-02-04  Richard Hestilow  <hestilow@ximian.com>
 	
 	* gtk/gtk.override (gtk_cell_renderer_get_size, get_fixed_size):
