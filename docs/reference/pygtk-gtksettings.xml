@@ -73,7 +73,13 @@ linkend="method-gtksettings--set-double-property">set_double_property</link></me
         <methodname><link
 linkend="function-gtk--settings-get-default">gtk.settings_get_default</link></methodname>
         <methodparam></methodparam>
-      </methodsynopsis></programlisting>
+      </methodsynopsis><methodsynopsis language="python">
+        <methodname><link
+linkend="function-gtk--settings-get-for-screen">gtk.settings_get_for_screen</link></methodname>
+	<methodparam><parameter
+		       role="keyword">screen</parameter></methodparam>
+      </methodsynopsis>
+</programlisting>
 
   </refsect1>
 
@@ -98,10 +104,23 @@ linkend="function-gtk--settings-get-default">gtk.settings_get_default</link></me
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"gtk-double-click-time"</entry>
+	      <entry>"gtk-button-images"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The maximum time allowed between two clicks for them to
-be considered a double click (in milliseconds)</entry>
+	      <entry>If <literal>TRUE</literal>, stock icons should be shown
+in buttons. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-can-change-accels"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the menu accelerators can
+be changed by pressing a key over the menu item.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-color-palette"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The palette to use in the color selector</entry>
 	    </row>
 
 	    <row valign="top">
@@ -119,16 +138,45 @@ milleseconds</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-split-cursor"</entry>
+	      <entry>"gtk-dnd-drag-threshold"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, two cursors should be
-displayed for mixed left-to-right and right-to-left text</entry>
+	      <entry>The number of pixels the cursor can move before
+dragging starts</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-theme-name"</entry>
+	      <entry>"gtk-double-click-distance"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The name of the theme RC file to load</entry>
+	      <entry>The maximum distance allowed between two clicks for
+them to be considered a double click (in pixels). Available in GTK+ 2.4
+and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-double-click-time"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The maximum time allowed between two clicks for them to
+be considered a double click (in milliseconds)</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-entry-select-on-focus"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, select the contents of an
+entry when it is focused.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-font-name"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The name of the default font to use</entry>
+	    </row>
+
+	    <row valign="top">
+		       <entry>"gtk-icon-sizes"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The list of icon sizes
+(gtk-menu=16,16;gtk-button=20,20...</entry>
 	    </row>
 
 	    <row valign="top">
@@ -144,45 +192,44 @@ displayed for mixed left-to-right and right-to-left text</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-dnd-drag-threshold"</entry>
+	      <entry>"gtk-menu-bar-popup-delay"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The number of pixels the cursor can move before
-dragging starts</entry>
+	      <entry>The delay before the submenus of a menu bar appear.
+Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-font-name"</entry>
+	      <entry>"gtk-menu-images"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The name of the default font to use</entry>
+	      <entry>If <literal>TRUE</literal> images should be shown in
+menus. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-color-palette"</entry>
+	      <entry>"gtk-menu-popdown-delay"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The palette to use in the color selector</entry>
+	      <entry>The time before hiding a submenu when the pointer is
+moving towards the submenu. Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-entry-select-on-focus"</entry>
+	      <entry>"gtk-menu-popdown-delay"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, select the contents of an
-entry when it is focused.</entry>
+	      <entry>Minimum time the pointer must stay over a menu item
+before the submenu appears. Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-can-change-accels"</entry>
+	      <entry>"gtk-split-cursor"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the menu accelerators can
-be changed by pressing a key over the menu item.</entry>
+	      <entry>If <literal>TRUE</literal>, two cursors should be
+displayed for mixed left-to-right and right-to-left text</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gtk-toolbar-style"</entry>
+	      <entry>"gtk-theme-name"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The toolbar display style - one of:
-<literal>gtk.TOOLBAR_ICONS</literal>, <literal>gtk.TOOLBAR_TEXT</literal>,
-<literal>gtk.TOOLBAR_BOTH</literal> or
-<literal>gtk.TOOLBAR_BOTH_HORIZ</literal></entry>
+	      <entry>The name of the theme RC file to load</entry>
 	    </row>
 
 	    <row valign="top">
@@ -195,6 +242,50 @@ be changed by pressing a key over the menu item.</entry>
 <literal>gtk.ICON_SIZE_BUTTON</literal>,
 <literal>gtk.ICON_SIZE_DND</literal> or
 <literal>gtk.ICON_SIZE_DIALOG</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-toolbar-style"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The toolbar display style - one of:
+<literal>gtk.TOOLBAR_ICONS</literal>, <literal>gtk.TOOLBAR_TEXT</literal>,
+<literal>gtk.TOOLBAR_BOTH</literal> or
+<literal>gtk.TOOLBAR_BOTH_HORIZ</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-xft-antialias"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Whether to antialias Xft fonts; 0=no, 1=yes, -1=default.
+Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-xft-dpi"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Resolution for Xft, in 1024 * dots/inch. -1 to use
+default value. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-xft-hinting"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Whether to hint Xft fonts; 0=no, 1=yes, -1=default.
+Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-xft-hintstyle"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>What degree of hinting to use; none, slight, medium,
+or full. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gtk-xft-rgba"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Type of subpixel antialiasing; none, rgb, bgr, vrgb, vbgr.
+Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	  </tbody>
@@ -414,6 +505,43 @@ object</simpara></listitem>
 returns the singleton <link
 linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
 object.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--settings-get-for-screen">
+      <title>gtk.settings_get_for_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.settings_get_for_screen</methodname>
+          <methodparam><parameter
+		       role="keyword">screen</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+	  object</simpara></listitem>
+	</varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+          object</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.settings_get_for_screen</function>() function
+returns the singleton <link
+linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+object for the <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+specified by <parameter>screen</parameter>.</para>
 
     </refsect2>
 
