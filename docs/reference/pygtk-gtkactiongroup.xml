@@ -68,6 +68,8 @@
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkactiongroup--add-radio-actions">add_radio_actions</link></methodname>
 	<methodparam><parameter role="keyword">entries</parameter></methodparam>
+	<methodparam><parameter role="keyword">value</parameter></methodparam>
+	<methodparam><parameter role="keyword">on_change</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkactiongroup--set-translation-domain">set_translation_domain</link></methodname>
@@ -650,6 +652,9 @@ method. Optional with default value of <literal>None</literal>.</simpara>
 	<simpara>The callback function invoked when the action is
 activated. Optional with default value of <literal>None</literal>.</simpara>
       </listitem>
+      <listitem>
+	<simpara>A flag indicating whether the toggle action is active. Optional with default value of <literal>FALSE</literal>.</simpara>
+      </listitem>
    </itemizedlist>
 
       <para>The "activate" signals of the actions are connected to the
@@ -664,12 +669,24 @@ callbacks and their accel paths are set to
       <programlisting><methodsynopsis language="python">
 	  <methodname>add_radio_actions</methodname>
 	  <methodparam><parameter role="keyword">entries</parameter></methodparam>
+	  <methodparam><parameter role="keyword">value</parameter></methodparam>
+	  <methodparam><parameter role="keyword">on_change</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">entries</parameter>&nbsp;:</term>
 	  <listitem><simpara>a list or tuple of radio action entry
 tuples</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">value</parameter>&nbsp;:</term>
+	  <listitem><simpara>the value of the radio action to set
+active</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">on_change</parameter>&nbsp;:</term>
+	  <listitem><simpara>a callback to connect ot the "changed" signal
+of the first radio action</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -682,7 +699,7 @@ convenience method that creates a number of <link
 linkend="class-gtkradioaction"><classname>gtk.RadioAction</classname></link>
 objects based on the information in the list of action entry tuples
 contained in <parameter>entries</parameter> and adds them to the action
-group. The entry tuples can vary in size from one to seven items with the
+group. The entry tuples can vary in size from one to six items with the
 following information:</para>
 
     <itemizedlist>
@@ -713,15 +730,14 @@ method. Optional with default value of <literal>None</literal>.</simpara>
       </listitem>
       <listitem>
 	<simpara>The value to set on the radio action. Optional with default
-value of <literal>0</literal>.</simpara>
-      </listitem>
-      <listitem>
-	<simpara>The callback function invoked when the action is
-activated. Optional with default value of <literal>None</literal>.</simpara>
+value of <literal>0</literal>. Should be specified in applications.</simpara>
       </listitem>
    </itemizedlist>
 
-      <para>The accel paths of the actions are set to
+      <para>The <parameter>value</parameter> parameter specifies the radio
+action that should be set active. The "changed" signal of the first radio
+action is connected to the <parameter>on_change</parameter> callback and the
+accel paths of the actions are set to
 <literal>&lt;Actions&gt;/<replaceable>group-name</replaceable>/<replaceable>action-name</replaceable></literal>.</para>
 
     </refsect2>
