@@ -1910,10 +1910,11 @@ _wrap_gtk_editable_insert_text(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "text", NULL };
     char *text;
-    int len, pos;
+    int len, pos=0;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"s#:GtkEditable.insert_text",
-				     kwlist, &text, &len))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s#|i:GtkEditable.insert_text",
+				     kwlist, &text, &len, &pos))
         return NULL;
     gtk_editable_insert_text(GTK_EDITABLE(self->obj), text, len, &pos);
     return PyInt_FromLong(pos);
