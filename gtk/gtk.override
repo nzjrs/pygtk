@@ -557,6 +557,37 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
+ignore gtk_selection_data_copy gtk_selection_data_free
+%%
+override_attr GtkSelectionData.data
+if (pyg_boxed_get(self, GtkSelectionData)->length >= 0) {
+    return PyString_FromStringAndSize(
+			pyg_boxed_get(self, GtkSelectionData)->data,
+			pyg_boxed_get(self, GtkSelectionData)->length);
+} else {
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_selection_data_set kwargs
+static PyObject *
+_wrap_gtk_selection_data_set(PyGBoxed *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "type", "format", "data", NULL };
+    GdkAtom type;
+    int format, length;
+    guchar *data;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwlist,
+				     "iis#:GtkSelectionData.set", kwlist,
+				     &type, &format, &data, &length))
+	return NULL;
+    gtk_selection_data_set(pyg_boxed_get(self, GtkSelectionData),
+			   type, format, data, length);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_widget_draw kwargs
 static PyObject *
 _wrap_gtk_widget_draw(PyGObject *self, PyObject *args, PyObject *kwargs)

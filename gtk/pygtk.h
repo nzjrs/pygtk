@@ -20,9 +20,6 @@ struct _PyGtk_FunctionStruct {
     PyTypeObject *gdkEvent_type;
     PyObject *(* gdkEvent_new)(GdkEvent *event);
 
-    PyTypeObject *gtkSelectionData_type;
-    PyObject *(* gtkSelectionData_new)(GtkSelectionData *data);
-
     PyTypeObject *gdkAtom_type;
     PyObject *(* gdkAtom_new)(GdkAtom atom);
 
@@ -42,11 +39,6 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    GtkSelectionData *obj;
-} PyGtkSelectionData_Object;
-
-typedef struct {
-    PyObject_HEAD
     gchar *name;
     GdkAtom atom;
 } PyGdkAtom_Object;
@@ -63,7 +55,6 @@ typedef struct {
 
 /* routines to get the C object value out of the PyObject wrapper */
 #define PyGdkEvent_Get(v) (((PyGdkEvent_Object *)(v))->obj)
-#define PyGtkSelectionData_Get(v) (((PyGtkSelectionData_Object *)(v))->obj)
 #define PyGdkAtom_Get(v) (((PyGdkAtom_Object *)(v))->atom)
 #define PyGtkCTreeNode_Get(v) (((PyGtkCTreeNode_Object *)(v))->node)
 #define PyGdkDevice_Get(v) (((PyGdkDevice_Object *)(v))->obj)
@@ -83,21 +74,18 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 
 /* type objects */
 #define PyGdkEvent_Type         *(_PyGtk_API->gdkEvent_type)
-#define PyGtkSelectionData_Type *(_PyGtk_API->gtkSelectionData_type)
 #define PyGdkAtom_Type          *(_PyGtk_API->gdkAtom_type)
 #define PyGtkCTreeNode_Type     *(_PyGtk_API->gtkCTreeNode_type)
 #define PyGdkDevice_Type        *(_PyGtk_API->gdkDevice_type)
 
 /* type checking routines */
 #define PyGdkEvent_Check(v) ((v)->ob_type == _PyGtk_API->gdkEvent_type)
-#define PyGtkSelectionData_Check(v) ((v)->ob_type == _PyGtk_API->gtkSelectionData_type)
 #define PyGdkAtom_Check(v) ((v)->ob_type == _PyGtk_API->gdkAtom_type)
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == _PyGtk_API->gtkCTreeNode_type)
 #define PyGdkDevice_Check(v) ((v)->ob_type == _PyGtk_API->gdkDevice_type)
 
 /* type objects */
 #define PyGdkEvent_New         (_PyGtk_API->gdkEvent_new)
-#define PyGtkSelectionData_New (_PyGtk_API->gtkSelectionData_new)
 #define PyGdkAtom_New          (_PyGtk_API->gdkAtom_new)
 #define PyGtkCTreeNode_New     (_PyGtk_API->gtkCTreeNode_new)
 #define PyGdkDevice_New        (_PyGtk_API->gdkDevice_new)

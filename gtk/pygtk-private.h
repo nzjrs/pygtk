@@ -15,21 +15,18 @@
 
 /* type objects */
 extern PyTypeObject PyGdkEvent_Type;
-extern PyTypeObject PyGtkSelectionData_Type;
 extern PyTypeObject PyGdkAtom_Type;
 extern PyTypeObject PyGtkCTreeNode_Type;
 extern PyTypeObject PyGdkDevice_Type;
 
 /* check the type of a PyObject */
 #define PyGdkEvent_Check(v) ((v)->ob_type == &PyGdkEvent_Type)
-#define PyGtkSelectionData_Check(v) ((v)->ob_type == &PyGtkSelectionData_Type)
 #define PyGdkAtom_Check(v) ((v)->ob_type == &PyGdkAtom_Type)
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == &PyGtkCTreeNode_Type)
 #define PyGdkDevice_Check(v) ((v)->ob_type == &PyGdkDevice_Type)
 
 /* constructors for PyObject wrappers ... */
 PyObject *PyGdkEvent_New(GdkEvent *event);
-PyObject *PyGtkSelectionData_New(GtkSelectionData *data);
 PyObject *PyGdkAtom_New(GdkAtom atom);
 PyObject *PyGtkCTreeNode_New(GtkCTreeNode *node);
 PyObject *PyGdkDevice_New(GdkDevice *device);

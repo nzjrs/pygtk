@@ -330,6 +330,9 @@ def write_getattr(parser, objobj, overrides, fp=sys.stdout):
         fp.write('\n\n')
         return funcname
     
+    # no overrides for the whole function.  If no fields, don't write a func
+    if not objobj.fields:
+        return '0'
     attrchecks = ''
     for ftype, fname in objobj.fields:
         attrname = objobj.c_name + '.' + fname
@@ -428,10 +431,7 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
 
     # write the type template
     dict = { 'class': objobj.c_name }
-    if objobj.fields:
-        dict['getattr'] = write_getattr(parser, objobj, overrides, fp)
-    else:
-        dict['getattr'] = '0'
+    dict['getattr'] = write_getattr(parser, objobj, overrides, fp)
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
     fp.write(typetmpl % dict)
 
@@ -558,6 +558,9 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
         fp.write('\n\n')
         return funcname
 
+    # no overrides for the whole function.  If no fields, don't write a func
+    if not boxedobj.fields:
+        return '0'
     attrchecks = ''
     for ftype, fname in boxedobj.fields:
         attrname = boxedobj.c_name + '.' + fname
@@ -640,10 +643,7 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
 
     # write the type template
     dict = { 'typename': boxedobj.c_name }
-    if boxedobj.fields:
-        dict['getattr'] = write_boxed_getattr(parser, boxedobj, overrides, fp)
-    else:
-        dict['getattr'] = '0'
+    dict['getattr'] = write_boxed_getattr(parser, boxedobj, overrides, fp)
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['typename'] + '_methods)'
     fp.write(boxedtmpl % dict)
 

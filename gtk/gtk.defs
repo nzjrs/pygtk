@@ -780,6 +780,18 @@
   (release-func gtk_tree_iter_free)
 )
 
+(boxed SelectionData
+  (in-module Gtk)
+  (c-name GtkSelectionData)
+  (copy-func gtk_selection_data_copy)
+  (release-func gtk_selection_data_free)
+  (field (type-and-name GdkAtom selection))
+  (field (type-and-name GdkAtom target))
+  (field (type-and-name GdkAtom type))
+  (field (type-and-name gint format))
+  (field (type-and-name guchar* data))
+)
+
 
 ;; Enumerations and flags ...
 
@@ -8771,7 +8783,7 @@
 (method copy
   (of-object SelectionData (Gtk))
   (c-name gtk_selection_data_copy)
-  (return-type GtkSelectioData*)
+  (return-type GtkSelectionData*)
 )
 
 (method free

@@ -84,19 +84,6 @@ PyGdkDragContext_New(GdkDragContext *ctx)
 #endif
 
 PyObject *
-PyGtkSelectionData_New(GtkSelectionData *data)
-{
-    PyGtkSelectionData_Object *self;
-
-    self = (PyGtkSelectionData_Object *)PyObject_NEW(PyGtkSelectionData_Object,
-						     &PyGtkSelectionData_Type);
-    if (self == NULL)
-	return NULL;
-    self->obj = data;
-    return (PyObject *)self;
-}
-
-PyObject *
 PyGdkAtom_New(GdkAtom atom)
 {
     PyGdkAtom_Object *self;
@@ -1770,99 +1757,6 @@ PyTypeObject PyGdkDragContext_Type = {
 #endif
 
 static void
-pygtk_selection_data_dealloc(PyGtkSelectionData_Object *self)
-{
-    PyMem_DEL(self);
-}
-
-static int
-pygtk_selection_data_compare(PyGtkSelectionData_Object *self,
-			     PyGtkSelectionData_Object *v)
-{
-    if (self->obj == v->obj) return 0;
-    if (self->obj > v->obj) return -1;
-    return 1;
-}
-
-static long
-pygtk_selection_data_hash(PyGtkSelectionData_Object *self)
-{
-    return (long)self->obj;
-}
-
-static PyObject *
-pygtk_selection_data_set(PyGtkSelectionData_Object *self, PyObject *args)
-{
-    GdkAtom type;
-    int format, length;
-    guchar *data;
-
-    if (!PyArg_ParseTuple(args, "iis#:GtkSelectionData.set", &type, &format,
-			  &data, &length))
-	return NULL;
-    gtk_selection_data_set(self->obj, type, format, data, length);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyMethodDef pygtk_selection_data_methods[] = {
-    {"set", (PyCFunction)pygtk_selection_data_set, METH_VARARGS, NULL},
-    {NULL, 0, 0, NULL}
-};
-
-static PyObject *
-pygtk_selection_data_getattr(PyGtkSelectionData_Object *self, char *key)
-{
-    if (!strcmp(key, "__members__"))
-	return Py_BuildValue("[sssss]", "data", "format", "selection",
-			     "target", "type", "length");
-
-    if (!strcmp(key, "selection"))
-	return PyGdkAtom_New(self->obj->selection);
-    else if (!strcmp(key, "target"))
-	return PyGdkAtom_New(self->obj->target);
-    else if (!strcmp(key, "type"))
-	return PyGdkAtom_New(self->obj->type);
-    else if (!strcmp(key, "format"))
-	return PyInt_FromLong(self->obj->format);
-    else if (!strcmp(key, "length"))
-	return PyInt_FromLong(self->obj->length);
-    else if (!strcmp(key, "data")) {
-	if (self->obj->length > -1) {
-	    return PyString_FromStringAndSize(self->obj->data, self->obj->length);
-	}
-	else {
-	    Py_INCREF (Py_None);
-	    return Py_None;
-	}
-    }
-
-    return Py_FindMethod(pygtk_selection_data_methods, (PyObject *)self, key);
-}
-
-PyTypeObject PyGtkSelectionData_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GtkSelectionData",
-    sizeof(PyGtkSelectionData_Object),
-    0,
-    (destructor)pygtk_selection_data_dealloc,
-    (printfunc)0,
-    (getattrfunc)pygtk_selection_data_getattr,
-    (setattrfunc)0,
-    (cmpfunc)pygtk_selection_data_compare,
-    (reprfunc)0,
-    0,
-    0,
-    0,
-    (hashfunc)pygtk_selection_data_hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
-
-static void
 pygdk_atom_dealloc(PyGdkAtom_Object *self)
 {
     if (self->name) g_free(self->name);
@@ -2396,20 +2290,6 @@ PyGdkEvent_to_value(GValue *value, PyObject *object)
     return -1;
 }
 static PyObject *
-PyGtkSelectionData_from_value(const GValue *value)
-{
-    return PyGtkSelectionData_New(g_value_get_boxed(value));
-}
-static int
-PyGtkSelectionData_to_value(GValue *value, PyObject *object)
-{
-    if (PyGtkSelectionData_Check(object)) {
-	g_value_set_boxed(value, PyGtkSelectionData_Get(object));
-	return 0;
-    }
-    return -1;
-}
-static PyObject *
 PyGtkTreePath_from_value(const GValue *value)
 {
     GtkTreePath *path = (GtkTreePath *)g_value_get_boxed(value);
@@ -2453,7 +2333,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GdkColormap);
     register_tp(GdkDragContext);
 #endif
-    register_tp2(GtkSelectionData, GTK_TYPE_SELECTION_DATA);
     register_tp(GdkAtom);
     register_tp(GtkCTreeNode);
     register_tp(GdkDevice);
