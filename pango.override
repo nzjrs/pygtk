@@ -158,6 +158,7 @@ pypango_attr_tp_getattr(PyPangoAttribute *self, char *attr)
     case PANGO_ATTR_UNDERLINE:
     case PANGO_ATTR_STRIKETHROUGH:
     case PANGO_ATTR_RISE:
+    case PANGO_ATTR_FALLBACK:
 	if (!strcmp(attr, "__members__"))
 	    return Py_BuildValue("[s]", "value");
 	if (!strcmp(attr, "value"))
@@ -1470,4 +1471,20 @@ _wrap_PANGO_RBEARING(PyObject *self, PyObject *args, PyObject *kwargs)
     PyErr_Clear();
     PyErr_SetString(PyExc_ValueError, "rect must be a 4-tuple of integers");
     return NULL;
+}
+%%
+override pango_attr_fallback_new kwargs
+static PyObject *
+_wrap_pango_attr_fallback_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "fallback", "start_index", "end_index", NULL };
+    gboolean fallback;
+    guint start = 0, end = 1;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|ii:PangoAttrFallback",
+				     kwlist, &fallback, &start, &end))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_fallback_new(fallback),
+			    start, end);
 }
