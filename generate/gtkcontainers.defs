@@ -108,7 +108,22 @@
 
 ;;; Window
 
-(define-object GtkWindow (GtkBin))
+(define-object GtkWindow (GtkBin)
+    (fields
+     (GtkWidget focus_widget)
+     (GtkWidget default_widget)
+     (GtkWindow transient_parent)
+     (int resize_count)
+     (int allow_shrink)
+     (int allow_grow)
+     (int auto_shrink)
+     (int handling_resize)
+     (int position)
+     (int use_uposition)
+     (int modal)
+     (int window_has_focus)
+     (int window_has_pointer_focus)
+    ))
 
 (define-func gtk_window_new
   GtkWidget

@@ -6,6 +6,7 @@
 #
 # TODO
 # 1. document some of this (maybe all of it)
+# 2. add widget members to individual __getattr__()s
 
 # The _obj argument in each constructor is used to create a gtk object
 # that coresponds to an already created GTK Object.  It should be possible
@@ -844,6 +845,40 @@ class GtkWindow(GtkBin):
 		self._o = _gtk.gtk_window_new(type)
 		if title is not None:
 			self.set_title(title)
+	def __getattr__(self, attr): 
+		attrs = {
+			'focus_widget' : _gtk.gtk_window_get_focus_widget,
+			'default_widget' : _gtk.gtk_window_get_default_widget,
+			'transient_parent' : _gtk.gtk_window_get_transient_parent,
+			'resize_count': _gtk.gtk_window_get_resize_count,
+			'allow_shrink': _gtk.gtk_window_get_allow_shrink,
+			'allow_grow': _gtk.gtk_window_get_allow_grow,
+			'auto_shrink': _gtk.gtk_window_get_auto_shrink,
+			'handling_resize': _gtk.gtk_window_get_handling_resize,
+			# We already have a position method 
+			'window_position': _gtk.gtk_window_get_position,
+			'use_uposition' :  _gtk.gtk_window_get_use_uposition,
+			'modal':  _gtk.gtk_window_get_modal,
+			'window_has_focus' :  _gtk.gtk_window_get_window_has_focus,
+			'window_has_pointer_focus' :
+				_gtk.gtk_window_get_window_has_pointer_focus
+        }
+		if attrs.has_key(attr):
+			ret = attrs[attr](self._o)
+			# avoid spurious None checks
+			if ret is None:
+				return None
+			if type(ret) == _gtk.GtkObjectType:
+				return _obj2inst(ret)
+			else:
+				return ret
+		#else:
+		#	ret = _gtk.gtk_object_get(self._o, key)
+		#	if type(ret) == _gtk.GtkObjectType:
+		#		return _obj2inst(ret)
+		#	else:
+		#		return ret
+		return GtkBin.__getattr__(self, attr)
 	def activate_focus(self, obj=None):
 		_gtk.gtk_window_activate_focus(self._o)
 	def activate_default(self, obj=None):

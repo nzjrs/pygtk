@@ -7167,7 +7167,7 @@ void init_gtk() {
 #ifdef WITH_THREAD
      /* it is required that this function be called to enable the thread
       * safety functions */
-     disable_threads = getenv("PYGTK_NO_THREADS") != ? 1 : 0;
+     disable_threads = getenv("PYGTK_NO_THREADS") != NULL ? 1 : 0;
      if ( !g_threads_got_initialized && !disable_threads )
          g_thread_init(NULL);
 #endif
