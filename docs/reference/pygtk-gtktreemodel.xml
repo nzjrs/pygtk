@@ -120,6 +120,12 @@ linkend="method-gtktreemodel--unref-node">unref_node</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtktreemodel--get-value">get</link></methodname>
+	<methodparam><parameter>iter</parameter></methodparam>
+	<methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtktreemodel--foreach">foreach</link></methodname>
 	<methodparam><parameter>func</parameter></methodparam>
 	<methodparam><parameter>user_data</parameter></methodparam>
@@ -880,33 +886,53 @@ method. Please note that nodes that are deleted are not unreffed.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gtktreemodel- -get">
+  <refsect2 id="method-gtktreemodel--get">
     <title>gtk.TreeModel.get</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>get</methodname>
-    <methodparam><parameter role="keyword">iter</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
-      <listitem><simpara>a row in <parameter>tree_model</parameter></simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Gets the value of one or more cells in the row referenced by <parameter>iter</parameter>.
-The variable argument list should contain integer column numbers,
-each column number followed by a place to store the value being
-retrieved.  The list is terminated by a -1. For example, to get a
-value from column 0 with type <literal>G_TYPE_STRING</literal>, you would
-write: <literal>gtk_tree_model_get (model, iter, 0, &amp;place_string_here, -1)</literal>,
-where <literal>place_string_here</literal> is a <type>gchar*</type> to be 
-filled with the string.
-If appropriate, the returned values have to be freed or unreferenced.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get</methodname>
+	  <methodparam><parameter>iter</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  pointing at the row to retrieve data value
+	  from</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>one or more column numbers</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a tuple containing the column
+	  values</simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
 
+      <para>The <methodname>get</methodname>() method returns a tuple
+containing the values of one or more cells in the row referenced by the
+<link linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+specified by <parameter>iter</parameter>. The additional arguments should
+contain integer column numbers. For example, to get values from columns 0
+and 3, you would write:</para>
+
+      <programlisting>
+  value0, value3 = treemodel_get(iter, 0, 3)
+ </programlisting>
+
+      <para></para>
+
+    </refsect2>
+
+<!-- NOT IMPLEMENTED
   <refsect2 id="method-gtktreemodel- -get-valist">
     <title>gtk.TreeModel.get_valist</title>
 
