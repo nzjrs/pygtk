@@ -462,7 +462,7 @@ class GtkTreePathArg(ArgType):
             '        return NULL;\n'
             '    }\n')
     freepath = ('    if (%(name)s)\n'
-                '        gtk_tree_path_free(%(name)s);')
+                '        gtk_tree_path_free(%(name)s);\n')
     def __init__(self):
         pass
     def write_param(self, ptype, pname, pdflt, pnull, info):
