@@ -16,15 +16,13 @@ pkginclude_HEADERS = pygobject.h
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pygtk-2.0.pc
 
-INCLUDES = $(PYTHON_INCLUDES)
+INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS) $(ATK_CFLAGS)
 COMMONDEFS = pango-types.defs atk-types.defs gtk/gdk-types.defs \
 	     gtk/gtk-types.defs
 
 # gobject module
 pyexec_LTLIBRARIES += gobjectmodule.la
-gobjectmodule_la_LDFLAGS = -module -avoid-version \
- -export-symbols-regex initgobject
-gobjectmodule_la_CFLAGS = $(GLIB_CFLAGS)
+gobjectmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initgobject
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 gobjectmodule_la_SOURCES = \
   pygobject.h pygobject-private.h \
@@ -33,10 +31,9 @@ gobjectmodule_la_SOURCES = \
 # pango module
 pyexec_LTLIBRARIES += pangomodule.la
 pangomodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initpango
-pangomodule_la_CFLAGS = $(PANGO_CFLAGS)
+pangomodule_la_LIBADD = $(PANGO_LIBS)
 pangomodule_la_SOURCES = pangomodule.c
 nodist_pangomodule_la_SOURCES = pango.c
-pangomodule_la_LIBADD = $(PANGO_LIBS)
 pango.c: $(COMMONDEFS) pango.override
 CLEANFILES += pango.c
 EXTRA_DIST += pango.override
@@ -45,10 +42,9 @@ defs_DATA += pango.defs pango-types.defs
 # atk module
 pyexec_LTLIBRARIES += atkmodule.la
 atkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initatk
-atkmodule_la_CFLAGS = $(ATK_CFLAGS)
+atkmodule_la_LIBADD = $(ATK_LIBS)
 atkmodule_la_SOURCES = atkmodule.c
 nodist_atkmodule_la_SOURCES = atk.c
-atkmodule_la_LIBADD = $(ATK_LIBS)
 atk.c: $(COMMONDEFS) atk.override
 CLEANFILES += atk.c
 EXTRA_DIST += atk.override

@@ -882,8 +882,19 @@
   (c-name "pango_font_map_load_font")
   (return-type "PangoFont*")
   (parameters
-    '("PangoContect*" "context")
+    '("PangoContext*" "context")
     '("const-PangoFontDescription*" "desc")
+  )
+)
+
+(define-method load_fontset
+  (of-object "PangoFontMap")
+  (c-name "pango_font_map_load_fontset")
+  (return-type "PangoFontset*")
+  (parameters
+    '("PangoContext*" "context")
+    '("const-PangoFontDescription*" "desc")
+    '("PangoLanguage*" "language")
   )
 )
 
@@ -895,6 +906,25 @@
     '("PangoFontFamily***" "families")
     '("int*" "n_families")
   )
+)
+
+
+
+;; From /opt/gtk2/include/pango-1.0/pango/pango-fontset.h
+
+(define-method get_font
+  (of-object "PangoFontset")
+  (c-name "pango_fontset_get_font")
+  (return-type "PangoFont*")
+  (parameters
+    '("guint" "wc")
+  )
+)
+
+(define-method get_metrics
+  (of-object "PangoFontset")
+  (c-name "pango_fontset_get_metrics")
+  (return-type "PangoFontMetrics*")
 )
 
 

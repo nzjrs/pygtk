@@ -22,14 +22,16 @@ ignore
   pango_attr_list_unref
   pango_coverage_ref
   pango_coverage_unref
-  pango_font_description_copy
   pango_font_description_equal
   pango_font_description_free
   pango_font_descriptions_free
   pango_font_map_free_families
   pango_font_metrics_ref
   pango_font_metrics_unref
+  pango_font_get_coverage
+  pango_font_find_shaper
   pango_glyph_string_free
+  pango_layout_get_log_attrs
   pango_tab_array_free
 %%
 ignore
@@ -86,3 +88,228 @@ _wrap_pango_font_description_tp_hash(PyGBoxed *self)
     return (long)pango_font_description_hash(
 		pyg_boxed_get(self, PangoFontDescription));
 }
+%%
+override pango_font_description_copy noargs
+static PyObject *
+_wrap_pango_font_description_copy(PyObject *self)
+{
+    return pyg_boxed_new(PANGO_TYPE_FONT_DESCRIPTION,
+			 pyg_boxed_get(self, PangoFontDescription),
+			 TRUE, TRUE);
+}
+%%
+override pango_context_list_families noargs
+static PyObject *
+_wrap_pango_context_list_families(PyGObject *self)
+{
+    PangoFontFamily **families;
+    gint n_families, i;
+    PyObject *ret;
+
+    pango_context_list_families(PANGO_CONTEXT(self->obj), &families,
+				&n_families);
+    ret = PyTuple_New(n_families);
+    for (i = 0; i < n_families; i++) {
+	PyObject *family;
+
+	family = pygobject_new((GObject *)families[i]);
+	PyTuple_SetItem(ret, i, family);
+    }
+    g_free(families);
+    return ret;
+}
+%%
+override pango_font_get_glyph_extents kwargs
+static PyObject *
+_wrap_pango_font_get_glyph_extents(PyGObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    static char *kwlist[] = { "glyph", NULL };
+    gint glyph;
+    PangoRectangle ink_rect, logical_rect;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:PangoFont.get_glyph_extents", kwlist,
+				     &glyph))
+	return NULL;
+    pango_font_get_glyph_extents(PANGO_FONT(self->obj), (PangoGlyph)glyph,
+				 &ink_rect, &logical_rect);
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_font_family_list_faces noargs
+static PyObject *
+_wrap_pango_font_family_list_faces(PyGObject *self)
+{
+    PangoFontFace **faces;
+    gint n_faces, i;
+    PyObject *ret;
+
+    pango_font_family_list_faces(PANGO_FONT_FAMILY(self->obj),
+				 &faces, &n_faces);
+    ret = PyTuple_New(n_faces);
+    for (i = 0; i < n_faces; i++) {
+	PyObject *face;
+
+	face = pygobject_new((GObject *)faces[i]);
+	PyTuple_SetItem(ret, i, face);
+    }
+    g_free(faces);
+    return ret;
+}
+%%
+override pango_font_map_list_families noargs
+static PyObject *
+_wrap_pango_font_map_list_families(PyGObject *self)
+{
+    PangoFontFamily **families;
+    gint n_families, i;
+    PyObject *ret;
+
+    pango_font_map_list_families(PANGO_FONT_MAP(self->obj), &families,
+				 &n_families);
+    ret = PyTuple_New(n_families);
+    for (i = 0; i < n_families; i++) {
+	PyObject *family;
+
+	family = pygobject_new((GObject *)families[i]);
+	PyTuple_SetItem(ret, i, family);
+    }
+    g_free(families);
+    return ret;
+}
+%%
+override pango_tab_array_get_tab kwargs
+static PyObject *
+_wrap_pango_tab_array_get_tab(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "tab_index", NULL };
+    gint tab_index, location;
+    PangoTabAlign alignment;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoTabArray.get_tab",
+				     kwlist, &tab_index))
+	return NULL;
+
+    pango_tab_array_get_tab(pyg_boxed_get(self, PangoTabArray),
+			    tab_index, &alignment, &location);
+    return Py_BuildValue("(ii)", (int)alignment, location);
+}
+%%
+override pango_tab_array_get_tabs noargs
+static PyObject *
+_wrap_pango_tab_array_get_tabs(PyObject *self)
+{
+    PangoTabAlign *alignments;
+    gint *locations, length, i;
+    PyObject *ret;
+
+    length = pango_tab_array_get_size(pyg_boxed_get(self, PangoTabArray));
+    pango_tab_array_get_tabs(pyg_boxed_get(self, PangoTabArray),
+			     &alignments, &locations);
+    ret = PyTuple_New(length);
+    for (i = 0; i < length; i++) {
+	PyObject *item;
+
+	item = Py_BuildValue("(ii)", (int)alignments[i], locations[i]);
+	PyTuple_SetItem(ret, i, item);
+    }
+    return ret;
+}
+%%
+override pango_layout_set_markup kwargs
+static PyObject *
+_wrap_pango_layout_set_markup(PyGObject *self, PyObject *args,PyObject *kwargs)
+{
+    static char *kwlist[] = { "markup", NULL };
+    char *markup;
+    gint length;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:PangoLayout.set_markup",
+				     kwlist, &markup, &length))
+	return NULL;
+
+    pango_layout_set_markup(PANGO_LAYOUT(self->obj), markup, length);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override pango_layout_set_markup_with_accel kwargs
+static PyObject *
+_wrap_pango_layout_set_markup_with_accel(PyGObject *self, PyObject *args,
+					 PyObject *kwargs)
+{
+    static char *kwlist[] = { "markup", "accel_marker", NULL };
+    char *markup;
+    gint length, accel_length;
+    Py_UNICODE *accel_marker, pychr;
+    gunichar accel_char;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s#u#:PangoLayout.set_markup_with_accel",
+				     kwlist, &markup, &length,
+				     &accel_marker, &accel_length))
+	return NULL;
+    if (accel_length != 1) {
+	PyErr_SetString(PyExc_TypeError, "accel_marker must be a unicode string of length 1");
+	return NULL;
+    }
+    pango_layout_set_markup_with_accel(PANGO_LAYOUT(self->obj), markup, length,
+				       (gunichar)accel_marker[0], &accel_char);
+
+#if !defined(Py_UNICODE_SIZE) || Py_UNICODE_SIZE == 2
+    if (accel_char >= 0xffff) {
+	PyErr_SetString(PyExc_ValueError, "unicode character is too big to fit in a 16-bit unicode character");
+	return NULL;
+    }
+#endif
+    pychr = (Py_UNICODE)accel_char;
+    return PyUnicode_FromUnicode(&pychr, 1);
+}
+%%
+override pango_layout_index_to_pos kwlist
+static PyObject *
+_wrap_pango_layout_index_to_pos(PyGObject *self, PyObject *args,
+				PyObject *kwargs)
+{
+    static char *kwlist[] = { "index", NULL };
+    gint index;
+    PangoRectangle pos;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:PangoLayout.index_to_pos", kwlist,
+				     &index))
+	return NULL;
+
+    pango_layout_index_to_pos(PANGO_LAYOUT(self->obj), index, &pos);
+    return Py_BuildValue("(iiii)", pos.x, pos.y, pos.width, pos.height);
+}
+%%
+override pango_layout_get_cursor_pos kwlist
+static PyObject *
+_wrap_pango_layout_get_cursor_pos(PyGObject *self, PyObject *args,
+				PyObject *kwargs)
+{
+    static char *kwlist[] = { "index", NULL };
+    gint index;
+    PangoRectangle strong_pos, weak_pos;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:PangoLayout.get_cursor_pos", kwlist,
+				     &index))
+	return NULL;
+
+    pango_layout_get_cursor_pos(PANGO_LAYOUT(self->obj), index,
+				&strong_pos, &weak_pos);
+    return Py_BuildValue("((iiii)(iiii))",
+			 strong_pos.x, strong_pos.y,
+			 strong_pos.width, strong_pos.height,
+			 weak_pos.x, weak_pos.y,
+			 weak_pos.width, weak_pos.height);
+}
+
