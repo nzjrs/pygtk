@@ -68,6 +68,14 @@ linkend="method-gtkpaned--compute-position">compute_position</link></methodname>
 	<methodparam><parameter
 		       role="keyword">child2_req</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkpaned--get-child1">get_child1</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkpaned--get-child2">get_child2</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -96,6 +104,22 @@ linkend="method-gtkpaned--compute-position">compute_position</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"max-position"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The largest possible value for the position property.
+This property is derived from the size and shrinkability of the widget's
+children. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"min-position"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The smallest possible value for the position property.
+This property is derived from the size and shrinkability of the widget's
+children. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"position"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The position of the paned separator in pixels (0 means
@@ -107,6 +131,38 @@ all the way to the left or top).</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the "position" property is
 valid.</entry>
+	    </row>
+
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Child Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"resize"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the child expands and
+shrinks along with the paned widget. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"shrink"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the child can be made
+smaller than its requisition. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	  </tbody>
@@ -506,6 +562,52 @@ positions.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkpaned--get-child1">
+      <title>gtk.Paned.get_child1</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_child1</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the first child, or<literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in  PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_child1</methodname>() method returns the
+first child of the paned widget.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkpaned--get-child2">
+      <title>gtk.Paned.get_child2</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_child2</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the second child, or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in  PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_child2</methodname>() method returns 
+the second child of the paned widget.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -538,6 +640,11 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -576,6 +683,11 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -619,6 +731,11 @@ method</simpara></listitem>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
 	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
+	</varlistentry>
       </variablelist>
 
       <para>The "cycle-child-focus" signal is emitted when
@@ -661,6 +778,11 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -729,6 +851,11 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -813,6 +940,11 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
