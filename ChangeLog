@@ -1,4 +1,25 @@
+2001-06-22  James Henstridge  <james@daa.com.au>
+
+	* codegen/argtypes.py (GTypeArg.write_param): new arg type for
+	GType and GtkType args that uses pyg_type_from_object.
+
+	* gobjectmodule.c (pyg_type_from_object): new function to get a
+	type code from various types of python objects (currently, integer
+	like objects, strings and other objects that have a __gtype__
+	attribute).
+	(pygobject__init__): use pyg_type_from_object to get the object
+	type.
+	(pyg_signal_new): same here.
+
 2001-06-21  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pyg_boxed_getattro): allow getattr to work on
+	PyGBoxed types (while not overloading tp_getattr).  We fall back
+	to tp_getattr if provided by the boxed type.
+	(pyg_register_boxed): make sure tp_getattro is set correctly.
+
+	* gtk/gtk-types.c (_pygtk_register_boxed_types): convert
+	GtkAccelGroup to a PyGBoxed type.
 
 	* gtk/gtkobject-support.c (pygtk_dict_as_container_args): comment
 	out, as container args have been switched to properties now.

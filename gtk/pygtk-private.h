@@ -14,7 +14,7 @@
 #undef WITH_THREAD
 
 /* type objects */
-extern PyTypeObject PyGtkAccelGroup_Type;
+extern PyExtensionClass PyGtkAccelGroup_Type;
 extern PyTypeObject PyGdkFont_Type;
 extern PyTypeObject PyGdkColor_Type;
 extern PyTypeObject PyGdkEvent_Type;
@@ -28,7 +28,7 @@ extern PyTypeObject PyGtkTextIter_Type;
 extern PyTypeObject PyGtkTreeIter_Type;
 
 /* check the type of a PyObject */
-#define PyGtkAccelGroup_Check(v) ((v)->ob_type == &PyGtkAccelGroup_Type)
+#define PyGtkAccelGroup_Check(v) pyg_boxed_check((v), &PyGtkAccelGroup_Type)
 #define PyGdkFont_Check(v) ((v)->ob_type == &PyGdkFont_Type)
 #define PyGdkColor_Check(v) ((v)->ob_type == &PyGdkColor_Type)
 #define PyGdkEvent_Check(v) ((v)->ob_type == &PyGdkEvent_Type)
@@ -42,7 +42,7 @@ extern PyTypeObject PyGtkTreeIter_Type;
 #define PyGtkTreeIter_Check(v) ((v)->ob_type == &PyGtkTreeIter_Type)
 
 /* constructors for PyObject wrappers ... */
-PyObject *PyGtkAccelGroup_New(GtkAccelGroup *obj);
+#define PyGtkAccelGroup_New(ag) pyg_boxed_new(GTK_TYPE_ACCEL_GROUP, ag, TRUE, TRUE)
 PyObject *PyGdkFont_New(GdkFont *font);
 PyObject *PyGdkColor_New(GdkColor *colour);
 PyObject *PyGdkEvent_New(GdkEvent *event);

@@ -69,11 +69,6 @@ struct _PyGtk_FunctionStruct {
 /* structure definitions for the various object types in PyGTK */
 typedef struct {
     PyObject_HEAD
-    GtkAccelGroup *obj;
-} PyGtkAccelGroup_Object;
-
-typedef struct {
-    PyObject_HEAD
     GdkFont *obj;
 } PyGdkFont_Object;
 
@@ -130,7 +125,7 @@ typedef struct {
 } PyGtkTreeIter_Object;
 
 /* routines to get the C object value out of the PyObject wrapper */
-#define PyGtkAccelGroup_Get(v) (((PyGtkAccelGroup_Object *)(v))->obj)
+#define PyGtkAccelGroup_Get(v) pyg_boxed_get((v), GtkAccelGroup)
 #define PyGdkFont_Get(v) (((PyGdkFont_Object *)(v))->obj)
 #define PyGdkColor_Get(v) (&((PyGdkColor_Object *)(v))->obj)
 #define PyGdkEvent_Get(v) (((PyGdkEvent_Object *)(v))->obj)
@@ -171,7 +166,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGtkTreeIter_Type      *(_PyGtk_API->gtkTreeIter_type)
 
 /* type checking routines */
-#define PyGtkAccelGroup_Check(v) ((v)->ob_type == _PyGtk_API->gtkAccelGroup_type)
+#define PyGtkAccelGroup_Check(v) pyg_boxed_check((v), _PyGtk_API->gtkAccelGroup_type)
 #define PyGdkFont_Check(v) ((v)->ob_type == _PyGtk_API->gdkFont_type)
 #define PyGdkColor_Check(v) ((v)->ob_type == _PyGtk_API->gdkColor_type)
 #define PyGdkEvent_Check(v) ((v)->ob_type == _PyGtk_API->gdkEvent_type)
@@ -185,7 +180,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGtkTreeIter_Check(v) ((v)->ob_type == _PyGtk_API->gtkTreeIter_type)
 
 /* type objects */
-#define PyGtkAccelGroup_New    (_PyGtk_API->gtkAccelGroup_new)
+#define PyGtkAccelGroup_New(ag) pyg_boxed_new(GTK_TYPE_ACCEL_GROUP, ag, TRUE, TRUE)
 #define PyGdkFont_New          (_PyGtk_API->gdkFont_new)
 #define PyGdkColor_New         (_PyGtk_API->gdkColor_new)
 #define PyGdkEvent_New         (_PyGtk_API->gdkEvent_new)

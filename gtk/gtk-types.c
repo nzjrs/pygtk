@@ -6,20 +6,6 @@
 /* these aren't ExtensionClass's */
 #undef Py_FindMethod
 
-PyObject *
-PyGtkAccelGroup_New(GtkAccelGroup *obj)
-{
-    PyGtkAccelGroup_Object  *self;
-
-    self = (PyGtkAccelGroup_Object *)PyObject_NEW(PyGtkAccelGroup_Object ,
-						  &PyGtkAccelGroup_Type);
-    if (self == NULL)
-	return NULL;
-    self->obj = obj;
-    gtk_accel_group_ref(self->obj);
-    return (PyObject *)self;
-}
-
 #if 0
 PyObject *
 PyGtkStyle_New(GtkStyle *obj)
@@ -241,80 +227,70 @@ PyGtkTreeIter_New(GtkTreeIter *iter)
     return (PyObject *)self;
 }
 
-static void
-pygtk_accel_group_dealloc(PyGtkAccelGroup_Object *self)
-{
-    gtk_accel_group_unref(self->obj); 
-    PyMem_DEL(self);
-}
-
-static int
-pygtk_accel_group_compare(PyGtkAccelGroup_Object *self,
-			PyGtkAccelGroup_Object *v)
-{
-    if (self->obj == v->obj) return 0;
-    if (self->obj > v->obj) return -1;
-    return 1;
-}
-
-static long
-pygtk_accel_group_hash(PyGtkAccelGroup_Object *self)
-{
-    return (long)self->obj;
-}
-
 static PyObject *
-pygtk_accel_group_lock(PyGtkAccelGroup_Object *self, PyObject *args)
+pygtk_accel_group_new(PyGBoxed *self, PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ":GtkAccelGroup.lock"))
 	return NULL;
-    gtk_accel_group_lock(self->obj);
+
+    self->boxed = gtk_accel_group_new();
+    self->gtype = GTK_TYPE_ACCEL_GROUP;
+    self->free_on_dealloc = TRUE;
     Py_INCREF(Py_None);
     return Py_None;
 }
 
 static PyObject *
-pygtk_accel_group_unlock(PyGtkAccelGroup_Object *self, PyObject *args)
+pygtk_accel_group_lock(PyGBoxed *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkAccelGroup.lock"))
+	return NULL;
+    gtk_accel_group_lock(pyg_boxed_get(self, GtkAccelGroup));
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_accel_group_unlock(PyGBoxed *self, PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ":GtkAccelGroup.unlock"))
 	return NULL;
-    gtk_accel_group_unlock(self->obj);
+    gtk_accel_group_unlock(pyg_boxed_get(self, GtkAccelGroup));
     Py_INCREF(Py_None);
     return Py_None;
 }
 
 static PyMethodDef pygtk_accel_group_methods[] = {
+    { "__init__", (PyCFunction)pygtk_accel_group_new, METH_VARARGS },
     { "lock", (PyCFunction)pygtk_accel_group_lock, METH_VARARGS },
     { "unlock", (PyCFunction)pygtk_accel_group_unlock, METH_VARARGS },
     { NULL, NULL, 0 }
 };
 
-static PyObject *
-pygtk_accel_group_getattr(PyGtkAccelGroup_Object *self, gchar *attr)
-{
-    return Py_FindMethod(pygtk_accel_group_methods, (PyObject *)self, attr);
-}
-
-PyTypeObject PyGtkAccelGroup_Type = {
+PyExtensionClass PyGtkAccelGroup_Type = {
     PyObject_HEAD_INIT(NULL)
     0,
     "GtkAccelGroup",
-    sizeof(PyGtkAccelGroup_Object),
+    sizeof(PyGBoxed),
     0,
-    (destructor)pygtk_accel_group_dealloc,
+    (destructor)0,
     (printfunc)0,
-    (getattrfunc)pygtk_accel_group_getattr,
+    (getattrfunc)0,
     (setattrfunc)0,
-    (cmpfunc)pygtk_accel_group_compare,
+    (cmpfunc)0,
     (reprfunc)0,
     0,
     0,
     0,
-    (hashfunc)pygtk_accel_group_hash,
+    (hashfunc)0,
     (ternaryfunc)0,
     (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
+    (getattrofunc)0,
+    (setattrofunc)0,
+    0L,0L,
+    NULL,
+    METHOD_CHAIN(pygtk_accel_group_methods),
+    0,
 };
 
 #if 0
@@ -3635,20 +3611,6 @@ pygtk_tree_path_from_pyobject(PyObject *object)
 /* marshalers for the boxed types.  Uses uppercase notation so that
  * the macro below can automatically install them. */
 static PyObject *
-PyGtkAccelGroup_from_value(const GValue *value)
-{
-    return PyGtkAccelGroup_New(g_value_get_boxed(value));
-}
-static int
-PyGtkAccelGroup_to_value(GValue *value, PyObject *object)
-{
-    if (PyGtkAccelGroup_Check(object)) {
-	g_value_set_boxed(value, PyGtkAccelGroup_Get(object));
-	return 0;
-    }
-    return -1;
-}
-static PyObject *
 PyGdkFont_from_value(const GValue *value)
 {
     return PyGdkFont_New(g_value_get_boxed(value));
@@ -3779,7 +3741,8 @@ _pygtk_register_boxed_types(PyObject *moddict)
     pyg_boxed_register(tp, Py##x##_from_value, Py##x##_to_value)
 
     ExtensionClassImported;
-    register_tp2(GtkAccelGroup, GTK_TYPE_ACCEL_GROUP);
+    pyg_register_boxed(moddict, "GtkAccelGroup", GTK_TYPE_ACCEL_GROUP,
+		       &PyGtkAccelGroup_Type);
 #if 0
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;

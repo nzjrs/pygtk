@@ -394,6 +394,21 @@ class AtomArg(IntArg):
     def write_return(self, ptype, varlist):
         return '    return PyGdkAtom_New(%(func)s);'
 
+class GTypeArg(ArgType):
+    gtype = '    %(name)s = pyg_type_from_object(py_%(name)s);\n' + \
+            '    if (!%(name)s)\n' + \
+            '        return NULL;\n'
+    def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
+		    extracode, arglist):
+        varlist.add(self.enumname, pname)
+	varlist.add('PyObject', '*py_' + pname + ' = NULL')
+	parselist.append('&py_' + pname)
+	extracode.append(self.gtype % {'name': pname})
+	arglist.append(pname)
+	return 'O'
+    def write_return(self, ptype, varlist):
+	return '    return PyInt_FromLong(%(func)s);'
+
 # simple GError handler.
 # XXXX - must get codegen to handle real GError stuff
 class GErrorArg(ArgType):
@@ -511,7 +526,6 @@ matcher.register('gint16', arg)
 matcher.register('guint32', arg)
 matcher.register('gint32', arg)
 matcher.register('GtkType', arg)
-matcher.register('GType', arg)
 
 arg = DoubleArg()
 matcher.register('double', arg)
@@ -550,6 +564,10 @@ matcher.register_boxed('GtkTreeIter', 'PyGtkTreeIter_Type',
 matcher.register('const-GtkTreeIter*', matcher.get('GtkTreeIter*'))
 
 matcher.register('GdkAtom', AtomArg())
+
+matcher.register('GType', GTypeArg())
+matcher.register('GtkType', GTypeArg())
+
 matcher.register('GError**', GErrorArg())
 matcher.register('GtkTreePath*', GtkTreePathArg())
 
