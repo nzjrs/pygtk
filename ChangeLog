@@ -1,3 +1,20 @@
+2003-07-11  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk.defs (gtk_tree_model_sort_convert_iter_to_child_iter)
+	Allow sort_iter to be NULL. Fixes #113097
+	(gtk_tree_model_sort_convert_child_iter_to_iter)
+	Allow child_iter to be NULL. Fixes #113097
+
+	* gtk/gtktreeview.override
+	(_wrap_gtk_tree_model_sort_convert_iter_to_child_iter)
+	Allow the child_iter to be NULL and return the converted iter but 
+	allow child_iter to be passed in for backward compatibility.
+	Fixes #113097
+	(_wrap_gtk_tree_model_sort_convert_child_iter_to_iter)
+	Allow the sort_iter to be NULL and return the converted iter but 
+	allow sort_iter to be passed in for backward compatibility.
+	Fixes #113097
+
 2003-07-03  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.defs (GtkWindow.set_icon): allow passing None as the

@@ -1809,3 +1809,70 @@ _wrap_gtk_cell_renderer_get_fixed_size(PyGObject *self)
 
     return Py_BuildValue("(ii)", width, height);
 }
+%%
+override gtk_tree_model_sort_convert_child_iter_to_iter kwargs
+static PyObject *
+_wrap_gtk_tree_model_sort_convert_child_iter_to_iter(PyGObject *self,
+						     PyObject *args,
+						     PyObject *kwargs)
+{
+    static char *kwlist[] = { "sort_iter", "child_iter", NULL };
+    PyObject *py_sort_iter = Py_None, *py_child_iter;
+    GtkTreeIter iter, *sort_iter, *child_iter = NULL;
+
+    sort_iter = &iter;
+    if (!PyArg_ParseTupleAndKeywords(
+	args, kwargs, "OO:GtkTreeModelSort.convert_child_iter_to_iter",
+	kwlist, &py_sort_iter, &py_child_iter))
+        return NULL;
+    if (pyg_boxed_check(py_sort_iter, GTK_TYPE_TREE_ITER))
+        sort_iter = pyg_boxed_get(py_sort_iter, GtkTreeIter);
+    else if (py_sort_iter != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+			"sort_iter should be a GtkTreeIter or None");
+        return NULL;
+    }
+    if (pyg_boxed_check(py_child_iter, GTK_TYPE_TREE_ITER))
+        child_iter = pyg_boxed_get(py_child_iter, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "child_iter should be a GtkTreeIter");
+        return NULL;
+    }
+    gtk_tree_model_sort_convert_child_iter_to_iter(
+	GTK_TREE_MODEL_SORT(self->obj), sort_iter, child_iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, sort_iter, TRUE, TRUE);
+}
+%%
+override gtk_tree_model_sort_convert_iter_to_child_iter kwargs
+static PyObject *
+_wrap_gtk_tree_model_sort_convert_iter_to_child_iter(PyGObject *self,
+						     PyObject *args,
+						     PyObject *kwargs)
+{
+    static char *kwlist[] = { "child_iter", "sorted_iter", NULL };
+    PyObject *py_child_iter = Py_None, *py_sorted_iter;
+    GtkTreeIter iter, *child_iter, *sorted_iter = NULL;
+
+    child_iter = &iter;
+    if (!PyArg_ParseTupleAndKeywords(
+	args, kwargs, "OO:GtkTreeModelSort.convert_iter_to_child_iter",
+	kwlist, &py_child_iter, &py_sorted_iter))
+        return NULL;
+    if (pyg_boxed_check(py_child_iter, GTK_TYPE_TREE_ITER))
+        child_iter = pyg_boxed_get(py_child_iter, GtkTreeIter);
+    else if (py_child_iter != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+			"child_iter should be a GtkTreeIter or None");
+        return NULL;
+    }
+    if (pyg_boxed_check(py_sorted_iter, GTK_TYPE_TREE_ITER))
+        sorted_iter = pyg_boxed_get(py_sorted_iter, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError,
+			"sorted_iter should be a GtkTreeIter");
+        return NULL;
+    }
+    gtk_tree_model_sort_convert_iter_to_child_iter(
+	GTK_TREE_MODEL_SORT(self->obj), child_iter, sorted_iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, child_iter, TRUE, TRUE);
+}
