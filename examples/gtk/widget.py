@@ -43,10 +43,10 @@ class PyGtkWidget(gtk.Widget):
         self.style.attach(self.window)
         self.style.set_background(self.window, gtk.STATE_NORMAL)
 
-    def do_size_request(self, allocation):
+    def do_size_request(self, requisition):
 	width, height = self.layout.get_size()
-	allocation.width = width // pango.SCALE + BORDER_WIDTH*4
-	allocation.height = height // pango.SCALE + BORDER_WIDTH*4
+	requisition.width = width // pango.SCALE + BORDER_WIDTH*4
+	requisition.height = height // pango.SCALE + BORDER_WIDTH*4
 
     def do_size_allocate(self, allocation):
         self.allocation = allocation
