@@ -3983,8 +3983,10 @@ _wrap_gdk_window_set_user_data(PyGObject *self, PyObject *args, PyObject *kwargs
 
     if (pygobject_check(user_data, &PyGtkWidget_Type))
 	gdk_window_set_user_data(GDK_WINDOW(self->obj), GTK_WIDGET(user_data->obj));
-    else
-	gdk_window_set_user_data(GDK_WINDOW(self->obj), user_data);
+    else {
+	PyErr_SetString(PyExc_ValueError, "Only GtkWidgets are allowed as user data. Maybe you want to use GObject.set_data()");
+	return NULL;
+    }
 	
     Py_INCREF(Py_None);
     return Py_None;
@@ -3996,7 +3998,7 @@ _wrap_gdk_window_get_user_data(PyGObject *self)
 {
     gpointer user_data = NULL;
     gdk_window_get_user_data(GDK_WINDOW(self->obj), &user_data);
-    if (G_IS_OBJECT(user_data)) {
+    if (GTK_IS_WIDGET(user_data)) {
 	return pygobject_new(G_OBJECT(user_data));
     } else {
 	PyErr_SetString(PyExc_ValueError, "could not convert the user data");
