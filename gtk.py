@@ -1681,6 +1681,8 @@ class GtkPaned(GtkContainer):
 		_gtk.gtk_paned_pack1(self._o, child._o, resize, shrink)
 	def pack2(self, child, resize=TRUE, shrink=TRUE):
 		_gtk.gtk_paned_pack2(self._o, child._o, resize, shrink)
+	def set_position(self, position):
+		_gtk.gtk_paned_set_position(self._o, position)
 	def handle_size(self, size):
 		print "handle_size deprecated -- use set_handle_size"
 		self.set_handle_size(size)

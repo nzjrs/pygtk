@@ -1,3 +1,29 @@
+1999-02-16  James Henstridge  <james@daa.com.au>
+
+	* description.py: added documentation about GtkStyle changes to this
+	pseudo module.
+
+	* gtkmodule.c: added a new python type GtkStyleHelper that is used
+	by python GtkStyle objects as a sequence type that alows us to write
+	back to the arrays in the GtkStyle object.  I have also made it
+	possible to update the font and (black|white){,_gc}.  I also added
+	a GtkStyle.copy() method.  This gives the user everything they need
+	to alter styles inside their applications.  I still believe that
+	rc files are better, but there seem to be a lot of people who want
+	this functionality.
+	
+	* gtkmodule.c (_wrap_gtk_window_set_geometry_hints): made changes so
+	apect ratios can be set to integers.  Also made it throw an exception
+	for aspect ratios of zero, since this caused my X server to crash
+	a few times.
+
+1999-02-15  James Henstridge  <james@daa.com.au>
+
+	* gtk.py (GtkPaned.set_position): added function.
+
+	* generate/gtkcontainers.defs (gtk_paned_set_position): added new
+	function
+
 1999-02-14  James Henstridge  <james@daa.com.au>
 
 	* gtk.py: added GtkWindow.set_geometry_hints to match below addition.

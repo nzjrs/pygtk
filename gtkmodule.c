@@ -446,6 +446,147 @@ static PyTypeObject PyGtkAccelGroup_Type = {
   NULL
 };
 
+typedef struct {
+  PyObject_HEAD
+  GtkStyle *style; /* parent style */
+  enum {STYLE_COLOUR_ARRAY, STYLE_GC_ARRAY, STYLE_PIXMAP_ARRAY} type;
+  gpointer array;
+} PyGtkStyleHelper_Object;
+staticforward PyTypeObject PyGtkStyleHelper_Type;
+
+static PyObject *PyGtkStyleHelper_New(GtkStyle *style, int type,
+				      gpointer array) {
+  PyGtkStyleHelper_Object *self;
+
+  self = (PyGtkStyleHelper_Object *)PyObject_NEW(PyGtkStyleHelper_Object,
+						 &PyGtkStyleHelper_Type);
+  if (self == NULL)
+    return NULL;
+  self->style = gtk_style_ref(style);
+  self->type = type;
+  self->array = array;
+  return (PyObject *)self;
+}
+
+static void PyGtkStyleHelper_Dealloc(PyGtkStyleHelper_Object *self) {
+  gtk_style_unref(self->style);
+  PyMem_DEL(self);
+}
+
+static int PyGtkStyleHelper_Length(PyGtkStyleHelper_Object *self) {
+  return 5;
+}
+static PyObject *PyGtkStyleHelper_GetItem(PyGtkStyleHelper_Object *self,
+					  int pos) {
+  if (pos < 0) pos += 5;
+  if (pos < 0 || pos >= 5) {
+    PyErr_SetString(PyExc_IndexError, "index out of range");
+    return NULL;
+  }
+  switch (self->type) {
+  case STYLE_COLOUR_ARRAY:
+    {
+      GdkColor *array = (GdkColor *)self->array;
+      return PyGdkColor_New(&array[pos]);
+    }
+  case STYLE_GC_ARRAY:
+    {
+      GdkGC **array = (GdkGC **)self->array;
+      return PyGdkGC_New(array[pos]);
+    }
+  case STYLE_PIXMAP_ARRAY:
+    {
+      GdkWindow **array = (GdkWindow **)self->array;
+      if (array[pos])
+	return PyGdkWindow_New(array[pos]);
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+  }
+  g_assert_not_reached();
+  return NULL;
+}
+static int PyGtkStyleHelper_SetItem(PyGtkStyleHelper_Object *self, int pos,
+				    PyObject *value) {
+  if (pos < 0) pos += 5;
+  if (pos < 0 || pos >= 5) {
+    PyErr_SetString(PyExc_IndexError, "index out of range");
+    return -1;
+  }
+  switch (self->type) {
+  case STYLE_COLOUR_ARRAY:
+    {
+      GdkColor *array = (GdkColor *)self->array;
+
+      if (!PyGdkColor_Check(value)) {
+	PyErr_SetString(PyExc_TypeError, "can only assign a GdkColor");
+	return -1;
+      }
+      array[pos] = *PyGdkColor_Get(value);
+      return 0;
+    }
+  case STYLE_GC_ARRAY:
+    {
+      GdkGC **array = (GdkGC **)self->array;
+
+      if (!PyGdkGC_Check(value)) {
+	PyErr_SetString(PyExc_TypeError, "can only assign a GdkGC");
+	return -1;
+      }
+      if (array[pos]) gdk_gc_unref(array[pos]);
+      array[pos] = gdk_gc_ref(PyGdkGC_Get(value));
+      return 0;
+    }
+  case STYLE_PIXMAP_ARRAY:
+    {
+      GdkWindow **array = (GdkWindow **)self->array;
+
+      if (!PyGdkWindow_Check(value) && value != Py_None) {
+	PyErr_SetString(PyExc_TypeError,"can only assign a GdkPixmap or None");
+	return -1;
+      }
+      if (array[pos]) gdk_pixmap_unref(array[pos]);
+      if (value != Py_None)
+	array[pos] = gdk_pixmap_ref(PyGdkWindow_Get(value));
+      else
+	array[pos] = NULL;
+    }
+  }
+  g_assert_not_reached();
+  return -1;
+}
+static PySequenceMethods PyGtkStyleHelper_SeqMethods = {
+  (inquiry)PyGtkStyleHelper_Length,
+  (binaryfunc)0,
+  (intargfunc)0,
+  (intargfunc)PyGtkStyleHelper_GetItem,
+  (intintargfunc)0,
+  (intobjargproc)PyGtkStyleHelper_SetItem,
+  (intintobjargproc)0
+};
+static PyTypeObject PyGtkStyleHelper_Type = {
+  PyObject_HEAD_INIT(&PyType_Type)
+  0,
+  "GtkStyleHelper",
+  sizeof(PyGtkStyleHelper_Object),
+  0,
+  (destructor)PyGtkStyleHelper_Dealloc,
+  (printfunc)0,
+  (getattrfunc)0,
+  (setattrfunc)0,
+  (cmpfunc)0,
+  (reprfunc)0,
+  0,
+  &PyGtkStyleHelper_SeqMethods,
+  0,
+  (hashfunc)0,
+  (ternaryfunc)0,
+  (reprfunc)0,
+  0L,0L,0L,0L,
+  NULL
+};
+
+
 static void
 PyGtkStyle_Dealloc(PyGtkStyle_Object *self) {
   gtk_style_unref(self->obj);
@@ -459,6 +600,23 @@ PyGtkStyle_Compare(PyGtkStyle_Object *self, PyGtkStyle_Object *v) {
   return 1;
 }
 
+static PyObject *PyGtkStyle_copy(PyGtkStyle_Object *self, PyObject *args) {
+  GtkStyle *style;
+  PyObject *ret;
+  if (!PyArg_ParseTuple(args, ":GtkStyle.copy"))
+    return NULL;
+  /* this is so that new style has ref count one and doesn't get destroyed */
+  style = gtk_style_copy(self->obj);
+  ret = PyGtkStyle_New(style);
+  gtk_style_unref(style);
+  return ret;
+}
+
+static PyMethodDef PyGtkStyle_methods[] = {
+  {"copy", (PyCFunction)PyGtkStyle_copy, METH_VARARGS, NULL},
+  {NULL, 0, 0, NULL}
+};
+
 static PyObject *PyGtkStyle_GetAttr(PyGtkStyle_Object *self, char *attr) {
   GtkStyle *style = self->obj;
   PyObject *ret;
@@ -470,106 +628,46 @@ static PyObject *PyGtkStyle_GetAttr(PyGtkStyle_Object *self, char *attr) {
 			 "dark", "dark_gc", "fg", "fg_gc", "font", "light",
 			 "light_gc", "mid", "mid_gc", "text", "text_gc",
 			 "white", "white_gc");
-  if (!strcmp(attr, "fg")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkColor_New(&style->fg[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "bg")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkColor_New(&style->bg[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "light")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkColor_New(&style->light[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "dark")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkColor_New(&style->dark[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "mid")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkColor_New(&style->mid[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "text")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkColor_New(&style->text[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "base")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkColor_New(&style->base[i]));
-    return ret;
-  }
+  if (!strcmp(attr, "fg"))
+    return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->fg);
+  if (!strcmp(attr, "bg"))
+    return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->bg);
+  if (!strcmp(attr, "light"))
+    return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->light);
+  if (!strcmp(attr, "dark"))
+    return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->dark);
+  if (!strcmp(attr, "mid"))
+    return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->mid);
+  if (!strcmp(attr, "text"))
+    return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->text);
+  if (!strcmp(attr, "base"))
+    return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->base);
   if (!strcmp(attr, "black"))
     return PyGdkColor_New(&style->black);
   if (!strcmp(attr, "white"))
     return PyGdkColor_New(&style->white);
   if (!strcmp(attr, "font"))
     return PyGdkFont_New(style->font);
-  if (!strcmp(attr, "fg_gc")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkGC_New(style->fg_gc[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "bg_gc")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkGC_New(style->bg_gc[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "light_gc")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkGC_New(style->light_gc[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "dark_gc")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkGC_New(style->dark_gc[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "mid_gc")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkGC_New(style->mid_gc[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "text_gc")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkGC_New(style->text_gc[i]));
-    return ret;
-  }
-  if (!strcmp(attr, "base_gc")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i, PyGdkGC_New(style->base_gc[i]));
-    return ret;
-  }
+  if (!strcmp(attr, "fg_gc"))
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+  if (!strcmp(attr, "bg_gc"))
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+  if (!strcmp(attr, "light_gc"))
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+  if (!strcmp(attr, "dark_gc"))
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+  if (!strcmp(attr, "mid_gc"))
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+  if (!strcmp(attr, "text_gc"))
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+  if (!strcmp(attr, "base_gc"))
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
   if (!strcmp(attr, "black_gc"))
     return PyGdkGC_New(style->black_gc);
   if (!strcmp(attr, "white_gc"))
     return PyGdkGC_New(style->white_gc);
-  if (!strcmp(attr, "bg_pixmap")) {
-    ret = PyTuple_New(5);
-    for (i = 0; i < 5; i++)
-      PyTuple_SetItem(ret, i,PyGdkWindow_New(style->bg_pixmap[i]));
-    return ret;
-  }
+  if (!strcmp(attr, "bg_pixmap"))
+    return PyGtkStyleHelper_New(style, STYLE_PIXMAP_ARRAY, style->bg_pixmap);
   if (!strcmp(attr, "colormap")) {
     if (style->colormap)
       return PyGdkColormap_New(style->colormap);
@@ -577,8 +675,57 @@ static PyObject *PyGtkStyle_GetAttr(PyGtkStyle_Object *self, char *attr) {
     return Py_None;
   }
 
-  PyErr_SetString(PyExc_AttributeError, attr);
-  return NULL;
+  return Py_FindMethod(PyGtkStyle_methods, (PyObject *)self, attr);
+}
+
+static int PyGtkStyle_SetAttr(PyGtkStyle_Object *self, char *key,
+			      PyObject *value) {
+  GtkStyle *style = self->obj;
+  if (!strcmp(key, "font")) {
+    if (PyGdkFont_Check(value)) {
+      if (style->font)
+	gdk_font_unref(style->font);
+      style->font = gdk_font_ref(PyGdkFont_Get(value));
+    } else {
+      PyErr_SetString(PyExc_TypeError, "font attribute must be type GdkFont");
+      return -1;
+    }
+  } else if (!strcmp(key, "black")) {
+    if (PyGdkColor_Check(value))
+      style->black = *PyGdkColor_Get(value);
+    else {
+      PyErr_SetString(PyExc_TypeError, "black attribute must be a GdkColor");
+      return -1;
+    }
+  } else if (!strcmp(key, "white")) {
+    if (PyGdkColor_Check(value))
+      style->white = *PyGdkColor_Get(value);
+    else {
+      PyErr_SetString(PyExc_TypeError, "white attribute must be a GdkColor");
+      return -1;
+    }
+  } else if (!strcmp(key, "black_gc")) {
+    if (PyGdkGC_Check(value)) {
+      if (style->black_gc)
+	gdk_gc_unref(style->black_gc);
+      style->black_gc = gdk_gc_ref(PyGdkGC_Get(value));
+    } else {
+      PyErr_SetString(PyExc_TypeError,"black_gc attribute must be a GdkColor");
+      return -1;
+    }
+  } else if (!strcmp(key, "white_gc")) {
+    if (PyGdkGC_Check(value)) {
+      if (style->white_gc)
+	gdk_gc_unref(style->white_gc);
+      style->white_gc = gdk_gc_ref(PyGdkGC_Get(value));
+    } else {
+      PyErr_SetString(PyExc_TypeError,"white_gc attribute must be a GdkColor");
+      return -1;
+    }
+  }
+      
+  PyErr_SetString(PyExc_AttributeError, key);
+  return -1;
 }
 
 static PyTypeObject PyGtkStyle_Type = {
@@ -590,7 +737,7 @@ static PyTypeObject PyGtkStyle_Type = {
   (destructor)PyGtkStyle_Dealloc,
   (printfunc)0,
   (getattrfunc)PyGtkStyle_GetAttr,
-  (setattrfunc)0,
+  (setattrfunc)PyGtkStyle_SetAttr,
   (cmpfunc)PyGtkStyle_Compare,
   (reprfunc)0,
   0,
@@ -3431,6 +3578,12 @@ static PyObject *_wrap_gtk_window_set_geometry_hints(PyObject *self, PyObject *a
       } else if (!strcmp(name, "height_inc")) {
 	geometry.height_inc = val;
 	geom_mask |= GDK_HINT_RESIZE_INC;
+      } else if (!strcmp(name, "min_aspect")) {
+	geometry.min_aspect = val;
+	geom_mask |= GDK_HINT_ASPECT;
+      } else if (!strcmp(name, "max_aspect")) {
+	geometry.max_aspect = val;
+	geom_mask |= GDK_HINT_ASPECT;
       } else {
 	gchar *err = g_strdup_printf("unknown hint name or wrong type for %s",
 				     name);
@@ -3460,6 +3613,11 @@ static PyObject *_wrap_gtk_window_set_geometry_hints(PyObject *self, PyObject *a
       g_free(err);
       return NULL;
     }
+  }
+  if (geom_mask & GDK_HINT_ASPECT && (geometry.min_aspect == 0.0 ||
+				      geometry.max_aspect == 0.0)) {
+    PyErr_SetString(PyExc_TypeError, "setting aspect to zero is a Bad Thing");
+    return NULL;
   }
   gtk_window_set_geometry_hints(GTK_WINDOW(PyGtk_Get(window)), geom_wid,
 				&geometry, geom_mask);

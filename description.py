@@ -27,8 +27,9 @@ class GtkCTreeNode:
 	expanded = _
 
 class GtkStyle:
-	"""Currently you can't assign to any of the attributes of a GtkStyle"""
-	"""This type can't be instantiated directly"""
+	"""You can assign to any attribute except colormap.  Also, assigning"""
+	"""to the sequence attributes is not allowed -- only assinging to"""
+	"""sequence members."""
 
 	"""COLORS"""
 	black = _
@@ -62,6 +63,10 @@ class GtkStyle:
 
 	"""The colormap for this style"""
 	colormap = _
+
+	def copy(self):
+		"""take a copy of this style"""
+		pass
 
 class GtkSelectionData:
 	"""This type represents the selection.  Do not keep a reference"""
