@@ -1,7 +1,10 @@
-pygtkdir = $(pythondir)/gtk
+pkgpythondir = $(pythondir)/gtk-2.0
+pkgpyexecdir = $(pyexecdir)/gtk-2.0
+
+pygtkdir = $(pkgpythondir)/gtk
 pygtk_PYTHON = __init__.py keysyms.py compat.py
 
-pygtkexecdir = $(pyexecdir)/gtk
+pygtkexecdir = $(pkgpyexecdir)/gtk
 
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA =
@@ -14,8 +17,8 @@ pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 pkginclude_HEADERS = pygtk.h
 
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES)
-COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs $(top_srcdir)/atk-types.defs \
-	     $(top_srcdir)/pango-types.defs
+COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs \
+  $(top_srcdir)/atk-types.defs $(top_srcdir)/pango-types.defs
 
 # gtk module
 pygtkexec_LTLIBRARIES = _gtkmodule.la

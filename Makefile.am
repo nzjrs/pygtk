@@ -1,5 +1,5 @@
-# require automake-1.5
-AUTOMAKE_OPTIONS = 1.5
+# require automake-1.6
+AUTOMAKE_OPTIONS = 1.6
 
 SUBDIRS = codegen gtk
 
@@ -20,8 +20,28 @@ INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS) $(ATK_CFLAGS)
 COMMONDEFS = pango-types.defs atk-types.defs gtk/gdk-types.defs \
 	     gtk/gtk-types.defs
 
+pkgpythondir = $(pythondir)/gtk-2.0
+pkgpyexecdir = $(pyexecdir)/gtk-2.0
+
+# this file is common to all pygtk versions.
+python_PYTHON = pygtk.py
+
+# install pth file.
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(pythondir)
+	echo "gtk-2.0" > $(DESTDIR)$(pythondir)/pygtk.pth
+install-exec-local:
+	$(mkinstalldirs) $(DESTDIR)$(pyexecdir)
+	echo "gtk-2.0" > $(DESTDIR)$(pyexecdir)/pygtk.pth
+uninstall-local:
+	rm -f $(DESTDIR)$(pythondir)/pygtk.pth $(DESTDIR)$(pyexecdir)/pygtk.pth
+
+pkgpyexec_LTLIBRARIES = \
+  gobjectmodule.la \
+  pangomodule.la \
+  atkmodule.la
+
 # gobject module
-pyexec_LTLIBRARIES += gobjectmodule.la
 gobjectmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initgobject
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 gobjectmodule_la_SOURCES = \
@@ -29,7 +49,6 @@ gobjectmodule_la_SOURCES = \
   gobjectmodule.c pygtype.c pygobject.c pygboxed.c
 
 # pango module
-pyexec_LTLIBRARIES += pangomodule.la
 pangomodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initpango
 pangomodule_la_LIBADD = $(PANGO_LIBS)
 pangomodule_la_SOURCES = pangomodule.c
@@ -40,7 +59,6 @@ EXTRA_DIST += pango.override
 defs_DATA += pango.defs pango-types.defs
 
 # atk module
-pyexec_LTLIBRARIES += atkmodule.la
 atkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initatk
 atkmodule_la_LIBADD = $(ATK_LIBS)
 atkmodule_la_SOURCES = atkmodule.c
