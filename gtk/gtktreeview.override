@@ -2692,3 +2692,22 @@ _wrap_gtk_tree_model_get(PyGObject *self, PyObject *args)
     }
     return ret;
 }
+%%
+override gtk_tree_selection_select_all noargs
+static PyObject *
+_wrap_gtk_tree_selection_select_all(PyGObject *self)
+{
+    GtkSelectionMode mode;
+ 
+    mode = gtk_tree_selection_get_mode(GTK_TREE_SELECTION(self->obj));
+    if (mode != GTK_SELECTION_MULTIPLE) {
+        PyErr_SetString(PyExc_TypeError,
+                        "gtk.TreeSelection.select_all requires that"
+                        " selection mode is gtk.SELECTION_MULTIPLE");
+        return NULL;
+    }
+ 
+    gtk_tree_selection_select_all(GTK_TREE_SELECTION(self->obj));
+    Py_INCREF(Py_None);
+    return Py_None;
+}
