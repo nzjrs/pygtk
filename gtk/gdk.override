@@ -55,11 +55,6 @@ import pango.Context as PyPangoContext_Type
 import pango.Font as PyPangoFont_Type
 import pango.Layout as PyPangoLayout_Type
 %%
-init
-#ifdef HAVE_NUMPY
-    import_array();
-#endif
-%%
 ignore-glob
   *_get_type
   _*
@@ -2229,6 +2224,35 @@ _wrap_gdk_pixbuf_render_pixmap_and_mask(PyGObject *self, PyObject *args,
 }
 %%
 override-attr GdkPixbuf.pixel_array
+#ifdef HAVE_NUMPY
+static int
+have_numpy(void)
+{
+    /* Return 1 if Numeric is available,
+       return 0 and set and exception if it is not. */
+    static int import_done = 0;
+    static PyObject *exc_type=NULL, *exc_value=NULL;
+    PyObject *exc_tb=NULL;
+
+    if (exc_type != NULL) {
+	PyErr_Restore(exc_type, exc_value, NULL);
+	return 0;
+    }
+    if (!import_done) {
+	import_done = 1;
+	import_array();
+	if (PyErr_Occurred()) {
+	    PyErr_Fetch(&exc_type, &exc_value, &exc_tb);
+	    Py_INCREF(exc_type);
+	    Py_XINCREF(exc_value);
+	    PyErr_Restore(exc_type, exc_value, exc_tb);
+	    return 0;
+	}
+    }
+    return 1;
+}
+#endif
+
 static PyObject *
 _wrap_gdk_pixbuf__get_pixel_array(PyGObject *self, void *closure)
 {
@@ -2236,6 +2260,9 @@ _wrap_gdk_pixbuf__get_pixel_array(PyGObject *self, void *closure)
     GdkPixbuf *pixbuf = GDK_PIXBUF(self->obj);
     PyArrayObject *array;
     int dims[3] = { 0, 0, 3 };
+
+    if (!have_numpy())
+	return NULL;
 
     dims[0] = gdk_pixbuf_get_height(pixbuf);
     dims[1] = gdk_pixbuf_get_width(pixbuf);
@@ -2632,6 +2659,9 @@ _wrap_gdk_pixbuf_new_from_array(PyObject *self, PyObject *args,
     gint width, height;
     gint i, j, nc, rs, st0, st1, st2;
     gchar *src, *dst;
+
+    if (!have_numpy())
+	return NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, 
 				      "O!ii:pixbuf_new_from_array", kwlist, 
