@@ -166,4 +166,14 @@ def parse_tmpl(fp, doc_dict):
 
         line = fp.readline()
 
-                
+def extract_tmpl(dirs, doc_dict=None):
+    if not doc_dict: doc_dict = {}
+    for dir in dirs:
+        for file in os.listdir(dir):
+            if file in ('.', '..'): continue
+            path = os.path.join(dir, file)
+            if os.path.isdir(path):
+                continue
+            if len(file) > 2 and file[-2:] == '.sgml':
+                parse_tmpl(open(path, 'r'), doc_dict)
+    return doc_dict
