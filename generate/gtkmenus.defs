@@ -28,6 +28,10 @@
   ((GtkMenuShell menu_shell)
    (GtkWidget menu_item)))
 
+(define-func gtk_menu_shell_deselect
+  none
+  ((GtkMenuShell menu_shell)))
+
 (define-func gtk_menu_shell_activate_item
   none
   ((GtkMenuShell menu_shell)
@@ -110,6 +114,10 @@
   ((GtkMenu menu)
    (GtkAccelGroup group)))
 
+(define-func gtk_menu_get_accel_group
+  GtkAccelGroup
+  ((GtkMenu menu)))
+
 ;; gtk_menu_attach_to_widget
 
 (define-func gtk_menu_get_attach_widget
@@ -129,6 +137,12 @@
   none
   ((GtkMenu menu)
    (string title)))
+
+(define-func gtk_menu_reorder_child
+  none
+  ((GtkMenu menu)
+   (GtkWidget child)
+   (int position)))
 
 ;; MenuItem
 
@@ -267,6 +281,13 @@
 (define-func gtk_item_factory_parse_rc_string
   none
   ((string rc_string)))
+
+(define-func gtk_item_factory_add_foreign
+  none
+  ((GtkWidget accel_widget)
+   (string full_path)
+   (uint keyval)
+   (GtkModifierType modifiers)))
 
 (define-func gtk_item_factory_from_widget
   GtkItemFactory

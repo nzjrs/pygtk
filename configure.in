@@ -2,12 +2,14 @@ AC_INIT
 
 dnl for gnome-python:
 
-AM_INIT_AUTOMAKE(pygtk, 0.5.12)
+AM_INIT_AUTOMAKE(pygtk, 0.5.13)
 
 AM_PATH_PYTHON
 AM_INIT_PYEXEC_MOD
 
-AM_PATH_GTK(1.1.16)
+AM_CHECK_PYMOD(thread,,extra_mods=gthread,extra_mods=)
+
+AM_PATH_GTK(1.2.1,,,$extra_mods)
 AM_PATH_GDK_IMLIB(1.8, [BUILD_IMLIB=], [BUILD_IMLIB="#"])
 AC_SUBST(BUILD_IMLIB)
 

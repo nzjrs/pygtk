@@ -3247,7 +3247,16 @@ static PyObject * _wrap_gtk_init(PyObject *self, PyObject *args) {
     for (i = 0; i < argc; i++)
         argv[i] = strdup(PyString_AsString(PyList_GetItem(av, i)));
 
-    gtk_init(&argc, &argv);
+    if (!gtk_init_check(&argc, &argv)) {
+        if (argv != NULL) {
+            for (i = 0; i < argc; i++)
+                if (argv[i] != NULL)
+                    free(argv[i]);
+            free(argv);
+        }
+	PyErr_SetString(PyExc_RuntimeError, "cannot open display");
+	return NULL;
+    }
     PySys_SetArgv(argc, argv);
 
     if (argv != NULL) {
@@ -4095,14 +4104,18 @@ _wrap_gtk_combo_set_popdown_strings(PyObject *self, PyObject *args) {
   PyObject *obj, *list, *item;
   GList *glist = NULL;
   int len, i;
-  if (!PyArg_ParseTuple(args, "O!O!:gtk_combo_set_popdown_strings",
-			&PyGtk_Type, &obj, &PyList_Type, &list))
+  if (!PyArg_ParseTuple(args, "O!O:gtk_combo_set_popdown_strings",
+			&PyGtk_Type, &obj, &list))
     return NULL;
-  len = PyList_Size(list);
+  if (!PySequence_Check(list)) {
+    PyErr_SetString(PyExc_TypeError, "second argument must be a sequence");
+    return NULL;
+  }
+  len = PySequence_Length(list);
   for (i = 0; i < len; i++) {
-    item = PyList_GetItem(list, i);
+    item = PySequence_GetItem(list, i);
     if (!PyString_Check(item)) {
-      PyErr_SetString(PyExc_TypeError, "list item not a string");
+      PyErr_SetString(PyExc_TypeError, "sequence item not a string");
       g_list_free(glist);
       return NULL;
     }
@@ -5521,7 +5534,7 @@ static PyObject *_wrap_gdk_threads_enter(PyObject *self, PyObject *args) {
 static PyObject *_wrap_gdk_threads_leave(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, ":gdk_threads_leave"))
     return NULL;
-  gdk_threads_enter();
+  gdk_threads_leave();
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -5768,6 +5781,12 @@ void init_gtk() {
          PyErr_Clear();
      else
          PyGtk_FatalExceptions = PyObject_IsTrue(d);
+
+#ifdef WITH_THREAD
+     /* it is required that this function be called to enable the thread
+      * safety functions */
+     g_thread_init(NULL);
+#endif
 
      if (PyErr_Occurred())
          Py_FatalError("can't initialise module _gtk");

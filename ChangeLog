@@ -1,3 +1,36 @@
+1999-04-20  James Henstridge  <james@daa.com.au>
+
+	* pygtk.spec: updated package version number.
+
+	* configure.in: added a check for the python thread module.  If it
+	is found, then also link _gtkmodule to the gthread library.
+	Incremented minimum GTK version to 1.2.1.
+	Incremented version to 0.5.13.
+
+	* gtkmodule.c: call g_thread_init if python was built with thread
+	support.  This is required to turn thread support on inside gdk/gtk.
+
+	* gtk.py: added new functions.
+	(GtkList.insert_items): this function wasn't looking at the internal
+	GtkObject for the children to insert, so would fail.
+
+	* generate/gtkbase.defs (gtk_widget_accelerators_locked): new func.
+
+	* generate/gtkmenus.defs (gtk_item_factory_add_foreign): new func.
+	(gtk_menu_get_accel_group): new func.
+	(gtk_menu_reorder_child): new func.
+	(gtk_menu_shell_deselect): new func.
+
+	* gtkmodule.c (_wrap_gtk_combo_set_popdown_strings): accept any
+	sequence for the second argument, rather than just lists.
+	(_wrap_gtk_init): check the return value, and throw an exception
+	when a connection to the X server could not be made, rather than
+	exiting.
+
+	* gtk.py: got rid of some warnings when pygtk is imported when
+	DISPLAY is not set.  Not completely necessary, but it doesn't hurt.
+	(GtkObject.remove_data) fixed small bug pointed out by Duncan Grisby.
+
 1999-04-08  James Henstridge  <james@daa.com.au>
 
 	* gtk.py (threads_enter,threads_leave): export these two new functions.

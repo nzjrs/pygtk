@@ -101,7 +101,7 @@ class GtkObject:
 	def get_data(self, key):
 		return _gtk.gtk_object_get_data(self._o, key)
 	def remove_data(self, key):
-		_gtk.gtk_object_remove_data(self._o)
+		_gtk.gtk_object_remove_data(self._o, key)
 	class __cnv:
 		def __init__(self, func):
 			self.func = func
@@ -200,9 +200,9 @@ class GtkTooltips(GtkData):
 
 class GtkItemFactory(GtkObject):
 	get_type = _gtk.gtk_item_factory_get_type
-	def __init__(self, type=_gtk.gtk_menu_bar_get_type(), path='',
-		     accel_group=None, _obj=None):
+	def __init__(self, type=-1, path='', accel_group=None, _obj=None):
 		if _obj: self._o = _obj; return
+		if type == -1: type = _gtk.gtk_menu_bar_get_type()
 		if hasattr(type, 'get_type'): type = type.get_type()
 		self._o = _gtk.gtk_item_factory_new(type,path,accel_group._ag)
 	parse_rc = _gtk.gtk_item_factory_parse_rc
@@ -238,12 +238,19 @@ class GtkItemFactory(GtkObject):
 		_gtk.gtk_item_factory_delete_item(self._o, path)
 	def popup(self, x, y, button, time):
 		_gtk.gtk_item_factory_popup(self._o, x, y, button, time)
+	def add_foreign(self, accel_widget, full_path, accel_group, keyval,
+			modifiers):
+		_gtk.gtk_item_factory_add_foreign(accel_widget._o, full_path,
+						  accel_group._ag, keyval,
+						  modifiers)
 
 class GtkWidget(GtkObject):
 	get_type = _gtk.gtk_widget_get_type
 	def __init__(self, _obj=None):
 		if _obj: self._o = _obj; return
 	# extra parameter is so that these funcs can be used as signal funcs
+	def accelerators_locked(self):
+		return _gtk.gtk_widget_accelerators_locked(self._o)
 	def activate(self, obj=None):
 		return _gtk.gtk_widget_activate(self._o)
 	def add_accelerator(self, signal, group, key, mods, flags):
@@ -1448,6 +1455,7 @@ class GtkList(GtkContainer):
 		l = _gtk.gtk_list_get_selection(self._o)
 		return map(_obj2inst, l)
 	def insert_items(self, items, pos):
+		items = map(lambda i: i._o, items)
 		_gtk.gtk_list_insert_items(self._o, items, pos)
 	def append_items(self, items):
 		items = map(lambda i: i._o, items)
@@ -1511,6 +1519,8 @@ class GtkMenuShell(GtkContainer):
 		_gtk.gtk_menu_shell_deactivate(self._o)
 	def select_item(self, item):
 		_gtk.gtk_menu_shell_select_item(self._o, item._o)
+	def deselect(self):
+		_gtk.gtk_menu_shell_deselect(self._o)
 	def activate_item(self, item, force_deactivate):
 		_gtk.gtk_menu_shell_activate_item(self._o, item._o,
 						  force_deactivate)
@@ -1558,10 +1568,15 @@ class GtkMenu(GtkMenuShell):
 		_gtk.gtk_menu_set_active(self._o, index)
 	def set_accel_group(self, group):
 		_gtk.gtk_menu_set_accel_group(self._o, group._ag)
+	def get_accel_group(self):
+		return GtkAccelGroup(_obj=
+				     _gtk.gtk_menu_get_accel_group(self._o))
 	def set_tearoff_state(self, torn_off):
 		_gtk.gtk_menu_set_tearoff_state(self._o, torn_off)
 	def set_title(self, title):
 		_gtk.gtk_menu_set_title(self._o, title)
+	def reorder_child(self, child, position):
+		_gtk.gtk_menu_reorder_child(self._o, child._o, position)
 
 class GtkNotebook(GtkContainer):
 	get_type = _gtk.gtk_notebook_get_type
