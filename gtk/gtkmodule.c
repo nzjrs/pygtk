@@ -132,18 +132,19 @@ init_gtk(void)
 
     /* initialise GTK ... */
     av = PySys_GetObject("argv");
-    if (!PyList_Check(av)) {
-        PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
-        av = NULL;
-    }
     if (av != NULL) {
-	argc = PyList_Size(av);
-	for (i = 0; i < argc; i++)
-            if (!PyString_Check(PyList_GetItem(av, i))) {
-                PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
-                av = NULL;
-                break;
-            }
+	if (!PyList_Check(av)) {
+	    PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
+	    av = NULL;
+	} else {
+	    argc = PyList_Size(av);
+	    for (i = 0; i < argc; i++)
+		if (!PyString_Check(PyList_GetItem(av, i))) {
+		    PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
+		    av = NULL;
+		    break;
+		}
+	}
     }
     if (av != NULL) {
 	argv = g_new(char *, argc);
