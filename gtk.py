@@ -620,7 +620,7 @@ class GtkMenuItem(GtkItem):
 	def set_placement(self, placement):
 		_gtk.gtk_menu_item_set_placement(self._o, placement)
 	def configure(self, show_toggle, show_sub):
-		_gtk.gtk_menu_item_configure(self._o, show_toggle. show_sub)
+		_gtk.gtk_menu_item_configure(self._o, show_toggle, show_sub)
 	def select(self, obj=None):
 		_gtk.gtk_menu_item_select(self._o)
 	def deselect(self, obj=None):
