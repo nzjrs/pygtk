@@ -843,6 +843,25 @@ pygdk_rectangle_from_pyobject(PyObject *object, GdkRectangle *rectangle)
     return FALSE;
 }
 
+static PyObject *
+PyGdkRectangle_from_value(const GValue *value)
+{
+    GdkRectangle *rect = (GtkTreePath *)g_value_get_boxed(value);
+
+    return pyg_boxed_new(rect, GDK_TYPE_RECTANGLE, TRUE, TRUE);
+}
+static int
+PyGdkRectangle_to_value(GValue *value, PyObject *object)
+{
+    GdkRectangle rect;
+
+    if (!pygdk_rectangle_from_pyobject(object, &rect))
+	return -1;
+
+    g_value_set_boxed(value, &rect);
+    return 0;
+}
+
 /* We have to set ob_type here because stupid win32 does not allow you
  * to use variables from another dll in a global variable initialisation.
  */
@@ -861,4 +880,7 @@ _pygtk_register_boxed_types(PyObject *moddict)
     pyg_register_boxed_custom(GTK_TYPE_TREE_PATH,
 			      PyGtkTreePath_from_value,
 			      PyGtkTreePath_to_value);
+    pyg_register_boxed_custom(GDK_TYPE_RECTANGLE,
+			      PyGdkRectangle_from_value,
+			      PyGdkRectangle_to_value);
 }
