@@ -3663,3 +3663,26 @@ _wrap_gdk_screen_get_setting(PyGObject *self, PyObject *args, PyObject *kwargs)
     g_value_unset(&value);
     return ret;
 }
+%%
+override gdk_pixbuf_fill kwargs
+static PyObject *
+_wrap_gdk_pixbuf_fill(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "pixel", NULL };
+    PyObject *py_pixel = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkPixbuf.fill", kwlist, &py_pixel))
+        return NULL;
+    
+    if (PyInt_Check(py_pixel))
+	gdk_pixbuf_fill(GDK_PIXBUF(self->obj), PyInt_AsLong(py_pixel));
+    else if (PyLong_Check(py_pixel))
+	gdk_pixbuf_fill(GDK_PIXBUF(self->obj), PyLong_AsUnsignedLong(py_pixel));
+    else {
+	PyErr_SetString(PyExc_TypeError, "pixel must be an int or a long");
+	return NULL;
+    }
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
