@@ -104,7 +104,7 @@ PyGtk_New(GtkObject *go) {
     return NULL;
   self->obj = go;
   gtk_object_ref(self->obj);
-  gtk_object_sink(self->obj);
+  /*  gtk_object_sink(self->obj); */
   return (PyObject *)self;
 }
 
