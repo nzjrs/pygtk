@@ -3891,7 +3891,7 @@ static PyObject *_wrap_gtk_adjustment_set_all(PyObject *self, PyObject *args) {
     PyObject *obj;
     double value, lower, upper, step_increment, page_increment, page_size;
     GtkAdjustment *adj;
-    if (!PyArg_ParseTuple(args, "O!:gtk_adjustment_set_all", &PyGtk_Type,
+    if (!PyArg_ParseTuple(args, "O!dddddd:gtk_adjustment_set_all", &PyGtk_Type,
 			  &obj, &value, &lower, &upper, &step_increment,
 			  &page_increment, &page_size))
 	return NULL;
@@ -3936,7 +3936,7 @@ static PyObject *_wrap_gtk_widget_draw(PyObject *self, PyObject *args) {
     GdkRectangle rect;
     PyObject *obj;
 
-    if (!PyArg_ParseTuple(args,"O!(iiii):gtk_widget_draw", &PyGtk_Type, &obj,
+    if (!PyArg_ParseTuple(args,"O!(hhhh):gtk_widget_draw", &PyGtk_Type, &obj,
 			 &(rect.x), &(rect.y), &(rect.width), &(rect.height)))
         return NULL;
     gtk_widget_draw(GTK_WIDGET(PyGtk_Get(obj)), &rect);
@@ -3958,8 +3958,9 @@ static PyObject *_wrap_gtk_widget_size_allocate(PyObject *self, PyObject *args) 
     GtkAllocation allocation;
     PyObject *obj;
 
-    if(!PyArg_ParseTuple(args,"O!(ii):gtk_widget_size_allocate", &PyGtk_Type,
-			 &obj, &(allocation.x), &(allocation.y)))
+    if(!PyArg_ParseTuple(args,"O!(hhhh):gtk_widget_size_allocate", &PyGtk_Type,
+			 &obj, &(allocation.x), &(allocation.y),
+			 &(allocation.width), &(allocation.height)))
         return NULL;
     gtk_widget_size_allocate(GTK_WIDGET(PyGtk_Get(obj)), &allocation);
     Py_INCREF(Py_None);
@@ -3981,13 +3982,12 @@ static PyObject *_wrap_gtk_widget_intersect(PyObject *self, PyObject *args) {
     GdkRectangle area;
     GdkRectangle intersect;
 
-    if(!PyArg_ParseTuple(args,"O!(iiii):gtk_widget_intersect", &PyGtk_Type,
-			 &obj, &(area.x), &(area.y), &(area.width),
-			 &(area.height))) 
+    if(!PyArg_ParseTuple(args,"O!(hhhh):gtk_widget_intersect", &PyGtk_Type,
+			 &obj, &(area.x), &(area.y), &(area.width), &(area.height))) 
         return NULL;
     if (gtk_widget_intersect(GTK_WIDGET(PyGtk_Get(obj)), &area, &intersect))
-        return Py_BuildValue("(iiii)", intersect.x, intersect.y,
-			     intersect.width, intersect.height);
+        return Py_BuildValue("(iiii)", (int)intersect.x, (int)intersect.y,
+			     (int)intersect.width, (int)intersect.height);
     else {
         Py_INCREF(Py_None);
         return Py_None;
@@ -4083,8 +4083,11 @@ static PyObject *_wrap_gtk_container_children(PyObject *self, PyObject *args) {
 
     for (tmp = list; tmp != NULL; tmp = tmp->next) {
       gtk_obj = PyGtk_New(GTK_OBJECT(tmp->data));
-      if (gtk_obj == NULL)
+      if (gtk_obj == NULL) {
+	g_list_free(list);
+	Py_DECREF(py_list);
 	return NULL;
+      }
       PyList_Append(py_list, gtk_obj);
       Py_DECREF(gtk_obj);
     }
@@ -4175,7 +4178,7 @@ static PyObject *_wrap_gtk_window_set_geometry_hints(PyObject *self, PyObject *a
       } else {
 	gchar *err = g_strdup_printf("unknown hint name or wrong type for %s",
 				     name);
-	PyErr_SetString(PyExc_TypeError, name);
+	PyErr_SetString(PyExc_TypeError, err);
 	g_free(err);
 	return NULL;
       }
@@ -4190,14 +4193,14 @@ static PyObject *_wrap_gtk_window_set_geometry_hints(PyObject *self, PyObject *a
       } else {
 	gchar *err = g_strdup_printf("unknown hint name or wrong type for %s",
 				     name);
-	PyErr_SetString(PyExc_TypeError, name);
+	PyErr_SetString(PyExc_TypeError, err);
 	g_free(err);
 	return NULL;
       }
     } else {
       gchar *err = g_strdup_printf("unknown hint name or wrong type for %s",
 				   name);
-      PyErr_SetString(PyExc_TypeError, name);
+      PyErr_SetString(PyExc_TypeError, err);
       g_free(err);
       return NULL;
     }
@@ -4279,7 +4282,7 @@ static PyObject *_wrap_gtk_clist_get_selection(PyObject *self, PyObject *args) {
 
   for (selection = GTK_CLIST(PyGtk_Get(clist))->selection; selection != NULL;
        selection = selection->next) {
-    row = (guint)selection->data;
+    row = GPOINTER_TO_UINT(selection->data);
     py_int = PyInt_FromLong(row);
     if (!py_int) {
       Py_DECREF(ret);
@@ -4899,7 +4902,7 @@ static PyObject *_wrap_gtk_toolbar_append_item(PyObject *self, PyObject *args) {
   char *text, *tooltip, *tip_private;
   GtkWidget *ret;
   PyObject *callback;
-  if (!PyArg_ParseTuple(args, "O!zzzO!O|gtk_toolbar_append_item",
+  if (!PyArg_ParseTuple(args, "O!zzzO!O:gtk_toolbar_append_item",
 			&PyGtk_Type, &t, &text, &tooltip, &tip_private,
 		       &PyGtk_Type, &icon, &callback))
     return NULL;
@@ -4907,7 +4910,7 @@ static PyObject *_wrap_gtk_toolbar_append_item(PyObject *self, PyObject *args) {
     PyErr_SetString(PyExc_TypeError,"sixth argument not callable");
     return NULL;
   }
-  Py_INCREF(callback);
+  if (callback != Py_None) Py_INCREF(callback);
   /* if you set sigfunc to NULL, no signal is connected, rather than
      the default signal handler being used */
   ret = gtk_toolbar_append_item(GTK_TOOLBAR(PyGtk_Get(t)), text, tooltip,
@@ -4925,7 +4928,7 @@ static PyObject *_wrap_gtk_toolbar_prepend_item(PyObject *self, PyObject *args) 
   char *text, *tooltip, *tip_private;
   GtkWidget *ret;
   PyObject *callback;
-  if (!PyArg_ParseTuple(args, "O!zzzO!O|gtk_toolbar_prepend_item",
+  if (!PyArg_ParseTuple(args, "O!zzzO!O:gtk_toolbar_prepend_item",
 			&PyGtk_Type, &t, &text, &tooltip, &tip_private,
 			&PyGtk_Type, &icon, &callback))
     return NULL;
@@ -4933,7 +4936,7 @@ static PyObject *_wrap_gtk_toolbar_prepend_item(PyObject *self, PyObject *args) 
     PyErr_SetString(PyExc_TypeError,"sixth argument not callable");
     return NULL;
   }
-  Py_INCREF(callback);
+  if (callback != Py_None) Py_INCREF(callback);
   ret = gtk_toolbar_prepend_item(GTK_TOOLBAR(PyGtk_Get(t)), text,
 				 tooltip, tip_private,
 				 GTK_WIDGET(PyGtk_Get(icon)),
@@ -4950,7 +4953,7 @@ static PyObject *_wrap_gtk_toolbar_insert_item(PyObject *self, PyObject *args) {
   GtkWidget *ret;
   PyObject *callback;
   int pos;
-  if (!PyArg_ParseTuple(args, "O!zzzO!Oi|gtk_toolbar_insert_item",
+  if (!PyArg_ParseTuple(args, "O!zzzO!Oi:gtk_toolbar_insert_item",
 			&PyGtk_Type, &t, &text, &tooltip, &tip_private,
 			&PyGtk_Type, &icon, &callback, &pos))
     return NULL;
@@ -4958,7 +4961,7 @@ static PyObject *_wrap_gtk_toolbar_insert_item(PyObject *self, PyObject *args) {
     PyErr_SetString(PyExc_TypeError,"sixth argument not callable");
     return NULL;
   }
-  Py_INCREF(callback);
+  if (callback != Py_None) Py_INCREF(callback);
   ret = gtk_toolbar_insert_item(GTK_TOOLBAR(PyGtk_Get(t)), text, tooltip,
 				tip_private, GTK_WIDGET(PyGtk_Get(icon)),
 				NULL, NULL, pos);
@@ -5490,13 +5493,13 @@ static PyObject *_wrap_gdk_color_alloc(PyObject *self, PyObject *args) {
     GdkColormap *colormap;
     PyGtkStyle_Object *style;
     PyGtk_Object *obj;
-    if (PyArg_ParseTuple(args, "O!iii:gdk_color_alloc", &PyGtkStyle_Type,
+    if (PyArg_ParseTuple(args, "O!hhh:gdk_color_alloc", &PyGtkStyle_Type,
 			 &style, &(gdk_color.red), &(gdk_color.green),
 			 &(gdk_color.blue)))
         colormap = PyGtkStyle_Get(style)->colormap;
     else {
         PyErr_Clear();
-	if (!PyArg_ParseTuple(args, "O!iii:gdk_color_alloc", &PyGtk_Type,
+	if (!PyArg_ParseTuple(args, "O!hhh:gdk_color_alloc", &PyGtk_Type,
 			      &obj, &(gdk_color.red), &(gdk_color.green),
 			      &(gdk_color.blue)))
 	    return NULL;
