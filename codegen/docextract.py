@@ -116,8 +116,8 @@ def parse_dir(dir, doc_dict):
 	if len(file) > 2 and file[-2:] == '.c':
 	    parse_file(open(path, 'r'), doc_dict)
 
-def extract(dirs):
-    doc_dict = {}
+def extract(dirs, doc_dict=None):
+    if not doc_dict: doc_dict = {}
     for dir in dirs:
 	parse_dir(dir, doc_dict)
     return doc_dict

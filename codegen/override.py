@@ -21,9 +21,9 @@ class Overrides:
         self.headers = ''
         self.init = ''
         self.imports = []
-	if filename: self.__handle_file(filename)
+	if filename: self.handle_file(filename)
 
-    def __handle_file(self, filename):
+    def handle_file(self, filename):
         fp = open(filename, 'r')
 	# read all the components of the file ...
         bufs = []

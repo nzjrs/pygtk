@@ -71,8 +71,13 @@ class Parser:
 	    self.parseTree = parse(arg)
 	else:
 	    raise TypeError, 'second arg must be string, tuple or file'
-    def startParsing(self, tuples=None):
-	if tuples == None: tuples = self.parseTree
+    def startParsing(self, arg=None):
+        if type(arg) == types.StringType:
+            tuples = parse(open(arg))
+        elif arg:
+            tuples = arg
+        else:
+            tuples = self.parseTree
 	for tup in tuples:
 	    self.handle(tup)
     def handle(self, tup):

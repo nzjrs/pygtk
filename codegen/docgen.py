@@ -6,19 +6,37 @@ import override
 import docextract
 
 class DocWriter:
-    def __init__(self, defs_file, overrides_file, source_dirs):
+    def __init__(self, source_dirs):
 	# parse the defs file
-	self.parser = defsparser.DefsParser(defs_file)
-	self.parser.startParsing()
-
-        # the overrides file
-        if overrides_file:
-            self.overrides = override.Overrides(open(overrides_file))
-        else:
-            self.overrides = override.Overrides(None)
+        self.parser = defsparser.DefsParser(())
+        self.overrides = override.Overrides()
+        self.classmap = {}
 
 	# extract documentation from C source code
 	self.docs = docextract.extract(source_dirs)
+
+    def add_docs(self, defs_file, overrides_file, module_name):
+        '''parse information about a given defs file'''
+        self.parser.filename = defs_file
+        self.parser.startParsing(defs_file)
+        if overrides_file:
+            self.overrides.handle_file(overrides_file)
+
+        for obj in self.parser.objects:
+            if not hasattr(obj, 'py_name'):
+                obj.py_name = '%s.%s' % (module_name, obj.name)
+                self.classmap[obj.c_name] = obj.py_name
+        for obj in self.parser.interfaces:
+            if not hasattr(obj, 'py_name'):
+                obj.py_name = '%s.%s' % (module_name, obj.name)
+                self.classmap[obj.c_name] = obj.py_name
+        for obj in self.parser.boxes:
+            if not hasattr(obj, 'py_name'):
+                obj.py_name = '%s.%s' % (module_name, obj.name)
+                self.classmap[obj.c_name] = obj.py_name
+
+    def pyname(self, name):
+        return self.classmap.get(name, name)
 
     def output_docs(self, output_prefix):
 	obj_defs = self.parser.objects[:]
@@ -187,13 +205,13 @@ class DocbookDocWriter(DocWriter):
             if info.__class__ == defsparser.FunctionDef:
                 if info.is_constructor_of is not None:
                     # should have a link here
-                    return '<function>' + info.is_constructor_of + \
-                           '()</function>'
+                    return '<function>%s()</function>' % \
+                           self.pyname(info.is_constructor_of)
                 else:
                     return '<function>' + info.name + '()</function>'
             if info.__class__ == defsparser.MethodDef:
                 return '<link linkend="' + self.make_method_ref(info) + \
-                       '"><function>' + info.of_object + '.' + \
+                       '"><function>' + self.pyname(info.of_object) + '.' + \
                        info.name + '()</function></link>'
         # fall through through
         return '<function>' + match.group(1) + '()</function>'
@@ -210,17 +228,17 @@ class DocbookDocWriter(DocWriter):
             if info.__class__ == defsparser.FunctionDef:
                 if info.is_constructor_of is not None:
                     # should have a link here
-                    return '<function>' + info.is_constructor_of + \
+                    return '<function>' + self.pyname(info.is_constructor_of) + \
                            '</function>'
                 else:
                     return '<function>' + info.name + '</function>'
             if info.__class__ == defsparser.MethodDef:
                 return '<link linkend="' + self.make_method_ref(info) + \
-                       '"><function>' + info.of_object + '.' + \
+                       '"><function>' + self.pyname(info.of_object) + '.' + \
                        info.name + '</function></link>'
             if info.__class__ == defsparser.ObjectDef:
                 return '<link linkend="' + self.make_class_ref(info.c_name) + \
-                       '"><type>' + info.c_name + '</type></link>'
+                       '"><type>' + self.pyname(info.c_name) + '</type></link>'
         # fall through through
         return '<literal>' + match.group(1) + '</literal>'
     
@@ -244,7 +262,7 @@ class DocbookDocWriter(DocWriter):
     def create_constructor_prototype(self, func_def):
         sgml = [ '  <funcsynopsis>\n    <funcprototype>\n']
         sgml.append('      <funcdef><function>')
-        sgml.append(func_def.is_constructor_of)
+        sgml.append(self.pyname(func_def.is_constructor_of))
         sgml.append('</function></funcdef>\n')
         for type, name, dflt, null in func_def.params:
             sgml.append('      <paramdef><parameter>')
@@ -295,7 +313,7 @@ class DocbookDocWriter(DocWriter):
     
     def write_class_header(self, obj_name, fp):
         fp.write('<sect1 id="' + self.make_class_ref(obj_name) + '">\n')
-        fp.write('  <title>Class ' + obj_name + '</title>\n\n')
+        fp.write('  <title>Class ' + self.pyname(obj_name) + '</title>\n\n')
     def write_class_footer(self, obj_name, fp):
         fp.write('</sect1>\n')
     def write_heading(self, text, fp):
@@ -309,10 +327,10 @@ class DocbookDocWriter(DocWriter):
         indent = ''
         for name, interfaces in ancestry:
             fp.write(indent + '+-- <link linkend="' +
-                     self.make_class_ref(name) + '">'+ name + '</link>')
+                     self.make_class_ref(name) + '">'+ self.pyname(name) + '</link>')
             if interfaces:
                 fp.write(' (implements ')
-                fp.write(string.join(interfaces, ', '))
+                fp.write(string.join(map(self.pyname, interfaces), ', '))
                 fp.write(')\n')
             else:
                 fp.write('\n')
@@ -357,7 +375,7 @@ class DocbookDocWriter(DocWriter):
 
     def write_method(self, meth_def, func_doc, fp):
         fp.write('  <sect3 id="' + self.make_method_ref(meth_def) + '">\n')
-        fp.write('    <title>' + meth_def.of_object + '.' +
+        fp.write('    <title>' + self.pyname(meth_def.of_object) + '.' +
                  meth_def.name + '</title>\n\n')
         prototype = self.create_method_prototype(meth_def)
         fp.write(prototype + '\n')
@@ -452,5 +470,6 @@ if __name__ == '__main__':
 	    'usage: docgen.py -d file.defs [-s /src/dir] [-o output-prefix]\n')
         sys.exit(1)
 
-    d = DocbookDocWriter(defs_file, overrides_file, source_dirs)
+    d = DocbookDocWriter(source_dirs)
+    d.add_docs(defs_file, overrides_file, 'gtk')
     d.output_docs(output_prefix)
