@@ -7,6 +7,7 @@ headers
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
 #include "pygtktreemodel.h"
+#include "pygtkcellrenderer.h"
 
 /* from the gdk portion ... */
 extern PyTypeObject PyGdkColormap_Type;
@@ -4437,7 +4438,7 @@ _wrap_gtk_cell_renderer_get_size(PyGObject *self, PyObject *args,
 	return NULL;
     }
 
-    gtk_cell_renderer_get_size(GTK_CELL_RENDERER(pygobject_get(self->obj)),
+    gtk_cell_renderer_get_size(GTK_CELL_RENDERER(self->obj),
 			       GTK_WIDGET(pygobject_get(py_widget)),
 			       &cell_area, &x_offset, &y_offset, &width,
 			       &height);
@@ -4453,7 +4454,7 @@ _wrap_gtk_cell_renderer_get_fixed_size(PyGObject *self)
 {
     gint width, height;
 
-    gtk_cell_renderer_get_fixed_size(GTK_CELL_RENDERER(pygobject_get(self->obj)),
+    gtk_cell_renderer_get_fixed_size(GTK_CELL_RENDERER(self->obj),
 				     &width, &height);
 
     return Py_BuildValue("(ii)", width, height);
