@@ -1281,6 +1281,12 @@
   (gtype-id "GTK_TYPE_EDITABLE")
 )
 
+(define-interface FileChooser
+  (in-module "Gtk")
+  (c-name "GtkFileChooser")
+  (gtype-id "GTK_TYPE_FILE_CHOOSER")
+)
+
 (define-interface TreeDragDest
   (in-module "Gtk")
   (c-name "GtkTreeDragDest")
@@ -1619,6 +1625,7 @@
   (parent "GtkDialog")
   (c-name "GtkFileChooserDialog")
   (gtype-id "GTK_TYPE_FILE_CHOOSER_DIALOG")
+  (implements "GtkFileChooser")
 )
 
 (define-object FileChooserWidget
@@ -1626,6 +1633,14 @@
   (parent "GtkVBox")
   (c-name "GtkFileChooserWidget")
   (gtype-id "GTK_TYPE_FILE_CHOOSER_WIDGET")
+  (implements "GtkFileChooser")
+)
+
+(define-object FileFilter
+  (in-module "Gtk")
+  (parent "GtkObject")
+  (c-name "GtkFileFilter")
+  (gtype-id "GTK_TYPE_FILE_FILTER")
 )
 
 (define-object FileSelection
@@ -2279,6 +2294,8 @@
   (parent "GObject")
   (c-name "GtkTreeModelFilter")
   (gtype-id "GTK_TYPE_TREE_MODEL_FILTER")
+  (implements "GtkTreeModel")
+  (implements "GtkTreeDragSource")
 )
 
 (define-object TreeModelSort
