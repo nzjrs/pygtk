@@ -98,6 +98,7 @@ typetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
 	   '    %(methods)s,\n' + \
            '    EXTENSIONCLASS_INSTDICT_FLAG,\n' + \
 	   '};\n\n'
+
 interfacetypetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
 	   '    PyObject_HEAD_INIT(NULL)\n' + \
 	   '    0,				/* ob_size */\n' + \
@@ -125,6 +126,71 @@ interfacetypetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
 	   '    %(methods)s,\n' + \
            '    0,\n' + \
 	   '};\n\n'
+
+boxedmethtmpl = 'static PyObject *\n' + \
+                '_wrap_%(cname)s(PyObject *self, PyObject *args, PyObject *kwargs)\n' + \
+                '{\n' + \
+                '%(varlist)s' + \
+                '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.%(name)s"%(parselist)s))\n' + \
+                '        return NULL;\n' + \
+                '%(extracode)s\n' + \
+                '%(handleret)s\n' + \
+                '}\n\n'
+boxedmethcalltmpl = '%(cname)s(pyg_boxed_get(self, %(typename))%(arglist)s)'
+
+boxedconsttmpl = 'static PyObject *\n' + \
+                 '_wrap_%(cname)s(PyObject *self, PyObject *args, PyObject *kwargs)\n' + \
+                 '{\n' + \
+                 '%(varlist)s' + \
+                 '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.__init__"%(parselist)s))\n' + \
+                 '        return NULL;\n' + \
+                 '%(extracode)s\n' + \
+                 '    self->gtype = %(typecode)s;\n' + \
+                 '    self->boxed = (GObject *)%(cname)s(%(arglist)s);\n' + \
+                 '    if (!self->obj) {\n' + \
+                 '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n' + \
+                 '        return NULL;\n' + \
+                 '    }\n' + \
+                 '    self->free_on_dealloc = TRUE;\n' + \
+                 '    Py_INCREF(Py_None);\n' + \
+                 '    return Py_None;\n' + \
+                 '}\n\n'
+
+boxedgetattrtmpl = 'static PyObject *\n' + \
+                   '%(getattr)s(PyObject *self, char *attr)\n' + \
+                   '{\n' + \
+                   '%(attrchecks)s' + \
+                   '    PyErr_SetString(PyExc_AttributeError, attr);\n' + \
+                   '    return NULL;\n' + \
+                   '}\n\n'
+
+boxedtmpl = 'PyExtensionClass Py%(typename)s_Type = {\n' + \
+            '    PyObject_HEAD_INIT(NULL)\n' + \
+            '    0,				/* ob_size */\n' + \
+            '    "%(typename)s",			/* tp_name */\n' + \
+            '    sizeof(PyGBoxed),		/* tp_basicsize */\n' + \
+            '    0,				/* tp_itemsize */\n' + \
+            '    /* methods */\n' + \
+            '    (destructor)0,			/* tp_dealloc */\n' + \
+            '    (printfunc)0,			/* tp_print */\n' + \
+            '    (getattrfunc)%(getattr)s,	/* tp_getattr */\n' + \
+            '    (setattrfunc)0,			/* tp_setattr */\n' + \
+            '    (cmpfunc)0,			/* tp_compare */\n' + \
+            '    (reprfunc)0,			/* tp_repr */\n' + \
+            '    0,				/* tp_as_number */\n' + \
+            '    0,				/* tp_as_sequence */\n' + \
+            '    0,				/* tp_as_mapping */\n' + \
+            '    (hashfunc)0,			/* tp_hash */\n' + \
+            '    (ternaryfunc)0,			/* tp_call */\n' + \
+            '    (reprfunc)0,			/* tp_str */\n' + \
+            '    (getattrofunc)0,		/* tp_getattro */\n' + \
+            '    (setattrofunc)0,		/* tp_setattro */\n' + \
+            '    /* Space for future expansion */\n' + \
+            '    0L, 0L,\n' + \
+            '    NULL, /* Documentation string */\n' + \
+            '    %(methods)s,\n' + \
+            '    0,\n' + \
+            '};\n\n'
 
 def fixname(name):
     if keyword.iskeyword(name):
@@ -389,6 +455,169 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
     fp.write(interfacetypetmpl % dict)
 
+## boxed types ...
+def write_boxed_method(objname, methobj, fp=sys.stdout):
+    varlist = argtypes.VarList()
+    parsestr = ''
+    parselist = ['']
+    extracode = []
+    arglist = ['']
+
+    if methobj.varargs:
+        raise ValueError, "varargs methods not supported"
+    
+    dict = {
+	'name':     fixname(methobj.name),
+	'cname':    methobj.c_name,
+	'varlist':  varlist,
+	'typename': objname,
+	'cast':     argtypes._to_upper_str(objname)[1:]
+    }
+
+    # create the keyword argument name list ...
+    kwlist = string.join(map(lambda x: '"'+fixname(x[1])+'"', methobj.params) +
+                         ['NULL'], ', ')
+    varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
+    parselist.append('kwlist')
+
+    # handle return type ...
+    for ptype, pname, pdflt, pnull in methobj.params:
+	if pdflt and '|' not in parsestr:
+	    parsestr = parsestr + '|'
+	handler = argtypes.matcher.get(ptype)
+	parsestr = parsestr + handler.write_param(ptype, pname, pdflt, pnull,
+						  varlist, parselist,
+						  extracode, arglist)
+    dict['typecodes'] = parsestr
+    dict['parselist'] = string.join(parselist, ', ')
+    dict['extracode'] = string.join(extracode, '')
+    dict['arglist']   = string.join(arglist, ', ')
+
+    call = boxedmethcalltmpl % dict
+    handler = argtypes.matcher.get(methobj.ret)
+    dict['handleret'] = handler.write_return(methobj.ret, varlist) % {'func': call}
+
+    fp.write(boxedmethtmpl % dict)
+
+def write_boxed_constructor(objname, funcobj, fp=sys.stdout):
+    varlist = argtypes.VarList()
+    parsestr = ''
+    parselist = ['']
+    extracode = []
+    arglist = []
+
+    dict = {
+	'name':    funcobj.name,
+	'cname':   funcobj.c_name,
+	'varlist': varlist,
+	'typename': objname,
+        'typecode': argtypes._enum_name(objname),
+	'cast':    argtypes._to_upper_str(objname)[1:],
+    }
+
+    # create the keyword argument name list ...
+    kwlist = string.join(map(lambda x: '"'+fixname(x[1])+'"', funcobj.params) +
+                         ['NULL'], ', ')
+    varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
+    parselist.append('kwlist')
+
+    # handle return type ...
+    for ptype, pname, pdflt, pnull in funcobj.params:
+	if pdflt and '|' not in parsestr:
+	    parsestr = parsestr + '|'
+	handler = argtypes.matcher.get(ptype)
+	parsestr = parsestr + handler.write_param(ptype, pname, pdflt, pnull,
+						  varlist, parselist,
+						  extracode, arglist)
+    dict['typecodes'] = parsestr
+    dict['parselist'] = string.join(parselist, ', ')
+    dict['extracode'] = string.join(extracode, '')
+    dict['arglist']   = string.join(arglist, ', ')
+    fp.write(boxedconsttmpl % dict)
+
+def write_boxed_getattr(parser, boxedobj, fp=sys.stdout):
+    typecode = argtypes._enum_name(boxedobj.c_name)
+    attrchecks = ''
+    for ftype, fname in boxedobj.fields:
+        try:
+            varlist = argtypes.VarList()
+            handler = argtypes.matcher.get(ftype)
+            code = handler.write_return(ftype, varlist) % \
+                   {'func': 'pyg_boxed_get(self, ' + boxedobj.c_name + ')->' + fname}
+            if code:
+                # indent code ...
+                code = '    ' + string.replace(code, '\n', '\n    ')
+            attrchecks = attrchecks + attrchecktmpl % { 'attr': fixname(fname),
+                                                        'varlist': varlist,
+                                                        'code': code }
+        except:
+            sys.stderr.write("couldn't write check for " + objobj.c_name +
+                             '.' + fname + '\n')
+	    #traceback.print_exc()
+    funcname = '_wrap_' + string.lower(uline) + '_getattr'
+    fp.write(boxedgetattrtmpl % {'getattr':    funcname,
+                                 'attrchecks': attrchecks })
+    return funcname
+
+def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
+    fp.write('\n/* ----------- ' + objobj.c_name + ' ----------- */\n\n')
+    constructor = parser.find_constructor(boxedobj, overrides)
+    methods = []
+    if constructor:
+	try:
+            methtype = 'METH_VARARGS'
+            if overrides.is_overriden(constructor.c_name):
+                fp.write(overrides.override(constructor.c_name))
+                fp.write('\n\n')
+                if overrides.wants_kwargs(constructor.c_name):
+                    methtype = methtype + '|METH_KEYWORDS'
+            else:
+                write_boxed_constructor(boxedobj.c_name, constructor, fp)
+                methtype = methtype + '|METH_KEYWORDS'
+	    methods.append(methdeftmpl %
+			   { 'name':  '__init__',
+			     'cname': '_wrap_' + constructor.c_name,
+			     'flags': methtype})
+	except:
+	    sys.stderr.write('Could not write constructor for ' +
+			     boxedobj.c_name + '\n')
+    for meth in parser.find_methods(boxedobj):
+        if overrides.is_ignored(meth.c_name):
+            continue
+	try:
+            methtype = 'METH_VARARGS'
+            if overrides.is_overriden(meth.c_name):
+                fp.write(overrides.override(meth.c_name))
+                fp.write('\n\n')
+                if overrides.wants_kwargs(meth.c_name):
+                    methtype = methtype + '|METH_KEYWORDS'
+            else:
+                write_boxed_method(boxedobj.c_name, meth, fp)
+                methtype = methtype + '|METH_KEYWORDS'
+	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
+					   'cname': '_wrap_' + meth.c_name,
+					   'flags': methtype})
+	except:
+	    sys.stderr.write('Could not write method ' + boxedobj.c_name +
+			     '.' + meth.name + '\n')
+            #traceback.print_exc()
+
+    # write the PyMethodDef structure
+    methods.append('    { NULL, NULL, 0 }\n')
+    fp.write('static PyMethodDef _Py' + boxedobj.c_name + '_methods[] = {\n')
+    fp.write(string.join(methods, ''))
+    fp.write('};\n\n')
+
+    # write the type template
+    dict = { 'class': boxedobj.c_name }
+    if objobj.fields:
+        dict['getattr'] = write_boxed_getattr(parser, boxedobj, fp)
+    else:
+        dict['getattr'] = '0'
+    dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
+    fp.write(boxedtmpl % dict)
+
+
 def write_functions(parser, overrides, prefix, fp=sys.stdout):
     fp.write('\n/* ----------- functions ----------- */\n\n')
     functions = []
@@ -424,11 +653,16 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write(overrides.get_headers())
     fp.write('\n\n')
     fp.write('/* ---------- forward type declarations ---------- */\n')
+    for obj in parser.boxed:
+        fp.write('PyExtensionClass Py' + obj.c_name + '_Type;\n')
     for obj in parser.objects:
         fp.write('PyExtensionClass Py' + obj.c_name + '_Type;\n')
     for interface in parser.interfaces:
         fp.write('PyExtensionClass Py' + interface.c_name + '_Type;\n')
     fp.write('\n')
+    for boxed in parser.boxed:
+        write_class(parser, boxed, overrides, fp)
+        fp.write('\n')
     for obj in parser.objects:
         write_class(parser, obj, overrides, fp)
         fp.write('\n')
@@ -442,6 +676,11 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('void\n' + prefix + '_register_classes(PyObject *d)\n{\n')
     fp.write('    ExtensionClassImported;\n')
     fp.write(overrides.get_init() + '\n')
+
+    for boxed in parser.boxed:
+        typecode = argtypes._enum_name(boxed.c_name)
+        fp.write('    pyg_register_boxed(d, "' + boxed.c_name +
+                 '", ' + typecode + ', &Py' + boxed.c_name + '_Type);\n')
     for interface in parser.interfaces:
         uclass = string.lower(argtypes._to_upper_str(interface.c_name)[1:])
         fp.write('    pyg_register_interface(d, "' + interface.c_name +
@@ -479,6 +718,8 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('}\n')
 
 def register_types(parser):
+    for boxed in parser.boxed:
+        argtypes.matcher.register_boxed(boxed.c_name)
     for obj in parser.objects:
         if obj.parent != (None, None):
             argtypes.matcher.register_object(obj.c_name,

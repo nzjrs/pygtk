@@ -122,6 +122,48 @@ class FlagsDef(EnumDef):
 	apply(EnumDef.__init__, (self,) + args)
 	self.deftype = 'flags'
 
+class BoxedDef(Definition):
+    def __init__(self, name, *args):
+	self.name = name
+	self.module = None
+	self.c_name = None
+        self.copy = None
+        self.release = None
+	self.fields = []
+	for arg in args:
+	    if type(arg) != type(()) or len(arg) < 2:
+		continue
+	    if arg[0] == 'in-module':
+		self.module = arg[1]
+	    elif arg[0] == 'c-name':
+		self.c_name = arg[1]
+            elif arg[0] == 'copy-func':
+                self.copy = arg[1]
+            elif arg[0] == 'release-func':
+                self.release = arg[1]
+	    elif arg[0] == 'field':
+		for parg in arg[1:]:
+		    if parg[0] == 'type-and-name':
+			self.fields.append((parg[1], parg[2]))
+    def merge(self, old):
+	# currently the .h parser doesn't try to work out what fields of
+	# an object structure should be public, so we just copy the list
+	# from the old version ...
+	self.fields = old.fields
+    def write_defs(self, fp=sys.stdout):
+	fp.write('(boxed ' + self.name + '\n')
+	if self.module:
+	    fp.write('  (in-module ' + self.module + ')\n')
+	if self.c_name:
+	    fp.write('  (c-name ' + self.c_name + ')\n')
+        if self.copy:
+            fp.write('  (copy-func ' + self.copy + ')\n')
+        if self.release:
+            fp.write('  (release-func ' + self.release + ')\n')
+	for (ftype, fname) in self.fields:
+	    fp.write('  (field (type-and-name ' + ftype + ' ' + fname + '))\n')
+	fp.write(')\n\n')
+
 class MethodDef(Definition):
     def __init__(self, name, *args):
 	self.name = name
