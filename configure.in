@@ -1,4 +1,4 @@
-AC_INIT(pygtk, 1.99.2,
+AC_INIT(pygtk, 1.99.3,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-python&component=pygtk])
 AC_CONFIG_SRCDIR([gtk/gtkmodule.c])
 AM_CONFIG_HEADER(config.h)
@@ -46,11 +46,11 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AM_PATH_GLIB_2_0(1.3.8,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],gobject)
-PKG_CHECK_MODULES(PANGO, pango >= 0.19,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
+AM_PATH_GLIB_2_0(1.3.9,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],gobject)
+PKG_CHECK_MODULES(PANGO, pango >= 0.20,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
-AM_PATH_GTK_2_0(1.3.8,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],$extra_mods)
+AM_PATH_GTK_2_0(1.3.9,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],$extra_mods)
 
 dnl check for libglade ...
 build_libglade=false
