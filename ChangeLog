@@ -1,3 +1,17 @@
+2004-04-11  Johan Dahlin  <johan@gnome.org>
+
+	* pygobject.c (pygobject_new_with_interfaces): New function.
+	(pygobject_lookup_class): Modify so we're not traversing parents
+	for unknown types but instead creating new types when they're not
+	registered. We're also using pygobject_new_with_interfaces so
+	interfaces gets attached correctly. Partial fix for bug 129032
+
+	* gobjectmodule.c: Add quark and attach the PyTypeObject for
+	GInterfaces. 
+
+	* pygobject-private.h: Make PyGInterface_Type and
+	pyginterface_type_key public	
+
 2004-04-10  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gtk.override (_wrap_gtk_action_group_add_toggle_actions) Make
