@@ -1332,6 +1332,29 @@ _wrap_gtk_tree_model_get_iter(PyGObject *self, PyObject *args,PyObject *kwargs)
     }
 }
 %%
+override gtk_tree_model_get_iter_from_string kwargs
+static PyObject *
+_wrap_gtk_tree_model_get_iter_from_string(PyGObject *self, PyObject *args,
+					  PyObject *kwargs)
+{
+    static char *kwlist[] = { "path_string", NULL };
+    const gchar *path_string;
+    GtkTreeIter iter;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s:GtkTreeModel.get_iter_from_string",
+				     kwlist, &path_string))
+	return NULL;
+
+    if (gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(self->obj), &iter,
+					    path_string)) {
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    } else {
+	PyErr_SetString(PyExc_ValueError, "invalid tree path");
+	return NULL;
+    }
+}
+%%
 override gtk_tree_model_get_value kwargs
 static PyObject *
 _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
