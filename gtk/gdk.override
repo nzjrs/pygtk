@@ -1725,6 +1725,9 @@ _wrap_gdk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 %%
 override gdk_property_get kwargs
+
+static GdkAtom atom_type = GDK_NONE, atom_pair_type = GDK_NONE;
+
 static PyObject *
 _wrap_gdk_property_get(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
@@ -1755,28 +1758,51 @@ _wrap_gdk_property_get(PyGObject *self, PyObject *args, PyObject *kwargs)
 			 pdelete, &atype, &aformat, &alength, &data)) {
 	/* success */
 	PyObject *pdata = NULL;
-	gint i;
-	guint16 *data16;
-	guint32 *data32;
+	gint nelements, i;
 	switch (aformat) {
 	case 8:
 	    if ((pdata = PyString_FromStringAndSize(data, alength)) == NULL)
 	        return NULL;
 	    break;
-	case 16:
-	    data16 = (guint16 *)data;
-	    if ((pdata = PyTuple_New(alength)) == NULL)
+	case 16: {
+	    short *data16;
+
+	    data16 = (short *)data;
+	    nelements = alength / sizeof(short);
+	    if ((pdata = PyList_New(nelements)) == NULL)
 	        return NULL;
-	    for (i = 0; i < alength; i++)
-		PyTuple_SetItem(pdata, i, PyInt_FromLong(data16[i]));
+	    for (i = 0; i < nelements; i++)
+		PyList_SetItem(pdata, i, PyInt_FromLong(data16[i]));
 	    break;
-	case 32:
-	    data32 = (guint32 *)data;
-	    if ((pdata = PyTuple_New(alength)) == NULL)
-	        return NULL;
-	    for (i = 0; i < alength; i++)
-		PyTuple_SetItem(pdata, i, PyInt_FromLong(data32[i]));
+	}
+	case 32: {
+	    if (atom_type == GDK_NONE) {
+		atom_type = gdk_atom_intern("ATOM", TRUE);
+		atom_pair_type = gdk_atom_intern("ATOM_PAIR", TRUE);
+	    }
+
+	    /* special handling for atom types */
+	    if (atype == atom_type || atype == atom_pair_type) {
+		GdkAtom *data32;
+
+		data32 = (GdkAtom *)data;
+		nelements = alength / sizeof(GdkAtom);
+		if ((pdata = PyList_New(nelements)) == NULL)
+		    return NULL;
+		for (i = 0; i < nelements; i++)
+		    PyList_SetItem(pdata, i, PyGdkAtom_New(data32[i]));
+	    } else {
+		long *data32;
+
+		data32 = (long *)data;
+		nelements  = alength / sizeof(long);
+		if ((pdata = PyList_New(nelements)) == NULL)
+		    return NULL;
+		for (i = 0; i < nelements; i++)
+		    PyList_SetItem(pdata, i, PyInt_FromLong(data32[i]));
+	    }
 	    break;
+	}
 	default:
 	    g_warning("got a property format != 8, 16 or 32");
 	    g_assert_not_reached();
@@ -1827,62 +1853,86 @@ _wrap_gdk_property_change(PyGObject *self, PyObject *args, PyObject *kwargs)
 	data = PyString_AsString(pdata);
 	nelements = PyString_Size(pdata);
 	break;
-    case 16:
-	{
-	    guint16 *data16;
-	    gint i;
+    case 16: {
+	short *data16;
+	gint i;
 
-	    if (!PySequence_Check(pdata)) {
-		PyErr_SetString(PyExc_TypeError,
-				"data not a sequence and format=16");
+	if (!PySequence_Check(pdata)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "data not a sequence and format=16");
+	    return NULL;
+	}
+	nelements = PySequence_Length(pdata);
+	data16 = g_new(short, nelements);
+	data = (guchar *)data16;
+	for (i = 0; i < nelements; i++) {
+	    PyObject *item = PySequence_GetItem(pdata, i);
+
+	    if (item) data16[i] = PyInt_AsLong(item);
+	    if (!item || PyErr_Occurred()) {
+		Py_XDECREF(item);
+		g_free(data16);
+		PyErr_Clear();
+		PyErr_SetString(PyExc_TypeError,"data element not an int");
 		return NULL;
 	    }
-	    nelements = PySequence_Length(pdata);
-	    data16 = g_new(guint16, nelements);
-	    data = (guchar *)data16;
-	    for (i = 0; i < nelements; i++) {
-		PyObject *item = PySequence_GetItem(pdata, i);
-		Py_DECREF(item);
-		item = PyNumber_Int(item);
-		if (!item) {
-		    g_free(data16);
-		    PyErr_Clear();
-		    PyErr_SetString(PyExc_TypeError,"data element not an int");
-		    return NULL;
-		}
-		data16[i] = PyInt_AsLong(item);
-		Py_DECREF(item);
-	    }
+	    Py_DECREF(item);
 	}
 	break;
-    case 32:
-	{
-	    guint32 *data32;
-	    gint i;
+    }
+    case 32: {
+	gint i;
 
-	    if (!PySequence_Check(pdata)) {
-		PyErr_SetString(PyExc_TypeError,
-				"data not a sequence and format=32");
-		return NULL;
-	    }
-	    nelements = PySequence_Length(pdata);
-	    data32 = g_new(guint32, nelements);
+	if (!PySequence_Check(pdata)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "data not a sequence and format=32");
+	    return NULL;
+	}
+	nelements = PySequence_Length(pdata);
+
+	if (atom_type == GDK_NONE) {
+	    atom_type = gdk_atom_intern("ATOM", TRUE);
+	    atom_pair_type = gdk_atom_intern("ATOM_PAIR", TRUE);
+	}
+
+	/* special handling for atom types */
+	if (type == atom_type || type == atom_pair_type) {
+	    GdkAtom *data32 = g_new(GdkAtom, nelements);
+
 	    data = (guchar *)data32;
 	    for (i = 0; i < nelements; i++) {
 		PyObject *item = PySequence_GetItem(pdata, i);
+
+		if (item) data32[i] = pygdk_atom_from_pyobject(item);
+		if (!item || PyErr_Occurred()) {
+		    Py_XDECREF(item);
+		    g_free(data32);
+		    PyErr_Clear();
+		    PyErr_SetString(PyExc_TypeError,"data element not an atom");
+		    return NULL;
+		}
 		Py_DECREF(item);
-		item = PyNumber_Int(item);
-		if (!item) {
+	    }
+	} else {
+	    long *data32 = g_new(long, nelements);
+
+	    data = (guchar *)data32;
+	    for (i = 0; i < nelements; i++) {
+		PyObject *item = PySequence_GetItem(pdata, i);
+
+		if (item) data32[i] = PyInt_AsLong(item);
+		if (!item || PyErr_Occurred()) {
+		    Py_XDECREF(item);
 		    g_free(data32);
 		    PyErr_Clear();
 		    PyErr_SetString(PyExc_TypeError,"data element not an int");
 		    return NULL;
 		}
-		data32[i] = PyInt_AsLong(item);
 		Py_DECREF(item);
 	    }
 	}
 	break;
+    }
     default:
 	PyErr_SetString(PyExc_TypeError, "format must be 8, 16 or 32");
 	return NULL;

@@ -1,3 +1,16 @@
+2003-06-02  James Henstridge  <james@daa.com.au>
+
+	* gtk/gdk.override (_wrap_gdk_property_change): use short and long
+	instead of gint16 and gint32, so we don't break on 64 bit
+	platforms (Xlib uses those types, even though they don't match the
+	sizes).
+	If format==32 test if the type is ATOM or ATOM_PAIR, and if so
+	marshal the data into a (GdkAtom *) array instead of (long *).
+	Based on patch in bug 113860.
+	(_wrap_gdk_property_get): make similar changes to property_get.
+	(_wrap_gdk_property_get): the returned length is the length in
+	bytes, not number of elements.
+
 2003-05-30  Johan Dahlin  <jdahlin@async.com.br>
 
 	* gtk/gtk.defs (set_transient_for, set_default, set_focus): Accept
