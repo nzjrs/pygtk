@@ -89,6 +89,7 @@ import atk.Object as PyAtkObject_Type
 import pango.Context as PyPangoContext_Type
 import pango.Font as PyPangoFont_Type
 import pango.Layout as PyPangoLayout_Type
+
 %%
 ignore
   gtk_accel_group_add
@@ -5579,6 +5580,37 @@ _wrap_gtk_pixmap_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     gtk_pixmap_set(GTK_PIXMAP(self->obj), GDK_PIXMAP(pixmap->obj), mask);
 
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gtk_plug_new kwargs
+static int
+_wrap_gtk_plug_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "socket_id", "display", NULL };
+    PyObject *py_socket_id = NULL;
+    gulong socket_id;
+    PyGObject *display = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!|O!:GtkPlug.__init__", kwlist,
+                                     &PyLong_Type, &py_socket_id,
+                                     &PyGdkDisplay_Type, &display))
+        return -1;
+
+    socket_id = PyLong_AsUnsignedLong(py_socket_id);
+
+    self->obj = g_object_new(pyg_type_from_object((PyObject *)self), NULL);
+
+    if (display)
+        gtk_plug_construct_for_display(GTK_PLUG(self->obj),
+                                       GDK_DISPLAY(display->obj), socket_id);
+    else
+        gtk_plug_construct(GTK_PLUG(self->obj), socket_id);
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkPlug object");
+        return -1;
+    }
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }

@@ -1,5 +1,15 @@
 2004-07-18  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
 
+	* gtk/gtk.defs (plug_new_for_display): Deprecate, since the
+	regular gtk.Plug constructor can accept a GdkDisplay now.
+
+	* gtk/gtk.override (_wrap_gtk_plug_new): Override constructor,
+	convert to g_object_new based; Add optional parameter 'display',
+	available since Gtk 2.2.
+
+	* gtk/gtktreeview.override (_wrap_gtk_tree_view_column_new):
+	Convert constructor to property based.
+
 	* gtk/gtk.defs (gtk_vscrollbar_new): Convert constructor to
 	property based.
 	(gtk_tree_view_new_with_model): idem.
