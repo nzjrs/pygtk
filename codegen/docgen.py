@@ -15,9 +15,9 @@ class Node:
     def add_child(self, node):
         self.subclasses.append(node)
 
-def build_object_tree(objects):
+def build_object_tree(parser):
     # reorder objects so that parent classes come first ...
-    objects = objects[:]
+    objects = parser.objects[:]
     pos = 0
     while pos < len(objects):
         parent = objects[pos].parent
@@ -36,6 +36,33 @@ def build_object_tree(objects):
         node = Node(obj_def.c_name, obj_def.implements)
         parent_node.add_child(node)
         nodes[node.name] = node
+
+    if parser.interfaces:
+        interfaces = Node('gobject.GInterface')
+        root.add_child(interfaces)
+        nodes[interfaces.name] = interfaces
+        for obj_def in parser.interfaces:
+            node = Node(obj_def.c_name)
+            interfaces.add_child(node)
+            nodes[node.name] = node
+
+    if parser.boxes:
+        boxed = Node('gobject.GBoxed')
+        root.add_child(boxed)
+        nodes[boxed.name] = boxed
+        for obj_def in parser.boxes:
+            node = Node(obj_def.c_name)
+            boxed.add_child(node)
+            nodes[node.name] = node
+
+    if parser.pointers:
+        pointers = Node('gobject.GPointer')
+        root.add_child(pointers)
+        nodes[pointers.name] = pointers
+        for obj_def in parser.pointers:
+            node = Node(obj_def.c_name)
+            pointers.add_child(node)
+            nodes[node.name] = node
 
     return root
 
@@ -81,7 +108,7 @@ class DocWriter:
         files = []
 
         # class heirachy
-        heirachy = build_object_tree(self.parser.objects)
+        heirachy = build_object_tree(self.parser)
         filename = self.create_filename('heirachy', output_prefix)
         fp = open(filename, 'w')
         self.write_full_heirachy(heirachy, fp)
@@ -541,6 +568,15 @@ class DocbookDocWriter(DocWriter):
                 fp.write('  <ooclass><classname><link linkend="%s">%s'
                          '</link></classname></ooclass>\n'
                          % (self.make_class_ref(base), self.pyname(base)))
+        elif isinstance(obj_def, definitions.InterfaceDef):
+            fp.write('  <ooclass><classname>gobject.GInterface'
+                     '</classname></ooclass>\n')
+        elif isinstance(obj_def, definitions.BoxedDef):
+            fp.write('  <ooclass><classname>gobject.GBoxed'
+                     '</classname></ooclass>\n')
+        elif isinstance(obj_def, definitions.PointerDef):
+            fp.write('  <ooclass><classname>gobject.GPointer'
+                     '</classname></ooclass>\n')
 
         constructor = self.parser.find_constructor(obj_def, self.overrides)
         if constructor:
