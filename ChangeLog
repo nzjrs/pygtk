@@ -1,5 +1,19 @@
 2002-01-07  James Henstridge  <james@daa.com.au>
 
+	* examples/pygtk-demo/demos/itemfactory.py (main): the F10 key is
+	used to start navigating the menu -- not alt.
+
+	* gtk/gtk-types.c (PyGtkStyleHelper_Dealloc): use PyObject_DEL.
+	(PyGtkStyle_Dealloc): same here.
+	(PyGdkWindow_Dealloc): same here.
+	(PyGdkGC_Dealloc): same here.
+	(PyGdkColormap_Dealloc): same here.
+	(pygdk_atom_dealloc): same here.
+
+	* gobjectmodule.c (pyg_type_wrapper_dealloc): use PyObject_DEL to
+	prevent segfaults with pymalloc.
+	(pyg_param_spec_dealloc): same here.
+
 	* gtk/gtkmodule.c (init_gtk): get rid of g_thread_init() call --
 	this occurs in gobjectmodule now.
 

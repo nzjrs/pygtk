@@ -107,7 +107,7 @@ static void
 PyGtkStyleHelper_Dealloc(PyGtkStyleHelper_Object *self)
 {
     gtk_style_unref(self->style);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static int
@@ -236,7 +236,7 @@ static void
 PyGtkStyle_Dealloc(PyGtkStyle_Object *self)
 {
     gtk_style_unref(self->obj);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static int
@@ -421,7 +421,7 @@ PyGdkWindow_Dealloc(PyGdkWindow_Object *self)
 	gdk_pixmap_unref(self->obj);
     else
 	gdk_window_unref(self->obj);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static int
@@ -916,7 +916,7 @@ static void
 PyGdkGC_Dealloc(PyGdkGC_Object *self)
 {
     gdk_gc_unref(self->obj);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static PyObject *
@@ -1114,7 +1114,7 @@ static void
 PyGdkColormap_Dealloc(PyGdkColormap_Object *self)
 {
     gdk_colormap_unref(self->obj);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static PyObject *
@@ -1248,7 +1248,7 @@ static void
 pygdk_atom_dealloc(PyGdkAtom_Object *self)
 {
     if (self->name) g_free(self->name);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static int

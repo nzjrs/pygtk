@@ -57,7 +57,7 @@ def main():
     menubar = item_factory.get_widget('<main>')
     box1.pack_start(menubar)
 
-    label = gtk.Label('Type\n<alt>\nto start')
+    label = gtk.Label('Type\n<F10>\nto start')
     label.set_size_request(200, 200);
     box1.pack_start(label)
 
