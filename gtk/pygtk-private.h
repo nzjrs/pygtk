@@ -74,7 +74,6 @@ int pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj);
 PyObject *pygtk_arg_as_pyobject(GtkArg *arg);
 void pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret);
 PyObject *pygtk_ret_as_pyobject(GtkArg *arg);
-GtkArg *pygtk_dict_as_args(PyObject *dict, GtkType type, gint *nargs);
 GtkArg *pygtk_dict_as_container_args(PyObject *dict, GtkType type,
 					    gint *nargs);
 

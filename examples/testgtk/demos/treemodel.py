@@ -42,7 +42,7 @@ class MyTreeModel(gtk.PyGtkTreeModel):
     def on_get_path(self, node):
 	'''returns the tree path (a tuple of indices at the various
 	levels) for a particular node.'''
-	return obj
+	return node
     def on_get_value(self, node, column):
 	'''returns the value stored in a particular column for the node'''
 	assert column == 0

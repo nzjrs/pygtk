@@ -24,7 +24,6 @@ struct _PyGtk_FunctionStruct {
     PyObject *(* arg_as_pyobject)(GtkArg *arg);
     void (* ret_from_pyobject)(GtkArg *ret, PyObject *obj);
     PyObject *(* ret_as_pyobject)(GtkArg *ret);
-    GtkArg *(* dict_as_args)(PyObject *dict, GtkType type, gint *nargs);
 
     void (* register_boxed)(GtkType boxed_type,
 			    PyObject *(*from_func)(gpointer boxed),
@@ -210,7 +209,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define pygtk_arg_as_pyobject (_PyGtk_API->arg_as_pyobject)
 #define pygtk_ret_from_pyobject (_PyGtk_API->ret_from_pyobject)
 #define pygtk_ret_as_pyobject (_PyGtk_API->ret_as_pyobject)
-#define pygtk_dict_as_args (_PyGtk_API->dict_as_args)
 #define pygtk_register_boxed (_PyGtk_API->register_boxed)
 
 /* some variables */

@@ -31,7 +31,6 @@ static struct _PyGtk_FunctionStruct functions = {
     pygtk_arg_as_pyobject,
     pygtk_ret_from_pyobject,
     pygtk_ret_as_pyobject,
-    pygtk_dict_as_args,
 
     pygtk_register_boxed,
 

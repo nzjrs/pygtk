@@ -65,7 +65,7 @@ def main():
     vbox.pack_start(vbox2, expand=gtk.FALSE)
 
     button = gtk.GtkButton('close')
-    button.connect('destroy', lambda widget, window=window: window.destroy())
+    button.connect('clicked', lambda widget, window=window: window.destroy())
     vbox2.pack_start(button)
     button.set_flags(gtk.CAN_DEFAULT)
     button.grab_default()

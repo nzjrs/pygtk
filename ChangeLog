@@ -1,3 +1,27 @@
+2000-12-14  James Henstridge  <james@daa.com.au>
+
+	* examples/testgtk/demos/menu.py (main): destroy window on
+	button's clicked signal rather than destroy signal.
+
+	* gtk/gtk.defs: remove gtk_object_default_construct and
+	gtk_object_constructed.
+
+	* gobjectmodule.c: change over to new notification functions.
+
+	* gtk/gtk-types.c: rename functions.
+
+	* gobjectmodule.c (pygobject_get_property):
+	(pygobject_set_property): change function names to match changes
+	in glib.
+	(...connect|emit): use g_signal_parse_name instead of
+	g_signal_lookup, so we can parse the detail out of the signal name
+	string.
+
+2000-12-07  James Henstridge  <james@daa.com.au>
+
+	* examples/testgtk/demos/treemodel.py (MyTreeModel.on_get_path):
+	fix small typo.
+
 2000-12-06  James Henstridge  <james@daa.com.au>
 
 	* gtk/pygtktreemodel.c: fix PyObject_CallMethod calls to add
