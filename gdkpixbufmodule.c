@@ -270,10 +270,10 @@ pygdk_pixbuf_scale(PyGdkPixbuf_Object *self, PyObject *args)
 {
     PyGdkPixbuf_Object *dest;
     int dest_x, dest_y, dest_width, dest_height;
-    int offset_x, offset_y, scale_x, scale_y;
+    double offset_x, offset_y, scale_x, scale_y;
     GdkInterpType interp_type;
 
-    if (!PyArg_ParseTuple(args, "O!iiiiiiiii:GdkPixbuf.scale",
+    if (!PyArg_ParseTuple(args, "O!iiiiddddi:GdkPixbuf.scale",
 			  &PyGdkPixbuf_Type, &dest, &dest_x, &dest_y,
 			  &dest_width, &dest_height, &offset_x, &offset_y,
 			  &scale_x, &scale_y, &interp_type))
@@ -290,11 +290,11 @@ pygdk_pixbuf_composite(PyGdkPixbuf_Object *self, PyObject *args)
 {
     PyGdkPixbuf_Object *dest;
     int dest_x, dest_y, dest_width, dest_height;
-    int offset_x, offset_y, scale_x, scale_y;
+    double offset_x, offset_y, scale_x, scale_y;
     GdkInterpType interp_type;
     int overall_alpha;
 
-    if (!PyArg_ParseTuple(args, "O!iiiiiiiiii:GdkPixbuf.composite",
+    if (!PyArg_ParseTuple(args, "O!iiiiddddii:GdkPixbuf.composite",
 			  &PyGdkPixbuf_Type, &dest, &dest_x, &dest_y,
 			  &dest_width, &dest_height, &offset_x, &offset_y,
 			  &scale_x, &scale_y, &interp_type, &overall_alpha))
@@ -311,12 +311,12 @@ pygdk_pixbuf_composite_color(PyGdkPixbuf_Object *self, PyObject *args)
 {
     PyGdkPixbuf_Object *dest;
     int dest_x, dest_y, dest_width, dest_height;
-    int offset_x, offset_y, scale_x, scale_y;
+    double offset_x, offset_y, scale_x, scale_y;
     GdkInterpType interp_type;
     int overall_alpha, check_x, check_y, check_size;
     int color1, color2;
 
-    if (!PyArg_ParseTuple(args, "O!iiiiiiiiiiiiiii:GdkPixbuf.composite_color",
+    if (!PyArg_ParseTuple(args, "O!iiiiddddiiiiiii:GdkPixbuf.composite_color",
 			  &PyGdkPixbuf_Type, &dest, &dest_x, &dest_y,
 			  &dest_width, &dest_height, &offset_x, &offset_y,
 			  &scale_x, &scale_y, &interp_type, &overall_alpha,
