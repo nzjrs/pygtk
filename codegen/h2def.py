@@ -127,7 +127,8 @@ def find_enum_defs(buf, enums=[]):
         for val in splitter.split(vals):
             if not string.strip(val): continue
             entries.append(string.split(val)[0])
-        enums.append((name, isflags, entries))
+        if name != 'GdkCursorType':
+            enums.append((name, isflags, entries))
         
         pos = m.end()
 
@@ -159,7 +160,8 @@ def write_enum_defs(enums, output=None):
         prefix = entries[0]
         for ent in entries:
             # shorten prefix til we get a match ...
-            while ent[:len(prefix)] != prefix:
+            # and handle GDK_FONT_FoNT, GDK_FONT_FONTSET case
+            while ent[:len(prefix)] != prefix or len(prefix) >= len(ent):
                 prefix = prefix[:-1]
         for ent in entries:
             fp.write('  (value (name ' +
