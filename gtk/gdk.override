@@ -794,64 +794,114 @@ static int
 _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist1[] = { "cursor_type", NULL };
-    static char *kwlist2[] = { "source", "mask", "fg", "bg", "x", "y", NULL };
+    static char *kwlist2[] = { "display", "cursor_type", NULL };
+    static char *kwlist3[] = { "display", "pixbuf", "x", "y", NULL };
+    static char *kwlist4[] = { "source", "mask", "fg", "bg", "x", "y", NULL };
     PyObject *py_cursor_type;
+    PyGObject *py_display;
+    PyGObject *source, *mask, *pixbuf;
+    PyObject *fg, *bg;
+    gint x, y;
 
     self->gtype = GDK_TYPE_CURSOR;
     self->free_on_dealloc = FALSE;
     self->boxed = NULL;
+
     if (PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkCursor.__init__",
-                                    kwlist1, &py_cursor_type)) {
-        GdkCursorType cursor_type;
+				     kwlist1, &py_cursor_type)) {
+	GdkCursorType cursor_type;
 
         if (pyg_enum_get_value(GDK_TYPE_CURSOR_TYPE, py_cursor_type,
                                (gint *)&cursor_type))
             return -1;
         self->boxed = gdk_cursor_new(cursor_type);
-        if (!self->boxed) {
-            PyErr_SetString(PyExc_RuntimeError,
-                            "could not create GdkCursor object");
-            return -1;
-        }
-        self->free_on_dealloc = TRUE;
-    } else {
-        PyGObject *source, *mask;
-        PyObject *fg, *bg;
-        gint x, y;
-        PyErr_Clear();
-
-        if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                         "OOOOii:GdkCursor.__init__", kwlist2,
-                                         &source, &mask, &fg, &bg, &x, &y))
-            return -1;
-        if (!pygobject_check(source, &PyGdkPixmap_Type)) {
-            PyErr_SetString(PyExc_TypeError, "source should be a GdkPixmap");
-            return -1;
-        }
-        if (!pygobject_check(mask, &PyGdkPixmap_Type)) {
-            PyErr_SetString(PyExc_TypeError, "mask should be a GdkPixmap");
-            return -1;
-        }
-        if (!pyg_boxed_check(fg, GDK_TYPE_COLOR)) {
-            PyErr_SetString(PyExc_TypeError, "fg should be a GdkColor");
-            return -1;
-        }
-        if (!pyg_boxed_check(bg, GDK_TYPE_COLOR)) {
-            PyErr_SetString(PyExc_TypeError, "bg should be a GdkColor");
-            return -1;
-        }
-        self->boxed = gdk_cursor_new_from_pixmap(GDK_PIXMAP(source->obj),
-                                                 GDK_PIXMAP(mask->obj),
-                                                 pyg_boxed_get(fg, GdkColor),
-                                                 pyg_boxed_get(bg, GdkColor),
-                                                 x, y);
-        if (!self->boxed) {
-            PyErr_SetString(PyExc_RuntimeError,
-                            "could not create GdkCursor object");
-            return -1;
-        }
-        self->free_on_dealloc = TRUE;
+	goto done;
     }
+
+    PyErr_Clear();
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, "OO:GdkCursor.__init__",
+				     kwlist2, &py_display, &py_cursor_type)) {
+	
+	GdkCursorType cursor_type;
+
+	if (!pygobject_check(py_display, &PyGdkDisplay_Type)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "display should be a GdkDisplay");
+	    return -1;
+	}
+        if (pyg_enum_get_value(GDK_TYPE_CURSOR_TYPE, py_cursor_type,
+                               (gint *)&cursor_type))
+            return -1;
+        self->boxed = gdk_cursor_new_for_display(GDK_DISPLAY(py_display->obj),
+						 cursor_type);
+	goto done;
+    }
+
+    PyErr_Clear();
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs,
+				    "OOii:GdkCursor.__init__", kwlist3,
+				    &py_display, &pixbuf, &x, &y)) {
+
+	if (!pygobject_check(py_display, &PyGdkDisplay_Type)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "display should be a GdkDisplay");
+	    return -1;
+	}
+	if (!pygobject_check(pixbuf, &PyGdkPixbuf_Type)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "pixbuf should be a GdkPixbuf");
+	    return -1;
+	}
+	self->boxed = gdk_cursor_new_from_pixbuf(GDK_DISPLAY(py_display->obj),
+						 GDK_PIXBUF(pixbuf->obj),
+						 x, y);
+	goto done;
+     }
+
+    PyErr_Clear();
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				    "OOOOii:GdkCursor.__init__", kwlist4,
+				     &source, &mask, &fg, &bg, &x, &y)) {
+	PyErr_Clear();
+	PyErr_SetString(PyExc_TypeError, "Usage:\n"
+			"  gtk.gdk.Cursor(cursor_type)\n"
+			"  gtk.gdk.Cursor(display, cursor_type)\n"
+			"  gtk.gdk.Cursor(display, pixbuf, x, y)\n"
+			"  gtk.gdk.Cusrsor(source, mask, fg, bg, x, y)");
+	return -1;
+    }
+
+    if (!pygobject_check(source, &PyGdkPixmap_Type)) {
+	PyErr_SetString(PyExc_TypeError, "source should be a GdkPixmap");
+	return -1;
+    }
+    if (!pygobject_check(mask, &PyGdkPixmap_Type)) {
+	PyErr_SetString(PyExc_TypeError, "mask should be a GdkPixmap");
+	return -1;
+    }
+    if (!pyg_boxed_check(fg, GDK_TYPE_COLOR)) {
+	PyErr_SetString(PyExc_TypeError, "fg should be a GdkColor");
+	return -1;
+    }
+    if (!pyg_boxed_check(bg, GDK_TYPE_COLOR)) {
+	PyErr_SetString(PyExc_TypeError, "bg should be a GdkColor");
+	return -1;
+    }
+    self->boxed = gdk_cursor_new_from_pixmap(GDK_PIXMAP(source->obj),
+					     GDK_PIXMAP(mask->obj),
+					     pyg_boxed_get(fg, GdkColor),
+					     pyg_boxed_get(bg, GdkColor),
+					     x, y);
+ done:
+    if (!self->boxed) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not create GdkCursor object");
+	return -1;
+    }
+    self->free_on_dealloc = TRUE;
     return 0;
 }
 %%
