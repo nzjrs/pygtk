@@ -38,7 +38,7 @@ pygtk_main_quit(void)
 DL_EXPORT(void)
 init_gtk(void)
 {
-    PyObject *m, *d;
+    PyObject *m, *d, *v;
     PyObject *av;
     int argc, i;
     char **argv;
@@ -101,6 +101,22 @@ init_gtk(void)
     m = Py_InitModule("gtk._gtk", pygtk_functions);
     d = PyModule_GetDict(m);
 
+    v = PyInt_FromLong(gtk_major_version);
+    if (v != NULL) {
+	PyDict_SetItemString(d, "major_version", v);
+	Py_DECREF(v);
+    }
+    v = PyInt_FromLong(gtk_minor_version);
+    if (v != NULL) {
+	PyDict_SetItemString(d, "minor_version", v);
+	Py_DECREF(v);
+    }
+    v = PyInt_FromLong(gtk_micro_version);
+    if (v != NULL) {
+	PyDict_SetItemString(d, "micro_version", v);
+	Py_DECREF(v);
+    }
+    
     _pygtk_register_boxed_types(d);
     pygtk_register_classes(d);
     pygtk_add_constants(m, "GTK_");
