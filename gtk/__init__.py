@@ -35,7 +35,6 @@ del __builtin__
 
 FALSE = False
 TRUE  = True
-
 import gobject as _gobject
 
 # load the required modules:
@@ -59,14 +58,37 @@ gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
 gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
-# old names compatibility ...
-mainloop = main
-def mainquit(*args):
-    main_quit()
-mainiteration = main_iteration
+# Warnings
+from warnings import warn as _warn
 
-load_font = gdk.Font
-load_fontset = gdk.fontset_load
-create_pixmap = gdk.Pixmap
-create_pixmap_from_xpm = gdk.pixmap_create_from_xpm
-create_pixmap_from_xpm_d = gdk.pixmap_create_from_xpm_d
+class GtkDeprecationWarning(DeprecationWarning):
+    pass
+
+class _Deprecated:
+    def __init__(self, func, oldname, module=''):
+        self.func = func
+        self.oldname = oldname
+        self.name = func.__name__
+        if module:
+            self.module = 'gtk.' + module
+        else:
+            self.module = 'gtk'
+
+    def __call__(self, *args, **kwargs):
+        message = 'gtk.%s is deprecated, use %s.%s instead' % (self.oldname,
+                                                               self.module,
+                                                               self.name)
+        _warn(message, GtkDeprecationWarning)
+        return self.func(*args, **kwargs)
+
+# old names compatibility ...
+mainloop = _Deprecated(main, 'mainloop')
+mainquit = _Deprecated(main_quit, 'mainquit')
+mainiteration = _Deprecated(main_iteration, 'mainiteration')
+load_font = _Deprecated(gdk.Font, 'load_font', 'gdk')
+load_fontset = _Deprecated(gdk.fontset_load, 'load_fontset', 'gdk')
+create_pixmap = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gdk')
+create_pixmap_from_xpm = _Deprecated(gdk.pixmap_create_from_xpm,
+                                     'pixmap_create_from_xpm', 'gdk')
+create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
+                                       'pixmap_create_from_xpm_d', 'gdk')
