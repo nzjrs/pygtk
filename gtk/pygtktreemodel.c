@@ -132,6 +132,10 @@ static gboolean pygtk_generic_tree_model_iter_nth_child(GtkTreeModel *tree_model
 static gboolean pygtk_generic_tree_model_iter_parent(GtkTreeModel *tree_model,
 					     GtkTreeIter *iter,
 					     GtkTreeIter *child);
+static void pygtk_generic_tree_model_unref_node(GtkTreeModel *tree_model,
+					     GtkTreeIter *iter);
+static void pygtk_generic_tree_model_ref_node(GtkTreeModel *tree_model,
+					     GtkTreeIter *iter);
 
 static void
 pygtk_generic_tree_model_iface_init(GtkTreeModelIface *iface)
@@ -148,6 +152,9 @@ pygtk_generic_tree_model_iface_init(GtkTreeModelIface *iface)
   iface->iter_n_children = pygtk_generic_tree_model_iter_n_children;
   iface->iter_nth_child = pygtk_generic_tree_model_iter_nth_child;
   iface->iter_parent = pygtk_generic_tree_model_iter_parent;
+  iface->ref_node = pygtk_generic_tree_model_ref_node;
+  iface->unref_node = pygtk_generic_tree_model_unref_node;
+
 }
 
 static void
@@ -663,3 +670,74 @@ pygtk_generic_tree_model_iter_parent(GtkTreeModel *tree_model, GtkTreeIter *iter
     }
 }
 
+static void
+pygtk_generic_tree_model_unref_node(GtkTreeModel *tree_model, GtkTreeIter *iter)
+{
+    PyObject *self, *py_ret, *py_iter, *method;
+
+    g_return_if_fail(tree_model != NULL);
+    g_return_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model));
+    g_return_if_fail(iter != NULL);
+
+    pyg_block_threads();
+
+    /* this call finds the wrapper for this GObject */
+    self = pygobject_new((GObject *)tree_model);
+
+#ifdef DEBUG_TREE_MODEL
+    g_message("unref_node(%p)", iter);
+#endif
+    py_iter = (PyObject *)iter->user_data;
+    if (py_iter == NULL)
+	py_iter = Py_None;
+
+    method = PyObject_GetAttrString(self, METHOD_PREFIX "unref_node");
+    if (method == NULL)
+	PyErr_Clear();
+    else {
+	py_ret = PyObject_CallFunction(method, "(O)", py_iter);
+	if (py_ret) {
+	    Py_DECREF(py_ret);
+	} else {
+	    PyErr_Print();
+	}
+    }
+
+    pyg_unblock_threads();
+}
+
+static void
+pygtk_generic_tree_model_ref_node(GtkTreeModel *tree_model, GtkTreeIter *iter)
+{
+    PyObject *self, *py_ret, *py_iter, *method;
+
+    g_return_if_fail(tree_model != NULL);
+    g_return_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model));
+    g_return_if_fail(iter != NULL);
+
+    pyg_block_threads();
+
+    /* this call finds the wrapper for this GObject */
+    self = pygobject_new((GObject *)tree_model);
+
+#ifdef DEBUG_TREE_MODEL
+    g_message("unref_node(%p)", iter);
+#endif
+    py_iter = (PyObject *)iter->user_data;
+    if (py_iter == NULL)
+	py_iter = Py_None;
+
+    method = PyObject_GetAttrString(self, METHOD_PREFIX "ref_node");
+    if (method == NULL)
+	PyErr_Clear();
+    else {
+	py_ret = PyObject_CallFunction(method, "(O)", py_iter);
+	if (py_ret) {
+	    Py_DECREF(py_ret);
+	} else {
+	    PyErr_Print();
+	}
+    }
+
+    pyg_unblock_threads();
+}
