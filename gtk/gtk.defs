@@ -309,15 +309,22 @@
   (c-name GtkInvisible)
 )
 
-(object Editable
+(interface Editable
   (in-module Gtk)
   (parent Widget (Gtk))
   (c-name GtkEditable)
 )
 
+(object OldEditable
+  (in-module Gtk)
+  (parent Widget (Gtk))
+  (implements GtkEditable)
+  (c-name GtkOldEditable)
+)
+
 (object Text
   (in-module Gtk)
-  (parent Editable (Gtk))
+  (parent OldEditable (Gtk))
   (c-name GtkText)
   (field (type-and-name GtkAdjustment* hadj))
   (field (type-and-name GtkAdjustment* vadj))
@@ -325,7 +332,8 @@
 
 (object Entry
   (in-module Gtk)
-  (parent Editable (Gtk))
+  (parent Widget (Gtk))
+  (implements GtkEditable)
   (c-name GtkEntry)
 )
 
@@ -4631,6 +4639,14 @@
   (parameter (type-and-name gint end))
 )
 
+(method get_selection_bounds
+  (of-object Editable (Gtk))
+  (c-name gtk_editable_get_selection_bounds)
+  (return-type gboolean)
+  (parameter (type-and-name gint* start))
+  (parameter (type-and-name gint* end))
+)
+
 (method insert_text
   (of-object Editable (Gtk))
   (c-name gtk_editable_insert_text)
@@ -4674,23 +4690,9 @@
   (return-type none)
 )
 
-(method claim_selection
-  (of-object Editable (Gtk))
-  (c-name gtk_editable_claim_selection)
-  (return-type none)
-  (parameter (type-and-name gboolean claim))
-  (parameter (type-and-name guint32 time) (default "GDK_CURRENT_TIME"))
-)
-
 (method delete_selection
   (of-object Editable (Gtk))
   (c-name gtk_editable_delete_selection)
-  (return-type none)
-)
-
-(method changed
-  (of-object Editable (Gtk))
-  (c-name gtk_editable_changed)
   (return-type none)
 )
 
@@ -4714,6 +4716,28 @@
   (parameter (type-and-name gboolean is_editable))
 )
 
+
+
+;; From /opt/pango/include/gtk-2.0/gtk/gtkoldeditable.h
+
+(function gtk_old_editable_get_type
+  (c-name gtk_old_editable_get_type)
+  (return-type none)
+)
+
+(method claim_selection
+  (of-object OldEditable (Gtk))
+  (c-name gtk_old_editable_claim_selection)
+  (return-type none)
+  (parameter (type-and-name gboolean claim))
+  (parameter (type-and-name guint time) (default "GDK_CURRENT_TIME"))
+)
+
+(method changed
+  (of-object OldEditable (Gtk))
+  (c-name gtk_old_editable_changed)
+  (return-type none)
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkentry.h
@@ -5563,6 +5587,11 @@
   (return-type none)
 )
 
+(method reset
+  (of-object IMContext (Gtk))
+  (c-name gtk_im_context_reset)
+  (return-type none)
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkimmulticontext.h

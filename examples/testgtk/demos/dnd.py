@@ -7,6 +7,8 @@ fairly straight forward port of the example distributed with gtk.
 FIXME: there are still a few things missing since I converted the
 GdkDragContext wrapper to being a GObject.'''
 
+description = 'Drag and Drop'
+
 import gtk
 from dndpixmap import *
 

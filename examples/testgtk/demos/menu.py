@@ -5,6 +5,8 @@ This example demonstrates the use of various menu types in gtk.  It
 demonstrates the new submenu navigation and scrolling menu features of
 gtk 2.0.'''
 
+description = 'Menus'
+
 import gtk
 
 def create_menu(depth, length=5):
