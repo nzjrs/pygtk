@@ -3990,6 +3990,21 @@ _wrap_gdk_window_set_user_data(PyGObject *self, PyObject *args, PyObject *kwargs
     return Py_None;
 }
 %%
+override gdk_window_get_user_data noargs
+static PyObject *
+_wrap_gdk_window_get_user_data(PyGObject *self)
+{
+
+    gpointer *user_data;
+    gdk_window_get_user_data(GDK_WINDOW(self->obj), &user_data);
+    if (pygobject_check(user_data, &PyGObject_Type))
+	return pygobject_new((GObject *)user_data);
+    } else {
+	PyErr_SetString(PyExc_ValueError, "could not convert the user data");
+	return NULL;
+    }
+}
+%%
 override gdk_display_list_devices noargs
 static PyObject *
 _wrap_gdk_display_list_devices(PyGObject *self)
