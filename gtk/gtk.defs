@@ -72,12 +72,14 @@
 (define-method ref
   (of-object "GtkAccelGroup")
   (c-name "gtk_accel_group_ref")
+  (deprecated "use GObject.ref")
   (return-type "GtkAccelGroup*")
 )
 
 (define-method unref
   (of-object "GtkAccelGroup")
   (c-name "gtk_accel_group_unref")
+  (deprecated "use GObject.unref")
   (return-type "none")
 )
 
@@ -333,6 +335,14 @@
   )
 )
 
+(define-method accelerator_width
+  (of-object "GtkAccelLabel")
+  (c-name "gtk_accel_label_accelerator_width")
+  (deprecated "use AtkAccelLabel.get_accel_width")
+  (return-type "guint")
+  (deprecated "use GtkAccelLabel.get_accel_width")
+)
+
 (define-method get_accel_width
   (of-object "GtkAccelLabel")
   (c-name "gtk_accel_label_get_accel_width")
@@ -360,7 +370,6 @@
   )
 )
 
-; DEPRECATED
 (define-method set_accel_widget
   (of-object "GtkAccelLabel")
   (c-name "gtk_accel_label_set_accel_widget")
@@ -690,6 +699,23 @@
   )
 )
 
+(define-method set_spacing
+  (of-object "GtkButtonBox")
+  (c-name "gtk_button_box_set_spacing")
+  (return-type "none")
+  (parameters
+    '("spacing" "s")
+  )
+  (deprecated "use GtkBox.set_spacing")
+)
+
+(define-method get_spacing
+  (of-object "GtkButtonBox")
+  (c-name "gtk_button_box_get_spacing")
+  (return-type "gint")
+  (deprecated "use GtkBox.get_spacing")
+)
+
 (define-method set_child_size
   (of-object "GtkButtonBox")
   (c-name "gtk_button_box_set_child_size")
@@ -698,6 +724,7 @@
     '("gint" "min_width")
     '("gint" "min_height")
   )
+  (deprecated "")
 )
 
 (define-method set_child_ipadding
@@ -708,6 +735,7 @@
     '("gint" "ipad_x")
     '("gint" "ipad_y")
   )
+  (deprecated "")
 )
 
 (define-method get_child_size
@@ -718,6 +746,7 @@
     '("gint*" "min_width")
     '("gint*" "min_height")
   )
+  (deprecated "")
 )
 
 (define-method get_child_ipadding
@@ -728,10 +757,11 @@
     '("gint*" "ipad_x")
     '("gint*" "ipad_y")
   )
+  (deprecated "")
 )
 
 (define-method _gtk_button_box_child_requisition
-  (ob-object "GtkButtonBox")
+  (of-object "GtkButtonBox")
   (c-name "_gtk_button_box_child_requisition")
   (return-type "none")
   (parameters
@@ -1515,6 +1545,17 @@
   (parameters
     '("gboolean" "always")
   )
+  (deprecated "")
+)
+
+(define-method set_state
+  (of-object "GtkCheckMenuItem")
+  (c-name "gtk_check_menu_item_set_state")
+  (return-type "none")
+  (parameters
+    '("gboolean" "is_active")
+  )
+  (deprecated "use GtkCheckMenuItem.set_active")
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkclipboard.h
@@ -1624,6 +1665,7 @@
     '("gint" "columns" (default "1"))
     '("gchar*[]" "titles")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-function gtk_clist_new
@@ -1633,6 +1675,7 @@
   (parameters
     '("gint" "columns" (default "1"))
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-function gtk_clist_new_with_titles
@@ -1643,6 +1686,7 @@
     '("gint" "columns" (default "1"))
     '("gchar*[]" "titles")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_hadjustment
@@ -1652,6 +1696,7 @@
   (parameters
     '("GtkAdjustment*" "adjustment")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_vadjustment
@@ -1661,18 +1706,21 @@
   (parameters
     '("GtkAdjustment*" "adjustment")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_hadjustment
   (of-object "GtkCList")
   (c-name "gtk_clist_get_hadjustment")
   (return-type "GtkAdjustment*")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_vadjustment
   (of-object "GtkCList")
   (c-name "gtk_clist_get_vadjustment")
   (return-type "GtkAdjustment*")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_shadow_type
@@ -1682,6 +1730,7 @@
   (parameters
     '("GtkShadowType" "type")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_selection_mode
@@ -1691,6 +1740,7 @@
   (parameters
     '("GtkSelectionMode" "mode")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_reorderable
@@ -1700,6 +1750,7 @@
   (parameters
     '("gboolean" "reorderable")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_use_drag_icons
@@ -1709,6 +1760,7 @@
   (parameters
     '("gboolean" "use_icons")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_button_actions
@@ -1719,30 +1771,35 @@
     '("guint" "button")
     '("guint8" "button_actions")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method freeze
   (of-object "GtkCList")
   (c-name "gtk_clist_freeze")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method thaw
   (of-object "GtkCList")
   (c-name "gtk_clist_thaw")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method column_titles_show
   (of-object "GtkCList")
   (c-name "gtk_clist_column_titles_show")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method column_titles_hide
   (of-object "GtkCList")
   (c-name "gtk_clist_column_titles_hide")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method column_title_active
@@ -1752,6 +1809,7 @@
   (parameters
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method column_title_passive
@@ -1761,18 +1819,21 @@
   (parameters
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method column_titles_active
   (of-object "GtkCList")
   (c-name "gtk_clist_column_titles_active")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method column_titles_passive
   (of-object "GtkCList")
   (c-name "gtk_clist_column_titles_passive")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_title
@@ -1783,6 +1844,7 @@
     '("gint" "column")
     '("const-gchar*" "title")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_column_title
@@ -1792,6 +1854,7 @@
   (parameters
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_widget
@@ -1802,6 +1865,7 @@
     '("gint" "column")
     '("GtkWidget*" "widget")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_column_widget
@@ -1811,6 +1875,7 @@
   (parameters
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_justification
@@ -1821,6 +1886,7 @@
     '("gint" "column")
     '("GtkJustification" "justification")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_visibility
@@ -1831,6 +1897,7 @@
     '("gint" "column")
     '("gboolean" "visible")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_resizeable
@@ -1841,6 +1908,7 @@
     '("gint" "column")
     '("gboolean" "resizeable")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_auto_resize
@@ -1851,12 +1919,14 @@
     '("gint" "column")
     '("gboolean" "auto_resize")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method columns_autosize
   (of-object "GtkCList")
   (c-name "gtk_clist_columns_autosize")
   (return-type "gint")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method optimal_column_width
@@ -1866,6 +1936,7 @@
   (parameters
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_width
@@ -1876,6 +1947,7 @@
     '("gint" "column")
     '("gint" "width")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_min_width
@@ -1886,6 +1958,7 @@
     '("gint" "column")
     '("gint" "min_width")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_column_max_width
@@ -1896,6 +1969,7 @@
     '("gint" "column")
     '("gint" "max_width")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_row_height
@@ -1905,6 +1979,7 @@
   (parameters
     '("guint" "height")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method moveto
@@ -1917,6 +1992,7 @@
     '("gfloat" "row_align")
     '("gfloat" "col_align")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method row_is_visible
@@ -1926,6 +2002,7 @@
   (parameters
     '("gint" "row")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_cell_type
@@ -1936,6 +2013,7 @@
     '("gint" "row")
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_text
@@ -1947,6 +2025,7 @@
     '("gint" "column")
     '("const-gchar*" "text")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_text
@@ -1958,6 +2037,7 @@
     '("gint" "column")
     '("gchar**" "text")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_pixmap
@@ -1970,6 +2050,7 @@
     '("GdkPixmap*" "pixmap")
     '("GdkBitmap*" "mask" (null-ok) (default "NULL"))
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_pixmap
@@ -1982,6 +2063,7 @@
     '("GdkPixmap**" "pixmap")
     '("GdkBitmap**" "mask")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_pixtext
@@ -1996,6 +2078,7 @@
     '("GdkPixmap*" "pixmap")
     '("GdkBitmap*" "mask")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_pixtext
@@ -2010,6 +2093,7 @@
     '("GdkPixmap**" "pixmap")
     '("GdkBitmap**" "mask")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_foreground
@@ -2020,6 +2104,7 @@
     '("gint" "row")
     '("GdkColor*" "color")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_background
@@ -2030,6 +2115,7 @@
     '("gint" "row")
     '("GdkColor*" "color")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_cell_style
@@ -2041,6 +2127,7 @@
     '("gint" "column")
     '("GtkStyle*" "style")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_cell_style
@@ -2051,6 +2138,7 @@
     '("gint" "row")
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_row_style
@@ -2061,6 +2149,7 @@
     '("gint" "row")
     '("GtkStyle*" "style")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_row_style
@@ -2070,6 +2159,7 @@
   (parameters
     '("gint" "row")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_shift
@@ -2082,6 +2172,7 @@
     '("gint" "vertical")
     '("gint" "horizontal")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_selectable
@@ -2092,6 +2183,7 @@
     '("gint" "row")
     '("gboolean" "selectable")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_selectable
@@ -2101,6 +2193,7 @@
   (parameters
     '("gint" "row")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method prepend
@@ -2110,6 +2203,7 @@
   (parameters
     '("gchar*[]" "text")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method append
@@ -2119,6 +2213,7 @@
   (parameters
     '("gchar*[]" "text")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method insert
@@ -2129,6 +2224,7 @@
     '("gint" "row")
     '("gchar*[]" "text")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method remove
@@ -2138,6 +2234,7 @@
   (parameters
     '("gint" "row")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_row_data
@@ -2148,6 +2245,7 @@
     '("gint" "row")
     '("gpointer" "data")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_row_data_full
@@ -2159,6 +2257,7 @@
     '("gpointer" "data")
     '("GtkDestroyNotify" "destroy")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_row_data
@@ -2168,6 +2267,7 @@
   (parameters
     '("gint" "row")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method find_row_from_data
@@ -2177,6 +2277,7 @@
   (parameters
     '("gpointer" "data")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method select_row
@@ -2187,6 +2288,7 @@
     '("gint" "row")
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method unselect_row
@@ -2197,18 +2299,21 @@
     '("gint" "row")
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method undo_selection
   (of-object "GtkCList")
   (c-name "gtk_clist_undo_selection")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method clear
   (of-object "GtkCList")
   (c-name "gtk_clist_clear")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method get_selection_info
@@ -2221,18 +2326,21 @@
     '("gint*" "row")
     '("gint*" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method select_all
   (of-object "GtkCList")
   (c-name "gtk_clist_select_all")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method unselect_all
   (of-object "GtkCList")
   (c-name "gtk_clist_unselect_all")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method swap_rows
@@ -2243,6 +2351,7 @@
     '("gint" "row1")
     '("gint" "row2")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method row_move
@@ -2253,6 +2362,7 @@
     '("gint" "source_row")
     '("gint" "dest_row")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_compare_func
@@ -2262,6 +2372,7 @@
   (parameters
     '("GtkCListCompareFunc" "cmp_func")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_sort_column
@@ -2271,6 +2382,7 @@
   (parameters
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_sort_type
@@ -2280,12 +2392,14 @@
   (parameters
     '("GtkSortType" "sort_type")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method sort
   (of-object "GtkCList")
   (c-name "gtk_clist_sort")
   (return-type "none")
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method set_auto_sort
@@ -2295,6 +2409,7 @@
   (parameters
     '("gboolean" "auto_sort")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 (define-method _create_cell_layout
@@ -2305,6 +2420,7 @@
     '("GtkCListRow*" "clist_row")
     '("gint" "column")
   )
+  (deprecated "use GtkListModel/GtkTreeView")
 )
 
 
@@ -2357,26 +2473,6 @@
   (return-type "none")
   (parameters
     '("gboolean" "use_palette")
-  )
-)
-
-;; DEPRECATED
-(define-method set_color
-  (of-object "GtkColorSelection")
-  (c-name "gtk_color_selection_set_color")
-  (return-type "none")
-  (parameters
-    '("gdouble*" "color")
-  )
-)
-
-;; DEPRECATED
-(define-method get_color
-  (of-object "GtkColorSelection")
-  (c-name "gtk_color_selection_get_color")
-  (return-type "none")
-  (parameters
-    '("gdouble*" "color")
   )
 )
 
@@ -2452,15 +2548,6 @@
   (return-type "gboolean")
 )
 
-(define-method set_update_policy
-  (of-object "GtkColorSelection")
-  (c-name "gtk_color_selection_set_update_policy")
-  (return-type "none")
-  (parameters
-    '("GtkUpdateType" "policy")
-  )
-)
-
 (define-function color_selection_palette_from_string
   (c-name "gtk_color_selection_palette_from_string")
   (return-type "gboolean")
@@ -2480,6 +2567,36 @@
   )
 )
 
+
+(define-method set_color
+  (of-object "GtkColorSelection")
+  (c-name "gtk_color_selection_set_color")
+  (return-type "none")
+  (parameters
+    '("gdouble*" "color")
+  )
+  (deprecated "use GtkColorSelection.set_current_color")
+)
+
+(define-method get_color
+  (of-object "GtkColorSelection")
+  (c-name "gtk_color_selection_get_color")
+  (return-type "none")
+  (parameters
+    '("gdouble*" "color")
+  )
+  (deprecated "use GtkColorSelection.get_current_color")
+)
+
+(define-method set_update_policy
+  (of-object "GtkColorSelection")
+  (c-name "gtk_color_selection_set_update_policy")
+  (return-type "none")
+  (parameters
+    '("GtkUpdateType" "policy")
+  )
+  (deprecated "")
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcolorseldialog.h
 
@@ -2587,6 +2704,16 @@
   (return-type "GtkType")
 )
 
+(define-method border_width
+  (of-object "GtkContainer")
+  (c-name "gtk_container_border_width")
+  (return-type "none")
+  (parameters
+    '("guint" "border_width")
+  )
+  (deprecated "use GtkContainer.set_border_width")
+)
+
 (define-method set_border_width
   (of-object "GtkContainer")
   (c-name "gtk_container_set_border_width")
@@ -2661,6 +2788,7 @@
     '("gpointer" "callback_data")
     '("GtkDestroyNotify" "notify")
   )
+  (deprecated "")
 )
 
 (define-method get_children
@@ -2669,11 +2797,11 @@
   (return-type "GList*")
 )
 
-; DEPRECATED
 (define-method children
   (of-object "GtkContainer")
   (c-name "gtk_container_children")
   (return-type "GList*")
+  (deprecated "use GtkContainer.get_children")
 )
 
 (define-method propagate_expose
@@ -2935,6 +3063,7 @@
     '("gint" "tree_column" (default "0"))
     '("gchar*[]" "titles")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-function gtk_ctree_new_with_titles
@@ -2946,6 +3075,7 @@
     '("gint" "tree_column" (default "0"))
     '("gchar*[]" "titles")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-function gtk_ctree_new
@@ -2956,12 +3086,14 @@
     '("gint" "columns" (default "1"))
     '("gint" "tree_column" (default "0"))
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method base_nodes
   (of-object "GtkCTree")
   (c-name "gtk_ctree_base_nodes")
   (return-type "GList*")
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method insert_node
@@ -2980,6 +3112,7 @@
     '("gboolean" "is_leaf" (default "1"))
     '("gboolean" "expanded" (default "0"))
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method remove_node
@@ -2989,6 +3122,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method insert_gnode
@@ -3002,6 +3136,7 @@
     '("GtkCTreeGNodeFunc" "func")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method export_to_gnode
@@ -3015,6 +3150,7 @@
     '("GtkCTreeGNodeFunc" "func")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method post_recursive
@@ -3026,6 +3162,7 @@
     '("GtkCTreeFunc" "func")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method post_recursive_to_depth
@@ -3038,6 +3175,7 @@
     '("GtkCTreeFunc" "func")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method pre_recursive
@@ -3049,6 +3187,7 @@
     '("GtkCTreeFunc" "func")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method pre_recursive_to_depth
@@ -3061,6 +3200,7 @@
     '("GtkCTreeFunc" "func")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method is_viewable
@@ -3070,6 +3210,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method last
@@ -3079,6 +3220,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method find_node_ptr
@@ -3088,6 +3230,7 @@
   (parameters
     '("GtkCTreeRow*" "ctree_row")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_nth
@@ -3097,6 +3240,7 @@
   (parameters
     '("guint" "row")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method find
@@ -3107,6 +3251,7 @@
     '("GtkCTreeNode*" "node")
     '("GtkCTreeNode*" "child")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method is_ancestor
@@ -3117,6 +3262,7 @@
     '("GtkCTreeNode*" "node")
     '("GtkCTreeNode*" "child")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method find_by_row_data
@@ -3127,6 +3273,7 @@
     '("GtkCTreeNode*" "node")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method find_all_by_row_data
@@ -3137,6 +3284,7 @@
     '("GtkCTreeNode*" "node")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method find_by_row_data_custom
@@ -3148,6 +3296,7 @@
     '("gpointer" "data")
     '("GCompareFunc" "func")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method find_all_by_row_data_custom
@@ -3159,6 +3308,7 @@
     '("gpointer" "data")
     '("GCompareFunc" "func")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method is_hot_spot
@@ -3169,6 +3319,7 @@
     '("gint" "x")
     '("gint" "y")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method move
@@ -3180,6 +3331,7 @@
     '("GtkCTreeNode*" "new_parent" (null-ok))
     '("GtkCTreeNode*" "new_sibling" (null-ok))
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method expand
@@ -3189,6 +3341,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method expand_recursive
@@ -3198,6 +3351,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method expand_to_depth
@@ -3208,6 +3362,7 @@
     '("GtkCTreeNode*" "node")
     '("gint" "depth")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method collapse
@@ -3217,6 +3372,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method collapse_recursive
@@ -3226,6 +3382,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method collapse_to_depth
@@ -3236,6 +3393,7 @@
     '("GtkCTreeNode*" "node")
     '("gint" "depth")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method toggle_expansion
@@ -3245,6 +3403,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method toggle_expansion_recursive
@@ -3254,6 +3413,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method select
@@ -3263,6 +3423,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method select_recursive
@@ -3272,6 +3433,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method unselect
@@ -3281,6 +3443,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method unselect_recursive
@@ -3290,6 +3453,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method real_select_recursive
@@ -3300,6 +3464,7 @@
     '("GtkCTreeNode*" "node")
     '("gint" "state")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_text
@@ -3311,6 +3476,7 @@
     '("gint" "column")
     '("const-gchar*" "text")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_pixmap
@@ -3323,6 +3489,7 @@
     '("GdkPixmap*" "pixmap")
     '("GdkBitmap*" "mask" (null-ok))
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_pixtext
@@ -3337,6 +3504,7 @@
     '("GdkPixmap*" "pixmap")
     '("GdkBitmap*" "mask" (null-ok))
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method set_node_info
@@ -3354,6 +3522,7 @@
     '("gboolean" "is_leaf")
     '("gboolean" "expanded")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_shift
@@ -3366,6 +3535,7 @@
     '("gint" "vertical")
     '("gint" "horizontal")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_selectable
@@ -3376,6 +3546,7 @@
     '("GtkCTreeNode*" "node")
     '("gboolean" "selectable")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_selectable
@@ -3385,6 +3556,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_cell_type
@@ -3395,6 +3567,7 @@
     '("GtkCTreeNode*" "node")
     '("gint" "column")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_text
@@ -3406,6 +3579,7 @@
     '("gint" "column")
     '("gchar**" "text")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_pixmap
@@ -3418,6 +3592,7 @@
     '("GdkPixmap**" "pixmap")
     '("GdkBitmap**" "mask")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_pixtext
@@ -3432,6 +3607,7 @@
     '("GdkPixmap**" "pixmap")
     '("GdkBitmap**" "mask")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method get_node_info
@@ -3449,6 +3625,7 @@
     '("gboolean*" "is_leaf")
     '("gboolean*" "expanded")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_row_style
@@ -3459,6 +3636,7 @@
     '("GtkCTreeNode*" "node")
     '("GtkStyle*" "style")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_row_style
@@ -3468,6 +3646,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_cell_style
@@ -3479,6 +3658,7 @@
     '("gint" "column")
     '("GtkStyle*" "style")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_cell_style
@@ -3489,6 +3669,7 @@
     '("GtkCTreeNode*" "node")
     '("gint" "column")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_foreground
@@ -3499,6 +3680,7 @@
     '("GtkCTreeNode*" "node")
     '("GdkColor*" "color")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_background
@@ -3509,6 +3691,7 @@
     '("GtkCTreeNode*" "node")
     '("GdkColor*" "color")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_row_data
@@ -3519,6 +3702,7 @@
     '("GtkCTreeNode*" "node")
     '("gpointer" "data")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_set_row_data_full
@@ -3530,6 +3714,7 @@
     '("gpointer" "data")
     '("GtkDestroyNotify" "destroy")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_get_row_data
@@ -3539,6 +3724,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_moveto
@@ -3551,6 +3737,7 @@
     '("gfloat" "row_align")
     '("gfloat" "col_align")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method node_is_visible
@@ -3560,6 +3747,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method set_indent
@@ -3569,6 +3757,7 @@
   (parameters
     '("gint" "indent")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method set_spacing
@@ -3578,6 +3767,7 @@
   (parameters
     '("gint" "spacing")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method set_show_stub
@@ -3587,6 +3777,7 @@
   (parameters
     '("gboolean" "show_stub")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method set_line_style
@@ -3596,6 +3787,7 @@
   (parameters
     '("GtkCTreeLineStyle" "line_style")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method set_expander_style
@@ -3605,6 +3797,7 @@
   (parameters
     '("GtkCTreeExpanderStyle" "expander_style")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method set_drag_compare_func
@@ -3614,6 +3807,7 @@
   (parameters
     '("GtkCTreeCompareDragFunc" "cmp_func")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method sort_node
@@ -3623,6 +3817,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 (define-method sort_recursive
@@ -3632,6 +3827,7 @@
   (parameters
     '("GtkCTreeNode*" "node")
   )
+  (deprecated "use GtkTreeStore/GtkTreeModel")
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcurve.h
@@ -3978,6 +4174,7 @@
     '("gint" "hot_x")
     '("gint" "hot_y")
   )
+  (deprecated "change the stock pixbuf for GTK_STOCK_DND")
 )
 
 (define-method _drag_source_handle_event
@@ -4011,7 +4208,6 @@
   (return-type "GtkWidget*")
 )
 
-; DEPRECATED
 (define-method size
   (of-object "GtkDrawingArea")
   (c-name "gtk_drawing_area_size")
@@ -4020,6 +4216,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 
@@ -4175,7 +4372,7 @@
   (return-type "GtkWidget*")
 )
 
-; DEPRECATED
+; DEPRECATED, but we use it for a constructor for convenience
 (define-function gtk_entry_new_with_max_length
   (c-name "gtk_entry_new_with_max_length")
   (is-constructor-of GtkEntry)
@@ -4222,6 +4419,7 @@
   (parameters
     '("gboolean" "editable")
   )
+  (deprecated "")
 )
 
 (define-method set_has_frame
@@ -4322,6 +4520,7 @@
   (parameters
     '("const-gchar*" "text")
   )
+  (deprecated "")
 )
 
 (define-method prepend_text
@@ -4331,6 +4530,7 @@
   (parameters
     '("const-gchar*" "text")
   )
+  (deprecated "")
 )
 
 (define-method set_position
@@ -4340,6 +4540,7 @@
   (parameters
     '("gint" "position")
   )
+  (deprecated "")
 )
 
 (define-method select_region
@@ -4350,6 +4551,7 @@
     '("gint" "start")
     '("gint" "end")
   )
+  (deprecated "")
 )
 
 
@@ -4492,11 +4694,11 @@
   (return-type "gchar*")
 )
 
-; DEPRECATED
 (define-method get_font
   (of-object "GtkFontSelection")
   (c-name "gtk_font_selection_get_font")
   (return-type "GdkFont*")
+  (deprecated "use GtkFontSelection.get_font_name")
 )
 
 (define-method set_font_name
@@ -4543,11 +4745,11 @@
   (return-type "gchar*")
 )
 
-; DEPRECATED
 (define-method get_font
   (of-object "GtkFontSelectionDialog")
   (c-name "gtk_font_selection_dialog_get_font")
   (return-type "GdkFont*")
+  (deprecated "use GtkFontSelectionDialog.get_font_name")
 )
 
 (define-method set_font_name
@@ -4770,34 +4972,34 @@
   (return-type "GtkWidget*")
 )
 
-; DEPRECATED
 (define-function hbutton_box_get_spacing_default
   (c-name "gtk_hbutton_box_get_spacing_default")
   (return-type "gint")
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-function hbutton_box_get_layout_default
   (c-name "gtk_hbutton_box_get_layout_default")
   (return-type "GtkButtonBoxStyle")
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-function hbutton_box_set_spacing_default
   (c-name "gtk_hbutton_box_set_spacing_default")
   (return-type "none")
   (parameters
     '("gint" "spacing")
   )
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-function hbutton_box_set_layout_default
   (c-name "gtk_hbutton_box_set_layout_default")
   (return-type "none")
   (parameters
     '("GtkButtonBoxStyle" "layout")
   )
+  (deprecated "")
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkhbox.h
@@ -5312,6 +5514,7 @@
     '("GdkImage*" "val")
     '("GdkBitmap*" "mask")
   )
+  (deprecated "")
 )
 
 (define-method get
@@ -5322,6 +5525,7 @@
     '("GdkImage**" "val")
     '("GdkBitmap**" "mask")
   )
+  (deprecated "")
 )
 
 (define-method set_from_pixmap
@@ -5979,6 +6183,7 @@
   (parameters
     '("const-gchar*" "path")
   )
+  (deprecated "")
 )
 
 (define-function item_factory_create_menu_entries
@@ -5988,6 +6193,7 @@
     '("guint" "n_entries")
     '("GtkMenuEntry*" "entries")
   )
+  (deprecated "")
 )
 
 (define-function item_factories_path_delete
@@ -5997,6 +6203,7 @@
     '("const-gchar*" "ifactory_path")
     '("const-gchar*" "path")
   )
+  (deprecated "")
 )
 
 (define-method create_items_ac
@@ -6009,6 +6216,7 @@
     '("gpointer" "callback_data")
     '("guint" "callback_type")
   )
+  (deprecated "")
 )
 
 
@@ -6251,7 +6459,16 @@
   )
 )
 
-; DEPRECATED
+(define-method set
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set")
+  (return-type "none")
+  (parameters
+    '("const-char*" "str")
+  )
+  (deprecated "use GtkLabel.set_text")
+)
+
 (define-method get
   (of-object "GtkLabel")
   (c-name "gtk_label_get")
@@ -6259,9 +6476,9 @@
   (parameters
     '("char**" "str")
   )
+  (deprecated "use GtkLabel.get_text")
 )
 
-; DEPRECATED
 (define-method parse_uline
   (of-object "GtkLabel")
   (c-name "gtk_label_parse_uline")
@@ -6269,6 +6486,7 @@
   (parameters
     '("const-gchar*" "string")
   )
+  (deprecated "")
 )
 
 
@@ -6361,18 +6579,18 @@
   )
 )
 
-; DEPRECATED
 (define-method freeze
   (of-object "GtkLayout")
   (c-name "gtk_layout_freeze")
   (return-type "none")
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-method thaw
   (of-object "GtkLayout")
   (c-name "gtk_layout_thaw")
   (return-type "none")
+  (deprecated "")
 )
 
 
@@ -6382,12 +6600,14 @@
 (define-function gtk_list_get_type
   (c-name "gtk_list_get_type")
   (return-type "GtkType")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-function gtk_list_new
   (c-name "gtk_list_new")
   (is-constructor-of GtkList)
   (return-type "GtkWidget*")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method insert_items
@@ -6398,6 +6618,7 @@
     '("GList*" "items")
     '("gint" "position")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method append_items
@@ -6407,6 +6628,7 @@
   (parameters
     '("GList*" "items")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method prepend_items
@@ -6416,6 +6638,7 @@
   (parameters
     '("GList*" "items")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method remove_items
@@ -6425,6 +6648,7 @@
   (parameters
     '("GList*" "items")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method remove_items_no_unref
@@ -6434,6 +6658,7 @@
   (parameters
     '("GList*" "items")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method clear_items
@@ -6444,6 +6669,7 @@
     '("gint" "start")
     '("gint" "end")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method select_item
@@ -6453,6 +6679,7 @@
   (parameters
     '("gint" "item")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method unselect_item
@@ -6462,6 +6689,7 @@
   (parameters
     '("gint" "item")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method select_child
@@ -6471,6 +6699,7 @@
   (parameters
     '("GtkWidget*" "child")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method unselect_child
@@ -6480,6 +6709,7 @@
   (parameters
     '("GtkWidget*" "child")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method child_position
@@ -6489,6 +6719,7 @@
   (parameters
     '("GtkWidget*" "child")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method set_selection_mode
@@ -6498,6 +6729,7 @@
   (parameters
     '("GtkSelectionMode" "mode")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method extend_selection
@@ -6509,30 +6741,35 @@
     '("gfloat" "position")
     '("gboolean" "auto_start_selection")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method start_selection
   (of-object "GtkList")
   (c-name "gtk_list_start_selection")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method end_selection
   (of-object "GtkList")
   (c-name "gtk_list_end_selection")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method select_all
   (of-object "GtkList")
   (c-name "gtk_list_select_all")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method unselect_all
   (of-object "GtkList")
   (c-name "gtk_list_unselect_all")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method scroll_horizontal
@@ -6543,6 +6780,7 @@
     '("GtkScrollType" "scroll_type")
     '("gfloat" "position")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method scroll_vertical
@@ -6553,18 +6791,21 @@
     '("GtkScrollType" "scroll_type")
     '("gfloat" "position")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method toggle_add_mode
   (of-object "GtkList")
   (c-name "gtk_list_toggle_add_mode")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method toggle_focus_row
   (of-object "GtkList")
   (c-name "gtk_list_toggle_focus_row")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method toggle_row
@@ -6574,18 +6815,21 @@
   (parameters
     '("GtkWidget*" "item")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method undo_selection
   (of-object "GtkList")
   (c-name "gtk_list_undo_selection")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method end_drag_selection
   (of-object "GtkList")
   (c-name "gtk_list_end_drag_selection")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 
@@ -6600,6 +6844,7 @@
   (c-name "gtk_list_item_new")
   (is-constructor-of GtkListItem)
   (return-type "GtkWidget*")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-function gtk_list_item_new_with_label
@@ -6609,18 +6854,21 @@
   (parameters
     '("const-gchar*" "label")
   )
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method select
   (of-object "GtkListItem")
   (c-name "gtk_list_item_select")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 (define-method deselect
   (of-object "GtkListItem")
   (c-name "gtk_list_item_deselect")
   (return-type "none")
+  (deprecated "use GtkListStore/GtkTreeView")
 )
 
 
@@ -6815,6 +7063,7 @@
   (parameters
     '("gint" "error_code")
   )
+  (deprecated "")
 )
 
 (define-function disable_setlocale
@@ -7258,6 +7507,37 @@
 )
 
 
+(define-method append
+  (of-object "GtkMenuBar")
+  (c-name "gtk_menu_append")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+  )
+  (deprecated "use GtkMenuShell.append")
+)
+
+(define-method prepend
+  (of-object "GtkMenuBar")
+  (c-name "gtk_menu_prepend")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+  )
+  (deprecated "use GtkMenuShell.prepend")
+)
+
+(define-method insert
+  (of-object "GtkMenuBar")
+  (c-name "gtk_menu_insert")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+    '("gint" "position")
+  )
+  (deprecated "use GtkMenuShell.insert")
+)
+
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkmenubar.h
 
@@ -7279,6 +7559,7 @@
   (parameters
     '("GtkWidget*" "child")
   )
+  (deprecated "use GtkMenuShell.append")
 )
 
 (define-method prepend
@@ -7288,6 +7569,7 @@
   (parameters
     '("GtkWidget*" "child")
   )
+  (deprecated "use GtkMenuShell.prepend")
 )
 
 (define-method insert
@@ -7298,6 +7580,7 @@
     '("GtkWidget*" "child")
     '("gint" "position")
   )
+  (deprecated "use GtkMenuShell.insert")
 )
 
 
@@ -7384,11 +7667,11 @@
   )
 )
 
-; DEPRECATED
 (define-method right_justify
   (of-object "GtkMenuItem")
   (c-name "gtk_menu_item_right_justify")
   (return-type "none")
+  (deprecated "use GtkMenuItem.set_right_justified")
 )
 
 (define-method get_submenu
@@ -7772,6 +8055,7 @@
   (parameters
     '("gboolean" "homogeneous")
   )
+  (deprecated "")
 )
 
 (define-method set_tab_border
@@ -7781,6 +8065,7 @@
   (parameters
     '("guint" "border_width")
   )
+  (deprecated "")
 )
 
 (define-method set_tab_hborder
@@ -7790,6 +8075,7 @@
   (parameters
     '("guint" "tab_hborder")
   )
+  (deprecated "")
 )
 
 (define-method set_tab_vborder
@@ -7799,6 +8085,7 @@
   (parameters
     '("guint" "tab_vborder")
   )
+  (deprecated "")
 )
 
 (define-method get_scrollable
@@ -7938,6 +8225,23 @@
   )
 )
 
+(define-method current_page
+  (of-object "GtkNotebook")
+  (c-name "gtk_notebook_current_page")
+  (return-type "gint")
+  (deprecated "use GtkNotebook.get_current_page")
+)
+
+(define-method set_page
+  (of-object "GtkNotebook")
+  (c-name "gtk_notebook_set_page")
+  (return-type "none")
+  (parameters
+    '("gint" "page_num")
+  )
+  (deprecated "use GtkNotebook.set_current_page")
+)
+
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkobject.h
@@ -7967,18 +8271,18 @@
   )
 )
 
-; DEPRECATED - use GObject.ref
 (define-method ref
   (of-object "GtkObject")
   (c-name "gtk_object_ref")
   (return-type "GtkObject*")
+  (deprecated "use GObject.ref")
 )
 
-; DEPRECATED - use GObject.unref
 (define-method unref
   (of-object "GtkObject")
   (c-name "gtk_object_unref")
   (return-type "none")
+  (deprecated "use GObject.unref")
 )
 
 (define-method sink
@@ -7987,7 +8291,6 @@
   (return-type "none")
 )
 
-; DEPRECATED - use GObject.weakref
 (define-method weakref
   (of-object "GtkObject")
   (c-name "gtk_object_weakref")
@@ -7996,9 +8299,9 @@
     '("GtkDestroyNotify" "notify")
     '("gpointer" "data")
   )
+  (deprecated "use GObject.weakref")
 )
 
-; DEPRECATED - use GObject.weakunref
 (define-method weakunref
   (of-object "GtkObject")
   (c-name "gtk_object_weakunref")
@@ -8007,6 +8310,7 @@
     '("GtkDestroyNotify" "notify")
     '("gpointer" "data")
   )
+  (deprecated "use GObject.weakunref")
 )
 
 (define-method destroy
@@ -8015,7 +8319,6 @@
   (return-type "none")
 )
 
-; DEPRECATED - use GObject.set_data
 (define-method set_data
   (of-object "GtkObject")
   (c-name "gtk_object_set_data")
@@ -8024,9 +8327,9 @@
     '("const-gchar*" "key")
     '("gpointer" "data")
   )
+  (deprecated "use GObject.set_data")
 )
 
-; DEPRECATED - use GObject.set_data_full
 (define-method set_data_full
   (of-object "GtkObject")
   (c-name "gtk_object_set_data_full")
@@ -8036,9 +8339,9 @@
     '("gpointer" "data")
     '("GtkDestroyNotify" "destroy")
   )
+  (deprecated "use GObject.set_data_full")
 )
 
-; DEPRECATED - use GObject.remove_data
 (define-method remove_data
   (of-object "GtkObject")
   (c-name "gtk_object_remove_data")
@@ -8046,9 +8349,9 @@
   (parameters
     '("const-gchar*" "key")
   )
+  (deprecated "use GObject.remove_data")
 )
 
-; DEPRECATED - use GObject.get_data
 (define-method get_data
   (of-object "GtkObject")
   (c-name "gtk_object_get_data")
@@ -8056,9 +8359,9 @@
   (parameters
     '("const-gchar*" "key")
   )
+  (deprecated "use GObject.get_data")
 )
 
-; DEPRECATED
 (define-method remove_no_notify
   (of-object "GtkObject")
   (c-name "gtk_object_remove_no_notify")
@@ -8066,9 +8369,9 @@
   (parameters
     '("const-gchar*" "key")
   )
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-method set_user_data
   (of-object "GtkObject")
   (c-name "gtk_object_set_user_data")
@@ -8076,16 +8379,16 @@
   (parameters
     '("gpointer" "data")
   )
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-method get_user_data
   (of-object "GtkObject")
   (c-name "gtk_object_get_user_data")
   (return-type "gpointer")
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-method set_data_by_id
   (of-object "GtkObject")
   (c-name "gtk_object_set_data_by_id")
@@ -8094,9 +8397,9 @@
     '("GQuark" "data_id")
     '("gpointer" "data")
   )
+  (deprecated "use GObject.set_qdata")
 )
 
-; DEPRECATED
 (define-method set_data_by_id_full
   (of-object "GtkObject")
   (c-name "gtk_object_set_data_by_id_full")
@@ -8106,9 +8409,9 @@
     '("gpointer" "data")
     '("GtkDestroyNotify" "destroy")
   )
+  (deprecated "use GObject.set_qdata_full")
 )
 
-; DEPRECATED
 (define-method get_data_by_id
   (of-object "GtkObject")
   (c-name "gtk_object_get_data_by_id")
@@ -8116,9 +8419,9 @@
   (parameters
     '("GQuark" "data_id")
   )
+  (deprecated "use GObject.get_qdata")
 )
 
-; DEPRECATED
 (define-method remove_data_by_id
   (of-object "GtkObject")
   (c-name "gtk_object_remove_data_by_id")
@@ -8126,9 +8429,9 @@
   (parameters
     '("GQuark" "data_id")
   )
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-method remove_no_notify_by_id
   (of-object "GtkObject")
   (c-name "gtk_object_remove_no_notify_by_id")
@@ -8136,9 +8439,9 @@
   (parameters
     '("GQuark" "key_id")
   )
+  (deprecated "")
 )
 
-; DEPRECATED - use GObject.get
 (define-method get
   (of-object "GtkObject")
   (c-name "gtk_object_get")
@@ -8146,9 +8449,9 @@
   (parameters
     '("const-gchar*" "first_property_name")
   )
+  (deprecated "use GObject.get")
 )
 
-; DEPRECATED - use GObject.set
 (define-method set
   (of-object "GtkObject")
   (c-name "gtk_object_set")
@@ -8156,9 +8459,9 @@
   (parameters
     '("const-gchar*" "first_property_name")
   )
+  (deprecated "use GObject.set")
 )
 
-; DEPRECATED
 (define-function object_add_arg_type
   (c-name "gtk_object_add_arg_type")
   (return-type "none")
@@ -8168,6 +8471,7 @@
     '("guint" "arg_flags")
     '("guint" "arg_id")
   )
+  (deprecated "")
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkoptionmenu.h
@@ -8310,6 +8614,7 @@
     '("GdkPixmap*" "pixmap")
     '("GdkBitmap*" "mask" (null-ok))
   )
+  (deprecated "use GtkPixbuf")
 )
 
 (define-method set
@@ -8320,6 +8625,7 @@
     '("GdkPixmap*" "val")
     '("GdkBitmap*" "mask" (null-ok))
   )
+  (deprecated "use GtkPixbuf")
 )
 
 (define-method get
@@ -8330,6 +8636,7 @@
     '("GdkPixmap**" "val")
     '("GdkBitmap**" "mask")
   )
+  (deprecated "use GtkPixbuf")
 )
 
 (define-method set_build_insensitive
@@ -8339,6 +8646,7 @@
   (parameters
     '("guint" "build")
   )
+  (deprecated "use GtkPixbuf")
 )
 
 
@@ -8368,140 +8676,6 @@
   )
 )
 
-
-
-;; From /opt/gtk2/include/gtk-2.0/gtk/gtkpreview.h
-
-(define-function gtk_preview_get_type
-  (c-name "gtk_preview_get_type")
-  (return-type "GtkType")
-)
-
-(define-function preview_uninit
-  (c-name "gtk_preview_uninit")
-  (return-type "none")
-)
-
-(define-function gtk_preview_new
-  (c-name "gtk_preview_new")
-  (is-constructor-of GtkPreview)
-  (return-type "GtkWidget*")
-  (parameters
-    '("GtkPreviewType" "type")
-  )
-)
-
-(define-method size
-  (of-object "GtkPreview")
-  (c-name "gtk_preview_size")
-  (return-type "none")
-  (parameters
-    '("gint" "width")
-    '("gint" "height")
-  )
-)
-
-(define-method put
-  (of-object "GtkPreview")
-  (c-name "gtk_preview_put")
-  (return-type "none")
-  (parameters
-    '("GdkWindow*" "window")
-    '("GdkGC*" "gc")
-    '("gint" "srcx")
-    '("gint" "srcy")
-    '("gint" "destx")
-    '("gint" "desty")
-    '("gint" "width")
-    '("gint" "height")
-  )
-)
-
-(define-method draw_row
-  (of-object "GtkPreview")
-  (c-name "gtk_preview_draw_row")
-  (return-type "none")
-  (parameters
-    '("guchar*" "data")
-    '("gint" "x")
-    '("gint" "y")
-    '("gint" "w")
-  )
-)
-
-(define-method set_expand
-  (of-object "GtkPreview")
-  (c-name "gtk_preview_set_expand")
-  (return-type "none")
-  (parameters
-    '("gboolean" "expand")
-  )
-)
-
-(define-function preview_set_gamma
-  (c-name "gtk_preview_set_gamma")
-  (return-type "none")
-  (parameters
-    '("double" "gamma")
-  )
-)
-
-(define-function preview_set_color_cube
-  (c-name "gtk_preview_set_color_cube")
-  (return-type "none")
-  (parameters
-    '("guint" "nred_shades")
-    '("guint" "ngreen_shades")
-    '("guint" "nblue_shades")
-    '("guint" "ngray_shades")
-  )
-)
-
-(define-function preview_set_install_cmap
-  (c-name "gtk_preview_set_install_cmap")
-  (return-type "none")
-  (parameters
-    '("gint" "install_cmap")
-  )
-)
-
-(define-function preview_set_reserved
-  (c-name "gtk_preview_set_reserved")
-  (return-type "none")
-  (parameters
-    '("gint" "nreserved")
-  )
-)
-
-(define-method set_dither
-  (of-object "GtkPreview")
-  (c-name "gtk_preview_set_dither")
-  (return-type "none")
-  (parameters
-    '("GdkRgbDither" "dither")
-  )
-)
-
-(define-function preview_get_visual
-  (c-name "gtk_preview_get_visual")
-  (return-type "GdkVisual*")
-)
-
-(define-function preview_get_cmap
-  (c-name "gtk_preview_get_cmap")
-  (return-type "GdkColormap*")
-)
-
-(define-function gtk_preview_get_info
-  (c-name "gtk_preview_get_info")
-  (return-type "GtkPreviewInfo*")
-)
-
-(define-function preview_reset
-  (c-name "gtk_preview_reset")
-  (return-type "none")
-)
-
 (define-method get_id
   (of-object "GtkPlug")
   (c-name "gtk_plug_get_id")
@@ -8527,6 +8701,155 @@
 )
 
 
+;; From /opt/gtk2/include/gtk-2.0/gtk/gtkpreview.h
+
+(define-function gtk_preview_get_type
+  (c-name "gtk_preview_get_type")
+  (return-type "GtkType")
+)
+
+(define-function preview_uninit
+  (c-name "gtk_preview_uninit")
+  (return-type "none")
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function gtk_preview_new
+  (c-name "gtk_preview_new")
+  (is-constructor-of GtkPreview)
+  (return-type "GtkWidget*")
+  (parameters
+    '("GtkPreviewType" "type")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-method size
+  (of-object "GtkPreview")
+  (c-name "gtk_preview_size")
+  (return-type "none")
+  (parameters
+    '("gint" "width")
+    '("gint" "height")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-method put
+  (of-object "GtkPreview")
+  (c-name "gtk_preview_put")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "window")
+    '("GdkGC*" "gc")
+    '("gint" "srcx")
+    '("gint" "srcy")
+    '("gint" "destx")
+    '("gint" "desty")
+    '("gint" "width")
+    '("gint" "height")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-method draw_row
+  (of-object "GtkPreview")
+  (c-name "gtk_preview_draw_row")
+  (return-type "none")
+  (parameters
+    '("guchar*" "data")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "w")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-method set_expand
+  (of-object "GtkPreview")
+  (c-name "gtk_preview_set_expand")
+  (return-type "none")
+  (parameters
+    '("gboolean" "expand")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function preview_set_gamma
+  (c-name "gtk_preview_set_gamma")
+  (return-type "none")
+  (parameters
+    '("double" "gamma")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function preview_set_color_cube
+  (c-name "gtk_preview_set_color_cube")
+  (return-type "none")
+  (parameters
+    '("guint" "nred_shades")
+    '("guint" "ngreen_shades")
+    '("guint" "nblue_shades")
+    '("guint" "ngray_shades")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function preview_set_install_cmap
+  (c-name "gtk_preview_set_install_cmap")
+  (return-type "none")
+  (parameters
+    '("gint" "install_cmap")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function preview_set_reserved
+  (c-name "gtk_preview_set_reserved")
+  (return-type "none")
+  (parameters
+    '("gint" "nreserved")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-method set_dither
+  (of-object "GtkPreview")
+  (c-name "gtk_preview_set_dither")
+  (return-type "none")
+  (parameters
+    '("GdkRgbDither" "dither")
+  )
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function preview_get_visual
+  (c-name "gtk_preview_get_visual")
+  (return-type "GdkVisual*")
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function preview_get_cmap
+  (c-name "gtk_preview_get_cmap")
+  (return-type "GdkColormap*")
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function gtk_preview_get_info
+  (c-name "gtk_preview_get_info")
+  (return-type "GtkPreviewInfo*")
+  (deprecated "use GtkPixbuf")
+)
+
+(define-function preview_reset
+  (c-name "gtk_preview_reset")
+  (return-type "none")
+  (deprecated "use GtkPixbuf")
+)
+
+
+
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkprivate.h
 
 
@@ -8545,6 +8868,7 @@
   (parameters
     '("gint" "show_text")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method set_text_alignment
@@ -8555,6 +8879,7 @@
     '("gfloat" "x_align")
     '("gfloat" "y_align")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method set_format_string
@@ -8564,6 +8889,7 @@
   (parameters
     '("const-gchar*" "format")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method set_adjustment
@@ -8573,6 +8899,7 @@
   (parameters
     '("GtkAdjustment*" "adjustment")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method configure
@@ -8584,6 +8911,7 @@
     '("gfloat" "min")
     '("gfloat" "max")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method set_percentage
@@ -8593,6 +8921,7 @@
   (parameters
     '("gfloat" "percentage")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method set_value
@@ -8602,12 +8931,14 @@
   (parameters
     '("gfloat" "value")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method get_value
   (of-object "GtkProgress")
   (c-name "gtk_progress_get_value")
   (return-type "gfloat")
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method set_activity_mode
@@ -8617,12 +8948,14 @@
   (parameters
     '("guint" "activity_mode")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method get_current_text
   (of-object "GtkProgress")
   (c-name "gtk_progress_get_current_text")
   (return-type "gchar*")
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method get_text_from_value
@@ -8632,12 +8965,14 @@
   (parameters
     '("gfloat" "value")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method get_current_percentage
   (of-object "GtkProgress")
   (c-name "gtk_progress_get_current_percentage")
   (return-type "gfloat")
+  (deprecated "use GtkProgressBar")
 )
 
 (define-method get_percentage_from_value
@@ -8647,6 +8982,7 @@
   (parameters
     '("gfloat" "value")
   )
+  (deprecated "use GtkProgressBar")
 )
 
 
@@ -8737,6 +9073,7 @@
   (parameters
     '("GtkAdjustment*" "adjustment" (null-ok) (default "NULL"))
   )
+  (deprecated "")
 )
 
 (define-method set_bar_style
@@ -8746,6 +9083,7 @@
   (parameters
     '("GtkProgressBarStyle" "style")
   )
+  (deprecated "")
 )
 
 (define-method set_discrete_blocks
@@ -8755,6 +9093,7 @@
   (parameters
     '("guint" "blocks")
   )
+  (deprecated "")
 )
 
 (define-method set_activity_step
@@ -8764,6 +9103,7 @@
   (parameters
     '("guint" "step")
   )
+  (deprecated "")
 )
 
 (define-method set_activity_blocks
@@ -8773,6 +9113,7 @@
   (parameters
     '("guint" "blocks")
   )
+  (deprecated "")
 )
 
 (define-method update
@@ -8782,6 +9123,7 @@
   (parameters
     '("gfloat" "percentage")
   )
+  (deprecated "")
 )
 
 
@@ -8822,7 +9164,6 @@
 )
 
 (define-function radio_button_new_with_label_from_widget
-  (of-object "GtkRadioButton")
   (is-constructor-of GtkRadioButton)
   (c-name "gtk_radio_button_new_with_label_from_widget")
   (return-type "GtkWidget*")
@@ -8843,7 +9184,6 @@
 )
 
 (define-function radio_button_new_with_mnemonic_from_widget
-  (of-object "GtkRadioButton")
   (is-constructor-of GtkRadioButton)
   (c-name "gtk_radio_button_new_with_mnemonic_from_widget")
   (return-type "GtkWidget*")
@@ -8868,11 +9208,11 @@
   )
 )
 
-; DEPRECATED
 (define-method group
   (of-object "GtkRadioButton")
   (c-name "gtk_radio_button_group")
   (return-type "GSList*")
+  (deprecated "use GtkRadioButton.get_group")
 )
 
 
@@ -8913,12 +9253,6 @@
   )
 )
 
-(define-method group
-  (of-object "GtkRadioMenuItem")
-  (c-name "gtk_radio_menu_item_group")
-  (return-type "GSList*")
-)
-
 (define-method get_group
   (of-object "GtkRadioMenuItem")
   (c-name "gtk_radio_menu_item_get_group")
@@ -8934,7 +9268,12 @@
   )
 )
 
-
+(define-method group
+  (of-object "GtkRadioMenuItem")
+  (c-name "gtk_radio_menu_item_group")
+  (return-type "GSList*")
+  (deprecated "use GtkRadioMenuItem.get_group")
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkrange.h
 
@@ -9089,33 +9428,6 @@
   (return-type "GtkStyle*")
 )
 
-(define-function rc_add_widget_name_style
-  (c-name "gtk_rc_add_widget_name_style")
-  (return-type "none")
-  (parameters
-    '("GtkRcStyle*" "rc_style")
-    '("const-gchar*" "pattern")
-  )
-)
-
-(define-function rc_add_widget_class_style
-  (c-name "gtk_rc_add_widget_class_style")
-  (return-type "none")
-  (parameters
-    '("GtkRcStyle*" "rc_style")
-    '("const-gchar*" "pattern")
-  )
-)
-
-(define-function rc_add_class_style
-  (c-name "gtk_rc_add_class_style")
-  (return-type "none")
-  (parameters
-    '("GtkRcStyle*" "rc_style")
-    '("const-gchar*" "pattern")
-  )
-)
-
 (define-function rc_style_get_type
   (c-name "gtk_rc_style_get_type")
   (return-type "GType")
@@ -9153,6 +9465,36 @@
     '("GQuark" "type_name")
     '("GQuark" "property_name")
   )
+)
+
+(define-method add_widget_name_style
+  (of-object "GtkRcStyle")
+  (c-name "gtk_rc_add_widget_name_style")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "pattern")
+  )
+  (deprecated "")
+)
+
+(define-method add_widget_class_style
+  (of-object "GtkRcStyle")
+  (c-name "gtk_rc_add_widget_class_style")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "pattern")
+  )
+  (deprecated "")
+)
+
+(define-method add_class_style
+  (of-object "GtkRcStyle")
+  (c-name "gtk_rc_add_class_style")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "pattern")
+  )
+  (deprecated "")
 )
 
 (define-function rc_find_pixmap_in_path
@@ -9983,6 +10325,7 @@
   (parameters
     '("GdkNativeWindow" "wid")
   )
+  (deprecated "")
 )
 
 
@@ -10359,12 +10702,31 @@
   (of-object "GtkStyle")
   (c-name "gtk_style_ref")
   (return-type "GtkStyle*")
+  (deprecated "")
 )
 
 (define-method unref
   (of-object "GtkStyle")
   (c-name "gtk_style_unref")
   (return-type "none")
+  (deprecated "")
+)
+
+(define-method get_font
+  (of-object "GtkStyle")
+  (c-name "gtk_style_get_font")
+  (return-type "GdkFont*")
+  (deprecated "")
+)
+
+(define-method set_font
+  (of-object "GtkStyle")
+  (c-name "gtk_style_set_font")
+  (return-type "none")
+  (parameters
+    '("GdkFont*" "font")
+  )
+  (deprecated "")
 )
 
 (define-method set_background
@@ -10427,6 +10789,7 @@
     '("gint" "x2")
     '("gint" "y")
   )
+  (deprecated "")
 )
 
 (define-method draw_vline
@@ -10440,6 +10803,7 @@
     '("gint" "y2")
     '("gint" "x")
   )
+  (deprecated "")
 )
 
 (define-method draw_shadow
@@ -10455,6 +10819,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_polygon
@@ -10469,6 +10834,7 @@
     '("gint" "npoints")
     '("gboolean" "fill")
   )
+  (deprecated "")
 )
 
 (define-method draw_arrow
@@ -10486,6 +10852,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_diamond
@@ -10501,6 +10868,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_oval
@@ -10516,20 +10884,7 @@
     '("gint" "width")
     '("gint" "height")
   )
-)
-
-; DEPRECATED
-(define-method draw_string
-  (of-object "GtkStyle")
-  (c-name "gtk_draw_string")
-  (return-type "none")
-  (parameters
-    '("GdkWindow*" "window")
-    '("GtkStateType" "state_type")
-    '("gint" "x")
-    '("gint" "y")
-    '("const-gchar*" "string")
-  )
+  (deprecated "")
 )
 
 (define-method draw_box
@@ -10545,6 +10900,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_flat_box
@@ -10560,6 +10916,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_check
@@ -10590,6 +10947,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_cross
@@ -10605,6 +10963,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_ramp
@@ -10621,6 +10980,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_tab
@@ -10636,6 +10996,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_shadow_gap
@@ -10654,6 +11015,7 @@
     '("gint" "gap_x")
     '("gint" "gap_width")
   )
+  (deprecated "")
 )
 
 (define-method draw_box_gap
@@ -10672,6 +11034,7 @@
     '("gint" "gap_x")
     '("gint" "gap_width")
   )
+  (deprecated "")
 )
 
 (define-method draw_extension
@@ -10688,6 +11051,7 @@
     '("gint" "height")
     '("GtkPositionType" "gap_side")
   )
+  (deprecated "")
 )
 
 (define-method draw_focus
@@ -10701,6 +11065,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method draw_slider
@@ -10717,6 +11082,7 @@
     '("gint" "height")
     '("GtkOrientation" "orientation")
   )
+  (deprecated "")
 )
 
 (define-method draw_handle
@@ -10733,6 +11099,7 @@
     '("gint" "height")
     '("GtkOrientation" "orientation")
   )
+  (deprecated "")
 )
 
 (define-method draw_expander
@@ -10746,6 +11113,7 @@
     '("gint" "y")
     '("gboolean" "is_open")
   )
+  (deprecated "")
 )
 
 (define-method draw_layout
@@ -10760,6 +11128,7 @@
     '("gint" "y")
     '("PangoLayout*" "layout")
   )
+  (deprecated "")
 )
 
 (define-method draw_resize_grip
@@ -10775,6 +11144,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "")
 )
 
 (define-method paint_hline
@@ -10879,23 +11249,6 @@
     '("gint" "y")
     '("gint" "width")
     '("gint" "height")
-  )
-)
-
-; DEPRECATED
-(define-method paint_string
-  (of-object "GtkStyle")
-  (c-name "gtk_paint_string")
-  (return-type "none")
-  (parameters
-    '("GdkWindow*" "window")
-    '("GtkStateType" "state_type")
-    '("GdkRectangle*" "area")
-    '("GtkWidget*" "widget")
-    '("const-gchar*" "detail")
-    '("gint" "x")
-    '("gint" "y")
-    '("const-gchar*" "string")
   )
 )
 
@@ -11177,6 +11530,53 @@
     '("GParamSpec*" "pspec")
     '("GtkRcPropertyParser" "parser")
   )
+)
+
+(define-method apply_default_pixmap
+  (of-object "GtkStyle")
+  (c-name "gtk_style_apply_default_pixmap")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "window")
+    '("gboolean" "set_bg")
+    '("GdkRectangle*" "area")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
+  (deprecated "use GtkStyle.apply_default_background")
+)
+
+(define-method draw_string
+  (of-object "GtkStyle")
+  (c-name "gtk_draw_string")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "window")
+    '("GtkStateType" "state_type")
+    '("gint" "x")
+    '("gint" "y")
+    '("const-gchar*" "string")
+  )
+  (deprecated "")
+)
+
+(define-method paint_string
+  (of-object "GtkStyle")
+  (c-name "gtk_paint_string")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "window")
+    '("GtkStateType" "state_type")
+    '("GdkRectangle*" "area")
+    '("GtkWidget*" "widget")
+    '("const-gchar*" "detail")
+    '("gint" "x")
+    '("gint" "y")
+    '("const-gchar*" "string")
+  )
+  (deprecated "")
 )
 
 (define-function _gtk_draw_insertion_cursor
@@ -13197,18 +13597,21 @@
   (c-name "gtk_tips_query_new")
   (is-constructor-of GtkTipsQuery)
   (return-type "GtkWidget*")
+  (deprecated "")
 )
 
 (define-method start_query
   (of-object "GtkTipsQuery")
   (c-name "gtk_tips_query_start_query")
   (return-type "none")
+  (deprecated "")
 )
 
 (define-method stop_query
   (of-object "GtkTipsQuery")
   (c-name "gtk_tips_query_stop_query")
   (return-type "none")
+  (deprecated "")
 )
 
 (define-method set_caller
@@ -13218,6 +13621,7 @@
   (parameters
     '("GtkWidget*" "caller")
   )
+  (deprecated "")
 )
 
 (define-method set_labels
@@ -13228,6 +13632,7 @@
     '("const-gchar*" "label_inactive")
     '("const-gchar*" "label_no_tip")
   )
+  (deprecated "")
 )
 
 
@@ -13312,6 +13717,16 @@
   (of-object "GtkToggleButton")
   (c-name "gtk_toggle_button_get_inconsistent")
   (return-type "gboolean")
+)
+
+(define-method set_state
+  (of-object "GtkToggleButton")
+  (c-name "gtk_toggle_button_set_state")
+  (return-type "none")
+  (parameters
+    '("gboolean" "is_active")
+  )
+  (deprecated "use GtkToggleButton.set_active")
 )
 
 
@@ -13612,6 +14027,7 @@
   (parameters
     '("guint" "delay")
   )
+  (deprecated "")
 )
 
 (define-method set_tip
@@ -15617,34 +16033,34 @@
   (return-type "GtkWidget*")
 )
 
-; DEPRECATED
 (define-function vbutton_box_get_spacing_default
   (c-name "gtk_vbutton_box_get_spacing_default")
   (return-type "gint")
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-function vbutton_box_set_spacing_default
   (c-name "gtk_vbutton_box_set_spacing_default")
   (return-type "none")
   (parameters
     '("gint" "spacing")
   )
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-function vbutton_box_get_layout_default
   (c-name "gtk_vbutton_box_get_layout_default")
   (return-type "GtkButtonBoxStyle")
+  (deprecated "")
 )
 
-; DEPRECATED
 (define-function vbutton_box_set_layout_default
   (c-name "gtk_vbutton_box_set_layout_default")
   (return-type "none")
   (parameters
     '("GtkButtonBoxStyle" "layout")
   )
+  (deprecated "")
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkvbox.h
@@ -15959,6 +16375,7 @@
   (of-object "GtkWidget")
   (c-name "gtk_widget_queue_clear")
   (return-type "none")
+  (deprecated "use GtkWidget.queue_draw")
 )
 
 (define-method queue_clear_area
@@ -15971,6 +16388,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "use GtkWidget.queue_draw_area")
 )
 
 (define-method queue_resize
@@ -15986,6 +16404,7 @@
   (parameters
     '("GdkRectangle*" "area")
   )
+  (deprecated "use GtkWidget.queue_draw_area")
 )
 
 (define-method size_request
@@ -16230,6 +16649,7 @@
     '("gint" "x")
     '("gint" "y")
   )
+  (deprecated "")
 )
 
 (define-method set_usize
@@ -16240,6 +16660,7 @@
     '("gint" "width")
     '("gint" "height")
   )
+  (deprecated "use GtkWidget.set_default_size")
 )
 
 (define-method set_events
@@ -16433,21 +16854,18 @@
   )
 )
 
-; DEPRECATED
-(define-method get_font
-  (of-object "GtkStyle")
-  (c-name "gtk_style_get_font")
-  (return-type "GdkFont*")
+(define-method set_rc_style
+  (of-object "GtkWidget")
+  (c-name "gtk_widget_set_rc_style")
+  (return-type "none")
+  (deprecated "Use GtkWidget.set_style")
 )
 
-; DEPRECATED
-(define-method set_font
-  (of-object "GtkStyle")
-  (c-name "gtk_style_set_font")
+(define-method restore_default_style
+  (of-object "GtkWidget")
+  (c-name "gtk_widget_restore_default_style")
   (return-type "none")
-  (parameters
-    '("GdkFont*" "font")
-  )
+  (deprecated "Use GtkWidget.set_style")
 )
 
 (define-method create_pango_context
@@ -17221,6 +17639,7 @@
     '("gint" "allow_grow")
     '("gint" "auto_shrink")
   )
+  (deprecated "use GtkWindow.set_resizable")
 )
 
 (define-method set_default_size

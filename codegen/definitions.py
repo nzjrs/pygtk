@@ -180,6 +180,7 @@ class BoxedDef(Definition):
 
 class MethodDef(Definition):
     def __init__(self, name, *args):
+        dump = 0
 	self.name = name
 	self.ret = None
 	self.c_name = None
@@ -187,6 +188,7 @@ class MethodDef(Definition):
 	self.of_object = None
 	self.params = [] # of form (type, name, default, nullok)
         self.varargs = 0
+        self.deprecated = None
 	for arg in args:
 	    if type(arg) != type(()) or len(arg) < 2:
 		continue
@@ -212,6 +214,19 @@ class MethodDef(Definition):
                     self.params.append((ptype, pname, pdflt, pnull))
             elif arg[0] == 'varargs':
                 self.varargs = arg[1] in ('t', '#t')
+            elif arg[0] == 'deprecated':
+                self.deprecated = arg[1]
+            else:
+                sys.stderr.write("Warning: %s argument unsupported.\n" 
+                                 % (arg[0]))
+                dump = 1
+        if dump:
+            self.write_defs(sys.stderr)
+        for item in ('c_name', 'of_object'):
+            if self.__dict__[item] == None:
+                self.write_defs(sys.stderr)
+                raise RuntimeError, "definition missing required %s" % (item,)
+            
     def merge(self, old):
 	# here we merge extra parameter flags accross to the new object.
 	for i in range(len(self.params)):
@@ -230,6 +245,8 @@ class MethodDef(Definition):
 	    fp.write('  (gtype-id "' + self.typecode + '")\n')
 	if self.ret:
 	    fp.write('  (return-type "' + self.ret + '")\n')
+	if self.deprecated:
+	    fp.write('  (deprecated "' + self.deprecated + '")\n')
         if self.params:
             fp.write('  (parameters\n')
             for ptype, pname, pdflt, pnull in self.params:
@@ -242,6 +259,7 @@ class MethodDef(Definition):
 
 class FunctionDef(Definition):
     def __init__(self, name, *args):
+        dump = 0
 	self.name = name
 	self.in_module = None
 	self.is_constructor_of = None
@@ -250,6 +268,7 @@ class FunctionDef(Definition):
         self.typecode = None
 	self.params = [] # of form (type, name, default, nullok)
         self.varargs = 0
+        self.deprecated = None
 	for arg in args:
 	    if type(arg) != type(()) or len(arg) < 2:
 		continue
@@ -277,7 +296,21 @@ class FunctionDef(Definition):
                     self.params.append((ptype, pname, pdflt, pnull))
             elif arg[0] == 'varargs':
                 self.varargs = arg[1] in ('t', '#t')
+            elif arg[0] == 'deprecated':
+                self.deprecated = arg[1]
+            else:
+                sys.stderr.write("Warning: %s argument unsupported\n"
+                                 % (arg[0],))
+                dump = 1
+        if dump:
+            self.write_defs(sys.stderr)
+        for item in ('c_name',):
+            if self.__dict__[item] == None:
+                self.write_defs(sys.stderr)
+                raise RuntimeError, "definition missing required %s" % (item,)
+
     _method_write_defs = MethodDef.__dict__['write_defs']
+
     def merge(self, old):
 	# here we merge extra parameter flags accross to the new object.
 	for i in range(len(self.params)):
@@ -309,6 +342,8 @@ class FunctionDef(Definition):
 	    fp.write('  (gtype-id "' + self.typecode + '")\n')
 	if self.ret:
 	    fp.write('  (return-type "' + self.ret + '")\n')
+	if self.deprecated:
+	    fp.write('  (deprecated "' + self.deprecated + '")\n')
         if self.params:
             fp.write('  (parameters\n')
             for ptype, pname, pdflt, pnull in self.params:

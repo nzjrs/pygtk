@@ -94,6 +94,9 @@ consttmpl = ('static int\n'
 
 methdeftmpl = '    { "%(name)s", (PyCFunction)%(cname)s, %(flags)s },\n'
 
+deprecatedtmpl = ('    if (PyErr_Warn(PyExc_DeprecationWarning, "%s") < 0)\n'
+                  '        return NULL;\n')
+
 gettertmpl = ('static PyObject *\n'
               '%(funcname)s(PyGObject *self, void *closure)\n'
               '{\n'
@@ -314,8 +317,12 @@ def write_function(funcobj, fp=sys.stdout):
 
     handler = argtypes.matcher.get(funcobj.ret)
     handler.write_return(funcobj.ret, info)
+
+    deprecated = ""
+    if funcobj.deprecated != None:
+        deprecated = deprecatedtmpl % funcobj.deprecated
     
-    dict['codebefore'] = info.get_codebefore()
+    dict['codebefore'] = deprecated + info.get_codebefore()
     dict['funccall']   = funccall
     dict['codeafter']  = info.get_codeafter()
 
@@ -366,7 +373,11 @@ def write_method(objname, castmacro, methobj, fp=sys.stdout):
     handler = argtypes.matcher.get(methobj.ret)
     handler.write_return(methobj.ret, info)
 
-    dict['codebefore'] = info.get_codebefore()
+    deprecated = ""
+    if methobj.deprecated != None:
+        deprecated = deprecatedtmpl % methobj.deprecated
+
+    dict['codebefore'] = deprecated + info.get_codebefore()
     dict['funccall']   = funccall
     dict['codeafter']  = info.get_codeafter()
 
@@ -413,12 +424,16 @@ def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
             info.add_parselist('|', [], [])
 	handler = argtypes.matcher.get(ptype)
         handler.write_param(ptype, pname, pdflt, pnull, info)
+        
+    deprecated = ""
+    if funcobj.deprecated != None:
+        deprecated = deprecatedtmpl % funcobj.deprecated
 
     dict['varlist']    = info.get_kwlist() + info.get_varlist()
     dict['typecodes']  = info.parsestr
     dict['parselist']  = info.get_parselist()
-    dict['codebefore'] = string.replace(info.get_codebefore(),
-                                       'return NULL;', 'return -1;')
+    dict['codebefore'] = string.replace(deprecated + info.get_codebefore(),
+                                        'return NULL;', 'return -1;')
     dict['codeafter']  = string.replace(info.get_codeafter(),
                                        'return NULL;', 'return -1;')
     dict['arglist']    = info.get_arglist()
