@@ -3,7 +3,7 @@
 
 Summary: Python bindings for the GTK+ widget set.
 Name: pygtk
-Version: 1.99
+Version: 1.99.1
 Release: 1
 Copyright: LGPL
 Group: Development/Languages
@@ -17,17 +17,7 @@ Requires: python >= 2.0
 %description
 PyGTK is an extension module for python that gives you access to the GTK+
 widget set.  Just about anything you can write in C with GTK+ you can write
-in python with PyGTK (within reason), but with all of python's benefits.
-
-%package glarea
-Summary: A wrapper for the GtkGLArea widget for use with PyGTK
-Group: Development/Languages
-Requires: pygtk = %{version}
-
-%description glarea
-This module contains a wrapper for the GtkGLArea widget, which allows you
-to display OpenGL output inside your pygtk program.  It needs a set of
-Python OpenGL bindings such as PyOpenGL to actually do any OpenGL rendering.
+in python with PyGTK (within reason), but with all the benefits of python.
 
 %package libglade
 Summary: A wrapper for the libglade library for use with PyGTK
@@ -35,9 +25,18 @@ Group: Development/Languages
 Requires: pygtk = %{version}
 
 %description libglade
-This module contains a wrapper for the libglade library.  Libglade is a
-library similar to the pyglade module, except that it is written in C (so
-is faster) and is more complete.
+This module contains a wrapper for the libglade library.  Libglade allows
+a program to construct its user interface from an XML description, which
+allows the programmer to keep the UI and program logic separate.
+
+%package devel
+Summary: files needed to build wrappers for GTK+ addon libraries
+Group: Development/Languages
+Requires: pygtk = %{ver}
+
+%description devel
+This package contains files required to build wrappers for GTK+ addon
+libraries so that they interoperate with pygtk.
 
 %prep
 %setup
@@ -54,7 +53,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %dir %{_prefix}/lib/python?.?/site-packages/gtk
 %{_prefix}/lib/python?.?/site-packages/gtk/__init__.py*
 %{_prefix}/lib/python?.?/site-packages/gtk/GDK.py*
-%{_prefix}/lib/python?.?/site-packages/gtk/GTK.py*
 
 %{_prefix}/lib/python?.?/site-packages/gobjectmodule.so
 %{_prefix}/lib/python?.?/site-packages/pangomodule.so
@@ -64,5 +62,19 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %doc examples
 
 %files libglade
-%{_prefix}/lib/python?.?/site-packages/gtk/libglademodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk/glademodule.so
 
+%files devel
+%{_prefix}/bin/pygtk-codegen-2.0
+%dir %{_prefix}/include/pygtk
+%{_prefix}/include/pygtk/*.h
+%dir %{_prefix}/share/pygtk
+%dir %{_prefix}/share/pygtk/1.2
+%dir %{_prefix}/share/pygtk/1.2/codegen
+%dir %{_prefix}/share/pygtk/1.2/defs
+%{_prefix}/share/pygtk/2.0/codegen/*
+%{_prefix}/share/pygtk/2.0/defs/pango.defs
+%{_prefix}/share/pygtk/2.0/defs/gdk.defs
+%{_prefix}/share/pygtk/2.0/defs/gtk.defs
+%{_prefix}/share/pygtk/2.0/defs/gtk-extrafuncs.defs
+%{_prefix}/share/pygtk/2.0/defs/libglade.defs

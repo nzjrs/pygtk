@@ -1,5 +1,5 @@
-# require automake-1.4a
-AUTOMAKE_OPTIONS = 1.4a
+# require automake-1.5
+AUTOMAKE_OPTIONS = 1.5
 
 SUBDIRS = codegen gtk
 
