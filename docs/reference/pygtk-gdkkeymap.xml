@@ -16,37 +16,26 @@ values.</refpurpose>
       <ooclass><classname>gtk.gdk.Keymap</classname></ooclass>
       <ooclass><classname><link
 linkend="class-gobject">gobject.GObject</link></classname></ooclass>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkkeymap- -lookup-key">lookup_key</link></methodname>
-    <methodparam><parameter role="keyword">key</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkkeymap- -translate-keyboard-state">translate_keyboard_state</link></methodname>
-    <methodparam><parameter role="keyword">hardware_keycode</parameter></methodparam>
-    <methodparam><parameter role="keyword">state</parameter></methodparam>
-    <methodparam><parameter role="keyword">group</parameter></methodparam>
-    <methodparam><parameter role="keyword">keyval</parameter></methodparam>
-    <methodparam><parameter role="keyword">effective_group</parameter></methodparam>
-    <methodparam><parameter role="keyword">level</parameter></methodparam>
-    <methodparam><parameter role="keyword">consumed_modifiers</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkkeymap- -get-entries-for-keyval">get_entries_for_keyval</link></methodname>
-    <methodparam><parameter role="keyword">keyval</parameter></methodparam>
-    <methodparam><parameter role="keyword">keys</parameter></methodparam>
-    <methodparam><parameter role="keyword">n_keys</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkkeymap- -get-entries-for-keycode">get_entries_for_keycode</link></methodname>
-    <methodparam><parameter role="keyword">hardware_keycode</parameter></methodparam>
-    <methodparam><parameter role="keyword">keys</parameter></methodparam>
-    <methodparam><parameter role="keyword">keyvals</parameter></methodparam>
-    <methodparam><parameter role="keyword">n_entries</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkkeymap--lookup-key">lookup_key</link></methodname>
+	<methodparam><parameter role="keyword">keycode</parameter></methodparam>
+	<methodparam><parameter role="keyword">group</parameter></methodparam>
+	<methodparam><parameter role="keyword">level</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkkeymap--translate-keyboard-state">translate_keyboard_state</link></methodname>
+	<methodparam><parameter role="keyword">keycode</parameter></methodparam>
+	<methodparam><parameter role="keyword">state</parameter></methodparam>
+	<methodparam><parameter role="keyword">group</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkkeymap--get-entries-for-keyval">get_entries_for_keyval</link></methodname>
+	<methodparam><parameter role="keyword">keyval</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkkeymap--get-entries-for-keycode">get_entries_for_keycode</link></methodname>
+	<methodparam><parameter role="keyword">hardware_keycode</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkkeymap--get-direction">get_direction</link></methodname>
@@ -62,6 +51,10 @@ linkend="function-gdk--keymap-get-default">gtk.gdk.keymap_get_default</link></me
 	<methodparam></methodparam>
       </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
+linkend="function-gdk--keymap-get-for-display">gtk.gdk.keymap_get_for_display</link></methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
 linkend="function-gdk--keyval-name">gtk.gdk.keyval_name</link></methodname>
 	<methodparam><parameter
 		       role="keyword">keyval</parameter></methodparam>
@@ -70,6 +63,11 @@ linkend="function-gdk--keyval-name">gtk.gdk.keyval_name</link></methodname>
 linkend="function-gdk--keyval-from-name">gtk.gdk.keyval_from_name</link></methodname>
 	<methodparam><parameter
 		       role="keyword">keyval_name</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--keyval-convert-case">gtk.gdk.keyval_convert_case</link></methodname>
+	<methodparam><parameter
+		       role="keyword">symbol</parameter></methodparam>
       </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gdk--keyval-to-upper">gtk.gdk.keyval_to_upper</link></methodname>
@@ -126,6 +124,16 @@ linkend="function-gdk--unicode-to-keyval">gtk.gdk.unicode_to_keyval</link></meth
           </methodsynopsis>
         </listitem>
       </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkgdkkeymap--keys-changed">keys-changed</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>gdkkeymap</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
   </refsect1>
@@ -172,189 +180,372 @@ characters will be printed on the key next to the English characters.
   <refsect1>
     <title>Methods</title>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gdkkeymap- -lookup-key">
-    <title>gtk.gdk.Keymap.lookup_key</title>
+    <refsect2 id="method-gdkkeymap--lookup-key">
+      <title>gtk.gdk.Keymap.lookup_key</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>lookup_key</methodname>
-    <methodparam><parameter role="keyword">key</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">key</parameter>&nbsp;:</term>
-      <listitem><simpara>a <literal>Keymap key</literal> with keycode, group, and level initialized</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>a keyval, or 0 if none was mapped to the given <parameter>key</parameter></simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Looks up the keyval mapped to a keycode/group/level triplet.
-If no keyval is bound to <parameter>key</parameter>, returns 0. For normal user input,
-you want to use <link linkend="method-gdkkeymap- -translate-keyboard-state"><function>gtk.gdk.Keymap.translate_keyboard_state()</function></link> instead of
-this function, since the effective group/level may not be
-the same as the current keyboard state.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+	  <methodname>lookup_key</methodname>
+	  <methodparam><parameter
+	  role="keyword">keycode</parameter></methodparam>
+	  <methodparam><parameter
+	  role="keyword">group</parameter></methodparam>
+	  <methodparam><parameter
+	  role="keyword">level</parameter></methodparam>
+	  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">keycode</parameter>&nbsp;:</term>
+	  <listitem><simpara>the hardware keycode.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">group</parameter>&nbsp;:</term>
+	  <listitem><simpara>the key group</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">level</parameter>&nbsp;:</term>
+	  <listitem><simpara>the key level</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a keyval, or 0 if none was mapped to the
+	  (<parameter>keycode</parameter>, <parameter>group</parameter>,
+	  <parameter>level</parameter>) triplet.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
 
-  <refsect2 id="method-gdkkeymap- -translate-keyboard-state">
-    <title>gtk.gdk.Keymap.translate_keyboard_state</title>
+      <para>The <methodname>lookup_key</methodname>() method returns the
+keyval mapped to the specified (<parameter>keycode</parameter>,
+<parameter>group</parameter>, <parameter>level</parameter>) triplet.  This
+method returns 0 if no keyval is found. For normal user input, you want to
+use the <link
+linkend="method-gdkkeymap--translate-keyboard-state"><methodname>translate_keyboard_state()</methodname></link>
+method instead of this method, since the effective group or level may not be
+the same as the current keyboard state.</para>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>translate_keyboard_state</methodname>
-    <methodparam><parameter role="keyword">hardware_keycode</parameter></methodparam>
-    <methodparam><parameter role="keyword">state</parameter></methodparam>
-    <methodparam><parameter role="keyword">group</parameter></methodparam>
-    <methodparam><parameter role="keyword">keyval</parameter></methodparam>
-    <methodparam><parameter role="keyword">effective_group</parameter></methodparam>
-    <methodparam><parameter role="keyword">level</parameter></methodparam>
-    <methodparam><parameter role="keyword">consumed_modifiers</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">hardware_keycode</parameter>&nbsp;:</term>
-      <listitem><simpara>a keycode</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">state</parameter>&nbsp;:</term>
-      <listitem><simpara>a modifier state</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">group</parameter>&nbsp;:</term>
-      <listitem><simpara>active keyboard group</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">keyval</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for keyval</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">effective_group</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for effective group</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">level</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for level</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">consumed_modifiers</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for modifiers that were used to determine the group or level</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara><literal>TRUE</literal> if there was a keyval bound to the keycode/state/group</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Translates the contents of a <literal>GdkEventKey</literal> into a keyval, effective
-group, and level. Modifiers that affected the translation and
-are thus unavailable for application use are returned in
-<parameter>consumed_modifiers</parameter>.  See <function>gdk_keyval_get_keys()</function> for an explanation of
-groups and levels.  The <parameter>effective_group</parameter> is the group that was
-actually used for the translation; some keys such as Enter are not
-affected by the active keyboard group. The <parameter>level</parameter> is derived from
-<parameter>state</parameter>. For convenience, <literal>GdkEventKey</literal> already contains the translated
-keyval, so this function isn't as useful as you might think.
-</para>  </refsect2>
+      <para>The parameters to this method are:</para>
 
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>keycode</parameter>&nbsp;:</term>
+	  <listitem>
+	    <simpara>the hardware keycode. This is an identifying number for
+a physical key.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>group</parameter>&nbsp;:</term>
+	  <listitem>
+	    <simpara>indicates movement in a horizontal direction. Usually
+groups are used for two different languages. In group 0, a key might have
+two English characters, and in group 1 it might have two Hebrew
+characters. The Hebrew characters will be printed on the key next to the
+English characters.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>level</parameter>&nbsp;:</term>
+	  <listitem>
+	    <simpara>indicates which symbol on the key will be used, in a
+vertical direction. So on a standard US keyboard, the key with the number
+"1" on it also has the exclamation point ("!")  character on it. The level
+indicates whether to use the "1" or the "!" symbol. The letter keys are
+considered to have a lowercase letter at level 0, and an uppercase letter at
+level 1, though only the uppercase letter is printed.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
 
-  <refsect2 id="method-gdkkeymap- -get-entries-for-keyval">
+      <para></para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkkeymap--translate-keyboard-state">
+      <title>gtk.gdk.Keymap.translate_keyboard_state</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>translate_keyboard_state</methodname>
+	  <methodparam><parameter role="keyword">keycode</parameter></methodparam>
+	  <methodparam><parameter role="keyword">state</parameter></methodparam>
+	  <methodparam><parameter role="keyword">group</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">keycode</parameter>&nbsp;:</term>
+	  <listitem><simpara>a keycode</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">state</parameter>&nbsp;:</term>
+	  <listitem><simpara>a modifier state</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">group</parameter>&nbsp;:</term>
+	  <listitem><simpara>an active keyboard group</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem>
+	    <simpara>a 4-tuple containing the keyval, the effective group,
+the level and the modifiers that were used to determine the group or
+level</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>translate_keyboard_state</methodname>() method
+translates the contents of a keyboard <link
+linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+(specified by <parameter>keycode</parameter>, <parameter>state</parameter>
+and <parameter>group</parameter>) into a keyval, effective group, level and
+consumed modifiers that affected the translation (and are unavailable for
+application use) which are returned in a 4-tuple. See the <link
+linkend="function-gdk--keyval_get_keys"><function>gtk.gdk.keyval_get_keys</function>()</link>
+function for an explanation of groups and levels. The effective group is the
+group that was actually used for the translation; some keys such as
+<keycap>Enter</keycap> are not affected by the active keyboard group. The
+level is derived from <parameter>state</parameter>. For convenience, the
+keyboard <link
+linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> already
+contains the translated keyval, so this method isn't as useful as you might
+think.</para>
+
+      <para>The value of <parameter>state</parameter> or the consumed
+modifiers is a combination of:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
+	  <listitem>
+	    <simpara>The Shift key.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.LOCK_MASK</literal></term>
+	  <listitem>
+	    <simpara>A Lock key (depending on the modifier mapping of the X
+server this may either be CapsLock or ShiftLock).</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
+	  <listitem>
+	    <simpara>The Control key. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.MOD1_MASK</literal></term>
+	  <listitem>
+	    <simpara>The fourth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this modifier, but
+normally it is the Alt key).</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.MOD2_MASK</literal></term>
+	  <listitem>
+	    <simpara>The fifth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.MOD3_MASK</literal></term>
+	  <listitem>
+	    <simpara>The sixth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.MOD4_MASK</literal></term>
+	  <listitem>
+	    <simpara>The seventh modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.MOD5_MASK</literal></term>
+	  <listitem>
+	    <simpara>The eighth modifier key (it depends on the modifier
+mapping of the X server which key is interpreted as this
+modifier).</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
+	  <listitem>
+	    <simpara>The first mouse button.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
+	  <listitem>
+	    <simpara>The second mouse button.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
+	  <listitem>
+	    <simpara>The third mouse button.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
+	  <listitem>
+	    <simpara>The fourth mouse button.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
+	  <listitem>
+	    <simpara>The fifth mouse button.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
+	  <listitem>
+	    <simpara>Differentiates between (keyval, modifiers) pairs from
+key press and release events.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
+	  <listitem>
+	    <simpara>all of the above</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para></para>
+
+      <refsect3>
+	<title>Consumed Modifiers</title>
+
+	<para>The consumed_modifiers are modifiers that should be masked out
+from state when comparing this key press to a hot key. For instance, on a US
+keyboard, the <keysym>plus</keysym> symbol is shifted, so when comparing a key press to a
+<keycombo>
+	    <keycap>Control</keycap><keysym>plus</keysym></keycombo>
+	    accelerator <keycap>Shift</keycap> should be masked out. For
+	    example:</para>
+
+	<programlisting>
+  # We want to ignore irrelevant modifiers like ScrollLock
+  ALL_ACCELS_MASK = (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK
+                     | gtk.gdk.MOD1_MASK)
+  keyval, egroup, level, consumed = keymap.translate_keyboard_state(
+                   keymap, event.hardware_keycode, event.state, event.group)
+  if (keyval == ord('+') and 
+      (event.state &amp; ~consumed &amp; ALL_ACCELS_MASK) == gtk.gdk.CONTROL_MASK):
+    # Control was pressed
+</programlisting>
+
+	<para>All single modifier combinations that could affect the key for
+any combination of modifiers will be returned in consumed_modifiers.
+Multi-modifier combinations are returned only when actually found in
+<parameter>state</parameter>. When you store accelerators, you should always
+store them with consumed modifiers removed. Store &lt;Control&gt;plus, not
+&lt;Control&gt;&lt;Shift&gt;plus,</para>
+
+      </refsect3>
+
+    </refsect2>
+
+  <refsect2 id="method-gdkkeymap--get-entries-for-keyval">
     <title>gtk.gdk.Keymap.get_entries_for_keyval</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>get_entries_for_keyval</methodname>
-    <methodparam><parameter role="keyword">keyval</parameter></methodparam>
-    <methodparam><parameter role="keyword">keys</parameter></methodparam>
-    <methodparam><parameter role="keyword">n_keys</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">keyval</parameter>&nbsp;:</term>
-      <listitem><simpara>a keyval, such as <literal>GDK_a</literal>, <literal>GDK_Up</literal>, <literal>GDK_Return</literal>, etc.</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">keys</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for an array of <literal>Keymap key</literal></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">n_keys</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for number of elements in returned array</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara><literal>TRUE</literal> if keys were found and returned</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Obtains a list of keycode/group/level combinations that will
-generate <parameter>keyval</parameter>. Groups and levels are two kinds of keyboard mode;
-in general, the level determines whether the top or bottom symbol
-on a key is used, and the group determines whether the left or
-right symbol is used. On US keyboards, the shift key changes the
-keyboard level, and there are no groups. A group switch key might
-convert a keyboard between Hebrew to English modes, for example.
-<literal>GdkEventKey</literal> contains a <literal>group</literal> field that indicates the active
-keyboard group. The level is computed from the modifier mask.
-The returned array should be freed
-with <function>g_free()</function>.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_entries_for_keyval</methodname>
+	  <methodparam><parameter role="keyword">keyval</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">keyval</parameter>&nbsp;:</term>
+	  <listitem><simpara>a keyval, such as <literal>GDK_a</literal>,
+<literal>GDK_Up</literal>, <literal>GDK_Return</literal>,
+etc.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a tuple containing 3-tuple containing a keycode,
+a group and a level that will generate
+<parameter>keyval</parameter>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
 
-  <refsect2 id="method-gdkkeymap- -get-entries-for-keycode">
+      <para>The <methodname>get_entries_for_keyval</methodname>() method
+returns a tuple of (keycode, group, level) 3-tuples that will generate
+<parameter>keyval</parameter>. Groups and levels are two kinds of keyboard
+mode; in general, the level determines whether the top or bottom symbol on a
+key is used, and the group determines whether the left or right symbol is
+used. On US keyboards, the shift key changes the keyboard level, and there
+are no groups. A group switch key might convert a keyboard between Hebrew to
+English modes, for example, the <literal>gtk.gdk.KEY_PRESS</literal> and
+<literal>gtk.gdk.KEY_RELEASE</literal> <link
+linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> objects
+contain a <literal>group</literal> attribute that indicates the active
+keyboard group. The level is computed from the modifier mask.</para>
+
+    </refsect2>
+
+  <refsect2 id="method-gdkkeymap--get-entries-for-keycode">
     <title>gtk.gdk.Keymap.get_entries_for_keycode</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>get_entries_for_keycode</methodname>
-    <methodparam><parameter role="keyword">hardware_keycode</parameter></methodparam>
-    <methodparam><parameter role="keyword">keys</parameter></methodparam>
-    <methodparam><parameter role="keyword">keyvals</parameter></methodparam>
-    <methodparam><parameter role="keyword">n_entries</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">hardware_keycode</parameter>&nbsp;:</term>
-      <listitem><simpara>a keycode</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">keys</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for array of <literal>Keymap key</literal>, or NULL</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">keyvals</parameter>&nbsp;:</term>
-      <listitem><simpara>return location for array of keyvals, or NULL</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">n_entries</parameter>&nbsp;:</term>
-      <listitem><simpara>length of <parameter>keys</parameter> and <parameter>keyvals</parameter></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara><literal>TRUE</literal> if there were any entries</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Returns the keyvals bound to <parameter>hardware_keycode</parameter>.
-The Nth <literal>Keymap key</literal> in <parameter>keys</parameter> is bound to the Nth
-keyval in <parameter>keyvals</parameter>. Free the returned arrays with <function>g_free()</function>.
-When a keycode is pressed by the user, the keyval from
-this list of entries is selected by considering the effective
-keyboard group and level. See <link linkend="method-gdkkeymap- -translate-keyboard-state"><function>gtk.gdk.Keymap.translate_keyboard_state()</function></link>.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_entries_for_keycode</methodname>
+	  <methodparam><parameter role="keyword">hardware_keycode</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">hardware_keycode</parameter>&nbsp;:</term>
+	  <listitem><simpara>a keycode</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a tuple containing 4-tuples: (keyval, keycode,
+group, level)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_entries_for_keycode</methodname>() method
+returns a tuple containing 4-tuples with: the keyvals bound to
+<parameter>hardware_keycode</parameter>, the keycode, the group and the
+level.  When a keycode is pressed by the user, the keyval from this list of
+entries is selected by considering the effective keyboard group and
+level. See the <link
+linkend="method-gdkkeymap--translate-keyboard-state"><methodname>translate_keyboard_state()</methodname></link>
+method for more information.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gdkkeymap--get-direction">
     <title>gtk.gdk.Keymap.get_direction</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>get_direction</methodname>
-    <methodparam></methodparam>  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>a Pango direction: <literal>pango.DIRECTION_LTR</literal> or <literal>pango.DIRECTION_RTL</literal>.</simpara></listitem>
-    </varlistentry>
-  </variablelist>
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_direction</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a Pango direction: <literal>pango.DIRECTION_LTR</literal> or <literal>pango.DIRECTION_RTL</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
       <para>The <methodname>get_direction</methodname>() method returns the direction of the keymap.</para>
 
@@ -385,6 +576,39 @@ display.</simpara></listitem>
 returns the default <link
 linkend="class-gdkkeymap"><classname>gtk.gdk.Keymap</classname></link> for
 the display.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--keymap-get-for-display">
+      <title>gtk.gdk.keymap_get_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.gdk.keymap_get_for_display</methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara></listitem>
+	</varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the keymap for
+          <parameter>display</parameter>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.keymap_get_for_display</function>()
+function returns the <link
+linkend="class-gdkkeymap"><classname>gtk.gdk.Keymap</classname></link> for
+the <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by <parameter>display</parameter>.</para>
 
     </refsect2>
 
@@ -440,6 +664,39 @@ name is not a valid key.</simpara></listitem>
       <para>The <function>gtk.gdk.keyval_from_name</function>() function
 converts the key name specified by <parameter>keyval_name</parameter> to a
 key value.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--keyval-convert-case">
+      <title>gtk.gdk.keyval_convert_case</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.gdk.keyval_convert_case</methodname>
+          <methodparam><parameter
+			 role="keyword">symbol</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+          <term><parameter
+role="keyword">symbol</parameter>&nbsp;:</term>
+          <listitem><simpara>a keyval</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a 2-tuple containing the lowercase and
+          uppercase versions of
+          <parameter>symbol</parameter></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.keyval_convert_case</function>() function
+returns the lowercase and uppercase versions of the keyval specified by
+<parameter>symbol</parameter>.</para>
 
     </refsect2>
 
