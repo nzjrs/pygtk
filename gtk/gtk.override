@@ -4050,12 +4050,11 @@ pygtk_menu_detach (GtkWidget *attach_widget, GtkMenu *menu)
     if (!func)
 	return;
 
-    pyg_block_threads ();
+    pyg_block_threads();
+    
     ret = PyObject_CallFunction (func, "OO",
 				 pygobject_new ((GObject *) menu),
 				 pygobject_new ((GObject *) attach_widget));
-    pyg_unblock_threads ();
-
     if (ret == NULL) {
 	PyErr_Print ();
 	PyErr_Clear ();
@@ -4063,6 +4062,8 @@ pygtk_menu_detach (GtkWidget *attach_widget, GtkMenu *menu)
     }
     else
 	Py_DECREF (ret);
+    
+    pyg_unblock_threads();
 }
 static PyObject *
 _wrap_gtk_menu_attach_to_widget (PyGObject *self, PyObject *args,
@@ -4242,6 +4243,7 @@ _wrap_gtk_ctree__get_selection(PyGObject *self, void *closure)
 	PyList_Append(ret, py_node);
 	Py_DECREF(py_node);
     }
+
     return ret;
 }
 %%

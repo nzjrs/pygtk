@@ -1,5 +1,11 @@
 2002-12-28  Johan Dahlin  <jdahlin@async.com.br>
 
+	* gobjectmodule.c, gtk/gtk.override, gtk/pygtkcellrenderer.c,
+	gtk/pygtktreemodel: Improve threading support by adding
+	pyg_thread_block/unblock around all PyObject_Call* and
+	g_object_refs.
+	Based upon patch by Jon Trowbridge. Fixes #99102.
+	
 	* gtk/gdk-types.defs (ColorSpace): Add.
 
 	* gtk/gdk.defs (GdkRectangle.intersect, GdkRectangle.union,
@@ -11,7 +17,8 @@
 
 2002-12-28  Jeremy Katz  <katzj@redhat.com>
  
- 	* codegen/codegen.py (GObjectWrapper.get_initial_constructor_substdict): 
+ 	* codegen/codegen.py 
+	(GObjectWrapper.get_initial_constructor_substdict): 
  	GtkInvisible is a toplevel like GtkWindow and needs to be handled 
  	similarly for reference counting.
 
