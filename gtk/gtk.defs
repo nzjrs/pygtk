@@ -4,25 +4,11 @@
 
 ; object definitions ...
 
-(define-boxed AccelGroup
+(define-object AccelGroup
   (in-module "Gtk")
   (parent "GObject")
   (c-name "GtkAccelGroup")
   (gtype-id "GTK_TYPE_ACCEL_GROUP")
-)
-
-(define-boxed CTreeNode
-  (in-module "Gtk")
-  (c-name "GtkCTreeNode")
-  (gtype-id "GTK_TYPE_CTREE_NODE")
-  (fields
-    '("GtkCTreeNode*" "parent")
-    '("GtkCTreeNode*" "children")
-    '("GtkCTreeNode*" "sibling")
-    '("guint16" "level")
-    '("guint" "is_leaf")
-    '("guint" "expanded")
-  )
 )
 
 (define-object IconFactory
@@ -924,20 +910,18 @@
 
 ;; Boxed types ...
 
-(define-boxed TextIter
+(define-boxed CTreeNode
   (in-module "Gtk")
-  (c-name "GtkTextIter")
-  (gtype-id "GTK_TYPE_TEXT_ITER")
-  (copy-func "gtk_text_iter_copy")
-  (release-func "gtk_text_iter_free")
-)
-
-(define-boxed TreeIter
-  (in-module "Gtk")
-  (c-name "GtkTreeIter")
-  (gtype-id "GTK_TYPE_TREE_ITER")
-  (copy-func "gtk_tree_iter_copy")
-  (release-func "gtk_tree_iter_free")
+  (c-name "GtkCTreeNode")
+  (gtype-id "GTK_TYPE_CTREE_NODE")
+  (fields
+    '("GtkCTreeNode*" "parent")
+    '("GtkCTreeNode*" "children")
+    '("GtkCTreeNode*" "sibling")
+    '("guint16" "level")
+    '("guint" "is_leaf")
+    '("guint" "expanded")
+  )
 )
 
 (define-boxed SelectionData
@@ -953,6 +937,22 @@
     '("gint" "format")
     '("guchar*" "data")
   )
+)
+
+(define-boxed TextIter
+  (in-module "Gtk")
+  (c-name "GtkTextIter")
+  (gtype-id "GTK_TYPE_TEXT_ITER")
+  (copy-func "gtk_text_iter_copy")
+  (release-func "gtk_text_iter_free")
+)
+
+(define-boxed TreeIter
+  (in-module "Gtk")
+  (c-name "GtkTreeIter")
+  (gtype-id "GTK_TYPE_TREE_ITER")
+  (copy-func "gtk_tree_iter_copy")
+  (release-func "gtk_tree_iter_free")
 )
 
 

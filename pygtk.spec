@@ -10,8 +10,8 @@ Group: Development/Languages
 Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{version}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
-Requires: gtk+ >= 1.3.7
-Requires: python >= 2.0
+Requires: gtk+ >= 1.3.9
+Requires: python >= 2.2
 
 %description
 PyGTK is an extension module for python that gives you access to the GTK+
@@ -69,9 +69,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_prefix}/include/pygtk/*.h
 %{_prerix}/lib/pkgconfig/pygtk-2.0.pc
 %dir %{_prefix}/share/pygtk
-%dir %{_prefix}/share/pygtk/1.2
-%dir %{_prefix}/share/pygtk/1.2/codegen
-%dir %{_prefix}/share/pygtk/1.2/defs
+%dir %{_prefix}/share/pygtk/2.0
+%dir %{_prefix}/share/pygtk/2.0/codegen
+%dir %{_prefix}/share/pygtk/2.0/defs
 %{_prefix}/share/pygtk/2.0/codegen/*
 %{_prefix}/share/pygtk/2.0/defs/pango.defs
 %{_prefix}/share/pygtk/2.0/defs/gdk.defs
