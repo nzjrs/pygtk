@@ -2571,6 +2571,9 @@ def create_pixmap(window, width, height, depth=-1):
 		window = window.get_window()
 	return _gtk.gdk_pixmap_new(window, width, height, depth)
 
+def create_bitmap_from_data(window, data, width, height):
+	return _gtk.gdk_bitmap_create_from_data(window, data, width, height)
+
 # drawing functions...
 def draw_point(drawable, gc, x, y):
 	_gtk.gdk_draw_point(drawable, gc, x, y)

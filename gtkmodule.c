@@ -46,6 +46,9 @@ static int _blockcount = 1;
 #  define PyGTK_UNBLOCK_THREADS
 #endif
 
+static void PyGtk_BlockThreads(void) { PyGTK_BLOCK_THREADS }
+static void PyGtk_UnblockThreads(void) { PyGTK_UNBLOCK_THREADS }
+
 static gboolean PyGtk_FatalExceptions = FALSE;
 
 typedef struct {
@@ -4803,6 +4806,27 @@ static PyObject *_wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyO
   return ret;
 }
 
+static PyObject *_wrap_gdk_bitmap_create_from_data(PyObject *self, PyObject *args) {
+  PyObject *window;
+  char *data;
+  int length, width, height;
+  GdkBitmap *bitmap;
+
+  if (!PyArg_ParseTuple(args, "O!s#ii:gdk_bitmap_create_from_data",
+			&PyGdkWindow_Type, &window, &data, &length,
+			&width, &height))
+    return NULL;
+  bitmap = gdk_bitmap_create_from_data(PyGdkWindow_Get(window), data, width,
+				       height);
+  if (bitmap) {
+    PyObject *ret = PyGdkWindow_New(bitmap);
+    gdk_bitmap_unref(bitmap);
+    return ret;
+  }
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject *_wrap_gdk_font_load(PyObject *self, PyObject *args) {
   gchar *name;
   GdkFont *font;
@@ -5646,6 +5670,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gdk_pixmap_create_from_xpm_d", _wrap_gdk_pixmap_create_from_xpm_d, 1 },
     { "gdk_pixmap_colormap_create_from_xpm", _wrap_gdk_pixmap_colormap_create_from_xpm, 1 },
     { "gdk_pixmap_colormap_create_from_xpm_d", _wrap_gdk_pixmap_colormap_create_from_xpm_d, 1 },
+    { "gdk_bitmap_create_from_data", _wrap_gdk_bitmap_create_from_data, 1 },
     { "gdk_font_load", _wrap_gdk_font_load, 1 },
     { "gdk_fontset_load", _wrap_gdk_fontset_load, 1 },
     { "gdk_draw_polygon", _wrap_gdk_draw_polygon, 1 },
@@ -5766,6 +5791,12 @@ void init_gtk() {
 
      PyDict_SetItemString(private, "PyGtk_RegisterBoxed",
                           d=PyCObject_FromVoidPtr(PyGtk_RegisterBoxed, NULL));
+     Py_DECREF(d);
+     PyDict_SetItemString(private, "PyGtk_BlockThreads",
+			  d=PyCObject_FromVoidPtr(PyGtk_BlockThreads, NULL));
+     Py_DECREF(d);
+     PyDict_SetItemString(private, "PyGtk_UnblockThreads",
+			  d=PyCObject_FromVoidPtr(PyGtk_UnblockThreads, NULL));
      Py_DECREF(d);
 
      m = PyImport_ImportModule("os");
