@@ -10,6 +10,16 @@ import re
 import string
 import sys
 
+def class2cname(klass, method):
+    print >> sys.stderr, klass, method
+    c_name = ''
+    for c in klass:
+        if c.isupper():
+            c_name += '_' + c.lower()
+        else:
+            c_name += c
+    return c_name[1:] + '_'  + method
+    
 import_pat = re.compile(r'\s*import\s+(\S+)\.([^\s.]+)\s+as\s+(\S+)')
 
 class Overrides:
@@ -27,7 +37,10 @@ class Overrides:
         self.headers = ''
         self.init = ''
         self.imports = []
-	if filename: self.handle_file(filename)
+        self.defines = {}
+        self.functions = {}
+	if filename:
+            self.handle_file(filename)
 
     def handle_file(self, filename):
         oldpath = os.getcwd()
@@ -71,19 +84,23 @@ class Overrides:
 	else:
 	    line = buffer ; rest = ''
 	words = string.split(line)
-	if (words[0] == 'ignore' or
-            words[0] == 'ignore-' + sys.platform):
+        command = words[0]
+	if (command == 'ignore' or
+            command == 'ignore-' + sys.platform):
+            "ignore/ignore-platform [functions..]"
 	    for func in words[1:]:
                 self.ignores[func] = 1
 	    for func in string.split(rest):
                 self.ignores[func] = 1
-	elif (words[0] == 'ignore-glob' or
-              words[0] == 'ignore-glob-' + sys.platform):
+	elif (command == 'ignore-glob' or
+              command == 'ignore-glob-' + sys.platform):
+            "ignore-glob/ignore-glob-platform [globs..]"            
 	    for func in words[1:]:
                 self.glob_ignores.append(func)
 	    for func in string.split(rest):
 		self.glob_ignores.append(func)
-	elif words[0] == 'override':
+	elif command == 'override':
+            "override function/method [kwargs,noargs]"
 	    func = words[1]
 	    if 'kwargs' in words[1:]:
 		self.kwargs[func] = 1
@@ -91,33 +108,61 @@ class Overrides:
 		self.noargs[func] = 1
 	    self.overrides[func] = rest
             self.startlines[func] = (startline + 1, filename)
-        elif words[0] == 'override-attr':
+        elif command == 'override-attr':
+            "override-slot Class.attr"
             attr = words[1]
             self.override_attrs[attr] = rest
             self.startlines[attr] = (startline + 1, filename)
-        elif words[0] == 'override-slot':
+        elif command == 'override-slot':
+            "override-slot Class.slot"
             slot = words[1]
             self.override_slots[slot] = rest
             self.startlines[slot] = (startline + 1, filename)
-        elif words[0] == 'headers':
+        elif command == 'headers':
+            "headers"
             self.headers = '%s\n#line %d "%s"\n%s' % \
                            (self.headers, startline + 1, filename, rest)
-        elif words[0] == 'init':
+        elif command == 'init':
+            "init"
             self.init = '%s\n#line %d "%s"\n%s' % \
                         (self.init, startline + 1, filename, rest)
-        elif words[0] == 'modulename':
+        elif command == 'modulename':
+            "modulename name"
             self.modulename = words[1]
-        elif words[0] == 'include':
+        elif command == 'include':
+            "include filename"
 	    for filename in words[1:]:
                 self.handle_file(filename)
 	    for filename in string.split(rest):
                 self.handle_file(filename)
-        elif words[0] == 'import':
+        elif command == 'import':
+            "import module1 [\n module2, \n module3 ...]"
             for line in string.split(buffer, '\n'):
                 match = import_pat.match(line)
                 if match:
                     self.imports.append(match.groups())
+        elif command == 'define':
+            "define funcname [kwargs,noargs]"
+            "define Class.method [kwargs,noargs]"
+	    func = words[1]
+            klass = None
+            if func.find('.') != -1:
+                klass, func = func.split('.', 1)
 
+                if not self.defines.has_key(klass):
+                    self.defines[klass] = {}
+                self.defines[klass][func] = rest
+            else:
+                func = self.modulename + '_' + func
+                self.functions[func] = rest
+
+	    if 'kwargs' in words[1:]:
+		self.kwargs[func] = 1
+            elif 'noargs' in words[1:]:
+		self.noargs[func] = 1
+
+            self.startlines[func] = (startline + 1, filename)
+            
     def is_ignored(self, name):
 	if self.ignores.has_key(name):
 	    return 1
@@ -135,10 +180,17 @@ class Overrides:
     def override(self, name):
         self.overridden[name] = 1
         return self.overrides[name]
-    
+
+    def define(self, klass, name):
+        self.overridden[class2cname(klass, name)] = 1
+        return self.defines[klass][name]
+
+    def function(self, name):
+        return self.functions[name]
+        
     def getstartline(self, name):
         return self.startlines[name]
-    
+
     def wants_kwargs(self, name):
 	return self.kwargs.has_key(name)
     
@@ -165,3 +217,9 @@ class Overrides:
     
     def get_imports(self):
         return self.imports
+
+    def get_defines_for(self, klass):
+        return self.defines.get(klass, {})
+    
+    def get_functions(self):
+        return self.functions

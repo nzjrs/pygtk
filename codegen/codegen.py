@@ -1,6 +1,7 @@
 import sys, os, string
 import getopt, traceback, keyword
 import defsparser, argtypes, override
+from override import class2cname
 
 def exc_info():
     #traceback.print_exc()
@@ -307,6 +308,8 @@ class Wrapper:
 
     def write_methods(self):
         methods = []
+        klass = self.objinfo.c_name
+        # First, get methods from the defs files
         for meth in self.parser.find_methods(self.objinfo):
             if self.overrides.is_ignored(meth.c_name):
                 continue
@@ -335,8 +338,35 @@ class Wrapper:
                                  'flags': methflags})
             except:
                 sys.stderr.write('Could not write method %s.%s: %s\n'
-                                % (self.objinfo.c_name, meth.name, exc_info()))
+                                % (klass, meth.name, exc_info()))
 
+        # Now try to see if there are any defined in the override
+        for method_name in self.overrides.get_defines_for(klass):
+            c_name = class2cname(klass, method_name)
+            if self.overrides.is_already_included(method_name):
+                continue
+
+            try:
+                methflags = 'METH_VARARGS'
+                lineno, filename = self.overrides.getstartline(method_name)
+                self.fp.setline(lineno, filename)
+                self.fp.write(self.overrides.define(klass, method_name))
+                self.fp.resetline()
+                self.fp.write('\n\n')
+
+                if self.overrides.wants_kwargs(method_name):
+                    methflags = methflags + '|METH_KEYWORDS'
+                elif self.overrides.wants_noargs(method_name):
+                    methflags = 'METH_NOARGS'
+
+                methods.append(self.methdef_tmpl %
+                               { 'name':  method_name,
+                                 'cname': '_wrap_' + c_name,
+                                 'flags': methflags})
+            except:
+                sys.stderr.write('Could not write method %s.%s: %s\n'
+                                % (klass, method_name, exc_info()))
+            
         if methods:
             methoddefs = '_Py%s_methods' % self.objinfo.c_name
             # write the PyMethodDef structure
@@ -405,6 +435,7 @@ class Wrapper:
     def write_functions(self, prefix):
         self.fp.write('\n/* ----------- functions ----------- */\n\n')
         functions = []
+        # First, get methods from the defs files
         for func in self.parser.find_functions():
             if self.overrides.is_ignored(func.c_name):
                 continue
@@ -432,6 +463,29 @@ class Wrapper:
             except:
                 sys.stderr.write('Could not write function %s: %s\n'
                                  % (func.name, exc_info()))
+
+        # Now try to see if there are any defined in the override
+        for func in self.overrides.get_functions():
+            try:
+                methflags = 'METH_VARARGS'
+                lineno, filename = self.overrides.getstartline(func)
+                self.fp.setline(lineno, filename)
+                self.fp.write(self.overrides.function(func))
+                self.fp.resetline()
+                self.fp.write('\n\n')
+                if self.overrides.wants_kwargs(func):
+                    methflags = methflags + '|METH_KEYWORDS'
+                elif self.overrides.wants_noargs(func):
+                    methflags = 'METH_NOARGS'
+
+                    functions.append(self.methdef_tmpl %
+                                     { 'name':  func.split('_', 1)[1],
+                                       'cname': '_wrap_' + func,
+                                       'flags': methflags })
+            except:
+                sys.stderr.write('Could not write function %s: %s\n'
+                                 % (fun, exc_info()))
+                
         # write the PyMethodDef structure
         functions.append('    { NULL, NULL, 0 }\n')
         
