@@ -4,71 +4,69 @@
 GtkColorSelection lets the user choose a color. GtkColorSelectionDialog is a
 prebuilt dialog containing a GtkColorSelection."""
 
-description = "Color Selector"
-
 import gtk
 
-window = None
-color = None
-da = None
+class ColorSelectorDemo(gtk.Window):
+    color = gtk.gdk.color_parse("blue")
 
-def change_color_cb(w):
-    global window, color, da
-    
-    dialog = gtk.ColorSelectionDialog("Changing color")
-    dialog.set_transient_for(window)
-    colorsel = dialog.colorsel
-    
-    colorsel.set_previous_color(color)
-    colorsel.set_current_color(color)
-    colorsel.set_has_palette(gtk.TRUE)
-    
-    response = dialog.run()
-    
-    if response == gtk.RESPONSE_OK:
-        color = colorsel.get_current_color()
-        da.modify_bg(gtk.STATE_NORMAL, color)
-    
-    dialog.destroy()
+    def __init__(self, parent=None):
+        # Create the toplevel window
+        gtk.Window.__init__(self)
+        try:
+            self.set_screen(parent.get_screen())
+        except AttributeError:
+            self.connect('destroy', lambda *w: gtk.main_quit())
+
+        self.set_title(self.__class__.__name__)
+        self.set_border_width(8)
+        vbox = gtk.VBox()
+        vbox.set_border_width(8)
+        self.add(vbox)
+
+        # Create the color swatch area
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_IN)
+        vbox.pack_start(frame, True, True, 8)
+
+        self.d_area = gtk.DrawingArea()
+        self.d_area.set_size_request(200, 200)
+        self.d_area.modify_bg(gtk.STATE_NORMAL, self.color)
+        frame.add(self.d_area)
+
+        alignment = gtk.Alignment(1.0, 0.5, 0.0, 0.0)
+
+        button = gtk.Button("_Change the above color")
+        alignment.add(button)
+
+        vbox.pack_start(alignment, True, True)
+
+        button.connect('clicked', self.on_change_color_clicked)
+        button.set_flags(gtk.CAN_DEFAULT)
+        button.grab_default()
+
+        self.show_all()
+
+    def on_change_color_clicked(self, button):
+
+        dialog = gtk.ColorSelectionDialog("Changing color")
+        dialog.set_transient_for(self)
+        colorsel = dialog.colorsel
+
+        colorsel.set_previous_color(self.color)
+        colorsel.set_current_color(self.color)
+        colorsel.set_has_palette(gtk.TRUE)
+
+        response = dialog.run()
+
+        if response == gtk.RESPONSE_OK:
+            self.color = colorsel.get_current_color()
+            self.d_area.modify_bg(gtk.STATE_NORMAL, self.color)
+
+        dialog.destroy()
+        return True
 
 def main():
-    global window, color, da
-    
-    color = gtk.gdk.color_parse("blue")
-    
-    window = gtk.Window()
-    window.set_title("Color selection")
-    window.set_border_width(8)
-    window.connect('destroy', lambda win: gtk.main_quit())
-    
-    vbox = gtk.VBox()
-    vbox.set_border_width(8)
-    window.add(vbox)
-    
-    # Create the color swatch area
-    
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
-    vbox.pack_start(frame, gtk.TRUE, gtk.TRUE, 8)
-    
-    da = gtk.DrawingArea()
-    da.set_size_request(200, 200)
-    da.modify_bg(gtk.STATE_NORMAL, color)
-    frame.add(da)
-    
-    alignment = gtk.Alignment(1.0, 0.5, 0.0, 0.0)
-    
-    button = gtk.Button("_Change the above color")
-    alignment.add(button)
-    
-    vbox.pack_start(alignment, gtk.TRUE, gtk.TRUE)
-    
-    button.connect('clicked', change_color_cb)
-    button.set_flags(gtk.CAN_DEFAULT)
-    button.grab_default()
-    
-    window.show_all()
-    
+    ColorSelectorDemo()
     gtk.main()
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''Drag and Drop Test
+'''Drag and Drop
 
 This is a test of the drag and drop capabilities of gtk.  It is a
 fairly straight forward port of the example distributed with gtk.
@@ -7,23 +7,8 @@ fairly straight forward port of the example distributed with gtk.
 FIXME: there are still a few things missing since I converted the
 GdkDragContext wrapper to being a GObject.'''
 
-description = 'Drag and Drop'
-
 import gtk
 from dndpixmap import *
-
-trashcan_open = None
-trashcan_open_mask = None
-trashcan_closed = None
-trashcan_closed_mask = None
-
-have_drag = gtk.FALSE
-popped_up = gtk.FALSE
-in_popup = gtk.FALSE
-popup_timer = 0
-popdown_timer = 0
-popup_win = None
-
 
 TARGET_STRING = 0
 TARGET_ROOTWIN = 1
@@ -31,175 +16,191 @@ TARGET_ROOTWIN = 1
 target = [
     ('STRING', 0, TARGET_STRING),
     ('text/plain', 0, TARGET_STRING),
-    ('application/x-rootwin-drop', 0, TARGET_ROOTWIN)]
+    ('application/x-rootwin-drop', 0, TARGET_ROOTWIN)
+]
 
-def target_drag_leave(w, context, time):
-    global trashcan_closed, trashcan_closed_mask
-    global have_drag
-    print 'leave'
-    have_drag = gtk.FALSE
-    w.set_from_pixmap(trashcan_closed, trashcan_closed_mask)
-    
-def target_drag_motion(w, context, x, y, time):
-    global trashcan_open, trashcan_open_mask
-    global have_drag
-    if not have_drag:
-	have_drag = gtk.TRUE
-	w.set_from_pixmap(trashcan_open, trashcan_open_mask)
-    source_widget = context.get_source_widget()
-    print 'motion, source ',
-    if source_widget:
-	print source_widget.__class__.__name__
-    else:
-	print 'unknown'
-    context.drag_status(context.suggested_action, time)
-    return gtk.TRUE
+def create_pixmap(widget, xpm_data):
+    return \
+        gtk.gdk.pixmap_colormap_create_from_xpm_d(
+            None, widget.get_colormap(), None, xpm_data)
 
-def target_drag_drop(w, context, x, y, time):
-    global trashcan_closed, trashcan_closed_mask
-    global have_drag
-    print 'drop'
-    have_drag = gtk.FALSE
-    w.set_from_pixmap(trashcan_closed, trashcan_closed_mask)
-    if context.targets:
-	w.drag_get_data(context, context.targets[0], time)
-	return gtk.TRUE
-    return gtk.FALSE
+class DragAndDropDemo(gtk.Window):
+    trashcan_open = None
+    trashcan_open_mask = None
+    trashcan_closed = None
+    trashcan_closed_mask = None
+    drag_icon = None
+    drag_mask = None
+    have_drag = False
+    popped_up = False
+    in_popup = False
+    popup_timer = None
+    popdown_timer = 0
+    popup_win = None
 
-def target_drag_data_received(w, context, x, y, data, info, time):
-    if data.format == 8:
-	print 'Received "%s" in trashcan' % data.data
-	context.finish(gtk.TRUE, gtk.FALSE, time)
-    else:
-	context.finish(gtk.FALSE, gtk.FALSE, time)
-        
-def label_drag_data_received(w, context, x, y, data, info, time):
-    if data and data.format == 8:
-	print 'Received "%s" in label' % data.data
-	context.finish(gtk.TRUE, gtk.FALSE, time)
-    else:
-	context.finish(gtk.FALSE, gtk.FALSE, time)
-        
-def source_drag_data_get(w, context, selection_data, info, time):
-    if info == TARGET_ROOTWIN:
-	print 'I was dropped on the rootwin'
-    else:
-	selection_data.set(selection_data.target, 8, "I'm Data!")	
+    def __init__(self, parent=None):
+        gtk.Window.__init__(self)
+        try:
+            self.set_screen(parent.get_screen())
+        except AttributeError:
+            self.connect('destroy', lambda *w: gtk.main_quit())
+        self.set_title(self.__class__.__name__)
 
-def popdown_cb():
-    global popdown_timer, popped_up
-    global popup_win
-    popdown_timer = 0	
-    popup_win.hide()
-    popped_up = gtk.FALSE
-    return gtk.FALSE
+        table = gtk.Table(2,2)
+        self.add(table)
 
-def popup_motion(w, context, x, y, time):
-    global in_popup, popdown_timer
-    if not in_popup:
-	in_popup = gtk.TRUE
-	if popdown_timer:
-	    print 'removed popdown'
-	    gtk.timeout_remove(popdown_timer)
-	    popdown_timer = 0
-    return gtk.TRUE
+        self.drag_icon, self.drag_mask = \
+            create_pixmap(self, drag_icon_xpm)
+        self.trashcan_open, self.trashcan_open_mask = \
+            create_pixmap(self, trashcan_open_xpm)
+        self.trashcan_closed, self.trashcan_closed_mask = \
+            create_pixmap(self, trashcan_closed_xpm)
 
-def popup_leave(w, context, time):
-    global in_popup, popdown_timer
-    print 'popup_leave'
-    if in_popup:
-	in_popup = gtk.FALSE
-	if not popdown_timer:
-	    print 'added popdown'
-	    popdown_timer = gtk.timeout_add(500, popdown_cb)
-            
-def popup_cb():
-    global popped_up, popup_win
-    global popup_timer, popdown_timer
-    if not popped_up:
-	if not popup_win:
-	    popup_win = gtk.Window(gtk.WINDOW_POPUP)
-	    popup_win.set_position(gtk.WIN_POS_MOUSE)
-	    table = gtk.Table(3, 3)
-	    for k in range(9):
-		i, j = divmod(k, 3)
-		b = gtk.Button("%d,%d" % (i,j))
-		table.attach(b, i,i+1,j,j+1)
-		b.drag_dest_set(gtk.DEST_DEFAULT_ALL, target, 
-				gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
-		b.connect('drag_motion', popup_motion)
-		b.connect('drag_leave', popup_leave)
-	    table.show_all()
-	    popup_win.add(table)
-	popup_win.show()
-	popped_up = gtk.TRUE
-    popdown_timer = gtk.timeout_add(500, popdown_cb)
-    print 'added popdown'
-    popup_timer = 0
-    return gtk.FALSE
+        label = gtk.Label('Drop Here!\n')
+        label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
+                gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
+        label.connect('drag_data_received', self.label_drag_data_received)
+        table.attach(label, 0, 1, 0, 1)
 
-def popsite_motion(w, context, x, y, time):
-    global popup_timer
-    if not popup_timer:
-	popup_timer = gtk.timeout_add(500, popup_cb)
-    return gtk.TRUE
+        label = gtk.Label('Popup\n')
+        label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
+                gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
+        table.attach(label, 1, 2, 1, 2)
+        label.connect('drag_motion', self.popsite_motion)
+        label.connect('drag_leave', self.popsite_leave)
 
-def popsite_leave(w, context, time):
-    global popup_timer
-    if popup_timer:
-	gtk.timeout_remove(popup_timer)
-	popup_timer = 0
-        
-def source_drag_data_delete(w, context, data):
-    print 'Delete the data!'
-    
-def create_pixmap(widget, xpm):
-    return gtk.gdk.pixmap_colormap_create_from_xpm_d(None,
-                                                     widget.get_colormap(),
-                                                     None, xpm)
+        image = gtk.Image()
+        image.set_from_pixmap(self.trashcan_closed, self.trashcan_closed_mask)
+        image.drag_dest_set(0, [], 0)
+        table.attach(image, 1, 2, 0, 1)
+        image.connect('drag_leave', self.target_drag_leave)
+        image.connect('drag_motion', self.target_drag_motion)
+        image.connect('drag_drop', self.target_drag_drop)
+        image.connect('drag_data_received', self.target_drag_data_received)
+
+        b = gtk.Button('Drag Here\n')
+        b.drag_source_set(gtk.gdk.BUTTON1_MASK | gtk.gdk.BUTTON3_MASK,
+                  target, gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
+        b.drag_source_set_icon(self.get_colormap(), self.drag_icon, self.drag_mask)
+        table.attach(b, 0, 1, 1, 2)
+        b.connect('drag_data_get', self.source_drag_data_get)
+        b.connect('drag_data_delete', self.source_drag_data_delete)
+        self.show_all()
+
+    def label_drag_data_received(self, w, context, x, y, data, info, time):
+        if data and data.format == 8:
+            print 'Received "%s" in label' % data.data
+            context.finish(True, False, time)
+        else:
+            context.finish(False, False, time)
+
+    def popsite_motion(self, w, context, x, y, time):
+        if self.popup_timer is None:
+            self.popup_timer = gtk.timeout_add(500, self.popup_cb)
+        return True
+
+    def popsite_leave(self, w, context, time):
+        if self.popup_timer is not None:
+            gtk.timeout_remove(self.popup_timer)
+        self.popup_timer = None
+
+    def popup_motion(self, w, context, x, y, time):
+        print 'popup_motion'
+        if not self.in_popup:
+            self.in_popup = True
+        if self.popdown_timer is not None:
+            print 'removed popdown'
+            gtk.timeout_remove(self.popdown_timer)
+            self.popdown_timer = None
+        return True
+
+    def popup_leave(self, w, context, time):
+        print 'popup_leave'
+        if self.in_popup:
+            self.in_popup = False
+        if self.popdown_timer is None:
+            print 'added popdown'
+            self.popdown_timer = gtk.timeout_add(500, self.popdown_cb)
+
+    def popup_cb(self):
+        if not self.popped_up:
+            if self.popup_win is None:
+                self.popup_win = gtk.Window(gtk.WINDOW_POPUP)
+                self.popup_win.set_position(gtk.WIN_POS_MOUSE)
+                table = gtk.Table(3, 3)
+                for k in range(9):
+                    i, j = divmod(k, 3)
+                    b = gtk.Button("%d,%d" % (i,j))
+                    b.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
+                        gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
+                    b.connect('drag_motion', self.popup_motion, None)
+                    b.connect('drag_leave', self.popup_leave)
+                    table.attach(b, i, i+1, j, j+1)
+                table.show_all()
+                self.popup_win.add(table)
+        self.popup_win.show()
+        self.popped_up = True
+        self.in_popup = True
+        self.popdown_timer = gtk.timeout_add(500, self.popdown_cb)
+        print 'added popdown'
+        self.popup_timer = None
+        return False
+
+    def popdown_cb(self):
+        print 'popdown'
+        #if self.in_popup:
+        #    return True
+        self.popdown_timer = None
+        self.popup_win.hide()
+        self.popped_up = False
+        return False
+
+    def target_drag_leave(self, img, context, time):
+        print 'leave'
+        self.have_drag = False
+        img.set_from_pixmap(self.trashcan_closed, self.trashcan_closed_mask)
+
+    def target_drag_motion(self, img, context, x, y, time):
+        if self.have_drag is False:
+            self.have_drag = True
+        img.set_from_pixmap(self.trashcan_open, self.trashcan_open_mask)
+        source_widget = context.get_source_widget()
+        print 'motion, source ',
+        if source_widget:
+            print source_widget.__class__.__name__
+        else:
+            print 'unknown'
+            context.drag_status(context.suggested_action, time)
+        return True
+
+    def target_drag_drop(self, img, context, x, y, time):
+        print 'drop'
+        self.have_drag = False
+        img.set_from_pixmap(self.trashcan_closed, self.trashcan_closed_mask)
+        if context.targets:
+            img.drag_get_data(context, context.targets[0], time)
+            return True
+        return False
+
+    def target_drag_data_received(self, img, context, x, y, data, info, time):
+        if data.format == 8:
+            print 'Received "%s" in trashcan' % data.data
+            context.finish(True, False, time)
+        else:
+            context.finish(False, False, time)
+
+    def source_drag_data_get(self, btn, context, selection_data, info, time):
+        if info == TARGET_ROOTWIN:
+            print 'I was dropped on the rootwin'
+        else:
+            selection_data.set(selection_data.target, 8, "I'm Data!")	
+
+    def source_drag_data_delete(self, btn, context, data):
+        print 'Delete the data!'
 
 def main():
-    global trashcan_open, trashcan_open_mask
-    global trashcan_closed, trashcan_closed_mask
-    global drag_icon, drag_mask
-    win = gtk.Window()
-    win.connect('destroy', lambda win: gtk.main_quit())
-    table = gtk.Table(2,2)
-    win.add(table)
-    drag_icon, drag_mask = create_pixmap(win, drag_icon_xpm)
-    trashcan_open, trashcan_open_mask = create_pixmap(win, trashcan_open_xpm)
-    trashcan_closed, trashcan_closed_mask = create_pixmap(win, trashcan_closed_xpm)
-    label = gtk.Label('Drop Here!\n')
-    label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
-			gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
-    label.connect('drag_data_received', label_drag_data_received)
-    table.attach(label, 0, 1, 0, 1)
-
-    label = gtk.Label('Popup\n')
-    label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
-			gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
-    table.attach(label, 1, 2, 1, 2)
-    label.connect('drag_motion', popsite_motion)
-    label.connect('drag_leave', popsite_leave)
-
-    image = gtk.Image()
-    image.set_from_pixmap(trashcan_closed, trashcan_closed_mask)
-    image.drag_dest_set(0, [], 0)
-    table.attach(image, 1, 2, 0, 1)
-    image.connect('drag_leave', target_drag_leave)
-    image.connect('drag_motion', target_drag_motion)
-    image.connect('drag_drop', target_drag_drop)
-    image.connect('drag_data_received', target_drag_data_received)
-
-    b = gtk.Button('Drag Here\n')
-    b.drag_source_set(gtk.gdk.BUTTON1_MASK | gtk.gdk.BUTTON3_MASK,
-		      target, gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
-    b.drag_source_set_icon(win.get_colormap(), drag_icon, drag_mask)
-    table.attach(b, 0, 1, 1, 2)
-    b.connect('drag_data_get', source_drag_data_get)
-    b.connect('drag_data_delete', source_drag_data_delete)
-    win.show_all()
+    DragAndDropDemo()
     gtk.main()
-    
+
 if __name__ == '__main__':
     main()

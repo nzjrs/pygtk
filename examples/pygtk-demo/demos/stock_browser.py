@@ -1,218 +1,270 @@
-"""Stock Item and Icon Browser
+#!/usr/bin/env python
+'''Stock Item and Icon Browser
 
-This source code for this demo doesn't demonstrate anything
-particularly useful in applications. The purpose of the "demo" is
- just to provide a handy place to browse the available stock icons
- and stock items."""
-
-description = "Stock Browser"
+This source code for this demo doesn't demonstrate anything particularly
+useful in applications. The purpose of the "demo" is just to provide a
+handy place to browse the available stock icons and stock items.
+'''
+# pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
 import gobject
 import gtk
+import re
 
-window = None
+def id_to_macro(stock_id):
+    if stock_id == '':
+        return ''
+    if stock_id.startswith('gtk'):
+        # gtk-foo-bar -> gtk.STOCK_FOO_BAR
+        macro = 'gtk.STOCK' + \
+            re.sub('-([^-]+)', lambda m:('_' + m.group(1).upper()), stock_id[3:])
 
-class StockItemInfo(gobject.GObject):
-    id = ''
-    item = None
-    small_icon = None
-    macro = ''
-    accel_str = ''
-gobject.type_register(StockItemInfo)
+    else:
+        # demo-gtk-logo -> DEMO_GTK_LOGO as with custom icon-factories
+        macro = re.sub('([^-]+)-?', lambda m:('_' + m.group(1).upper()), stock_id)
+        macro = macro[1:]  # there is a leading '_' always
 
-class StockItemDisplay:
-    pass
+    return  macro
 
-def id_to_macro(str):
-    if str.startswith('gtk-'):
-        str = str.replace('gtk-', 'gtk-stock-')
-    str = str.upper()
-    return str.replace('-', '_')
-    
-def create_model():
-    store = gtk.ListStore(StockItemInfo)
 
-    ids = gtk.stock_list_ids()
-    ids.sort()
+class StockItemInfo(object):
+    def __init__(self, stock_id=''):
+        self.stock_id = stock_id
+        self.stock_item = None
+        self.small_icon = None
+        self.macro = id_to_macro(stock_id)
+        self.accel_str = ''
 
-    for id in ids:
-        info = StockItemInfo()
-        info.id = id
-        item = gtk.stock_lookup(info.id)
-        if item:
-            info.item = item
-        else:
-            info.item = [None, None, 0, 0, None]
-        
-        icon_set = gtk.icon_factory_lookup_default(info.id)
-        if icon_set:
-            sizes = icon_set.get_sizes()
-            if gtk.ICON_SIZE_MENU in sizes:
-                size = gtk.ICON_SIZE_MENU
-            else:
-                size = sizes[0]
+class StockItemDisplay(object):
+    def __init__(self):
+        self.type_label = None
+        self.macro_label = None
+        self.id_label = None
+        self.label_accel_label = None
+        self.icon_image = None
 
-            info.small_icon = window.render_icon(info.id,
-                                                 size)
-            if size != gtk.ICON_SIZE_MENU:
-                 #w, h = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
-                 raise NotImplementedError
 
-        if info.item[2]:
-            info.accel_str = gtk.accelerator_name(info.item[3],
-                                                  info.item[2])
-            
-        info.macro = id_to_macro(info.id)
-
-        iter = store.append()
-        store.set(iter, 0, info)
-        
-    return store
-
-def get_largest_size(id):
-    set = gtk.icon_factory_lookup_default(id)
+def get_largest_size(stockid):
+    ''' Finds the largest size at which the given image stock id is
+        available. This would not be useful for a normal application.
+    '''
+    set = gtk.icon_factory_lookup_default(stockid)
     best_size = gtk.ICON_SIZE_INVALID
     best_pixels = 0
-    
-    for size in set.get_sizes():
-        width, height = gtk.icon_size_lookup(size)
-        if width * height > best_pixels:
-            best_size = size
+
+    sizes = set.get_sizes()
+    n_sizes = len(sizes)
+
+    i = 0
+    while(i < n_sizes):
+        width, height = gtk.icon_size_lookup(sizes[i])
+
+        if(width * height > best_pixels):
+            best_size = sizes[i]
             best_pixels = width * height
+
+        i += 1
 
     return best_size
 
-def selection_changed(selection):
-    treeview = selection.get_tree_view()
-    display = treeview.get_data('stock-display')
-    value = selection.get_selected()
-    if value:
-        model, iter = value
-        info = model.get_value(iter, 0)
-        
-        if info.small_icon and info.item[1]:
-            display.type_label.set_text('Icon and Item')
-        elif info.small_icon:
-            display.type_label.set_text('Icon only')
-        elif info.item[1]:
-            display.type_label.set_text('Item only')
-        else:
-            display.type_label.set_text('???????')
 
-        display.macro_label.set_text(info.macro)
-        display.id_label.set_text(info.id)
+def macro_set_func_text(tree_column, cell, model, iter):
+    info = model.get_value(iter, 0)
+    cell.set_property("text", info.macro)
 
-        if info.item[1]:
-            display.label_accel_label.set_text_with_mnemonic('%s %s' % \
-                                                             (info.item[1],
-                                                              info.accel_str))
-        else:
-            display.label_accel_label.set_text('')
+def id_set_func(tree_column, cell, model, iter):
+    info = model.get_value(iter, 0)
+    cell.set_property("text", info.stock_id)
 
-        if info.small_icon:
-            display.icon_image.set_from_stock(info.id, get_largest_size(info.id))
+def accel_set_func(tree_column, cell, model, iter):
+    info = model.get_value(iter, 0)
+    cell.set_property("text", info.accel_str)
+
+def label_set_func(tree_column, cell, model, iter):
+    info = model.get_value(iter, 0)
+    cell.set_property("text", info.stock_item[1])
+
+
+class StockItemAndIconBrowserDemo(gtk.Window):
+    def __init__(self, parent=None):
+        gtk.Window.__init__(self)
+        try:
+            self.set_screen(parent.get_screen())
+        except AttributeError:
+            self.connect('destroy', lambda *w: gtk.main_quit())
+
+        self.set_title(self.__class__.__name__)
+        self.set_default_size(-1, 500)
+        self.set_border_width(8)
+
+        hbox = gtk.HBox(False, 8)
+        self.add(hbox)
+
+        sw = gtk.ScrolledWindow()
+        sw.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        hbox.pack_start(sw, False, False, 0)
+
+        model = self.__create_model()
+        treeview = gtk.TreeView(model)
+        sw.add(treeview)
+
+        column = gtk.TreeViewColumn()
+        column.set_title("Macro")
+
+        cell_renderer = gtk.CellRendererPixbuf()
+        column.pack_start(cell_renderer, False)
+        column.set_attributes(cell_renderer, stock_id=1)
+
+        cell_renderer = gtk.CellRendererText()
+        column.pack_start(cell_renderer, True)
+        column.set_cell_data_func(cell_renderer, macro_set_func_text)
+
+        treeview.append_column(column)
+
+        cell_renderer = gtk.CellRendererText()
+        treeview.insert_column_with_data_func(-1, "Label", cell_renderer, label_set_func)
+
+        cell_renderer = gtk.CellRendererText()
+        treeview.insert_column_with_data_func(-1, "Accel", cell_renderer, accel_set_func)
+
+        cell_renderer = gtk.CellRendererText()
+        treeview.insert_column_with_data_func(-1, "ID", cell_renderer, id_set_func)
+
+        align = gtk.Alignment(0.5, 0.0, 0.0, 0.0)
+        hbox.pack_end(align, False, False, 0)
+
+        frame = gtk.Frame("Selected Item")
+        align.add(frame)
+
+        vbox = gtk.VBox(False, 8)
+        vbox.set_border_width(4)
+        frame.add(vbox)
+
+        display = StockItemDisplay()
+        treeview.set_data("stock-display", display)
+
+        display.type_label  = gtk.Label()
+        display.macro_label = gtk.Label()
+        display.id_label    = gtk.Label()
+        display.label_accel_label = gtk.Label()
+        display.icon_image  = gtk.Image(); # empty image
+
+        vbox.pack_start(display.type_label, False, False, 0)
+        vbox.pack_start(display.icon_image, False, False, 0)
+        vbox.pack_start(display.label_accel_label, False, False, 0)
+        vbox.pack_start(display.macro_label, False, False, 0)
+        vbox.pack_start(display.id_label, False, False, 0)
+
+        selection = treeview.get_selection()
+        selection.set_mode(gtk.SELECTION_SINGLE)
+
+        selection.connect("changed", self.on_selection_changed)
+
+        self.show_all()
+
+    def __create_model(self):
+        store = gtk.ListStore(
+            gobject.TYPE_PYOBJECT,
+            gobject.TYPE_STRING)
+
+        ids = gtk.stock_list_ids()
+        ids.sort()
+
+        for data in ids:
+            info = StockItemInfo(stock_id=data)
+            stock_item = gtk.stock_lookup(data)
+
+            if stock_item:
+                info.stock_item = stock_item
+            else:
+                # stock_id, label, modifier, keyval, translation_domain
+                info.stock_item =('', '', 0, 0, '')
+
+            # only show icons for stock IDs that have default icons
+            icon_set = gtk.icon_factory_lookup_default(info.stock_id)
+            if icon_set is None:
+                info.small_icon = None
+            else:
+                # See what sizes this stock icon really exists at
+                sizes = icon_set.get_sizes()
+                n_sizes = len(sizes)
+
+                # Use menu size if it exists, otherwise first size found
+                size = sizes[0];
+                i = 0;
+                while(i < n_sizes):
+                    if(sizes[i] == gtk.ICON_SIZE_MENU):
+                        size = gtk.ICON_SIZE_MENU
+                        break
+                    i += 1
+
+                info.small_icon = self.render_icon(info.stock_id, size)
+
+                if(size != gtk.ICON_SIZE_MENU):
+                    # Make the result the proper size for our thumbnail
+                    w, h = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+
+                    scaled = info.small_icon.scale_simple(w, h, 'bilinear')
+                    info.small_icon = scaled
+
+            if info.stock_item[3] == 0:
+                info.accel_str = ""
+            else:
+                info.accel_str = \
+                    gtk.accelerator_name(info.stock_item[3], info.stock_item[2])
+
+            iter = store.append()
+            store.set(iter, 0, info, 1, info.stock_id)
+
+        return store
+
+    def on_selection_changed(self, selection):
+        treeview = selection.get_tree_view()
+        display = treeview.get_data("stock-display")
+
+        model, iter = selection.get_selected()
+        if iter:
+            info = model.get_value(iter, 0)
+
+            if(info.small_icon and info.stock_item[1]):
+                display.type_label.set_text("Icon and Item")
+
+            elif(info.small_icon):
+                display.type_label.set_text("Icon Only")
+
+            elif(info.stock_item[1]):
+                display.type_label.set_text("Item Only")
+
+            else:
+                display.type_label.set_text("???????")
+
+            display.macro_label.set_text(info.macro)
+            display.id_label.set_text(info.stock_id)
+
+            if(info.stock_item[1]):
+                s = "%s %s" % (info.stock_item[1], info.accel_str)
+                display.label_accel_label.set_text_with_mnemonic(s)
+
+            else:
+                display.label_accel_label.set_text("")
+
+            if(info.small_icon):
+                display.icon_image.set_from_stock(info.stock_id,
+                                      get_largest_size(info.stock_id))
+            else:
+                display.icon_image.set_from_pixbuf(None)
+
         else:
+            display.type_label.set_text("No selected item")
+            display.macro_label.set_text("")
+            display.id_label.set_text("")
+            display.label_accel_label.set_text("")
             display.icon_image.set_from_pixbuf(None)
-    else:
-        display.type_label.set_text('No selected item')
-        display.macro_label.set_text('')
-        display.id_label.set_text('')
-        display.label_accel_label.set_text('')
-        display.icon_image.set_from_pixbuf(None)
-            
-def macro_set_func_text(tree, cell, model, iter):
-    info = model.get_value(iter, 0)
-    cell.set_property('text', info.macro)
 
-def macro_set_func_pixbuf(tree, cell, model, iter):
-    info = model.get_value(iter, 0)
-    cell.set_property('pixbuf', info.small_icon)
-    
-def id_set_func(tree, cell, model, iter):
-    info = model.get_value(iter, 0)
-    cell.set_property('text', info.id)
-
-def accel_set_func(tree, cell, model, iter):
-    info = model.get_value(iter, 0)
-    cell.set_property('text', info.accel_str)
-
-def label_set_func(tree, cell, model, iter):
-    info = model.get_value(iter, 0)
-    cell.set_property('text', info.item[1])
-    
 def main():
-    global window
-    
-    window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    window.set_title('Stock Icons and Items')
-    window.set_default_size(-1, 500)
-
-    window.connect('destroy', lambda *x: gtk.mainquit())
-    window.set_border_width(8)
-
-    hbox = gtk.HBox(False, 8)
-    window.add(hbox)
-
-    sw = gtk.ScrolledWindow()
-    sw.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-    hbox.pack_start(sw)
-
-    model = create_model()
-
-    treeview = gtk.TreeView(model)
-    sw.add(treeview)
-
-    column = gtk.TreeViewColumn()
-    column.set_title('Macro')
-
-    cell_renderer = gtk.CellRendererPixbuf()
-    column.pack_start(cell_renderer, False)
-    column.set_cell_data_func(cell_renderer, macro_set_func_pixbuf)
-    cell_renderer = gtk.CellRendererText()
-    column.pack_start(cell_renderer, True)
-    column.set_cell_data_func(cell_renderer, macro_set_func_text)
-    treeview.append_column(column)
-
-    cell_renderer = gtk.CellRendererText()
-    treeview.insert_column_with_data_func(-1, "Label", cell_renderer,
-                                          label_set_func)
-    treeview.insert_column_with_data_func(-1, "Accel", cell_renderer,
-                                          accel_set_func)
-    treeview.insert_column_with_data_func(-1, "ID",  cell_renderer,
-                                          id_set_func)
-    
-    align = gtk.Alignment(0.5, 0.0, 0.0, 0.0)
-    hbox.pack_start(align)
-
-    frame = gtk.Frame("Selected Item")
-    align.add(frame)
-
-    vbox = gtk.VBox(False, 8)
-    vbox.set_border_width(4)
-    frame.add(vbox)
-
-    
-    display = StockItemDisplay()
-    treeview.set_data('stock-display', display)
-    display.type_label = gtk.Label()
-    display.macro_label = gtk.Label()
-    display.id_label = gtk.Label()
-    display.label_accel_label = gtk.Label()
-    display.icon_image = gtk.Image()
-    
-    vbox.pack_start(display.type_label)
-    vbox.pack_start(display.icon_image)
-    vbox.pack_start(display.label_accel_label)
-    vbox.pack_start(display.macro_label)
-    vbox.pack_start(display.id_label)
-
-    selection = treeview.get_selection()
-    selection.set_mode(gtk.SELECTION_SINGLE)
-    selection.connect('changed', selection_changed)
-
-    window.show_all()
+    StockItemAndIconBrowserDemo()
+    gtk.main()
 
 if __name__ == '__main__':
     main()
-    gtk.main()
-    

@@ -1,164 +1,306 @@
 #!/usr/bin/env python
-#
-# Copyright (C) 2004 Joey Tsai <joeytsai@joeytsai.com>
-#
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, write to the
-# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-# Boston, MA 02111-1307, USA.
-
-"""Images
+'''Images
 
 GtkImage is used to display an image; the image can be in a number of formats.
 Typically, you load an image into a GdkPixbuf, then display the pixbuf.
-
 This demo code shows some of the more obscure cases, in the simple case a call
-to gtk.Image's set_from_file() is all you need.
-"""
+to gtk_image_new_from_file() is all you need.
+If you want to put image data in your program as a C variable, use the
+make-inline-pixbuf program that comes with GTK+. This way you won't need to
+depend on loading external files, your application binary can be self-contained.'''
+# pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
-import sys
-
-import pygtk
-pygtk.require("2.0")
-
+import os
 import gobject
 import gtk
 
-description = "Images"
+IMAGEDIR = os.path.join(os.path.dirname(__file__), 'images')
+ALPHA_IMAGE = os.path.join(IMAGEDIR, 'alphatest.png')
+GTKLOGO_IMAGE = os.path.join(IMAGEDIR, 'gtk-logo-rgb.gif')
+BUDDY_IMAGE = os.path.join(IMAGEDIR, 'floppybuddy.gif')
 
-def error_dialog(message, parent=None):
-    dialog = gtk.MessageDialog(parent,
-	gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-	gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, message)
-    dialog.run()
-    dialog.destroy()
-
-def on_timeout(loader, fileobject):
-    run_again = True
-
-    try:
-	bytes = fileobject.read(256)
-	loader.write(bytes)
-    except (IOError, gobject.GError), e:
-	error_dialog(str(e))
-	run_again = False
-
-    if not bytes:
-	run_again = False
-
-    if not run_again:
-	try:
-	    fileobject.close()
-	    loader.close()
-	except gobject.GError, e:
-	    # bug 136989, loader.close() will throw an exception
-	    pass
-
-    return run_again
-
-def on_area_prepared(loader, image):
+def progressive_prepared_callback(loader, image):
     pixbuf = loader.get_pixbuf()
+
+    # Avoid displaying random memory contents, since the pixbuf
+    # isn't filled in yet.
+    #images.c -> gdk_pixbuf_fill(pixbuf, 0xaaaaaaff)
+    pixbuf.fill(0)
     image.set_from_pixbuf(pixbuf)
 
-def on_area_updated(loader, x, y, w, h, image):
+
+def progressive_updated_callback(loader, x, y, width, height, image):
+    ''' We know the pixbuf inside the GtkImage has changed, but the image
+        itself doesn't know this; so queue a redraw.  If we wanted to be
+        really efficient, we could use a drawing area or something
+        instead of a GtkImage, so we could control the exact position of
+        the pixbuf on the display, then we could queue a draw for only
+        the updated area of the image.
+    '''
     image.queue_draw()
 
-def get_progressive_image(filename):
-    try:
-	fileobject = open(filename, "r")
-    except IOError, e:
-	error_dialog(str(e))
-	return
+class ImagesDemo(gtk.Window):
+    pixbuf_loader = None
+    load_timeout = None
+    image_stream = None
 
-    image = gtk.Image()
+    def __init__(self, parent=None):
+        gtk.Window.__init__(self)
+        try:
+            self.set_screen(parent.get_screen())
+        except AttributeError:
+            self.connect('destroy', lambda *w: gtk.main_quit())
+        self.connect("destroy", self.cleanup_callback)
+        self.set_title(self.__class__.__name__)
+        self.set_border_width(8)
 
-    loader = gtk.gdk.PixbufLoader()
-    loader.connect("area_prepared", on_area_prepared, image)
-    loader.connect("area_updated",  on_area_updated,  image)
-    
-    gobject.timeout_add(150, on_timeout, loader, fileobject)
+        vbox = gtk.VBox(False, 8)
+        vbox.set_border_width(8)
+        self.add(vbox)
 
-    return image
+        label = gtk.Label();
+        label.set_markup("<u>Image loaded from a file</u>")
+        vbox.pack_start(label, False, False, 0)
 
-def get_image(filename):
-    try:
-	anim = gtk.gdk.PixbufAnimation(filename)
-    except gobject.GError, e:
-	error_dialog(str(e))
-	return
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_IN)
 
-    image = gtk.Image()
+        # The alignment keeps the frame from growing when users resize
+        # the window
+        align = gtk.Alignment(0.5, 0.5, 0, 0)
+        align.add(frame)
+        vbox.pack_start(align, False, False, 0)
 
-    if anim.is_static_image():
-	image.set_from_pixbuf( anim.get_static_image() )
-    else:
-	image.set_from_animation( anim )
+        image = gtk.Image()
 
-    return image
+        # use the current directory for the file
+        try:
+            pixbuf = gtk.gdk.pixbuf_new_from_file(GTKLOGO_IMAGE)
+            image.set_from_pixbuf(pixbuf)
 
-def align_image(image, label_text):
-    label = gtk.Label()
-    label.set_markup("<u>%s</u>" % label_text)
+        except gobject.GError, error:
 
-    frame = gtk.Frame()
-    frame.set_shadow_type(gtk.SHADOW_IN)
+            # This code shows off error handling. You can just use
+            # gtk_image_new_from_file() instead if you don't want to report
+            # errors to the user. If the file doesn't load when using
+            # gtk_image_new_from_file(), a "missing image" icon will
+            # be displayed instead.
 
-    if image:
-	frame.add(image)
-    else:
-	frame.add(gtk.Label("(No image)"))
+            dialog = gtk.MessageDialog(self,
+                gtk.DIALOG_DESTROY_WITH_PARENT,
+                gtk.MESSAGE_ERROR,
+                gtk.BUTTONS_CLOSE,
+                "Unable to open image file 'gtk-logo-rgb.gif': \n%s" % error)
 
-    align = gtk.Alignment(0.5, 0.5, 0, 0)
-    align.add(frame)
+            dialog.connect("response", lambda dlg, resp: dlg.destroy())
+            dialog.show()
 
-    vbox = gtk.VBox(spacing=8)
-    vbox.set_border_width(4)
-    vbox.pack_start(label)
-    vbox.pack_start(align)
+        frame.add(image)
 
-    return vbox
+        # Animation
 
-def on_button_toggled(button, vbox):
-    for widget in vbox.get_children():
-	if widget != button:
-	    widget.set_sensitive(not button.get_active())
+        label = gtk.Label()
+        label.set_markup("<u>Animation loaded from a file</u>")
+        vbox.pack_start(label, False, False, 0)
 
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_IN)
+
+        # The alignment keeps the frame from growing when users resize
+        # the window
+
+        align = gtk.Alignment(0.5, 0.5, 0, 0)
+        align.add(frame)
+        vbox.pack_start(align, False, False, 0)
+
+        image = gtk.Image()
+        image.set_from_file(BUDDY_IMAGE);
+
+        frame.add(image)
+
+        # Progressive
+
+        label = gtk.Label()
+        label.set_markup("<u>Progressive image loading</u>")
+        vbox.pack_start(label, False, False, 0)
+
+        frame = gtk.Frame()
+        frame.set_shadow_type(gtk.SHADOW_IN)
+
+        # The alignment keeps the frame from growing when users resize
+        # the window
+
+        align = gtk.Alignment(0.5, 0.5, 0, 0)
+        align.add(frame)
+        vbox.pack_start(align, False, False, 0)
+
+        # Create an empty image for now; the progressive loader
+        # will create the pixbuf and fill it in.
+
+        image = gtk.Image()
+        image.set_from_pixbuf(None)
+        frame.add(image)
+
+        self.start_progressive_loading(image)
+
+        # Sensitivity control
+
+        button = gtk.ToggleButton("_Insensitive");
+        vbox.pack_start(button, False, False, 0)
+
+        button.connect("toggled", self.on_sensitivity_toggled, vbox)
+
+        self.show_all()
+
+    def cleanup_callback(self, win):
+        if self.load_timeout != 0:
+            gtk.timeout_remove(self.load_timeout)
+            self.load_timeout = 0
+
+        if self.pixbuf_loader is not None:
+            self.pixbuf_loader.close()
+            self.pixbuf_loader = None
+
+        if self.image_stream is not None:
+            self.image_stream.close()
+            self.image_stream = None
+
+
+    def on_sensitivity_toggled(self, togglebutton, container):
+        children = container.get_children()
+
+        for child in children:
+
+            # don't disable our toggle
+            if type(child) != type(togglebutton):
+                child.set_sensitive(not togglebutton.get_active())
+
+    def start_progressive_loading(self, image):
+        ''' This is obviously totally contrived(we slow down loading
+            on purpose to show how incremental loading works).
+            The real purpose of incremental loading is the case where
+            you are reading data from a slow source such as the network.
+            The timeout simply simulates a slow data source by inserting
+            pauses in the reading process.
+        '''
+        self.load_timeout = gtk.timeout_add(150, self.progressive_timeout, image)
+
+    def progressive_timeout(self, image):
+
+        # This shows off fully-paranoid error handling, so looks scary.
+        # You could factor out the error handling code into a nice separate
+        # function to make things nicer.
+
+        if self.image_stream is not None:    # file is already opened
+            try:
+                buf = self.image_stream.read(256)
+                bytes_read = len(buf)
+
+            except IOError, error:
+                dialog = gtk.MessageDialog(self,
+                    gtk.DIALOG_DESTROY_WITH_PARENT,
+                    gtk.MESSAGE_ERROR,
+                    gtk.BUTTONS_CLOSE,
+                    "Failure reading image file 'alphatest.png': %s" % error)
+
+                dialog.connect("response", lambda d, r: d.destroy())
+
+                self.image_stream.close()
+                self.image_stream = None
+
+                dialog.show()
+
+                self.load_timeout = 0
+
+                return False; # uninstall the timeout
+
+            if not self.pixbuf_loader.write(buf, bytes_read):
+
+                dialog = gtk.MessageDialog(self,
+                           gtk.DIALOG_DESTROY_WITH_PARENT,
+                           gtk.MESSAGE_ERROR,
+                           gtk.BUTTONS_CLOSE,
+                           "Failed to load image")
+
+                dialog.connect("response", lambda d, r: d.destroy())
+
+                self.image_stream.close()
+                self.image_stream = None
+
+                dialog.show()
+
+                self.load_timeout = 0
+
+                return False # uninstall the timeout
+
+            #if(feof(image_stream)):
+            if bytes_read == 0:
+
+                self.image_stream.close()
+                self.image_stream = None
+
+                # Errors can happen on close, e.g. if the image
+                # file was truncated we'll know on close that
+                # it was incomplete.
+
+                if not self.pixbuf_loader.close():
+
+                    dialog = gtk.MessageDialog(self,
+                               gtk.DIALOG_DESTROY_WITH_PARENT,
+                               gtk.MESSAGE_ERROR,
+                               gtk.BUTTONS_CLOSE,
+                               "Failed to load image")
+
+                    dialog.connect("response", lambda d, r: dlg.destroy())
+                    dialog.show()
+
+                    self.pixbuf_loader = None
+
+                    self.load_timeout = 0
+
+                    return False # uninstall the timeout
+
+                # if feof(image_stream)
+                self.pixbuf_loader = None
+
+        else:    # if(image_stream) ...
+            try:
+                self.image_stream = open(ALPHA_IMAGE, "rb")
+
+            except IOError, error:
+                error_message = "Unable to open image file 'alphatest.png' : %s"
+
+                dialog = gtk.MessageDialog(self,
+                    gtk.DIALOG_DESTROY_WITH_PARENT,
+                    gtk.MESSAGE_ERROR,
+                    gtk.BUTTONS_CLOSE,
+                    error_message % error)
+
+                dialog.connect("response", lambda d, r: d.destroy())
+                dialog.show()
+
+                self.load_timeout = 0
+
+                return False # uninstall the timeout
+
+            if self.pixbuf_loader is not None:
+                self.pixbuf_loader.close()
+                self.pixbuf_loader = None
+
+            self.pixbuf_loader = gtk.gdk.PixbufLoader()
+
+            self.pixbuf_loader.connect("area_prepared",
+                progressive_prepared_callback, image)
+
+            self.pixbuf_loader.connect("area_updated",
+                progressive_updated_callback, image)
+
+        # leave timeout installed
+        return True;
 
 def main():
-    vbox = gtk.VBox()
-
-    button = gtk.ToggleButton("_Insensitive")
-    button.connect("toggled", on_button_toggled, vbox)
-
-    i1 = get_image("gtk-logo-rgb.gif")
-    i2 = get_image("floppybuddy.gif")
-    i3 = get_progressive_image("alphatest.png")
-
-    vbox.pack_start(align_image(i1, "Image loaded from a file"))
-    vbox.pack_start(align_image(i2, "Animation loaded from a file"))
-    vbox.pack_start(align_image(i3, "Progressive image loading"))
-    vbox.pack_start(button)
-
-    win = gtk.Window()
-    win.set_title("Images")
-    win.set_border_width(8)
-    win.connect("destroy", gtk.main_quit)
-    win.add(vbox)
-    win.show_all()
-
+    ImagesDemo()
     gtk.main()
 
-    return 0
-
-if __name__ == "__main__":
-    sys.exit(main())
+if __name__ == '__main__':
+    main()
