@@ -567,7 +567,7 @@ _wrap_glade_xml_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 				     &pydict))
         return -1;
 
-    if (!PyMapping_Check(pydict)) {
+    if (pydict && !PyMapping_Check(pydict)) {
         PyErr_SetString(PyExc_TypeError,
 			"typedict must be a mapping");
 	return -1;
