@@ -1538,7 +1538,6 @@ ignore
   gtk_container_child_set
   gtk_container_arg_set
   gtk_container_arg_get
-  gtk_progress_bar_new
   gtk_clist_set_row_data_full
   gtk_window_add_embedded_xid
   gtk_window_remove_embedded_xid
@@ -3789,6 +3788,43 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     self->obj = (GObject *)gtk_message_dialog_new(parent, flags, type, buttons, "%s", message_format);
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkMessageDialog object");
+        return NULL;
+    }
+    gtk_object_ref(GTK_OBJECT(self->obj));
+    gtk_object_sink(GTK_OBJECT(self->obj));
+    pygobject_register_wrapper((PyObject *)self);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+ignore gtk_progress_bar_new
+%%
+override gtk_progress_bar_new_with_adjustment kwargs
+static PyObject *
+_wrap_gtk_progress_bar_new_with_adjustment(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    GtkAdjustment *adjustment = NULL;
+    static char *kwlist[] = { "adjustment", NULL };
+    PyGObject *py_adjustment = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkProgressBar.__init__", kwlist, &py_adjustment))
+        return NULL;
+    if ((PyObject *)py_adjustment == Py_None)
+        adjustment = NULL;
+    else if (py_adjustment && pygobject_check(py_adjustment, &PyGtkAdjustment_Type))
+        adjustment = GTK_ADJUSTMENT(py_adjustment->obj);
+    else if (py_adjustment) {
+        PyErr_SetString(PyExc_TypeError, "adjustment should be a GtkAdjustment or None");
+        return NULL;
+    }
+
+    if (adjustment)
+	self->obj = (GObject *)gtk_progress_bar_new_with_adjustment(adjustment);
+    else
+	self->obj = (GObject *)gtk_progress_bar_new();
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkProgressBar object");
         return NULL;
     }
     gtk_object_ref(GTK_OBJECT(self->obj));
