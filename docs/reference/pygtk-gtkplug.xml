@@ -34,6 +34,15 @@ linkend="method-gtkplug--get-id">get_id</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
     </classsynopsis>
 
+    <programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--plug-new-for-display">gtk.plug_new_for_display</link></methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+	<methodparam><parameter role="keyword">socket_id</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
   </refsect1>
 
   <refsect1>
@@ -82,7 +91,7 @@ creates a <link
 linkend="class-gtkplug"><classname>gtk.Plug</classname></link> with that
 window ID. Any widgets contained in the <link
 linkend="class-gtkplug"><classname>gtk.Plug</classname></link> then will
-appear inside the first applications window. </para>
+appear inside the first applications window.</para>
 
   </refsect1>
 
@@ -102,7 +111,8 @@ appear inside the first applications window. </para>
       </varlistentry>
       <varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
-	<listitem><simpara>a GtkWidget*</simpara></listitem>
+	<listitem><simpara>a <link
+	linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
       </varlistentry>
     </variablelist>
 
@@ -139,6 +149,11 @@ socket</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is <emphasis>not</emphasis> available in PyGTK 2.2
+and above.</para>
+      </warning>
+
       <para>The <methodname>construct</methodname>() method finishes the
 initialization of plug for the <link
 linkend="class-gtksocket"><classname>gtk.Socket</classname></link>
@@ -161,11 +176,62 @@ linkend="class-gtkplug"><classname>gtk.Plug</classname></link>.</para>
 	</varlistentry>
       </variablelist>
 
-      <para>THe get_id() method returns the window ID of the <link
+      <para>The <methodname>get_id</methodname>() method returns the window
+ID of the <link
 linkend="class-gtkplug"><classname>gtk.Plug</classname></link> widget, which
 can be used to embed this window inside another window, for instance with
 <link
 linkend="method-gtksocket--add-id"><methodname>gtk.Socket.add_id</methodname>()</link>.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gtk--plug-new-for-display">
+      <title>gtk.plug_new_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.plug_new_for_display</methodname>
+	  <methodparam><parameter
+			 role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">socket_id</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+	  associated with
+	  <parameter>socket_id's</parameter>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">socket_id</parameter>&nbsp;:</term>
+	  <listitem><simpara> the window ID of the socket's
+	  window.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkplug"><classname>gtk.Plug</classname></link>
+	  object</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.plug_new_for_display</function>() function
+creates a new plug widget inside the <link
+linkend="class-gtksocket"><classname>gtk.Socket</classname></link> specified
+by <parameter>socket_id</parameter> on the <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by display.</para>
 
     </refsect2>
 
