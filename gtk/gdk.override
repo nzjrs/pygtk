@@ -1280,66 +1280,78 @@ _wrap_gdk_gc_tp_setattr(PyGObject *self, char *attr, PyObject *value)
 	int i = PyInt_AsLong(value);
 	GdkGCValues v;
 	gdk_gc_get_values(gc, &v);
-	if (!strcmp(attr, "function")) gdk_gc_set_function(gc, i);
-	else if (!strcmp(attr, "fill")) gdk_gc_set_fill(gc, i);
-	else if (!strcmp(attr, "subwindow_mode")) gdk_gc_set_subwindow(gc, i);
-	else if (!strcmp(attr, "ts_x_origin"))
+	if (!strcmp(attr, "function")) {
+	    gdk_gc_set_function(gc, i);
+	    return 0;
+	} else if (!strcmp(attr, "fill")) {
+	    gdk_gc_set_fill(gc, i);
+	    return 0;
+	} else if (!strcmp(attr, "subwindow_mode")) {
+	    gdk_gc_set_subwindow(gc, i);
+	    return 0;
+	} else if (!strcmp(attr, "ts_x_origin")) {
 	    gdk_gc_set_ts_origin(gc, i, v.ts_y_origin);
-	else if (!strcmp(attr, "ts_y_origin"))
+	    return 0;
+	} else if (!strcmp(attr, "ts_y_origin")) {
 	    gdk_gc_set_ts_origin(gc, v.ts_x_origin, i);
-	else if (!strcmp(attr, "clip_x_origin"))
+	    return 0;
+	} else if (!strcmp(attr, "clip_x_origin")) {
 	    gdk_gc_set_clip_origin(gc, i, v.clip_y_origin);
-	else if (!strcmp(attr, "clip_y_origin"))
+	    return 0;
+	} else if (!strcmp(attr, "clip_y_origin")) {
 	    gdk_gc_set_clip_origin(gc, v.clip_x_origin, i);
-	else if (!strcmp(attr, "graphics_exposures")) gdk_gc_set_exposures(gc, i);
-	else if (!strcmp(attr, "line_width"))
-	    gdk_gc_set_line_attributes(gc, i,v.line_style,v.cap_style,v.join_style);
-	else if (!strcmp(attr, "line_style"))
-	    gdk_gc_set_line_attributes(gc, v.line_width,i,v.cap_style,v.join_style);
-	else if (!strcmp(attr, "cap_style"))
-	    gdk_gc_set_line_attributes(gc, v.line_width,v.line_style,i,v.join_style);
-	else if (!strcmp(attr, "join_style"))
-	    gdk_gc_set_line_attributes(gc, v.line_width,v.line_style,v.cap_style,i);
-	else {
-	    PyErr_SetString(PyExc_TypeError,"type mismatch");
-	    return -1;
+	    return 0;
+	} else if (!strcmp(attr, "graphics_exposures")) {
+	    gdk_gc_set_exposures(gc, i);
+	    return 0;
+	} else if (!strcmp(attr, "line_width")) {
+	    gdk_gc_set_line_attributes(gc, i, v.line_style,
+				       v.cap_style, v.join_style);
+	    return 0;
+	} else if (!strcmp(attr, "line_style")) {
+	    gdk_gc_set_line_attributes(gc, v.line_width, i,
+				       v.cap_style, v.join_style);
+	    return 0;
+	} else if (!strcmp(attr, "cap_style")) {
+	    gdk_gc_set_line_attributes(gc, v.line_width, v.line_style,
+				       i, v.join_style);
+	    return 0;
+	} else if (!strcmp(attr, "join_style")) {
+	    gdk_gc_set_line_attributes(gc, v.line_width, v.line_style,
+				       v.cap_style, i);
+	    return 0;
 	}
     } else if (pyg_boxed_check(value, GDK_TYPE_COLOR)) {
 	GdkColor *c = pyg_boxed_get(value, GdkColor);
-	if (!strcmp(attr, "foreground")) gdk_gc_set_foreground(gc, c);
-	else if (!strcmp(attr, "background")) gdk_gc_set_background(gc, c);
-	else {
-	    PyErr_SetString(PyExc_TypeError,"type mismatch");
-	    return -1;
+	if (!strcmp(attr, "foreground")) {
+	    gdk_gc_set_foreground(gc, c);
+	    return 0;
+	} else if (!strcmp(attr, "background")) {
+	    gdk_gc_set_background(gc, c);
+	    return 0;
 	}
     } else if (pyg_boxed_check(value, GDK_TYPE_FONT)) {
-	if (!strcmp(attr, "font")) gdk_gc_set_font(gc, pyg_boxed_get(value, GdkFont));
-	else{
-	    PyErr_SetString(PyExc_TypeError,"type mismatch");
-	    return -1;
+	if (!strcmp(attr, "font")) {
+	    gdk_gc_set_font(gc, pyg_boxed_get(value, GdkFont));
+	    return 0;
 	}
     } else if (pygobject_check(value, &PyGdkWindow_Type) || value == Py_None) {
 	PyGObject *window = (PyGObject *)value;
 	GdkWindow *w = (value==Py_None)?NULL:GDK_WINDOW(window->obj);
-	if (!strcmp(attr, "tile")) gdk_gc_set_tile(gc, w);
-	else if (!strcmp(attr, "stipple")) gdk_gc_set_stipple(gc, w);
-	else if (!strcmp(attr, "clip_mask")) gdk_gc_set_clip_mask(gc, w);
-	else {
-	    PyErr_SetString(PyExc_TypeError,"type mismatch");
-	    return -1;
+	if (!strcmp(attr, "tile")) {
+	    gdk_gc_set_tile(gc, w);
+	    return 0;
+	} else if (!strcmp(attr, "stipple")) {
+	    gdk_gc_set_stipple(gc, w);
+	    return 0;
+	} else if (!strcmp(attr, "clip_mask")) {
+	    gdk_gc_set_clip_mask(gc, w);
+	    return 0;
 	}
-    } else {
-	PyErr_SetString(PyExc_TypeError,"type mismatch");
-	return -1;
     }
 
-    {
-	PyObject *name = PyString_FromString(attr);
-	int ret = PyObject_GenericSetAttr ((PyObject *)self, name, value);
-	Py_DECREF(name);
-	return ret;
-    }
-    return 0;
+    PyErr_SetString(PyExc_AttributeError, "could not write attribute");
+    return -1;
 }
 %%
 override gdk_gc_set_dashes
