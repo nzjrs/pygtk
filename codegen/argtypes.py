@@ -188,6 +188,18 @@ class IntArg(ArgType):
         info.varlist.add('int', 'ret')
         info.codeafter.append('    return PyInt_FromLong(ret);')
 
+class TimeTArg(ArgType):
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pdflt:
+	    info.varlist.add('time_t', pname + ' = ' + pdflt)
+	else:
+	    info.varlist.add('time_t', pname)
+	info.arglist.append(pname)
+        info.add_parselist('i', ['&' + pname], [pname])
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add('time_t', 'ret')
+        info.codeafter.append('    return PyInt_FromLong(ret);')
+
 class ULongArg(ArgType):
     dflt = '    if (py_%(name)s)\n' \
            '        %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
@@ -735,6 +747,9 @@ matcher.register('gint8', arg)
 matcher.register('guint16', arg)
 matcher.register('gint16', arg)
 matcher.register('gint32', arg)
+
+arg = TimeTArg()
+matcher.register('time_t', arg)
 
 # If the system maxint is smaller than unsigned int, we need to use
 # Long objects with PyLong_AsUnsignedLong
