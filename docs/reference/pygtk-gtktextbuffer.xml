@@ -384,11 +384,23 @@ linkend="method-gtktextbuffer--delete-selection">delete_selection</link></method
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextbuffer--begin-user-action">begin_user_action</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextbuffer--end-user-action">end_user_action</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktextbuffer--end-user-action">backspace</link></methodname>
+	<methodparam><parameter
+		       role="keyword">iter</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">interactive</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">default_editable</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -403,6 +415,32 @@ linkend="method-gtktextbuffer--end-user-action">end_user_action</link></methodna
   </refsect1>
 
   <refsect1>
+    <title>Properties</title>
+ 
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+        <tgroup cols="3">
+          <colspec column="1" colwidth="1in"/>
+          <colspec column="2" colwidth="1in"/>
+          <colspec column="3" colwidth="4in"/>
+          <tbody>
+ 
+            <row valign="top">
+              <entry>"tag-table"</entry>
+              <entry>Read-Write-Construct Only</entry>
+              <entry>The <link
+linkend="class-gtktexttagtable"><classname>gtk.TextTagTable</classname></link> 
+associated with the textbuffer. Available in GTK+ 2.2 and above.</entry>
+            </row>
+ 
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </blockquote>
+ 
+  </refsect1>
+ 
+   <refsect1>
     <title>Attributes</title>
 
     <blockquote role="properties">
@@ -2477,12 +2515,70 @@ methods.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>end_user_action</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
 
       <para>The <methodname>end_user_action</methodname>() method should be
 paired with a call to the <link
 linkend="method-gtktextbuffer--begin-user-action"><methodname>begin_user_action</methodname>()</link> 
 method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--backspace">
+      <title>gtk.TextBuffer.backspace</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>backspace</methodname>
+          <methodparam><parameter
+                         role="keyword">iter</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">interactive</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">default_editable</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gtktextiter"><classname>gtk.TextIter</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">interactive</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> the deletion is
+caused by user interaction</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">default_editable</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <parameter>TRUE</parameter> the buffer is
+editable by default</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the buffer was
+modified</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>backspace</methodname>() method performs the
+appropriate action as if the user hit the delete key with the cursor at the
+position specified by <parameter>iter</parameter>. In the normal case a
+single character will be deleted, but when combining accents are involved,
+more than one character can be deleted, and when precomposed character and
+accent combinations are involved, less than one character will be
+deleted.</para>
+
+      <para>Because the buffer is modified, all outstanding iterators become
+invalid after calling this function; however, <parameter>iter</parameter>
+will be re-initialized to point to the location where text was
+deleted.</para>
 
     </refsect2>
 
