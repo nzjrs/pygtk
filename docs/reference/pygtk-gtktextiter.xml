@@ -251,6 +251,22 @@ linkend="method-gtktextiter--backward-word-starts">backward_word_starts</link></
 		       role="keyword">count</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextiter--forward-visible-word-end">forward_visible_word_end</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextiter--backward-visible-word-start">backward_visible_word_start</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextiter--forward-visible-word-ends">forward_visible_word_ends</link></methodname>
+	<methodparam><parameter role="keyword">count</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextiter--backward-visible-word-starts">backward_visible_word_starts</link></methodname>
+	<methodparam><parameter role="keyword">count</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextiter--forward-sentence-end">forward_sentence_end</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
@@ -1772,7 +1788,7 @@ location moved and is not the end textiter</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>back_word_starts(</methodname>) method calls the
+      <para>The <methodname>backward_word_starts(</methodname>) method calls the
 <link
 linkend="method-gtktextiter--backward-word-start"><methodname>backward_word_start</methodname>()</link> 
 method up to <parameter>count</parameter> times or the <link
@@ -1780,6 +1796,122 @@ linkend="method-gtktextiter--forward-word-ends"><methodname>forward_word_ends</m
 method if <parameter>count</parameter> is negative. The method returns
 <literal>TRUE</literal> if the textiter location changed and the resulting
 location is not at the end of the textbuffer.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextiter--forward-visible-word-end">
+      <title>gtk.TextIter.forward_visible_word_end</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>forward_visible_word_end</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the textiter moved
+	  and is not the end iterator</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>forward_visible_word_end</methodname>() method
+moves the textiter forward to the next visible word end. (If the textiter is
+currently on a word end, it moves forward to the next one after that.) Word
+breaks are determined by Pango and should be correct for nearly any language
+(if not, the correct fix would be to the Pango word break
+algorithms).</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextiter--backward-visible-word-start">
+      <title>gtk.TextIter.backward_visible_word_start</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>backward_visible_word_start</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the textiter moved
+	  and is not the end iterator</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>backward_visible_word_start</methodname>()
+method moves the textiter backward to the previous visible word start. (If
+textiter is currently on a word start, it moves backward to the next one
+after that.) Word breaks are determined by Pango and should be correct for
+nearly any language (if not, the correct fix would be to the Pango word
+break algorithms).</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextiter--forward-visible-word-ends">
+      <title>gtk.TextIter.forward_visible_word_ends</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>forward_visible_word_ends</methodname>
+	  <methodparam><parameter role="keyword">count</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">count</parameter>&nbsp;:</term>
+	  <listitem><simpara>the number of times to move</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the textiter moved
+	  and is not the end iterator</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>forward_visible_word_ends</methodname>() method
+calls the <link
+linkend="method-gtktextiter--forward-visible-word-end"><methodname>forward_visible_word_end()</methodname></link>
+method the number of times specified by <parameter>count</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextiter--backward-visible-word-starts">
+      <title>gtk.TextIter.backward_visible_word_starts</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>backward_visible_word_starts</methodname>
+	  <methodparam><parameter role="keyword">count</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">count</parameter>&nbsp;:</term>
+	  <listitem><simpara>the number of times to move</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the textiter moved
+	  and is not the end iterator</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>backward_visible_word_starts</methodname>()
+method calls the <link
+linkend="method-gtktextiter--backward-visible-word-start"><methodname>backward_visible_word_start()</methodname></link>
+method the number of times specified by <parameter>count</parameter>.</para>
 
     </refsect2>
 
