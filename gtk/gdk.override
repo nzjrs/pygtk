@@ -2382,3 +2382,21 @@ _wrap_gdk_gc_new2(PyObject *self, PyObject *args, PyObject *kwargs)
     /* pygobject_new handles NULL checking */
     return pygobject_new((GObject *)ret);
 }
+%%
+override gdk_devices_list noargs
+static PyObject *
+_wrap_gdk_devices_list(PyObject *self)
+{
+    GList * devlist,  *tmp;
+    PyObject *list;
+
+    devlist = gdk_devices_list();
+    list = PyList_New(0);
+    for (tmp = devlist; tmp != NULL; tmp = tmp->next) {
+        PyObject *item = pygobject_new((GObject *)tmp->data);
+        PyList_Append(list, item);
+        Py_DECREF(item);
+    }
+
+    return list;
+}
