@@ -1,5 +1,37 @@
 2000-12-06  James Henstridge  <james@daa.com.au>
 
+	* gtk/pygtktreemodel.c: fix PyObject_CallMethod calls to add
+	parentheses around argument type list.
+	(pygtk_tree_model_get_flags): decref py_ret -- not Py_None
+	(pygtk_tree_model_get_n_columns): same here.
+	(pygtk_tree_model_get_column_type): same here.
+	(*): conditionally print out debugging messages.
+
+	* examples/testgtk/demos/treemodel.py: simple test of
+	PyGtkTreeModel.
+
+	* gtk/pygtktreemodel.c: set iter->tree_node to NULL when returning
+	FALSE, as GTK sometimes ignores the return value :(
+
+	* codegen/codegen.py (interfacetypetmpl): don't set the interface
+	type as having an instance dictionary.
+	(write_interface): actually use interfacetypetmpl when writing out
+	the interface type def.
+
+	* codegen/argtypes.py (_conv_special_cases): add a special case
+	for the underscore version of PyGtkTreeModel.
+
+	* gtk/gtk.override: include pygtktreemodel.h
+
+	* gtk/__init__.py: don't error out if we can't import ltihooks.
+
+	* gtk/gtk-extrafuncs.defs: include defs for PyGtkTreeModel type.
+
+	* gtk/Makefile.am (_gtkmodule_la_SOURCES): compile PyGtkTreeModel
+	into pygtk.
+
+	* gtk/pygtktreemodel.c: fix errors.
+
 	* gtk/pygtktreemodel.[ch]: check in initial leaky implementation
 	of the GtkTreeModel for use from python.  Can't test it right now
 	because gtk head is broken.

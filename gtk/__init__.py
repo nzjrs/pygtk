@@ -1,8 +1,11 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 
 # this can go when things are a little further along
-import ltihooks
-del ltihooks
+try:
+    import ltihooks
+    del ltihooks
+except ImportError:
+    pass
 
 # hack so that ltihooks is used when importing ExtensionClass ...
 import ExtensionClass

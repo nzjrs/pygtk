@@ -14,6 +14,7 @@ _conv_special_cases = {
     'GnomeRootWin': '_GNOME_ROOTWIN',
     'GnomeAppBar': '_GNOME_APPBAR',
     'GnomeDEntryEdit': '_GNOME_DENTRY_EDIT',
+    'PyGtkTreeModel': '_PYGTK_TREE_MODEL'
 }
 
 def _to_upper_str(str):

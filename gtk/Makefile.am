@@ -26,6 +26,8 @@ _gtkmodule_la_SOURCES = \
 	gtkmodule.c \
 	gtkobject-support.c \
 	gtk-types.c \
+	pygtktreemodel.h \
+	pygtktreemodel.c \
 	gtk.c
 
 #imlibmodule_la_LDFLAGS = -module -avoid-version

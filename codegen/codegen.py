@@ -130,7 +130,7 @@ interfacetypetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
 	   '    0L, 0L,\n' + \
 	   '    NULL, /* Documentation string */\n' + \
 	   '    %(methods)s,\n' + \
-           '    EXTENSIONCLASS_BASICNEW_FLAG,\n' + \
+           '    0,\n' + \
 	   '};\n\n'
 
 def fixname(name):
@@ -411,7 +411,7 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
     # write the type template
     dict = { 'class': interface.c_name, 'getattr': '0' }
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
-    fp.write(typetmpl % dict)
+    fp.write(interfacetypetmpl % dict)
 
 def write_functions(parser, overrides, prefix, fp=sys.stdout):
     fp.write('\n/* ----------- functions ----------- */\n\n')
