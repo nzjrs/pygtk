@@ -4937,3 +4937,66 @@ _wrap_gtk_icon_size_lookup_for_settings(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_icon_theme_set_search_path kwargs
+static PyObject *
+_wrap_gtk_icon_theme_set_search_path(PyGObject *self, PyObject *args,
+				     PyObject *kwargs)
+{
+    static char *kwlist[] = { "path", NULL };
+    int i, len;
+    PyObject *py_seq;
+    gchar **paths;
+
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,
+				     "O:GtkIconTheme.set_search_path",
+                                     kwlist, &py_seq))
+        return NULL;
+
+    if (!PySequence_Check(py_seq) || (len = PySequence_Size(py_seq)) < 0) {
+	PyErr_SetString(PyExc_ValueError,
+			"path should be a sequence of strings");
+	return NULL;
+    }
+
+    paths = g_new(gchar *, len);
+    for (i = 0; i < len; i++) {
+	PyObject *py_path = PySequence_GetItem(py_seq, i);
+	if (!PyString_Check(py_path)) {
+	    PyErr_SetString(PyExc_ValueError, "path items must be strings");
+	    Py_DECREF(py_path);
+	    g_free(paths);
+	    return NULL;
+	}
+	paths[i] = PyString_AsString(py_path);
+	Py_DECREF(py_path);
+    }
+
+    gtk_icon_theme_set_search_path(GTK_ICON_THEME(self->obj),
+				   (const gchar **)paths, len);
+
+    g_free(paths);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_icon_theme_get_search_path noargs
+static PyObject *
+_wrap_gtk_icon_theme_get_search_path(PyGObject *self)
+{
+    gchar **paths;
+    gint n_items;
+    PyObject *py_tuple;
+    int i;
+
+    gtk_icon_theme_get_search_path(GTK_ICON_THEME(self->obj),
+				   &paths, &n_items);
+
+    py_tuple = PyTuple_New(n_items);
+    for (i = 0; i < n_items; i++)
+	PyTuple_SetItem(py_tuple, i, PyString_FromString(paths[i]));
+
+    g_strfreev(paths);
+
+    return py_tuple;
+}
