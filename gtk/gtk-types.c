@@ -952,7 +952,7 @@ static PyGetSetDef pygtk_tree_model_row_getsets[] = {
 static PyTypeObject PyGtkTreeModelRow_Type = {
     PyObject_HEAD_INIT(NULL)
     0,
-    "gtk.gtk.TreeModelRow",
+    "gtk.TreeModelRow",
     sizeof(PyGtkTreeModelRow),
     0,
     (destructor)pygtk_tree_model_row_dealloc,
@@ -1044,7 +1044,7 @@ pygtk_tree_model_row_iter_next(PyGtkTreeModelRowIter *self)
 static PyTypeObject PyGtkTreeModelRowIter_Type = {
     PyObject_HEAD_INIT(NULL)
     0,
-    "gtk.gtk.TreeModelRowIter",
+    "gtk.TreeModelRowIter",
     sizeof(PyGtkTreeModelRowIter),
     0,
     (destructor)pygtk_tree_model_row_iter_dealloc,
@@ -1072,6 +1072,53 @@ static PyTypeObject PyGtkTreeModelRowIter_Type = {
     (iternextfunc)pygtk_tree_model_row_iter_next
 };
 
+int
+_pygtk_tree_model_set_row(GtkTreeModel *model, GtkTreeIter *iter,
+			  PyObject *items)
+{
+    gint n_columns, i;
+
+    if (!GTK_IS_LIST_STORE(model) && !GTK_IS_TREE_STORE(model)) {
+	PyErr_SetString(PyExc_TypeError,
+			"can not set cells in this tree model");
+	return -1;
+    }
+
+    if (!PySequence_Check(items)) {
+	PyErr_SetString(PyExc_TypeError, "expecting a sequence");
+	return -1;
+    }
+    n_columns = gtk_tree_model_get_n_columns(model);
+    if (PySequence_Length(items) != n_columns) {
+	PyErr_SetString(PyExc_ValueError, "row sequence has wrong length");
+	return -1;
+    }
+    for (i = 0; i < n_columns; i++) {
+	GValue value = { 0, };
+	PyObject *item;
+
+	item = PySequence_GetItem(items, i);
+	if (!item)
+	    return -1;
+	g_value_init(&value, gtk_tree_model_get_column_type(model, i));
+	if (pyg_value_from_pyobject(&value, item)) {
+	    Py_DECREF(item);
+	    PyErr_SetString(PyExc_TypeError,
+			    "value is of wrong type for this column");
+	    return -1;
+	}
+
+	if (GTK_IS_LIST_STORE(model))
+	    gtk_list_store_set_value(GTK_LIST_STORE(model), iter, i, &value);
+	else if (GTK_IS_TREE_STORE(model))
+	    gtk_tree_store_set_value(GTK_TREE_STORE(model), iter, i, &value);
+
+	g_value_unset(&value);
+	Py_DECREF(item);
+    }
+    return 0;
+}
+
 PyObject *
 pygtk_tree_path_to_pyobject(GtkTreePath *path)
 {
@@ -1089,7 +1136,12 @@ pygtk_tree_path_to_pyobject(GtkTreePath *path)
 GtkTreePath *
 pygtk_tree_path_from_pyobject(PyObject *object)
 {
-    if (PyInt_Check(object)) {
+    if (PyString_Check(object)) {
+	GtkTreePath *path;
+
+	path = gtk_tree_path_new_from_string(PyString_AsString(object));
+	return path;
+    } else if (PyInt_Check(object)) {
 	GtkTreePath *path;
 
 	path = gtk_tree_path_new();

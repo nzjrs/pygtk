@@ -1843,10 +1843,53 @@ _wrap_gtk_tree_model_tp_getitem(PyGObject *self, PyObject *item)
     gtk_tree_path_free(path);
     return ret;
 }
+static int
+_wrap_gtk_tree_model_tp_setitem(PyGObject *self, PyObject *item,
+				PyObject *value)
+{
+    GtkTreeIter *iter, iter2;
+
+    if (pyg_boxed_check(item, GTK_TYPE_TREE_ITER)) {
+	iter = pyg_boxed_get(item, GtkTreeIter);
+    } else {
+	GtkTreePath *path = pygtk_tree_path_from_pyobject(item);
+
+	if (!path) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "could not parse subscript as a tree path");
+	    return  -1;
+	}
+	if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(self->obj), &iter2,path)) {
+	    PyErr_SetString(PyExc_TypeError, "could not find tree path");
+	    gtk_tree_path_free(path);
+	    return -1;
+	}
+	iter = &iter2;
+	gtk_tree_path_free(path);
+    }
+
+    if (value == NULL) {
+	if (GTK_IS_LIST_STORE(self->obj)) {
+	    gtk_list_store_remove(GTK_LIST_STORE(self->obj), iter);
+	    return 0;
+	} else if (GTK_IS_TREE_STORE(self->obj)) {
+	    gtk_tree_store_remove(GTK_TREE_STORE(self->obj), iter);
+	    return 0;
+	} else {
+	    PyErr_SetString(PyExc_TypeError,
+			    "don't know how to remove rows "
+			    "from this type of tree model");
+	    return -1;
+	}
+    } else {
+	return _pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), iter,value);
+    }
+}
+
 static PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping = {
     (inquiry)_wrap_gtk_tree_model_tp_length,
     (binaryfunc)_wrap_gtk_tree_model_tp_getitem,
-    (objobjargproc)0
+    (objobjargproc)_wrap_gtk_tree_model_tp_setitem
 };
 %%
 override-slot GtkTreeModel.tp_iter
@@ -2112,14 +2155,21 @@ ignore
 static PyObject *
 _wrap_gtk_list_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "position", NULL };
+    static char *kwlist[] = { "position", "row", NULL };
     GtkTreeIter iter;
     gint position;
+    PyObject *row = Py_None;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:GtkListStore.insert",
-				     kwlist, &position))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|O:GtkListStore.insert",
+				     kwlist, &position, &row))
 	return NULL;
     gtk_list_store_insert(GTK_LIST_STORE(self->obj), &iter, position);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -2128,13 +2178,14 @@ static PyObject *
 _wrap_gtk_list_store_insert_before(PyGObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
-    static char *kwlist[] = { "sibling", NULL };
+    static char *kwlist[] = { "sibling", "row", NULL };
     PyObject *sibling;
     GtkTreeIter iter;
+    PyObject *row = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O:GtkListStore.insert_before",
-				     kwlist, &sibling))
+				     "O|O:GtkListStore.insert_before",
+				     kwlist, &sibling, &row))
 	return NULL;
     if (!pyg_boxed_check(sibling, GTK_TYPE_TREE_ITER)) {
 	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
@@ -2142,6 +2193,12 @@ _wrap_gtk_list_store_insert_before(PyGObject *self, PyObject *args,
     }
     gtk_list_store_insert_before(GTK_LIST_STORE(self->obj), &iter,
 				 pyg_boxed_get(sibling, GtkTreeIter));
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -2150,13 +2207,14 @@ static PyObject *
 _wrap_gtk_list_store_insert_after(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
-    static char *kwlist[] = { "sibling", NULL };
+    static char *kwlist[] = { "sibling", "row", NULL };
     PyObject *sibling;
     GtkTreeIter iter;
+    PyObject *row = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O:GtkListStore.insert_after",
-				     kwlist, &sibling))
+				     "O|O:GtkListStore.insert_after",
+				     kwlist, &sibling, &row))
 	return NULL;
     if (!pyg_boxed_check(sibling, GTK_TYPE_TREE_ITER)) {
 	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
@@ -2164,26 +2222,54 @@ _wrap_gtk_list_store_insert_after(PyGObject *self, PyObject *args,
     }
     gtk_list_store_insert_after(GTK_LIST_STORE(self->obj), &iter,
 				pyg_boxed_get(sibling, GtkTreeIter));
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_list_store_prepend noargs
+override gtk_list_store_prepend kwargs
 static PyObject *
-_wrap_gtk_list_store_prepend(PyGObject *self)
+_wrap_gtk_list_store_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
+    static char *kwlist[] = { "row", NULL };
     GtkTreeIter iter;
+    PyObject *row = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkListStore.prepend",
+				     kwlist, &row))
 
     gtk_list_store_prepend(GTK_LIST_STORE(self->obj), &iter);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_list_store_append noargs
 static PyObject *
-_wrap_gtk_list_store_append(PyGObject *self)
+_wrap_gtk_list_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
+    static char *kwlist[] = { "row", NULL };
     GtkTreeIter iter;
+    PyObject *row = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkListStore.append",
+				     kwlist, &row))
 
     gtk_list_store_append(GTK_LIST_STORE(self->obj), &iter);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -2330,13 +2416,14 @@ override gtk_tree_store_insert kwargs
 static PyObject *
 _wrap_gtk_tree_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "parent", "position", NULL };
+    static char *kwlist[] = { "parent", "position", "row", NULL };
     PyObject *py_parent;
     GtkTreeIter iter, *parent = NULL;
     gint position;
+    PyObject *row = Py_None;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi:GtkTreeStore.insert",
-				     kwlist, &py_parent, &position))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi|O:GtkTreeStore.insert",
+				     kwlist, &py_parent, &position, &row))
 	return NULL;
     if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
 	parent = pyg_boxed_get(py_parent, GtkTreeIter);
@@ -2346,6 +2433,12 @@ _wrap_gtk_tree_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return NULL;
     }
     gtk_tree_store_insert(GTK_TREE_STORE(self->obj), &iter, parent, position);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -2354,13 +2447,14 @@ static PyObject *
 _wrap_gtk_tree_store_insert_before(PyGObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
-    static char *kwlist[] = { "parent", "sibling", NULL };
+    static char *kwlist[] = { "parent", "sibling", "row", NULL };
     PyObject *py_parent, *py_sibling;
     GtkTreeIter iter, *parent = NULL, *sibling = NULL;
+    PyObject *row = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OO:GtkTreeStore.insert_before",
-				     kwlist, &py_parent, &py_sibling))
+				     "OO|O:GtkTreeStore.insert_before",
+				     kwlist, &py_parent, &py_sibling, &row))
 	return NULL;
     if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
 	parent = pyg_boxed_get(py_parent, GtkTreeIter);
@@ -2378,6 +2472,12 @@ _wrap_gtk_tree_store_insert_before(PyGObject *self, PyObject *args,
     }
     gtk_tree_store_insert_before(GTK_TREE_STORE(self->obj), &iter, parent,
 				 sibling);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -2386,13 +2486,14 @@ static PyObject *
 _wrap_gtk_tree_store_insert_after(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
-    static char *kwlist[] = { "parent", "sibling", NULL };
+    static char *kwlist[] = { "parent", "sibling", "row", NULL };
     PyObject *py_parent, *py_sibling;
     GtkTreeIter iter, *parent = NULL, *sibling = NULL;
+    PyObject *row = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OO:GtkTreeStore.insert_after",
-				     kwlist, &py_parent, &py_sibling))
+				     "OO|O:GtkTreeStore.insert_after",
+				     kwlist, &py_parent, &py_sibling, &row))
 	return NULL;
     if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
 	parent = pyg_boxed_get(py_parent, GtkTreeIter);
@@ -2410,6 +2511,12 @@ _wrap_gtk_tree_store_insert_after(PyGObject *self, PyObject *args,
     }
     gtk_tree_store_insert_after(GTK_TREE_STORE(self->obj), &iter, parent,
 				sibling);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -2417,12 +2524,13 @@ override gtk_tree_store_prepend kwargs
 static PyObject *
 _wrap_gtk_tree_store_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "parent", NULL };
+    static char *kwlist[] = { "parent", "row", NULL };
     PyObject *py_parent;
     GtkTreeIter iter, *parent = NULL;
+    PyObject *row = Py_None;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkTreeStore.prepend",
-				     kwlist, &py_parent))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:GtkTreeStore.prepend",
+				     kwlist, &py_parent, &row))
 	return NULL;
     if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
 	parent = pyg_boxed_get(py_parent, GtkTreeIter);
@@ -2432,6 +2540,12 @@ _wrap_gtk_tree_store_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return NULL;
     }
     gtk_tree_store_prepend(GTK_TREE_STORE(self->obj), &iter, parent);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -2439,12 +2553,13 @@ override gtk_tree_store_append kwargs
 static PyObject *
 _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "parent", NULL };
+    static char *kwlist[] = { "parent", "row", NULL };
     PyObject *py_parent;
     GtkTreeIter iter, *parent = NULL;
+    PyObject *row = Py_None;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkTreeStore.append",
-				     kwlist, &py_parent))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:GtkTreeStore.append",
+				     kwlist, &py_parent, &row))
 	return NULL;
     if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
 	parent = pyg_boxed_get(py_parent, GtkTreeIter);
@@ -2454,6 +2569,12 @@ _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return NULL;
     }
     gtk_tree_store_append(GTK_TREE_STORE(self->obj), &iter, parent);
+
+    /* optionally set items in the new row */
+    if (row != Py_None &&
+	_pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
+	return NULL;
+
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
@@ -6814,8 +6935,6 @@ _wrap_gtk_stock_list_ids(PyGObject *self)
 
     list = PyList_New(g_slist_length(ids));
     for (; ids; ids = ids->next, i++) {
-	PyObject *py_item;
-
 	PyList_SetItem(list, i, PyString_FromString(ids->data));
 	g_free(ids->data);
     }

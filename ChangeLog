@@ -1,3 +1,26 @@
+2003-03-11  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk.override (_wrap_gtk_tree_model_tp_setitem): add a
+	setitem routine for GtkTreeStore and GtkListStore.
+	(_wrap_gtk_list_store_insert): add second argument to allow
+	setting the values in the row when creating it.
+	(_wrap_gtk_list_store_insert_before): same here.
+	(_wrap_gtk_list_store_insert_after): and here.
+	(_wrap_gtk_list_store_prepend): and here.
+	(_wrap_gtk_list_store_append): and here.
+	(_wrap_gtk_tree_store_insert): and here.
+	(_wrap_gtk_tree_store_insert_before): and here.
+	(_wrap_gtk_tree_store_insert_after): and here.
+	(_wrap_gtk_tree_store_prepend): and here.
+	(_wrap_gtk_tree_store_append): and here.
+
+	* gtk/pygtk-private.h (_pygtk_tree_model_set_row): add prototype.
+
+	* gtk/gtk-types.c (pygtk_tree_path_from_pyobject): support
+	converting a path string to a GtkTreePath.
+	(_pygtk_tree_model_set_row): new helper function to set a row from
+	a sequence.
+
 2003-03-08  Johan Dahlin  <jdahlin@async.com.br>
 
 	* gtk/gdk.defs (gdk_color_new): New placeholder function

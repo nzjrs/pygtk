@@ -52,5 +52,7 @@ PyObject *_pygtk_style_helper_new(GtkStyle *style, int type, gpointer array);
 PyObject *_pygtk_tree_model_row_new(GtkTreeModel *model, GtkTreeIter *iter);
 PyObject *_pygtk_tree_model_row_iter_new(GtkTreeModel *model,
 					 GtkTreeIter *parent_iter);
+int       _pygtk_tree_model_set_row(GtkTreeModel *model, GtkTreeIter *iter,
+				    PyObject *items);
 
 #endif
