@@ -422,8 +422,9 @@ pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
 				   "(Oi)", py_iter,column);
 
     if (py_value) {
-	pyg_value_from_pyobject(value, py_value);
-	Py_DECREF(py_value);
+        if (py_value != Py_None)
+            pyg_value_from_pyobject(value, py_value);
+        Py_DECREF(py_value);
     } else {
 	PyErr_Print();
     }
