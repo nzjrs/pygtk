@@ -3180,12 +3180,9 @@ _wrap_gtk_toolbar_insert_stock(PyGObject *self, PyObject *args,
 				  tooltip_private_text, NULL, NULL,
 				  position);
     if (ret && PyCallable_Check(callback)) {
-	PyObject *tup = PyTuple_New(1);
-	PySequence_SetItem(tup, 0, param);
 	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, tup, NULL),
+				 pyg_closure_new(callback, param, NULL),
 				 FALSE);
-	Py_DECREF(tup);
     }
     return pygobject_new((GObject *)ret);
 }

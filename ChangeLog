@@ -1,5 +1,18 @@
 2002-01-11  Matt Wilson  <msw@redhat.com>
 
+	* gtk/gtk.override (_wrap_gtk_toolbar_insert_stock): removed
+	debugging code I didn't mean to check in.
+
+	* gobjectmodule.c (pyg_closure_new): use PyTuple_SetItem to build
+	the tuple if extra_args isn't one.  It's faster than using
+	abstractions and clarifies ownership rules, so we always incref
+	extra_args even if we're about to wrap it in a tuple.  Fixes
+	crashes when passing callback functions into
+	GtkToolbar.{append_item,prepend_item,insert_item,insert_stock,
+	append_element}
+
+2002-01-11  Matt Wilson  <msw@redhat.com>
+
 	* codegen/argtypes.py (GtkTreePathArg.normal): added missing newline
 
 	* gtk/gtk.defs (item_factory_path_from_widget): the return here
