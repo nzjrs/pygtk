@@ -2925,9 +2925,12 @@ _wrap_gtk_adjustment__set_page_size(PyGObject *self, PyObject *value,
 %%
 override gtk_adjustment_set_all kwargs
 static PyObject *
-_wrap_gtk_adjustment_set_all(PyGObject *self, PyObject *args,
+_wrap_gtk_adjustment_set_all(PyGObject *self,
+			     PyObject *args,
                              PyObject *kwargs)
 {
+    static char *kwlist[] = { "value", "lower", "upper", "step_increment",
+			      "page_increment", "page_size", NULL };
     GtkAdjustment *adj = GTK_ADJUSTMENT(self->obj);
     double *value = &adj->value, *lower = &adj->lower, *upper = &adj->upper;
     double *step_increment = &adj->step_increment;
@@ -2938,11 +2941,11 @@ _wrap_gtk_adjustment_set_all(PyGObject *self, PyObject *args,
     double old_page_increment = *page_increment;
     double old_page_size = *page_size;
 
-    if (PyErr_Warn(PyExc_DeprecationWarning, "use individual setters") < 0)
-        return NULL;
-    if (!PyArg_ParseTuple(args, "|dddddd:gtk_adjustment_set_all",
-                          value, lower, upper, step_increment,
-                          page_increment, page_size)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|dddddd:gtk_adjustment_set_all",
+				     kwlist,
+				     value, lower, upper, step_increment,
+				     page_increment, page_size)) {
         adj->value = old_value;
         adj->lower = old_lower;
         adj->upper = old_upper;
@@ -2951,9 +2954,13 @@ _wrap_gtk_adjustment_set_all(PyGObject *self, PyObject *args,
         adj->page_size = old_page_size;
         return NULL;
     }
-    if (PyTuple_Size(args) > 0)
+    
+    if (adj->value != old_value)
         gtk_adjustment_value_changed(adj);
-    if (PyTuple_Size(args) > 1)
+    if (adj->lower != old_lower || adj->upper != old_upper
+	|| adj->step_increment != old_step_increment
+	|| adj->page_increment != old_page_increment
+	|| adj->page_size != old_page_size)
         gtk_adjustment_changed(adj);
 
     Py_INCREF(Py_None);
