@@ -1583,5 +1583,28 @@ _wrap_pango_attr_list_filter(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override pango_font_face_list_sizes noargs
+static PyObject *
+_wrap_pango_font_face_list_sizes(PyGObject *self)
+{
+    PyObject *py_sizes;
+    int *sizes, n_sizes, i;
 
-	
+    pango_font_face_list_sizes(PANGO_FONT_FACE(self->obj), &sizes, &n_sizes);
+
+
+    if (!sizes) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+
+    py_sizes = PyTuple_New(n_sizes);
+
+    for (i = 0; i < n_sizes; i++)
+	PyTuple_SetItem(py_sizes, i, PyInt_FromLong(sizes[i]));
+
+    g_free(sizes);
+
+    return py_sizes;
+}
