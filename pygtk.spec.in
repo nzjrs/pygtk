@@ -72,15 +72,16 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
 %defattr(644, root, root, 755)
-%dir %{_prefix}/lib/python?.?/site-packages/gtk
-%{_prefix}/lib/python?.?/site-packages/gtk/__init__.py*
-%{_prefix}/lib/python?.?/site-packages/gtk/keysyms.py*
+%dir %{_prefix}/lib/python?.?/site-packages/gtk-2.0
+%dir %{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/__init__.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/keysyms.py*
 
 %defattr(755, root, root, 755)
-%{_prefix}/lib/python?.?/site-packages/atkmodule.so
-%{_prefix}/lib/python?.?/site-packages/gobjectmodule.so
-%{_prefix}/lib/python?.?/site-packages/pangomodule.so
-%{_prefix}/lib/python?.?/site-packages/gtk/_gtkmodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/atkmodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gobjectmodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/pangomodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/_gtkmodule.so
 
 %doc AUTHORS NEWS README MAPPING ChangeLog
 %doc examples
@@ -88,7 +89,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %if %{buildglade}
 %files libglade
 %defattr(755, root, root, 755)
-%{_prefix}/lib/python?.?/site-packages/gtk/glademodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/glademodule.so
 %endif
 
 %files devel
