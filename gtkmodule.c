@@ -70,6 +70,7 @@
 #ifdef ENABLE_PYGTK_THREADING
 static GStaticPrivate pythreadstate_key = G_STATIC_PRIVATE_INIT;
 static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
+static int disable_threads;
 
 /* The global Python lock will be grabbed by Python when entering a
  * Python/C function; thus, the initial lock count will always be one.
@@ -77,7 +78,7 @@ static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
 #  define INITIAL_LOCK_COUNT 1
 #  define PyGTK_BLOCK_THREADS                                                \
    {                                                                         \
-     if ( !getenv("PYGTK_NO_THREADS") ) {                                    \
+     if (!disable_threads) {                                                 \
          gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key)); \
          if (counter == -INITIAL_LOCK_COUNT) {                               \
            PyThreadState *_save;                                             \
@@ -91,7 +92,7 @@ static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
 
 #  define PyGTK_UNBLOCK_THREADS                                              \
    {                                                                         \
-      if ( !getenv("PYGTK_NO_THREADS") ) {                                   \
+      if (!disable_threads) {                                                \
          gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key)); \
          counter--;                                                          \
          if (counter == -INITIAL_LOCK_COUNT) {                               \
@@ -7166,7 +7167,8 @@ void init_gtk() {
 #ifdef WITH_THREAD
      /* it is required that this function be called to enable the thread
       * safety functions */
-     if ( !g_threads_got_initialized && !getenv("PYGTK_NO_THREADS") )
+     disable_threads = getenv("PYGTK_NO_THREADS") != ? 1 : 0;
+     if ( !g_threads_got_initialized && !disable_threads )
          g_thread_init(NULL);
 #endif
 
