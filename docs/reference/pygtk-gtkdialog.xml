@@ -81,7 +81,14 @@ linkend="method-gtkdialog--response">response</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkdialog--run">run</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkdialog--set-alternative-button-order">set_alternative_button_order</link></methodname>
+	<methodparam><parameter
+		       role="keyword">new_order</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -712,6 +719,62 @@ post-run code won't know whether the dialog was destroyed or not.</para>
 
       <para>After the <methodname>run</methodname>() method returns, you are
 responsible for hiding or destroying the dialog as needed.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkdialog--set-alternative-button-order">
+      <title>gtk.Dialog.set_alternative_button_order</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_alternative_button_order</methodname>
+	  <methodparam><parameter
+			 role="keyword">new_order</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">new_order</parameter>&nbsp;:</term>
+	  <listitem><simpara>a sequence containing response id
+integer values</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_alternative_button_order</methodname>()
+method sets an alternative button order for the dialog based on the sequence
+of response ids specified by <parameter>new_order</parameter>. If the
+"gtk-alternative-button-order" property of the <link
+linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+object is set to <literal>TRUE</literal>, the dialog buttons are reordered
+according to the order of the response ids passed to this method.</para>
+
+      <para>By default, GTK+ dialogs use the button order advocated by the
+Gnome Human Interface Guidelines with the affirmative button at the far
+right, and the cancel button left of it. But the builtin GTK+ dialogs and
+<link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link>s
+do provide an alternative button order, which is more suitable on some
+platforms, e.g. Windows.</para>
+
+      <para>Use this method after adding all the buttons to your dialog,
+as the following example shows:</para>
+
+      <programlisting>
+  settings = gtk.settings_get_default()
+  settings.set_property('gtk-alternative-button-order', True)
+
+  dialog = gtk.Dialog()
+  cancel_button = dialog.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+  ok_button = dialog.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
+  ok_button.grab_default()
+  help_button = dialog.add_button(gtk.STOCK_HELP, gtk.RESPONSE_HELP)
+
+  dialog.set_alternative_button_order([gtk.RESPONSE_OK, gtk.RESPONSE_CANCEL,
+                                       gtk.RESPONSE_HELP])
+</programlisting>
 
     </refsect2>
 
