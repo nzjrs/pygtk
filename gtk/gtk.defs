@@ -11259,6 +11259,64 @@
 
 
 
+;; From /opt/gtk2/include/gtk-2.0/gtk/gtkradiotoolbutton.h
+
+(define-function gtk_radio_tool_button_get_type
+  (c-name "gtk_radio_tool_button_get_type")
+  (return-type "GType")
+)
+
+(define-function gtk_radio_tool_button_new
+  (c-name "gtk_radio_tool_button_new")
+  (is-constructor-of "GtkRadioToolButton")
+  (return-type "GtkToolItem*")
+)
+
+(define-function radio_tool_button_new_from_stock
+  (c-name "gtk_radio_tool_button_new_from_stock")
+  (is-constructor-of "GtkRadioToolButton")
+  (return-type "GtkToolItem*")
+  (parameters
+    '("const-gchar*" "stock_id")
+  )
+)
+
+(define-function radio_tool_button_new_from_widget
+  (c-name "gtk_radio_tool_button_new_from_widget")
+  (is-constructor-of "GtkRadioToolButton")
+  (return-type "GtkToolItem*")
+  (parameters
+    '("GtkRadioToolButton*" "group")
+   )
+)
+
+(define-function radio_tool_button_new_with_stock_from_widget
+  (c-name "gtk_radio_tool_button_new_with_stock_from_widget")
+  (is-constructor-of "GtkRadioToolButton")
+  (return-type "GtkToolItem*")
+  (parameters
+    '("GtkRadioToolButton*" "group")
+    '("const-gchar*" "stock_id")
+  )
+)
+
+(define-method set_group
+  (of-object "GtkRadioToolButton")
+  (c-name "gtk_radio_tool_button_set_group")
+  (return-type "none")
+  (parameters
+    '("GSList*" "group")
+  )
+)
+
+(define-method get_group
+  (of-object "GtkRadioToolButton")
+  (c-name "gtk_radio_tool_button_get_group")
+  (return-type "GSList*")
+)
+
+
+
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkrange.h
 
 (define-function gtk_range_get_type

@@ -244,6 +244,7 @@ ignore-glob
   gtk_marshal_*
   gtk_pattern_*
   gtk_radio_button_new_*
+  gtk_radio_tool_button_new_*
   gtk_quit_add_*
   gtk_signal_*
   gtk_target_list_*
@@ -5108,6 +5109,100 @@ _wrap_gtk_radio_action_get_group(PyGObject *self) {
     PyObject *gtk_obj;
 
     list = gtk_radio_action_get_group(GTK_RADIO_ACTION(self->obj));
+
+    if ((py_list = PyList_New(0)) == NULL) {
+        return NULL;
+    }
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+        gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+        if (gtk_obj == NULL) {
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_Append(py_list, gtk_obj);
+        Py_DECREF(gtk_obj);
+    }
+    return py_list;
+}
+%%
+override gtk_radio_tool_button_new kwargs
+static int
+_wrap_gtk_radio_tool_button_new(PyGObject *self, PyObject *args,
+                              PyObject *kwargs)
+{
+    static char *kwlist[] = { "group", "stock_id", NULL };
+    gchar *stock = NULL;
+    PyObject *py_widget = Py_None;
+    GtkRadioToolButton *widget = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|Oz:GtkRadioToolButton.__init__", kwlist,
+                                     &py_widget, &stock))
+        return -1;
+
+    if (py_widget != Py_None) {
+	if (pygobject_check(py_widget, &PyGtkRadioToolButton_Type))
+	    widget = GTK_RADIO_TOOL_BUTTON(pygobject_get(py_widget));
+	else {
+	    PyErr_SetString(PyExc_TypeError,
+			    "first argument must be a GtkRadioToolButton or None");
+	    return -1;
+	}
+    }
+
+    /* various configs for create radio tool buttons ... */
+    if (stock == NULL) {
+        if (widget == NULL)
+            self->obj = (GObject *)gtk_radio_tool_button_new(NULL);
+        else
+            self->obj = (GObject *)gtk_radio_tool_button_new_from_widget(widget);
+    } else {
+        if (widget == NULL)
+            self->obj = (GObject *)gtk_radio_tool_button_new_from_stock(NULL,
+                                                                         stock);
+        else
+            self->obj = (GObject *)gtk_radio_tool_button_new_with_stock_from_widget
+                (widget, stock);
+    }
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkRadioToolButton object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gtk_radio_tool_button_set_group kwargs
+static PyObject *
+_wrap_gtk_radio_tool_button_set_group(PyGObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "group", NULL };
+    GSList *list;
+    GtkRadioToolButton *group;
+    PyObject *py_group;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:GtkRadioToolButton.set_group", kwlist,
+				     &PyGtkRadioToolButton_Type, &py_group))
+        return NULL;
+
+    group = GTK_RADIO_TOOL_BUTTON(pygobject_get(py_group));
+    list = gtk_radio_tool_button_get_group(group);
+    gtk_radio_tool_button_set_group(GTK_RADIO_TOOL_BUTTON(self->obj), list);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_radio_tool_button_get_group noargs
+static PyObject *
+_wrap_gtk_radio_tool_button_get_group(PyGObject *self) {
+    PyObject *py_list;
+    GSList *list, *tmp;
+    PyObject *gtk_obj;
+
+    list = gtk_radio_tool_button_get_group(GTK_RADIO_TOOL_BUTTON(self->obj));
 
     if ((py_list = PyList_New(0)) == NULL) {
         return NULL;
