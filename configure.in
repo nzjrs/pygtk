@@ -84,13 +84,13 @@ dnl get rid of the -export-dynamic stuff from the configure flags ...
 export_dynamic=`(./libtool --config; echo eval echo \\$export_dynamic_flag_spec) | sh`
 
 dnl glib
-AM_PATH_GLIB_2_0(glib_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],gobject $extra_mods)
+AM_PATH_GLIB_2_0(glib_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-2 branch?)],gobject $extra_mods)
 if test -n "$export_dynamic"; then
   GLIB_LIBS=`echo $GLIB_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
 dnl atk
-PKG_CHECK_MODULES(ATK, atk >= atk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
+PKG_CHECK_MODULES(ATK, atk >= atk_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-2 branch?)])
 AC_SUBST(ATK_CFLAGS)
 AC_SUBST(ATK_LIBS)
 if test -n "$export_dynamic"; then
@@ -98,7 +98,7 @@ if test -n "$export_dynamic"; then
 fi
 
 dnl pango
-PKG_CHECK_MODULES(PANGO, pango >= pango_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
+PKG_CHECK_MODULES(PANGO, pango >= pango_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-2 branch?)])
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
 if test -n "$export_dynamic"; then
@@ -106,7 +106,7 @@ if test -n "$export_dynamic"; then
 fi
 
 dnl gtk+
-AM_PATH_GTK_2_0(gtk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],$extra_mods)
+AM_PATH_GTK_2_0(gtk_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-2 branch?)],$extra_mods)
 if test -n "$export_dynamic"; then
   GTK_LIBS=`echo $GTK_LIBS | sed -e "s/$export_dynamic//"`
 fi
