@@ -1,0 +1,710 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="class-gtkentrycompletion">
+  <refnamediv>
+    <refname>gtk.EntryCompletion</refname>
+    <refpurpose>completion functionality for GtkEntry</refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>Synopsis</title>
+
+    <classsynopsis language="python">
+      <ooclass><classname>gtk.EntryCompletion</classname></ooclass>
+      <ooclass><classname><link
+      linkend="class-gobject">gobject.GObject</link></classname></ooclass>
+      <ooclass><classname><link
+      linkend="class-gtkcelllayout">gtk.CellLayout</link></classname></ooclass>
+      <constructorsynopsis language="python">
+	<methodname><link
+	linkend="constructor-gtkentrycompletion">gtk.EntryCompletion</link></methodname>
+	<methodparam></methodparam> </constructorsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--get-entry">get_entry</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--set-model">set_model</link></methodname>
+	<methodparam><parameter role="keyword">model</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--get-model">get_model</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--set-match-func">set_match_func</link></methodname>
+	<methodparam><parameter>func</parameter></methodparam>
+	<methodparam><parameter>func_data</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--set-minimum-key-length">set_minimum_key_length</link></methodname>
+	<methodparam><parameter role="keyword">length</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--get-minimum-key-length">get_minimum_key_length</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--complete">complete</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--insert-action-text">insert_action_text</link></methodname>
+	<methodparam><parameter role="keyword">index</parameter></methodparam>
+	<methodparam><parameter role="keyword">text</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--insert-action-markup">insert_action_markup</link></methodname>
+	<methodparam><parameter role="keyword">index</parameter></methodparam>
+	<methodparam><parameter role="keyword">markup</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkentrycompletion--delete-action">delete_action</link></methodname>
+	<methodparam><parameter role="keyword">index</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--set-text-column">set_text_column</link></methodname>
+	<methodparam><parameter
+	role="keyword">column</parameter></methodparam>
+      </methodsynopsis>
+    </classsynopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Ancestry</title>
+
+<synopsis>+-- <link linkend="class-gobject">gobject.GObject</link>
+  +-- <link linkend="class-gtkentrycompletion">gtk.EntryCompletion</link> (implements <link linkend="class-gtkcelllayout">gtk.CellLayout</link>)
+</synopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"minimum-key-length"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Minimum length of the search key in order to look up
+	      matches.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"model"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The <link 
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> to 
+find matches in.</entry>
+	    </row>
+
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Signal Prototypes</title>
+
+    <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkentrycompletion--action-activated">action-activated</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>completion</parameter></methodparam>
+            <methodparam><parameter>index</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkentrycompletion--match-selected">match-selected</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>completion</parameter></methodparam>
+            <methodparam><parameter>model</parameter></methodparam>
+            <methodparam><parameter>iter</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Description</title>
+
+    <note>
+      <para>This widget is available in PyGTK 2.4 and above.</para>
+    </note>
+
+    <para><link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+is an auxiliary object to be used in conjunction with <link
+linkend="class-gtkentry"><classname>gtk.Entry</classname></link> to provide
+completion functionality. It implements the <link
+linkend="class-gtkcelllayout"><classname>gtk.CellLayout</classname></link>
+interface, to allow the user to add extra cells to the popup display of
+completions.</para>
+
+    <para>To add completion functionality to an entry, use the <link
+linkend="method-gtkentry--set-completion"><methodname>gtk.Entry.set_completion</methodname>()</link>
+method.  In addition to regular completion matches, that will be inserted
+into the entry when they are selected, <link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+also allows "actions" to be displayed in the popup window below any
+completions. Their appearance is similar to menuitems, to differentiate them
+clearly from completion strings. When an action is selected, the
+"action-activated" signal is emitted.</para>
+
+    <para>A <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+(e.g. a <link
+linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>)
+containing the completion strings is associated with the <link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+using the <link
+linkend="method-gtkentrycompletion--set-model"><methodname>set_model</methodname>()</link>
+method. The tree model column containing the completion strings can be set
+using the convenience method <link
+linkend="method-gtkentrycompletion--set-text-column"><methodname>set_text_column</methodname>()</link>
+that also creates a <link
+linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
+and packs it into the entry completion.</para>
+
+    <para>Otherwise, you can create <link
+linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+objects and pack them into the <link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+using the <link
+linkend="class-gtkcelllayout"><classname>gtk.CellLayout</classname></link>
+methods <link
+linkend="method-gtkcelllayout--pack-start"><methodname>gtk.CellLayout.pack_start</methodname>()</link>
+or <link
+linkend="method-gtkcelllayout--pack-start"><methodname>gtk.CellLayout.pack_start</methodname>()</link>. However,
+you will also have to define a match function and set it with the <link
+linkend="method-gtkentrycompletion--set-match-func"><methodname>set_match_func</methodname>()</link>
+method.</para>
+
+    <para>If you wanted to create a completion list with the strings to
+insert and some additional info e.g. an icon or description you could do
+something like:</para>
+
+    <programlisting>
+  entry = gtk.Entry()
+  completion = gtk.EntryCompletion()
+  entry.set_completion(completion)
+  liststore = gtk.ListStore(gobject.TYPE_STRING, gtk.gdk.Pixbuf)
+  completion.set_model(liststore)
+  pixbufcell = gtk.CellRendererPixbuf()
+  ec.pack_start(pixbufcell)
+  ec.add_attribute(pixbufcell, 'pixbuf', 1)
+  ec.set_text_column(0)  # creates a gtk.CellRendererText and packs it in the
+                         # completion. Also sets the 'text' attribute
+  # load up the liststore with string - pixbuf data - assuming pixbuf created
+  ls.append(['string text', pixbuf])
+</programlisting>
+
+    <para>This will create an entry that will display a pixbuf and the text
+string during completion.</para>
+
+    <para>Actions are easily managed using the <link
+    linkend="method-gtkentrycompletion--insert-action-text"><methodname>insert_action_text</methodname>()</link>,
+    <link
+    linkend="method-gtkentrycompletion--insert-action-markup"><methodname>insert_action_markup</methodname>()</link>
+    and <link
+    linkend="method-gtkentrycompletion--delete-action"><methodname>delete_action</methodname>()</link>
+    methods.</para>
+
+  </refsect1>
+
+  <refsect1 id="constructor-gtkentrycompletion">
+    <title>Constructor</title>
+
+    <programlisting><constructorsynopsis language="python">
+	<methodname>gtk.EntryCompletion</methodname>
+	<methodparam></methodparam>  </constructorsynopsis></programlisting>
+    <variablelist>
+      <varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara>A newly created <link linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link> object.</simpara></listitem>
+      </varlistentry>
+    </variablelist>
+
+    <note>
+      <para>This constructor is available in PyGTK 2.4 and above.</para>
+    </note>
+
+    <para>Creates a new <link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+object.</para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Methods</title>
+
+  <refsect2 id="method-gtkentrycompletion--get-entry">
+    <title>gtk.EntryCompletion.get_entry</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_entry</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The <link
+	  linkend="class-gtkentry"><classname>gtk.Entry</classname></link>
+	  that the completion is attached to.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_entry</methodname>() method retrieves the
+<link linkend="class-gtkentry"><classname>gtk.Entry</classname></link> that
+the entry completion is attached to.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-model">
+      <title>gtk.EntryCompletion.set_model</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_model</methodname>
+	  <methodparam><parameter role="keyword">model</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">model</parameter>&nbsp;:</term>
+	  <listitem><simpara>The <link
+	  linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+	  to use with the entry completion.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_model</methodname>() method sets the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+specified by <parameter>model</parameter> to be used with the entry
+completion. A previously set model will be removed before the new model
+is set.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-model">
+      <title>gtk.EntryCompletion.get_model</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_model</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The current <link
+	  linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
+	  or <literal>None</literal> if not set.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_model</methodname>() method returns the
+<link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+that the entry completion is using as data source. Returns
+<literal>None</literal> if the model is unset.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-match-func">
+      <title>gtk.EntryCompletion.set_match_func</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_match_func</methodname>
+	  <methodparam><parameter>func</parameter></methodparam>
+	  <methodparam><parameter>func_data</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>func</parameter>&nbsp;:</term>
+	  <listitem><simpara>A function to be used.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>func_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>The user data for <parameter>func</parameter>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_match_func</methodname>() method sets the
+match function specified by <parameter>func</parameter>. The match function
+is used by the entry completion to determine if a row of the associated tree
+model should be in the completion list.</para>
+
+      <para>The signature of the match function is:</para>
+
+      <programlisting>
+  def match_func(completion, key_string, iter, func_data):
+</programlisting>
+
+      <para>where <parameter>completion</parameter> is the <link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+that the match function is invoked on, <parameter>key_string</parameter> is
+the current contents of the <link
+linkend="class-gtkentry"><classname>gtk.Entry</classname></link> to be
+matched, <parameter>iter</parameter> is a gtkTree<link
+linkend="class-gtkiter pointing at a row in the "><classname>gtk.Iter
+pointing at a row in the </classname></link><link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+associated with completion and <parameter>func_data</parameter> is the data
+specified when the <link
+linkend="method-gtkentrycompletion--set-match-func"><methodname>set_match_func</methodname>()</link>
+method was called. The match function should return <literal>TRUE</literal>
+if the completion string should be displayed; otherwise,
+<literal>FALSE</literal>.</para>
+
+      <para>A simple example match function is:</para>
+
+      <programlisting>
+  # Assumes that the func_data is set to the number of the text column in the
+  # model.
+  def match_func(completion, key, iter, column):
+    model = completion.get_model()
+    text = model.get_value(iter, column)
+    if text.startswith(key):
+      return True
+    return False
+</programlisting>
+
+      <para>You must use the <link
+linkend="method-gtkentrycompletion--set-match-func"><methodname>set_match_func</methodname>()</link>
+method to display completions if you don't use the <link
+linkend="method-gtkentrycompletion--set-text-column"><methodname>set_text_column</methodname>()</link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-minimum-key-length">
+      <title>gtk.EntryCompletion.set_minimum_key_length</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_minimum_key_length</methodname>
+	  <methodparam><parameter role="keyword">length</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">length</parameter>&nbsp;:</term>
+	  <listitem><simpara>The minimum length of the key string in order
+	  to start completing.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_minimum_key_length</methodname>() method
+sets the minimum length of the search key to the value specified by
+<parameter>length</parameter>. This means that the key string (contents of
+the <link linkend="class-gtkentry"><classname>gtk.Entry</classname></link>)
+must be at least <parameter>length</parameter> characters before a
+completion list will be displayed. This is useful for long lists, where
+completing using a small key will take too much time and will likely return
+too large a dataset.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-minimum-key-length">
+      <title>gtk.EntryCompletion.get_minimum_key_length</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_minimum_key_length</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The currently used minimum key
+	  length.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_minimum_key_length</methodname>() method
+returns the minimum key length set for the entry completion. See the
+<link
+linkend="method-gtkentrycompletion--set-minimum-key-length"><methodname>set_minimum_key_length</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--complete">
+      <title>gtk.EntryCompletion.complete</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>complete</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>complete</methodname>() method requests a
+completion operation, i.e. a refiltering of the current list
+with completions, using the current key. The completion list view will be
+updated accordingly.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--insert-action-text">
+      <title>gtk.EntryCompletion.insert_action_text</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>insert_action_text</methodname>
+	  <methodparam><parameter role="keyword">index</parameter></methodparam>
+	  <methodparam><parameter role="keyword">text</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">index</parameter>&nbsp;:</term>
+	  <listitem><simpara>The index in the action list where the item
+	  should be inserted.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">text</parameter>&nbsp;:</term>
+	  <listitem><simpara>The text of the item to
+	  insert.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>inset_action_text</methodname>() method inserts
+an action in the action item list of the entry completion at the position
+specified by <parameter>index</parameter> with the text specified by
+<parameter>text</parameter>. If you want the action item to have markup, use
+the <link
+linkend="method-gtkentrycompletion--insert-action-markup"><methodname>gtk.EntryCompletion.insert_action_markup()</methodname></link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--insert-action-markup">
+      <title>gtk.EntryCompletion.insert_action_markup</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>insert_action_markup</methodname>
+	  <methodparam><parameter role="keyword">index</parameter></methodparam>
+	  <methodparam><parameter role="keyword">markup</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">index</parameter>&nbsp;:</term>
+	  <listitem><simpara>The index in the action list where the item
+	  should be inserted.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">markup</parameter>&nbsp;:</term>
+	  <listitem><simpara>The Pango markup of the item to
+	  insert.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>insert_action_markup</methodname>() method
+inserts an action item in the action item list of the entry completion at
+the position specified by <parameter>index</parameter> with the Pango markup
+specified by <parameter>markup</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--delete-action">
+      <title>gtk.EntryCompletion.delete_action</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>delete_action</methodname>
+	  <methodparam><parameter role="keyword">index</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">index</parameter>&nbsp;:</term>
+	  <listitem><simpara>The index of the item to
+	  delete.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>delete_action</methodname>() method deletes the
+action item at the position in the action item list specified by
+<parameter>index</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-text-column">
+      <title>gtk.EntryCompletion.set_text_column</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_text_column</methodname>
+	  <methodparam><parameter role="keyword">column</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">column</parameter>&nbsp;:</term>
+	  <listitem><simpara>The column in the model to get strings
+	  from.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_text_column</methodname>() method is a
+convenience method for setting up the most common completion scenario: a
+completion list with just strings. This method creates and adds a <link
+linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
+using the column specified by <parameter>column</parameter> as the source
+for completion strings. If you don't use this method you will have to
+install a <link
+linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
+in the entry completion and set a match function using the <link
+linkend="method-gtkentrycompletion--set-match-func"><methodname>set_match_func</methodname>()</link>
+method to display the completion strings.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Signals</title>
+
+    <refsect2 id="signal-gtkentrycompletion--action-activated">
+      <title>The "action-activated" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>completion</parameter></methodparam>
+	  <methodparam><parameter>index</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>completion</parameter>&nbsp;:</term>
+	  <listitem><simpara>the entry completion that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>index</parameter>&nbsp;:</term>
+	  <listitem><simpara>the index of the action item that was
+	  activated.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The "action-activated" signal is emitted when an action item is
+selected from the popup action list.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkentrycompletion--match-selected">
+      <title>The "match-selected" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>completion</parameter></methodparam>
+	  <methodparam><parameter>model</parameter></methodparam>
+	  <methodparam><parameter>iter</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>completion</parameter>&nbsp;:</term>
+	  <listitem><simpara>the entry completion that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>model</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+	  that <parameter>iter</parameter> points into.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  pointing at the selection completion string row in
+	  <parameter>model</parameter>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The "match-selected" signal is emitted when a completion string
+was selected from the completion list. <parameter>iter</parameter> points at
+the row in <parameter>model</parameter> that contains the completion
+string.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+</refentry>
