@@ -283,7 +283,7 @@ pygtk_generic_tree_model_get_iter(GtkTreeModel *tree_model,
     self = pygobject_new((GObject *)tree_model);
 
 #ifdef DEBUG_TREE_MODEL
-    g_message("get_tree_iter(%p)", path);
+    g_message("get_iter(%p)", path);
 #endif
     py_path = pygtk_tree_path_to_pyobject(path);
     pyg_block_threads();
@@ -324,17 +324,17 @@ pygtk_generic_tree_model_get_path(GtkTreeModel *tree_model, GtkTreeIter *iter)
     self = pygobject_new((GObject *)tree_model);
 
 #ifdef DEBUG_TREE_MODEL
-    g_message("get_tree_path(%p)", iter);
+    g_message("get_path(%p)", iter);
 #endif
     pyg_block_threads();
-    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_tree_path",
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_path",
 				 "(O)", (PyObject *)iter->user_data);
     pyg_unblock_threads();
     if (py_ret) {
 	GtkTreePath *path = pygtk_tree_path_from_pyobject(py_ret);
 
 	if (!path)
-	    g_warning("could not convert return value of get_tree_path() to "
+	    g_warning("could not convert return value of get_path() to "
 		      "a GtkTreePath");
 	Py_DECREF(py_ret);
 	return path;
