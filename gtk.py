@@ -314,8 +314,8 @@ class GtkWidget(GtkObject):
 		_gtk.gtk_drag_source_set_icon(self._o, colormap, pixmap, mask)
 	# targets as for drag_dest_set
 	def drag_begin(self, targets, actions, button, event):
-		return _gtk.gtk_drag_begine(self._o, targets, actions, button,
-					    event)
+		return _gtk.gtk_drag_begin(self._o, targets, actions, button,
+					   event)
 	def drag_set_icon_widget(self, context, widget, hot_x, hot_y):
 		_gtk.gtk_drag_set_icon_widget(context, widget._o, hot_x, hot_y)
 	def drag_set_icon_pixmap(self, context, colormap, pixmap, mask,
@@ -713,6 +713,11 @@ class GtkMenuItem(GtkItem):
 			self._o = _gtk.gtk_menu_item_new()
 		else:
 			self._o = _gtk.gtk_menu_item_new_with_label(label)
+	def get_submenu(self):
+		submenu = _gtk.gtk_menu_item_get_submenu(self._o)
+		if submenu:
+			return _obj2inst(submenu)
+		return None
 	def set_submenu(self, sub):
 		_gtk.gtk_menu_item_set_submenu(self._o, sub._o)
 	def set_placement(self, placement):
@@ -1547,6 +1552,14 @@ class GtkList(GtkContainer):
 	def __init__(self, _obj=None):
 		if _obj: self._o = _obj; return
 		self._o = _gtk.gtk_list_new()
+	def __getattr__(self, attr):
+		attrs = {
+			'last_focus_child':_gtk.gtk_list_get_last_focus_child,
+			'undo_focus_child':_gtk.gtk_list_get_undo_focus_child,
+		}
+		if attrs.has_key(attr):
+			return _obj2inst(attrs[attr](self._o))
+		return GtkContainer.__getattr__(self, attr)
 	def get_selection(self):
 		l = _gtk.gtk_list_get_selection(self._o)
 		return map(_obj2inst, l)
@@ -1683,20 +1696,27 @@ class GtkNotebook(GtkContainer):
 		if _obj: self._o = _obj; return
 		self._o = _gtk.gtk_notebook_new()
 	def append_page(self, child, tab):
-		_gtk.gtk_notebook_append_page(self._o, child._o, tab._o)
+		if tab: tab = tab._o
+		_gtk.gtk_notebook_append_page(self._o, child._o, tab)
 	def append_page_menu(self, child, tab, ml):
-		_gtk.gtk_notebook_append_page_menu(self._o, child._o, tab._o,
-						   ml._o)
+		if tab: tab = tab._o
+		if ml: ml = ml._o
+		_gtk.gtk_notebook_append_page_menu(self._o, child._o, tab, ml)
 	def prepend_page(self, child, tab):
-		_gtk.gtk_notebook_prepend_page(self._o, child._o, tab._o)
+		if tab: tab = tab._o
+		_gtk.gtk_notebook_prepend_page(self._o, child._o, tab)
 	def prepend_page_menu(self, child, tab, ml):
-		_gtk.gtk_notebook_prepend_page_menu(self._o, child._o, tab._o,
-						    ml._o)
+		if tab: tab = tab._o
+		if ml: ml = ml._o
+		_gtk.gtk_notebook_prepend_page_menu(self._o, child._o, tab, ml)
 	def insert_page(self, child, tab, pos):
-		_gtk.gtk_notebook_insert_page(self._o, child._o, tab._o, pos)
+		if tab: tab = tab._o
+		_gtk.gtk_notebook_insert_page(self._o, child._o, tab, pos)
 	def insert_page_menu(self, child, tab, ml, pos):
-		_gtk.gtk_notebook_insert_page_menu(self._o, child._o, tab._o,
-						   ml._o, pos)
+		if tab: tab = tab._o
+		if ml: ml = ml._o
+		_gtk.gtk_notebook_insert_page_menu(self._o, child._o, tab,
+						   ml, pos)
 	def remove_page(self, pos):
 		_gtk.gtk_notebook_remove_page(self._o, pos)
 	def current_page(self):

@@ -206,10 +206,10 @@ WINDOW_DIALOG   = 1
 WINDOW_POPUP    = 2
 
 # GtkObjectFlag's
-DESTROYED  = 1 << 0
-FLOATING   = 1 << 1
-CONNECTED  = 1 << 2
-RESERVED_2 = 1 << 3
+DESTROYED   = 1 << 0
+FLOATING    = 1 << 1
+CONNECTED   = 1 << 2
+CONSTRUCTED = 1 << 3
 # GtkWidgetFlag's
 TOPLEVEL         = 1 << 4
 NO_WINDOW        = 1 << 5
@@ -226,6 +226,8 @@ HAS_GRAB         = 1 << 15
 RC_STYLE         = 1 << 16
 COMPOSITE_CHILD  = 1 << 17
 BASIC            = 1 << 18
+APP_PAINTABLE    = 1 << 19
+RECEIVES_DEFAULT = 1 << 20
 
 # GtkCellType's
 CELL_EMPTY   = 0

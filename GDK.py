@@ -2,6 +2,8 @@
 # GDK.py -- this file contains GDK constants relevant to pygtk
 #
 
+CURRENT_TIME = 0
+
 # GdkInputCondition's
 INPUT_READ      = 1 << 0
 INPUT_WRITE     = 1 << 1
@@ -130,6 +132,10 @@ SELECTION_TYPE_PIXMAP   = 20
 SELECTION_TYPE_WINDOW   = 33
 SELECTION_TYPE_STRING   = 31
 
+# GdkSelection
+SELECTION_PRIMARY = 1
+SELECTION_SECONDARY = 2
+
 # GdkInputSource's
 SOURCE_MOUSE  = 0
 SOURCE_PEN    = 1
@@ -213,6 +219,10 @@ JOIN_BEVEL = 2
 RGB_DITHER_NONE   = 0
 RGB_DITHER_NORMAL = 1
 RGB_DITHER_MAX    = 2
+
+# GdkSubwindowMode
+CLIP_BY_CHILDREN  = 0
+INCLUDE_INFERIORS = 1
 
 # GdkCursorType's
 X_CURSOR = 0
@@ -306,6 +316,7 @@ WINDOW_DIALOG = 3
 WINDOW_TEMP = 4
 WINDOW_PIXMAP = 5
 WINDOW_FOREIGN = 6
+
 
 # these are the Key Symbols for GDK
 # they were created with sed -n 's/#define GDK)\([^ ]*\)/\1 =/p' <gdkkeysyms.h

@@ -1,5 +1,41 @@
 2001-12-23  James Henstridge  <james@daa.com.au>
 
+	* gtk.py (GtkNotebook.append_page):
+	(GtkNotebook.append_page_menu):
+	(GtkNotebook.prepend_page):
+	(GtkNotebook.prepend_page_menu):
+	(GtkNotebook.insert_page):
+	(GtkNotebook.insert_page_menu): allow None to be passed for
+	tab_label or menu_label.
+
+	* generate/gtkcontainers.defs (gtk_notebook_append_page):
+	(gtk_notebook_append_page_menu):
+	(gtk_notebook_prepend_page):
+	(gtk_notebook_prepend_page_menu):
+	(gtk_notebook_insert_page):
+	(gtk_notebook_insert_page_menu): allow NULL for tab_label or
+	menu_label.  (fix from bug #66118).
+
+	* gtk.py (GtkMenu.ensure_uline_accel_group): add to gtk.py
+
+	* generate/gtkmenus.defs (gtk_menu_ensure_uline_accel_group): add
+	method (from bug #66117).
+
+	* gtk.py (GtkList.__getattr__): add accessors.
+
+	* generate/gtklists.defs (GtkList): add fields (from bug #66116).
+
+	* gtk.py (GtkMenuItem.get_submenu): add wrapper.
+
+	* generate/gtkmenus.defs (GtkMenuItem): add access to submenu
+	field (from bug #66113).
+
+	* gtk.py (GtkWidget.drag_begin): fix typo (from bug #66111).
+
+	* GTK.py: add more constants, but (partial apply from bug #66110).
+
+	* GDK.py: add some more constants (from bug #66108).
+
 	* gtkmodule.c (PyGdkWindow_GetAttr): s/origin/root_origin/ typo
 	(from bug #62026).
 	(_wrap_gdk_color_new): fix up short/int handling for color values.
