@@ -69,15 +69,19 @@ static PyObject *_wrap_glade_xml_signal_connect(PyObject *self, PyObject *args) 
     PyObject *xml, *func, *cbargs = NULL, *data;
     gchar *handler_name;
 
-    if (!PyArg_ParseTuple(args, "O!sO|O:glade_xml_signal_connect", &PyGtk_Type,
-			  &xml, &handler_name, &func, &cbargs))
+    if (!PyArg_ParseTuple(args, "O!sO|O!:glade_xml_signal_connect",
+			  &PyGtk_Type, &xml, &handler_name, &func,
+			  &PyTuple_Type, &cbargs))
 	return NULL;
     if (!PyCallable_Check(func)) {
 	PyErr_SetString(PyExc_TypeError, "third argument not callable");
 	return NULL;
     }
-    if (!cbargs)
+    if (cbargs)
+	Py_INCREF(cbargs);
+    else
 	cbargs = PyTuple_New(0);
+    Py_INCREF(func);
     data = Py_BuildValue("(OO)", func, cbargs);
     glade_xml_signal_connect_full(GLADE_XML(PyGtk_Get(xml)), handler_name,
 				  connect_one, data);

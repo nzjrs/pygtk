@@ -2484,20 +2484,20 @@ def events_pending():
 	return _gtk.gtk_events_pending()
 
 # idle/quit/timeout handlers
-def idle_add(callback):
-	return _gtk.gtk_idle_add(callback)
+def idle_add(callback, *args):
+	return _gtk.gtk_idle_add(callback, args)
 def idle_add_priority(priority, callback):
 	return _gtk.gtk_idle_add_priority(priority, callback)
 def idle_remove(tag):
 	_gtk.gtk_idle_remove(tag)
-def quit_add(mainlevel, callback):
-        return _gtk.gtk_quit_add(mainlevel, callback)
+def quit_add(mainlevel, callback, *args):
+        return _gtk.gtk_quit_add(mainlevel, callback, args)
 def quit_add_destroy(mainlevel, object):
 	_gtk.gtk_quit_add_destroy(mainlevel, object._o)
 def quit_remove(tag):
 	_gtk.gtk_quit_remove(tag)
-def timeout_add(timeout, callback):
-	return _gtk.gtk_timeout_add(timeout, callback)
+def timeout_add(timeout, callback, *args):
+	return _gtk.gtk_timeout_add(timeout, callback, args)
 def timeout_remove(tag):
 	_gtk.gtk_timeout_remove(tag)
 

@@ -2853,27 +2853,32 @@ void PyGtk_SignalDestroy(/*gpointer*/ PyObject *func) {
 /* used for timeout and idle functions */
 static void PyGtk_HandlerMarshal(gpointer a, PyObject *func, int nargs,
                                                           GtkArg *args) {
-  PyObject *ret;
+    PyObject *ret;
 
-  PyGTK_BLOCK_THREADS
-  ret = PyObject_CallObject(func, NULL);
-  if (ret == NULL) {
-    if (PyGtk_FatalExceptions)
-      gtk_main_quit();
-    else {
-      PyErr_Print();
-      PyErr_Clear();
+    PyGTK_BLOCK_THREADS
+
+    if (PyTuple_Check(func))
+	ret = PyObject_CallObject(PyTuple_GetItem(func, 0),
+				  PyTuple_GetItem(func, 1));
+    else
+	ret = PyObject_CallObject(func, NULL);
+    if (ret == NULL) {
+	if (PyGtk_FatalExceptions)
+	    gtk_main_quit();
+	else {
+	    PyErr_Print();
+	    PyErr_Clear();
+	}
+	*GTK_RETLOC_BOOL(args[0]) = FALSE;
+	PyGTK_UNBLOCK_THREADS
+	    return;
     }
-    *GTK_RETLOC_BOOL(args[0]) = FALSE;
+    if (ret == Py_None || (PyInt_Check(ret) && PyInt_AsLong(ret) == 0))
+	*GTK_RETLOC_BOOL(args[0]) = FALSE;
+    else
+	*GTK_RETLOC_BOOL(args[0]) = TRUE;
+    Py_DECREF(ret);
     PyGTK_UNBLOCK_THREADS
-    return;
-  }
-  if (ret == Py_None || (PyInt_Check(ret) && PyInt_AsLong(ret) == 0))
-    *GTK_RETLOC_BOOL(args[0]) = FALSE;
-  else
-    *GTK_RETLOC_BOOL(args[0]) = TRUE;
-  Py_DECREF(ret);
-  PyGTK_UNBLOCK_THREADS
 }
 
 /* callback for input handlers */
@@ -3227,31 +3232,44 @@ static PyObject *_wrap_gtk_events_pending(PyObject *self, PyObject *args) {
 static PyObject *
 _wrap_gtk_timeout_add(PyObject *self, PyObject *args) {
     guint32 interval;
-    PyObject *callback;
-    if (!PyArg_ParseTuple(args, "iO:gtk_timeout_add", &interval, &callback))
+    PyObject *callback, *cbargs = NULL;
+    if (!PyArg_ParseTuple(args, "iO|O!:gtk_timeout_add", &interval, &callback,
+			  &PyTuple_Type, &cbargs))
         return NULL;
     if (!PyCallable_Check(callback)) {
         PyErr_SetString(PyExc_TypeError, "second arg not callable");
         return NULL;
     }
+    if (cbargs)
+	Py_INCREF(cbargs);
+    else
+	cbargs = PyTuple_New(0);
     Py_INCREF(callback);
     return PyInt_FromLong(gtk_timeout_add_full(interval, NULL,
-        (GtkCallbackMarshal)PyGtk_HandlerMarshal, callback,
+        (GtkCallbackMarshal)PyGtk_HandlerMarshal,
+	Py_BuildValue("(OO)", callback, cbargs),
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
 
 static PyObject *
 _wrap_gtk_idle_add(PyObject *self, PyObject *args) {
-    PyObject *callback;
-    if (!PyArg_ParseTuple(args, "O:gtk_idle_add", &callback))
+    PyObject *callback, *cbargs = NULL;
+
+    if (!PyArg_ParseTuple(args, "O|O!:gtk_idle_add", &callback,
+			  &PyTuple_Type, &cbargs))
         return NULL;
     if (!PyCallable_Check(callback)) {
         PyErr_SetString(PyExc_TypeError, "arg not callable");
         return NULL;
     }
+    if (cbargs)
+	Py_INCREF(cbargs);
+    else
+	cbargs = PyTuple_New(0);
     Py_INCREF(callback);
     return PyInt_FromLong(gtk_idle_add_full(GTK_PRIORITY_DEFAULT, NULL,
-        (GtkCallbackMarshal)PyGtk_HandlerMarshal, callback, 
+        (GtkCallbackMarshal)PyGtk_HandlerMarshal,
+	Py_BuildValue("(OO)", callback, cbargs),
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
 
@@ -3284,16 +3302,22 @@ static PyObject *_wrap_gtk_idle_remove_function(PyObject *self, PyObject *args) 
 static PyObject *
 _wrap_gtk_quit_add(PyObject *self, PyObject *args) {
     int main_level;
-    PyObject *callback;
-    if (!PyArg_ParseTuple(args, "iO:gtk_quit_add", &main_level, &callback))
+    PyObject *callback, *cbargs = NULL;
+    if (!PyArg_ParseTuple(args, "iO|O!:gtk_quit_add", &main_level, &callback,
+			  &PyTuple_Type, &cbargs))
         return NULL;
     if (!PyCallable_Check(callback)) {
         PyErr_SetString(PyExc_TypeError, "2nd arg not callable");
         return NULL;
     }
+    if (cbargs)
+	Py_INCREF(cbargs);
+    else
+	cbargs = PyTuple_New(0);
     Py_INCREF(callback);
     return PyInt_FromLong(gtk_quit_add_full(main_level, NULL,
-        (GtkCallbackMarshal)PyGtk_HandlerMarshal, callback, 
+        (GtkCallbackMarshal)PyGtk_HandlerMarshal,
+	Py_BuildValue("(OO)", callback, cbargs),
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
 
