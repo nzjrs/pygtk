@@ -675,6 +675,24 @@ class GdkRectangleArg(ArgType):
 	info.varlist.add('GdkRectangle', 'ret')
 	info.codeafter.append('    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &ret, TRUE, TRUE);')
 
+class PyObjectArg(ArgType):
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+        info.varlist.add('PyObject', '*' + pname)
+        info.add_parselist('O', ['&' + pname], [pname])
+        info.arglist.append(pname)
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add("PyObject", "*ret")
+        if ownsreturn:
+            info.codeafter.append('    if (ret) {\n'
+                                  '       return ret;\n'
+                                  '    }\n'
+                                  '    Py_INCREF(Py_None);\n'
+                                  '    return Py_None;')
+        else:
+            info.codeafter.append('    if (!ret) ret = Py_None;\n'
+                                  '    Py_INCREF(ret);\n'
+                                  '    return ret;')
+
 class ArgMatcher:
     def __init__(self):
 	self.argtypes = {}
@@ -818,6 +836,7 @@ matcher.register('GtkTreePath*', GtkTreePathArg())
 matcher.register('GdkRectangle*', GdkRectanglePtrArg())
 matcher.register('GtkAllocation*', GdkRectanglePtrArg())
 matcher.register('GdkRectangle', GdkRectangleArg())
+matcher.register('PyObject*', PyObjectArg())
 
 matcher.register('GdkNativeWindow', ULongArg())
 
