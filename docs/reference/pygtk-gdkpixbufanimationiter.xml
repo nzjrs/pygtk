@@ -52,20 +52,21 @@ linkend="method-gdkpixbufanimationiter--advance">advance</link></methodname>
     <title>Description</title>
 
     <para>A <link
-linkend="class-gdkpixbufanimationiter"><classname>gtk.gdk.PixbufAnimationIter</classname></link> 
-is used to access the frames of a gdkPixbufAnimation at specified times. A
-<link
-linkend="class-gdkpixbufanimationiter"><classname>gtk.gdk.PixbufAnimationIter</classname></link> 
+linkend="class-gdkpixbufanimationiter"><classname>gtk.gdk.PixbufAnimationIter</classname></link>
+is used to access the frames of a <link
+linkend="class-gdkpixbufanimation"><classname>gtk.gdk.PixbufAnimation</classname></link>
+at specified times. A <link
+linkend="class-gdkpixbufanimationiter"><classname>gtk.gdk.PixbufAnimationIter</classname></link>
 object is created using the <link
-linkend="method-gdkpixbufanimation--get-iter"><methodname>gtk.gdk.PixbufAnimation.get_iter</methodname>()</link> 
+linkend="method-gdkpixbufanimation--get-iter"><methodname>gtk.gdk.PixbufAnimation.get_iter</methodname>()</link>
 method. After creating an iterator, you should immediately display the
 pixbuf returned by the <link
-linkend="method-gdkpixbufanimationiter--get-pixbuf"><methodname>get_pixbuf</methodname>()</link> 
+linkend="method-gdkpixbufanimationiter--get-pixbuf"><methodname>get_pixbuf</methodname>()</link>
 method. Then, you should install a timeout (with the <link
-linkend="function-gobject--timeout-add"><methodname>gobject.timeout_add</methodname>()</link>() 
+linkend="function-gobject--timeout-add"><methodname>gobject.timeout_add</methodname>()</link>()
 function) or by some other mechanism ensure that you'll update the image
-after the number of  milliseconds specified by the <link
-linkend="method-gdkpixbufanimationiter--get-delay-time"><methodname>get_delay_time</methodname>()</link> 
+after the number of milliseconds specified by the <link
+linkend="method-gdkpixbufanimationiter--get-delay-time"><methodname>get_delay_time</methodname>()</link>
 method. Each time the image is updated, you should reinstall the timeout
 with the new, possibly-changed delay time.</para>
 
@@ -163,7 +164,7 @@ is partially loaded, or the last frame</simpara></listitem>
 
       <para>The <methodname>on_currently_loading_frame</methodname>() method
 returns <literal>TRUE</literal> if the frame currently pointed to by the
-iterator is paritally loaded or the last frame. This method is used to
+iterator is partially loaded or the last frame. This method is used to
 determine how to respond to the "area_updated" signal on <link
 linkend="class-gdkpixbufloader"><classname>gtk.gdk.PixbufLoader</classname></link> 
 when loading an animation. The "area_updated" signal is emitted for an area
@@ -207,7 +208,7 @@ method, and must increase or remain unchanged each time the <link
 linkend="method-gdkpixbufanimationiter--get-pixbuf"><methodname>get_pixbuf</methodname>()</link> 
 method is called. That is, you can't go backward in time; animations only
 play forward. As a shortcut, pass 0.0 (the default) for the current time and
-the curent time will automatically be determined an used. So you only need
+the current time will automatically be determined an used. So you only need
 to explicitly pass <parameter>current_time</parameter> if you're doing
 something odd like playing the animation at double speed.</para>
 

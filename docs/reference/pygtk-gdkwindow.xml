@@ -703,7 +703,7 @@ object interacts with the native window system for input and events. Some
 <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
 objects do not have an associated <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> and
-therefore cannot receove events. To receive events on behalf of these
+therefore cannot receive events. To receive events on behalf of these
 "windowless" widgets a <link
 linkend="class-gtkeventbox"><classname>gtk.EventBox</classname></link> must
 be used.</para>
@@ -1629,7 +1629,8 @@ parent</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The reparent() method reparents the window into the <link
+      <para>The <methodname>reparent</methodname>() method reparents the
+window into the <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
 specified <parameter>new_parent</parameter>. The window being reparented
 will be unmapped as a side effect.</para>
@@ -1849,7 +1850,7 @@ override redirect</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>set_override_redirect</methodname>() method sets
-the "override redirect" attribute on the window to the vlaue specified by
+the "override redirect" attribute on the window to the value specified by
 <parameter>override_redirect</parameter>. If
 <parameter>override_redirect</parameter> is <literal>TRUE</literal> the
 window is not under the control of the window manager. This means it won't
@@ -2007,7 +2008,7 @@ without the shape extension, this function will do nothing.</para>
 	  <methodparam></methodparam>
       </methodsynopsis></programlisting>
 
-      <para>THe <methodname>set_child_shapes</methodname>() method sets the
+      <para>The <methodname>set_child_shapes</methodname>() method sets the
 shape mask of the window to the union of shape masks for all children of the
 window, ignoring the shape mask of the window itself. Contrast this method
 with the <link
@@ -2176,7 +2177,7 @@ static gravity</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>set_static_gravities</methodname>() method sets
-the bit gravity of the given window to the value spcified by
+the bit gravity of the given window to the value specified by
 <parameter>use_static</parameter>. If <parameter>use_static</parameter> is
 <literal>TRUE</literal> the window uses static gravity and all children get
 static subwindow gravity as well. This method returns
@@ -2203,7 +2204,7 @@ have</simpara></listitem>
       <para>The <methodname>set_type_hint</methodname>() method provides the
 specified <parameter>hint</parameter> to the window manager about the
 functionality of a window. The window manager can use this information when
-determining the decoration and behaviour of the window. The hint must be set
+determining the decoration and behavior of the window. The hint must be set
 before the window is mapped. The value of hint must be one of:</para>
 
       <variablelist>
@@ -2285,7 +2286,7 @@ method</para>
 	<para>This method is available in PyGTK 2.2 and above.</para>
       </note>
 
-      <para>The <methodname>set_skip_taskbar_hint</methodname>() method seta
+      <para>The <methodname>set_skip_taskbar_hint</methodname>() method sets
 the "skip_taskbar" setting to the value specified by
 <parameter>skips_taskbar</parameter>. If
 <parameter>skips_taskbar</parameter> is <literal>TRUE</literal> the window
@@ -2409,7 +2410,7 @@ the geometry hints for the window.</para>
 acceptable sizes for a toplevel window. The purpose of this is to constrain
 user resizing, but the windowing system will typically (but is not required
 to) also constrain the current size of the window to the provided values and
-constrain programatic resizing via gdk_window_resize() or
+constrain programmatic resizing via gdk_window_resize() or
 gdk_window_move_resize().</para>
 
       <para>Note that on X11, this effect has no effect on windows of type
@@ -2613,7 +2614,7 @@ window.</para>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">leader</parameter>&nbsp;:</term>
-	  <listitem><simpara>snother <link
+	  <listitem><simpara>another <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link></simpara></listitem>
 	</varlistentry>
       </variablelist>
@@ -2689,7 +2690,7 @@ at the origin of the window's parent</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>set_back_pixmap</methodname>() method sets the
-background pixmap of the window to the value spcified by
+background pixmap of the window to the value specified by
 <parameter>pixmap</parameter> A background pixmap will be tiled, positioning
 the first tile at the origin of the window, or if
 <parameter>parent_relative</parameter> is <literal>TRUE</literal>, the
@@ -2727,7 +2728,7 @@ linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link> or
 pointer for a <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>. Use
 either the <link linkend="constructor-gdkcursor1">gtk.gdk.Cursor()</link> or
-<link linkend="constructor-gdkcursor2">gtk.gdk.Cursor</link>() constuctors
+<link linkend="constructor-gdkcursor2">gtk.gdk.Cursor</link>() constructors
 to create the cursor. To make the cursor invisible, use the <link
 linkend="constructor-gdkcursor2">gtk.gdk.Cursor</link>() constructor to
 create a cursor with no pixels in it. Passing <literal>None</literal> for
@@ -2755,7 +2756,7 @@ of the window and the bit depth of the window.</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_geometry</methodname>() method returns a
-5-tuple containing the windows's location and size (x, y, width, height) and
+5-tuple containing the window's location and size (x, y, width, height) and
 the bit depth of the window. The X and Y coordinates returned are relative
 to the parent window of the window, which for toplevels usually means
 relative to the window decorations (titlebar, etc.) rather than relative to
@@ -2862,11 +2863,13 @@ specifying the bounding box of the window frame</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_frame_extents</methodname>() method returns
-a gdkRectangle specifying the bounding box of the window, including window
-manager titlebar/borders if any. The frame position is given in root window
+a <link
+linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
+specifying the bounding box of the window, including window manager
+titlebar/borders if any. The frame position is given in root window
 coordinates. To get the position of the window itself (rather than the
 frame) in root window coordinates, use the <link
-linkend="method-gdkwindow--get-origin"><methodname>get_origin</methodname>()</link> 
+linkend="method-gdkwindow--get-origin"><methodname>get_origin</methodname>()</link>
 method.</para>
 
     </refsect2>
@@ -2888,7 +2891,7 @@ the mouse pointer and the modifier mask</simpara></listitem>
 
       <para>The <methodname>get_pointer</methodname>() method returns a
 3-tuple containing the coordinates of the mouse pointer location relative to
-the window and the modifier state. The modifer state is a combination of the
+the window and the modifier state. The modifier state is a combination of the
 following:</para>
 
       <variablelist>
@@ -3212,14 +3215,14 @@ all the event masks.</para>
       </note>
 
       <para>The <methodname>set_icon_list</methodname>() method sets the
-list of icons for the window. pixbufs is a list or tuple containing
-gdkPixbuf objects to be used as the icon images. One of these will be used
-to represent the window when it has been iconified. The icon is usually
-shown in an icon box or some sort of task bar. Which icon size is shown
-depends on the window manager. The window manager can scale the icon but
-setting several size icons can give better image quality since the window
-manager may only need to scale the icon by a small amount or not at
-all.</para>
+list of icons for the window. pixbufs is a list or tuple containing <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+objects to be used as the icon images. One of these will be used to
+represent the window when it has been iconified. The icon is usually shown
+in an icon box or some sort of task bar. Which icon size is shown depends on
+the window manager. The window manager can scale the icon but setting
+several size icons can give better image quality since the window manager
+may only need to scale the icon by a small amount or not at all.</para>
 
     </refsect2>
 
@@ -3292,7 +3295,7 @@ linkend="method-gdkwindow--set-icon"><methodname>set_icon</methodname>()</link>.
       </variablelist>
 
       <para>The <methodname>set_icon_name</methodname>() method sets the
-name of the window when it is iconfied to the value of
+name of the window when it is iconified to the value of
 <parameter>name</parameter>. Windows may have a name used while minimized,
 distinct from the name they display in their titlebar. Most of the time this
 is a bad idea from a user interface standpoint. But you can set such a name
@@ -3316,10 +3319,10 @@ linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link></simpara>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>set_group</methodname>() mehtod sets the group
+      <para>The <methodname>set_group</methodname>() method sets the group
 leader for the window to the <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
-speciified by <parameter>leader</parameter>. By default, the group leader
+specified by <parameter>leader</parameter>. By default, the group leader
 for all toplevel windows is set to a global window implicitly created by
 <literal>PyGTK</literal>. With this method you can override this default.
 The group leader window allows the window manager to distinguish all windows
@@ -3526,7 +3529,7 @@ following:</para>
 	<varlistentry>
 	  <term><literal>gtk.gdk.FUNC_CLOSE</literal></term>
 	  <listitem>
-	    <simpara>The window should be closable.</simpara>
+	    <simpara>The window should be closeable.</simpara>
 	  </listitem>
 	</varlistentry>
       </variablelist>
@@ -3710,7 +3713,7 @@ a concept of "fullscreen" but most standard window managers do.</para>
       </methodsynopsis></programlisting>
 
       <para>The <methodname>register_dnd</methodname>() method registers the
-window as a potential drop destingation.</para>
+window as a potential drop destination.</para>
 
     </refsect2>
 
@@ -3908,7 +3911,9 @@ objects</simpara></listitem>
       <para>The <methodname>invalidate_rect</methodname>() method
 invalidates the rectangular region specified by rect. If
 <parameter>invalidate_children</parameter> is <literal>TRUE</literal> the
-child gdkWindow object of the window are also invalidated.</para>
+child <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+object of the window are also invalidated.</para>
 
     </refsect2>
 
@@ -4399,7 +4404,7 @@ debugging</simpara></listitem>
       </variablelist>
 
       <para>The <function>gtk.gdk.gdk_set_debug_updates</function>() function
-sets the update debuging flag to the value of
+sets the update debugging flag to the value of
 <parameter>setting</parameter>. If <parameter>setting</parameter> is
 <literal>TRUE</literal>, update debugging is enabled. With update debugging
 enabled, calls to the <link
@@ -4459,7 +4464,7 @@ linkend="function-gdk--window-foreign-new"><function>gtk.gdk.window_foreign_new<
 function)</para>
 
       <note>
-	  <para>For multihead-aware widgets or applications use the <link
+	  <para>For multi-head-aware widgets or applications use the <link
 linkend="method-gdkdisplay--get-window-at-pointer"><methodname>gtk.gdk.Display.get_window_at_pointer</methodname>()</link>
 method instead.</para>
       </note>
