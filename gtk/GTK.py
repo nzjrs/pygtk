@@ -1,0 +1,336 @@
+#
+# Constants for gtk.py
+#
+
+# true/false
+FALSE = 0
+TRUE  = 1
+
+# GtkAccelFlag's
+ACCEL_VISIBLE        = 1 << 0
+ACCEL_SIGNAL_VISIBLE = 1 << 1
+ACCEL_LOCKED         = 1 << 2
+ACCEL_MASK           = 0x07
+
+# GtkArrowType's
+ARROW_UP    = 0
+ARROW_DOWN  = 1
+ARROW_LEFT  = 2
+ARROW_RIGHT = 3
+
+# GtkAttachOptions
+EXPAND = 1 << 0
+SHRINK = 1 << 1
+FILL   = 1 << 2
+
+# GtkButtonBoxStyle's
+BUTTONBOX_DEFAULT_STYLE = 0
+BUTTONBOX_SPREAD        = 1
+BUTTONBOX_EDGE          = 2
+BUTTONBOX_START         = 3
+BUTTONBOX_END           = 4
+
+# GtkCalendarDisplayOptions's
+CALENDAR_SHOW_HEADING      = 1 << 0
+CALENDAR_SHOW_DAY_NAMES    = 1 << 1
+CALENDAR_NO_MONTH_CHANGE   = 1 << 2
+CALENDAR_SHOW_WEEK_NUMBERS = 1 << 3
+CALENDAR_WEEK_START_MONDAY = 1 << 4
+
+# GtkCurveType's
+CURVE_TYPE_LINEAR = 0
+CURVE_TYPE_SPLINE = 1
+CURVE_TYPE_FREE   = 2
+
+# GtkDirectionType's
+DIR_TAB_FORWARD  = 0
+DIR_TAB_BACKWARD = 1
+DIR_UP           = 2
+DIR_DOWN         = 3
+DIR_LEFT         = 4
+DIR_RIGHT        = 5
+
+# GtkJustification's
+JUSTIFY_LEFT   = 0
+JUSTIFY_RIGHT  = 1
+JUSTIFY_CENTER = 2
+JUSTIFY_FILL   = 3
+
+# GtkMatchType's
+MATCH_ALL      = 0
+MATCH_ALL_TAIL = 1
+MATCH_HEAD     = 2
+MATCH_TAIL     = 3
+MATCH_EXACT    = 4
+MATCH_LAST     = 5
+
+# GtkMenuDirectionType's
+MENU_DIR_PARENT = 0
+MENU_DIR_CHILD  = 1
+MENU_DIR_NEXT   = 2
+MENU_DIR_PREV   = 3
+
+# GtkMenuFactoryType's
+MENU_FACTORY_MENU        = 0
+MENU_FACTORY_MENU_BAR    = 1
+MENU_FACTORY_OPTION_MENU = 2
+
+# GtkMetricType's
+PIXELS      = 0
+INCHES      = 1
+CENTIMETERS = 2
+
+# GtkOrientation's
+ORIENTATION_HORIZONTAL = 0
+ORIENTATION_VERTICAL   = 1
+
+# GtkPackType's
+PACK_START = 0
+PACK_END   = 1
+
+# GtkPathPriorityType's
+PATH_PRIO_LOWEST      = 0
+PATH_PRIO_GTK         = 4
+PATH_PRIO_APPLICATION = 8
+PATH_PRIO_RC          = 12
+PATH_PRIO_HIGHEST     = 15
+PATH_PRIO_MASK        = 0x0f
+
+# GtkPathType's
+PATH_WIDGET       = 0
+PATH_WIDGET_CLASS = 1
+PATH_CLASS        = 2
+
+# GtkPolicyType's
+POLICY_ALWAYS    = 0
+POLICY_AUTOMATIC = 1
+POLICY_NEVER     = 2
+
+# GtkPositionType's
+POS_LEFT   = 0
+POS_RIGHT  = 1
+POS_TOP    = 2
+POS_BOTTOM = 3
+
+# GtkPreviewType's
+PREVIEW_COLOR     = 0
+PREVIEW_GRAYSCALE = 1
+
+# GtkReliefStyle's
+RELIEF_NORMAL = 0
+RELIEF_HALF   = 1
+RELIEF_NONE   = 2
+
+# GtkResizeMode's
+RESIZE_PARENT    = 0
+RESIZE_QUEUE     = 1
+RESIZE_IMMEDIATE = 2
+
+# GtkScrollType's
+SCROLL_NONE          = 0
+SCROLL_STEP_BACKWARD = 1
+SCROLL_STEP_FORWARD  = 2
+SCROLL_PAGE_BACKWARD = 3
+SCROLL_PAGE_FORWARD  = 4
+SCROLL_JUMP          = 5
+
+# GtkSelectionMode's
+SELECTION_SINGLE   = 0
+SELECTION_BROWSE   = 1
+SELECTION_MULTIPLE = 2
+SELECTION_EXTENDED = 3
+
+# GtkShadowType's
+SHADOW_NONE       = 0
+SHADOW_IN         = 1
+SHADOW_OUT        = 2
+SHADOW_ETCHED_IN  = 3
+SHADOW_ETCHED_OUT = 4
+
+# GtkSortType's
+SORT_ASCENDING  = 0
+SORT_DESCENDING = 1
+
+# GtkStateType's
+STATE_NORMAL      = 0
+STATE_ACTIVE      = 1
+STATE_PRELIGHT    = 2
+STATE_SELECTED    = 3
+STATE_INSENSITIVE = 4
+
+# GtkSubmenuDirection's
+DIRECTION_LEFT  = 0
+DIRECTION_RIGHT = 1
+
+# GtkSubmenuPlacement's
+TOP_BOTTOM = 0
+LEFT_RIGHT = 1
+
+# GtkTargetFlags
+TARGET_SAME_APP    = 1 << 0
+TARGET_SAME_WIDGET = 1 << 1
+
+# GtkToolbarStyle's
+TOOLBAR_ICONS = 0
+TOOLBAR_TEXT  = 1
+TOOLBAR_BOTH  = 2
+
+# GtkToolbarSpaceStyle's
+TOOLBAR_SPACE_EMPTY = 0
+TOOLBAR_SPACE_LINE  = 1
+
+# GtkTroughType's
+TROUGH_NONE  = 0
+TROUGH_START = 1
+TROUGH_END   = 2
+TROUGH_JUMP  = 3
+
+# GtkUpdateType's
+UPDATE_CONTINUOUS    = 0
+UPDATE_DISCONTINUOUS = 1
+UPDATE_DELAYED       = 2
+
+# GtkVisibility's
+VISIBILITY_NONE    = 0
+VISIBILITY_PARTIAL = 1
+VISIBILITY_FULL    = 2
+
+# GtkWindowPosition's
+WIN_POS_NONE   = 0
+WIN_POS_CENTER = 1
+WIN_POS_MOUSE  = 2
+
+# GtkWindowType's
+WINDOW_TOPLEVEL = 0
+WINDOW_DIALOG   = 1
+WINDOW_POPUP    = 2
+
+# GtkObjectFlag's
+DESTROYED  = 1 << 0
+FLOATING   = 1 << 1
+CONNECTED  = 1 << 2
+RESERVED_2 = 1 << 3
+# GtkWidgetFlag's
+TOPLEVEL         = 1 << 4
+NO_WINDOW        = 1 << 5
+REALIZED         = 1 << 6
+MAPPED           = 1 << 7
+VISIBLE          = 1 << 8
+SENSITIVE        = 1 << 9
+PARENT_SENSITIVE = 1 << 10
+CAN_FOCUS        = 1 << 11
+HAS_FOCUS        = 1 << 12
+CAN_DEFAULT      = 1 << 13
+HAS_DEFAULT      = 1 << 14
+HAS_GRAB         = 1 << 15
+RC_STYLE         = 1 << 16
+COMPOSITE_CHILD  = 1 << 17
+BASIC            = 1 << 18
+
+# GtkCellType's
+CELL_EMPTY   = 0
+CELL_TEXT    = 1
+CELL_PIXMAP  = 2
+CELL_PIXTEXT = 3
+CELL_WIDGET  = 4
+
+# GtkCTreePos's
+CTREE_POS_BEFORE   = 0
+CTREE_POS_AS_CHILD = 1
+CTREE_POS_AFTER    = 2
+
+# GtkCTreeLineStyle's
+CTREE_LINES_NONE   = 0
+CTREE_LINES_SOLID  = 1
+CTREE_LINES_DOTTED = 2
+CTREE_LINES_TABBED = 3
+
+# GtkCTreeExpanderStyle's
+CTREE_EXPANDER_NONE     = 0
+CTREE_EXPANDER_SQUARE   = 1
+CTREE_EXPANDER_TRIANGLE = 2
+CTREE_EXPANDER_CIRCULAR = 3
+
+# GtkCTreeExpansionType's
+CTREE_EXPANSION_EXPAND             = 0
+CTREE_EXPANSION_EXPAND_RECURSIVE   = 1
+CTREE_EXPANSION_COLLAPSE           = 2
+CTREE_EXPANSION_COLLAPSE_RECURSIVE = 3
+CTREE_EXPANSION_TOGGLE             = 4
+CTREE_EXPANSION_TOGGLE_RECURSIVE   = 5
+
+# GtkDestDefaults ...
+DEST_DEFAULT_MOTION    = 1 << 0
+DEST_DEFAULT_HIGHLIGHT = 1 << 1
+DEST_DEFAULT_DROP      = 1 << 2
+DEST_DEFAULT_ALL       = 0x07
+
+# GtkFontMetricType's
+PIXELS_METRIC = 0
+POINTS_METRIC = 1
+
+# GtkPackerOption's
+PACK_EXPAND = 1 << 0
+FILL_X      = 1 << 1
+FILL_Y      = 1 << 2
+
+# GtkSideType's
+SIDE_TOP    = 0
+SIDE_BOTTOM = 1
+SIDE_LEFT   = 2
+SIDE_RIGHT  = 3
+
+# GtkAnchorType's
+ANCHOR_CENTER     = 0
+ANCHOR_NORTH      = 1
+ANCHOR_NORTH_WEST = 2
+ANCHOR_NORTH_EAST = 3
+ANCHOR_SOUTH      = 4
+ANCHOR_SOUTH_WEST = 5
+ANCHOR_SOUTH_EAST = 6
+ANCHOR_WEST       = 7
+ANCHOR_EAST       = 8
+ANCHOR_N          = ANCHOR_NORTH
+ANCHOR_NW         = ANCHOR_NORTH_WEST
+ANCHOR_NE         = ANCHOR_NORTH_EAST
+ANCHOR_S          = ANCHOR_SOUTH
+ANCHOR_SW         = ANCHOR_SOUTH_WEST
+ANCHOR_SE         = ANCHOR_SOUTH_EAST
+ANCHOR_W          = ANCHOR_WEST
+ANCHOR_E          = ANCHOR_EAST
+
+# GtkProgressBarStyle's
+PROGRESS_CONTINUOUS = 0
+PROGRESS_DISCRETE   = 1
+
+# GtkProgressBarOrientation's
+PROGRESS_LEFT_TO_RIGHT = 0
+PROGRESS_RIGHT_TO_LEFT = 1
+PROGRESS_BOTTOM_TO_TOP = 2
+PROGRESS_TOP_TO_BOTTOM = 3
+
+# GtkSpinButtonUpdatePolicy's
+UPDATE_ALWAYS   = 0
+UPDATE_IF_VALID = 1
+
+# GtkSpinType's
+SPIN_STEP_FORWARD  = 0
+SPIN_STEP_BACKWARD = 1
+SPIN_PAGE_FORWARD  = 2
+SPIN_PAGE_BACKWARD = 3
+SPIN_HOME          = 4
+SPIN_END           = 5
+SPIN_USER_DEFINED  = 6
+
+# GtkToolbarChildType's
+TOOLBAR_CHILD_SPACE        = 0
+TOOLBAR_CHILD_BUTTON       = 1
+TOOLBAR_CHILD_TOGGLEBUTTON = 2
+TOOLBAR_CHILD_RADIOBUTTON  = 3
+TOOLBAR_CHILD_WIDGET       = 4
+
+# GtkTreeViewMode's
+TREE_VIEW_LINE = 0
+TREE_VIEW_ITEM = 1
+
+
