@@ -1436,6 +1436,9 @@ _wrap_gtk_list_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "label", NULL };
     gchar *text = NULL;
 
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use gtk.TreeView") < 0)
+        return -1;
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|z:GtkListItem.__init__",
                                      kwlist, &text))
         return -1;

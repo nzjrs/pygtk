@@ -579,6 +579,11 @@ class GObjectWrapper(Wrapper):
             print >> out, "    char *prop_names[] = %s;" % prop_names
             print >> out, "    guint nparams, i;"
             print >> out
+            if constructor.deprecated is not None:
+                print >> out, '    if (PyErr_Warn(PyExc_DeprecationWarning, "%s") < 0)' %\
+                      constructor.deprecated
+                print >> out, '        return -1;'
+                print >> out
             print >> out, "    if (!PyArg_ParseTupleAndKeywords(args, kwargs, ",
             template = '"'
             if mandatory_arguments:
@@ -600,6 +605,12 @@ class GObjectWrapper(Wrapper):
             print >> out, "    for (i = 0; i < nparams; ++i)"
             print >> out, "        g_value_unset(&params[i].value);"
         else:
+            print >> out
+            if constructor.deprecated is not None:
+                print >> out, '    if (PyErr_Warn(PyExc_DeprecationWarning, "%s") < 0)' %\
+                      constructor.deprecated
+                print >> out, '        return -1;'
+                print >> out
             print >> out, "    self->obj = g_object_newv(obj_type, 0, NULL);"
 
         print >> out, \
