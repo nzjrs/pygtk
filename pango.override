@@ -5,6 +5,150 @@ headers
 #include <pygobject.h>
 #include <pango/pango.h>
 
+/* ------------- PangoAttribute ------------- */
+
+typedef struct {
+    PyObject_HEAD
+    PangoAttribute *attr;
+} PyPangoAttribute;
+staticforward PyTypeObject PyPangoAttribute_Type;
+
+static PyObject *
+pypango_attr_new(PangoAttribute *attr)
+{
+    PyPangoAttribute *self;
+
+    self = (PyPangoAttribute *)PyObject_NEW(PyPangoAttribute,
+					    &PyPangoAttribute_Type);
+    if (self == NULL)
+	return NULL;
+    self->attr = attr;
+
+    return (PyObject *)self;
+}
+
+static void
+pypango_attr_dealloc(PyPangoAttribute *self)
+{
+    pango_attribute_destroy(self->attr);
+    PyObject_DEL(self);
+}
+
+static int
+pypango_attr_compare(PyPangoAttribute *self, PyPangoAttribute *v)
+{
+    if (pango_attribute_equal(self->attr, v->attr))
+	return 0;
+    if (self->attr > v->attr)
+	return -1;
+    return 1;
+}
+
+static long
+pypango_attr_hash(PyPangoAttribute *self)
+{
+    return (long)self->attr;
+}
+
+static PyObject *
+pypango_attr_copy(PyPangoAttribute *self)
+{
+    return pypango_attr_new(pango_attribute_copy(self->attr));
+}
+
+static PyMethodDef pypango_attr_methods[] = {
+    { "copy", (PyCFunction)pypango_attr_copy, METH_NOARGS },
+    { NULL, NULL, 0 }
+};
+
+static PyObject *
+pypango_attr_get_index(PyPangoAttribute *self, void *closure)
+{
+    gboolean is_end = GPOINTER_TO_INT(closure) != 0;
+
+    if (is_end)
+	return PyInt_FromLong(self->attr->end_index);
+    else
+	return PyInt_FromLong(self->attr->start_index);
+}
+
+static int
+pypango_attr_set_index(PyPangoAttribute *self, PyObject *value, void *closure)
+{
+    gboolean is_end = GPOINTER_TO_INT(closure) != 0;
+    gint val;
+
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred()) {
+	PyErr_Clear();
+	PyErr_SetString(PyExc_TypeError, "index must be an integer");
+	return -1;
+    }
+    if (is_end)
+	self->attr->end_index = val;
+    else
+	self->attr->start_index = val;
+    return 0;
+}
+
+static PyGetSetDef pypango_attr_getsets[] = {
+    { "start_index", (getter)pypango_attr_get_index,
+      (setter)pypango_attr_set_index, NULL, GINT_TO_POINTER(0) },
+    { "end_index", (getter)pypango_attr_get_index,
+      (setter)pypango_attr_set_index, NULL, GINT_TO_POINTER(1) },
+    { NULL, (getter)0, (setter)0, NULL, NULL }
+};
+
+static PyTypeObject PyPangoAttribute_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,					/* ob_size */
+    "pango.Attribute",			/* tp_name */
+    sizeof(PyPangoAttribute),		/* tp_basicsize */
+    0,					/* tp_itemsize */
+    /* methods */
+    (destructor)pypango_attr_dealloc,	/* tp_dealloc */
+    (printfunc)0,			/* tp_print */
+    (getattrfunc)0,			/* tp_getattr */
+    (setattrfunc)0,			/* tp_setattr */
+    (cmpfunc)pypango_attr_compare,	/* tp_compare */
+    (reprfunc)0,			/* tp_repr */
+    0,					/* tp_as_number */
+    0,					/* tp_as_sequence */
+    0,					/* tp_as_mapping */
+    (hashfunc)pypango_attr_hash,	/* tp_hash */
+    (ternaryfunc)0,			/* tp_call */
+    (reprfunc)0,			/* tp_str */
+    (getattrofunc)0,			/* tp_getattro */
+    (setattrofunc)0,			/* tp_setattro */
+    0,					/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,			/* tp_flags */
+    NULL, /* Documentation string */
+    (traverseproc)0,			/* tp_traverse */
+    (inquiry)0,				/* tp_clear */
+    (richcmpfunc)0,			/* tp_richcompare */
+    0,					/* tp_weaklistoffset */
+    (getiterfunc)0,			/* tp_iter */
+    (iternextfunc)0,			/* tp_iternext */
+    pypango_attr_methods,		/* tp_methods */
+    0,					/* tp_members */
+    pypango_attr_getsets,		/* tp_getset */
+    (PyTypeObject *)0,			/* tp_base */
+    (PyObject *)0,			/* tp_dict */
+    0,					/* tp_descr_get */
+    0,					/* tp_descr_set */
+    0,					/* tp_dictoffset */
+    (initproc)0,			/* tp_init */
+    PyType_GenericAlloc,		/* tp_alloc */
+    PyType_GenericNew,			/* tp_new */
+    0,					/* tp_free */
+    (inquiry)0,				/* tp_is_gc */
+    (PyObject *)0,			/* tp_bases */
+};
+
+%%
+init
+    if (PyType_Ready(&PyPangoAttribute_Type) < 0)
+        return;
 %%
 modulename pango
 %%
@@ -41,6 +185,306 @@ ignore
   pango_glyph_string_x_to_index
   pango_break
   pango_shape
+%%
+override pango_attr_language_new kwargs
+static PyObject *
+_wrap_pango_attr_language_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "language", NULL };
+    char *slanguage;
+    PangoLanguage *language;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:PangoAttrLanguage",
+				     kwlist, &slanguage))
+	return NULL;
+
+    language = pango_language_from_string(slanguage);
+
+    return pypango_attr_new(pango_attr_language_new(language));
+}
+%%
+override pango_attr_family_new kwargs
+static PyObject *
+_wrap_pango_attr_family_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "family", NULL };
+    char *family;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:PangoAttrFamily", kwlist,
+				     &family))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_family_new(family));
+}
+%%
+override pango_attr_foreground_new kwargs
+static PyObject *
+_wrap_pango_attr_foreground_new(PyObject *self,PyObject *args,PyObject *kwargs)
+{
+    static char *kwlist[] = { "red", "green", "blue", NULL };
+    guint16 red, green, blue;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "HHH:PangoAttrForeground",
+				     kwlist, &red, &green, &blue))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_foreground_new(red, green, blue));
+}
+%%
+override pango_attr_background_new kwargs
+static PyObject *
+_wrap_pango_attr_background_new(PyObject *self,PyObject *args,PyObject *kwargs)
+{
+    static char *kwlist[] = { "red", "green", "blue", NULL };
+    guint16 red, green, blue;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "HHH:PangoAttrBackground",
+				     kwlist, &red, &green, &blue))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_background_new(red, green, blue));
+}
+%%
+override pango_attr_size_new kwargs
+static PyObject *
+_wrap_pango_attr_size_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "size", NULL };
+    int size;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoAttrSize", kwlist,
+				     &size))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_size_new(size));
+}
+%%
+override pango_attr_style_new kwargs
+static PyObject *
+_wrap_pango_attr_style_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "style", NULL };
+    PyObject *py_style;
+    PangoStyle style;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrStyle", kwlist,
+				     &py_style))
+	return NULL;
+    if (!pyg_enum_get_value(PANGO_TYPE_STYLE, py_style, (gint *)&style))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_style_new(style));
+}
+%%
+override pango_attr_weight_new kwargs
+static PyObject *
+_wrap_pango_attr_weight_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "weight", NULL };
+    PyObject *py_weight;
+    PangoWeight weight;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrWeight", kwlist,
+				     &py_weight))
+	return NULL;
+    if (!pyg_enum_get_value(PANGO_TYPE_WEIGHT, py_weight, (gint *)&weight))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_weight_new(weight));
+}
+%%
+override pango_attr_variant_new kwargs
+static PyObject *
+_wrap_pango_attr_variant_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "variant", NULL };
+    PyObject *py_variant;
+    PangoVariant variant;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrVariant",
+				     kwlist, &py_variant))
+	return NULL;
+    if (!pyg_enum_get_value(PANGO_TYPE_VARIANT, py_variant, (gint *)&variant))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_variant_new(variant));
+}
+%%
+override pango_attr_stretch_new kwargs
+static PyObject *
+_wrap_pango_attr_stretch_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "stretch", NULL };
+    PyObject *py_stretch;
+    PangoStretch stretch;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrStretch",
+				     kwlist, &py_stretch))
+	return NULL;
+    if (!pyg_enum_get_value(PANGO_TYPE_STRETCH, py_stretch, (gint *)&stretch))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_stretch_new(stretch));
+}
+%%
+override pango_attr_font_desc_new kwargs
+static PyObject *
+_wrap_pango_attr_font_desc_new(PyObject *self, PyObject *args,PyObject *kwargs)
+{
+    static char *kwlist[] = { "desc", NULL };
+    PyObject *font_desc;
+    PangoFontDescription *desc;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrFontDesc",
+				     kwlist, &font_desc))
+	return NULL;
+    if (!pyg_boxed_check(font_desc, PANGO_TYPE_FONT_DESCRIPTION)) {
+	PyErr_SetString(PyExc_TypeError,"desc must be a PangoFontDescription");
+	return NULL;
+    }
+    desc = pyg_boxed_get(font_desc, PangoFontDescription);
+    return pypango_attr_new(pango_attr_font_desc_new(desc));
+}
+%%
+override pango_attr_underline_new kwargs
+static PyObject *
+_wrap_pango_attr_underline_new(PyObject *self, PyObject *args,PyObject *kwargs)
+{
+    static char *kwlist[] = { "underline", NULL };
+    PyObject *py_underline;
+    PangoUnderline underline;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrUnderline",
+				     kwlist, &py_underline))
+	return NULL;
+    if (!pyg_enum_get_value(PANGO_TYPE_UNDERLINE, py_underline,
+			    (gint *)&underline))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_underline_new(underline));
+}
+%%
+override pango_attr_strikethrough_new kwargs
+static PyObject *
+_wrap_pango_attr_strikethrough_new(PyObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    static char *kwlist[] = { "strikethrough", NULL };
+    gboolean strikethrough;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoAttrStrikethrough",
+				     kwlist, &strikethrough))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_strikethrough_new(strikethrough));
+}
+%%
+override pango_attr_rise_new kwargs
+static PyObject *
+_wrap_pango_attr_rise_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "rise", NULL };
+    gint rise;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoAttrRise",
+				     kwlist, &rise))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_rise_new(rise));
+}
+%%
+override pango_attr_shape_new kwargs
+static PyObject *
+_wrap_pango_attr_shape_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "ink_rect", "logical_rect", NULL };
+    PangoRectangle ink_rect, logical_rect;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "(iiii)(iiii):PangoAttrShape", kwlist,
+				     &ink_rect.x, &ink_rect.y,
+				     &ink_rect.width, &ink_rect.height,
+				     &logical_rect.x, &logical_rect.y,
+				     &logical_rect.width,&logical_rect.height))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_shape_new(&ink_rect, &logical_rect));
+}
+%%
+override pango_attr_scale_new kwargs
+static PyObject *
+_wrap_pango_attr_scale_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "scale", NULL };
+    double scale;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "d:PangoAttrScale",
+				     kwlist, &scale))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_scale_new(scale));
+}
+%%
+override pango_attr_list_insert kwargs
+static PyObject *
+_wrap_pango_attr_list_insert(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "attr", NULL };
+    PyPangoAttribute *py_attr;
+    PangoAttribute *attr;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:PangoAttrList.insert", kwlist,
+				     &PyPangoAttribute_Type, &py_attr))
+	return NULL;
+    attr = pango_attribute_copy(py_attr->attr);
+
+    pango_attr_list_insert(pyg_boxed_get(self, PangoAttrList), attr);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override pango_attr_list_insert_before kwargs
+static PyObject *
+_wrap_pango_attr_list_insert_before(PyObject *self, PyObject *args,
+				    PyObject *kwargs)
+{
+    static char *kwlist[] = { "attr", NULL };
+    PyPangoAttribute *py_attr;
+    PangoAttribute *attr;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:PangoAttrList.insert_before", kwlist,
+				     &PyPangoAttribute_Type, &py_attr))
+	return NULL;
+    attr = pango_attribute_copy(py_attr->attr);
+
+    pango_attr_list_insert_before(pyg_boxed_get(self, PangoAttrList), attr);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override pango_attr_list_change kwargs
+static PyObject *
+_wrap_pango_attr_list_change(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "attr", NULL };
+    PyPangoAttribute *py_attr;
+    PangoAttribute *attr;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:PangoAttrList.change", kwlist,
+				     &PyPangoAttribute_Type, &py_attr))
+	return NULL;
+    attr = pango_attribute_copy(py_attr->attr);
+
+    pango_attr_list_change(pyg_boxed_get(self, PangoAttrList), attr);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 %%
 ignore pango_font_description_from_string
 %%
