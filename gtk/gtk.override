@@ -4128,3 +4128,42 @@ _wrap_gtk_color_button_get_color(PyGObject *self)
     gtk_color_button_get_color(GTK_COLOR_BUTTON(self->obj), &color);
     return pyg_boxed_new(GDK_TYPE_COLOR, &color, TRUE, TRUE);
 }
+%%
+override gtk_combo_box_new kwargs
+static int
+_wrap_gtk_combo_box_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "model", NULL };
+    PyGObject *pymodel = NULL;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O!:GtkComboBox.__init__",
+				     kwlist, &PyGtkTreeModel_Type, &pymodel))
+        return -1;
+    if (pymodel)
+	self->obj = (GObject *)gtk_combo_box_new_with_model(GTK_TREE_MODEL(pymodel->obj));
+    else
+	self->obj = (GObject *)gtk_combo_box_new();
+ 
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkComboBox object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gtk_combo_box_get_active_iter noargs
+static PyObject *
+_wrap_gtk_combo_box_get_active_iter(PyGObject *self)
+{
+    GtkTreeIter iter;
+    gboolean ret;
+
+    ret = gtk_combo_box_get_active_iter(GTK_COMBO_BOX(self->obj), &iter);
+
+    if (ret)
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
