@@ -1,3 +1,22 @@
+2003-01-08  Jon Trowbridge  <trow@ximian.com>
+
+	* pygobject.c (pygobject_dealloc): Wrap
+	Py_BEGIN_ALLOW_THREADS/Py_END_ALLOW_THREADS around the call to
+	g_object_unref.  We need to do this because the object finalizers
+	might trigger other code that has to acquire the interpreter lock,
+	causing a deadlock.  Fixes #102756.
+
+	* gtk/gtk-types.c (pygtk_style_helper_dealloc): Wrap the call to
+	g_object_unref in Py_BEGIN_ALLOW_THREADS/Py_END_ALLOW_THREADS.
+	This should let us avoid other instances of bug #102756.
+	(pygtk_style_helper_setitem): Ditto.
+	(pygtk_tree_model_row_dealloc): Ditto.
+	(pygtk_tree_model_row_iter_dealloc): Ditto.
+
+	* gtk/gdk.override (pygdk_unblock_threads, pygdk_unblock_threads): 
+	Restored David I Lehn's patch (#98380).  His patch was fine ---
+	it just caused bug #102756 to emerge.
+
 2003-01-07  Johan Dahlin  <jdahlin@async.com.br>
 
 	* pygtk.py (_get_available_versions): Rewrite using glob.glob,

@@ -55,7 +55,9 @@ _pygtk_style_helper_new(GtkStyle *style, int type, gpointer array)
 static void
 pygtk_style_helper_dealloc(PyGtkStyleHelper_Object *self)
 {
+    Py_BEGIN_ALLOW_THREADS;
     g_object_unref(self->style);
+    Py_END_ALLOW_THREADS;
     PyObject_DEL(self);
 }
 
@@ -126,7 +128,11 @@ pygtk_style_helper_setitem(PyGtkStyleHelper_Object *self, int pos,
 		PyErr_SetString(PyExc_TypeError, "can only assign a GdkGC");
 		return -1;
 	    }
-	    if (array[pos]) g_object_unref(array[pos]);
+	    if (array[pos]) {
+		Py_BEGIN_ALLOW_THREADS;
+		g_object_unref(array[pos]);
+		Py_END_ALLOW_THREADS;
+	    }
 	    array[pos] = GDK_GC(g_object_ref(pygobject_get(value)));
 	    return 0;
 	}
@@ -139,7 +145,11 @@ pygtk_style_helper_setitem(PyGtkStyleHelper_Object *self, int pos,
 				"can only assign a GdkPixmap or None");
 		return -1;
 	    }
-	    if (array[pos]) g_object_unref(array[pos]);
+	    if (array[pos]) {
+		Py_BEGIN_ALLOW_THREADS;
+		g_object_unref(array[pos]);
+		Py_END_ALLOW_THREADS;
+	    }
 	    if (value != Py_None)
 		array[pos] = GDK_PIXMAP(g_object_ref(pygobject_get(value)));
 	    else
@@ -790,7 +800,9 @@ _pygtk_tree_model_row_new(GtkTreeModel *model, GtkTreeIter *iter)
 static void
 pygtk_tree_model_row_dealloc(PyGtkTreeModelRow *self)
 {
+    Py_BEGIN_ALLOW_THREADS;
     g_object_unref(self->model);
+    Py_END_ALLOW_THREADS;
     PyObject_DEL(self);
 }
 
@@ -998,7 +1010,9 @@ _pygtk_tree_model_row_iter_new(GtkTreeModel *model, GtkTreeIter *parent_iter)
 static void
 pygtk_tree_model_row_iter_dealloc(PyGtkTreeModelRowIter *self)
 {
+    Py_BEGIN_ALLOW_THREADS;
     g_object_unref(self->model);
+    Py_END_ALLOW_THREADS;
     PyObject_DEL(self);
 }
 
