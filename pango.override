@@ -63,3 +63,24 @@ _wrap_pango_font_description_new(PyGBoxed *self, PyObject *args,
     self->free_on_dealloc = TRUE;
     return 0;
 }
+%%
+override-slot PangoFontDescription.tp_compare
+static int
+_wrap_pango_font_description_tp_compare(PyGBoxed *self, PyGBoxed *other)
+{
+    if (self->boxed == other->boxed ||
+	pango_font_description_equal(pyg_boxed_get(self, PangoFontDescription),
+				pyg_boxed_get(other, PangoFontDescription)))
+	return 0;
+    if (self->boxed > other->boxed)
+	return -1;
+    return 1;
+}
+%%
+override-slot PangoFontDescription.tp_hash
+static long
+_wrap_pango_font_description_tp_hash(PyGBoxed *self)
+{
+    return (long)pango_font_description_hash(
+		pyg_boxed_get(self, PangoFontDescription));
+}
