@@ -61,7 +61,7 @@ class Wrapper:
         '    sizeof(%(tp_basicsize)s),	        /* tp_basicsize */\n' \
         '    0,					/* tp_itemsize */\n' \
         '    /* methods */\n' \
-        '    (destructor)0,			/* tp_dealloc */\n' \
+        '    (destructor)%(tp_dealloc)s,	/* tp_dealloc */\n' \
         '    (printfunc)0,			/* tp_print */\n' \
         '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
         '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
@@ -76,10 +76,10 @@ class Wrapper:
         '    (getattrofunc)0,			/* tp_getattro */\n' \
         '    (setattrofunc)0,			/* tp_setattro */\n' \
         '    (PyBufferProcs*)%(tp_as_buffer)s,	/* tp_as_buffer */\n' \
-        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
+        '    %(tp_flags)s,                      /* tp_flags */\n' \
         '    NULL, 				/* Documentation string */\n' \
-        '    (traverseproc)0,			/* tp_traverse */\n' \
-        '    (inquiry)0,			/* tp_clear */\n' \
+        '    (traverseproc)%(tp_traverse)s,	/* tp_traverse */\n' \
+        '    (inquiry)%(tp_clear)s,		/* tp_clear */\n' \
         '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
         '    %(tp_weaklistoffset)s,             /* tp_weaklistoffset */\n' \
         '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
@@ -103,7 +103,8 @@ class Wrapper:
                   'tp_as_number', 'tp_as_sequence', 'tp_as_mapping', 'tp_hash',
                   'tp_call', 'tp_str', 'tp_as_buffer', 'tp_richcompare', 'tp_iter',
                   'tp_iternext', 'tp_descr_get', 'tp_descr_set', 'tp_init',
-                  'tp_alloc', 'tp_new', 'tp_free', 'tp_is_gc']
+                  'tp_alloc', 'tp_new', 'tp_free', 'tp_is_gc',
+                  'tp_traverse', 'tp_clear', 'tp_dealloc', 'tp_flags']
 
     getter_tmpl = \
         'static PyObject *\n' \
@@ -163,7 +164,11 @@ class Wrapper:
     def get_field_accessor(self, fieldname):
         raise NotImplementedError
 
-    def get_initial_class_substdict(self): return {}
+    def get_initial_class_substdict(self):
+        return dict(tp_flags='Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE',
+                    tp_basicsize='PyObject',
+                    tp_weaklistoffset='0',
+                    tp_dictoffset='0')
 
     def get_initial_constructor_substdict(self, constructor):
         return { 'name': '%s.__init__' % self.objinfo.c_name,
@@ -190,9 +195,6 @@ class Wrapper:
 
         # handle slots ...
         for slot in self.slots_list:
-            if substdict.has_key(slot) and substdict[slot] != '0':
-                continue
-            
             slotname = '%s.%s' % (self.objinfo.c_name, slot)
             slotfunc = '_wrap_%s_%s' % (self.get_lower_name(), slot)
             if slot[:6] == 'tp_as_':
@@ -202,7 +204,8 @@ class Wrapper:
                 self.write_function(slotname, data)
                 substdict[slot] = slotfunc
             else:
-                substdict[slot] = '0'
+                if not substdict.has_key(slot):
+                    substdict[slot] = '0'
     
         self.fp.write(self.type_tmpl % substdict)
 
@@ -529,9 +532,11 @@ class GObjectWrapper(Wrapper):
                                             '_TYPE_', '_', 1)
 
     def get_initial_class_substdict(self):
-        return { 'tp_basicsize'      : 'PyGObject',
-                 'tp_weaklistoffset' : 'offsetof(PyGObject, weakreflist)',
-                 'tp_dictoffset'     : 'offsetof(PyGObject, inst_dict)' }
+        d = Wrapper.get_initial_class_substdict(self)
+        d.update(dict(tp_basicsize='PyGObject',
+                      tp_weaklistoffset='offsetof(PyGObject, weakreflist)',
+                      tp_dictoffset='offsetof(PyGObject, inst_dict)'))
+        return d
     
     def get_field_accessor(self, fieldname):
         castmacro = string.replace(self.objinfo.typecode, '_TYPE_', '_', 1)
@@ -630,10 +635,6 @@ class GObjectWrapper(Wrapper):
 
 
 class GInterfaceWrapper(GObjectWrapper):
-    def get_initial_class_substdict(self):
-        return { 'tp_basicsize'      : 'PyObject',
-                 'tp_weaklistoffset' : '0',
-                 'tp_dictoffset'     : '0'}
 
     def write_constructor(self):
         # interfaces have no constructors ...
@@ -674,9 +675,9 @@ class GBoxedWrapper(Wrapper):
         '}\n\n'
 
     def get_initial_class_substdict(self):
-        return { 'tp_basicsize'      : 'PyGBoxed',
-                 'tp_weaklistoffset' : '0',
-                 'tp_dictoffset'     : '0' }
+        d = Wrapper.get_initial_class_substdict(self)
+        d.update(dict(tp_basicsize='PyGBoxed'))
+        return d
 
     def get_field_accessor(self, fieldname):
         return 'pyg_boxed_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)
@@ -716,9 +717,9 @@ class GPointerWrapper(GBoxedWrapper):
         '}\n\n'
 
     def get_initial_class_substdict(self):
-        return { 'tp_basicsize'      : 'PyGPointer',
-                 'tp_weaklistoffset' : '0',
-                 'tp_dictoffset'     : '0' }
+        d = Wrapper.get_initial_class_substdict(self)
+        d.update(dict(tp_basicsize='PyGPointer'))
+        return d
 
     def get_field_accessor(self, fieldname):
         return 'pyg_pointer_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)

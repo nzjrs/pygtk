@@ -20,9 +20,24 @@
 	* examples/Makefile.am (EXTRA_DIST): Add fsmw's entrycompletion.py
 	example.
 
+	* codegen/codegen.py (GObjectWrapper.get_initial_class_substdict)
+	(GInterfaceWrapper.get_initial_class_substdict)
+	(GBoxedWrapper.get_initial_class_substdict)
+	(GPointerWrapper.get_initial_class_substdict): Refactor substdict
+	code: move most common items to parent class, and just override a
+	few in subclasses.  Set default value for slot tp_flags.
+
+	* gobject/pygobject.c (pygobject_register_class): Remove hardcoded
+	( and unnecessary ) initialization of slots tp_dealloc,
+	tp_traverse, tp_clear, tp_flags, tp_weaklistoffset, and
+	tp_dictoffset.  They will naturally inherit from parent type if unset.
+
 	* codegen/codegen.py
 	(GObjectWrapper.write_property_based_constructor): honor flag
 	caller-owns-return.
+	(Wrapper): Allow override of tp_traverse, tp_clear, tp_dealloc, tp_flags.
+	(Wrapper.write_class): Allow slots listed by
+	get_initial_*_substdict to be overridden.
 
 2004-08-14  John Finlay  <finlay@moeraki.com>
 
