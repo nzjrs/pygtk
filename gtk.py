@@ -1156,7 +1156,7 @@ class GtkCList(GtkContainer):
 		attrs = {
 			'selection':_gtk.gtk_clist_get_selection,
 			'focus_row':_gtk.gtk_clist_get_focus_row,
-			'rows':_gtk_clist_get_rows,
+			'rows':_gtk.gtk_clist_get_rows,
 		}
 		if attrs.has_key(attr):
 			return attrs[attr](self._o)
