@@ -59,6 +59,15 @@ sink_gtkwindow(GObject *object)
 }
 
 static void
+sink_gtkinvisible(GObject *object)
+{
+    if (object->ref_count == 1
+	&& GTK_INVISIBLE(object)->has_user_ref_count) {
+	g_object_ref(object);
+    }
+}
+
+static void
 sink_gtkobject(GObject *object)
 {
     if (GTK_OBJECT_FLOATING(object)) {
@@ -100,6 +109,7 @@ init_gtk(void)
     g_assert(pygobject_register_class != NULL);
 
     pygobject_register_sinkfunc(GTK_TYPE_WINDOW, sink_gtkwindow);
+    pygobject_register_sinkfunc(GTK_TYPE_INVISIBLE, sink_gtkinvisible);
     pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
 
     /* set the default python encoding to utf-8 */

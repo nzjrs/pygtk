@@ -527,13 +527,10 @@ class GObjectWrapper(Wrapper):
 
     def get_initial_constructor_substdict(self, constructor):
         substdict = Wrapper.get_initial_constructor_substdict(self, constructor)
-        if argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkInvisible'):
-            substdict['aftercreate'] = "    g_object_ref(self->obj); /* we don't own the first reference of invisibles */\n"
-	else:
-	    if not constructor.caller_owns_return:
-		substdict['aftercreate'] = "    g_object_ref(self->obj);\n"
-	    else:
-		substdict['aftercreate'] = ''
+        if not constructor.caller_owns_return:
+            substdict['aftercreate'] = "    g_object_ref(self->obj);\n"
+        else:
+            substdict['aftercreate'] = ''
         return substdict
 
     def get_initial_method_substdict(self, method):

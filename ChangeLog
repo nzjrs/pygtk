@@ -1,5 +1,14 @@
 2004-06-20  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
 
+	* gtk/gtkmodule.c (init_gtk): Just like GtkWindow, register custom
+	sink function for GtkInvisible type.
+
+	* codegen/codegen.py
+	(GObjectWrapper.get_initial_constructor_substdict): Removed
+	special treatment of GtkInvisible, no longer needed.
+
+	* gtk/gtkmodule.c (sink_gtkinvisible): Copy-paste from sink_gtkwindow.
+
 	* pygobject.c (pygobject_new_with_interfaces): Add hack to
 	workaround python tp_(get|set)attr slot inheritance bug. Fixes
 	pygtk bug #144135 (gtk.gdk.GC attributes not working).
