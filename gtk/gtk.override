@@ -7895,6 +7895,17 @@ _wrap_gtk_tooltips_data_get(PyGObject *self, PyObject *args, PyObject *kwargs)
 			 data->tip_private);
 }
 %%
+override gtk_window_get_frame_dimensions  noargs
+static PyObject *
+_wrap_gtk_window_get_frame_dimensions(PyGObject *self)
+{
+    int left, top, right, bottom;
+
+    gtk_window_get_frame_dimensions(GTK_WINDOW(self->obj),
+				    &left, &top, &right, &bottom);
+    return Py_BuildValue("(iiii)", left, top, right, bottom);
+}
+%%
 ignore-win32
         GTK_TYPE_PLUG
         GTK_TYPE_SOCKET
