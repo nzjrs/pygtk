@@ -215,7 +215,7 @@ boxedgetattrtmpl = 'static PyObject *\n' + \
                    '    return Py_FindMethod(%(methods)s, self, attr);\n' + \
                    '}\n\n'
 attrchecktmpl = '    if (!strcmp(attr, "%(attr)s")) {\n' + \
-                '%(varlist)s' + \
+                '    %(varlist)s' + \
                 '%(code)s\n' + \
                 '    }\n'
 
@@ -451,8 +451,8 @@ def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
             handler = argtypes.matcher.get(ftype)
             code = handler.write_return(ftype, varlist) % \
                    {'func': castmacro + '(self->obj)->' + fname,
-                    'checkerror': '0',
-                    'handleerror': ''}
+                    'checkerror': handler.checkerror,
+                    'handleerror': handler.handleerror}
             fp.write(gettertmpl % { 'funcname': funcname,
                                     'attr': fname,
                                     'varlist': varlist,
@@ -716,7 +716,9 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
             varlist = argtypes.VarList()
             handler = argtypes.matcher.get(ftype)
             code = handler.write_return(ftype, varlist) % \
-                   {'func': 'pyg_boxed_get(self, ' + boxedobj.c_name + ')->' + fname}
+                   {'func': 'pyg_boxed_get(self, ' + boxedobj.c_name + ')->' + fname,
+                    'handleerror': handler.handleerror,
+                    'checkerror': handler.checkerror}
             if code:
                 # indent code ...
                 code = '    ' + string.replace(code, '\n', '\n    ')
