@@ -1,5 +1,14 @@
 2005-01-09  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* tests/Makefile.am (tests): Add test_subprocess.py.
+
+	* tests/test_subprocess.py: Unit test for gobject.spawn_async and
+	gobject.child_watch_add.
+
+	* gobject/gobjectmodule.c (pyg_spawn_async): Add wrapper for
+	g_spawn_async_with_pipes.
+	(pyg_child_watch_add): Add wrapper for g_child_watch_add_full.
+
 	* gobject/pygobject.h, gobject/pygobject-private.h: Define
 	pyg_threads_enabled as PyEval_ThreadsInitialized() on Python 2.4,
 	so that it is no longer required to call gobject.threads_init on
