@@ -583,11 +583,20 @@ static PyObject *_wrap_gdk_imlib_rotate_image(PyObject *self, PyObject *args) {
 
 static PyObject *_wrap_gdk_imlib_create_image_from_data(PyObject *self, PyObject *args) {
     unsigned char *data, *alpha;
-    int w, h;
+    int w, h, ndata, nalpha;
 
-    if (!PyArg_ParseTuple(args, "szii:gdk_imlib_create_image_from_data",
-			  &data, &alpha, &w, &h))
+    if (!PyArg_ParseTuple(args, "s#z#ii:gdk_imlib_create_image_from_data",
+			  &data, &ndata, &alpha, &nalpha, &w, &h))
         return NULL;
+
+    if (data && ndata < w * h * 3) {
+	PyErr_SetString(PyExc_TypeError,"data argument is too short for size");
+	return NULL;
+    }
+    if (alpha && nalpha < w * h) {
+	PyErr_SetString(PyExc_TypeError,"alpha channel is too short for size");
+	return NULL;
+    }
     return PyGdkImlibImage_New(gdk_imlib_create_image_from_data(
 					data, alpha, w, h));
 }
