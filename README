@@ -1,0 +1,209 @@
+Gtkmodule and Gtkinter
+======================
+Author: James Henstridge <james@daa.com.au>
+
+
+This archive contains modules that allow you to use gtk in Python
+programs.  At present, it is a fairly complete set of bindings.
+Despite the low version number, this peice of software is quite
+useful, and is usable to write moderately complex programs.  (see the
+examples directory for some examples of the simpler programs you could
+write).
+
+If you have any enhancements or bug reports, please send them to me at
+james@daa.com.au.  If you are going to send me diffs, my prefered
+format is unified diff (ie. diff -u), followed by context diffs.
+Please don't send me diffs which don't have any context, as these are
+almost useless if I try to apply them manually, or have a different
+version of the source tree.
+
+
+New Versions
+============
+
+New versions of this package can be found at
+  ftp://ftp.daa.com.au/pub/james/python/
+  ftp://ftp.gtk.org/pub/gtk/python/
+  ftp://ftp.python.org/pub/contrib/Graphics/
+
+
+Mailing list
+============
+
+There is a mailing list for pygtk.  You can subscribe to it by sending mail
+to pygtk-request@daa.com.au with the word subscribe in the body.  The list
+address is pygtk@daa.com.au.
+
+
+Copyright Information
+=====================
+
+This software is covered by the GNU Library General Public Licence
+(version 2, or if you choose, a later version).  Basically just don't
+say you wrote bits you didn't.
+
+
+Compilation
+===========
+
+This archive contains a single C module called gtkmodule.  It contains
+an almost direct mapping of the functions in GTK including GTK signal
+handling, and the gtk_object_new/gtk_object_set commands.  This
+version REQUIRES gtk+-1.1.3 or later, as it includes support for
+features not found in previous versions, and there are
+incompatibilities between versions.  Also if you want the GdkImlib
+extension, you must have Imlib version 1.8 or greater.  I recommend
+getting the latest stable versions of these libraries before compiling
+pygtk, as it will make your system more stable.
+
+Parts of this module are automatically generated from the .defs file
+in the generate directory, by the two python scripts in that
+directory.
+
+To compile gtkmodule, first run "./configure" from the base directory
+of the distribution.  It requires that you have python in the path,
+and python has been installed properly.  If python is not in the path,
+you could try running "PYTHON=/subdir/python ./configure".  This
+should generate Makefile from the files Makefile.pre.in and Setup.in.
+
+Now you should be able to run "make" to compile the module.  Now you
+should install the files.  I have provided an install target to the
+makefile, so you should be able to just type "make install".  On
+systems with Python 1.5 and later, it installs to the site-packages
+directory (using prefix and exec_prefix where appropriate).  For
+Python 1.4, it installs the python code to $(prefix)/lib/python$(version),
+and the libraries to $(excec_prefix)/lib/python$(version)/sharedmodules.
+It also compiles .pyc files from the python code.
+
+If you had a copy of gdk_imlib installed on your system (and configure
+could find it) when you built pygtk, a wrapper for it will have been
+installed with the main pygtk modules.  A simple example of using the
+GdkImlib module is in the directory examples/imlib.
+
+If you have trouble with building or installing any of the code, please
+tell me -- it is the only way I can fix the problem.  If you do mail me,
+please put something sensible in the subject line so I can tell what it
+is about.
+
+
+Upgrading
+=========
+
+Note that from version 0.5.0 up, pygtk uses GTK v1.1.  Since there
+were some changes to the API, pygtk has changed accordingly.  The main
+one that will cause problems is the GtkAcceleratorTable.  In this
+version, it has been removed and replaced with the GtkAccelGroup.
+Also note that some of the functions that refer to that type may have
+changed slightly.  The rest of the changes are mostly invisible, since
+they are mainly internal, and not touched upon by most people's code.
+
+Also, I have changed the arguments for the Gtkinter.new function.  Now
+instead of object arguments being passed in as a dictionary, they are
+passed in as keyword arguments.  This is possible because the 'Gtk*::'
+prefix is no longer needed.
+
+If you have a previous 0.5.x version of pygtk, and you weren't using
+the Gtkinter.py wrapper, there is no _gtkbase module any more, so
+don't include it.  Also don't call pygtk_init, as it is now done
+automatically during module initialisation.
+
+
+Tests
+=====
+
+After having compiled and installed gtkmodule, GTK and Gtkinter, you
+may want to test them.  In the examples directory there are a number
+of programs you may want to use to test gtkmodule and Gtkinter.  These
+programs rely on being able to find gtkmodule, GTK and Gtkinter, so
+you must have installed them somewhere on your python path.  (Typing
+"PYTHONPATH=../.. python filename.py" from the examples directory is
+enough, after building gtkmodule)
+
+
+_gtkmodule and GTK.py
+====================
+
+This module contains an almost complete translation of the functions
+in the gtk library.  To start up, put in the command "from gtk import
+*".  If you want to use any of the constants, type "from GTK import
+*".  The constants all have the "GTK_" removed from the start.  Before
+creating any GtkObjects, you should execute the command "gtk_init()".
+Unlike the C equivalent, you don't have to specify an argument list,
+since there are other ways to get at it.
+
+When you are using the functions in this module, you will find that
+there is no need to use any of the type casting macros on GtkObjects,
+since they are all stored inside the same python type.  Each function
+in the module does its own type casting.
+
+In this module there are only two signal connection functions --
+gtk_signal_connect and gtk_signal_connect_after.  The other functions
+can be emulated with the use of callable class instances wrapped
+around the signal handler.  Also signal handlers are not parsed the
+extra data argument.  The reason for this is because the code has to
+keep track of both the python signal handler and its C wrapper.
+
+In the gtk_object_new and gtk_object_set functions, the property
+setting argumetns have been compressed into a single dictionary as an
+argument.  This dictionary has string keys that correspond to the
+property names, and the values are the property values.  The reason
+that I did not use keyword arguments is that things like
+"GtkWindow::title" are not valid keywords, so unfortunately we have to
+use this clumsy syntax.
+
+
+Gtkinter.py
+===========
+
+This module is a wrapper for gtkmodule.  You start using it by
+executing the command "from Gtkinter import *".  This will give you
+access to all of Gtkinter, and also import GTK, the constants module,
+for you.
+
+This module implements an object oriented wrapper for gtk.  Probably
+the best way to get a feel for it, is to read some of the source
+code.  Basically, there is a class for each GtkObject type.  Each
+class implements the functions specific to that GtkObject type as
+methods.  (ie. GtkWidget.show() is equivalent to gtk_widget_show()).
+
+The classes are set up such that their inheritance tree matches that
+of the actual GtkObjects.  This means that you can call
+GtkWidget.show() from a GtkWindow class instance.
+
+The constructors for each of these classes corresponds to the
+gtk_*_new functions.  Through the use of default arguments, both the
+gtk_*_new and gtk_*_new_* functions are both supported through the
+constructor.
+
+There are also a few extra functions in Gtkinter.  These are new(),
+mainloop() and mainquit().  The function new() implements
+gtk_object_new.  It's first argument can be either a string, or one of
+the classes in the module.  The second argument is a dictionary that
+is almost passed to gtk_object_new after converting Gtkinter Objects
+to GtkObjects.
+
+The function mainloop() is basically just the function gtk_main(), and
+the function mainquit is equivalent to gtk_main_quit().
+
+For further information on the interface, please see the source file
+Gtkinter.py.
+
+
+Should I Use Gtkmodule or GtkInter?
+===================================
+
+You should probably use the striaght gtkmodule, if you are using
+python to prototype a C application that will use GTK, but in most
+other cases, Gtkinter will probably be a lot easier to use, and will
+look more natural in a python program.
+
+
+Contacting the Author
+=====================
+
+You can contact me at the email address <james@daa.com.au>.  I try to
+answer my email quickly, but occasionally there will be a bit of a
+delay.  If you have an idea for a way to extend GTK, have found a
+problem with the code (I don't think there are many bugs anymore), or
+would like to contribute some code, please feel free to contact me.
+

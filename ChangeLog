@@ -1,0 +1,138 @@
+1998-12-05  James Henstridge  <james@daa.com.au>
+
+	* gtkmodule.c, generate/*.defs, gtk.py: updated to latest CVS.  This
+	includes the function name changes Tim Janik introduced.  I have
+	added backward compatibility wrappers for the old functions in gtk.py,
+	which also print out a deprecation message.
+
+1998-12-01  James Henstridge  <james@daa.com.au>
+
+	* gtk.py (GtkLayout): I had left a few remnants from when this class
+	was in gnome.ui.  This is now fixed.
+
+1998-11-29  James Henstridge  <james@daa.com.au>
+
+	* description.py: Added a description of the GtkCTreeNode type.
+
+	* gtk.py (GtkCTree): Added the GtkCTree class to this layer.
+	Hopefully I haven't made any mistakes.
+
+1998-11-28  James Henstridge  <james@daa.com.au>
+
+	* generate/gtklists.defs: added entries for GtkCTree.
+
+	* gtkmodule.c: Added the GtkCTreeNode type.  It exports some of the
+	attributes of the GtkCTreeRow associated with the node.  Specifically,
+	the parent, next sibling links, and a list of children.  This should
+	be enough attributes to make the type useful.
+	Also added extra functions for GtkCTree.
+	
+1998-11-27  James Henstridge  <james@daa.com.au>
+
+	* generate/gtk*.defs: updated for GTK+-1.1.5.
+	
+	* gtkmodule.c: added the PyGtk_RegisterBoxed function, exported through
+	the _private dictionary.  This allows adding extra boxed types so they
+	will be recognised in signal handlers and the like.
+	
+	* gtk.py: this file used to be Gtkinter.py.  People should make this
+	change in their programs.  Also updated for changes to the API.
+	
+	* Gtkinter.py: new file.  Simply does a "from gtk import *", so old
+	programs will still run properly.
+
+	* examples/*/*.py, pyglade/*.py, GdkImlib.py, GtkExtra.py: changed
+	occurences of Gtkinter to gtk.
+
+1998-11-17  James Henstridge  <james@daa.com.au>
+	
+	* GdkImlib.py: missed a closing parenthesis.  This caused problems.
+	
+	* generate/gtk.defs(gtk_rc_add_*_style): removed these functions.
+	They weren't exported by Gtkinter, and their declaration has changed
+	in newer GTK+'s.  Now pygtk should compile with both GTK+-1.1.3 and
+	CVS GTK (tested for a 1998-11-16 checkout).
+	
+	* configure.in, NEWS: bumped version up to 0.5.5, and made new release.
+	
+	* generate/gtkmisc.defs, Gtkinter.py: added the GtkCalendar widget.
+
+1998-11-15  James Henstridge  <james@daa.com.au>
+	
+	* gtkmodule.c: added GdkCursor type.
+	
+	* gtkmodule.c(GdkWindow.set_cursor): function to set cursor for window
+	
+	* generate/gtk.defs (gtk_cursor_*): new functions to create cursors
+	
+	* gtkmodule.c(gtk_pixmap_create_from_xpm_d): new function to create
+	a GdkPixmap from a list of strings (XPM data).  This allows you to
+	store pixmaps inline with your program for distribution.
+	
+	* gdkimlibmodule.c: export the GdkImlibImageType, and a _private
+	dictionary that holds exported functions.  I should be able to
+	add the GdkImlibImage dependent functions to _gnomeui now.
+	
+	* GDK.py, GTK.py: updated with new constants.
+	
+	* examples/simple/*1.py: stopped importing _gtkbase, and don't call
+	_gtk.pygtk_init().
+	
+	* pyglade/build.py: added menu widgets to the interface building code.
+	
+	* pygtk.spec: new file -- an RPM spec file for this package.
+	
+	* NEWS: add information about this new version.
+
+1998-11-15  James Henstridge  <james@daa.com.au>
+	
+	* gtkmodule.c: added GdkAtom handling.  There is now a special type for
+	GdkAtoms that can be cast to string and int with str() and int()
+	respectively, and it supports coercions, so it should act like an
+	int in most cases.  Functions that take GdkAtom's as arguments
+	actually take ints, so backward compatibility is kept, but functions
+	that return GdkAtoms now return this special type.
+	
+	* gtkmodule.c, generate/gtkdnd.defs, Gtkinter.py: added the new DnD
+	code, and support for selections.  The gtk_selection_* functions have
+	been mapped to GtkWidget.selection_*, and the gtk_drag_* functions
+	have been mapped to GtkWidget.drag_*
+	
+	* GdkImlib.py: added function create_image_from_data, so you can
+	create an image from raw RGB data.  Also added the Image.get_pixmap
+	method, which is like Image.make_pixmap, except it returns the
+	GdkPixmap,GdkBitmap pair, instead of a GtkPixmap widget.
+
+1998-11-14  James Henstridge  <james@daa.com.au>
+
+	* generate/*.defs: changes to bring pygtk up to date with GTK+-1.1.3
+
+1998-11-13  James Henstridge  <james@daa.com.au>
+	
+	* gtkmodule.c: added wrappers for GdkDragContext and GtkSelectionData.
+	Also removed all the old DnD GdkEvent mappings, and added the
+	GdkEventDND mapping.  This should be enough to get the new Dnd signals
+	working.
+	
+	* generate/gtkbase.defs, gtkmodule.c(_wrap_gtk_widget_dnd_*): removed
+	the old gtk_widget_dnd_* functions from the bindings.
+
+1998-11-10  James Henstridge  <james@daa.com.au>
+	
+	* build system: Converted over to using automake.  Note thay some
+	modifications have been made to the original version of automake,
+	so you will need to apply my patches if you want to modify pygtk.
+	
+	* swigsrc/*: removed.  I am now using some code generation tools
+	that take .defs files as input.
+	
+	* gdkimlibmodule.c: got rid of all the swig stuff, and cleaned up the
+	code a bit.  This has reduced the source code size by half.
+
+1998-11-10  James Henstridge  <james@daa.com.au>
+	
+	* ChangeLog: started change log.  Old Changelog file has been moved
+	to NEWS
+	
+	* NEWS: used to be Changelog
+	

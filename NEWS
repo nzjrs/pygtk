@@ -1,0 +1,393 @@
+pygtk-0.5.6:  27-November-1998
+	- Updated for gtk+-1.1.5.
+	- Renamed Gtkinter.py to gtk.py.  This follows the naming scheme of
+	  other modules more closely, and is easier for people who prefer to
+	  use "import ...".  It is also not a big change for people who
+	  use "from ... import *".  I have included a simple Gtkinter.py
+	  module for backward compatibility.
+	- Added a private function PyGtk_RegisterBoxed that can be used to add
+	  extra boxed types to the list of those registered in the callback
+	  marshals and the like.
+
+pygtk-0.5.5:  17-November-1998
+        - Fixed a small bug in GdkImlib that caused a syntax error (I should
+          have picked this up for the last release).
+        - Removed some function wrappers that are not used anywhere, in order
+          to get pygtk to compile cleanly on newer CVS GTK's.
+        - I forgot to include the wrappings for the new GtkCalendar widget in
+          the previous release.  It is in this one.
+
+pygtk-0.5.4:  15-November-1998
+        - updated for gtk+-1.1.3 (so you will need glib-1.1.4 as well).  This
+          release adds support for the new DnD functions, support for
+          selection (through the gtk_selection_* functions, which I have
+          mapped to GtkWidget.selection_*) and GdkAtoms, and support for
+          GdkCursors.
+        - To create a new cursor, use the cursor_new or cursor_new_from_pixmap
+          function, and then call the GdkWindow.set_cursor method to attach
+          it to a window.
+        - Added create_pixmap_from_xpm_d function that allows you to embed
+          XPM data into your program for easier distribution.
+        - Updated the GdkImlib module to the features found in imlib-1.8.
+        - Changed the build system, so SWIG is no longer needed.  Also now
+          using a modified version of automake to generate the makefiles.
+        - Updated the pyglade code to handle menus and the like.
+
+pygtk-0.5.3:  27-September-1998
+        - Updated for GTK+-1.1.2 (note that this version of gtk requires
+          glib-1.1.3).  This version adds the support for the tearoff menus
+          and keyboard navigation of menus (if you use item factory).
+        - This is the version of pygtk you will need for the pygnome wrapper
+          for gnome v0.30 (when I finish writing them).
+	- added events_pending function.  Now you can use code like:
+             while events_pending():
+                 mainiteration()
+          to be sure that a scrollbar has been updated.
+        - I have updated the examples/neil/*.py examples to use the
+          GtkItemFactory class.  This shows how to make keyboard navigable
+          menus.
+        - Fixed a typo in GtkWindow.set_focus
+        - Fixed signal handler wrapper, so that handlers that return GtkObject
+          classes get the return type converted back to the lower level
+          GtkObjects.  Also fixed _gtkbasemodule.c, so that return values from
+          signals get returned to GTK properly.  These fixes should allow
+          people to use the GnomeMDI wrappers in pygnome if you change
+          there signal definitions to use GTK_TYPE_OBJECT rather than
+          GTK_TYPE_POINTER (I will ask the author to make this change).
+
+pygtk-0.5.2:  31-August-1998
+        - fixed the ancestory for the GtkScrolledWindow class, fixed the
+          GtkPreview constructor.  Fixed some more spots in _gtkmodule.i
+          where I'd used int types instead of the correct enumeration.
+        - added the pyglade package.  This will allow you to put a bit of
+          code behind interfaces built with GLADE, which can be found at
+          http://www.comp.lancs.ac.uk/~damon/builder/index.html
+          In my current code, I have implemented most widgets on the
+          palette, although the .glade file reader is a bit fragile.  Note
+          that this package is not a code generator (yet).  It reads the
+          interface description and builds the interface at runtime.  This
+          way you can keep the interface separate from the implementation.
+          For an example of use, check the examples/glade directory.
+        - Added support for the GtkItemFactory.  Still no support for the
+          GtkCTree -- even if I did put in support for it, the signal
+          definitions define the GtkCTreeNode's as pointers, making it
+          almost useless.
+
+pygtk-0.5.1:  19-August-1998
+        - fix a small bug in configure script that prevented building.
+
+pygtk-0.5.0:  18-August-1998
+        - Updated for GTK+-1.1.1
+        - Replaced GtkAcceleratorTable with GtkAccelGroup.
+        - Made use of the GtkFlagInfo and GtkEnumInfo structures.  You can now
+          specify enum values by a string as well as by a number.  Flag values
+          can be given as strings, or as a tuple of strings or numbers that
+          are ORed together.
+        - Added GtkAccelLabel, GtkFontSelection, GtkFontSelectionDialog,
+          GtkPacker and GtkProgress widgets.  Also updated the methods on all
+          the other objects.  I haven't yet done GtkCTree or GtkItemFactory.
+        - Fixed the gtk_widget_size_request wrapper - it now returns the size
+          requisition as a (w,h) tuple.
+        - I have split gtkmodule into _gtkbasemodule and _gtkmodule.  The code
+          in _gtkbase is no longer generated.  I have gone through and removed
+          uneeded code put in by swig.  This reduced the size of that piece
+          of source by 25%.  Hopefuly this will speed up some of the core
+          functions a bit.  If you use Gtkinter, this change is invisible.
+          If you use gtkmodule directly, change:
+             from gtk import *
+          to
+             from _gtkbase import *
+             from _gtk import *
+             pygtk_init()
+          The pygtk_init function is part of the _gtk module, and is called
+          to tell it about all the types in _gtkbase.  (it should be called
+          by the module's init routine, but I can't find out how to make that
+          happen.
+        - Updated the Gtkinter.new command.  Now widget arguments don't get
+          the widget name prepended, so I have changed the function from
+          accepting the arguments as a dictionary to accepting them as
+          keyword arguments.  (eg you can do new(GtkWindow, title="title",
+          allow_shrink=FALSE)).  On a side note, the GTK_IS_*() functions
+          have been removed from gtkmodule and added in gtk_*_get_type()
+          functions.  You can get the functionality of the removed functions
+          with something like GTK_CHECK_TYPE(obj, gtk_*_get_type()).
+
+pygtk-0.4.5:  5-August-1998
+        - This may be the last gtk v1.0 release of pygtk.  If you have anymore
+          nagging bugs, tell me now, or they won't be fixed in a version that
+          can compile for gtk v1.0 (I will be moving to gtk v1.1)
+        - Fixed some small bugs which I got bug reports about, but forgot to
+          patch (in draw_polygon, GtkDrawingArea.draw_polygon and load_fontset)
+          Also added the font argument to draw_string,draw_text.  This was
+          what was causing those problems.
+        - Now gtk_set_locale is called when Gtkinter is loaded.  This will
+          make pygtk more useful for languages with non-latin character sets
+          (eg Japanese).
+        - Fixed up new_gc, so that if you don't pass it any arguments, it
+          doesn't cause your program to segfault.
+        - Made GtkObject.connect and GtkObject.connect_after var arg functions.
+          Any extra arguments passed will be added to the argument list for
+          the signal handler.
+        - Added some attributes to the GdkFont object.  You can now access
+          the ascent and descent attributes, and call the width and measure
+          methods, which both take a string as an argument.
+
+pygtk-0.4.4:  17-June-1998
+        - Updated for gtk+-1.0.4, although it will work with gtk+-1.0.2 (No
+          new features were added between these releases).
+        - Fixed the date on the last changelog entry :(
+        - Added the file description.py.  It contains a breif description
+          of some of the objects used in Gtkinter, such as GtkStyle's,
+          GdkColors, GdkGC's and so on.  It is structured as a python module,
+          but is not intended to be imported.  It can be used as a small
+          reference.
+        - Added variable GtkCList.selection, and method
+          GtkCList.get_selection_info.  These should help using clists, and
+          help trap double clicks in a clist, since you can now do something
+          like this:
+            row, col = clist.get_selection_info(event.x, event.y)
+          in a signal handler (maybe button_press).
+        - Changed the GdkWindow destroy function to call gdk_pixmap_unref, if
+          the window was a pixmap.  This gets rid of the annoying warning
+          when you close scribble.py.
+        - pointer types and unknown boxed types are now passed as Python
+          C objects in signal handlers.  This is so wrappers for add on
+          widgets that use pointer arguments can write code to convert
+          the pointers to a more usable format.
+        - Changed the behaviour of the PyObject -> GtkArg routines so that
+          that they use python's conversion routines.  Now you can pass a
+          class instance which has a __int__ method in place of an integer
+          in those routines (it implicitly uses int(o) on the instance).
+        - Added method GtkObject.emit, which acts like gtk_signal_emit.  Now
+          widget.show() and widget.emit('show') are equivalent (although the
+          first is faster). Now you should be able to use rulers properly.
+          The specification is GtkObject.emit(signal_name, arg1, ...).  It
+          returns whatever the signal handler was supposed to.  The rulers
+          example in the testgtk.py program has been fixed, and gives an
+          example of the GtkObject.emit method.
+        - Added test of statusbar in testgtk.py.  (The code was submited by
+          Andrew Kuchling <akuchlin@cnri.reston.va.us>)
+        - Fixed hude memory leak in GdkEvent initialisation -- when adding
+          items to a dictionary with PyDict_SetItemString, the third argument
+          is INCREF'd.  I was forgetting to DECREF it after finishing with
+          it.
+        - Added method GdkWindow.new_gc.  It takes keyword arguments with
+          names matching the fields of the structure GdkGCValues, defined
+          in gdk/gdktypes.h.  It creates a gc for that window with the
+          given attributes.  Also, the GdkGC type now has the same attributes
+          as the GdkGCValues structure, and they can be read and set.
+        - Added a wrapper for the GdkColormap type.  It can be accessed as a
+          sequence (eg len(cmap), a = cmap[42], print cmap[:10]).  The
+          sequence items are colours.  Also, the GtkStyle and GdkWindow types
+          now also have the attribute colormap, which can be used for accessing
+          the colormap.  Also, the GdkColor type now has the attributes red,
+          green, blue and pixel.
+          The colormap also has a single method -- GdkColormap.alloc.  It can
+          either be called with a string argument (a colour name), or three
+          integers (RGB components).  It does the same thing as the function
+          color_alloc (in fact, color_alloc is now implemented using it).
+
+pygtk-0.4.3:  7-May-1998
+        - Updated for gtk+-1.0.1.  This version of pygtk will not work with
+          earlier versions.  (You should upgrade anyway, since this version
+          plugs some security holes and memory leaks).
+        - Updated the GdkImlib module to take advntage of new features found
+          in Imlib 1.3.  You can now save images into just about any format.
+        - Added the types GdkWindow and GdkGC.  Also changed some of the
+          functions like gtk_widget_shape_combine_mask to take their correct
+          arguments.  This will not break any code written with Gtkinter,
+          as I have put in backward compatibility.  However, if you used any
+          of these functions in code that directly accessed the gtk module,
+          you may have to recode some of your work.
+          I have updated some of the testgtk.py examples.  You will notice
+          that the toolbar example loads quicker, since the test.xpm is only
+          read off disk once.
+        - Added the gdk_draw_* functions, and wrote wrappers for them as
+          methods of the GtkDrawingArea class.  See examples/simple/scribble.py
+          for an example of using pixmaps and the drawing area.
+
+pygtk-0.4.2:  22-April-1998
+        - Updated for gtk+-1.0.0.  Since there have been no API changes
+          between 0.99.10 and 1.0.0, it should work with that version as well.
+        - Updated the configure script.  It now uses the gtk-config script to
+          work out the cflags and libraries for GTK.  If gtk-config is not on
+          the path, you can pass configure an argument something like
+          --with-gtk-config=/subdir/gtk-config.
+        - You can now specify the path name for the python executable (if it
+          isn't on the path) with the --with-python=/subdir/python argument.
+        - There is now a 'make install' option.  It should work with both
+          python 1.4 and 1.5.x.  It defaults to installing scripts the
+          $(prefix)/lib/site-python, with $(prefix)/lib/python$(version) as
+          a backup, and shared modules in $(prefix)/lib/python$(version)
+          /site-packages with $(prefix)/lib/python$(version)/lib-dynload and 
+          $(prefix)/lib/python$(version)/sharedmodules as backup locations.
+          It also checks that the directory is in python's search path before
+          making the choice.
+          If you have installed previous versions of pygtk, it is probably a
+          good idea to remove those files before running 'make install', as
+          the locations chosen by this routine may be different from where
+          you installed previous versions.
+        - Changed the gtk_init function slightly, so it doesn't immediately
+          call the gtk_*get_type functions, instead deferring this till the
+          first call to gtk_object_new.  This shouldn't affect anyone's
+          programs, other than making loading slightly quicker.
+        - Also added support for return types for signals (this only breaks
+          compatibility if your handlers didn't return None or 0 or whatever).
+          You should now be able to do things like returning TRUE from a
+          delete_event signal handler to prevent a window being destroyed.
+	- Added some functions for GtkCurve's and GtkPreview's that were
+          previously missing.
+        - Fixed some of the typemap stuff.  GtkAspectFrame, GtkToolQuery and
+          GtkCList.get_row_data now work properly.  Also fixed a few similar
+          problems in GdkImlib.
+
+pygtk-0.4.1:  6-April-1998
+        - This archive is slightly smaller than the previous version, because
+          I accidently included some unneeded files.  (The package isn't
+          missing anything that is required).
+        - Updated for gtk+-0.99.9.  Note that the previous version of pygtk
+          works fine with 0.99.9, so this release is mainly new features.
+        - There is now a mailing list for pygtk.  To subscribe, send mail to
+          pygtk-request@daa.com.au, with the word subscribe in the body.
+          There is also a web site at http://www.daa.com.au/~james/pygtk/,
+          although it isn't very interesting yet.
+        - updated the examples/ide/gtkcons.py to take advantage of word
+          wrapping in the text widget.
+        - Added a function to export the Python types used in Gtkinter, so
+          other python bindings (such as the imlib one) can use them.
+          (It should be possible to do gnome bindings -- I will look at that
+          in a little while).
+	- Added support for gdk_imlib.  Note that this does not change
+          what libraries are required to build Gtkinter.  If you don't
+          have gdk_imlib, the configure script will notice, and decide not
+          to build support for it.  If you have gdk_imlib, and don't want to
+          build it, you can pass configure the argument --without-imlib.
+        - Added the directory examples/imlib, and a simple multi format
+          image viewer called examples/imlib/view.py.  This example requires
+          the imlib bindings to have been built.
+
+pygtk-0.4.0:  23-Mar-1998
+        - Updated for gtk+-0.99.8, so won't work with older versions (although
+          your old pygtk programs will still work).
+        - Added support quit handlers and input handlers.
+        - Fixed a long standing bug in idle/timeout/quit function reactivation.
+          Before, in order for an idle or timeout function to be reactivated,
+          it needed to call idle_add or timeout_add again. Now they just have
+          to return TRUE (like in C).  This simplifies these functions
+          substantially.  The old behaviour still works.
+          If you are using gtk+-0.99.7, you will find that timeout handlers
+          don't work.  This is caused by a bug in GTK, which was fixed in
+          gtk+-0.99.8.
+        - Found that GtkPixamp.__init__, GtkCList.set_pixtmap and GtkCList.
+          set_pixtext all kept references to the pixmaps when they shouldn't.
+          This is now fixed.
+        - Added the module GtkExtra, which contains some convenience routines
+          for writing pygtk programs.  It includes an implementation of the
+          menu factory (allows creation of arbitrary sized menus with about
+          four function calls), and single function call interfaces for
+          handling message boxes, file selection dialogs and input boxes.
+        - Added the module GDK.py, that contains relevant constants from GDK.
+          It is automatically imported by Gtkinter, so it is possible to do
+          things like widget.set_events(GDK.ALL_EVENTS_MASK)
+        - Added a crude integrated development environment (pyide.py) that
+          pulls together the debugger, profiler, console and editor examples
+          in the examples/ide directory.
+        - Added a function colour_alloc (or color_alloc) that can be used to
+          allocate new colours for use in the text widget and others.
+        - Added the drag and drop functions (finally).  Check the example in
+          testgtk.py for the details.
+        - Added GtkWidget.shape_combine_mask, which takes a pixmap as its first
+          argument, and uses its mask as the shape mask.
+	- Added the GtkCList.{set,get}_row_data functions.
+
+pygtk-0.3.0:  10-Mar-1998
+        - Updated for gtk+-0.99.4.  This means that it will not compile
+          properly with previous versions.  These incompatibilities are
+          justified since according to the authors of gtk, gtk+-0.99.4 is
+          very close to what 1.0.0 will look like.
+        - Joined the reference counting revolution :)  This doesn't affect
+          anyone's programs, since reference counting (like type casting) is
+          handled automatically by pygtk.
+        - Check out the examples/ide directory.  It contains a Gtkinter front
+          end to the python debugger and profiler and also a graphical
+          python console (which now works with different fonts and everything.
+        - Added more of the functions I left out from previous versions.  I
+          still haven't fiddled round with dnd yet.
+        - Fixed the gtk_object_get function (I had an '=' instead of a '==').
+          You can now use Gtkinter objects as dictionaries.  An example is
+               >>> win = GtkWindow(WINDOW_TOPLEVEL)
+               >>> # next line is equivalent to win['GtkWindow::title'] = 'a'
+               >>> win.set_title("a")
+               >>> win['GtkWindow::title']
+               'a'
+        - Added the object data facility.  You can use GtkObject.set_data,
+          get_data and remove_data to manipulate it.
+        - Added gtk_window_set_icon and gtk_window_set_icon_name.  They are
+          wrappers for the gdk counterparts.  The functions are also exposed
+          in Gtkinter as GtkWindow.set_icon[_name].  The set_icon function
+          takes a GtkPixmap as its argumnet, extracts the GdkPixmap and mask
+          from it and calls gtk_object_sink on the GtkPixmap, in case it never
+          gets packed in another widget.
+        - Similar wrappers are given for GtkCList.set_pixmap and
+          GtkCList.set_pixtext.  Once again, you pass a GtkPixmap instead of
+          a GdkPixmap/GdkBitmap pair.
+
+pygtk-0.2.0: 12-Feb-1998
+        - Fixed tooltips properly this time.  Now you need to keep a reference
+          to the GtkTooltips object for as long as you want to display those
+          tips.
+        - Added the example examples/testgtk/testgtk.py.  This is a
+          translation of the example with the same name that comes with the
+          gtk distribution.  The plus side of this is that I found and fixed
+          many bits of pygtk that were either broken or missing.  (eg.
+          getting the selection of a list, connecting signals for a toolbar)
+        - Added an example of using trees (examples/ide/browse.py).  This one
+          shows how you might set up a file manager where you only create
+          as much of the tree as you are using.
+        - Altered the signal handling behaviour so that the arguments to
+          a signal handler are converted to their Gtkinter equivalents.
+        - Pygtk should be complete enough for writing applications the size of
+          ones you might use guile-gtk for, and as far as I know is the most
+          complete out of the other python-gtk bindings I know of.
+
+pygtk-0.1.1:  4-Feb-1998
+        - I accidentally broke tooltips in the previous version in such a way
+          that you would get a seg fault when creating a GtkTooltips object.
+          This has been fixed.
+        - Added a new example called gtkcons.py.  This is a simple interactive
+          Python session in a GTK window.  Currently it has some bugs, the
+          most prominent being that the first character of output from a
+          command remains hidden until the next command is executed.  It
+          also demonstrates GtkHandleBox's.
+
+pygtk-0.1.0:  2-Feb-1998
+        - Changed the copyright to LGPL.  (There is no point in making it
+          more free, since this is the lisence on GTK itself).
+        - Integrated some changes sent in by Neil Schemenauer
+          <nascheme@acs.ucalgary.ca>.  (Mainly spelling mistakes in
+          Gtkinter.py, and a number of extra examples).  The new examples
+          are TAppli*.py and notebook.py.
+        - Updated package for gtk+-0.99.3.  (updates include addition of
+          GtkCList, GtkCombo, GtkHandleBox, GtkStatusbar and GtkToolbar).
+        - Updated the GTK.py, the constants module.
+        - Updated the GtkStyle and GdkEvent types.  You can now get the
+          different colours of a style, and you can access the relevant
+          information associated with a given type of GdkEvent.  This means
+          that you can now use signals that look at button clicks or key
+          strokes.
+        - Added support for GtkAcceleratorTable and GtkTooltips in
+          Gtkinter.py.  The types GdkColor, GdkEvent, GdkFont and GtkStyle
+          don't have wrappers, but are clean enough to be used without any.
+        - Added the GtkText.insert method.  There is also a
+          GtkText.insert_defaults that takes a single string argument.
+
+pygtk-0.0.2: 21-Jan-1998
+        - Added file Gtkinter.py.  This gives an object oriented
+          interface to gtk accessable from Python.  This is still not
+          quite complete.
+        - Added some example programs in the examples directory
+        - Decided to release the code -- I wonder if anyone will use it?
+
+pygtk-0.0.1: (never released)
+        - first release
+        - contains basic functionality of gtk through use of SWIG

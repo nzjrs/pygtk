@@ -1,0 +1,149 @@
+; -*- scheme -*-
+(define-object GtkRange (GtkWidget))
+
+(define-func gtk_range_get_adjustment
+  GtkAdjustment
+  ((GtkRange range)))
+
+(define-func gtk_range_set_update_policy
+  none
+  ((GtkRange range)
+   (GtkUpdateType policy)))
+
+(define-func gtk_range_set_adjustment
+  none
+  ((GtkRange range)
+   (GtkAdjustment adjustment)))
+
+(define-func gtk_range_draw_background
+  none
+  ((GtkRange range)))
+
+(define-func gtk_range_clear_background
+  none
+  ((GtkRange range)))
+
+(define-func gtk_range_draw_trough
+  none
+  ((GtkRange range)))
+
+(define-func gtk_range_draw_slider
+  none
+  ((GtkRange range)))
+
+(define-func gtk_range_draw_step_forw
+  none
+  ((GtkRange range)))
+
+(define-func gtk_range_draw_step_back
+  none
+  ((GtkRange range)))
+
+(define-func gtk_range_slider_update
+  none
+  ((GtkRange range)))
+
+;; Scale
+
+(define-object GtkScale (GtkRange))
+
+(define-func gtk_scale_set_digits
+  none
+  ((GtkScale scale)
+   (uint digits)))
+
+(define-func gtk_scale_set_draw_value
+  none
+  ((GtkScale scale)
+   (bool draw_value)))
+
+(define-func gtk_scale_set_value_pos
+  none
+  ((GtkScale scale)
+   (GtkPositionType pos)))
+
+(define-func gtk_scale_get_value_width
+  int
+  ((GtkScale scale)))
+
+(define-func gtk_scale_draw_value
+  none
+  ((GtkScale scale)))
+
+;; HScale
+
+(define-object GtkHScale (GtkScale))
+
+(define-func gtk_hscale_new
+  GtkWidget
+  ((GtkAdjustment adjustment)))
+
+;; VScale
+
+(define-object GtkVScale (GtkScale))
+
+(define-func gtk_vscale_new
+  GtkWidget
+  ((GtkAdjustment adjustment)))
+
+;; Scrollbar
+
+(define-object GtkScrollbar (GtkRange))
+
+;; HScrollbar
+
+(define-object GtkHScrollbar (GtkScrollbar))
+
+(define-func gtk_hscrollbar_new
+  GtkWidget
+  ((GtkAdjustment adjustment)))
+
+;; VScrollbar
+
+(define-object GtkVScrollbar (GtkScrollbar))
+
+(define-func gtk_vscrollbar_new
+  GtkWidget
+  ((GtkAdjustment adjustment)))
+
+;; Ruler
+
+(define-object GtkRuler (GtkWidget))
+
+(define-func gtk_ruler_set_metric
+  none
+  ((GtkRuler ruler)
+   (GtkMetricType metric)))
+
+(define-func gtk_ruler_set_range
+  none
+  ((GtkRuler ruler)
+   (float lower)
+   (float upper)
+   (float position)
+   (float max_size)))
+
+(define-func gtk_ruler_draw_ticks
+  none
+  ((GtkRuler ruler)))
+
+(define-func gtk_ruler_draw_pos
+  none
+  ((GtkRuler ruler)))
+
+;; HRuler
+
+(define-object GtkHRuler (GtkRuler))
+
+(define-func gtk_hruler_new
+  GtkWidget
+  ())
+
+;; VRuler
+
+(define-object GtkVRuler (GtkRuler))
+
+(define-func gtk_vruler_new
+  GtkWidget
+  ())
+
