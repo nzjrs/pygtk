@@ -37,15 +37,11 @@ linkend="method-gtktexttagtable--lookup">lookup</link></methodname>
 	<methodparam><parameter
 		       role="keyword">name</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktexttagtable- -foreach">foreach</link></methodname>
-    <methodparam><parameter role="keyword">func</parameter></methodparam>
-    <methodparam><parameter role="keyword">data</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktexttagtable--foreach">foreach</link></methodname>
+	<methodparam><parameter role="keyword">func</parameter></methodparam>
+	<methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktexttagtable--get-size">get_size</link></methodname>
@@ -238,14 +234,13 @@ texttagtable.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gtktexttagtable- -foreach">
+  <refsect2 id="method-gtktexttagtable--foreach">
     <title>gtk.TextTagTable.foreach</title>
 
 <programlisting><methodsynopsis language="python">
     <methodname>foreach</methodname>
     <methodparam><parameter role="keyword">func</parameter></methodparam>
-    <methodparam><parameter role="keyword">data</parameter></methodparam>
+    <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
   </methodsynopsis></programlisting>
   <variablelist>
     <varlistentry>
@@ -254,13 +249,31 @@ texttagtable.</para>
     </varlistentry>
     <varlistentry>
       <term><parameter role="keyword">data</parameter>&nbsp;:</term>
-      <listitem><simpara>user data</simpara></listitem>
+	  <listitem><simpara>user data to pass to
+	  <parameter>func</parameter> or
+	  <literal>None</literal></simpara></listitem>
     </varlistentry>
   </variablelist>
-<para>
-Calls <parameter>func</parameter> on each texttag in <parameter>table</parameter>, with user data <parameter>data</parameter>.
-</para>  </refsect2>
-END NOT IMLPEMENTED -->
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>foreach</methodname>() method calls the function
+specified by <parameter>func</parameter> on each texttag in the text tag
+table passing the user data specified by <parameter>data</parameter>. The
+signature of <parameter>func</parameter> is:</para>
+
+      <programlisting>
+  def func(texttag, user_data):
+</programlisting>
+
+      <para>where <parameter>texttag</parameter> is a <link
+linkend="class-gtktexttag"><classname>gtk.TextTag</classname></link> in the
+text tag table and <parameter>user_data</parameter> is
+<parameter>data</parameter>.</para>
+
+    </refsect2>
 
   <refsect2 id="method-gtktexttagtable--get-size">
       <title>gtk.TextTagTable.get_size</title>
