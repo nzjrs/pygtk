@@ -60,16 +60,19 @@
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkactiongroup--add-actions">add_actions</link></methodname>
 	<methodparam><parameter role="keyword">entries</parameter></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkactiongroup--add-toggle-actions">add_toggle_actions</link></methodname>
 	<methodparam><parameter role="keyword">entries</parameter></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkactiongroup--add-radio-actions">add_radio_actions</link></methodname>
 	<methodparam><parameter role="keyword">entries</parameter></methodparam>
-	<methodparam><parameter role="keyword">value</parameter></methodparam>
-	<methodparam><parameter role="keyword">on_change</parameter></methodparam>
+	<methodparam><parameter role="keyword">value</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter role="keyword">on_change</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkactiongroup--set-translation-domain">set_translation_domain</link></methodname>
@@ -539,12 +542,18 @@ specified by <parameter>action</parameter> from the action group.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>add_actions</methodname>
 	  <methodparam><parameter role="keyword">entries</parameter></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">entries</parameter>&nbsp;:</term>
 	  <listitem><simpara>a list or tuple of action
 descriptions</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>data to pass to the action
+callbacks</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -604,12 +613,18 @@ callbacks and their accel paths are set to
       <programlisting><methodsynopsis language="python">
 	  <methodname>add_toggle_actions</methodname>
 	  <methodparam><parameter role="keyword">entries</parameter></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">entries</parameter>&nbsp;:</term>
 	  <listitem><simpara>a list or tuple of toggle action entry
 tuples</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>data to pass to the action
+callbacks</simpara></listitem>
 	</varlistentry>
      </variablelist>
 
@@ -672,8 +687,9 @@ callbacks and their accel paths are set to
       <programlisting><methodsynopsis language="python">
 	  <methodname>add_radio_actions</methodname>
 	  <methodparam><parameter role="keyword">entries</parameter></methodparam>
-	  <methodparam><parameter role="keyword">value</parameter></methodparam>
-	  <methodparam><parameter role="keyword">on_change</parameter></methodparam>
+	  <methodparam><parameter role="keyword">value</parameter><initializer>0</initializer></methodparam>
+	  <methodparam><parameter role="keyword">on_change</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -690,6 +706,11 @@ active</simpara></listitem>
 	  <term><parameter role="keyword">on_change</parameter>&nbsp;:</term>
 	  <listitem><simpara>a callback to connect to the "changed" signal
 of the first radio action</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>data to pass to the
+<parameter>on_change</parameter> callback</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -739,8 +760,9 @@ value of <literal>0</literal>. Should be specified in applications.</simpara>
 
       <para>The <parameter>value</parameter> parameter specifies the radio
 action that should be set active. The "changed" signal of the first radio
-action is connected to the <parameter>on_change</parameter> callback and the
-accel paths of the actions are set to
+action is connected to the <parameter>on_change</parameter> callback (if
+specified and not <literal>None</literal>) and the accel paths of the
+actions are set to
 <literal>&lt;Actions&gt;/<replaceable>group-name</replaceable>/<replaceable>action-name</replaceable></literal>.</para>
 
     </refsect2>
