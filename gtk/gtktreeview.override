@@ -769,6 +769,81 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     return ret;
 }
 %%
+override gtk_tree_model_rows_reordered kwargs
+static PyObject *
+_wrap_gtk_tree_model_rows_reordered(PyGObject *self, PyObject *args,
+                                          PyObject *kwargs)
+{
+    static char *kwlist[] = { "path", "iter", "new_order", NULL };
+    PyObject *py_path, *py_iter, *py_new_order, *sitem;
+    GtkTreeIter *iter = NULL;
+    GtkTreePath *path;
+    gint *new_order;
+    gint len_model, len_seq;
+    gint i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OOO:GtkTreeModel.rows_reordered", kwlist,
+				     &py_path, &py_iter, &py_new_order))
+        return NULL;
+
+    path = pygtk_tree_path_from_pyobject(py_path);
+    if (!path) {
+        PyErr_SetString(PyExc_TypeError,
+	    "could not convert path to a GtkTreePath");
+        return NULL;
+    }
+
+    if (pyg_boxed_check(py_iter, GTK_TYPE_TREE_ITER))
+        iter = pyg_boxed_get(py_iter, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTreeIter");
+        gtk_tree_path_free(path);
+        return NULL;
+    }
+
+    if (!PySequence_Check(py_new_order)) {
+        PyErr_SetString(PyExc_TypeError,
+	    "new_order must be a sequence of ints");
+        gtk_tree_path_free(path);
+        return NULL;
+    }
+
+    len_model = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self->obj), iter);
+    len_seq = PySequence_Size(py_new_order);
+    if (len_model != len_seq) {
+        PyErr_Format(PyExc_ValueError,
+	    "new_order should be a sequence with the same size as the "
+	    "number of children of iter (%d, is %d)", len_model, len_seq);
+        gtk_tree_path_free(path);
+        return NULL;
+    }
+
+    // Create on stack: much faster, no free() needed.
+    new_order = g_newa(gint, len_seq);
+    for (i = 0; i < len_seq; i++) {
+	sitem = PySequence_GetItem(py_new_order, i);
+	Py_DECREF(sitem);
+	sitem = PyNumber_Int(sitem);
+	if (sitem)
+	    new_order[i] = (gint) PyInt_AsLong(sitem);
+	else {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "new_order sequence item not an int");
+	    gtk_tree_path_free(path);
+	    return NULL;
+	}
+	Py_DECREF(sitem);
+    }
+
+    gtk_tree_model_rows_reordered(GTK_TREE_MODEL(self->obj),
+				  path, iter, new_order);
+    gtk_tree_path_free(path);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override-slot GtkTreeModel.tp_as_number
 static int
 _wrap_gtk_tree_model_tp_nonzero(PyGObject *self)
@@ -1875,4 +1950,238 @@ _wrap_gtk_tree_model_sort_convert_iter_to_child_iter(PyGObject *self,
     gtk_tree_model_sort_convert_iter_to_child_iter(
 	GTK_TREE_MODEL_SORT(self->obj), child_iter, sorted_iter);
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, child_iter, TRUE, TRUE);
+}
+%%
+override gtk_tree_view_enable_model_drag_source kwargs
+static PyObject *
+_wrap_gtk_tree_view_enable_model_drag_source(PyGObject *self, PyObject *args,
+                                             PyObject *kwargs)
+{
+    static char *kwlist[] = { "start_button_mask", "targets", "actions", NULL };
+    PyObject *py_sbmask, *py_targets, *py_actions;
+    GdkModifierType sbmask;
+    GtkTargetEntry *targets;
+    GdkDragAction actions;
+    gint n_targets, i;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OOO:GtkTreeView.enable_model_drag_source",
+                                     kwlist,
+                                     &py_sbmask, &py_targets, &py_actions))
+        return NULL;
+    if (pyg_flags_get_value(GDK_TYPE_MODIFIER_TYPE,
+                             py_sbmask, (gint *)&sbmask))
+        return NULL;
+    if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
+                             py_actions, (gint *)&actions))
+        return NULL;
+    if (!PySequence_Check(py_targets)) {
+        PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
+        return NULL;
+    }
+    n_targets = PySequence_Length(py_targets);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+        PyObject *item = PySequence_GetItem(py_targets, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+                              &targets[i].flags, &targets[i].info)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "list items should be of form (string,int,int)");
+            g_free(targets);
+            return NULL;
+        }
+    }
+    gtk_tree_view_enable_model_drag_source(GTK_TREE_VIEW(self->obj),
+                                           sbmask, targets, n_targets, actions);
+    g_free(targets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_enable_model_drag_dest kwargs
+static PyObject *
+_wrap_gtk_tree_view_enable_model_drag_dest(PyGObject *self, PyObject *args,
+                                           PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", "actions", NULL };
+    PyObject *py_targets, *py_actions;
+    GtkTargetEntry *targets;
+    GdkDragAction actions;
+    gint n_targets, i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO:GtkTreeView.enable_model_drag_dest",
+                                     kwlist,
+                                     &py_targets, &py_actions))
+        return NULL;
+    if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
+                             py_actions, (gint *)&actions))
+        return NULL;
+    if (!PySequence_Check(py_targets)) {
+        PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
+        return NULL;
+    }
+    n_targets = PySequence_Length(py_targets);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+        PyObject *item = PySequence_GetItem(py_targets, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+                              &targets[i].flags, &targets[i].info)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "list items should be of form (string,int,int)");
+            g_free(targets);
+            return NULL;
+        }
+    }
+    gtk_tree_view_enable_model_drag_dest(GTK_TREE_VIEW(self->obj),
+                                         targets, n_targets, actions);
+    g_free(targets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_enable_model_drag_source kwargs
+static PyObject *
+_wrap_gtk_tree_view_enable_model_drag_source(PyGObject *self, PyObject *args,
+                                             PyObject *kwargs)
+{
+    static char *kwlist[] = { "start_button_mask", "targets", "actions", NULL };
+    PyObject *py_sbmask, *py_targets, *py_actions;
+    GdkModifierType sbmask;
+    GtkTargetEntry *targets;
+    GdkDragAction actions;
+    gint n_targets, i;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OOO:GtkTreeView.enable_model_drag_source",
+                                     kwlist,
+                                     &py_sbmask, &py_targets, &py_actions))
+        return NULL;
+    if (pyg_flags_get_value(GDK_TYPE_MODIFIER_TYPE,
+                             py_sbmask, (gint *)&sbmask))
+        return NULL;
+    if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
+                             py_actions, (gint *)&actions))
+        return NULL;
+    if (!PySequence_Check(py_targets)) {
+        PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
+        return NULL;
+    }
+    n_targets = PySequence_Length(py_targets);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+        PyObject *item = PySequence_GetItem(py_targets, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+                              &targets[i].flags, &targets[i].info)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "list items should be of form (string,int,int)");
+            g_free(targets);
+            return NULL;
+        }
+    }
+    gtk_tree_view_enable_model_drag_source(GTK_TREE_VIEW(self->obj),
+                                           sbmask, targets, n_targets, actions);
+    g_free(targets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_enable_model_drag_dest kwargs
+static PyObject *
+_wrap_gtk_tree_view_enable_model_drag_dest(PyGObject *self, PyObject *args,
+                                           PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", "actions", NULL };
+    PyObject *py_targets, *py_actions;
+    GtkTargetEntry *targets;
+    GdkDragAction actions;
+    gint n_targets, i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO:GtkTreeView.enable_model_drag_dest",
+                                     kwlist,
+                                     &py_targets, &py_actions))
+        return NULL;
+    if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
+                             py_actions, (gint *)&actions))
+        return NULL;
+    if (!PySequence_Check(py_targets)) {
+        PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
+        return NULL;
+    }
+    n_targets = PySequence_Length(py_targets);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+        PyObject *item = PySequence_GetItem(py_targets, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+                              &targets[i].flags, &targets[i].info)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "list items should be of form (string,int,int)");
+            g_free(targets);
+            return NULL;
+        }
+    }
+    gtk_tree_view_enable_model_drag_dest(GTK_TREE_VIEW(self->obj),
+                                         targets, n_targets, actions);
+    g_free(targets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_get_drag_dest_row noargs
+static PyObject *
+_wrap_gtk_tree_view_get_drag_dest_row(PyGObject *self)
+{
+    GtkTreePath *path;
+    GtkTreeViewDropPosition pos;
+
+    gtk_tree_view_get_drag_dest_row(GTK_TREE_VIEW(self->obj), &path, &pos);
+    if (path) {
+        PyObject *py_path = pygtk_tree_path_to_pyobject(path);
+        gint py_pos = (gint) pos;
+        gtk_tree_path_free(path);
+        return Py_BuildValue("(Oi)", py_path, py_pos);
+    } else {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+}
+%%
+override gtk_tree_view_set_drag_dest_row kwargs
+static PyObject *
+_wrap_gtk_tree_view_set_drag_dest_row(PyGObject *self, PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "path", "pos", NULL };
+    PyObject *py_path;
+    gint py_pos;
+    GtkTreePath *path;
+    GtkTreeViewDropPosition pos;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "Oi:GtkTreeView.set_drag_dest_row",
+                                     kwlist,
+                                     &py_path, &py_pos))
+        return NULL;
+    
+    path = pygtk_tree_path_from_pyobject(py_path);
+    if (!path) {
+        PyErr_SetString(PyExc_TypeError,
+                        "set_drag_dest_row muts be a TreePath");
+        return NULL;
+    }
+    pos = (GtkTreeViewDropPosition) py_pos;
+    gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(self->obj), path, pos);
+    gtk_tree_path_free(path);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
