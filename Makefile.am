@@ -36,7 +36,7 @@ $(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango.override
 	&& cp gen-pango.c pango.c \
 	&& rm -f gen-pango.c
 
-pkginclude_HEADERS = pygobject.h
+pkginclude_HEADERS = pygobject.h ExtensionClass.h
 
 noinst_PYTHON = ltihooks.py
 
