@@ -11,6 +11,7 @@ import_pat = re.compile(r'\s*import\s+(\S+)\.([^\s.]+)\s+as\s+(\S+)')
 
 class Overrides:
     def __init__(self, filename=None):
+        self.modulename = None
 	self.ignores = {}
 	self.glob_ignores = []
 	self.overrides = {}
@@ -86,6 +87,8 @@ class Overrides:
         elif words[0] == 'init':
             self.init = '%s\n#line %d "%s"\n%s' % \
                         (self.init, startline + 1, filename, rest)
+        elif words[0] == 'modulename':
+            self.modulename = words[1]
         elif words[0] == 'import':
             for line in string.split(buffer, '\n'):
                 match = import_pat.match(line)

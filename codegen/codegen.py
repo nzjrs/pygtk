@@ -246,7 +246,7 @@ boxedgettertmpl = ('static PyObject *\n'
 boxedtmpl = """PyTypeObject Py%(typename)s_Type = {
     PyObject_HEAD_INIT(NULL)
     0,					/* ob_size */
-    "%(typename)s",			/* tp_name */
+    "%(classname)s",			/* tp_name */
     sizeof(PyGBoxed),			/* tp_basicsize */
     0,					/* tp_itemsize */
     /* methods */
@@ -306,7 +306,7 @@ pointerconsttmpl = ('static int\n'
 pointertmpl = """PyTypeObject Py%(typename)s_Type = {
     PyObject_HEAD_INIT(NULL)
     0,					/* ob_size */
-    "%(typename)s",			/* tp_name */
+    "%(classname)s",			/* tp_name */
     sizeof(PyGPointer),			/* tp_basicsize */
     0,					/* tp_itemsize */
     /* methods */
@@ -616,6 +616,10 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
         'classname': objobj.name,
         'initfunc': initfunc
     }
+    if overrides.modulename:
+        dict['classname'] = '%s.%s' % (overrides.modulename, objobj.name)
+    else:
+        dict['classname'] = objobj.name
     dict['getsets'] = write_getsets(parser, objobj, castmacro, overrides, fp)
     dict['methods'] = '_Py' + dict['class'] + '_methods'
 
@@ -672,7 +676,11 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
     fp.write('};\n\n')
 
     # write the type template
-    dict = { 'class': interface.c_name, 'classname': interface.name }
+    dict = { 'class': interface.c_name }
+    if overrides.modulename:
+        dict['classname'] = '%s.%s' % (overrides.modulename, interface.name)
+    else:
+        dict['classname'] = inerface.name
     dict['methods'] = '_Py' + dict['class'] + '_methods'
 
     # handle slots ...
@@ -879,6 +887,11 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
 
     # write the type template
     dict = { 'typename': boxedobj.c_name, 'initfunc': initfunc }
+
+    if overrides.modulename:
+        dict['classname'] = '%s.%s' % (overrides.modulename, boxedobj.name)
+    else:
+        dict['classname'] = boxedobj.name
 
     dict['getsets'] = write_boxed_getsets(parser, boxedobj, overrides, fp)
     dict['methods'] = '_Py' + dict['typename'] + '_methods'
@@ -1089,6 +1102,11 @@ def write_pointer(parser, pointerobj, overrides, fp=sys.stdout):
 
     # write the type template
     dict = { 'typename': pointerobj.c_name, 'initfunc': initfunc }
+
+    if overrides.modulename:
+        dict['classname'] = '%s.%s' % (overrides.modulename, pointerobj.name)
+    else:
+        dict['classname'] = pointerobj.name
 
     dict['getsets'] = write_pointer_getsets(parser, pointerobj, overrides, fp)
     dict['methods'] = '_Py' + dict['typename'] + '_methods'
