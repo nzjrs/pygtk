@@ -51,9 +51,9 @@ GLOBAL_MACROS = [('VERSION', '"%s"' % VERSION),
                  ('PYGTK_MINOR_VERSION', MINOR_VERSION),
                  ('PYGTK_MICRO_VERSION', MICRO_VERSION)]
 
-DEFS_DIR = 'share/pygtk/%s/defs' % PYGTK_SUFFIX
-CODEGEN_DIR = 'share/pygtk/%s/codegen' % PYGTK_SUFFIX
-INCLUDE_DIR = 'include/pygtk-%s' % PYGTK_SUFFIX
+DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
+CODEGEN_DIR = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'codegen')
+INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
 
 str_version = sys.version[:3]
 version = map(int, str_version.split('.'))
