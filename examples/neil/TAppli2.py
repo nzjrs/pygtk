@@ -46,7 +46,7 @@ class Application:
 			('/_Edit/_Paste',   '<control>V', edit_cb, 3, '')
 		])
 		self.w_menubar = itemf.get_widget('<main>')
-		self.w_vbox.pack_start(self.w_menubar, expand=FALSE)
+		self.w_vbox.pack_start(self.w_menubar, expand=False)
 		self.w_menubar.show()
 
 	def init_text(self):		
@@ -82,14 +82,14 @@ class Application:
 			#self.w_text.queueDraw()
 		elif action == 2:
 			print "File:Open"
-			fname = GtkExtra.file_open_box(modal=FALSE)
+			fname = GtkExtra.file_open_box(modal=False)
 			if fname:
 				try:
 					f=open(fname, "r")
 				except IOError:
 					return
 				self.w_text.freeze()
-				while TRUE:
+				while True:
 					line = f.readline()
 					if line == "":
 						break
@@ -99,7 +99,7 @@ class Application:
 			print "File:Save"
 		elif action == 4:
 			print "File:Save As"
-			print GtkExtra.file_save_box(modal=FALSE), "chosen"
+			print GtkExtra.file_save_box(modal=False), "chosen"
 		elif action == 5:
 			print "File:Close"
 		elif action == 6:

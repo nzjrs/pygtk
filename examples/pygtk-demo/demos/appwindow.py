@@ -114,7 +114,7 @@ class ApplicationMainWindowDemo(gtk.Window):
         bar = merge.get_widget("/MenuBar")
         bar.show()
 
-        table = gtk.Table(1, 4, gtk.FALSE)
+        table = gtk.Table(1, 4, False)
         self.add(table)
 
         table.attach(bar,

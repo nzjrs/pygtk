@@ -47,7 +47,7 @@ class Application:
 			('/_Help/_About',   '<control>A', help_cb, 1, '')
 		])
 		self.w_menubar = itemf.get_widget('<main>')
-		self.w_vbox.pack_start(self.w_menubar, expand=FALSE)
+		self.w_vbox.pack_start(self.w_menubar, expand=False)
 		self.w_menubar.show()
 
 	def init_canvas(self):		
@@ -70,7 +70,7 @@ class Application:
 			print "File:New"
 		elif action == 2:
 			print "File:Open"
-			print GtkExtra.file_open_box(modal=FALSE), "chosen"
+			print GtkExtra.file_open_box(modal=False), "chosen"
 		elif action == 3:
 			print "FileSave"
 			dlg=GtkExtra.message_box("Test Application",
@@ -78,7 +78,7 @@ class Application:
 						 ("OK",), pixmap='bomb.xpm')
 		elif action == 4:
 			print "File:Save As"
-			print GtkExtra.file_save_box(modal=FALSE), "chosen"
+			print GtkExtra.file_save_box(modal=False), "chosen"
 		elif action == 5:
 			print "File:Close"
 		elif action == 6:

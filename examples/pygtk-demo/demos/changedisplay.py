@@ -87,7 +87,7 @@ class QueryForToplevel(gtk.Window):
             self.connect("button-release-event", self.button_release_event_cb)
 
             # Process events until clicked is set by button_release_event_cb.
-            # We pass in may_block=TRUE since we want to wait if there
+            # We pass in may_block=True since we want to wait if there
             # are no events currently.
             #
             while self.query_clicked is False:

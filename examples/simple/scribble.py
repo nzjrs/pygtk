@@ -13,26 +13,26 @@ def configure_event(widget, event):
 	win = widget.window
 	width, height = win.get_size()
 	pixmap = gtk.gdk.Pixmap(win, width, height)
-	pixmap.draw_rectangle(widget.get_style().white_gc, gtk.TRUE,
+	pixmap.draw_rectangle(widget.get_style().white_gc, True,
 			      0, 0, width, height)
-	return gtk.TRUE
+	return True
 
 def expose_event(widget, event):
 	x, y, width, height = event.area
 	gc = widget.get_style().fg_gc[gtk.STATE_NORMAL]
 	widget.window.draw_drawable(gc, pixmap, x, y, x, y, width, height)
-	return gtk.FALSE
+	return False
 
 def draw_brush(widget, x, y):
         x, y = int(x), int(y)
-	pixmap.draw_rectangle(widget.get_style().black_gc, gtk.TRUE,
+	pixmap.draw_rectangle(widget.get_style().black_gc, True,
 			      x-5, y-5, 10, 10)
 	widget.queue_draw()
 
 def button_press_event(widget, event):
 	if event.button == 1 and pixmap != None:
 		draw_brush(widget, event.x, event.y)
-	return gtk.TRUE
+	return True
 
 def motion_notify_event(widget, event):
 	if event.is_hint:
@@ -42,7 +42,7 @@ def motion_notify_event(widget, event):
 		state = event.state
 	if state & gtk.gdk.BUTTON1_MASK and pixmap != None:
 		draw_brush(widget, x, y)
-	return gtk.TRUE
+	return True
 
 def main():
 	win = gtk.Window()
@@ -70,7 +70,7 @@ def main():
 				gtk.gdk.POINTER_MOTION_HINT_MASK)
 
 	button = gtk.Button(stock=gtk.STOCK_QUIT)
-	vbox.pack_start(button, expand=gtk.FALSE, fill=gtk.FALSE)
+	vbox.pack_start(button, expand=False, fill=False)
 	button.connect("clicked", lambda widget, win=win: win.destroy())
 	button.show()
 	win.show()

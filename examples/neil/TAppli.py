@@ -62,7 +62,7 @@ class Application:
 			('/_Edit/_Paste',   '<control>V', edit_cb, 3, '')
 		])
 		self.w_menubar = itemf.get_widget('<main>')
-		self.w_vbox.pack_start(self.w_menubar, expand=FALSE)
+		self.w_vbox.pack_start(self.w_menubar, expand=False)
 		self.w_menubar.show()
 
 	def init_list(self):		
@@ -81,7 +81,7 @@ class Application:
 		c.show()
 		
 	def init_button(self):
-		t = GtkTable(rows=1, cols=2, homogeneous=TRUE)
+		t = GtkTable(rows=1, cols=2, homogeneous=True)
 		b1 = GtkButton('Do it!')
 		b1.connect('clicked', self.doit)
 		b2 = GtkButton('Quit')
@@ -89,7 +89,7 @@ class Application:
 		t.attach(b1, 0, 1, 0, 1, yoptions=0, xpadding=2, ypadding=2)
 		t.attach(b2, 1, 2, 0, 1, yoptions=0, xpadding=2, ypadding=2)
 		
-		self.w_vbox.pack_end(t, expand=FALSE)
+		self.w_vbox.pack_end(t, expand=False)
 				
 		b1.show()
 		b2.show()
@@ -117,7 +117,7 @@ class Application:
 			print "Idle:", self.idlecount
 			# if measuring time
 			##self.quit()
-		return TRUE
+		return True
 
 			
 if(__name__=="__main__"):

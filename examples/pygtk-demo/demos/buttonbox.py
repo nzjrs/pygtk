@@ -53,13 +53,13 @@ class ButtonBoxDemo(gtk.Window):
         vbox.set_border_width(10)
         frame_horiz.add(vbox)
 
-        vbox.pack_start(create_bbox(gtk.TRUE, "Spread", 40, gtk.BUTTONBOX_SPREAD),
+        vbox.pack_start(create_bbox(True, "Spread", 40, gtk.BUTTONBOX_SPREAD),
                 padding=0)
-        vbox.pack_start(create_bbox(gtk.TRUE, "Edge", 40, gtk.BUTTONBOX_EDGE),
+        vbox.pack_start(create_bbox(True, "Edge", 40, gtk.BUTTONBOX_EDGE),
                 padding=5)
-        vbox.pack_start(create_bbox(gtk.TRUE, "Start", 40, gtk.BUTTONBOX_START),
+        vbox.pack_start(create_bbox(True, "Start", 40, gtk.BUTTONBOX_START),
                 padding=5)
-        vbox.pack_start(create_bbox(gtk.TRUE, "End", 40, gtk.BUTTONBOX_END),
+        vbox.pack_start(create_bbox(True, "End", 40, gtk.BUTTONBOX_END),
                 padding=5)
 
         frame_vert = gtk.Frame("Vertical Button Boxes")
@@ -69,13 +69,13 @@ class ButtonBoxDemo(gtk.Window):
         hbox.set_border_width(10)
         frame_vert.add(hbox)
 
-        hbox.pack_start(create_bbox(gtk.FALSE, "Spread", 40, gtk.BUTTONBOX_SPREAD),
+        hbox.pack_start(create_bbox(False, "Spread", 40, gtk.BUTTONBOX_SPREAD),
                 padding=0)
-        hbox.pack_start(create_bbox(gtk.FALSE, "Edge", 40, gtk.BUTTONBOX_EDGE),
+        hbox.pack_start(create_bbox(False, "Edge", 40, gtk.BUTTONBOX_EDGE),
                 padding=5)
-        hbox.pack_start(create_bbox(gtk.FALSE, "Start", 40, gtk.BUTTONBOX_START),
+        hbox.pack_start(create_bbox(False, "Start", 40, gtk.BUTTONBOX_START),
                 padding=5)
-        hbox.pack_start(create_bbox(gtk.FALSE, "End", 40, gtk.BUTTONBOX_END),
+        hbox.pack_start(create_bbox(False, "End", 40, gtk.BUTTONBOX_END),
                 padding=5)
 
         self.show_all()

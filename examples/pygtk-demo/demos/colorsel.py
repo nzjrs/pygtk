@@ -54,7 +54,7 @@ class ColorSelectorDemo(gtk.Window):
 
         colorsel.set_previous_color(self.color)
         colorsel.set_current_color(self.color)
-        colorsel.set_has_palette(gtk.TRUE)
+        colorsel.set_has_palette(True)
 
         response = dialog.run()
 

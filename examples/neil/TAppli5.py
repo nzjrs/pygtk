@@ -69,7 +69,7 @@ class Application:
 			('/_Help/_About',   '<control>A', help_cb, 1, '')
 		])
 		self.w_menubar = itemf.get_widget('<main>')
-		self.w_vbox.pack_start(self.w_menubar, expand=FALSE)
+		self.w_vbox.pack_start(self.w_menubar, expand=False)
 		self.w_menubar.show()
 
 	def init_text(self):		
@@ -109,7 +109,7 @@ class Application:
 			#self.w_text.queueDraw()
 		elif action == 2:
 			print "File:Open"
-			print GtkExtra.file_open_box(modal=FALSE), "chosen"
+			print GtkExtra.file_open_box(modal=False), "chosen"
 		elif action == 3:
 			print "File:Save"
 			GtkExtra.message_box("Test Application",
@@ -117,7 +117,7 @@ class Application:
 					     ("OK",), pixmap='bomb.xpm')
 		elif action == 4:
 			print "File:Save As"
-			print GtkExtra.message_box(modal=FALSE), "chosen"
+			print GtkExtra.message_box(modal=False), "chosen"
 		elif action == 5:
 			print "File:Close"
 			GtkExtra.message_box("Test Application",

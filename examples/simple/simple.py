@@ -17,8 +17,8 @@ def destroy(*args):
 window = gobject.new(gtk.Window,
 		     type=gtk.WINDOW_TOPLEVEL,
 		     title='Hello World',
-		     allow_grow=gtk.FALSE,
-		     allow_shrink=gtk.FALSE,
+		     allow_grow=False,
+		     allow_shrink=False,
 		     border_width=10)
 window.connect("destroy", destroy)
 
