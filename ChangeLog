@@ -1,5 +1,10 @@
 2003-01-07  Johan Dahlin  <jdahlin@async.com.br>
 
+	* pygtk.py (_get_available_versions): Rewrite using glob.glob,
+	with python2.2 glob uses fnmatch.filter with is an optimized
+	version of what we did before. _get_available_versions is now
+	roughly 5 times faster.
+
 	* gtk/gdk.override (pygdk_block_threads, pygdk_unblock_threads): 
 	Reverted patch from David I Lehn (#98380) since it caused troubles 
 	for other people.
