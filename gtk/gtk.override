@@ -4673,3 +4673,29 @@ _wrap_gtk_font_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+%%
+override gtk_action_get_proxies noargs
+static PyObject *
+_wrap_gtk_action_get_proxies(PyGObject *self)
+{
+    PyObject *py_list;
+    GSList *slist, *tmp;
+    int i, slen;
+
+    slist = gtk_action_get_proxies(GTK_ACTION(self->obj));
+    slen = g_slist_length(slist);
+    if ((py_list = PyList_New(slen)) == NULL)
+        return NULL;
+
+    for (i = 0, tmp = slist; i < slen && tmp != NULL; tmp = tmp->next, i++) {
+        PyObject *obj = pygobject_new(G_OBJECT(tmp->data));
+        if (obj == NULL) {
+	    g_slist_free(slist);
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_SetItem(py_list, i, obj);
+    }
+    g_slist_free(slist);
+    return py_list;
+}
