@@ -62,7 +62,7 @@ GTKMODULE_DEFS = generate/gtk.defs \
   generate/gtkmenus.defs  generate/gtkmisc.defs \
   generate/gtkranges.defs generate/gtkdnd.defs
 
-$(srcdir)/gtkmodule_defs.c $(srcdir)/gtkmodule_impl.c $(srcdir)/gtkgl_defs.c $(srcdir)/gtkgl_impl.c: $(srcdir)/mkgtk.py $(GENERATE) $(GTKMODULE_DEFS) generate/gtkgl.defs generate/libglade.defs
+$(srcdir)/gtkmodule_defs.c $(srcdir)/gtkmodule_impl.c $(srcdir)/gtkgl_defs.c $(srcdir)/gtkgl_impl.c $(srcdir)/libglade_defs.c $(srcdir)/libglade_impl.c: $(srcdir)/mkgtk.py $(GENERATE) $(GTKMODULE_DEFS) generate/gtkgl.defs generate/libglade.defs
 	cd $(srcdir) && $(PYTHON) mkgtk.py
 
 

@@ -63,5 +63,8 @@ def get_widget_name(widget):
 def get_widget_long_name(widget):
 	return _libglade.glade_get_widget_long_name(widget._o)
 def get_widget_tree(widget):
-	return GladeXML(_obj=_libglade.glade_get_widget_tree(widget._o))
+	xml = _libglade.glade_get_widget_tree(widget._o)
+	if xml:
+		return GladeXML(_obj=xml)
+	return xml
 

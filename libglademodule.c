@@ -128,9 +128,81 @@ static PyObject *_wrap_glade_xml_signal_autoconnect(PyObject *self, PyObject *ar
     return Py_None;
 }
 
+static PyObject *_wrap_glade_xml_get_widget(PyObject *self, PyObject *args) {
+    PyObject *xml;
+    char *name;
+    GtkWidget *widget;
+
+    if (!PyArg_ParseTuple(args, "O!s:glade_xml_get_widget",
+			  &PyGtk_Type, &xml, &name))
+	return NULL;
+    widget = glade_xml_get_widget(GLADE_XML(PyGtk_Get(xml)), name);
+    if (widget)
+	return PyGtk_New((GtkObject *)widget);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_glade_xml_get_widget_by_long_name(PyObject *self, PyObject *args) {
+    PyObject *xml;
+    char *name;
+    GtkWidget *widget;
+
+    if (!PyArg_ParseTuple(args, "O!s:glade_xml_get_widget_by_long_name",
+			  &PyGtk_Type, &xml, &name))
+	return NULL;
+    widget = glade_xml_get_widget_by_long_name(GLADE_XML(PyGtk_Get(xml)),name);
+    if (widget)
+	return PyGtk_New((GtkObject *)widget);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_glade_get_widget_name(PyObject *self, PyObject *args) {
+    PyObject *wid;
+    const char *name;
+
+    if (!PyArg_ParseTuple(args, "O!:glade_get_widget_name", &PyGtk_Type, &wid))
+	return NULL;
+    if ((name = glade_get_widget_name(GTK_WIDGET(PyGtk_Get(wid)))) != NULL)
+	return PyString_FromString(name);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_glade_get_widget_long_name(PyObject *self, PyObject *args) {
+    PyObject *wid;
+    const char *name;
+
+    if (!PyArg_ParseTuple(args, "O!:glade_get_widget_long_name",
+			  &PyGtk_Type, &wid))
+	return NULL;
+    if ((name = glade_get_widget_long_name(GTK_WIDGET(PyGtk_Get(wid))))!=NULL)
+	return PyString_FromString(name);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_glade_get_widget_tree(PyObject *self, PyObject *args) {
+    PyObject *wid;
+    GladeXML *xml;
+
+    if (!PyArg_ParseTuple(args, "O!:glade_get_widget_tree", &PyGtk_Type, &wid))
+	return NULL;
+    if ((xml = glade_get_widget_tree(GTK_WIDGET(PyGtk_Get(wid))))!=NULL)
+	return PyGtk_New((GtkObject *)xml);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef libgladeMethods[] = {
     { "glade_xml_signal_connect", _wrap_glade_xml_signal_connect, 1 },
     { "glade_xml_signal_autoconnect", _wrap_glade_xml_signal_autoconnect, 1 },
+    { "glade_xml_get_widget", _wrap_glade_xml_get_widget, 1 },
+    { "glade_xml_get_widget_by_long_name", _wrap_glade_xml_get_widget_by_long_name, 1 },
+    { "glade_get_widget_name", _wrap_glade_get_widget_name, 1 },
+    { "glade_get_widget_long_name", _wrap_glade_get_widget_long_name, 1 },
+    { "glade_get_widget_tree", _wrap_glade_get_widget_tree, 1 },
 #include "libglade_defs.c"
     { NULL, NULL, 0 }
 };
