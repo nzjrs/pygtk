@@ -83,7 +83,11 @@ _pygtk_log_func(const gchar *log_domain,
                 const gchar *message,
                 gpointer user_data)
 {
+    PyGILState_STATE state;
+
+    state = PyGILState_Ensure();
     PyErr_Warn(PyGtkWarning, (char *) message);
+    PyGILState_Release(state);
 }
 
 static gboolean
