@@ -37,6 +37,10 @@ ignore
 ignore
   pango_context_new
   pango_context_set_font_map
+  pango_glyph_string_index_to_x
+  pango_glyph_string_x_to_index
+  pango_break
+  pango_shape
 %%
 ignore pango_font_description_from_string
 %%
@@ -243,6 +247,36 @@ _wrap_pango_glyph_string_extents_range(PyObject *self, PyObject *args,
 			 logical_rect.width, logical_rect.height);
 }
 %%
+override pango_glyph_string_get_logical_widths kwargs
+static PyObject *
+_wrap_pango_glyph_string_get_logical_widths(PyObject *self, PyObject *args,
+					    PyObject *kwargs)
+{
+    static char *kwlist[] = { "text", "embedding_level", NULL };
+    const char *text;
+    gint length, embedding_level, *logical_widths;
+    gint i, slen;
+    PyObject *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s#i:PangoGlyphString.get_logical_widths",
+				     kwlist, &text, &length, &embedding_level))
+	return NULL;
+    slen = g_utf8_strlen(text, length);
+    logical_widths = g_new(int, slen);
+    pango_glyph_string_get_logical_widths(pyg_boxed_get(self,PangoGlyphString),
+					  text, length, embedding_level,
+					  logical_widths);
+    ret = PyTuple_New(slen);
+    for (i = 0; i < slen; i++) {
+	PyObject *item = PyInt_FromLong(logical_widths[i]);
+
+	PyTuple_SetItem(ret, i, item);
+    }
+    g_free(logical_widths);
+    return ret;
+}
+%%
 override pango_layout_set_markup kwargs
 static PyObject *
 _wrap_pango_layout_set_markup(PyGObject *self, PyObject *args,PyObject *kwargs)
@@ -426,6 +460,50 @@ _wrap_pango_layout_get_pixel_size(PyGObject *self)
     pango_layout_get_pixel_size(PANGO_LAYOUT(self->obj), &width, &height);
 
     return Py_BuildValue("(ii)", width, height);
+}
+%%
+override pango_parse_markup kwargs
+static PyObject *
+_wrap_pango_parse_markup(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "markup_text", "accel_marker", NULL };
+    char *markup_text, *text = NULL;
+    gint length;
+    Py_UNICODE *py_accel_marker, py_accel_char;
+    gint py_accel_marker_len;
+    gunichar accel_marker, accel_char = 0;
+    PangoAttrList *attr_list = NULL;
+    GError *error = NULL;
+    gboolean ret;
+    PyObject *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#u#:pango.parse_markup",
+				     kwlist, &markup_text, &length,
+				     &py_accel_marker, &py_accel_marker_len))
+	return NULL;
+    if (py_accel_marker_len != 1) {
+	PyErr_SetString(PyExc_TypeError, "accel_mark must be one character");
+	return NULL;
+    }
+    accel_marker = py_accel_marker[0];
+    ret = pango_parse_markup(markup_text, length, accel_marker,
+			     &attr_list, &text, &accel_char, &error);
+    if (pyg_error_check(&error))
+	return NULL;
+
+#if !defined(Py_UNICODE_SIZE) || Py_UNICODE_SIZE == 2
+    if (accel_char >= 0xffff) {
+	PyErr_SetString(PyExc_ValueError, "unicode character is too big to fit in a 16-bit unicode character");
+	return NULL;
+    }
+#endif
+    py_accel_char = (Py_UNICODE)accel_char;
+
+    py_ret = Py_BuildValue("(Nsu#)", pyg_boxed_new(PANGO_TYPE_ATTR_LIST,
+						   attr_list, FALSE, TRUE),
+			   text, &py_accel_char, 1);
+    g_free(text);
+    return py_ret;
 }
 %%
 override pango_tab_array_get_tab kwargs
