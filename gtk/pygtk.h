@@ -52,7 +52,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PYGTK_VERSION (_PyGtk_API->pygtkVersion)
 
 /* public functions */
-#define pygdk_rectangle_from_pyobject (_PyGtk_API->rectangle_from_pyobject);
+#define pygdk_rectangle_from_pyobject (_PyGtk_API->rectangle_from_pyobject)
 
 
 /* a function to initialise the pygtk functions */
