@@ -3946,6 +3946,91 @@ _wrap_gtk_ctree_node_tp_getattr(PyGPointer *self, char *attr)
     return NULL;
 }
 %%
+override-slot GtkRequisition.tp_as_sequence
+static int
+_wrap_gtk_requisition_length(PyGBoxed *self)
+{
+    return 2;
+}
+static PyObject *
+_wrap_gtk_requisition_getitem(PyGBoxed *self, int pos)
+{
+    GtkRequisition *requisition;
+
+    if (pos < 0) pos += 2;
+    if (pos < 0 || pos >= 2) {
+	PyErr_SetString(PyExc_IndexError, "index out of range");
+	return NULL;
+    }
+    requisition = pyg_boxed_get(self, GtkRequisition);
+    switch (pos) {
+    case 0: return PyInt_FromLong(requisition->width);
+    case 1: return PyInt_FromLong(requisition->height);
+    default:
+	g_assert_not_reached();
+	return NULL;
+    }
+}
+static int
+_wrap_gtk_requisition_setitem(PyGBoxed *self, int pos, PyObject *value)
+{
+    GtkRequisition *requisition;
+    gint val;
+
+    if (pos < 0) pos += 2;
+    if (pos < 0 || pos >= 2) {
+	PyErr_SetString(PyExc_IndexError, "index out of range");
+	return -1;
+    }
+    requisition = pyg_boxed_get(self, GtkRequisition);
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    switch(pos) {
+    case 0: requisition->width      = val; break;
+    case 1: requisition->height     = val; break;
+    default:
+	g_assert_not_reached();
+	return -1;
+    }
+    return 0;
+}
+static PySequenceMethods _wrap_gtk_requisition_tp_as_sequence = {
+    (inquiry)_wrap_gtk_requisition_length,
+    (binaryfunc)0,
+    (intargfunc)0,
+    (intargfunc)_wrap_gtk_requisition_getitem,
+    (intintargfunc)0,
+    (intobjargproc)_wrap_gtk_requisition_setitem,
+    (intintobjargproc)0
+};
+%%
+override-attr GtkRequisition.width
+static int
+_wrap_gtk_requisition__set_width(PyGBoxed *self, PyObject *value, void *closure)
+{
+    gint val;
+
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    pyg_boxed_get(self, GtkRequisition)->width = val;
+    return 0;
+}
+%%
+override-attr GtkRequisition.height
+static int
+_wrap_gtk_requisition__set_height(PyGBoxed *self, PyObject *value, void *closure)
+{
+    gint val;
+
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    pyg_boxed_get(self, GtkRequisition)->height = val;
+    return 0;
+}
+%%
 ignore gtk_tree_remove_items
 %%
 override gtk_toolbar_append_item kwargs
