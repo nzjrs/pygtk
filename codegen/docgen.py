@@ -107,11 +107,11 @@ class DocWriter:
     def output_docs(self, output_prefix):
         files = []
 
-        # class heirachy
-        heirachy = build_object_tree(self.parser)
-        filename = self.create_filename('heirachy', output_prefix)
+        # class hierarchy
+        hierarchy = build_object_tree(self.parser)
+        filename = self.create_filename('hierarchy', output_prefix)
         fp = open(filename, 'w')
-        self.write_full_heirachy(heirachy, fp)
+        self.write_full_hierarchy(hierarchy, fp)
         fp.close()
 
 	obj_defs = self.parser.objects + self.parser.interfaces + \
@@ -144,7 +144,7 @@ class DocWriter:
         self.write_synopsis(obj_def, fp)
         self.close_section(fp)
 
-	# construct the inheritence heirachy ...
+	# construct the inheritence hierarchy ...
 	ancestry = [ (obj_def.c_name, obj_def.implements) ]
         try:
             parent = obj_def.parent
@@ -160,7 +160,7 @@ class DocWriter:
             pass
         ancestry.reverse()
         self.write_heading('Ancestry', fp)
-        self.write_heirachy(obj_def.c_name, ancestry, fp)
+        self.write_hierarchy(obj_def.c_name, ancestry, fp)
         self.close_section(fp)
 
         constructor = self.parser.find_constructor(obj_def, self.overrides)
@@ -238,7 +238,7 @@ class DocWriter:
     def create_toc_filename(self, output_prefix):
         return self.create_filename(self, 'docs', output_prefix)
 
-    def write_full_heirachy(self, heirachy, fp):
+    def write_full_hierarchy(self, hierarchy, fp):
         def handle_node(node, fp, indent=''):
             for child in node.subclasses:
                 fp.write(indent + node.name)
@@ -249,7 +249,7 @@ class DocWriter:
                 else:
                     fp.write('\n')
                 handle_node(child, fp, indent + '  ')
-        handle_node(heirachy, fp)
+        handle_node(hierarchy, fp)
 
     # these need to handle default args ...
     def create_constructor_prototype(self, func_def):
@@ -296,7 +296,7 @@ class DocWriter:
             prototype = self.create_method_prototype(meth)
             fp.write('    def %s\n' % prototype)
 
-    def write_heirachy(self, obj_name, ancestry, fp):
+    def write_hierarchy(self, obj_name, ancestry, fp):
         indent = ''
         for name, interfaces in ancestry:
             fp.write(indent + '+-- ' + name)
@@ -444,8 +444,8 @@ class DocbookDocWriter(DocWriter):
         lines.append('</para>')
         return string.join(lines, '\n')
 
-    # write out heirachy
-    def write_full_heirachy(self, heirachy, fp):
+    # write out hierarchy
+    def write_full_hierarchy(self, hierarchy, fp):
         def handle_node(node, fp, indent=''):
             if node.name:
                 fp.write('%s<link linkend="%s">%s</link>' %
@@ -469,7 +469,7 @@ class DocbookDocWriter(DocWriter):
             for child in node.subclasses:
                 handle_node(child, fp, indent)
         fp.write('<synopsis>')
-        handle_node(heirachy, fp)
+        handle_node(hierarchy, fp)
         fp.write('</synopsis>\n')
 
     # these need to handle default args ...
@@ -588,7 +588,7 @@ class DocbookDocWriter(DocWriter):
             fp.write(self.create_method_prototype(meth, addlink=1))
         fp.write('</classsynopsis>\n\n')
 
-    def write_heirachy(self, obj_name, ancestry, fp):
+    def write_hierarchy(self, obj_name, ancestry, fp):
         fp.write('<synopsis>')
         indent = ''
         for name, interfaces in ancestry:
@@ -725,8 +725,8 @@ class DocbookDocWriter(DocWriter):
             fp.write('    </authorgroup>\n')
             fp.write('  </bookinfo>\n\n')
 
-            fp.write('  <chapter id="class-heirachy">\n')
-            fp.write('    <title>Class Heirachy</title>\n')
+            fp.write('  <chapter id="class-hierarchy">\n')
+            fp.write('    <title>Class Hierarchy</title>\n')
             fp.write('    <para>Not done yet</para>\n')
             fp.write('  </chapter>\n\n')
 
