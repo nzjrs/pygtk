@@ -28,11 +28,11 @@ common_ldflags = -module -avoid-version
 endif
 
 # gtk module
-pygtkexec_LTLIBRARIES = _gtkmodule.la
-_gtkmodule_la_CFLAGS = $(GTK_CFLAGS)
-_gtkmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
-_gtkmodule_la_LIBADD = $(GTK_LIBS)
-_gtkmodule_la_SOURCES = \
+pygtkexec_LTLIBRARIES = _gtk.la
+_gtk_la_CFLAGS = $(GTK_CFLAGS)
+_gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
+_gtk_la_LIBADD = $(GTK_LIBS)
+_gtk_la_SOURCES = \
   pygtk.h \
   pygtk-private.h \
   gtkmodule.c \
@@ -74,30 +74,30 @@ EXTRA_DIST += 			\
 
 # libglade module
 if BUILD_LIBGLADE
-glademodule_la = glademodule.la
+glade_la = glade.la
 endif
-pygtkexec_LTLIBRARIES += $(glademodule_la)
-glademodule_la_CFLAGS = $(LIBGLADE_CFLAGS)
-glademodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
-glademodule_la_LIBADD = $(LIBGLADE_LIBS)
-glademodule_la_SOURCES = libglademodule.c
+pygtkexec_LTLIBRARIES += $(glade_la)
+glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
+glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
+glade_la_LIBADD = $(LIBGLADE_LIBS)
+glade_la_SOURCES = libglademodule.c
 libglade.c: $(COMMONDEFS) libglade.override
-nodist_glademodule_la_SOURCES = libglade.c
+nodist_glade_la_SOURCES = libglade.c
 CLEANFILES += libglade.c
 defs_DATA += libglade.defs
 EXTRA_DIST += libglade.override
 
 # gtkgl module
 if BUILD_GTKGL
-glmodule_la = glmodule.la
+gl_la = gl.la
 endif
-pygtkexec_LTLIBRARIES += $(glmodule_la)
-glmodule_la_CFLAGS = $(GTKGL_CFLAGS)
-glmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgl
-glmodule_la_LIBADD = $(GTKGL_LIBS)
-glmodule_la_SOURCES = gtkglmodule.c
+pygtkexec_LTLIBRARIES += $(gl_la)
+gl_la_CFLAGS = $(GTKGL_CFLAGS)
+gl_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgl
+gl_la_LIBADD = $(GTKGL_LIBS)
+gl_la_SOURCES = gtkglmodule.c
 libgl.c: $(COMMONDEFS) gtkgl.override
-nodist_glmodule_la_SOURCES = gtkgl.c
+nodist_gl_la_SOURCES = gtkgl.c
 CLEANFILES += gtkgl.c
 defs_DATA += gtkgl.defs
 EXTRA_DIST += gtkgl.override

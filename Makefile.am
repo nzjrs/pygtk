@@ -37,9 +37,9 @@ uninstall-local:
 	rm -f $(DESTDIR)$(pythondir)/pygtk.pth $(DESTDIR)$(pyexecdir)/pygtk.pth
 
 pkgpyexec_LTLIBRARIES = \
-  gobjectmodule.la \
-  pangomodule.la \
-  atkmodule.la
+  gobject.la \
+  pango.la \
+  atk.la
 
 if PLATFORM_WIN32
 common_ldflags = -module -avoid-version -no-undefined
@@ -48,27 +48,27 @@ common_ldflags = -module -avoid-version
 endif
 
 # gobject module
-gobjectmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgobject
-gobjectmodule_la_LIBADD = $(GLIB_LIBS)
-gobjectmodule_la_SOURCES = \
+gobject_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgobject
+gobject_la_LIBADD = $(GLIB_LIBS)
+gobject_la_SOURCES = \
   pygobject.h pygobject-private.h \
   gobjectmodule.c pygtype.c pygobject.c pygboxed.c
 
 # pango module
-pangomodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpango
-pangomodule_la_LIBADD = $(PANGO_LIBS)
-pangomodule_la_SOURCES = pangomodule.c
-nodist_pangomodule_la_SOURCES = pango.c
+pango_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpango
+pango_la_LIBADD = $(PANGO_LIBS)
+pango_la_SOURCES = pangomodule.c
+nodist_pango_la_SOURCES = pango.c
 pango.c: $(COMMONDEFS) pango.override
 CLEANFILES += pango.c
 EXTRA_DIST += pango.override
 defs_DATA += pango.defs pango-types.defs
 
 # atk module
-atkmodule_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initatk
-atkmodule_la_LIBADD = $(ATK_LIBS)
-atkmodule_la_SOURCES = atkmodule.c
-nodist_atkmodule_la_SOURCES = atk.c
+atk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initatk
+atk_la_LIBADD = $(ATK_LIBS)
+atk_la_SOURCES = atkmodule.c
+nodist_atk_la_SOURCES = atk.c
 atk.c: $(COMMONDEFS) atk.override
 CLEANFILES += atk.c
 EXTRA_DIST += atk.override
