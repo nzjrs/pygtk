@@ -412,7 +412,7 @@
   (caller-owns-return #t)
   (parameters
     '("const-PangoFontDescription*" "desc")
-    '("PangoLanguage*" "language")
+    '("PangoLanguage*" "language" (null-ok) (default "NULL"))
   )
 )
 
@@ -470,7 +470,7 @@
     '("int" "start_index")
     '("int" "length")
     '("PangoAttrList*" "attrs")
-    '("PangoAttrIterator*" "cached_iter")
+    '("PangoAttrIterator*" "cached_iter" (null-ok) (default "NULL"))
   )
 )
 
@@ -735,7 +735,7 @@
   (c-name "pango_font_description_better_match")
   (return-type "gboolean")
   (parameters
-    '("const-PangoFontDescription*" "old_match")
+    '("const-PangoFontDescription*" "old_match" (null-ok) (default "NULL"))
     '("const-PangoFontDescription*" "new_match")
   )
 )
@@ -881,7 +881,7 @@
   (c-name "pango_font_get_metrics")
   (return-type "PangoFontMetrics*")
   (parameters
-    '("PangoLanguage*" "language")
+    '("PangoLanguage*" "language" (null-ok) (default "NULL"))
   )
 )
 
@@ -1157,7 +1157,7 @@
   (c-name "pango_layout_set_font_description")
   (return-type "none")
   (parameters
-    '("const-PangoFontDescription*" "desc")
+    '("const-PangoFontDescription*" "desc" (null-ok))
   )
 )
 
@@ -1256,7 +1256,7 @@
   (c-name "pango_layout_set_tabs")
   (return-type "none")
   (parameters
-    '("PangoTabArray*" "tabs")
+    '("PangoTabArray*" "tabs" (null-ok))
   )
 )
 
@@ -1704,11 +1704,11 @@
   )
 )
 
-(define-method matches
-  (of-object "PangoLanguage")
+(define-function pango_language_matches
   (c-name "pango_language_matches")
   (return-type "gboolean")
   (parameters
+    '("PangoLanguage*" "language" (null-ok))
     '("const-char*" "range_list")
   )
 )

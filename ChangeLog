@@ -147,6 +147,23 @@
 
 	* setup.py (py_modules): Install dsextras.py
 
+2003-04-12  Naofumi Yasufuku  <naofumi@yasufuku.net>
+ 
+ 	* pango.defs (pango_context_get_metrics): Allow language parameter
+ 	to be omitted to get the metrics for the entire font.
+ 	(pango_itemize): Allow cached_iter parameter to be omitted.
+ 	(pango_font_description_better_match): Allow old_match parameter
+ 	to be omitted to determine if new_match is a match at all.
+ 	(pango_font_get_metrics): Allow language parameter to be omitted
+ 	to get the metrics for the entire font.
+ 	(pango_layout_set_font_description): Allow 'None' desc parameter
+ 	to unset the current font description.
+ 	(pango_layout_set_tabs): Allow 'None' tabs parameter to reinstate
+ 	the default tabs.
+ 	(pango_language_matches): Changed to function. Allow 'None'
+ 	language parameter which matches nothing but '*'.
+	Fixes #109848
+	
 2003-03-24  James Henstridge  <james@daa.com.au>
 
 	* pygobject-private.h: add missing "extern" keyword (from Glyph's
