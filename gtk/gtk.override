@@ -2872,6 +2872,63 @@ _wrap_gtk_tree_view_insert_column_with_attributes(PyGObject *self, PyObject *arg
     return pygobject_new ((GObject *) column);
 }
 %%
+override gtk_tree_view_get_visible_rect noargs
+static PyObject *
+_wrap_gtk_tree_view_get_visible_rect(PyGObject *self)
+{
+    GdkRectangle visible_rect;
+
+    gtk_tree_view_get_visible_rect(GTK_TREE_VIEW(self->obj), &visible_rect);
+
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &visible_rect, TRUE, TRUE);
+}
+%%
+override gtk_tree_view_get_cell_area kwargs
+static PyObject *
+_wrap_gtk_tree_view_get_cell_area(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "path", "column", NULL };
+    PyObject *py_path;
+    PyGObject *column;
+    GdkRectangle rect;
+    GtkTreePath *path;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO!:GtkTreeView.get_cell_area", kwlist, &py_path, &PyGtkTreeViewColumn_Type, &column))
+        return NULL;
+    path = pygtk_tree_path_from_pyobject(py_path);
+    if (!path) {
+        PyErr_SetString(PyExc_TypeError, "could not convert path to a GtkTreePath");
+        return NULL;
+    }
+    gtk_tree_view_get_cell_area(GTK_TREE_VIEW(self->obj), path, GTK_TREE_VIEW_COLUMN(column->obj), &rect);
+    if (path)
+        gtk_tree_path_free(path);
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &rect, TRUE, TRUE);
+}
+%%
+override gtk_tree_view_get_background_area kwargs
+static PyObject *
+_wrap_gtk_tree_view_get_background_area(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "path", "column", NULL };
+    PyObject *py_path;
+    PyGObject *column;
+    GdkRectangle rect;
+    GtkTreePath *path;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO!:GtkTreeView.get_background_area", kwlist, &py_path, &PyGtkTreeViewColumn_Type, &column))
+        return NULL;
+    path = pygtk_tree_path_from_pyobject(py_path);
+    if (!path) {
+        PyErr_SetString(PyExc_TypeError, "could not convert path to a GtkTreePath");
+        return NULL;
+    }
+    gtk_tree_view_get_background_area(GTK_TREE_VIEW(self->obj), path, GTK_TREE_VIEW_COLUMN(column->obj), &rect);
+    if (path)
+        gtk_tree_path_free(path);
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &rect, TRUE, TRUE);
+}
+%%
 override gtk_tree_selection_get_selected noargs
 static PyObject *
 _wrap_gtk_tree_selection_get_selected(PyGObject *self)
