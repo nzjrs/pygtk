@@ -549,6 +549,29 @@ _wrap_gtk_tree_selection_get_selected(PyGObject *self)
     }
 }
 %%
+override gtk_tree_selection_get_selected_rows noargs
+static PyObject *
+_wrap_gtk_tree_selection_get_selected_rows(PyGObject *self)
+{
+    GtkTreeModel *model;
+    GList *selected, *tmp;
+    PyObject *py_selected;
+
+    selected = gtk_tree_selection_get_selected_rows
+	(GTK_TREE_SELECTION(self->obj), &model);
+    py_selected = PyList_New(0);
+    for (tmp = selected; tmp != NULL; tmp = tmp->next) {
+	GtkTreePath *path = tmp->data;
+	PyObject *item = pygtk_tree_path_to_pyobject(path);
+
+	PyList_Append(py_selected, item);
+	Py_DECREF(item);
+	gtk_tree_path_free(path);
+    }
+    g_list_free(selected);
+    return Py_BuildValue("(NN)", pygobject_new((GObject *)model), py_selected);
+}
+%%
 override gtk_tree_selection_selected_foreach
 static void
 pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
