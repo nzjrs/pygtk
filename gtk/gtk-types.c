@@ -1038,11 +1038,9 @@ _pygtk_register_boxed_types(PyObject *moddict)
 {
 #define register_tp(x) Py##x##_Type.ob_type = &PyType_Type; \
     PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type)
-#define register_tp2(x, tp) Py##x##_Type.ob_type = &PyType_Type; \
-    PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type); \
-    pyg_register_boxed_custom(tp, Py##x##_from_value, Py##x##_to_value)
 
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
+    PyGdkAtom_Type.ob_type = &PyType_Type;
 #if 0
     register_tp(GdkWindow);
     register_tp(GdkGC);
