@@ -1,7 +1,7 @@
 # require automake-1.7
 AUTOMAKE_OPTIONS = 1.7
 
-SUBDIRS = codegen gtk docs
+SUBDIRS = codegen gtk docs tests
 
 CLEANFILES =
 EXTRA_DIST = $(defs_DATA)
@@ -53,8 +53,16 @@ endif
 gobject_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgobject
 gobject_la_LIBADD = $(GLIB_LIBS)
 gobject_la_SOURCES = \
-  pygobject.h pygobject-private.h \
-  gobjectmodule.c pygtype.c pygobject.c pygboxed.c
+		gobjectmodule.c \
+		pygboxed.c \
+		pygenum.c \
+		pygenum.h \
+		pygflags.c \
+		pygflags.h \
+		pygobject.c \
+		pygobject.h \
+		pygobject-private.h \
+		pygtype.c
 
 # pango module
 pango_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpango

@@ -1261,7 +1261,7 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    event->scroll.state = PyInt_AsLong(value);
 	    return 0;
 	} else if (!strcmp(attr, "direction")) {
-	    INT_CHECK();
+	    INT_CHECK(); /* XXX: ENUM */
 	    event->scroll.direction = PyInt_AsLong(value);
             return 0;
 	} else if (!strcmp(attr, "device")) {
@@ -1449,13 +1449,13 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "y_root"))
             return PyFloat_FromDouble(event->crossing.y_root);
         if (!strcmp(attr, "mode"))
-            return PyInt_FromLong(event->crossing.mode);
+            return pyg_enum_from_gtype(GDK_TYPE_CROSSING_MODE, event->crossing.mode);
         if (!strcmp(attr, "detail"))
             return PyInt_FromLong(event->crossing.detail);
         if (!strcmp(attr, "focus"))
             return PyInt_FromLong(event->crossing.focus);
         if (!strcmp(attr, "state"))
-            return PyInt_FromLong(event->crossing.state);
+            return pyg_enum_from_gtype(GDK_TYPE_NOTIFY_TYPE, event->crossing.mode);
         break;
     case GDK_FOCUS_CHANGE:      /*GdkEventFocus             focus_change*/
         if (!strcmp(attr, "__members__"))
@@ -1491,7 +1491,7 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "time"))
             return PyInt_FromLong(event->property.time);
         if (!strcmp(attr, "state"))
-            return PyInt_FromLong(event->property.state);
+            return pyg_enum_from_gtype(GDK_TYPE_PROPERTY_STATE, event->property.state);
         break;
     case GDK_SELECTION_CLEAR:   /*GdkEventSelection         selection*/
     case GDK_SELECTION_REQUEST: /*GdkEventSelection         selection*/
@@ -1560,7 +1560,7 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
                                  "type", "window", "send_event",
                                  "state");
         if (!strcmp(attr, "state"))
-            return PyInt_FromLong(event->visibility.state);
+            return pyg_enum_from_gtype(GDK_TYPE_VISIBILITY_STATE, event->visibility.state);
         break;
     case GDK_NO_EXPOSE:         /*GdkEventNoExpose          no_expose*/
         break;
@@ -1579,7 +1579,7 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "state"))
             return PyInt_FromLong(event->scroll.state);
         if (!strcmp(attr, "direction"))
-            return PyInt_FromLong(event->scroll.direction);
+            return pyg_enum_from_gtype(GDK_TYPE_SCROLL_DIRECTION, event->scroll.direction);
         if (!strcmp(attr, "device"))
             return pygobject_new((GObject *)event->scroll.device);
         if (!strcmp(attr, "x_root"))
@@ -1603,7 +1603,7 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
                                  "type", "window", "send_event",
                                  "action", "name");
         if (!strcmp(attr, "action"))
-            return PyInt_FromLong(event->setting.action);
+            return pyg_enum_from_gtype(GDK_TYPE_SETTING_ACTION, event->setting.action);
         if (!strcmp(attr, "name"))
             return PyString_FromString(event->setting.name);
         break;
@@ -1612,7 +1612,7 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     }
     
     if (!strcmp(attr, "type"))
-        return PyInt_FromLong(event->type);
+        return pyg_enum_from_gtype(GDK_TYPE_EVENT_TYPE, event->type);
     if (!strcmp(attr, "window"))
         return pygobject_new((GObject *)event->any.window);
     if (!strcmp(attr, "send_event"))
@@ -2041,7 +2041,7 @@ _wrap_gdk_gc_tp_getattr(PyGObject *self, char *attr)
     if (!strcmp(attr, "clip_mask")) 
         return pygobject_new((GObject *)gc.clip_mask);
     if (!strcmp(attr, "subwindow_mode"))
-        return PyInt_FromLong(gc.subwindow_mode);
+        return pyg_enum_from_gtype(GDK_TYPE_SUBWINDOW_MODE, gc.subwindow_mode);
     if (!strcmp(attr, "ts_x_origin")) 
         return PyInt_FromLong(gc.ts_x_origin);
     if (!strcmp(attr, "ts_y_origin")) 
@@ -2055,11 +2055,11 @@ _wrap_gdk_gc_tp_getattr(PyGObject *self, char *attr)
     if (!strcmp(attr, "line_width")) 
         return PyInt_FromLong(gc.line_width);
     if (!strcmp(attr, "line_style")) 
-        return PyInt_FromLong(gc.line_style);
+        return pyg_enum_from_gtype(GDK_TYPE_LINE_STYLE, gc.line_style);
     if (!strcmp(attr, "cap_style")) 
-        return PyInt_FromLong(gc.cap_style);
+        return pyg_enum_from_gtype(GDK_TYPE_CAP_STYLE, gc.cap_style);
     if (!strcmp(attr, "join_style")) 
-        return PyInt_FromLong(gc.join_style);
+        return pyg_enum_from_gtype(GDK_TYPE_JOIN_STYLE, gc.join_style);
 
     {
         PyObject *name = PyString_FromString(attr);
@@ -3857,7 +3857,7 @@ _wrap_gdk_window_get_decorations(PyGObject *self)
 
     gdk_window_get_decorations(GDK_WINDOW(self->obj), &decor);
 
-    return PyInt_FromLong(decor);
+    return pyg_enum_from_gtype(GDK_TYPE_WM_DECORATION, decor);
 }
 %%
 override gdk_window_get_toplevels noargs

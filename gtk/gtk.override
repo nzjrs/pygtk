@@ -611,7 +611,8 @@ _wrap_gtk_box_query_child_packing(PyGObject *self, PyObject *args,
     gtk_box_query_child_packing(GTK_BOX(self->obj),
                                 child, &expand, &fill,
                                 &padding, &pack_type);
-    return Py_BuildValue("(iiii)", (int)expand, (int)fill, padding, pack_type);
+    return Py_BuildValue("(iiiO)", (int)expand, (int)fill, padding,
+			 pyg_enum_from_gtype(GTK_TYPE_PACK_TYPE, pack_type));
 }
 %%
 override gtk_combo_set_popdown_strings kwargs
@@ -2113,7 +2114,8 @@ _wrap_gtk_notebook_query_tab_label_packing(PyGObject *self, PyObject *args,
     gtk_notebook_query_tab_label_packing(GTK_NOTEBOOK(self->obj),
                                          GTK_WIDGET(child->obj),
                                          &expand, &fill, &pack_type);
-    return Py_BuildValue("(iii)", expand, fill, pack_type);
+    return Py_BuildValue("(iiO)", expand, fill,
+			 pyg_enum_from_gtype(GTK_TYPE_PACK_TYPE, pack_type));
 }
 %%
 override gtk_list_insert_items kwargs
@@ -3022,7 +3024,7 @@ _wrap_gtk_stock_lookup(PyGObject *self, PyObject *args)
         return Py_BuildValue("zziiz",
                              item.stock_id,
                              item.label,
-                             item.modifier,
+                             pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, item.modifier),
                              item.keyval,
                              item.translation_domain);
     }
@@ -3413,10 +3415,12 @@ _wrap_gtk_image_get_stock(PyGObject *self)
     if (stock_id) {
 	return Py_BuildValue("(OO)",
 			     PyString_FromString(stock_id),
-			     PyInt_FromLong(size));
+			     pyg_enum_from_gtype(GTK_TYPE_ICON_SIZE, size));
     } else {
 	Py_INCREF(Py_None);
-	return Py_BuildValue("(OO)", Py_None, PyInt_FromLong(size));
+	return Py_BuildValue("(OO)",
+			     Py_None,
+			     pyg_enum_from_gtype(GTK_TYPE_ICON_SIZE, size));
     }
 }
 %%
@@ -3435,7 +3439,7 @@ _wrap_gtk_image_get_icon_set(PyGObject *self)
     }
     gtk_image_get_icon_set(GTK_IMAGE(self->obj), &icon_set, &size);
     return Py_BuildValue("(OO)", pygobject_new((GObject *)icon_set),
-			 PyInt_FromLong(size));
+			 pyg_enum_from_gtype(GTK_TYPE_ICON_SIZE, size));
 }
 %%
 override gtk_image_get noargs
@@ -3561,7 +3565,9 @@ _wrap_gtk_scrolled_window_get_policy(PyGObject *self)
 
     gtk_scrolled_window_get_policy(GTK_SCROLLED_WINDOW(self->obj),
 				   &hscrollbar_policy, &vscrollbar_policy);
-    return Py_BuildValue("(ii)", hscrollbar_policy, vscrollbar_policy);
+    return Py_BuildValue("(OO)",
+			 pyg_enum_from_gtype(GTK_TYPE_POLICY_TYPE, hscrollbar_policy),
+			 pyg_enum_from_gtype(GTK_TYPE_POLICY_TYPE, vscrollbar_policy));
 }
 %%
 override gtk_tooltips_data_get kwargs
@@ -3616,7 +3622,7 @@ _wrap_gtk_accelerator_parse(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     gtk_accelerator_parse((const gchar *)accel, &keyval, &modifier);
 
-    return Py_BuildValue("ii", keyval, modifier);
+    return Py_BuildValue("iO", keyval, pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, modifier));
 }
 %%
 override gtk_accel_map_lookup_entry kwargs
@@ -3634,7 +3640,8 @@ _wrap_gtk_accel_map_lookup_entry(PyGObject *self, PyObject *args,
         return NULL;
 
     if (gtk_accel_map_lookup_entry((const gchar *)accel_path, &accel_key))
-	return Py_BuildValue("ii", accel_key.accel_key, accel_key.accel_mods);
+	return Py_BuildValue("iO", accel_key.accel_key,
+			     pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, accel_key.accel_mods));
 
     Py_INCREF(Py_None);
     return Py_None;

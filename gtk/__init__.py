@@ -58,6 +58,8 @@ gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
 gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
+del _gobject
+
 # Warnings
 class _Deprecated:
     from warnings import warn

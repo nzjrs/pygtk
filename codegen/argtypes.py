@@ -318,7 +318,7 @@ class EnumArg(ArgType):
         info.add_parselist('O', ['&py_' + pname], [pname]);
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('gint', 'ret')
-        info.codeafter.append('    return PyInt_FromLong(ret);')
+        info.codeafter.append('    return pyg_enum_from_gtype(%s, ret);' % self.typecode)
 
 class FlagsArg(ArgType):
     flag = ('    if (%(default)spyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n'
@@ -341,7 +341,7 @@ class FlagsArg(ArgType):
         info.add_parselist('O', ['&py_' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('guint', 'ret')
-        info.codeafter.append('    return PyInt_FromLong(ret);')
+        info.codeafter.append('    return pyg_flags_from_gtype(%s, ret);' % self.typecode)
 
 class ObjectArg(ArgType):
     # should change these checks to more typesafe versions that check

@@ -752,6 +752,7 @@ def write_enums(parser, prefix, fp=sys.stdout):
         return
     fp.write('\n/* ----------- enums and flags ----------- */\n\n')
     fp.write('void\n' + prefix + '_add_constants(PyObject *module, const gchar *strip_prefix)\n{\n')
+
     for enum in parser.enums:
         if enum.typecode is None:
             for nick, value in enum.values:
@@ -759,15 +760,17 @@ def write_enums(parser, prefix, fp=sys.stdout):
                          % (value, value))
         else:
             if enum.deftype == 'enum':
-                fp.write('    pyg_enum_add_constants(module, %s, strip_prefix);\n'
-                         % (enum.typecode,))
+                fp.write('  pyg_enum_add(module, "%s", strip_prefix, %s);\n' % (enum.name, enum.typecode))
             else:
-                fp.write('    pyg_flags_add_constants(module, %s, strip_prefix);\n'
-                         % (enum.typecode,))
+                fp.write('  pyg_flags_add(module, "%s", strip_prefix, %s);\n' % (enum.name, enum.typecode))
+            
+    fp.write('\n')
+    fp.write('  if (!PyErr_Occurred())\n')
+    fp.write('    PyErr_Print();\n') 
     fp.write('}\n\n')
 
 def write_extension_init(overrides, prefix, fp): 
-    fp.write('/* intialise stuff extension classes */\n')
+    fp.write('/* initialise stuff extension classes */\n')
     fp.write('void\n' + prefix + '_register_classes(PyObject *d)\n{\n')
     imports = overrides.get_imports()[:]
     if imports:
@@ -905,7 +908,9 @@ def main(argv):
     p = defsparser.DefsParser(args[0], defines)
     if not outfilename:
         outfilename = os.path.splitext(args[0])[0] + '.c'
+        
     p.startParsing()
+    
     register_types(p)
     write_source(p, o, prefix, FileOutput(sys.stdout, outfilename))
 
