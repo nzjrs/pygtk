@@ -2625,6 +2625,7 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
     PyObject *py_buttons = Py_None;
     GtkDialogFlags flags = 0;
     int len, i;
+    GtkWindow *parent;
 
     static char *kwlist[] = { "title", "parent", "flags", "buttons", NULL };
 
@@ -2651,13 +2652,14 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
         return -1;
     }
 
+    parent = ((py_window && py_window != (PyGObject *) Py_None) ?
+              GTK_WINDOW(py_window->obj) : NULL);
     self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
                              "title", title,
-                             "parent", ((py_window && py_window != (PyGObject *) Py_None) ?
-                                        GTK_WINDOW(py_window->obj) : NULL),
                              "modal", flags&GTK_DIALOG_MODAL,
                              "destroy-with-parent", flags&GTK_DIALOG_DESTROY_WITH_PARENT,
                              "has-separator", !(flags&GTK_DIALOG_NO_SEPARATOR),
+                             (parent? "parent" : NULL), parent,
                              NULL);
 
     if (!self->obj) {
