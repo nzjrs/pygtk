@@ -472,6 +472,11 @@ linkend="method-gdkwindow--set-group">set_group</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gdkwindow--get-group">get_group</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gdkwindow--set-decorations">set_decorations</link></methodname>
 	<methodparam><parameter
 		       role="keyword">decorations</parameter></methodparam>
@@ -607,6 +612,10 @@ linkend="method-gdkwindow--process-updates">process_updates</link></methodname>
   </methodsynopsis>
 END NOT IMPLEMENTED -->
 
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkwindow--set-accept-focus">set_accept_focus</link></methodname>
+	<methodparam><parameter role="keyword">accept_focus</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -615,6 +624,13 @@ END NOT IMPLEMENTED -->
 <methodsynopsis language="python">
 	<methodname><link
 linkend="function-gdk--window-foreign-new">gtk.gdk.window_foreign_new</link></methodname>
+	<methodparam><parameter
+		       role="keyword">anid</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--window-foreign-new-for-display">gtk.gdk.window_foreign_new_for_display</link></methodname>
+	<methodparam><parameter
+		       role="keyword">display</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">anid</parameter></methodparam>
       </methodsynopsis><methodsynopsis language="python">
@@ -628,6 +644,13 @@ linkend="function-gdk--window-get-toplevels">gtk.gdk.window_get_toplevels</link>
       </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gdk--window-lookup">gtk.gdk.window_lookup</link></methodname>
+	<methodparam><parameter
+		       role="keyword">anid</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--window-lookup-for-display">gtk.gdk.window_lookup_for_display</link></methodname>
+	<methodparam><parameter
+		       role="keyword">display</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">anid</parameter></methodparam>
       </methodsynopsis><methodsynopsis language="python">
@@ -3289,6 +3312,35 @@ method for example).</para>
 
     </refsect2>
 
+    <refsect2 id="method-gdkwindow--get-group">
+      <title>gtk.gdk.Window.get_group</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_group</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the group leader <link
+	  linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+	  for the window</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_group</methodname>() method returns the
+group leader <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> for
+the window. See the <link
+linkend="method-gdkwindow--set-group"><methodname>set_group()</methodname></link>
+method for more information.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gdkwindow--set-decorations">
       <title>gtk.gdk.Window.set_decorations</title>
 
@@ -4054,6 +4106,39 @@ likely to change in future releases of GDK.
 </para>  </refsect2>
 END NOT IMPLEMENTED -->
 
+    <refsect2 id="method-gdkwindow--set-accept-focus">
+      <title>gtk.gdk.Window.set_accept_focus</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_accept_focus</methodname>
+	  <methodparam><parameter role="keyword">accept_focus</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">accept_focus</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, the window should
+	  receive input focus</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_accept_focus</methodname>() method sets the
+"accept_focus setting to the value of
+<parameter>accept_focus</parameter>. If <parameter>accept_focus</parameter>
+is <literal>TRUE</literal> the window will accept focus; if
+<literal>FALSE</literal> hints to the desktop environment that the window
+doesn't want to receive input focus.</para>
+
+      <para>On X, it is the responsibility of the window manager to
+interpret this hint. ICCCM-compliant window manager usually respect
+it.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -4082,7 +4167,52 @@ been destroyed.</simpara></listitem>
       </variablelist>
 
       <para>The <function>gtk.gdk.window_foreign_new</function>() function
-wraps a native window specified by anid for the default display in a <link
+wraps a native window specified by <parameter>anid</parameter> for the default display in a <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>. This
+may fail if the window has been destroyed. For example in the X Window
+System backend, a native window handle is an Xlib
+<literal>XID</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--window-foreign-new-for-display">
+      <title>gtk.gdk.window_foreign_new_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.window_foreign_new_for_display</methodname>
+	  <methodparam><parameter
+			 role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">anid</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">anid</parameter>&nbsp;:</term>
+	  <listitem><simpara>a native window system ID</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the new <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+wrapper for the native window or <literal>None</literal> if the window has
+been destroyed.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The
+<function>gtk.gdk.window_foreign_new_for_display</function>() function wraps
+a native window specified by <parameter>anid</parameter> for the <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by <parameter>display</parameter> in a <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>. This
 may fail if the window has been destroyed. For example in the X Window
 System backend, a native window handle is an Xlib
@@ -4165,6 +4295,51 @@ up the <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> that
 wraps the native window handle specified by <parameter>anid</parameter>. For
 example in the X Window System backend, a native window handle is an Xlib
+<literal>XID</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--window-lookup-for-display">
+      <title>gtk.gdk.window_lookup_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.window_lookup_for_display</methodname>
+	  <methodparam><parameter
+			 role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">anid</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">anid</parameter>&nbsp;:</term>
+	  <listitem><simpara>a native window system ID</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+wrapper for the native window or <literal>None</literal> if there is
+none.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.window_lookup_for_display</function>()
+function looks up the <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> that
+wraps the native window handle specified by <parameter>anid</parameter> for
+the <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by <parameter>display</parameter>. For example in the X Window
+System backend, a native window handle is an Xlib
 <literal>XID</literal>.</para>
 
     </refsect2>
