@@ -49,6 +49,17 @@ linkend="method-gtkcalendar--clear-marks">clear_marks</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtkcalendar--get-display-options">get_display_options</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkcalendar--set-display-options">set_display_options</link></methodname>
+	<methodparam><parameter
+		       role="keyword">flags</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtkcalendar--display-options">display_options</link></methodname>
 	<methodparam><parameter
 		       role="keyword">flags</parameter></methodparam>
@@ -271,8 +282,10 @@ linkend="class-gtkcalendar"><classname>gtk.Calendar</classname></link> is a
 widget that displays a simple calendar, one month at a time. In addition,
 the calendar can display the days of the week and navigation controls that
 allow a user to change the month and year displayed by calling the <link
-linkend="method-gtkcalendar--display-options"><methodname>display_options</methodname>()</link> 
-method. The possible display options are:</para>
+linkend="method-gtkcalendar--display-options"><methodname>display_options</methodname>()</link>
+(<link
+linkend="method-gtkcalendar--set-display-options"><methodname>set_display_options</methodname>()</link>
+in PyGTK 2.4 and above) method. The possible display options are:</para>
 
     <variablelist>
       <varlistentry>
@@ -483,6 +496,99 @@ marked days.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkcalendar--get-display-options">
+      <title>gtk.Calendar.get_display_options</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_display_options</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the calendar display options</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_display_options</methodname>() method
+returns the current calendar display options. See the <link
+linkend="method-gtkcalendar--set-display-options"><methodname>set_display_options</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcalendar--set-display-options">
+      <title>gtk.Calendar.set_display_options</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_display_options</methodname>
+	  <methodparam><parameter
+			 role="keyword">flags</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">flags</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new calendar display
+options</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_display_options</methodname>() method sets the
+calendar display options to the value specified by
+<parameter>flags</parameter>. The possible display options are a combination
+of:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.CALENDAR_SHOW_HEADING</literal></term>
+	  <listitem>
+	    <simpara>Specifies that the month and year should be
+displayed.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.CALENDAR_SHOW_DAY_NAMES</literal></term>
+	  <listitem>
+	    <simpara>Specifies that three letter day descriptions should be
+present.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.CALENDAR_NO_MONTH_CHANGE</literal></term>
+	  <listitem>
+	    <simpara>Prevents the user from switching months with the
+calendar.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.CALENDAR_SHOW_WEEK_NUMBERS</literal></term>
+	  <listitem>
+	    <simpara>Displays each week numbers of the current year, down
+the left side of the calendar.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.CALENDAR_WEEK_START_MONDAY</literal></term>
+	  <listitem>
+	    <simpara>Starts the calendar week on Monday, instead of the
+default Sunday.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The display options can be removed by passing 0 as the value of
+<parameter>flags</parameter>.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkcalendar--display-options">
       <title>gtk.Calendar.display_options</title>
 
@@ -499,8 +605,15 @@ options</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and should be replaced
+	by the <link
+	linkend="method-gtkcalendar--set-display-options"><methodname>set_display_options</methodname>()</link>
+	method.</para>
+      </warning>
+
       <para>The <methodname>display_options</methodname>() method sets the
-calendar dispaly options to the value specified by
+calendar display options to the value specified by
 <parameter>flags</parameter>. The possible display options are a combination
 of:</para>
 
