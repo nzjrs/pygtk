@@ -43,14 +43,28 @@ _gtk_la_SOURCES = \
   pygtkcellrenderer.h \
   pygtkcellrenderer.c \
   $(pygtk_win32_sources)
+nodist__gtk_la_SOURCES = gtk.c gdk.c
+
 # prevent the .defs.c rule from trying to generate gtk-types.c because
 # there is gtk-types.defs.  This is basically a hack and I really wish I
 # could use pattern rules.  Perhaps we should rename gtk-types.c.
 gtk-types.c:
-	:
+	@:
+
+gtk_overrides = \
+  gdk.override \
+  gtk.override \
+  gtkclist.override \
+  gtkwidget.override \
+  gtkcontainer.override \
+  gtkstyle.override \
+  gtkwindow.override \
+  gtkctree.override \
+  gtktextview.override \
+  gtktreeview.override
+
 gdk.c: $(srcdir)/gdk.defs $(COMMONDEFS) $(srcdir)/gdk.override
-gtk.c: $(srcdir)/gtk.defs $(COMMONDEFS) $(srcdir)/gtk.override $(srcdir)/gtk-extrafuncs.defs
-nodist__gtkmodule_la_SOURCES = gtk.c gdk.c
+gtk.c: $(srcdir)/gtk.defs $(COMMONDEFS) $(gtk_overrides) $(srcdir)/gtk-extrafuncs.defs
 CLEANFILES += gtk.c gdk.c
 
 defs_DATA += 			\
@@ -60,17 +74,7 @@ defs_DATA += 			\
 	gdk.defs 		\
 	gdk-types.defs
 
-EXTRA_DIST += 			\
-	gdk.override		\
-	gtk.override 		\
-	gtkclist.override	\
-	gtkwidget.override	\
-	gtkcontainer.override	\
-	gtkstyle.override	\
-	gtkwindow.override	\
-	gtkctree.override	\
-	gtktextview.override	\
-	gtktreeview.override
+EXTRA_DIST += $(gtk_overrides)
 
 # libglade module
 if BUILD_LIBGLADE
@@ -80,9 +84,9 @@ pygtkexec_LTLIBRARIES += $(glade_la)
 glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
 glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
 glade_la_LIBADD = $(LIBGLADE_LIBS)
-glade_la_SOURCES = libglademodule.c
-libglade.c: $(COMMONDEFS) libglade.override
+glade_la_SOURCES = libglademodule.c libglade.c
 nodist_glade_la_SOURCES = libglade.c
+libglade.c: $(COMMONDEFS) libglade.override
 CLEANFILES += libglade.c
 defs_DATA += libglade.defs
 EXTRA_DIST += libglade.override
@@ -96,8 +100,8 @@ gl_la_CFLAGS = $(GTKGL_CFLAGS)
 gl_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgl
 gl_la_LIBADD = $(GTKGL_LIBS)
 gl_la_SOURCES = gtkglmodule.c
-libgl.c: $(COMMONDEFS) gtkgl.override
 nodist_gl_la_SOURCES = gtkgl.c
+libgl.c: $(COMMONDEFS) gtkgl.override
 CLEANFILES += gtkgl.c
 defs_DATA += gtkgl.defs
 EXTRA_DIST += gtkgl.override
