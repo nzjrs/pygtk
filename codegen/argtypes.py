@@ -47,9 +47,13 @@ class WrapperInfo:
     def get_arglist(self):
         return string.join(self.arglist, ', ')
     def get_varlist(self):
-        kwlist = '    static char *kwlist[] = { %s };\n' % \
-                 string.join(self.kwlist + [ 'NULL' ], ', ')
-        return kwlist + str(self.varlist)
+        return str(self.varlist)
+    def get_kwlist(self):
+        ret = '    static char *kwlist[] = { %s };\n' % \
+              string.join(self.kwlist + [ 'NULL' ], ', ')
+        if not self.get_varlist():
+            ret = ret + '\n'
+        return ret
 
     def add_parselist(self, codes, parseargs, keywords):
         self.parsestr = self.parsestr + codes

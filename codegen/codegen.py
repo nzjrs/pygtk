@@ -54,9 +54,8 @@ functmpl = 'static PyObject *\n' + \
 	   '_wrap_%(cname)s(PyObject *self, PyObject *args, PyObject *kwargs)\n' + \
 	   '{\n' + \
 	   '%(varlist)s' + \
-	   '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(name)s"%(parselist)s))\n' + \
-	   '        return NULL;\n' + \
-	   '%(codebefore)s\n' + \
+           '%(parseargs)s' + \
+	   '%(codebefore)s' + \
            '    %(funccall)s\n' + \
 	   '%(codeafter)s\n' + \
 	   '}\n\n'
@@ -66,9 +65,8 @@ methtmpl = 'static PyObject *\n' + \
 	   '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n' + \
 	   '{\n' + \
 	   '%(varlist)s' + \
-	   '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.%(name)s"%(parselist)s))\n' + \
-	   '        return NULL;\n' + \
-	   '%(codebefore)s\n' + \
+           '%(parseargs)s' + \
+	   '%(codebefore)s' + \
            '    %(funccall)s\n' + \
 	   '%(codeafter)s\n' + \
 	   '}\n\n'
@@ -78,9 +76,9 @@ consttmpl = 'static int\n' + \
 	    '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n' + \
 	    '{\n' + \
 	    '%(varlist)s' + \
-	    '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.__init__"%(parselist)s))\n' + \
-	    '        return -1;\n' + \
-	    '%(codebefore)s\n' + \
+            '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.__init__"%(parselist)s))\n' + \
+            '        return -1;\n' + \
+	    '%(codebefore)s' + \
 	    '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n' + \
             '%(codeafter)s\n' + \
 	    '    if (!self->obj) {\n' + \
@@ -198,9 +196,8 @@ boxedmethtmpl = 'static PyObject *\n' + \
                 '_wrap_%(cname)s(PyObject *self, PyObject *args, PyObject *kwargs)\n' + \
                 '{\n' + \
                 '%(varlist)s' + \
-                '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.%(name)s"%(parselist)s))\n' + \
-                '        return NULL;\n' + \
-                '%(codebefore)s\n' + \
+                '%(parseargs)s' + \
+                '%(codebefore)s' + \
                 '    %(funccall)s\n' + \
                 '%(codeafter)s\n' + \
                 '}\n\n'
@@ -212,7 +209,7 @@ boxedconsttmpl = 'static int\n' + \
                  '%(varlist)s' + \
                  '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.__init__"%(parselist)s))\n' + \
                  '        return -1;\n' + \
-                 '%(codebefore)s\n' + \
+                 '%(codebefore)s' + \
                  '    self->gtype = %(typecode)s;\n' + \
                  '    self->free_on_dealloc = FALSE;\n' + \
                  '    self->boxed = %(cname)s(%(arglist)s);\n' + \
@@ -291,11 +288,11 @@ def fixname(name):
 def write_function(funcobj, fp=sys.stdout):
     info = argtypes.WrapperInfo()
 
+# have to do return type processing
     if funcobj.varargs:
         raise ValueError, "varargs functions not supported"
     
     dict = {
-	'name':    fixname(funcobj.name),
 	'cname':   funcobj.c_name,
     }
 
@@ -312,15 +309,29 @@ def write_function(funcobj, fp=sys.stdout):
 
     handler = argtypes.matcher.get(funcobj.ret)
     handler.write_return(funcobj.ret, info)
-
-    dict['typecodes']  = info.parsestr
-    dict['parselist']  = info.get_parselist()
+    
     dict['codebefore'] = info.get_codebefore()
     dict['funccall']   = funccall
     dict['codeafter']  = info.get_codeafter()
-    dict['varlist']    = info.get_varlist()
+
+    if info.parsestr:
+        parsetmpl = '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(name)s"%(parselist)s))\n' + \
+                    '        return NULL;\n'
+        parsedict = {'name':      fixname(funcobj.name),
+                     'typecodes': info.parsestr,
+                     'parselist': info.get_parselist()}
+
+        dict['parseargs'] = parsetmpl % parsedict
+        dict['varlist'] = info.get_kwlist() + info.get_varlist()
+        flags = 'METH_VARARGS|METH_KEYWORDS'
+    else:
+        dict['parseargs'] = ''
+        dict['varlist']    = info.get_varlist()
+        flags = 'METH_NOARGS'
 
     fp.write(functmpl % dict)
+
+    return flags
 
 def write_method(objname, castmacro, methobj, fp=sys.stdout):
     info = argtypes.WrapperInfo()
@@ -330,9 +341,7 @@ def write_method(objname, castmacro, methobj, fp=sys.stdout):
         raise ValueError, "varargs methods not supported"
     
     dict = {
-	'name':    fixname(methobj.name),
 	'cname':   methobj.c_name,
-	'class':   objname,
     }
     
     for ptype, pname, pdflt, pnull in methobj.params:
@@ -350,14 +359,30 @@ def write_method(objname, castmacro, methobj, fp=sys.stdout):
     handler = argtypes.matcher.get(methobj.ret)
     handler.write_return(methobj.ret, info)
 
-    dict['typecodes']  = info.parsestr
-    dict['parselist']  = info.get_parselist()
     dict['codebefore'] = info.get_codebefore()
     dict['funccall']   = funccall
     dict['codeafter']  = info.get_codeafter()
-    dict['varlist']    = info.get_varlist()
+
+    if info.parsestr:
+        parsetmpl = '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.%(name)s"%(parselist)s))\n' + \
+                    '        return NULL;\n'
+        parsedict = {'class':     objname,
+                     'name':      fixname(methobj.name),
+                     'typecodes': info.parsestr,
+                     'parselist': info.get_parselist()}
+
+        dict['parseargs'] = parsetmpl % parsedict
+
+        dict['varlist'] = info.get_kwlist() + info.get_varlist()
+        flags = 'METH_VARARGS|METH_KEYWORDS'
+    else:
+        dict['parseargs'] = ''
+        dict['varlist']   = info.get_varlist()
+        flags = 'METH_NOARGS'
 
     fp.write(methtmpl % dict)
+
+    return flags
 
 def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
     info = argtypes.WrapperInfo()
@@ -381,7 +406,7 @@ def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
 	handler = argtypes.matcher.get(ptype)
         handler.write_param(ptype, pname, pdflt, pnull, info)
 
-    dict['varlist']    = info.get_varlist()
+    dict['varlist']    = info.get_kwlist() + info.get_varlist()
     dict['typecodes']  = info.parsestr
     dict['parselist']  = info.get_parselist()
     dict['codebefore'] = string.replace(info.get_codebefore(),
@@ -389,6 +414,7 @@ def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
     dict['codeafter']  = string.replace(info.get_codeafter(),
                                        'return NULL;', 'return -1;')
     dict['arglist']    = info.get_arglist()
+
     fp.write(consttmpl % dict)
 
 def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
@@ -478,9 +504,10 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
                 fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
+                elif overrides.wants_noargs(meth.c_name):
+                    methtype = 'METH_NOARGS'
             else:
-                write_method(objobj.c_name, castmacro, meth, fp)
-                methtype = methtype + '|METH_KEYWORDS'
+                methtype = write_method(objobj.c_name, castmacro, meth, fp)
 	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
 					   'cname': '_wrap_' + meth.c_name,
 					   'flags': methtype})
@@ -521,9 +548,10 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
                 fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
+                elif overrides.wants_noargs(meth.c_name):
+                    methtype = 'METH_NOARGS'
             else:
-                write_method(interface.c_name, castmacro, meth, fp)
-                methtype = methtype + '|METH_KEYWORDS'
+                methtype = write_method(interface.c_name, castmacro, meth, fp)
 	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
 					   'cname': '_wrap_' + meth.c_name,
 					   'flags': methtype})
@@ -552,9 +580,7 @@ def write_boxed_method(objname, methobj, fp=sys.stdout):
         raise ValueError, "varargs methods not supported"
     
     dict = {
-	'name':     fixname(methobj.name),
 	'cname':    methobj.c_name,
-        'typename': objname
     }
     
     for ptype, pname, pdflt, pnull in methobj.params:
@@ -572,14 +598,29 @@ def write_boxed_method(objname, methobj, fp=sys.stdout):
     handler = argtypes.matcher.get(methobj.ret)
     handler.write_return(methobj.ret, info)
 
-    dict['typecodes']  = info.parsestr
-    dict['parselist']  = info.get_parselist()
     dict['codebefore'] = info.get_codebefore()
     dict['funccall']   = funccall
     dict['codeafter']  = info.get_codeafter()
-    dict['varlist']    = info.get_varlist()
+    
+    if info.parsestr:
+        parsetmpl = '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.%(name)s"%(parselist)s))\n' + \
+                    '        return NULL;\n'
+        parsedict = {'typecodes': info.parsestr,
+                     'typename':  objname,
+                     'name':      fixname(methobj.name),
+                     'parselist': info.get_parselist()}
+
+        dict['parseargs'] = parsetmpl % parsedict
+        dict['varlist'] = info.get_kwlist() + info.get_varlist()
+        flags = 'METH_VARARGS|METH_KEYWORDS'
+    else:
+        dict['parseargs'] = ''
+        dict['varlist']    = info.get_varlist()
+        flags = 'METH_NOARGS'
 
     fp.write(boxedmethtmpl % dict)
+
+    return flags
 
 def write_boxed_constructor(objname, typecode, funcobj, fp=sys.stdout):
     info = argtypes.WrapperInfo()
@@ -597,7 +638,7 @@ def write_boxed_constructor(objname, typecode, funcobj, fp=sys.stdout):
 	handler = argtypes.matcher.get(ptype)
         spec = handler.write_param(ptype, pname, pdflt, pnull, info)
 
-    dict['varlist']    = info.get_varlist()
+    dict['varlist']    = info.get_kwlist() + info.get_varlist()
     dict['typecodes']  = info.parsestr
     dict['parselist']  = info.get_parselist()
     dict['codebefore'] = string.replace(info.get_codebefore(),
@@ -694,9 +735,10 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
                 fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
+                elif overrides.wants_noargs(meth.c_name):
+                    methtype = 'METH_NOARGS'
             else:
-                write_boxed_method(boxedobj.c_name, meth, fp)
-                methtype = methtype + '|METH_KEYWORDS'
+                methtype = write_boxed_method(boxedobj.c_name, meth, fp)
 	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
 					   'cname': '_wrap_' + meth.c_name,
 					   'flags': methtype})
@@ -733,9 +775,10 @@ def write_functions(parser, overrides, prefix, fp=sys.stdout):
                 fp.write('\n\n')
                 if overrides.wants_kwargs(func.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
+                elif overrides.wants_noargs(func.c_name):
+                    methtype = 'METH_NOARGS'
             else:
-                write_function(func, fp)
-                methtype = methtype + '|METH_KEYWORDS'
+                methtype = write_function(func, fp)
 	    functions.append(methdeftmpl % { 'name':  func.name,
                                              'cname': '_wrap_' + func.c_name,
                                              'flags': methtype})

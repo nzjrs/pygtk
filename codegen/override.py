@@ -15,6 +15,7 @@ class Overrides:
 	self.glob_ignores = []
 	self.overrides = {}
 	self.kwargs = {}
+        self.noargs = {}
         self.startlines = {}
         self.override_attrs = {}
         self.headers = ''
@@ -66,6 +67,8 @@ class Overrides:
 	    func = words[1]
 	    if 'kwargs' in words[1:]:
 		self.kwargs[func] = 1
+            elif 'noargs' in words[1:]:
+		self.noargs[func] = 1
 	    self.overrides[func] = rest
             self.startlines[func] = (startline + 1, filename)
         elif words[0] == 'override-attr':
@@ -99,6 +102,8 @@ class Overrides:
         return self.startlines[name]
     def wants_kwargs(self, name):
 	return self.kwargs.has_key(name)
+    def wants_noargs(self, name):
+	return self.noargs.has_key(name)
     def attr_is_overriden(self, attr):
         return self.override_attrs.has_key(attr)
     def attr_override(self, attr):

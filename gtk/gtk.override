@@ -81,14 +81,12 @@ _wrap_gtk_widget_draw(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-override gtk_widget_size_request
+override gtk_widget_size_request noargs
 static PyObject *
-_wrap_gtk_widget_size_request(PyGObject *self, PyObject *args)
+_wrap_gtk_widget_size_request(PyGObject *self)
 {
     GtkRequisition requisition;
 
-    if (!PyArg_ParseTuple(args,":GtkWidget.size_request"))
-        return NULL;
     gtk_widget_size_request(GTK_WIDGET(self->obj), &requisition);
     return Py_BuildValue("(ii)", requisition.width, requisition.height);
 }
@@ -111,26 +109,22 @@ _wrap_gtk_widget_size_allocate(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
-override gtk_widget_get_child_requisition
+override gtk_widget_get_child_requisition noargs
 static PyObject *
-_wrap_gtk_widget_get_child_requisition(PyGObject *self, PyObject *args)
+_wrap_gtk_widget_get_child_requisition(PyGObject *self)
 {
     GtkRequisition requisition;
 
-    if (!PyArg_ParseTuple(args,":GtkWidget.get_child_requisition"))
-        return NULL;
     gtk_widget_get_child_requisition(GTK_WIDGET(self->obj), &requisition);
     return Py_BuildValue("(ii)", requisition.width, requisition.height);
 }
 %%
-override gtk_widget_get_allocation
+override gtk_widget_get_allocation noargs
 static PyObject *
-_wrap_gtk_widget_get_allocation(PyGObject *self, PyObject *args)
+_wrap_gtk_widget_get_allocation(PyGObject *self)
 {
     GtkAllocation allocation;
 
-    if (!PyArg_ParseTuple(args, ":GtkWidget.get_allocation"))
-	return NULL;
     allocation = GTK_WIDGET(self->obj)->allocation;
     return Py_BuildValue("(iiii)", (int)allocation.x, (int)allocation.y,
 			 (int)allocation.width, (int)allocation.height);
@@ -157,29 +151,25 @@ _wrap_gtk_widget_intersect(PyGObject *self, PyObject *args, PyObject*kwargs)
     }
 }
 %%
-override gtk_widget_get_pointer
+override gtk_widget_get_pointer noargs
 static PyObject *
-_wrap_gtk_widget_get_pointer(PyGObject *self, PyObject *args)
+_wrap_gtk_widget_get_pointer(PyGObject *self)
 {
     int x, y;
 
-    if (!PyArg_ParseTuple(args, ":GtkWidget.get_pointer"))
-	return NULL;
     gtk_widget_get_pointer(GTK_WIDGET(self->obj), &x, &y);
     return Py_BuildValue("(ii)", x, y);
 }
 %%
-override gtk_widget_path
+override gtk_widget_path noargs
 static PyObject *
-_wrap_gtk_widget_path(PyGObject *self, PyObject *args)
+_wrap_gtk_widget_path(PyGObject *self)
 {
     guint length;
     gchar *path;
     gchar *path_reversed;
     PyObject *result;
 
-    if (!PyArg_ParseTuple(args, ":GtkWidget.path"))
-	return NULL;
     gtk_widget_path(GTK_WIDGET(self->obj), &length, &path, &path_reversed);
     result = PyString_FromString(path);
     g_free(path);
@@ -188,17 +178,15 @@ _wrap_gtk_widget_path(PyGObject *self, PyObject *args)
     return result;
 }
 %%
-override gtk_widget_class_path
+override gtk_widget_class_path noargs
 static PyObject *
-_wrap_gtk_widget_class_path(PyGObject *self, PyObject *args)
+_wrap_gtk_widget_class_path(PyGObject *self)
 {
     guint length;
     gchar *path;
     gchar *path_reversed;
     PyObject *result;
 
-    if (!PyArg_ParseTuple(args, ":GtkWidget.path"))
-	return NULL;
     gtk_widget_class_path(GTK_WIDGET(self->obj), &length, &path,
 			  &path_reversed);
     result = PyString_FromString(path);
@@ -208,16 +196,14 @@ _wrap_gtk_widget_class_path(PyGObject *self, PyObject *args)
     return result;
 }
 %%
-override gtk_container_children
+override gtk_container_children noargs
 static PyObject *
-_wrap_gtk_container_children(PyGObject *self, PyObject *args)
+_wrap_gtk_container_children(PyGObject *self)
 {
     GList *list, *tmp;
     PyObject *py_list;
     PyObject *gtk_obj;
 
-    if(!PyArg_ParseTuple(args,":GtkContainer.children"))
-        return NULL;
     list = gtk_container_children(GTK_CONTAINER(self->obj));
 
     if ((py_list = PyList_New(0)) == NULL) {
@@ -238,14 +224,12 @@ _wrap_gtk_container_children(PyGObject *self, PyObject *args)
     return py_list;
 }
 %%
-override gtk_label_get
+override gtk_label_get noargs
 static PyObject *
-_wrap_gtk_label_get(PyGObject *self, PyObject *args)
+_wrap_gtk_label_get(PyGObject *self)
 {
     gchar *text = NULL;
 
-    if (!PyArg_ParseTuple(args, ":GtkLabel.get"))
-	return NULL;
     gtk_label_get(GTK_LABEL(self->obj), &text);
     if (text)
 	return PyString_FromString(text);
@@ -253,68 +237,58 @@ _wrap_gtk_label_get(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
-override gtk_label_get_selection_bounds
+override gtk_label_get_selection_bounds noargs
 static PyObject *
-_wrap_gtk_label_get_selection_bounds(PyGObject *self, PyObject *args)
+_wrap_gtk_label_get_selection_bounds(PyGObject *self)
 {
     gint start;
     gint end;
 
-    if (!PyArg_ParseTuple(args,":GtkLabel.get_selection_bounds"))
-        return NULL;
     gtk_label_get_selection_bounds(GTK_LABEL(self->obj), &start, &end);
     return Py_BuildValue("(ii)", start, end);
 }
 %%
-override gtk_label_get_layout_offsets
+override gtk_label_get_layout_offsets noargs
 static PyObject *
-_wrap_gtk_label_get_layout_offsets(PyGObject *self, PyObject *args)
+_wrap_gtk_label_get_layout_offsets(PyGObject *self)
 {
     gint x;
     gint y;
 
-    if (!PyArg_ParseTuple(args,":GtkLabel.get_layout_offsets"))
-        return NULL;
     gtk_label_get_layout_offsets(GTK_LABEL(self->obj), &x, &y);
     return Py_BuildValue("(ii)", x, y);
 }
 %%
-override gtk_spin_button_get_increments
+override gtk_spin_button_get_increments noargs
 static PyObject *
-_wrap_gtk_spin_button_get_increments(PyGObject *self, PyObject *args)
+_wrap_gtk_spin_button_get_increments(PyGObject *self)
 {
     gdouble step;
     gdouble page;
 
-    if (!PyArg_ParseTuple(args,":GtkSpinButton.get_increments"))
-        return NULL;
     gtk_spin_button_get_increments(GTK_SPIN_BUTTON(self->obj), &step, &page);
     return Py_BuildValue("(dd)", step, page);
 }
 %%
-override gtk_spin_button_get_range
+override gtk_spin_button_get_range noargs
 static PyObject *
-_wrap_gtk_spin_button_get_range(PyGObject *self, PyObject *args)
+_wrap_gtk_spin_button_get_range(PyGObject *self)
 {
     gdouble min;
     gdouble max;
 
-    if (!PyArg_ParseTuple(args,":GtkSpinButton.get_range"))
-        return NULL;
     gtk_spin_button_get_range(GTK_SPIN_BUTTON(self->obj), &min, &max);
     return Py_BuildValue("(dd)", min, max);
 }
 %%
-override gtk_window_list_toplevels
+override gtk_window_list_toplevels noargs
 static PyObject *
-_wrap_gtk_window_list_toplevels(PyGObject *self, PyObject *args)
+_wrap_gtk_window_list_toplevels(PyGObject *self)
 {
     GList *list, *tmp;
     PyObject *py_list;
     PyObject *gtk_obj;
 
-    if(!PyArg_ParseTuple(args,":window_list_toplevels"))
-        return NULL;
     list = gtk_window_list_toplevels();
 
     if ((py_list = PyList_New(0)) == NULL) {
@@ -1090,26 +1064,22 @@ _wrap_gtk_list_store_insert_after(PyGObject *self, PyObject *args,
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_list_store_prepend
+override gtk_list_store_prepend noargs
 static PyObject *
-_wrap_gtk_list_store_prepend(PyGObject *self, PyObject *args)
+_wrap_gtk_list_store_prepend(PyGObject *self)
 {
     GtkTreeIter iter;
 
-    if (!PyArg_ParseTuple(args, ":GtkListStore.prepend"))
-	return NULL;
     gtk_list_store_prepend(GTK_LIST_STORE(self->obj), &iter);
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_list_store_append
+override gtk_list_store_append noargs
 static PyObject *
-_wrap_gtk_list_store_append(PyGObject *self, PyObject *args)
+_wrap_gtk_list_store_append(PyGObject *self)
 {
     GtkTreeIter iter;
 
-    if (!PyArg_ParseTuple(args, ":GtkListStore.append"))
-	return NULL;
     gtk_list_store_append(GTK_LIST_STORE(self->obj), &iter);
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
@@ -1372,14 +1342,12 @@ _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_tree_model_get_iter_root
+override gtk_tree_model_get_iter_root noargs
 static PyObject *
-_wrap_gtk_tree_model_get_iter_root(PyGObject *self, PyObject *args)
+_wrap_gtk_tree_model_get_iter_root(PyGObject *self)
 {
     GtkTreeIter iter;
 
-    if (!PyArg_ParseTuple(args, ":GtkTreeModel.get_iter_root"))
-	return NULL;
     gtk_tree_model_get_iter_root(GTK_TREE_MODEL(self->obj), &iter);
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
@@ -1508,15 +1476,13 @@ _wrap_gtk_tree_view_get_path_at_pos(PyGObject *self, PyObject *args,
     }
 }
 %%
-override gtk_tree_selection_get_selected
+override gtk_tree_selection_get_selected noargs
 static PyObject *
-_wrap_gtk_tree_selection_get_selected(PyGObject *self, PyObject *args)
+_wrap_gtk_tree_selection_get_selected(PyGObject *self)
 {
     GtkTreeModel *model;
     GtkTreeIter iter;
 
-    if (!PyArg_ParseTuple(args, ":GtkTreeSelection.get_selected"))
-	return NULL;
     if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(self->obj),
 					&model, &iter))
 	return Py_BuildValue("(NN)", pygobject_new((GObject *)model),
@@ -1853,13 +1819,10 @@ ignore gtk_object_new gtk_object_newv gtk_object_query_args
 ignore gtk_true gtk_false gtk_key_snooper_install gtk_key_snooper_remove
   gtk_get_current_event gtk_get_event_widget gtk_propagate_event
 %%
-override gtk_main
+override gtk_main noargs
 static PyObject *
-_wrap_gtk_main(PyObject *self, PyObject *args)
+_wrap_gtk_main(PyObject *self)
 {
-    if (!PyArg_ParseTuple(args, ":main"))
-	return NULL;
-
     pygtk_unblock_threads();
     gtk_main();
     pygtk_block_threads();
@@ -2167,15 +2130,13 @@ _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-override gtk_pixmap_get
+override gtk_pixmap_get noargs
 static PyObject *
-_wrap_gtk_pixmap_get(PyGObject *self, PyObject *args)
+_wrap_gtk_pixmap_get(PyGObject *self)
 {
     GdkPixmap *pixmap;
     GdkBitmap *mask;
 
-    if (!PyArg_ParseTuple(args, ":GtkPixmap.get"))
-	return NULL;
     gtk_pixmap_get(GTK_PIXMAP(self->obj), &pixmap, &mask);
     return Py_BuildValue("(NN)", pygobject_new((GObject *)pixmap),
 			 pygobject_new((GObject *)mask));
@@ -2210,28 +2171,24 @@ _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     return 0;
 }
 %%
-override gtk_button_box_get_child_size
+override gtk_button_box_get_child_size noargs
 static PyObject *
-_wrap_gtk_button_box_get_child_size(PyGObject *self, PyObject *args)
+_wrap_gtk_button_box_get_child_size(PyGObject *self)
 {
     gint min_width;
     gint min_height;
 
-    if (!PyArg_ParseTuple(args,":GtkButtonBox.get_child_size"))
-        return NULL;
     gtk_button_box_get_child_size(GTK_BUTTON_BOX(self->obj), &min_width, &min_height);
     return Py_BuildValue("(ii)", min_width, min_height);
 }
 %%
-override gtk_button_box_get_child_ipadding
+override gtk_button_box_get_child_ipadding noargs
 static PyObject *
-_wrap_gtk_button_box_get_child_ipadding(PyGObject *self, PyObject *args)
+_wrap_gtk_button_box_get_child_ipadding(PyGObject *self)
 {
     gint ipad_x;
     gint ipad_y;
 
-    if (!PyArg_ParseTuple(args,":GtkButtonBox.get_child_ipadding"))
-        return NULL;
     gtk_button_box_get_child_ipadding(GTK_BUTTON_BOX(self->obj), &ipad_x, &ipad_y);
     return Py_BuildValue("(ii)", ipad_x, ipad_y);
 }
@@ -3434,51 +3391,43 @@ _wrap_gtk_list__get_selection(PyGObject *self, void *closure)
     return ret;
 }
 %%
-override gtk_list_get_selection
+override gtk_list_get_selection noargs
 static PyObject *
 _wrap_gtk_list__get_selection(PyGObject *self, void *closure);
 static PyObject *
-_wrap_gtk_list_get_selection(PyGObject *self, PyObject *args)
+_wrap_gtk_list_get_selection(PyGObject *self)
 {
-    if (!PyArg_ParseTuple(args, ":GtkList.get_selection"))
-        return NULL;
     return _wrap_gtk_list__get_selection(self, NULL);
 }
 %%
-override gtk_color_selection_get_current_color
+override gtk_color_selection_get_current_color noargs
 static PyObject *
-_wrap_gtk_color_selection_get_current_color(PyGObject *self, PyObject *args)
+_wrap_gtk_color_selection_get_current_color(PyGObject *self)
 {
     GdkColor colour = { 0, };
 
-    if (!PyArg_ParseTuple(args, ":GtkColorSelection.get_current_color"))
-        return NULL;
     gtk_color_selection_get_current_color(GTK_COLOR_SELECTION(self->obj),
 					  &colour);
     return pyg_boxed_new(GDK_TYPE_COLOR, &colour, TRUE, TRUE);
 }
 %%
-override gtk_color_selection_get_previous_color
+override gtk_color_selection_get_previous_color noargs
 static PyObject *
-_wrap_gtk_color_selection_get_previous_color(PyGObject *self, PyObject *args)
+_wrap_gtk_color_selection_get_previous_color(PyGObject *self)
 {
     GdkColor colour = { 0, };
 
-    if (!PyArg_ParseTuple(args, ":GtkColorSelection.get_previous_color"))
-        return NULL;
     gtk_color_selection_get_previous_color(GTK_COLOR_SELECTION(self->obj),
 					   &colour);
     return pyg_boxed_new(GDK_TYPE_COLOR, &colour, TRUE, TRUE);
 }
 %%
-override gtk_calendar_get_date
+override gtk_calendar_get_date noargs
 static PyObject *
-_wrap_gtk_calendar_get_date(PyGObject *self, PyObject *args)
+_wrap_gtk_calendar_get_date(PyGObject *self)
 {
     guint year, month, day;
 
-    if (!PyArg_ParseTuple(args, ":GtkCalendar.get_date"))
-	return NULL;
     gtk_calendar_get_date(GTK_CALENDAR(self->obj), &year, &month, &day);
     return Py_BuildValue("(iii)", year, month, day);
 }
@@ -3675,25 +3624,21 @@ _wrap_gtk_selection_add_targets(PyGObject *self, PyObject *args,
 %%
 ignore gtk_text_iter_free
 %%
-override gtk_text_iter_copy
+override gtk_text_iter_copy noargs
 static PyObject *
-_wrap_gtk_text_iter_copy(PyGBoxed *self, PyObject *args)
+_wrap_gtk_text_iter_copy(PyGBoxed *self)
 {
-    if (!PyArg_ParseTuple(args, ":GtkTextIter.copy"))
-	return NULL;
     return pyg_boxed_new(GTK_TYPE_TEXT_ITER, pyg_boxed_get(self, GtkTextIter),
 			 TRUE, TRUE);
 }
 %%
-override gtk_text_iter_get_char
+override gtk_text_iter_get_char noargs
 static PyObject *
-_wrap_gtk_text_iter_get_char(PyGBoxed *self, PyObject *args)
+_wrap_gtk_text_iter_get_char(PyGBoxed *self)
 {
     gunichar chr;
     Py_UNICODE pychr;
 
-    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_char"))
-	return NULL;
     chr = gtk_text_iter_get_char(pyg_boxed_get(self, GtkTextIter));
     if (chr > 0xffff) {
 	PyErr_SetString(PyExc_RuntimeError, "python's broken unicode handling only supports 16 bit unicode, and you just hit this limit");
@@ -3800,15 +3745,13 @@ _wrap_gtk_text_iter_get_visible_text(PyGBoxed *self, PyObject *args,
     return pytext;
 }
 %%
-override gtk_text_iter_get_marks
+override gtk_text_iter_get_marks noargs
 static PyObject *
-_wrap_gtk_text_iter_get_marks(PyGBoxed *self, PyObject *args)
+_wrap_gtk_text_iter_get_marks(PyGBoxed *self)
 {
     GSList *ret, *tmp;
     PyObject *pyret;
 
-    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_marks"))
-	return NULL;
     ret = gtk_text_iter_get_marks(pyg_boxed_get(self, GtkTextIter));
     pyret = PyList_New(0);
     for (tmp = ret; tmp != NULL; tmp = tmp->next) {
@@ -3846,15 +3789,13 @@ _wrap_gtk_text_iter_get_toggled_tags(PyGBoxed *self, PyObject *args,
     return pyret;
 }
 %%
-override gtk_text_iter_get_tags
+override gtk_text_iter_get_tags noargs
 static PyObject *
-_wrap_gtk_text_iter_get_tags(PyGBoxed *self, PyObject *args)
+_wrap_gtk_text_iter_get_tags(PyGBoxed *self)
 {
     GSList *ret, *tmp;
     PyObject *pyret;
 
-    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_tags"))
-	return NULL;
     ret = gtk_text_iter_get_tags(pyg_boxed_get(self, GtkTextIter));
     pyret = PyList_New(0);
     for (tmp = ret; tmp != NULL; tmp = tmp->next) {
@@ -4011,40 +3952,31 @@ _wrap_gtk_text_buffer_get_iter_at_line(PyGObject *self, PyObject *args, PyObject
     return pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_text_buffer_get_start_iter
+override gtk_text_buffer_get_start_iter noargs
 static PyObject *
-_wrap_gtk_text_buffer_get_start_iter(PyGObject *self, PyObject *args)
+_wrap_gtk_text_buffer_get_start_iter(PyGObject *self)
 {
     GtkTextIter iter;
-
-    if (!PyArg_ParseTuple(args, ":GtkTextBuffer.get_start_iter"))
-        return NULL;
 
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(self->obj), &iter);
     return pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_text_buffer_get_end_iter
+override gtk_text_buffer_get_end_iter noargs
 static PyObject *
-_wrap_gtk_text_buffer_get_end_iter(PyGObject *self, PyObject *args)
+_wrap_gtk_text_buffer_get_end_iter(PyGObject *self)
 {
     GtkTextIter iter;
-
-    if (!PyArg_ParseTuple(args, ":GtkTextBuffer.get_end_iter"))
-        return NULL;
 
     gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(self->obj), &iter);
     return pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_text_buffer_get_bounds
+override gtk_text_buffer_get_bounds noargs
 static PyObject *
-_wrap_gtk_text_buffer_get_bounds(PyGObject *self, PyObject *args)
+_wrap_gtk_text_buffer_get_bounds(PyGObject *self)
 {
     GtkTextIter start, end;
-
-    if (!PyArg_ParseTuple(args, ":GtkTextBuffer.get_bounds"))
-        return NULL;
 
     gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(self->obj), &start, &end);
     return Py_BuildValue("(NN)",
@@ -4283,19 +4215,13 @@ _wrap_gtk_rc_set_default_files(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
-override gtk_rc_get_default_files kwargs
+override gtk_rc_get_default_files noargs
 static PyObject *
-_wrap_gtk_rc_get_default_files(PyGObject *self, PyObject *args,
-			       PyObject *kwargs)
+_wrap_gtk_rc_get_default_files(PyGObject *self)
 {
     gchar **filenames = NULL, **tmp;
-    static char *kwlist[] = { NULL };
     int i = 0, j;
     PyObject *ret;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, ":rc_get_default_files",
-				     kwlist))
-        return NULL;
 
     filenames = gtk_rc_get_default_files();
 
@@ -4310,19 +4236,13 @@ _wrap_gtk_rc_get_default_files(PyGObject *self, PyObject *args,
     return ret;
 }
 %%
-override gtk_icon_set_get_sizes kwargs
+override gtk_icon_set_get_sizes noargs
 static PyObject *
-_wrap_gtk_icon_set_get_sizes(PyGObject *self, PyObject *args,
-			     PyObject *kwargs)
+_wrap_gtk_icon_set_get_sizes(PyGObject *self)
 {
     GtkIconSize *sizes;
-    static char *kwlist[] = { NULL };
     int i, n_sizes;
     PyObject *ret;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, ":GtkIconSet.get_sizes",
-				     kwlist))
-        return NULL;
 
     gtk_icon_set_get_sizes(pyg_boxed_get(self, GtkIconSet), &sizes, &n_sizes);
 
@@ -4364,18 +4284,11 @@ _wrap_gtk_cell_renderer_get_size(PyGObject *self, PyObject *args,
 			 x_offset, y_offset, width, height);
 }
 %%
-override gtk_cell_renderer_get_fixed_size kwargs
+override gtk_cell_renderer_get_fixed_size noargs
 static PyObject *
-_wrap_gtk_cell_renderer_get_fixed_size(PyGObject *self, PyObject *args,
-				       PyObject *kwargs)
+_wrap_gtk_cell_renderer_get_fixed_size(PyGObject *self)
 {
-    static char *kwlist[] = { NULL };
     gint width, height;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     ":GtkCellRenderer.get_fixed_size",
-				     kwlist))
-        return NULL;
 
     gtk_cell_renderer_get_fixed_size(GTK_CELL_RENDERER(pygobject_get(self->obj)),
 				     &width, &height);

@@ -1,5 +1,26 @@
 2001-12-05  Matt Wilson  <msw@redhat.com>
 
+	* codegen/argtypes.py (WrapperInfo): split it get_varlist into
+	get_varlist and get_kwlist to avoid unused kwlists when generating
+	noarg functions.
+
+	* codegen/codegen.py (write_boxed, write_functions, write_class,
+	write_interface): check to see if override function wants no args,
+	use METH_NOARGS if so.  Also get the method flags from the various
+	function writers so they can ask to have noargs placed in their
+	flags
+	(write_function, write_method, write_boxed_method): write out the
+	parse args and keywords only if there are parameters to parse.
+	Return METH_NOARGS if we don't accept arguments,
+	METH_VARARGS|METH_KEYWORDS otherwise.
+
+	* codegen/override.py (Overrides.is_overriden): keep a dictionary
+	of overrides that have the 'noargs' key in them.
+
+	* gtk/gtkgl.override, gtk/gtk.override, gtk/gdk.override): removed
+	argument parsing from functions/methods that take no arguments,
+	mark them as noarg
+
 	* examples/pygtk-demo/demos/list_store.py (create_model): use new
 	GtkListStore.set method.
 

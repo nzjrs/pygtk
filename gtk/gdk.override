@@ -1112,15 +1112,13 @@ _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
     return pygc;
 }
 %%
-override gdk_drawable_get_size
+override gdk_drawable_get_size noargs
 static PyObject *
-_wrap_gdk_drawable_get_size(PyGObject *self, PyObject *args)
+_wrap_gdk_drawable_get_size(PyGObject *self)
 {
     gint width;
     gint height;
 
-    if (!PyArg_ParseTuple(args, ":GdkDrawable.get_size"))
-	return NULL;
     gdk_drawable_get_size(GDK_DRAWABLE(self->obj), &width, &height);
     return Py_BuildValue("(ii)", width, height);
 }
@@ -1337,89 +1335,75 @@ _wrap_gdk_property_change(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-override gdk_window_get_geometry
+override gdk_window_get_geometry noargs
 static PyObject *
-_wrap_gdk_window_get_geometry(PyGObject *self, PyObject *args)
+_wrap_gdk_window_get_geometry(PyGObject *self)
 {
     gint x, y, width, height, depth;
 
-    if (!PyArg_ParseTuple(args, ":GdkWindow.get_geometry"))
-	return NULL;
     gdk_window_get_geometry(GDK_WINDOW(self->obj), &x, &y, &width, &height,
 			    &depth);
     return Py_BuildValue("(iiiii)", x, y, width, height, depth);
 }
 %%
-override gdk_window_get_position
+override gdk_window_get_position noargs
 static PyObject *
-_wrap_gdk_window_get_position(PyGObject *self, PyObject *args)
+_wrap_gdk_window_get_position(PyGObject *self)
 {
     gint x, y;
 
-    if (!PyArg_ParseTuple(args, ":GdkWindow.get_position"))
-	return NULL;
     gdk_window_get_position(GDK_WINDOW(self->obj), &x, &y);
     return Py_BuildValue("(ii)", x, y);
 }
 %%
-override gdk_window_get_origin
+override gdk_window_get_origin noargs
 static PyObject *
-_wrap_gdk_window_get_origin(PyGObject *self, PyObject *args)
+_wrap_gdk_window_get_origin(PyGObject *self)
 {
     gint x, y;
 
-    if (!PyArg_ParseTuple(args, ":GdkWindow.get_origin"))
-	return NULL;
     gdk_window_get_origin(GDK_WINDOW(self->obj), &x, &y);
     return Py_BuildValue("(ii)", x, y);
 }
 %%
-override gdk_window_get_deskrelative_origin
+override gdk_window_get_deskrelative_origin noargs
 static PyObject *
-_wrap_gdk_window_get_deskrelative_origin(PyGObject *self, PyObject *args)
+_wrap_gdk_window_get_deskrelative_origin(PyGObject *self)
 {
     gint x, y;
 
-    if (!PyArg_ParseTuple(args, ":GdkWindow.get_deskrelative_origin"))
-	return NULL;
     gdk_window_get_deskrelative_origin(GDK_WINDOW(self->obj), &x, &y);
     return Py_BuildValue("(ii)", x, y);
 }
 %%
-override gdk_window_get_root_origin
+override gdk_window_get_root_origin noargs
 static PyObject *
-_wrap_gdk_window_get_root_origin(PyGObject *self, PyObject *args)
+_wrap_gdk_window_get_root_origin(PyGObject *self)
 {
     gint x, y;
 
-    if (!PyArg_ParseTuple(args, ":GdkWindow.get_root_origin"))
-	return NULL;
     gdk_window_get_root_origin(GDK_WINDOW(self->obj), &x, &y);
     return Py_BuildValue("(ii)", x, y);
 }
 %%
-override gdk_window_get_pointer
+override gdk_window_get_pointer noargs
 static PyObject *
-_wrap_gdk_window_get_pointer(PyGObject *self, PyObject *args)
+_wrap_gdk_window_get_pointer(PyGObject *self)
 {
     gint x, y;
     GdkModifierType mask;
 
-    if (!PyArg_ParseTuple(args, ":GdkWindow.get_pointer"))
-	return NULL;
     gdk_window_get_pointer(GDK_WINDOW(self->obj), &x, &y, &mask);
     return Py_BuildValue("(iii)", x, y, (gint)mask);
 }
 %%
-override gdk_window_get_children
+override gdk_window_get_children noargs
 static PyObject *
-_wrap_gdk_window_get_children(PyGObject *self, PyObject *args)
+_wrap_gdk_window_get_children(PyGObject *self)
 {
     GList *children, *tmp;
     PyObject *list;
 
-    if (!PyArg_ParseTuple(args, ":GdkWindow.get_children"))
-	return NULL;
     children = gdk_window_get_children(GDK_WINDOW(self->obj));
     list = PyList_New(0);
     for (tmp = children; tmp != NULL; tmp = tmp->next) {

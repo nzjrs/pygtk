@@ -95,12 +95,10 @@ _wrap_gtk_gl_area_share_new(PyGtk_Object *self, PyObject *args,
     return Py_None;
 }
 %%
-override gdk_gl_wait_gdk
+override gdk_gl_wait_gdk noargs
 static PyObject *
-_wrap_gdk_gl_wait_gdk(PyObject *self, PyObject *args)
+_wrap_gdk_gl_wait_gdk(PyObject *self)
 {
-    if (!PyArg_ParseTuple(args, ":wait_gdk"))
-	return NULL;
     pygtk_unblock_threads();
     gdk_gl_wait_gdk();
     pygtk_block_threads();
@@ -108,12 +106,10 @@ _wrap_gdk_gl_wait_gdk(PyObject *self, PyObject *args)
     return Py_None;
 }
 %%
-override gdk_gl_wait_gl
+override gdk_gl_wait_gl noargs
 static PyObject *
-_wrap_gdk_gl_wait_gl(PyObject *self, PyObject *args)
+_wrap_gdk_gl_wait_gl(PyObject *self)
 {
-    if (!PyArg_ParseTuple(args, ":wait_gl"))
-	return NULL;
     pygtk_unblock_threads();
     gdk_gl_wait_gl();
     pygtk_block_threads();
