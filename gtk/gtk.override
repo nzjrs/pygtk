@@ -3212,14 +3212,14 @@ _wrap_gtk_toolbar_append_element(PyGObject *self, PyObject *args,
     if (pyg_enum_get_value(GTK_TYPE_TOOLBAR_CHILD_TYPE,
 			   py_type, (gint *)&type))
 	return NULL;
-    if (!pygobject_check(py_widget, &PyGtkWidget_Type))
+    if (pygobject_check(py_widget, &PyGtkWidget_Type))
 	widget = GTK_WIDGET(py_widget->obj);
     else if ((PyObject *)py_widget != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"second argument must be a GtkWidget or None");
 	return NULL;
     }
-    if (!pygobject_check(py_icon, &PyGtkWidget_Type))
+    if (pygobject_check(py_icon, &PyGtkWidget_Type))
 	icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
@@ -3265,14 +3265,14 @@ _wrap_gtk_toolbar_prepend_element(PyGObject *self, PyObject *args,
     if (pyg_enum_get_value(GTK_TYPE_TOOLBAR_CHILD_TYPE,
 			   py_type, (gint *)&type))
 	return NULL;
-    if (!pygobject_check(py_widget, &PyGtkWidget_Type))
+    if (pygobject_check(py_widget, &PyGtkWidget_Type))
 	widget = GTK_WIDGET(py_widget->obj);
     else if ((PyObject *)py_widget != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"second argument must be a GtkWidget or None");
 	return NULL;
     }
-    if (!pygobject_check(py_icon, &PyGtkWidget_Type))
+    if (pygobject_check(py_icon, &PyGtkWidget_Type))
 	icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
@@ -3319,14 +3319,14 @@ _wrap_gtk_toolbar_insert_element(PyGObject *self, PyObject *args,
     if (pyg_enum_get_value(GTK_TYPE_TOOLBAR_CHILD_TYPE,
 			   py_type, (gint *)&type))
 	return NULL;
-    if (!pygobject_check(py_widget, &PyGtkWidget_Type))
+    if (pygobject_check(py_widget, &PyGtkWidget_Type))
 	widget = GTK_WIDGET(py_widget->obj);
     else if ((PyObject *)py_widget != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"second argument must be a GtkWidget or None");
 	return NULL;
     }
-    if (!pygobject_check(py_icon, &PyGtkWidget_Type))
+    if (pygobject_check(py_icon, &PyGtkWidget_Type))
 	icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
