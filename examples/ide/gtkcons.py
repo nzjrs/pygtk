@@ -135,7 +135,7 @@ class Console(GtkVBox):
 		self.inp.pack_start(self.text, padding=1)
 		self.text.show()
 
-		self.vscroll = GtkVScrollbar(self.text.get_vadjustment())
+		self.vscroll = GtkVScrollbar(self.text.vadj)
 		self.vscroll.set_update_policy(POLICY_AUTOMATIC)
 		self.inp.pack_end(self.vscroll, expand=FALSE)
 		self.vscroll.show()
@@ -145,7 +145,7 @@ class Console(GtkVBox):
 		self.inputbox.show()
 
 		self.prompt = GtkLabel(sys.ps1)
-		self.prompt.set_padding(xp=2, yp=0)
+		self.prompt.set_padding(xpad=2, ypad=0)
 		self.prompt.set_usize(26, -1)
 		self.inputbox.pack_start(self.prompt, fill=FALSE, expand=FALSE)
 		self.prompt.show()
@@ -184,8 +184,8 @@ class Console(GtkVBox):
 	def init(self):
 		self.text.realize()
 		self.text.style = self.text.get_style()
-		self.text.fg = self.text.style.fg[STATE_NORMAL]
-		self.text.bg = self.text.style.white
+		self.text.fg = None #self.text.style.fg[STATE_NORMAL]
+		self.text.bg = None #self.text.style.white
 
 		self.text.insert(self.title, self.text.fg,
 				 self.text.bg, 'Python %s\n%s\n\n' %
@@ -296,7 +296,7 @@ class Console(GtkVBox):
 				traceback.print_exc()
 		self.prompt.set_text(sys.ps1)
 		self.prompt.queue_draw()
-		adj = self.text.get_vadjustment()
+		adj = self.text.vadj
 		adj.set_value(adj.upper - adj.page_size)
 		sys.stdout, self.stdout = self.stdout, sys.stdout
 		sys.stderr, self.stderr = self.stderr, sys.stderr

@@ -4,7 +4,7 @@ import sys, string
 import getopt
 import parser, argtypes, override
 
-import traceback
+import traceback, keyword
 
 # have to do return type processing
 functmpl = 'static PyObject *\n' + \
@@ -37,6 +37,7 @@ consttmpl = 'static PyObject *\n' + \
 	    '        return NULL;\n' + \
 	    '%(extracode)s\n' + \
 	    '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n' + \
+            '%(gtkobjectsink)s' + \
 	    '    if (!self->obj) {\n' + \
 	    '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n' + \
 	    '        return NULL;\n' + \
@@ -105,6 +106,11 @@ typetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
            '    EXTENSIONCLASS_INSTDICT_FLAG,\n' + \
 	   '};\n\n'
 
+def fixname(name):
+    if keyword.iskeyword(name):
+	return name + '_'
+    return name
+
 def write_function(funcobj, fp=sys.stdout):
     varlist = argtypes.VarList()
     parsestr = ''
@@ -116,13 +122,13 @@ def write_function(funcobj, fp=sys.stdout):
         raise ValueError, "varargs functions not supported"
     
     dict = {
-	'name':    funcobj.name,
+	'name':    fixname(funcobj.name),
 	'cname':   funcobj.c_name,
 	'varlist': varlist,
     }
 
     # create the keyword argument name list ...
-    kwlist = string.join(map(lambda x: '"'+x[1]+'"', funcobj.params) +
+    kwlist = string.join(map(lambda x: '"'+fixname(x[1])+'"', funcobj.params) +
                          ['NULL'], ', ')
     varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
     parselist.append('kwlist')
@@ -156,7 +162,7 @@ def write_method(objname, methobj, fp=sys.stdout):
         raise ValueError, "varargs methods not supported"
     
     dict = {
-	'name':    methobj.name,
+	'name':    fixname(methobj.name),
 	'cname':   methobj.c_name,
 	'varlist': varlist,
 	'class':   objname,
@@ -164,7 +170,7 @@ def write_method(objname, methobj, fp=sys.stdout):
     }
 
     # create the keyword argument name list ...
-    kwlist = string.join(map(lambda x: '"'+x[1]+'"', methobj.params) +
+    kwlist = string.join(map(lambda x: '"'+fixname(x[1])+'"', methobj.params) +
                          ['NULL'], ', ')
     varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
     parselist.append('kwlist')
@@ -200,11 +206,16 @@ def write_constructor(objname, funcobj, fp=sys.stdout):
 	'cname':   funcobj.c_name,
 	'varlist': varlist,
 	'class':   objname,
-	'cast':    argtypes._to_upper_str(objname)[1:]
+	'cast':    argtypes._to_upper_str(objname)[1:],
+	'gtkobjectsink': ''
     }
 
+    if argtypes.matcher.object_is_a(objname, 'GtkObject'):
+        dict['gtkobjectsink'] = \
+			'    gtk_object_ref(GTK_OBJECT(self->obj));\n' + \
+			'    gtk_object_sink(GTK_OBJECT(self->obj));\n'
     # create the keyword argument name list ...
-    kwlist = string.join(map(lambda x: '"'+x[1]+'"', funcobj.params) +
+    kwlist = string.join(map(lambda x: '"'+fixname(x[1])+'"', funcobj.params) +
                          ['NULL'], ', ')
     varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
     parselist.append('kwlist')
@@ -235,7 +246,7 @@ def write_getattr(parser, objobj, fp=sys.stdout):
             if code:
                 # indent code ...
                 code = '    ' + string.replace(code, '\n', '\n    ')
-            attrchecks = attrchecks + attrchecktmpl % { 'attr': fname,
+            attrchecks = attrchecks + attrchecktmpl % { 'attr': fixname(fname),
                                                         'varlist': varlist,
                                                         'code': code }
         except:
@@ -308,7 +319,7 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
             else:
                 write_method(objobj.c_name, meth, fp)
                 methtype = methtype + '|METH_KEYWORDS'
-	    methods.append(methdeftmpl % { 'name':  meth.name,
+	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
 					   'cname': '_wrap_' + meth.c_name,
 					   'flags': methtype})
 	except:
@@ -391,7 +402,11 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
 
 def register_types(parser):
     for obj in parser.objects:
-	argtypes.matcher.register_object(obj.c_name)
+        if obj.parent != (None, None):
+            argtypes.matcher.register_object(obj.c_name,
+                                             obj.parent[1] + obj.parent[0])
+        else:
+            argtypes.matcher.register_object(obj.c_name, None)
     for enum in parser.enums:
 	if enum.deftype == 'flags':
 	    argtypes.matcher.register_flag(enum.c_name)

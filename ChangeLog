@@ -1,3 +1,75 @@
+2000-10-30  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtkmodule.c (init_gtk): init as module gtk._gtk.  Using just
+	_gtk doesn't seem to work with python 2.0
+
+2000-10-29  James Henstridge  <james@james.daa.com.au>
+
+	* examples/ide/gtkcons.py: small changes to make example run.
+
+	* gtk/gtk-types.c: add GtkTextIter.forward_search implementation.
+
+	* gtk/gtk.override: more override functions.
+
+	* gtk/gtkobject-support.c: remove some of the unused functions from
+	this file.
+
+2000-10-28  James Henstridge  <james@james.daa.com.au>
+
+	* gtk/gtk.override: override the functions used to initialise
+	GtkTextIter objects so that they return the iterator rather than
+	setting up an static GtkTextIter structure.
+
+	* gtk/gtk.defs (TextMark): add missing GtkTextMark object.  Don't
+	know why h2defs missed it.
+	("gtk-extrafuncs.defs"): include gtk-extrafuncs.defs.
+
+	* codegen/argtypes.py: add GdkDevice and GtkTextIter to list of
+	recognised boxed types.
+
+	* gtk/gtk-types.c: add skeleton implementation of GtkTextIter.
+
+	* gtk/pygtk.h, gtk/pygtk-private.h: add prototypes for GtkTextIter
+	wrapper.
+
+	* gtk/gtk.override: ref and sink GtkObjects which have their
+	constructors listed in the overrides file.  This should get rid of
+	the last few warnings on exit related to reference counting.
+
+	* codegen/codegen.py: use the keyword module to check for method
+	and argument names that conflict with the python keywords.  By
+	using this module, we shouldn't have problems with new keywords in
+	future versions of python.
+
+2000-10-27  James Henstridge  <james@james.daa.com.au>
+
+	* gobjectmodule.c (pygobject_emit): support for emiting signals on
+	GObjects from python.
+	
+	* codegen/codegen.py (write_constructor): sink GtkObjects.  This
+	prevents us losing our reference to the object if it is sunk.
+
+	* codegen/argtypes.py (ArgMatcher.object_is_a): function to check
+	if one object type is another type.
+
+	* codegen/codegen.py (register_types): pass the parent type when
+	registering a new GObject type.
+
+	* gtk/gtk-types.c (_pygtk_register_boxed_types): register
+	marshalers for the various boxed types, so that they work as
+	expected inside the signal handlers.
+
+	* gobjectmodule.c (pygobject_repr): small change to match style of
+	other repr functions in python.
+
+	* gtk/gtkmodule.c (init_gtk): only call g_thread_init() if pygtk
+	threading support is enabled.
+
+	* configure.in (enable_thread): add configure checks so that
+	threading support can be disabled even if python was compiled with
+	it.  It defaults to off for now because GSignal has some mutex
+	deadlocks at the moment.
+
 2000-10-26  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtkmodule.c (init_gtk): remove gtk_signal_set_funcs call.

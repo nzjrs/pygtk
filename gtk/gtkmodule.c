@@ -59,7 +59,7 @@ init_gtk(void)
     init_pygobject();
 
     /* initialise gthread if appropriate ... */
-#ifdef WITH_THREAD
+#ifdef ENABLE_PYGTK_THREADING
     /* it is required that this function be called to enable the thread
      * safety functions */
     g_thread_init(NULL);
@@ -91,7 +91,7 @@ init_gtk(void)
     }
 
     /* now initialise pygtk */
-    m = Py_InitModule("_gtk", pygtk_functions);
+    m = Py_InitModule("gtk._gtk", pygtk_functions);
     d = PyModule_GetDict(m);
 
     _pygtk_boxed_funcs = g_hash_table_new(g_direct_hash, g_direct_equal);

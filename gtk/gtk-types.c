@@ -209,6 +209,22 @@ PyGdkDevice_New(GdkDevice *device)
     return (PyObject *)self;
 }
 
+PyObject *
+PyGtkTextIter_New(GtkTextIter *iter)
+{
+    PyGtkTextIter_Object *self;
+
+    self = (PyGtkTextIter_Object *)PyObject_NEW(PyGtkTextIter_Object,
+						&PyGtkTextIter_Type);
+    if (self == NULL)
+	return NULL;
+    if (iter)
+	self->iter = *iter;
+    else
+	memset(&self->iter, 0, sizeof(GtkTextIter));
+    return (PyObject *)self;
+}
+
 static void
 pygtk_accel_group_dealloc(PyGtkAccelGroup_Object *self)
 {
@@ -2671,15 +2687,14 @@ pygdk_device_get_state(PyGdkDevice_Object *self, PyObject *args)
     GdkModifierType mask;
     PyObject *pyaxes;
     guint i;
+    extern PyExtensionClass PyGdkWindow_Type;
 
     if (!PyArg_ParseTuple(args, "O:GdkDevice.get_state", &window))
 	return NULL;
-#if 0
     if (!pygobject_check(window, &PyGdkWindow_Type)) {
 	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
 	return NULL;
     }
-#endif
     axes = g_new0(gdouble, self->obj->num_axes);
     gdk_device_get_state(self->obj, GDK_WINDOW(window->obj), axes, &mask);
     pyaxes = PyTuple_New(self->obj->num_axes);
@@ -2698,16 +2713,15 @@ pygdk_device_get_history(PyGdkDevice_Object *self, PyObject *args)
     gint n_events;
     PyObject *pyevents;
     guint i;
+    extern PyExtensionClass PyGdkWindow_Type;
 
     if (!PyArg_ParseTuple(args, "Oii:GdkDevice.get_history", &window,
 			  &start, &stop))
 	return NULL;
-#if 0
     if (!pygobject_check(window, &PyGdkWindow_Type)) {
 	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
 	return NULL;
     }
-#endif
     gdk_device_get_history(self->obj, GDK_WINDOW(window->obj), start, stop,
 			   &events, &n_events);
     pyevents = PyTuple_New(n_events);
@@ -2833,6 +2847,730 @@ PyTypeObject PyGdkDevice_Type = {
     NULL
 };
 
+static void
+pygtk_text_iter_dealloc(PyGtkTextIter_Object *self)
+{
+    PyMem_DEL(self);
+}
+
+static int
+pygtk_text_iter_compare(PyGtkTextIter_Object *self, PyGtkTextIter_Object *v)
+{
+    return gtk_text_iter_compare(&self->iter, &v->iter);
+}
+
+static long
+pygtk_text_iter_hash(PyGtkTextIter_Object *self)
+{
+    long x;
+
+    /* a hash function for the GtkTextIter object */
+    x = 0x345678L;
+    x = (1000003*x) ^ (long)self->iter.dummy1;
+    x = (1000003*x) ^ (long)self->iter.dummy2;
+    x = (1000003*x) ^ (long)self->iter.dummy3;
+    x = (1000003*x) ^ (long)self->iter.dummy4;
+    x = (1000003*x) ^ (long)self->iter.dummy5;
+    x = (1000003*x) ^ (long)self->iter.dummy6;
+    x = (1000003*x) ^ (long)self->iter.dummy7;
+    x = (1000003*x) ^ (long)self->iter.dummy8;
+    x = (1000003*x) ^ (long)self->iter.dummy9;
+    x = (1000003*x) ^ (long)self->iter.dummy10;
+    x = (1000003*x) ^ (long)self->iter.dummy11;
+    x = (1000003*x) ^ (long)self->iter.dummy12;
+    if (x == -1) /* -1 indicates error condition */
+	x = -2;
+    return x;
+}
+
+static PyObject *
+pygtk_text_iter_copy(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.copy"))
+	return NULL;
+    /* don't use gtk_text_iter_copy, as it makes a new copy of the
+     * iter, and PyGtkTextIter_New does the same when creating the new
+     * PyObject */
+    return PyGtkTextIter_New(&self->iter);
+}
+
+static PyObject *
+pygtk_text_iter_get_offset(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_offset"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_get_offset(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_get_line(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_line"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_get_line(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_get_line_offset(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_line_offset"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_get_line_offset(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_get_line_index(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_line_index"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_get_line_index(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_get_char(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gunichar chr;
+    Py_UNICODE pychr;
+
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_char"))
+	return NULL;
+    chr = gtk_text_iter_get_char(&self->iter);
+    if (chr > 0xffff) {
+	PyErr_SetString(PyExc_RuntimeError, "python's broken unicode handling only supports 16 bit unicode, and you just hit this limit");
+	return NULL;
+    }
+    pychr = (Py_UNICODE)chr;
+    return PyUnicode_FromUnicode(&pychr, 1);
+}
+
+static PyObject *
+pygtk_text_iter_get_slice(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGtkTextIter_Object *end;
+    gchar *text;
+    PyObject *pytext;
+
+    if (!PyArg_ParseTuple(args, "O!:GtkTextIter.get_slice",
+			  &PyGtkTextIter_Type, &end))
+	return NULL;
+    text = gtk_text_iter_get_slice(&self->iter, &end->iter);
+    pytext = PyUnicode_DecodeUTF8(text, strlen(text), "strict");
+    g_free(text);
+    return pytext;
+}
+
+static PyObject *
+pygtk_text_iter_get_text(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGtkTextIter_Object *end;
+    gchar *text;
+    PyObject *pytext;
+
+    if (!PyArg_ParseTuple(args, "O!:GtkTextIter.get_text",
+			  &PyGtkTextIter_Type, &end))
+	return NULL;
+    text = gtk_text_iter_get_text(&self->iter, &end->iter);
+    pytext = PyUnicode_DecodeUTF8(text, strlen(text), "strict");
+    g_free(text);
+    return pytext;
+}
+
+static PyObject *
+pygtk_text_iter_get_visible_slice(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGtkTextIter_Object *end;
+    gchar *text;
+    PyObject *pytext;
+
+    if (!PyArg_ParseTuple(args, "O!:GtkTextIter.get_visible_slice",
+			  &PyGtkTextIter_Type, &end))
+	return NULL;
+    text = gtk_text_iter_get_visible_slice(&self->iter, &end->iter);
+    pytext = PyUnicode_DecodeUTF8(text, strlen(text), "strict");
+    g_free(text);
+    return pytext;
+}
+
+static PyObject *
+pygtk_text_iter_get_visible_text(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGtkTextIter_Object *end;
+    gchar *text;
+    PyObject *pytext;
+
+    if (!PyArg_ParseTuple(args, "O!:GtkTextIter.get_visible_text",
+			  &PyGtkTextIter_Type, &end))
+	return NULL;
+    text = gtk_text_iter_get_visible_text(&self->iter, &end->iter);
+    pytext = PyUnicode_DecodeUTF8(text, strlen(text), "strict");
+    g_free(text);
+    return pytext;
+}
+
+static PyObject *
+pygtk_text_iter_get_pixbuf(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_pixbuf"))
+	return NULL;
+    return pygobject_new((GObject *)gtk_text_iter_get_pixbuf(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_get_marks(PyGtkTextIter_Object *self, PyObject *args)
+{
+    GSList *ret, *tmp;
+    PyObject *pyret;
+
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_marks"))
+	return NULL;
+    ret = gtk_text_iter_get_marks(&self->iter);
+    pyret = PyList_New(0);
+    for (tmp = ret; tmp != NULL; tmp = tmp->next) {
+	PyObject *mark = pygobject_new((GObject *)tmp->data);
+	PyList_Append(pyret, mark);
+	Py_DECREF(mark);
+    }
+    g_slist_free(ret);
+    return pyret;
+}
+
+static PyObject *
+pygtk_text_iter_get_toggled_tags(PyGtkTextIter_Object *self, PyObject *args)
+{
+    GSList *ret, *tmp;
+    int toggled_on;
+    PyObject *pyret;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.get_toggled_tags", &toggled_on))
+	return NULL;
+    ret = gtk_text_iter_get_toggled_tags(&self->iter, toggled_on);
+    pyret = PyList_New(0);
+    for (tmp = ret; tmp != NULL; tmp = tmp->next) {
+	PyObject *tag = pygobject_new((GObject *)tmp->data);
+	PyList_Append(pyret, tag);
+	Py_DECREF(tag);
+    }
+    g_slist_free(ret);
+    return pyret;
+}
+
+static PyObject *
+pygtk_text_iter_begins_tag(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGObject *tag;
+    extern PyExtensionClass PyGtkTextTag_Type;
+
+    if (!PyArg_ParseTuple(args, "O:GtkTextIter.begins_tag", &tag))
+	return NULL;
+    if (!pygobject_check(tag, &PyGtkTextTag_Type)) {
+	PyErr_SetString(PyExc_TypeError, "tag should be a GtkTextTag");
+	return NULL;
+    }
+    return PyInt_FromLong(gtk_text_iter_begins_tag(&self->iter,
+						   GTK_TEXT_TAG(tag->obj)));
+}
+
+static PyObject *
+pygtk_text_iter_ends_tag(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGObject *tag;
+    extern PyExtensionClass PyGtkTextTag_Type;
+
+    if (!PyArg_ParseTuple(args, "O:GtkTextIter.ends_tag", &tag))
+	return NULL;
+    if (!pygobject_check(tag, &PyGtkTextTag_Type)) {
+	PyErr_SetString(PyExc_TypeError, "tag should be a GtkTextTag");
+	return NULL;
+    }
+    return PyInt_FromLong(gtk_text_iter_ends_tag(&self->iter,
+						 GTK_TEXT_TAG(tag->obj)));
+}
+
+static PyObject *
+pygtk_text_iter_toggles_tag(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGObject *tag;
+    extern PyExtensionClass PyGtkTextTag_Type;
+
+    if (!PyArg_ParseTuple(args, "O:GtkTextIter.toggles_tag", &tag))
+	return NULL;
+    if (!pygobject_check(tag, &PyGtkTextTag_Type)) {
+	PyErr_SetString(PyExc_TypeError, "tag should be a GtkTextTag");
+	return NULL;
+    }
+    return PyInt_FromLong(gtk_text_iter_toggles_tag(&self->iter,
+						    GTK_TEXT_TAG(tag->obj)));
+}
+
+static PyObject *
+pygtk_text_iter_has_tag(PyGtkTextIter_Object *self, PyObject *args)
+{
+    PyGObject *tag;
+    extern PyExtensionClass PyGtkTextTag_Type;
+
+    if (!PyArg_ParseTuple(args, "O:GtkTextIter.has_tag", &tag))
+	return NULL;
+    if (!pygobject_check(tag, &PyGtkTextTag_Type)) {
+	PyErr_SetString(PyExc_TypeError, "tag should be a GtkTextTag");
+	return NULL;
+    }
+    return PyInt_FromLong(gtk_text_iter_has_tag(&self->iter,
+						GTK_TEXT_TAG(tag->obj)));
+}
+
+static PyObject *
+pygtk_text_iter_editable(PyGtkTextIter_Object *self, PyObject *args)
+{
+    int default_setting;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.editable", &default_setting))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_editable(&self->iter,default_setting));
+}
+
+static PyObject *
+pygtk_text_iter_starts_line(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.starts_line"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_starts_line(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_ends_line(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.ends_line"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_ends_line(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_get_chars_in_line(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.get_chars_in_line"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_starts_line(&self->iter));
+}
+
+/* XXXX - gtk_text_iter_get_attributes */
+
+static PyObject *
+pygtk_text_iter_is_last(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.is_last"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_is_last(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_is_first(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.is_first"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_is_first(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_next_char(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.next_char"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_next_char(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_prev_char(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.prev_char"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_prev_char(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_forward_chars(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gint count;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.forward_chars", &count))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_forward_chars(&self->iter, count));
+}
+
+static PyObject *
+pygtk_text_iter_backward_chars(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gint count;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.backward_chars", &count))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_backward_chars(&self->iter, count));
+}
+
+static PyObject *
+pygtk_text_iter_forward_line(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.forward_line"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_forward_line(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_backward_line(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.backward_line"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_backward_line(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_forward_lines(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gint count;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.forward_lines", &count))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_forward_lines(&self->iter, count));
+}
+
+static PyObject *
+pygtk_text_iter_backward_lines(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gint count;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.backward_lines", &count))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_backward_lines(&self->iter, count));
+}
+
+static PyObject *
+pygtk_text_iter_forward_word_ends(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gint count;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.forward_word_ends", &count))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_forward_word_ends(&self->iter, count));
+}
+
+static PyObject *
+pygtk_text_iter_backward_word_starts(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gint count;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.backward_word_starts", &count))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_backward_word_starts(&self->iter, count));
+}
+
+static PyObject *
+pygtk_text_iter_forward_word_end(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.forward_word_end"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_forward_word_end(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_backward_word_start(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.backward_word_start"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_backward_word_start(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_set_offset(PyGtkTextIter_Object *self, PyObject *args)
+{
+    int char_offset;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.set_offset", &char_offset))
+	return NULL;
+    gtk_text_iter_set_offset(&self->iter, char_offset);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_text_iter_set_line(PyGtkTextIter_Object *self, PyObject *args)
+{
+    int line_number;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.set_line", &line_number))
+	return NULL;
+    gtk_text_iter_set_line(&self->iter, line_number);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_text_iter_set_line_offset(PyGtkTextIter_Object *self, PyObject *args)
+{
+    int char_on_line;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.set_line_offset",&char_on_line))
+	return NULL;
+    gtk_text_iter_set_line_offset(&self->iter, char_on_line);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_text_iter_set_line_index(PyGtkTextIter_Object *self, PyObject *args)
+{
+    int byte_on_line;
+
+    if (!PyArg_ParseTuple(args, "i:GtkTextIter.set_line_index", &byte_on_line))
+	return NULL;
+    gtk_text_iter_set_line_index(&self->iter, byte_on_line);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_text_iter_forward_to_end(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.forward_to_end"))
+	return NULL;
+    gtk_text_iter_forward_to_end(&self->iter);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_text_iter_forward_to_newline(PyGtkTextIter_Object *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.forward_to_newline"))
+	return NULL;
+    return PyInt_FromLong(gtk_text_iter_forward_to_newline(&self->iter));
+}
+
+static PyObject *
+pygtk_text_iter_forward_to_tag_toggle(PyGtkTextIter_Object *self,
+				      PyObject *args)
+{
+    PyObject *pytag = Py_None;
+    GtkTextTag *tag = NULL;
+    extern PyExtensionClass PyGtkTextTag_Type;
+
+    if (!PyArg_ParseTuple(args, "|O:GtkTextIter.forward_to_tag_toggle",
+			  &pytag))
+	return NULL;
+    if (pygobject_check(pytag, &PyGtkTextTag_Type))
+	tag = GTK_TEXT_TAG(pygobject_get(pytag));
+    else if (pytag != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "tag must be a GtkTextTag or None");
+	return NULL;
+    }
+    return PyInt_FromLong(gtk_text_iter_forward_to_tag_toggle(&self->iter,
+							      tag));
+}
+
+static PyObject *
+pygtk_text_iter_backward_to_tag_toggle(PyGtkTextIter_Object *self,
+				       PyObject *args)
+{
+    PyObject *pytag = Py_None;
+    GtkTextTag *tag = NULL;
+    extern PyExtensionClass PyGtkTextTag_Type;
+
+    if (!PyArg_ParseTuple(args, "|O:GtkTextIter.backward_to_tag_toggle",
+			  &pytag))
+	return NULL;
+    if (pygobject_check(pytag, &PyGtkTextTag_Type))
+	tag = GTK_TEXT_TAG(pygobject_get(pytag));
+    else if (pytag != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "tag must be a GtkTextTag or None");
+	return NULL;
+    }
+    return PyInt_FromLong(gtk_text_iter_backward_to_tag_toggle(&self->iter,
+							       tag));
+}
+
+/* XXXX - gtk_text_iter_{fore,back}ward_find_char */
+
+static PyObject *
+pygtk_text_iter_forward_search(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gchar *str;
+    gint visible_only, slice;
+    GtkTextIter match_start, match_end;
+
+    if (!PyArg_ParseTuple(args, "sii:GtkTextIter.forward_search",
+			  &str, &visible_only, &slice))
+	return NULL;
+    if (gtk_text_iter_forward_search(&self->iter, str, visible_only, slice,
+				     &match_start, &match_end))
+	return Py_BuildValue("(NN)", PyGtkTextIter_New(&match_start),
+			     PyGtkTextIter_New(&match_end));
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+/* XXXX - gtk_text_iter_backward_search (doesn't seem to be implemented) */
+
+static PyMethodDef pygtk_text_iter_methods[] = {
+    { "copy", (PyCFunction)pygtk_text_iter_copy, METH_VARARGS },
+    { "get_offset", (PyCFunction)pygtk_text_iter_get_offset, METH_VARARGS },
+    { "get_line", (PyCFunction)pygtk_text_iter_get_line, METH_VARARGS },
+    { "get_line_offset", (PyCFunction)pygtk_text_iter_get_line_offset, METH_VARARGS },
+    { "get_line_index", (PyCFunction)pygtk_text_iter_get_line_index, METH_VARARGS },
+    { "get_char", (PyCFunction)pygtk_text_iter_get_char, METH_VARARGS },
+    { "get_slice", (PyCFunction)pygtk_text_iter_get_slice, METH_VARARGS },
+    { "get_text", (PyCFunction)pygtk_text_iter_get_text, METH_VARARGS },
+    { "get_visible_slice", (PyCFunction)pygtk_text_iter_get_visible_slice, METH_VARARGS },
+    { "get_visible_text", (PyCFunction)pygtk_text_iter_get_visible_text, METH_VARARGS },
+    { "get_pixbuf", (PyCFunction)pygtk_text_iter_get_pixbuf, METH_VARARGS },
+    { "get_marks", (PyCFunction)pygtk_text_iter_get_marks, METH_VARARGS },
+    { "get_toggled_tags", (PyCFunction)pygtk_text_iter_get_toggled_tags, METH_VARARGS },
+    { "begins_tag", (PyCFunction)pygtk_text_iter_begins_tag, METH_VARARGS },
+    { "ends_tag", (PyCFunction)pygtk_text_iter_ends_tag, METH_VARARGS },
+    { "toggles_tag", (PyCFunction)pygtk_text_iter_toggles_tag, METH_VARARGS },
+    { "has_tag", (PyCFunction)pygtk_text_iter_has_tag, METH_VARARGS },
+    { "editable", (PyCFunction)pygtk_text_iter_editable, METH_VARARGS },
+    { "starts_line", (PyCFunction)pygtk_text_iter_starts_line, METH_VARARGS },
+    { "ends_line", (PyCFunction)pygtk_text_iter_ends_line, METH_VARARGS },
+    { "get_chars_in_line", (PyCFunction)pygtk_text_iter_get_chars_in_line, METH_VARARGS },
+    { "is_last", (PyCFunction)pygtk_text_iter_is_last, METH_VARARGS },
+    { "is_first", (PyCFunction)pygtk_text_iter_is_first, METH_VARARGS },
+    { "next_char", (PyCFunction)pygtk_text_iter_next_char, METH_VARARGS },
+    { "prev_char", (PyCFunction)pygtk_text_iter_prev_char, METH_VARARGS },
+    { "forward_chars", (PyCFunction)pygtk_text_iter_forward_chars, METH_VARARGS },
+    { "backward_chars", (PyCFunction)pygtk_text_iter_backward_chars, METH_VARARGS },
+    { "forward_line", (PyCFunction)pygtk_text_iter_forward_line, METH_VARARGS },
+    { "backward_line", (PyCFunction)pygtk_text_iter_backward_line, METH_VARARGS },
+    { "forward_lines", (PyCFunction)pygtk_text_iter_forward_lines, METH_VARARGS },
+    { "backward_lines", (PyCFunction)pygtk_text_iter_backward_lines, METH_VARARGS },
+    { "forward_word_ends", (PyCFunction)pygtk_text_iter_forward_word_ends, METH_VARARGS },
+    { "backward_word_starts", (PyCFunction)pygtk_text_iter_backward_word_starts, METH_VARARGS },
+    { "forward_word_end", (PyCFunction)pygtk_text_iter_forward_word_end, METH_VARARGS },
+    { "backward_word_start", (PyCFunction)pygtk_text_iter_backward_word_start, METH_VARARGS },
+    { "set_offset", (PyCFunction)pygtk_text_iter_set_offset, METH_VARARGS },
+    { "set_line", (PyCFunction)pygtk_text_iter_set_line, METH_VARARGS },
+    { "set_line_offset", (PyCFunction)pygtk_text_iter_set_line_offset, METH_VARARGS },
+    { "set_line_index", (PyCFunction)pygtk_text_iter_set_line_index, METH_VARARGS },
+    { "forward_to_end", (PyCFunction)pygtk_text_iter_forward_to_end, METH_VARARGS },
+    { "forward_to_newline", (PyCFunction)pygtk_text_iter_forward_to_newline, METH_VARARGS },
+    { "forward_to_tag_toggle", (PyCFunction)pygtk_text_iter_forward_to_tag_toggle, METH_VARARGS },
+    { "backward_to_tag_toggle", (PyCFunction)pygtk_text_iter_backward_to_tag_toggle, METH_VARARGS },
+    { "forward_search", (PyCFunction)pygtk_text_iter_forward_search, METH_VARARGS },
+    { NULL, NULL, 0 }
+};
+
+static PyObject *
+pygtk_text_iter_getattr(PyGtkTextIter_Object *self, char *attr)
+{
+    return Py_FindMethod(pygtk_text_iter_methods, (PyObject *)self, attr);
+}
+
+PyTypeObject PyGtkTextIter_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "GtkTextIter",
+    sizeof(PyGtkTextIter_Object),
+    0,
+    (destructor)pygtk_text_iter_dealloc,
+    (printfunc)0,
+    (getattrfunc)pygtk_text_iter_getattr,
+    (setattrfunc)0,
+    (cmpfunc)pygtk_text_iter_compare,
+    (reprfunc)0,
+    0,
+    0,
+    0,
+    (hashfunc)pygtk_text_iter_hash,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    0L,0L,0L,0L,
+    NULL
+};
+
+/* marshalers for the boxed types.  Uses uppercase notation so that
+ * the macro below can automatically install them. */
+static PyObject *
+PyGtkAccelGroup_from_value(const GValue *value)
+{
+    return PyGtkAccelGroup_New(g_value_get_boxed(value));
+}
+static int
+PyGtkAccelGroup_to_value(GValue *value, PyObject *object)
+{
+    if (PyGtkAccelGroup_Check(object)) {
+	g_value_set_boxed(value, PyGtkAccelGroup_Get(object));
+	return 0;
+    }
+    return -1;
+}
+static PyObject *
+PyGdkFont_from_value(const GValue *value)
+{
+    return PyGdkFont_New(g_value_get_boxed(value));
+}
+static int
+PyGdkFont_to_value(GValue *value, PyObject *object)
+{
+    if (PyGdkFont_Check(object)) {
+	g_value_set_boxed(value, PyGdkFont_Get(object));
+	return 0;
+    }
+    return -1;
+}
+static PyObject *
+PyGdkColor_from_value(const GValue *value)
+{
+    return PyGdkColor_New(g_value_get_boxed(value));
+}
+static int
+PyGdkColor_to_value(GValue *value, PyObject *object)
+{
+    if (PyGdkColor_Check(object)) {
+	g_value_set_boxed(value, PyGdkColor_Get(object));
+	return 0;
+    }
+    return -1;
+}
+static PyObject *
+PyGdkEvent_from_value(const GValue *value)
+{
+    return PyGdkEvent_New(g_value_get_boxed(value));
+}
+static int
+PyGdkEvent_to_value(GValue *value, PyObject *object)
+{
+    if (PyGdkEvent_Check(object)) {
+	g_value_set_boxed(value, PyGdkEvent_Get(object));
+	return 0;
+    }
+    return -1;
+}
+static PyObject *
+PyGdkVisual_from_value(const GValue *value)
+{
+    return PyGdkVisual_New(g_value_get_boxed(value));
+}
+static int
+PyGdkVisual_to_value(GValue *value, PyObject *object)
+{
+    if (PyGdkVisual_Check(object)) {
+	g_value_set_boxed(value, PyGdkVisual_Get(object));
+	return 0;
+    }
+    return -1;
+}
+static PyObject *
+PyGtkSelectionData_from_value(const GValue *value)
+{
+    return PyGtkSelectionData_New(g_value_get_boxed(value));
+}
+static int
+PyGtkSelectionData_to_value(GValue *value, PyObject *object)
+{
+    if (PyGtkSelectionData_Check(object)) {
+	g_value_set_boxed(value, PyGtkSelectionData_Get(object));
+	return 0;
+    }
+    return -1;
+}
+
 /* We have to set ob_type here because stupid win32 does not allow you
  * to use variables from another dll in a global variable initialisation.
  */
@@ -2840,29 +3578,33 @@ void
 _pygtk_register_boxed_types(PyObject *moddict)
 {
 #define register_tp(x) Py##x##_Type.ob_type = &PyType_Type; \
-    PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type);
+    PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type)
+#define register_tp2(x, tp) Py##x##_Type.ob_type = &PyType_Type; \
+    PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type); \
+    pyg_boxed_register(tp, Py##x##_from_value, Py##x##_to_value)
 
     ExtensionClassImported;
-    register_tp(GtkAccelGroup);
+    register_tp2(GtkAccelGroup, GTK_TYPE_ACCEL_GROUP);
 #if 0
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
 #endif
-    register_tp(GdkFont);
-    register_tp(GdkColor);
-    register_tp(GdkEvent);
+    register_tp2(GdkFont, GTK_TYPE_GDK_FONT);
+    register_tp2(GdkColor, GTK_TYPE_GDK_COLOR);
+    register_tp2(GdkEvent, GTK_TYPE_GDK_EVENT);
 #if 0
     register_tp(GdkWindow);
     register_tp(GdkGC);
 #endif
-    register_tp(GdkVisual);
+    register_tp2(GdkVisual, GTK_TYPE_GDK_VISUAL);
 #if 0
     register_tp(GdkColormap);
     register_tp(GdkDragContext);
 #endif
-    register_tp(GtkSelectionData);
+    register_tp2(GtkSelectionData, GTK_TYPE_SELECTION_DATA);
     register_tp(GdkAtom);
     register_tp(GdkCursor);
     register_tp(GtkCTreeNode);
     register_tp(GdkDevice);
+    register_tp(GtkTextIter);
 }

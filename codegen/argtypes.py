@@ -307,9 +307,10 @@ class ObjectArg(ArgType):
 	    '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n' + \
 	    '        return NULL;\n' + \
 	    '    }\n'
-    def __init__(self, objname):
+    def __init__(self, objname, parent):
 	self.objname = objname
 	self.cast = _to_upper_str(objname)[1:]
+        self.parent = parent
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
 	if pnull:
@@ -399,6 +400,7 @@ class GErrorArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
 	    arglist.append('NULL')
+            return ''
 
 class ArgMatcher:
     def __init__(self):
@@ -410,15 +412,24 @@ class ArgMatcher:
 	self.register(ptype, EnumArg(ptype))
     def register_flag(self, ptype):
 	self.register(ptype, FlagsArg(ptype))
-    def register_object(self, ptype):
-        oa = ObjectArg(ptype)
+    def register_object(self, ptype, parent):
+        oa = ObjectArg(ptype, parent)
         self.register(ptype, oa)  # in case I forget the * in the .defs
 	self.register(ptype+'*', oa)
+        if ptype == 'GdkPixmap':
+            # hack to handle GdkBitmap synonym.
+            self.register('GdkBitmap', oa)
+            self.register('GdkBitmap*', oa)
     def register_boxed(self, ptype, pytype, getter, new):
 	self.register(ptype+'*', BoxedArg(ptype, pytype, getter, new))
 
     def get(self, ptype):
 	return self.argtypes[ptype]
+    def object_is_a(self, otype, parent):
+        if otype == None: return 0
+        if otype == parent: return 1
+        if not self.argtypes.has_key(otype): return 0
+        return self.object_is_a(self.get(otype).parent, parent)
 
 matcher = ArgMatcher()
 
@@ -490,7 +501,15 @@ matcher.register_boxed('GdkCursor', 'PyGdkCursor_Type',
 		       'PyGdkCursor_Get', 'PyGdkCursor_New')
 matcher.register_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
 		       'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
+matcher.register_boxed('GdkDevice', 'PyGdkDevice_Type',
+		       'PyGdkDevice_Get', 'PyGdkDevice_New')
+matcher.register_boxed('GtkTextIter', 'PyGtkTextIter_Type',
+		       'PyGtkTextIter_Get', 'PyGtkTextIter_New')
+matcher.register('const-GtkTextIter*', matcher.get('GtkTextIter*'))
+
 matcher.register('GdkAtom', AtomArg())
 matcher.register('GError**', GErrorArg())
+
+matcher.register_object('GObject', None)
 
 del arg

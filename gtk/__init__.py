@@ -17,17 +17,17 @@ import GDK
 from _gtk import *
 
 # old names compatibility ...
-#mainloop = main
-#def mainquit(*args):
-#    main_quit()
-#mainiteration = main_iteration
+mainloop = main
+def mainquit(*args):
+    main_quit()
+mainiteration = main_iteration
 
-#load_font = font_load
-#load_fontset = fontset_load
-#create_pixmap = pixmap_new
-#create_pixmap_from_xpm = pixmap_create_from_xpm
-#create_pixmap_from_xpm_d = pixmap_create_from_xpm_d
+load_font = font_load
+load_fontset = fontset_load
+create_pixmap = GtkPixmap
+create_pixmap_from_xpm = pixmap_create_from_xpm
+create_pixmap_from_xpm_d = pixmap_create_from_xpm_d
 
 # for importing ...
-__all__ = ['_gtk', 'GTK', 'GDK', 'imlib', 'libglade', 'gl' ]
+__all__ = ['_gtk', 'GTK', 'GDK' ]#, 'imlib', 'libglade', 'gl' ]
 

@@ -1,12 +1,19 @@
 ;; -*- scheme -*-
 
 (include "gdk.defs")
+(include "gtk-extrafuncs.defs")
 
 ; object definitions ...
 (object IconFactory
   (in-module Gtk)
   (parent Object (G))
   (c-name GtkIconFactory)
+)
+
+(object TextMark
+  (in-module Gtk)
+  (parent Object (G))
+  (c-name GtkTextMark)
 )
 
 (object Object
@@ -55,6 +62,12 @@
   (in-module Gtk)
   (parent Data (Gtk))
   (c-name GtkAdjustment)
+  (field (type-and-name gfloat value))
+  (field (type-and-name gfloat lower))
+  (field (type-and-name gfloat upper))
+  (field (type-and-name gfloat step_increment))
+  (field (type-and-name gfloat page_increment))
+  (field (type-and-name gfloat page_size))
 )
 
 (object CellRenderer
@@ -103,6 +116,7 @@
   (in-module Gtk)
   (parent Object (Gtk))
   (c-name GtkTextBuffer)
+  (field (type-and-name GtkTextTagTable* tag_table))
 )
 
 (object TextTag
@@ -145,6 +159,9 @@
   (in-module Gtk)
   (parent Object (Gtk))
   (c-name GtkWidget)
+  (field (type-and-name GtkStyle* style))
+  (field (type-and-name GdkWindow* window))
+  (field (type-and-name GtkWidget* parent))
 )
 
 (object Separator
@@ -295,6 +312,8 @@
   (in-module Gtk)
   (parent Editable (Gtk))
   (c-name GtkText)
+  (field (type-and-name GtkAdjustment* hadj))
+  (field (type-and-name GtkAdjustment* vadj))
 )
 
 (object Entry
@@ -391,6 +410,7 @@
   (in-module Gtk)
   (parent Container (Gtk))
   (c-name GtkNotebook)
+  (field (type-and-name GtkPositionType tab_pos))
 )
 
 (object MenuShell
@@ -458,6 +478,7 @@
   (in-module Gtk)
   (parent Item (Gtk))
   (c-name GtkTreeItem)
+  (field (type-and-name GtkWidget* subtree))
 )
 
 (object MenuItem
@@ -476,6 +497,7 @@
   (in-module Gtk)
   (parent MenuItem (Gtk))
   (c-name GtkCheckMenuItem)
+  (field (type-and-name gboolean active))
 )
 
 (object RadioMenuItem
@@ -530,6 +552,7 @@
   (in-module Gtk)
   (parent Button (Gtk))
   (c-name GtkToggleButton)
+  (field (type-and-name gboolean draw_indicator))
 )
 
 (object CheckButton
@@ -578,6 +601,11 @@
   (in-module Gtk)
   (parent VBox (Gtk))
   (c-name GtkGammaCurve)
+  (field (type-and-name GtkWidget* table))
+  (field (type-and-name GtkWidget* curve))
+  (field (type-and-name gfloat gamma))
+  (field (type-and-name GtkWidget* gamma_dialog))
+  (field (type-and-name GtkWidget* gamma_text))
 )
 
 (object HBox
@@ -596,6 +624,8 @@
   (in-module Gtk)
   (parent HBox (Gtk))
   (c-name GtkCombo)
+  (field (type-and-name GtkWidget* entry))
+  (field (type-and-name GtkWidget* list))
 )
 
 (object ButtonBox
@@ -620,6 +650,8 @@
   (in-module Gtk)
   (parent Container (Gtk))
   (c-name GtkCList)
+  (field (type-and-name gint focus_row))
+  (field (type-and-name gint rows))
 )
 
 (object CTree
@@ -650,18 +682,34 @@
   (in-module Gtk)
   (parent Window (Gtk))
   (c-name GtkFontSelectionDialog)
+  (field (type-and-name GtkWidget* fontsel))
+  (field (type-and-name GtkWidget* main_vbox))
+  (field (type-and-name GtkWidget* action_area))
+  (field (type-and-name GtkWidget* ok_button))
+  (field (type-and-name GtkWidget* apply_button))
+  (field (type-and-name GtkWidget* cancel_button))
 )
 
 (object FileSelection
   (in-module Gtk)
   (parent Window (Gtk))
   (c-name GtkFileSelection)
+  (field (type-and-name GtkWidget* dir_list))
+  (field (type-and-name GtkWidget* file_list))
+  (field (type-and-name GtkWidget* selection_entry))
+  (field (type-and-name GtkWidget* selection_text))
+  (field (type-and-name GtkWidget* main_vbox))
+  (field (type-and-name GtkWidget* ok_button))
+  (field (type-and-name GtkWidget* cancel_button))
+  (field (type-and-name GtkWidget* help_button))
 )
 
 (object Dialog
   (in-module Gtk)
   (parent Window (Gtk))
   (c-name GtkDialog)
+  (field (type-and-name GtkWidget* vbox))
+  (field (type-and-name GtkWidget* action_area))
 )
 
 (object MessageDialog
@@ -674,12 +722,18 @@
   (in-module Gtk)
   (parent Dialog (Gtk))
   (c-name GtkInputDialog)
+  (field (type-and-name GtkWidget* close_button))
+  (field (type-and-name GtkWidget* save_button))
 )
 
 (object ColorSelectionDialog
   (in-module Gtk)
   (parent Dialog (Gtk))
   (c-name GtkColorSelectionDialog)
+  (field (type-and-name GtkWidget* colorsel))
+  (field (type-and-name GtkWidget* ok_button))
+  (field (type-and-name GtkWidget* cancel_button))
+  (field (type-and-name GtkWidget* help_button))
 )
 
 ;; Enumerations and flags ...
@@ -1898,9 +1952,9 @@
   (c-name gtk_aspect_frame_new)
   (is-constructor-of GtkAspectFrame)
   (return-type GtkWidget*)
-  (parameter (type-and-name const-gchar* label) (null-ok))
-  (parameter (type-and-name gfloat xalign))
-  (parameter (type-and-name gfloat yalign))
+  (parameter (type-and-name const-gchar* label) (null-ok) (default "NULL"))
+  (parameter (type-and-name gfloat xalign) (default "0.5"))
+  (parameter (type-and-name gfloat yalign) (default "0.5"))
   (parameter (type-and-name gfloat ratio) (default "1"))
   (parameter (type-and-name gboolean obey_child) (default "TRUE"))
 )
@@ -3875,8 +3929,8 @@
   (c-name gtk_ctree_move)
   (return-type none)
   (parameter (type-and-name GtkCTreeNode* node))
-  (parameter (type-and-name GtkCTreeNode* new_parent))
-  (parameter (type-and-name GtkCTreeNode* new_sibling))
+  (parameter (type-and-name GtkCTreeNode* new_parent) (null-ok))
+  (parameter (type-and-name GtkCTreeNode* new_sibling) (null-ok))
 )
 
 (method expand
@@ -3989,7 +4043,7 @@
   (parameter (type-and-name GtkCTreeNode* node))
   (parameter (type-and-name gint column))
   (parameter (type-and-name GdkPixmap* pixmap))
-  (parameter (type-and-name GdkBitmap* mask))
+  (parameter (type-and-name GdkBitmap* mask) (null-ok))
 )
 
 (method node_set_pixtext
@@ -4001,7 +4055,7 @@
   (parameter (type-and-name const-gchar* text))
   (parameter (type-and-name guint8 spacing))
   (parameter (type-and-name GdkPixmap* pixmap))
-  (parameter (type-and-name GdkBitmap* mask))
+  (parameter (type-and-name GdkBitmap* mask) (null-ok))
 )
 
 (method set_node_info
@@ -4011,10 +4065,10 @@
   (parameter (type-and-name GtkCTreeNode* node))
   (parameter (type-and-name const-gchar* text))
   (parameter (type-and-name guint8 spacing))
-  (parameter (type-and-name GdkPixmap* pixmap_closed))
-  (parameter (type-and-name GdkBitmap* mask_closed))
-  (parameter (type-and-name GdkPixmap* pixmap_opened))
-  (parameter (type-and-name GdkBitmap* mask_opened))
+  (parameter (type-and-name GdkPixmap* pixmap_closed) (null-ok))
+  (parameter (type-and-name GdkBitmap* mask_closed) (null-ok))
+  (parameter (type-and-name GdkPixmap* pixmap_opened) (null-ok))
+  (parameter (type-and-name GdkBitmap* mask_opened) (null-ok))
   (parameter (type-and-name gboolean is_leaf))
   (parameter (type-and-name gboolean expanded))
 )
@@ -4761,7 +4815,7 @@
   (c-name gtk_file_selection_new)
   (is-constructor-of GtkFileSelection)
   (return-type GtkWidget*)
-  (parameter (type-and-name const-gchar* title))
+  (parameter (type-and-name const-gchar* title) (null-ok) (default "NULL"))
 )
 
 (method set_filename
@@ -4933,14 +4987,14 @@
   (c-name gtk_frame_new)
   (is-constructor-of GtkFrame)
   (return-type GtkWidget*)
-  (parameter (type-and-name const-gchar* label) (null-ok))
+  (parameter (type-and-name const-gchar* label) (null-ok) (default "NULL"))
 )
 
 (method set_label
   (of-object Frame (Gtk))
   (c-name gtk_frame_set_label)
   (return-type none)
-  (parameter (type-and-name const-gchar* label))
+  (parameter (type-and-name const-gchar* label) (null-ok))
 )
 
 (method set_label_widget
@@ -5123,7 +5177,7 @@
   (c-name gtk_hscale_new)
   (is-constructor-of GtkHScale)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok) (default "NULL"))
 )
 
 
@@ -5139,7 +5193,7 @@
   (c-name gtk_hscrollbar_new)
   (is-constructor-of GtkHScrollbar)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok) (default "NULL"))
 )
 
 
@@ -5868,8 +5922,8 @@
   (c-name gtk_layout_new)
   (is-constructor-of GtkLayout)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok))
-  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok) (default "NULL"))
+  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok) (default "NULL"))
 )
 
 (method put
@@ -6334,7 +6388,7 @@
 (function main_iteration_do
   (c-name gtk_main_iteration_do)
   (return-type gint)
-  (parameter (type-and-name gboolean blocking))
+  (parameter (type-and-name gboolean blocking) (default "TRUE"))
 )
 
 (function true
@@ -7549,11 +7603,11 @@
   (parameter (type-and-name GtkSideType side))
   (parameter (type-and-name GtkAnchorType anchor))
   (parameter (type-and-name GtkPackerOptions options))
-  (parameter (type-and-name guint border_width))
-  (parameter (type-and-name guint pad_x))
-  (parameter (type-and-name guint pad_y))
-  (parameter (type-and-name guint i_pad_x))
-  (parameter (type-and-name guint i_pad_y))
+  (parameter (type-and-name guint border_width) (default "0"))
+  (parameter (type-and-name guint pad_x) (default "0"))
+  (parameter (type-and-name guint pad_y) (default "0"))
+  (parameter (type-and-name guint i_pad_x) (default "0"))
+  (parameter (type-and-name guint i_pad_y) (default "0"))
 )
 
 (method set_child_packing
@@ -7564,11 +7618,11 @@
   (parameter (type-and-name GtkSideType side))
   (parameter (type-and-name GtkAnchorType anchor))
   (parameter (type-and-name GtkPackerOptions options))
-  (parameter (type-and-name guint border_width))
-  (parameter (type-and-name guint pad_x))
-  (parameter (type-and-name guint pad_y))
-  (parameter (type-and-name guint i_pad_x))
-  (parameter (type-and-name guint i_pad_y))
+  (parameter (type-and-name guint border_width) (default "0"))
+  (parameter (type-and-name guint pad_x) (default "0"))
+  (parameter (type-and-name guint pad_y) (default "0"))
+  (parameter (type-and-name guint i_pad_x) (default "0"))
+  (parameter (type-and-name guint i_pad_y) (default "0"))
 )
 
 (method reorder_child
@@ -8012,7 +8066,7 @@
 (function gtk_progress_bar_new_with_adjustment
   (c-name gtk_progress_bar_new_with_adjustment)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok) (default "NULL"))
 )
 
 (method set_bar_style
@@ -8533,8 +8587,8 @@
   (c-name gtk_scrolled_window_new)
   (is-constructor-of GtkScrolledWindow)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok))
-  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok) (default "NULL"))
+  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok) (default "NULL"))
 )
 
 (method set_hadjustment
@@ -9108,9 +9162,9 @@
   (c-name gtk_spin_button_new)
   (is-constructor-of GtkSpinButton)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
-  (parameter (type-and-name gfloat climb_rate))
-  (parameter (type-and-name guint digits))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok) (default "NULL"))
+  (parameter (type-and-name gfloat climb_rate) (default "0.0"))
+  (parameter (type-and-name guint digits) (default "0"))
 )
 
 (method set_adjustment
@@ -10005,7 +10059,7 @@
   (return-type GtkWidget*)
   (parameter (type-and-name guint rows))
   (parameter (type-and-name guint columns))
-  (parameter (type-and-name gboolean homogeneous))
+  (parameter (type-and-name gboolean homogeneous) (default "FALSE"))
 )
 
 (method resize
@@ -10107,8 +10161,8 @@
   (c-name gtk_text_new)
   (is-constructor-of GtkText)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* hadj))
-  (parameter (type-and-name GtkAdjustment* vadj))
+  (parameter (type-and-name GtkAdjustment* hadj) (null-ok) (default "NULL"))
+  (parameter (type-and-name GtkAdjustment* vadj) (null-ok) (default "NULL"))
 )
 
 (method set_editable
@@ -10175,11 +10229,11 @@
   (of-object Text (Gtk))
   (c-name gtk_text_insert)
   (return-type none)
-  (parameter (type-and-name GdkFont* font))
-  (parameter (type-and-name GdkColor* fore))
-  (parameter (type-and-name GdkColor* back))
+  (parameter (type-and-name GdkFont* font) (null-ok))
+  (parameter (type-and-name GdkColor* fore) (null-ok))
+  (parameter (type-and-name GdkColor* back) (null-ok))
   (parameter (type-and-name const-char* chars))
-  (parameter (type-and-name gint length))
+  (parameter (type-and-name gint length) (default "-1"))
 )
 
 (method backward_delete
@@ -10209,7 +10263,7 @@
   (c-name gtk_text_buffer_new)
   (is-constructor-of GtkTextBuffer)
   (return-type GtkTextBuffer*)
-  (parameter (type-and-name GtkTextTagTable* table))
+  (parameter (type-and-name GtkTextTagTable* table) (null-ok))
 )
 
 (method get_line_count
@@ -10495,6 +10549,15 @@
   (parameter (type-and-name GtkTextIter* iter))
   (parameter (type-and-name gint line_number))
   (parameter (type-and-name gint char_offset))
+)
+
+(method get_iter_at_line_index
+  (of-object TextBuffer (Gtk))
+  (c-name gtk_text_buffer_get_iter_at_line_index)
+  (return-type none)
+  (parameter (type-and-name GtkTextIter* iter))
+  (parameter (type-and-name gint line_number))
+  (parameter (type-and-name gint byte_offset))
 )
 
 (method get_iter_at_offset
@@ -11020,22 +11083,28 @@
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktextmark.h
 
+(function gtk_text_mark_get_type
+  (c-name gtk_text_mark_get_type)
+  (return-type GType)
+)
+
+(method set_visible
+  (of-object TextMark (Gtk))
+  (c-name gtk_text_mark_set_visible)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
 (method is_visible
   (of-object TextMark (Gtk))
   (c-name gtk_text_mark_is_visible)
   (return-type gboolean)
 )
 
-(method ref
+(method get_name
   (of-object TextMark (Gtk))
-  (c-name gtk_text_mark_ref)
-  (return-type GtkTextMark*)
-)
-
-(method unref
-  (of-object TextMark (Gtk))
-  (c-name gtk_text_mark_unref)
-  (return-type none)
+  (c-name gtk_text_mark_get_name)
+  (return-type const-gchar*)
 )
 
 (method get_deleted
@@ -12755,8 +12824,8 @@
   (c-name gtk_viewport_new)
   (is-constructor-of GtkViewport)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok))
-  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* hadjustment) (null-ok) (default "NULL"))
+  (parameter (type-and-name GtkAdjustment* vadjustment) (null-ok) (default "NULL"))
 )
 
 (method get_hadjustment
@@ -12835,7 +12904,7 @@
   (c-name gtk_vscale_new)
   (is-constructor-of GtkVScale)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok) (default "NULL"))
 )
 
 
@@ -12846,7 +12915,7 @@
   (c-name gtk_vscrollbar_new)
   (is-constructor-of GtkVScrollbar)
   (return-type GtkWidget*)
-  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok))
+  (parameter (type-and-name GtkAdjustment* adjustment) (null-ok) (default "NULL"))
 )
 
 
