@@ -78,6 +78,7 @@ EXTRA_DIST += \
   examples/gobject/properties.py \
   examples/pygtk-demo/pygtk-demo.py \
   examples/pygtk-demo/demos/__init__.py \
+  examples/pygtk-demo/demos/appwindow.py \
   examples/pygtk-demo/demos/buttonbox.py \
   examples/pygtk-demo/demos/dndpixmap.py \
   examples/pygtk-demo/demos/dnd.py \
