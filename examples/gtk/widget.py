@@ -6,6 +6,10 @@ import pango
 import gtk
 from gtk import gdk
 
+if gtk.pygtk_version < (2,3,93):
+    print "PyGtk 2.3.93 or later required for this example"
+    raise SystemExit
+
 TEXT = 'A GtkWidget implemented in PyGTK'
 
 class PyGtkWidget(gtk.Widget):
@@ -70,7 +74,7 @@ class PyGtkWidget(gtk.Widget):
         event.width = allocation.width
         event.height = allocation.height
         self.event(event)
-gobject.type_register(Widget)
+gobject.type_register(PyGtkWidget)
 
 win = gtk.Window()
 win.set_title(TEXT)
