@@ -3,11 +3,10 @@
 
 This is a test of the drag and drop capabilities of gtk.  It is a
 fairly straight forward port of the example distributed with gtk.
-
-FIXME: there are still a few things missing since I converted the
-GdkDragContext wrapper to being a GObject.'''
+'''
 
 import gtk
+import gobject
 from dndpixmap import *
 
 TARGET_STRING = 0
@@ -34,7 +33,7 @@ class DragAndDropDemo(gtk.Window):
     have_drag = False
     popped_up = False
     in_popup = False
-    popup_timer = None
+    popup_timer = 0
     popdown_timer = 0
     popup_win = None
 
@@ -95,32 +94,32 @@ class DragAndDropDemo(gtk.Window):
             context.finish(False, False, time)
 
     def popsite_motion(self, w, context, x, y, time):
-        if self.popup_timer is None:
-            self.popup_timer = gtk.timeout_add(500, self.popup_cb)
+        if not self.popup_timer:
+            self.popup_timer = gobject.timeout_add(500, self.popup_cb)
         return True
 
     def popsite_leave(self, w, context, time):
-        if self.popup_timer is not None:
-            gtk.timeout_remove(self.popup_timer)
-        self.popup_timer = None
+        if self.popup_timer:
+            gobject.source_remove(self.popup_timer)
+            self.popup_timer = 0
 
     def popup_motion(self, w, context, x, y, time):
         print 'popup_motion'
         if not self.in_popup:
             self.in_popup = True
-        if self.popdown_timer is not None:
-            print 'removed popdown'
-            gtk.timeout_remove(self.popdown_timer)
-            self.popdown_timer = None
+            if self.popdown_timer:
+                print 'removed popdown'
+                gobject.source_remove(self.popdown_timer)
+                self.popdown_timer = 0
         return True
 
     def popup_leave(self, w, context, time):
         print 'popup_leave'
         if self.in_popup:
             self.in_popup = False
-        if self.popdown_timer is None:
-            print 'added popdown'
-            self.popdown_timer = gtk.timeout_add(500, self.popdown_cb)
+            if not self.popdown_timer:
+                print 'added popdown'
+                self.popdown_timer = gobject.timeout_add(500, self.popdown_cb)
 
     def popup_cb(self):
         if not self.popped_up:
@@ -133,24 +132,23 @@ class DragAndDropDemo(gtk.Window):
                     b = gtk.Button("%d,%d" % (i,j))
                     b.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
                         gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
-                    b.connect('drag_motion', self.popup_motion, None)
+                    b.connect('drag_motion', self.popup_motion)
                     b.connect('drag_leave', self.popup_leave)
                     table.attach(b, i, i+1, j, j+1)
                 table.show_all()
                 self.popup_win.add(table)
-        self.popup_win.show()
-        self.popped_up = True
-        self.in_popup = True
-        self.popdown_timer = gtk.timeout_add(500, self.popdown_cb)
+            self.popup_win.present()
+            self.popped_up = True
+        self.popdown_timer = gobject.timeout_add(500, self.popdown_cb)
         print 'added popdown'
-        self.popup_timer = None
+        self.popup_timer = 0
         return False
 
     def popdown_cb(self):
         print 'popdown'
         #if self.in_popup:
         #    return True
-        self.popdown_timer = None
+        self.popdown_timer = 0
         self.popup_win.hide()
         self.popped_up = False
         return False
@@ -163,14 +161,14 @@ class DragAndDropDemo(gtk.Window):
     def target_drag_motion(self, img, context, x, y, time):
         if self.have_drag is False:
             self.have_drag = True
-        img.set_from_pixmap(self.trashcan_open, self.trashcan_open_mask)
+            img.set_from_pixmap(self.trashcan_open, self.trashcan_open_mask)
         source_widget = context.get_source_widget()
         print 'motion, source ',
         if source_widget:
             print source_widget.__class__.__name__
         else:
             print 'unknown'
-            context.drag_status(context.suggested_action, time)
+        context.drag_status(context.suggested_action, time)
         return True
 
     def target_drag_drop(self, img, context, x, y, time):
