@@ -52,7 +52,14 @@ linkend="method-pangoattrlist--splice">splice</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-pangoattrlist--get-iterator">get_iterator</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-pangoattrlist--filter">filter</link></methodname>
+	<methodparam><parameter role="keyword">func</parameter></methodparam>
+	<methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
 
     </classsynopsis>
 
@@ -274,6 +281,60 @@ linkend="class-pangoattriterator"><classname>pango.AttrIterator</classname></lin
 returns a <link
 linkend="class-pangoattriterator"><classname>pango.AttrIterator</classname></link> 
 initialized to the beginning of the attribute list.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-pangoattrlist--filter">
+      <title>pango.AttrList.filter</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>filter</methodname>
+	  <methodparam><parameter role="keyword">func</parameter></methodparam>
+	  <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">func</parameter>&nbsp;:</term>
+	  <listitem><simpara>a callback function that returns
+	  <literal>TRUE</literal> if an atttribute should be filtered
+	  out.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+	  <listitem><simpara>data to be passed to
+	  <parameter>func</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+	  linkend="class-pangoattrlist"><classname>pango.AttrList</classname></link>
+	  or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>filter</methodname>() method arranges for the
+callback function specified by <parameter>function</parameter> to be called
+on each pangoAttribute in the attribute list with the optional user data
+specified by <literal>data</literal>. The callback function signature
+is:</para>
+
+      <programlisting>
+  def func(attribute, user_data)
+</programlisting>
+
+      <para>where <parameter>attribute</parameter> is an attribute of the
+attribute list and <parameter>user_data</parameter> is
+<parameter>data</parameter>. The callback function returns
+<literal>TRUE</literal> if the attribute should be filtered out of the
+attribute list. The <methodname>filter</methodname> method returns a new
+<link
+linkend="class-pangoattrlist"><classname>pango.AttrList</classname></link>
+containing the attirbutes that were filtered out (removed from) the
+attribute list.</para>
 
     </refsect2>
 
