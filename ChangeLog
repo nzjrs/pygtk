@@ -1,3 +1,13 @@
+2002-01-28  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pyg_type_register): same code here, if __doc__
+	hasn't already been set.
+	(initgobject): don't bother setting __doc__ on GObject here, as
+	pygobject_register_class() does this for us.
+
+	* pygobject.c (pygobject_register_class): need to set the __doc__
+	descriptor on every class, otherwise it gets lost.
+
 2002-01-24  James Henstridge  <james@daa.com.au>
 
 	* examples/pygtk-demo/demos/colorsel.py:
