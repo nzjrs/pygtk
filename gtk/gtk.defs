@@ -56,11 +56,6 @@
   (return-type "GtkAccelGroup*")
 )
 
-(define-function accel_group_get_default
-  (c-name "gtk_accel_group_get_default")
-  (return-type "GtkAccelGroup*")
-)
-
 (define-method ref
   (of-object "GtkAccelGroup")
   (c-name "gtk_accel_group_ref")
@@ -255,25 +250,10 @@
   )
 )
 
-(define-method get_accel_object
-  (of-object "GtkAccelLabel")
-  (c-name "gtk_accel_label_get_accel_object")
-  (return-type "GObject*")
-)
-
 (define-method get_accel_width
   (of-object "GtkAccelLabel")
   (c-name "gtk_accel_label_get_accel_width")
   (return-type "guint")
-)
-
-(define-method set_accel_object
-  (of-object "GtkAccelLabel")
-  (c-name "gtk_accel_label_set_accel_object")
-  (return-type "none")
-  (parameters
-    '("GObject*" "accel_object")
-  )
 )
 
 (define-method refetch
@@ -5139,22 +5119,6 @@
     '("GtkType" "container_type")
     '("const-gchar*" "path")
     '("GtkAccelGroup*" "accel_group")
-  )
-)
-
-(define-function item_factory_parse_rc
-  (c-name "gtk_item_factory_parse_rc")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "file_name")
-  )
-)
-
-(define-function item_factory_parse_rc_string
-  (c-name "gtk_item_factory_parse_rc_string")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "rc_string")
   )
 )
 
@@ -12447,9 +12411,8 @@
   (c-name "gtk_tree_drag_dest_row_drop_possible")
   (return-type "gboolean")
   (parameters
-    '("GtkTreeModel*" "src_model")
-    '("GtkTreePath*" "src_path")
     '("GtkTreePath*" "dest_path")
+    '("GtkSelectionData*" "selection_data")
   )
 )
 
@@ -14364,45 +14327,6 @@
     '("guint" "accel_key")
     '("guint" "accel_mods")
   )
-)
-
-(define-method remove_accelerators
-  (of-object "GtkWidget")
-  (c-name "gtk_widget_remove_accelerators")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "accel_signal")
-    '("gboolean" "visible_only")
-  )
-)
-
-(define-method accelerator_signal
-  (of-object "GtkWidget")
-  (c-name "gtk_widget_accelerator_signal")
-  (return-type "guint")
-  (parameters
-    '("GtkAccelGroup*" "accel_group")
-    '("guint" "accel_key")
-    '("guint" "accel_mods")
-  )
-)
-
-(define-method lock_accelerators
-  (of-object "GtkWidget")
-  (c-name "gtk_widget_lock_accelerators")
-  (return-type "none")
-)
-
-(define-method unlock_accelerators
-  (of-object "GtkWidget")
-  (c-name "gtk_widget_unlock_accelerators")
-  (return-type "none")
-)
-
-(define-method accelerators_locked
-  (of-object "GtkWidget")
-  (c-name "gtk_widget_accelerators_locked")
-  (return-type "gboolean")
 )
 
 (define-method mnemonic_activate
