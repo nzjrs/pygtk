@@ -3834,3 +3834,14 @@ _wrap_gdk_display_get_maximal_cursor_size(PyGObject *self)
 
     return Py_BuildValue("(ii)", width, height);
 }
+%%
+override gdk_event_get_state noargs
+static PyObject *
+_wrap_gdk_event_get_state(PyGObject *self)
+{
+    GdkEvent *event = pyg_boxed_get(self, GdkEvent);
+    GdkModifierType state = 0;
+
+    gdk_event_get_state(event, &state);
+    return PyInt_FromLong(state);
+}
