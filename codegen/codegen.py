@@ -19,7 +19,7 @@ functmpl = 'static PyObject *\n' + \
 funccalltmpl = '%(cname)s(%(arglist)s)'
 
 methtmpl = 'static PyObject *\n' + \
-	   '_wrap_%(cname)s(PyGtk_Object *self, PyObject *args, PyObject *kwargs)\n' + \
+	   '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n' + \
 	   '{\n' + \
 	   '%(varlist)s' + \
 	   '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.%(name)s"%(parselist)s))\n' + \
@@ -30,7 +30,7 @@ methtmpl = 'static PyObject *\n' + \
 methcalltmpl = '%(cname)s(%(cast)s(self->obj)%(arglist)s)'
 
 consttmpl = 'static PyObject *\n' + \
-	    '_wrap_%(cname)s(PyGtk_Object *self, PyObject *args, PyObject *kwargs)\n' + \
+	    '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n' + \
 	    '{\n' + \
 	    '%(varlist)s' + \
 	    '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.__init__"%(parselist)s))\n' + \
@@ -56,7 +56,7 @@ gettypetmpl = 'static PyObject *\n' + \
               '    return PyInt_FromLong(%(uclass)s_get_type());\n' + \
               '}\n\n'
 getattrtmpl = 'static PyObject *\n' + \
-              '%(getattr)s(PyGtk_Object *self, char *attr)\n' + \
+              '%(getattr)s(PyGObject *self, char *attr)\n' + \
               '{\n' + \
               '%(attrchecks)s' + \
               '    return pygtk_getattr(self, attr);\n' + \
@@ -70,7 +70,7 @@ typetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
 	   '    PyObject_HEAD_INIT(NULL)\n' + \
 	   '    0,				/* ob_size */\n' + \
 	   '    "%(class)s",			/* tp_name */\n' + \
-	   '    sizeof(PyGtk_Object),		/* tp_basicsize */\n' + \
+	   '    sizeof(PyGObject),		/* tp_basicsize */\n' + \
 	   '    0,				/* tp_itemsize */\n' + \
 	   '    /* methods */\n' + \
 	   '    (destructor)0,			/* tp_dealloc */\n' + \
@@ -309,10 +309,7 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
         dict['getattr'] = write_getattr(parser, objobj, fp)
     else:
         dict['getattr'] = '0'
-    if objobj.c_name == 'GtkObject':
-        dict['methods'] = '{ _PyGtkObject_methods, &base_object_method_chain }'
-    else:
-        dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
+    dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
     fp.write(typetmpl % dict)
 
 def write_functions(parser, overrides, prefix, fp=sys.stdout):
@@ -365,11 +362,11 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write(overrides.get_init() + '\n')
     for obj in parser.objects:
         if obj.parent != (None, None):
-            fp.write('    pygtk_register_class(d, "' + obj.c_name + '", &Py' +
-                     obj.c_name + '_Type, &Py' + obj.parent[1] +
+            fp.write('    pygobject_register_class(d, "' + obj.c_name +
+                     '", &Py' + obj.c_name + '_Type, &Py' + obj.parent[1] +
                      obj.parent[0] + '_Type);\n')
         else:
-            fp.write('    pygtk_register_class(d, "' + obj.c_name +
+            fp.write('    pygobject_register_class(d, "' + obj.c_name +
                      '", &Py' + obj.c_name + '_Type, NULL);\n')
     fp.write('}\n')
 

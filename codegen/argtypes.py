@@ -285,25 +285,25 @@ class ObjectArg(ArgType):
     # a little further down in the class heirachy.
     nulldflt = '    if ((PyObject *)py_%(name)s == Py_None)\n' + \
 	       '        %(name)s = NULL;\n' + \
-	       '    else if (py_%(name)s && PyGtk_Check(py_%(name)s, &Py%(type)s_Type))\n' + \
+	       '    else if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n' + \
 	       '        %(name)s = %(cast)s(py_%(name)s->obj);\n' + \
 	       '    else if (py_%(name)s) {\n' + \
 	       '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n' + \
 	       '        return NULL;\n' + \
 	       '    }\n'
-    null = '    if (py_%(name)s && PyGtk_Check(py_%(name)s, &Py%(type)s_Type))\n' + \
+    null = '    if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n' + \
 	   '        %(name)s = %(cast)s(py_%(name)s->obj);\n' + \
 	   '    else if ((PyObject *)py_%(name)s != Py_None) {\n' + \
 	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n' + \
 	   '        return NULL;\n' + \
 	   '    }\n'
-    dflt = '    if (py_%(name)s && PyGtk_Check(py_%(name)s, &Py%(type)s_Type))\n' + \
+    dflt = '    if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n' + \
 	   '        %(name)s = %(cast)s(py_%(name)s->obj);\n' + \
 	   '    else if (py_%(name)s) {\n' + \
 	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n' + \
 	   '        return NULL;\n' + \
 	   '    }\n'
-    check = '    if (!PyGtk_Check(%(name)s, &Py%(type)s_Type)) {\n' + \
+    check = '    if (!pygobject_check(%(name)s, &Py%(type)s_Type)) {\n' + \
 	    '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n' + \
 	    '        return NULL;\n' + \
 	    '    }\n'
@@ -315,14 +315,14 @@ class ObjectArg(ArgType):
 	if pnull:
 	    if pdflt:
 		varlist.add(self.objname, '*' + pname + ' = ' + pdflt)
-		varlist.add('PyGtk_Object', '*py_' + pname + ' = NULL')
+		varlist.add('PyGObject', '*py_' + pname + ' = NULL')
 		parselist.append('&py_' + pname)
 		extracode.append(self.nulldflt % {'name':pname,
 						  'cast':self.cast,
 						  'type':self.objname}) 
 	    else:
 		varlist.add(self.objname, '*' + pname + ' = NULL')
-		varlist.add('PyGtk_Object', '*py_' + pname)
+		varlist.add('PyGObject', '*py_' + pname)
 		parselist.append('&py_' + pname)
 		extracode.append(self.null % {'name':pname,
 					      'cast':self.cast,
@@ -332,14 +332,14 @@ class ObjectArg(ArgType):
 	else:
 	    if pdflt:
 		varlist.add(self.objname, '*' + pname + ' = ' + pdflt)
-		varlist.add('PyGtk_Object', '*py_' + pname + ' = NULL')
+		varlist.add('PyGObject', '*py_' + pname + ' = NULL')
 		parselist.append('&py_' + pname)
 		extracode.append(self.dflt % {'name':pname,
 					      'cast':self.cast,
 					      'type':self.objname}) 
 		arglist.append(pname)
 	    else:
-		varlist.add('PyGtk_Object', '*' + pname)
+		varlist.add('PyGObject', '*' + pname)
 		parselist.append('&' + pname)
 		extracode.append(self.check % {'name':pname,
 					       'cast':self.cast,
@@ -348,7 +348,7 @@ class ObjectArg(ArgType):
 	    return 'O'
     def write_return(self, ptype, varlist):
 	return '    /* PyGtk_New handles NULL checking */\n' + \
-	       '    return PyGtk_New((GtkObject *)%(func)s);'
+	       '    return pygobject_new((GtkObject *)%(func)s);'
 
 class BoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
