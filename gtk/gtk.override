@@ -1345,13 +1345,13 @@ _wrap_gtk_tree_model_get_iter(PyGObject *self, PyObject *args,PyObject *kwargs)
     GtkTreeIter iter;
     GtkTreePath *path;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkTreeModel.get_iter",
-				     kwlist, &PyTuple_Type, &py_path))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkTreeModel.get_iter",
+				     kwlist, &py_path))
 	return NULL;
 
     path = pygtk_tree_path_from_pyobject(py_path);
     if (!path) {
-	PyErr_SetString(PyExc_TypeError, "GtkTreeModel.get_iter requires a tuple of integers as an argument");
+	PyErr_SetString(PyExc_TypeError, "GtkTreeModel.get_iter requires a tree path as its argument");
 	return NULL;
     }
     if (gtk_tree_model_get_iter(GTK_TREE_MODEL(self->obj), &iter, path)) {

@@ -572,7 +572,18 @@ class GErrorArg(ArgType):
 
 class GtkTreePathArg(ArgType):
     # haven't done support for default args.  Is it needed?
-    normal = '    %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
+    normal = ('    %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
+              '    if (!%(name)s) {\n'
+              '        PyErr_SetString(PyExc_TypeError, "could not convert %(name)s to a GtkTreePath");\n'
+              '        return NULL;\n'
+              '    }\n')
+    null = ('    if (py_%(name)s != Py_None) {\n'
+            '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
+            '        if (!%(name)s) {\n'
+            '            PyErr_SetString(PyExc_TypeError, "could not convert %(name)s to a GtkTreePath");\n'
+            '            return NULL;\n'
+            '        }\n'
+            '    }\n')
     null = ('    if (PyTuple_Check(py_%(name)s))\n'
             '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
             '    else if (py_%(name)s != Py_None) {\n'
@@ -591,11 +602,11 @@ class GtkTreePathArg(ArgType):
 	    info.arglist.append(pname)
             info.add_parselist('O', ['&py_' + pname], [pname])
 	else:
-            info.varlist.add('GtkTreePath', '*' + pname + ' = NULL')
+            info.varlist.add('GtkTreePath', '*' + pname)
 	    info.varlist.add('PyObject', '*py_' + pname)
             info.codebefore.append(self.normal % {'name': pname})
 	    info.arglist.append(pname)
-            info.add_parselist('O!', ['&PyTuple_Type', '&py_' + pname],[pname])
+            info.add_parselist('O', ['&py_' + pname], [pname])
         info.codeafter.append(self.freepath % {'name': pname})
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('GtkTreePath', '*ret')
@@ -616,30 +627,19 @@ class GtkTreePathArg(ArgType):
                                   '    return Py_None;')
 						       
 class GdkRectanglePtrArg(ArgType):
-    null = ('    if (PyTuple_Check(py_%(name)s)) {\n'
-            '        %(name)s = g_new(GdkRectangle, 1);\n'
-	    '        if (!PyArg_ParseTuple(py_%(name)s, "iiii", &%(name)s->x, &%(name)s->y, &%(name)s->width, &%(name)s->height)) {\n'
-	    '            return NULL;\n'
-	    '        }\n'
-	    '    } else {\n'
-	    '        PyErr_SetString(PyExc_TypeError, "%(name)s must be a tuple");\n'
-	    '    }\n')
+    null = ('    if (!pygdk_rectangle_from_pyobject(py_%(name)s, &%(name)s))\n'
+            '        return NULL;\n')
     def write_param(self, ptype, pname, pdflt, pnull, info):
-	if pnull:
-	    info.varlist.add('GdkRectangle', '*' + pname + ' = NULL')
-	    info.varlist.add('PyObject', '*py_' + pname + ' = Py_None')
-            info.add_parselist('O', ['&py_' + pname], [pname])
-	else:
-	    info.varlist.add('GdkRectangle', '*' + pname + ' = NULL')
-	    info.varlist.add('PyObject', '*py_' + pname)
-            info.add_parselist('O!', ['&PyTuple_Type', '&py_' + pname],[pname])
-	info.arglist.append(pname)
+        info.varlist.add('GdkRectangle', pname + ' = { 0, 0, 0, 0 }')
+        info.varlist.add('PyObject', '*py_' + pname + ' = Py_None')
+        info.add_parselist('O', ['&py_' + pname], [pname])
+	info.arglist.append('&' + pname)
 	info.codebefore.append(self.null % {'name':  pname})
 
 class GdkRectangleArg(ArgType):
     def write_return(self, ptype, ownsreturn, info):
 	info.varlist.add('GdkRectangle', 'ret')
-	info.codeafter.append('    return pyg_boxed_new(GDK_RECTANGLE, ret, TRUE, TRUE);')
+	info.codeafter.append('    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &ret, TRUE, TRUE);')
 
 class ArgMatcher:
     def __init__(self):
@@ -664,6 +664,7 @@ class ArgMatcher:
             self.register('GdkBitmap', oa)
             self.register('GdkBitmap*', oa)
     def register_boxed(self, ptype, typecode):
+        if self.argtypes.has_key(ptype): return
         arg = BoxedArg(ptype, typecode)
         self.register(ptype, arg)
 	self.register(ptype+'*', arg)

@@ -774,7 +774,13 @@ pygtk_tree_path_to_pyobject(GtkTreePath *path)
 GtkTreePath *
 pygtk_tree_path_from_pyobject(PyObject *object)
 {
-    if (PyTuple_Check(object)) {
+    if (PyInt_Check(object)) {
+	GtkTreePath *path;
+
+	path = gtk_tree_path_new();
+	gtk_tree_path_append_index(path, PyInt_AsLong(object));
+	return path;
+    } else if (PyTuple_Check(object)) {
 	GtkTreePath *path;
 	guint len, i;
 
@@ -817,6 +823,24 @@ PyGtkTreePath_to_value(GValue *value, PyObject *object)
 	return 0;
     }
     return -1;
+}
+
+gboolean
+pygdk_rectangle_from_pyobject(PyObject *object, GdkRectangle *rectangle)
+{
+    g_return_val_if_fail(rectangle != NULL, FALSE);
+
+    if (pyg_boxed_check(object, GDK_TYPE_RECTANGLE)) {
+	*rectangle = *pyg_boxed_get(object, GdkRectangle);
+	return TRUE;
+    }
+    if (PyArg_ParseTuple(object, "iiii", &rectangle->x, &rectangle->y,
+				&rectangle->width, &rectangle->height)) {
+	return TRUE;
+    }
+    PyErr_Clear();
+    PyErr_SetString(PyExc_TypeError, "could not convert to GdkRectangle");
+    return FALSE;
 }
 
 /* We have to set ob_type here because stupid win32 does not allow you

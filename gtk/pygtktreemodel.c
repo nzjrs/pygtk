@@ -323,6 +323,9 @@ pygtk_generic_tree_model_get_path(GtkTreeModel *tree_model, GtkTreeIter *iter)
     if (py_ret) {
 	GtkTreePath *path = pygtk_tree_path_from_pyobject(py_ret);
 
+	if (!path)
+	    g_warning("could not convert return value of get_tree_path() to "
+		      "a GtkTreePath");
 	Py_DECREF(py_ret);
 	return path;
     } else {

@@ -1,3 +1,33 @@
+2002-07-07  James Henstridge  <james@daa.com.au>
+
+	* codegen/argtypes.py (GtkTreePathArg.write_return): update to use
+	this function.
+	(ArgMatcher.register_boxed): short circuit if there is already a
+	handler for the boxed type (helps with setting custom handlers for
+	boxed types).
+
+	* gtk/gtk-types.c (pygdk_rectangle_from_pyobject): new function to
+	parse a GdkRectangle from a PyObject.
+
+	* gtk/pygtktreemodel.c (pygtk_generic_tree_model_get_path): print
+	a warning if the return value could not be converted to a
+	GtkTreePath.
+
+	* gtk/gtk.override (_wrap_gtk_tree_model_get_value): don't assume
+	tree paths are tuples.
+
+	* codegen/argtypes.py (GtkTreePathArg.write_param): fix up code
+	generator to get rid of assumption that tree paths are tuples, and
+	catch case where pygtk_tree_path_from_pyobject() returns NULL.
+
+	* gtk/gtk-types.c (pygtk_tree_path_from_pyobject): change so that
+	we treat an integer PyObject as a tree path with a single index.
+
+	* pygtype.c (pyg_closure_marshal): apply patch from Arjan Molenaar
+	<arjanmolenaar@hetnet.nl> that fixes a reference leak for the
+	argument tuple passed to the callback.
+	(pyg_signal_class_closure_marshal): apply similar fix here.
+
 Thu Jul  4 10:58:51 2002  Jonathan Blandford  <jrb@gnome.org>
 
 	* gtk/gtk-types.defs (TreeModelSort): We also implement

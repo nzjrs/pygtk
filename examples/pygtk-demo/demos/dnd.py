@@ -59,9 +59,9 @@ def target_drag_drop(w, context, x, y, time):
     print 'drop'
     have_drag = gtk.FALSE
     w.set(trashcan_closed, trashcan_closed_mask)
-#    if context.targets:
-#	w.drag_get_data(context, context.targets[0], time)
-#	return gtk.TRUE
+    if context.targets:
+	w.drag_get_data(context, context.targets[0], time)
+	return gtk.TRUE
     return gtk.FALSE
 def target_drag_data_received(w, context, x, y, data, info, time):
     if data.format == 8:

@@ -28,6 +28,8 @@ void pygtk_input_marshal(gpointer a, PyObject *func, int nargs, GtkArg *args);
 /* private */
 PyObject    *pygtk_tree_path_to_pyobject(GtkTreePath *path);
 GtkTreePath *pygtk_tree_path_from_pyobject(PyObject *object);
+gboolean     pygdk_rectangle_from_pyobject(PyObject *object,
+					   GdkRectangle *rectangle);
 
 GdkAtom pygdk_atom_from_pyobject(PyObject *object);
 
