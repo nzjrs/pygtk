@@ -11,6 +11,7 @@
 
 PyGTK is a set of bindings for the GTK widget set. It provides an object oriented interface that is slightly higher level than the C one. It automatically does all the type casting and reference counting that you would have to do normally with the C API. You can find out more on the official homepage, http://www.daa.com.au/~james/pygtk/"""
 
+from commands import getoutput
 from distutils.command.build import build
 from distutils.core import setup
 import os
@@ -22,7 +23,7 @@ from dsextras import Template, TemplateExtension
 
 MAJOR_VERSION = 1
 MINOR_VERSION = 99
-MICRO_VERSION = 14
+MICRO_VERSION = 15
 
 VERSION = "%d.%d.%d" % (MAJOR_VERSION,
                         MINOR_VERSION,
