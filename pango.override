@@ -1387,3 +1387,87 @@ _wrap_pango_attr_list_get_iterator(PyGBoxed *self)
 
     return pypango_attr_iterator_new(iter);
 }
+%%
+override PANGO_ASCENT kwargs
+static PyObject *
+_wrap_PANGO_ASCENT(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "rect", NULL };
+    int ret;
+    PangoRectangle rect;
+    PyObject *py_rect;
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, "O!:ASCENT",
+				     kwlist, &PyTuple_Type, &py_rect)
+	&& PyArg_ParseTuple(py_rect, "iiii:ASCENT", &rect.x, &rect.y,
+			     &rect.width, &rect.height)) {
+	ret = PANGO_ASCENT(rect);
+	return PyInt_FromLong(ret);
+    }
+    PyErr_Clear();
+    PyErr_SetString(PyExc_ValueError, "rect must be a 4-tuple of integers");
+    return NULL;
+}
+%%
+override PANGO_DESCENT kwargs
+static PyObject *
+_wrap_PANGO_DESCENT(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "rect", NULL };
+    int ret;
+    PangoRectangle rect;
+    PyObject *py_rect;
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, "O!:DESCENT",
+				     kwlist, &PyTuple_Type, &py_rect)
+	&& PyArg_ParseTuple(py_rect, "iiii:DESCENT", &rect.x, &rect.y,
+			     &rect.width, &rect.height)) {
+	ret = PANGO_DESCENT(rect);
+	return PyInt_FromLong(ret);
+    }
+    PyErr_Clear();
+    PyErr_SetString(PyExc_ValueError, "rect must be a 4-tuple of integers");
+    return NULL;
+}
+%%
+override PANGO_LBEARING kwargs
+static PyObject *
+_wrap_PANGO_LBEARING(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "rect", NULL };
+    int ret;
+    PangoRectangle rect;
+    PyObject *py_rect;
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, "O!:LBEARING",
+				     kwlist, &PyTuple_Type, &py_rect)
+	&& PyArg_ParseTuple(py_rect, "iiii:LBEARING", &rect.x, &rect.y,
+			     &rect.width, &rect.height)) {
+	ret = PANGO_LBEARING(rect);
+	return PyInt_FromLong(ret);
+    }
+    PyErr_Clear();
+    PyErr_SetString(PyExc_ValueError, "rect must be a 4-tuple of integers");
+    return NULL;
+}
+%%
+override PANGO_RBEARING kwargs
+static PyObject *
+_wrap_PANGO_RBEARING(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "rect", NULL };
+    int ret;
+    PangoRectangle rect;
+    PyObject *py_rect;
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, "O!:RBEARING",
+				     kwlist, &PyTuple_Type, &py_rect)
+	&& PyArg_ParseTuple(py_rect, "iiii:RBEARING", &rect.x, &rect.y,
+			     &rect.width, &rect.height)) {
+	ret = PANGO_RBEARING(rect);
+	return PyInt_FromLong(ret);
+    }
+    PyErr_Clear();
+    PyErr_SetString(PyExc_ValueError, "rect must be a 4-tuple of integers");
+    return NULL;
+}

@@ -62,6 +62,8 @@ initpango(void)
 		       PyFloat_FromDouble(PANGO_SCALE_LARGE));
     PyModule_AddObject(m, "SCALE_XX_LARGE",
 		       PyFloat_FromDouble(PANGO_SCALE_LARGE));    
+    PyModule_AddObject(m, "SCALE",
+		       PyInt_FromLong(PANGO_SCALE));    
 
     /* add anything else to the module dictionary (such as constants) */
 
