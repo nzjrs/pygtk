@@ -2212,18 +2212,24 @@
   )
 )
 
+(define-method get_accel_object
+  (of-object "GtkAccelLabel")
+  (c-name "gtk_accel_label_get_accel_object")
+  (return-type "GObject*")
+)
+
 (define-method get_accel_width
   (of-object "GtkAccelLabel")
   (c-name "gtk_accel_label_get_accel_width")
   (return-type "guint")
 )
 
-(define-method set_accel_widget
+(define-method set_accel_object
   (of-object "GtkAccelLabel")
-  (c-name "gtk_accel_label_set_accel_widget")
+  (c-name "gtk_accel_label_set_accel_object")
   (return-type "none")
   (parameters
-    '("GtkWidget*" "accel_widget")
+    '("GObject*" "accel_object")
   )
 )
 
@@ -2231,6 +2237,16 @@
   (of-object "GtkAccelLabel")
   (c-name "gtk_accel_label_refetch")
   (return-type "gboolean")
+)
+
+; DEPRECATED
+(define-method set_accel_widget
+  (of-object "GtkAccelLabel")
+  (c-name "gtk_accel_label_set_accel_widget")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "accel_widget")
+  )
 )
 
 
@@ -2737,6 +2753,50 @@
   (return-type "GtkReliefStyle")
 )
 
+(define-method set_label
+  (of-object "GtkButton")
+  (c-name "gtk_button_set_label")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "label")
+  )
+)
+
+(define-method get_label
+  (of-object "GtkButton")
+  (c-name "gtk_button_get_label")
+  (return-type "const-gchar*")
+)
+
+(define-method set_use_underline
+  (of-object "GtkButton")
+  (c-name "gtk_button_set_use_underline")
+  (return-type "none")
+  (parameters
+    '("gboolean" "value")
+  )
+)
+
+(define-method get_use_underline
+  (of-object "GtkButton")
+  (c-name "gtk_button_get_use_underline")
+  (return-type "gboolean")
+)
+
+(define-method set_use_stock
+  (of-object "GtkButton")
+  (c-name "gtk_button_set_use_stock")
+  (return-type "none")
+  (parameters
+    '("gboolean" "value")
+  )
+)
+
+(define-method get_use_stock
+  (of-object "GtkButton")
+  (c-name "gtk_button_get_use_stock")
+  (return-type "gboolean")
+)
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcalendar.h
@@ -7228,6 +7288,27 @@
   )
 )
 
+(define-method get_attributes
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_attributes")
+  (return-type "PangoAttrList*")
+)
+
+(define-method set_label
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set_label")
+  (return-type "none")
+  (parameters
+    '("const-char*" "label")
+  )
+)
+
+(define-method get_label
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_label")
+  (return-type "const-gchar*")
+)
+
 (define-method set_markup
   (of-object "GtkLabel")
   (c-name "gtk_label_set_markup")
@@ -7235,6 +7316,36 @@
   (parameters
     '("const-gchar*" "str")
   )
+)
+
+(define-method set_use_markup
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set_use_markup")
+  (return-type "none")
+  (parameters
+    '("gboolean" "setting")
+  )
+)
+
+(define-method get_use_markup
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_use_markup")
+  (return-type "gboolean")
+)
+
+(define-method set_use_underline
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set_use_underline")
+  (return-type "none")
+  (parameters
+    '("gboolean" "setting")
+  )
+)
+
+(define-method get_use_underline
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_use_underline")
+  (return-type "gboolean")
 )
 
 (define-method set_markup_with_mnemonic
@@ -7277,6 +7388,12 @@
   (parameters
     '("GtkJustification" "jtype")
   )
+)
+
+(define-method get_justify
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_justify")
+  (return-type "GtkJustification")
 )
 
 (define-method set_pattern
@@ -7348,6 +7465,7 @@
   )
 )
 
+; DEPRECATED
 (define-method get
   (of-object "GtkLabel")
   (c-name "gtk_label_get")
@@ -7357,6 +7475,7 @@
   )
 )
 
+; DEPRECATED
 (define-method parse_uline
   (of-object "GtkLabel")
   (c-name "gtk_label_parse_uline")
@@ -9645,9 +9764,9 @@
   )
 )
 
-(define-method group
+(define-method get_group
   (of-object "GtkRadioButton")
-  (c-name "gtk_radio_button_group")
+  (c-name "gtk_radio_button_get_group")
   (return-type "GSList*")
 )
 
@@ -9658,6 +9777,13 @@
   (parameters
     '("GSList*" "group")
   )
+)
+
+; DEPRECATED
+(define-method group
+  (of-object "GtkRadioButton")
+  (c-name "gtk_radio_button_group")
+  (return-type "GSList*")
 )
 
 
@@ -10649,6 +10775,12 @@
   )
 )
 
+(define-method get_digits
+  (of-object "GtkSpinButton")
+  (c-name "gtk_spin_button_get_digits")
+  (return-type "guint")
+)
+
 (define-method set_increments
   (of-object "GtkSpinButton")
   (c-name "gtk_spin_button_set_increments")
@@ -10659,6 +10791,16 @@
   )
 )
 
+(define-method get_increments
+  (of-object "GtkSpinButton")
+  (c-name "gtk_spin_button_get_increments")
+  (return-type "none")
+  (parameters
+    '("gdouble*" "step")
+    '("gdouble*" "page")
+  )
+)
+
 (define-method set_range
   (of-object "GtkSpinButton")
   (c-name "gtk_spin_button_set_range")
@@ -10666,6 +10808,16 @@
   (parameters
     '("gdouble" "min")
     '("gdouble" "max")
+  )
+)
+
+(define-method get_range
+  (of-object "GtkSpinButton")
+  (c-name "gtk_spin_button_get_range")
+  (return-type "none")
+  (parameters
+    '("gdouble*" "min")
+    '("gdouble*" "max")
   )
 )
 
@@ -10699,6 +10851,12 @@
   )
 )
 
+(define-method get_update_policy
+  (of-object "GtkSpinButton")
+  (c-name "gtk_spin_button_get_update_policy")
+  (return-type "guint")
+)
+
 (define-method set_numeric
   (of-object "GtkSpinButton")
   (c-name "gtk_spin_button_set_numeric")
@@ -10706,6 +10864,12 @@
   (parameters
     '("gboolean" "numeric")
   )
+)
+
+(define-method get_numeric
+  (of-object "GtkSpinButton")
+  (c-name "gtk_spin_button_get_numeric")
+  (return-type "gboolean")
 )
 
 (define-method spin
@@ -10727,6 +10891,12 @@
   )
 )
 
+(define-method get_wrap
+  (of-object "GtkSpinButton")
+  (c-name "gtk_spin_button_get_wrap")
+  (return-type "gboolean")
+)
+
 (define-method set_snap_to_ticks
   (of-object "GtkSpinButton")
   (c-name "gtk_spin_button_set_snap_to_ticks")
@@ -10734,6 +10904,12 @@
   (parameters
     '("gboolean" "snap_to_ticks")
   )
+)
+
+(define-method get_snap_to_ticks
+  (of-object "GtkSpinButton")
+  (c-name "gtk_spin_button_get_snap_to_ticks")
+  (return-type "gboolean")
 )
 
 (define-method update
@@ -13670,6 +13846,12 @@
   (parameters
     '("const-gchar*" "label")
   )
+)
+
+(define-method get_mode
+  (of-object "GtkToggleButton")
+  (c-name "gtk_toggle_button_get_mode")
+  (return-type "gboolean")
 )
 
 (define-method set_mode
