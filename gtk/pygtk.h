@@ -2,6 +2,7 @@
 #ifndef _PYGTK_H_
 #define _PYGTK_H_
 
+#define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
 #include <Python.h>
 #include <ExtensionClass.h>

@@ -3,6 +3,8 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+/* include this first, before NO_IMPORT_PYGOBJECT is defined */
+#include <pygobject.h>
 #include "pygtk-private.h"
 
 void _pygtk_register_boxed_types(PyObject *moddict);
@@ -51,6 +53,9 @@ init_gtk(void)
     PyObject *av;
     int argc, i;
     char **argv;
+
+    /* initialise gobject */
+    init_pygobject();
 
     /* initialise gthread if appropriate ... */
 #ifdef WITH_THREAD
