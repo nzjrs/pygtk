@@ -1440,26 +1440,6 @@ _wrap_gtk_radio_button_get_group(PyGObject *self) {
     return py_list;
 }
 %%
-override gtk_radio_button_set_group kwargs
-static PyObject *
-_wrap_gtk_radio_button_set_group(PyGObject *self, PyObject *args,
-				 PyObject *kwargs) {
-    static char *kwlist[] = { "group", NULL };
-    PyObject *py_group;
-    GSList *list;
-    GtkRadioButton *group;
-
-    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"O!:GtkRadioButton.set_group",
-                                     kwlist, &PyGtkRadioButton_Type,
-				     &py_group))
-        return NULL;
-    group = GTK_RADIO_BUTTON(pygobject_get(py_group));
-    list = gtk_radio_button_get_group(group);
-    gtk_radio_button_set_group(GTK_RADIO_BUTTON(self->obj), list);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
 override gtk_list_item_new kwargs
 static int
 _wrap_gtk_list_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -3542,17 +3522,26 @@ _wrap_gtk_radio_button_set_group(PyGObject *self, PyObject *args,
     GSList *list;
     GtkRadioButton *group;
 
-    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"O!:GtkRadioButton.set_group",
-                                     kwlist, &PyGtkRadioButton_Type,
-				     &py_group))
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"O:GtkRadioButton.set_group",
+                                     kwlist, &py_group))
         return NULL;
-    group = GTK_RADIO_BUTTON(pygobject_get(py_group));
-    list = gtk_radio_button_get_group(group);
-    if (list == gtk_radio_button_get_group(GTK_RADIO_BUTTON(self->obj))) {
-        PyErr_SetString(PyExc_ValueError, "radio button already in group");
-        return NULL;
+
+    if (pygobject_check(py_group, &PyGtkRadioButton_Type)) {
+	group = GTK_RADIO_BUTTON(pygobject_get(py_group));
+	list = gtk_radio_button_get_group(group);
+	if (list == gtk_radio_button_get_group(GTK_RADIO_BUTTON(self->obj))) {
+	    PyErr_SetString(PyExc_ValueError, "radio button already in group");
+	    return NULL;
+	}
+    } else if (py_group == Py_None) {
+	list = NULL;
+    } else {
+	PyErr_SetString(PyExc_TypeError, "group must be a RadioGroup or None");
+	return NULL;
     }
+
     gtk_radio_button_set_group(GTK_RADIO_BUTTON(self->obj), list);
+    
     Py_INCREF(Py_None);
     return Py_None;
 }
