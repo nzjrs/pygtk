@@ -3567,11 +3567,11 @@
   (return-type "GType")
 )
 
-(define-method install_child_property
-  (of-object "GtkContainerClass")
+(define-function container_class_install_child_property
   (c-name "gtk_container_class_install_child_property")
   (return-type "none")
   (parameters
+    '("GtkContainerClass*" "cclass")
     '("guint" "property_id")
     '("GParamSpec*" "pspec")
   )
@@ -12145,8 +12145,7 @@
   )
 )
 
-(define-method install_property
-  (of-object "GtkSettings")
+(define-function settings_install_property
   (c-name "gtk_settings_install_property")
   (return-type "none")
   (parameters
@@ -12154,8 +12153,7 @@
   )
 )
 
-(define-method install_property_parser
-  (of-object "GtkSettings")
+(define-function settings_install_property_parser
   (c-name "gtk_settings_install_property_parser")
   (return-type "none")
   (parameters
@@ -19982,35 +19980,35 @@
   (return-type "none")
 )
 
-(define-method install_style_property
-  (of-object "GtkWidgetClass")
+(define-function widget_class_install_style_property
   (c-name "gtk_widget_class_install_style_property")
   (return-type "none")
   (parameters
+    '("GtkWidgetClass*" "klass")
     '("GParamSpec*" "pspec")
   )
 )
 
-(define-method install_style_property_parser
-  (of-object "GtkWidgetClass")
+(define-function widget_class_install_style_property_parser
   (c-name "gtk_widget_class_install_style_property_parser")
   (return-type "none")
   (parameters
+    '("GtkWidgetClass*" "klass")
     '("GParamSpec*" "pspec")
     '("GtkRcPropertyParser" "parser")
   )
 )
 
-(define-method find_style_property
-  (of-object "GtkWidgetClass")
+(define-function widget_class_find_style_property
   (c-name "gtk_widget_class_find_style_property")
   (return-type "GParamSpec*")
   (parameters
+    '("GtkWidgetClass*" "klass")
     '("const-gchar*" "property_name")
   )
 )
 
-(define-function widget_list_style_properties
+(define-function widget_class_list_style_properties
   (c-name "gtk_widget_class_list_style_properties")
   (return-type "GParamSpec**")
   (parameters

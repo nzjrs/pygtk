@@ -1,5 +1,24 @@
 2004-06-04  Johan Dahlin  <johan@gnome.org>
 
+	* gtk/gtkwidget.override (_wrap_gtk_widget_class_install_style_property): Impl
+
+	* gtk/gtkcontainer.override
+	(_wrap_gtk_container_class_list_child_properties): Rename first
+	kwlist argument to klass (from widget), class should be a
+	GObjectClass and not a GtkWidgetClass
+	(_wrap_gtk_container_class_install_child_property): Impl.
+
+	* gtk/gtk.defs: Change a couple of methods to functions and set
+	correct class
+
+	* pygobject.h: Add pyg_param_spec_from_object
+
+	* gobjectmodule.c (create_property): Don't install the property
+	here, return it instead. And don't require a GObjectClass as argument
+	(pyg_param_spec_from_object): New function
+	(add_properties): Update to new create_property
+	(pygobject_api_functions): Export pyg_param_spec_from_object
+
 	* gtk/gtkcontainer.override
 	(_wrap_gtk_container_class_list_child_properties): Implement for Lorenzo.
 

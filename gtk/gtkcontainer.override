@@ -558,11 +558,11 @@ static PyObject *
 _wrap_gtk_container_class_list_child_properties (PyObject *self, PyObject *args,
 					      PyObject*kwargs)
 {
-    static char *kwlist[] = { "widget", NULL };
+    static char *kwlist[] = { "klass", NULL };
     GParamSpec **specs;
     PyObject *py_itype, *list;
     GType itype;
-    GtkWidgetClass *class;
+    GObjectClass *class;
     guint nprops;
     guint i;
 
@@ -602,4 +602,60 @@ _wrap_gtk_container_class_list_child_properties (PyObject *self, PyObject *args,
     g_type_class_unref(class);
 
     return list;
+}
+%%
+override gtk_container_class_install_child_property kwargs
+static PyObject *
+_wrap_gtk_container_class_install_child_property (PyObject *self,
+					       PyObject *args,
+					       PyObject* kwargs)
+{
+    static char *kwlist[] = { "klass", "property_id", "pspec", NULL };
+    PyObject *py_itype, *property;
+    GType itype;
+    GtkContainerClass *class;
+    guint property_id;
+    GParamSpec *pspec;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OiO:container_class_install_child_property",
+				     kwlist,
+				     &py_itype, &property_id, &property))
+	return NULL;
+
+
+    if ((itype = pyg_type_from_object(py_itype)) == 0)
+	return NULL;
+
+    if (!g_type_is_a(itype, GTK_TYPE_CONTAINER)) {
+	PyErr_SetString(PyExc_TypeError, "type must be derived from GtkContainer");
+	return NULL;
+    }
+
+    class = g_type_class_ref(itype);
+    if (!class) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not get a reference to type class");
+	return NULL;
+    }
+
+    pspec = pyg_param_spec_from_object(property);
+    if(!pspec) {
+	g_type_class_unref(class);
+	return NULL;
+    }
+
+    if (gtk_container_class_find_child_property(G_OBJECT_CLASS(class), pspec->name)) {
+	PyErr_Format(PyExc_TypeError,
+		     "there is already a '%s' property installed", pspec->name);
+	g_type_class_unref(class);
+	return NULL;
+    }
+    
+    gtk_container_class_install_child_property(class, property_id, pspec);
+	
+    g_type_class_unref(class);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }

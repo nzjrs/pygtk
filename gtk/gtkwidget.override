@@ -29,6 +29,7 @@ ignore
   gtk_widget_set
   gtk_widget_setv
   gtk_widget_style_get_valist
+  gtk_widget_class_install_style_property_parser
 %%
 override gtk_widget_translate_coordinates kwargs
 static PyObject *
@@ -207,6 +208,61 @@ _wrap_gtk_widget_class_list_style_properties (PyObject *self, PyObject *args,
     g_type_class_unref(class);
 
     return list;
+}
+%%
+override gtk_widget_class_install_style_property kwargs
+static PyObject *
+_wrap_gtk_widget_class_install_style_property (PyObject *self,
+					       PyObject *args,
+					       PyObject* kwargs)
+{
+    static char *kwlist[] = { "widget", "pspec", NULL };
+    PyObject *py_itype, *property;
+    GType itype;
+    GtkWidgetClass *class;
+    GParamSpec *pspec;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OO:widget_class_install_style_property",
+				     kwlist,
+				     &py_itype, &property))
+	return NULL;
+
+
+    if ((itype = pyg_type_from_object(py_itype)) == 0)
+	return NULL;
+
+    if (!g_type_is_a(itype, GTK_TYPE_WIDGET)) {
+	PyErr_SetString(PyExc_TypeError, "type must be derived from GtkWidget");
+	return NULL;
+    }
+
+    class = g_type_class_ref(itype);
+    if (!class) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not get a reference to type class");
+	return NULL;
+    }
+
+    pspec = pyg_param_spec_from_object(property);
+    if(!pspec) {
+	g_type_class_unref(class);
+	return NULL;
+    }
+
+    if (gtk_widget_class_find_style_property(class, pspec->name)) {
+	PyErr_Format(PyExc_TypeError,
+		     "there is already a '%s' property installed", pspec->name);
+	g_type_class_unref(class);
+	return NULL;
+    }
+    
+    gtk_widget_class_install_style_property(class, pspec);
+	
+    g_type_class_unref(class);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 %%
 override gtk_widget_style_get_property kwargs
