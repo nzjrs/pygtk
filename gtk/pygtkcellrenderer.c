@@ -94,6 +94,7 @@ pygtk_generic_cell_renderer_get_size (GtkCellRenderer *cell,
 				      gint            *height)
 {
     PyObject *self, *py_ret, *py_widget, *py_cell_area;
+    gint my_x, my_y, my_width, my_height;
 
     g_return_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell));
 
@@ -117,14 +118,27 @@ pygtk_generic_cell_renderer_get_size (GtkCellRenderer *cell,
     Py_DECREF(py_widget);
     Py_DECREF(py_cell_area);
 
-    if (!PyArg_ParseTuple(py_ret, "iiii", x_offset, y_offset, width, height)) {
+    if (!PyArg_ParseTuple(py_ret, "iiii",
+			  &my_x, &my_y, &my_width, &my_height)) {
 	PyErr_Clear();
 	Py_DECREF(py_ret);
 	g_warning("could not parse return value of get_size() method.  "
 		  "Should be of form (x_offset, y_offset, width, height)");
 	return;
     }
+
     /* success */
+    if (x_offset)
+	*x_offset = my_x;
+
+    if (y_offset)
+	*y_offset = my_y;
+
+    if (width)
+	*width = my_width;
+
+    if (height)
+	*height = my_height;
 }
 
 static void
