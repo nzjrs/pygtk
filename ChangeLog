@@ -1,3 +1,22 @@
+2001-06-08  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pyg_register_boxed): function to register a new
+	boxed type ExtensionClass.
+	(pyg_boxed_new): new function to create wrapper instances for a
+	particular boxed type (given its typecode).
+
+2001-06-07  James Henstridge  <james@daa.com.au>
+
+	* pygobject.h (pyg_boxed_get): add prototypes for a PyGBoxed type
+	that will be used for all boxed types in pygtk (well, I can hope
+	:)
+
+	* gobjectmodule.c (pyg_register_interface): new function to
+	register interfaces with.  Makes sure I don't accidentally give
+	the interface a parent class :).  Also adds a __gtype__ class
+	attribute similar to GObject classes.  May also make interfaces
+	subclasses of GInterface at some point.
+
 2001-05-29  James Henstridge  <james@daa.com.au>
 
 	* codegen/Makefile.am: install the code generator
