@@ -61,10 +61,16 @@
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkicontheme--get-example-icon-name">get_example_icon_name</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkicontheme--rescan-if-needed">rescan_if_needed</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkicontheme--get-icon-sizes">get_icon_sizes</link></methodname>
+	<methodparam><parameter role="keyword">icon_name</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -662,6 +668,36 @@ instance, to use when presenting a list of themes to the user.)</para>
 see if the icon theme has changed; if it has, any currently cached
 information is discarded and will be reloaded next time the icon theme is
 accessed.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkicontheme--get-icon-sizes">
+      <title>gtk.IconTheme.get_icon_sizes</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_icon_sizes</methodname>
+	  <methodparam><parameter role="keyword">icon_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of an icon</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a tuple containing the sizes that the icon is
+available in.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_icon_sizes</methodname>() method returns a
+tuple containing the sizes available for the icon named by
+<parameter>icon_name</parameter>. A size of -1 means the icon is
+scalable. If the icon is not found an emty tuple is returned.</para>
 
     </refsect2>
 
