@@ -1,5 +1,5 @@
 pygtkdir = $(pythondir)/gtk
-pygtk_PYTHON = __init__.py keysyms.py
+pygtk_PYTHON = __init__.py keysyms.py compat.py
 
 pygtkexecdir = $(pyexecdir)/gtk
 

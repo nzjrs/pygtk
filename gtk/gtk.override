@@ -2859,16 +2859,16 @@ static PyObject *
 _wrap_gtk_editable_insert_text(PyGObject *self, PyObject *args,
 			       PyObject *kwargs)
 {
-    static char *kwlist[] = { "text", "length", "pos", NULL };
+    static char *kwlist[] = { "text", "position", NULL };
     char *text;
-    int len, pos=0;
+    int len, position=0;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "s#|ii:GtkEditable.insert_text",
-				     kwlist, &text, &len, &len, &pos))
+				     "s#|i:GtkEditable.insert_text",
+				     kwlist, &text, &len, &position))
         return NULL;
-    gtk_editable_insert_text(GTK_EDITABLE(self->obj), text, len, &pos);
-    return PyInt_FromLong(pos);
+    gtk_editable_insert_text(GTK_EDITABLE(self->obj), text, len, &position);
+    return PyInt_FromLong(position);
 }
 %%
 override gtk_editable_get_selection_bounds noargs
