@@ -297,6 +297,36 @@ _wrap_gtk_spin_button_get_range(PyGObject *self, PyObject *args)
     return Py_BuildValue("(dd)", min, max);
 }
 %%
+override gtk_window_list_toplevels
+static PyObject *
+_wrap_gtk_window_list_toplevels(PyGObject *self, PyObject *args)
+{
+    GList *list, *tmp;
+    PyObject *py_list;
+    PyObject *gtk_obj;
+
+    if(!PyArg_ParseTuple(args,":window_list_toplevels"))
+        return NULL;
+    list = gtk_window_list_toplevels();
+
+    if ((py_list = PyList_New(0)) == NULL) {
+	g_list_free(list);
+	return NULL;
+    }
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+	gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+	if (gtk_obj == NULL) {
+	    g_list_free(list);
+	    Py_DECREF(py_list);
+	    return NULL;
+	}
+	PyList_Append(py_list, gtk_obj);
+	Py_DECREF(gtk_obj);
+    }
+    g_list_free(list);
+    return py_list;
+}
+%%
 override gtk_window_set_geometry_hints kwargs
 static PyObject *
 _wrap_gtk_window_set_geometry_hints(PyGObject *self, PyObject *args,
@@ -2847,6 +2877,37 @@ _wrap_gtk_toolbar_insert_item(PyGObject *self, PyObject *args,
     }
     ret = gtk_toolbar_insert_item(GTK_TOOLBAR(self->obj), text, tooltip_text,
 				  tooltip_private_text, icon, NULL, NULL,
+				  position);
+    if (ret && PyCallable_Check(callback)) {
+	g_signal_connect_closure(ret, "clicked",
+				 pyg_closure_new(callback, param, NULL),
+				 FALSE);
+    }
+    return pygobject_new((GObject *)ret);
+}
+%%
+override gtk_toolbar_insert_stock kwargs
+static PyObject *
+_wrap_gtk_toolbar_insert_stock(PyGObject *self, PyObject *args,
+			      PyObject *kwargs)
+{
+    static char *kwlist[] = { "stock_id", "tooltip_text", "tooltip_private_text",
+			      "callback", "user_data", "position",
+			      NULL };
+    char *stock_id, *tooltip_text, *tooltip_private_text;
+    PyObject *callback, *param;
+    GtkWidget *ret;
+    int position;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "zzzOOi:GtkToolbar.insert_stock", kwlist,
+				     &stock_id, &tooltip_text,
+				     &tooltip_private_text,
+				     &callback, &param, &position))
+	return NULL;
+
+    ret = gtk_toolbar_insert_stock(GTK_TOOLBAR(self->obj), stock_id, tooltip_text,
+				  tooltip_private_text, NULL, NULL,
 				  position);
     if (ret && PyCallable_Check(callback)) {
 	g_signal_connect_closure(ret, "clicked",
