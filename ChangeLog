@@ -1,5 +1,15 @@
 2001-12-01  James Henstridge  <james@daa.com.au>
 
+	* codegen/argtypes.py: change write_return methods to simply add a
+	"ret" variable to the varlist of the appropriate return type, and
+	add code for returning the correct value to codeafter code list.
+	(GErrorArg.write_param): add error handling code to the codeafter
+	code list.
+
+	* codegen/codegen.py: s/extracode/codebefore/
+	(*): get rid of the %(handlereturn)s stuff, and replace with "ret
+	= functioncall" statements, followed by %(codeafter)s.
+
 	* codegen/codegen.py: update to use WrapperInfo.
 
 	* codegen/argtypes.py: lots of changes to add a WrapperInfo class,

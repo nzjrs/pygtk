@@ -47,10 +47,9 @@ class WrapperInfo:
     def get_arglist(self):
         return string.join(self.arglist, ', ')
     def get_varlist(self):
-        self.kwlist.append('NULL')
-        self.varlist.add('static char', '*kwlist[] = { ' +
-                         string.join(self.kwlist, ', ') + ' }')
-        return str(self.varlist)
+        kwlist = '    static char *kwlist[] = { %s };\n' % \
+                 string.join(self.kwlist + [ 'NULL' ], ', ')
+        return kwlist + str(self.varlist)
 
     def add_parselist(self, codes, parseargs, keywords):
         self.parsestr = self.parsestr + codes
@@ -62,21 +61,22 @@ class WrapperInfo:
             self.kwlist.append('"%s"' % kw)
 
 class ArgType:
-    checkerror = '0'
-    handleerror = ''
     def write_param(self, ptype, pname, pdflt, pnull, info):
 	"""Add code to the WrapperInfo instance to handle
 	parameter."""
-	raise RuntimeError, "this is an abstract class"
+	raise RuntimeError, "write_param not implemented for %s" % \
+              self.__class__.__name__
     def write_return(self, ptype, info):
-	"""Returns a pattern containing %(func)s that will do the return"""
-	raise RuntimeError, "this is an abstract class"
+	"""Adds a variable named ret of the return type to
+	info.varlist, and add any required code to info.codeafter to
+	convert the return value to a python object."""
+	raise RuntimeError, "write_return not implemented for %s" % \
+              self.__class__.__name__
 
 class NoneArg(ArgType):
     def write_return(self, ptype, info):
-	return '    %(func)s;\n' + \
-	       '    Py_INCREF(Py_None);\n' + \
-	       '    return Py_None;'
+        info.codeafter.append('    Py_INCREF(Py_None);\n' +
+                              '    return Py_None;')
 
 class StringArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
@@ -93,26 +93,20 @@ class StringArg(ArgType):
     def write_return(self, ptype, info):
 	if ptype in ('const-gchar*', 'const-char*', 'static_string'):
 	    info.varlist.add('const gchar', '*ret')
-	    return '    ret = %(func)s;\n' + \
-                   '%(handleerror)s\n' + \
-		   '    if (ret)\n' + \
-		   '        return PyString_FromString(ret);\n' + \
-		   '    Py_INCREF(Py_None);\n' + \
-		   '    return Py_None;'
+            info.codeafter.append('    if (ret)\n' +
+                                  '        return PyString_FromString(ret);\n'+
+                                  '    Py_INCREF(Py_None);\n' +
+                                  '    return Py_None;')
 	else:
 	    # have to free result ...
 	    info.varlist.add('gchar', '*ret')
-	    return '    ret = %(func)s;\n' + \
-                   '    if (%(checkerror)s)\n' + \
-                   '        g_free(ret);\n' + \
-                   '%(handleerror)s\n' + \
-		   '    if (ret) {\n' + \
-		   '        PyObject *py_ret = PyString_FromString(ret);\n' + \
-		   '        g_free(ret);\n' + \
-		   '        return py_ret;\n' + \
-		   '    }\n' + \
-		   '    Py_INCREF(Py_None);\n' + \
-		   '    return Py_None;'
+            info.codeafter.append('    if (ret) {\n' +
+                                  '        PyObject *py_ret = PyString_FromString(ret);\n' +
+                                  '        g_free(ret);\n' +
+                                  '        return py_ret;\n' +
+                                  '    }\n' +
+                                  '    Py_INCREF(Py_None);\n' +
+                                  '    return Py_None;')
 
 class UCharArg(ArgType):
     # allows strings with embedded NULLs.
@@ -135,15 +129,12 @@ class CharArg(ArgType):
 	if pdflt:
 	    info.varlist.add('char', pname + " = '" + pdflt + "'")
 	else:
-	    infovarlist.add('char', pname)
+	    info.varlist.add('char', pname)
 	info.arglist.append(pname)
         info.add_parselist('c', ['&' + pname], [pname])
     def write_return(self, ptype, info):
-	info.varlist.add('gchar', 'ret[2]')
-	return '    ret[0] = %(func)s;\n' + \
-               '%(handleerror)s\n' + \
-	       "    ret[1] = '\0';\n" + \
-	       '    return PyString_FromString(ret);'
+	info.varlist.add('gchar', 'ret')
+        info.codeafter.append('    return PyString_FromStringAndSize(&ret, 1);')
 
 class IntArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
@@ -155,10 +146,7 @@ class IntArg(ArgType):
         info.add_parselist('i', ['&' + pname], [pname])
     def write_return(self, ptype, info):
         info.varlist.add('int', 'ret')
-        
-	return '    ret = %(func)s;\n' + \
-               '%(handleerror)s\n' + \
-               '    return PyInt_FromLong(ret);'
+        info.codeafter.append('    return PyInt_FromLong(ret);')
 
 class DoubleArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
@@ -170,9 +158,7 @@ class DoubleArg(ArgType):
         info.add_parselist('d', ['&' + pname], [pname])
     def write_return(self, ptype, info):
         info.varlist.add('double', 'ret')
-	return '    ret = %(func)s;\n' + \
-               '%(handleerror)s\n' + \
-               '    return PyFloat_FromDouble(%(func)s);'
+        info.codeafter.append('    return PyFloat_FromDouble(ret);')
 
 class FileArg(ArgType):
     nulldflt = '    if (py_%(name)s == Py_None)\n' + \
@@ -213,15 +199,12 @@ class FileArg(ArgType):
 		info.varlist.add('PyObject', '*' + pname)
 		info.arglist.append('PyFile_AsFile(' + pname + ')')
             info.add_parselist('O!', ['&PyFile_Type', '&' + pname], [pname])
-	    return 'O!'
     def write_return(self, ptype, info):
 	info.varlist.add('FILE', '*ret')
-	return '    ret = %(func)s;\n' + \
-               '%(handleerror)s\n' + \
-	       '    if (ret)\n' + \
-	       '        return PyFile_FromFile(ret, "", "", fclose);\n' + \
-	       '    Py_INCREF(Py_None);\n' + \
-	       '    return Py_None;'
+        info.codeafter.append('    if (ret)\n' +
+                              '        return PyFile_FromFile(ret, "", "", fclose);\n' +
+                              '    Py_INCREF(Py_None);\n' +
+                              '    return Py_None;')
 
 class EnumArg(ArgType):
     enum = '    if (pyg_enum_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
@@ -240,10 +223,8 @@ class EnumArg(ArgType):
 	info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname]);
     def write_return(self, ptype, info):
-        info.varlist.add('int', 'ret')
-	return '    ret = (int) %(func)s;\n' + \
-               '%(handleerror)s\n' + \
-               '    return PyInt_FromLong(ret);'
+        info.varlist.add('gint', 'ret')
+        info.codeafter.append('    return PyInt_FromLong(ret);')
 
 class FlagsArg(ArgType):
     flag = '    if (%(default)spyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
@@ -265,7 +246,8 @@ class FlagsArg(ArgType):
 	info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname])
     def write_return(self, ptype, info):
-	return '    return PyInt_FromLong(%(func)s);'
+        info.varlist.add('guint', 'ret')
+        info.codeafter.append('    return PyInt_FromLong(ret);')
 
 class ObjectArg(ArgType):
     # should change these checks to more typesafe versions that check
@@ -331,11 +313,10 @@ class ObjectArg(ArgType):
 		info.arglist.append('%s(%s->obj)' % (self.cast, pname))
                 info.add_parselist('O', ['&' + pname], [pname])
     def write_return(self, ptype, info):
-        info.varlist.add('GObject *', 'ret')
-	return '    ret = (GObject *)%(func)s;\n' + \
-               '%(handleerror)s\n' + \
-               '    /* pygobject_new handles NULL checking */\n' + \
-	       '    return pygobject_new(ret);'
+        if ptype[-1] == '*': ptype = ptype[:-1]
+        info.varlist.add(ptype, '*ret')
+        info.codeafter.append('    /* pygobject_new handles NULL checking */\n' +
+                              '    return pygobject_new((GObject *)ret);')
 
 class BoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -370,13 +351,14 @@ class BoxedArg(ArgType):
         info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname])
     def write_return(self, ptype, info):
-        if ptype[-1:] == '*':
-            return '    /* pyg_boxed_new handles NULL checking */\n' + \
-                   '    return pyg_boxed_new(' + self.typecode + ', %(func)s, TRUE, TRUE);'
+        if ptype[-1] == '*':
+            info.varlist.add(self.typename, '*ret')
+            info.codeafter.append('    /* pyg_boxed_new handles NULL checking */\n' +
+                                  '    return pyg_boxed_new(' + self.typecode + ', ret, TRUE, TRUE);')
         else:
-            return '/* pyg_boxed_new handles NULL checking */\n' + \
-                   '    return pyg_boxed_new(' + self.typecode + ', &%(func)s, TRUE, TRUE);'
-            
+            info.varlist.add(self.typename, 'ret')
+            info.codeafter.append('    /* pyg_boxed_new handles NULL checking */\n' +
+                                  '    return pyg_boxed_new(' + self.typecode + ', &ret, TRUE, TRUE);')
 
 class CustomBoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -407,11 +389,10 @@ class CustomBoxedArg(ArgType):
             info.add_parselist('O!', ['&' + self.pytype, '&' + pname], [pname])
     def write_return(self, ptype, info):
         info.varlist.add(ptype[:-1], '*ret')
-	return '    ret = %(func)s;\n' + \
-	       '    if (ret)\n' + \
-	       '        return ' + self.new + '(ret);\n' + \
-	       '    Py_INCREF(Py_None);\n' + \
-	       '    return Py_None;'
+        info.codeafter.append('    if (ret)\n' +
+                              '        return ' + self.new + '(ret);\n' +
+                              '    Py_INCREF(Py_None);\n' +
+                              '    return Py_None;')
 
 class AtomArg(IntArg):
     atom = '    %(name)s = pygdk_atom_from_pyobject(py_%(name)s);\n' +\
@@ -424,7 +405,8 @@ class AtomArg(IntArg):
 	info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname])
     def write_return(self, ptype, info):
-        return '    return PyGdkAtom_New(%(func)s);'
+        info.varlist.add('GdkAtom', 'ret')
+        info.codeafter.append('    return PyGdkAtom_New(ret);')
 
 class GTypeArg(ArgType):
     gtype = '    if ((%(name)s = pyg_type_from_object(py_%(name)s)) == 0)\n' +\
@@ -436,20 +418,20 @@ class GTypeArg(ArgType):
 	info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname])
     def write_return(self, ptype, info):
-	return '    return pyg_type_wrapper_new(%(func)s);'
+        info.varlist.add('GType', 'ret')
+        info.codeafter.append('    return pyg_type_wrapper_new(ret);')
 
 # simple GError handler.
 class GErrorArg(ArgType):
-    checkerror = '_error != NULL'
-    handleerror = '    if (_error != NULL) {\n' + \
-                  '        PyErr_SetString(PyExc_RuntimeError, _error->message);\n' + \
-                  '        g_error_free(_error);\n' + \
+    handleerror = '    if (%(name)s != NULL) {\n' + \
+                  '        PyErr_SetString(PyExc_RuntimeError, %(name)s->message);\n' + \
+                  '        g_error_free(%(name)s);\n' + \
                   '        return NULL;\n' + \
                   '    }\n'
     def write_param(self, ptype, pname, pdflt, pnull, info):
-        info.varlist.add('GError', '*_error = NULL')
-        info.arglist.append('&_error')
-        return ''
+        info.varlist.add('GError', '*' + pname + ' = NULL')
+        info.arglist.append('&' + pname)
+        info.codeafter.append(self.handleerror % { 'name': pname })
 
 class GtkTreePathArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -475,18 +457,13 @@ class GtkTreePathArg(ArgType):
             info.add_parselist('O!', ['&PyTuple_Type', '&' + pname], [pname])
     def write_return(self, ptype, info):
         info.varlist.add('GtkTreePath', '*ret')
-        info.varlist.add('PyObject', '*py_ret')
-	return '    ret = %(func)s;\n' + \
-               '    if (%(checkerror)s)\n' + \
-               '        gtk_tree_path_free(ret);\n' + \
-               '    %(handleerror)s\n' + \
-	       '    if (ret) {\n' + \
-               '        py_ret = pygtk_tree_path_to_pyobject(ret);\n' + \
-               '        gtk_tree_path_free(ret);\n' + \
-	       '        return py_ret;\n' + \
-               '    }\n' + \
-	       '    Py_INCREF(Py_None);\n' + \
-	       '    return Py_None;'
+        info.codeafter.append('    if (ret) {\n' +
+                              '        PyObject *py_ret = pygtk_tree_path_to_pyobject(ret);\n' +
+                              '        gtk_tree_path_free(ret);\n' +
+                              '        return py_ret;\n' +
+                              '    }\n' +
+                              '    Py_INCREF(Py_None);\n' +
+                              '    return Py_None;')
 
 class ArgMatcher:
     def __init__(self):
