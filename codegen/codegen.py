@@ -92,12 +92,17 @@ class Wrapper:
         '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
         '    %(tp_dictoffset)s,                 /* tp_dictoffset */\n' \
         '    (initproc)%(tp_init)s,		/* tp_init */\n' \
+        '    (allocfunc)%(tp_alloc)s,           /* tp_alloc */\n' \
+        '    (newfunc)%(tp_new)s,               /* tp_new */\n' \
+        '    (destructor)%(tp_free)s,           /* tp_free */\n' \
+        '    (inquiry)%(tp_is_gc)s              /* tp_is_gc */\n' \
         '};\n\n'
 
     slots_list = ['tp_getattr', 'tp_setattr', 'tp_compare', 'tp_repr',
                   'tp_as_number', 'tp_as_sequence', 'tp_as_mapping', 'tp_hash',
                   'tp_call', 'tp_str', 'tp_richcompare', 'tp_iter',
-                  'tp_iternext', 'tp_descr_get', 'tp_descr_set', 'tp_init']
+                  'tp_iternext', 'tp_descr_get', 'tp_descr_set', 'tp_init',
+                  'tp_alloc', 'tp_new', 'tp_free', 'tp_is_gc']
 
     getter_tmpl = \
         'static PyObject *\n' \
@@ -175,7 +180,10 @@ class Wrapper:
         else:
             substdict['classname'] = self.objinfo.name
 
-        substdict['tp_init'] = self.write_constructor()
+        # Maybe this could be done in a nicer way, but I'll leave it as it is
+        # for now: -- Johan
+        if not self.overrides.slot_is_overriden('%s.tp_init' % self.objinfo.c_name):
+            substdict['tp_init'] = self.write_constructor()
         substdict['tp_methods'] = self.write_methods()
         substdict['tp_getset'] = self.write_getsets()
 
