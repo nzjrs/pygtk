@@ -3056,19 +3056,17 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
 %%
 override gtk_menu_popup kwargs
 static void
-pygtk_menu_position(GtkMenu *menu, int *x, int *y, PyObject *func)
+pygtk_menu_position(GtkMenu *menu, int *x, int *y, gboolean *push_in,
+		    PyObject *func)
 {
     PyObject *ret;
 
     pyg_block_threads();
-    ret = PyObject_CallFunction(func, "Oii", pygobject_new((GObject *)menu),
-                                *x, *y);
-    if (ret == NULL || !PyArg_ParseTuple(ret, "ii", x, y)) {
+    ret = PyObject_CallFunction(func, "O", pygobject_new((GObject *)menu));
+    if (ret == NULL || !PyArg_ParseTuple(ret, "iii", x, y, push_in)) {
 	PyErr_Print();
 	PyErr_Clear();
-        if (ret) {
-          Py_DECREF(ret);
-        }
+	Py_XDECREF(ret);
     } else {
         Py_DECREF(ret);
     }
