@@ -744,6 +744,10 @@ _wrap_gtk_text_buffer_set_text(PyGObject *self, PyObject *args, PyObject *kwargs
     }
 
     if (oldlen > 0) {
+	if (oldlen > len) {
+	    PyErr_SetString(PyExc_ValueError, "len greater than text length");
+	    return NULL;
+	}
 	len = oldlen;
     }
     
@@ -785,6 +789,10 @@ _wrap_gtk_text_buffer_insert(PyGObject *self, PyObject *args,
     }
 
     if (oldlen > 0) {
+	if (oldlen > len) {
+	    PyErr_SetString(PyExc_ValueError, "len greater than text length");
+	    return NULL;
+	}
 	len = oldlen;
     }
 
@@ -815,6 +823,10 @@ _wrap_gtk_text_buffer_insert_at_cursor(PyGObject *self, PyObject *args,
     }
 
     if (oldlen > 0) {
+	if (oldlen > len) {
+	    PyErr_SetString(PyExc_ValueError, "len greater than text length");
+	    return NULL;
+	}
 	len = oldlen;
     }
     
@@ -842,6 +854,14 @@ _wrap_gtk_text_buffer_insert_interactive(PyGObject *self, PyObject *args,
     }
 
     if (oldlen > 0) {
+	if (oldlen > len) {
+	    PyErr_SetString(PyExc_ValueError, "len greater than text length");
+	    return NULL;
+	}
+	if (oldlen > len) {
+	    PyErr_SetString(PyExc_ValueError, "len greater than text length");
+	    return NULL;
+	}
 	len = oldlen;
     }
 
