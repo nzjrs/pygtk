@@ -73,6 +73,11 @@ linkend="method-gdkcolormap--get-visual">get_visual</link></methodname>
 linkend="method-gdkcolormap--get-screen">get_screen</link></methodname>
 	<methodparam></methodparam>  
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gdkcolormap--query-color">query_color</link></methodname>
+	<methodparam><parameter role="keyword">pixel</parameter></methodparam>  
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -404,6 +409,48 @@ linkend="class-gdkvisual"><classname>gtk.gdk.Screen</classname></link></simpara>
       <para>The <methodname>get_screen</methodname>() method returns the
 <link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
 the colormap was created for.</para>
+
+  </refsect2>
+
+  <refsect2 id="method-gdkcolormap--query-color">
+      <title>gtk.gdk.Colormap.query_color</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>query_color</methodname>
+	  <methodparam></methodparam>  
+</methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">pixel</parameter>&nbsp;:</term>
+          <listitem><simpara>a pixel value</simpara></listitem>
+        </varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+	  corresponding to <parameter>pixel</parameter></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>query_color</methodname>() method returns the
+<link linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+corresponding to the hardware pixel value specified by
+<parameter>pixel</parameter>. <parameter>pixel</parameter> must be a valid
+pixel in the colormap. It's a programmer error to call this method with a
+pixel which is not in the colormap. Hardware pixels are normally obtained
+from the <link
+linkend="method-gdkcolormap--alloc-color"><methodname>alloc_color</methodname>()</link>
+method, or from a <link
+linkend="class-gdkimage"><classname>gtk.gdk.Image</classname></link>
+object. (A <link
+linkend="class-gdkimage"><classname>gtk.gdk.Image</classname></link>
+contains image data in hardware format while a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+contains image data in a canonical 24-bit RGB format.)</para>
 
   </refsect2>
 
