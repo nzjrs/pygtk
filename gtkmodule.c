@@ -3977,6 +3977,7 @@ static PyObject *_wrap_gtk_adjustment_set_all(PyObject *self, PyObject *args) {
     adj->step_increment = step_increment;
     adj->page_increment = page_increment;
     adj->page_size = page_size;
+    gtk_adjustment_changed(adj);
     Py_INCREF(Py_None);
     return Py_None;
 }
