@@ -365,8 +365,9 @@ _wrap_gtk_clist_new_with_titles(PyGObject *self, PyObject *args,
 	    PyObject *item = PySequence_GetItem(py_list, i);
 
 	    Py_DECREF(item); /* PySequence_GetItem INCREF's */
-	    if (!PyString_Check(item)) {
-		PyErr_SetString(PyExc_TypeError, "sequence item not a string");
+	    if (!PyString_Check(item) && !PyUnicode_Check(item)) {
+		PyErr_SetString(PyExc_TypeError,
+				"sequence item not a string or unicode object");
 		g_free(list);
 		return -1;
 	    }
@@ -475,8 +476,9 @@ _wrap_gtk_clist_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyObject *item = PySequence_GetItem(py_list, i);
 
 	Py_DECREF(item);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "sequence item not a string");
+	if (!PyString_Check(item) && !PyUnicode_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence item not a string or unicode object");
 	    g_free(list);
 	    return NULL;
 	}
@@ -513,8 +515,9 @@ _wrap_gtk_clist_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyObject *item = PySequence_GetItem(py_list, i);
 
 	Py_DECREF(item);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "sequence item not a string");
+	if (!PyString_Check(item) && !PyUnicode_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence item not a string or unicode object");
 	    g_free(list);
 	    return NULL;
 	}
@@ -551,8 +554,9 @@ _wrap_gtk_clist_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyObject *item = PySequence_GetItem(py_list, i);
 
 	Py_DECREF(item);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "sequence item not a string");
+	if (!PyString_Check(item) && !PyUnicode_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence item not a string or unicode object");
 	    g_free(list);
 	    return NULL;
 	}
@@ -687,8 +691,9 @@ _wrap_gtk_combo_set_popdown_strings(PyGObject *self, PyObject *args,
 	PyObject *item = PySequence_GetItem(list, i);
 
 	Py_DECREF(item);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "sequence item not a string");
+	if (!PyString_Check(item) && !PyUnicode_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence item not a string or unicode object");
 	    g_list_free(glist);
 	    return NULL;
 	}
@@ -2207,8 +2212,9 @@ _wrap_gtk_ctree_new_with_titles(PyGObject *self, PyObject *args,
 	    PyObject *item = PySequence_GetItem(py_titles, i);
 
 	    Py_DECREF(item);
-	    if (!PyString_Check(item)) {
-		PyErr_SetString(PyExc_TypeError, "sequence item not a string");
+	    if (!PyString_Check(item) && !PyUnicode_Check(item)) {
+		PyErr_SetString(PyExc_TypeError,
+				"sequence item not a string or unicode object");
 		g_free(titles);
 		return -1;
 	    }
@@ -2335,8 +2341,9 @@ _wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
 	PyObject *item = PySequence_GetItem(py_text, i);
 
 	Py_DECREF(item);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError,"text sequence item not a string");
+	if (!PyString_Check(item) && !PyUnicode_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence item not a string or unicode object");
 	    g_free(text);
 	    return NULL;
 	}
