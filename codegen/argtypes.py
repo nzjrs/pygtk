@@ -382,8 +382,14 @@ class ObjectArg(ArgType):
     def write_return(self, ptype, ownsreturn, info):
         if ptype[-1] == '*': ptype = ptype[:-1]
         info.varlist.add(ptype, '*ret')
-        info.codeafter.append('    /* pygobject_new handles NULL checking */\n' +
-                              '    return pygobject_new((GObject *)ret);')
+        if ownsreturn:
+            info.varlist.add('PyObject', '*py_ret')
+            info.codeafter.append('    py_ret = pygobject_new((GObject *)ret;\n'
+                                  '    g_object_unref(ret);\n'
+                                  '    return py_ret;')
+        else:
+            info.codeafter.append('    /* pygobject_new handles NULL checking */\n' +
+                                  '    return pygobject_new((GObject *)ret);')
 
 class BoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -417,15 +423,19 @@ class BoxedArg(ArgType):
                                                  'typecode': self.typecode})
         info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname])
+    ret_tmpl = '    /* pyg_boxed_new handles NULL checking */\n' \
+               '    return pyg_boxed_new(%(typecode)s, %(ret)s, %(copy)s, TRUE);'
     def write_return(self, ptype, ownsreturn, info):
         if ptype[-1] == '*':
             info.varlist.add(self.typename, '*ret')
-            info.codeafter.append('    /* pyg_boxed_new handles NULL checking */\n' +
-                                  '    return pyg_boxed_new(' + self.typecode + ', ret, TRUE, TRUE);')
+            ret = 'ret'
         else:
             info.varlist.add(self.typename, 'ret')
-            info.codeafter.append('    /* pyg_boxed_new handles NULL checking */\n' +
-                                  '    return pyg_boxed_new(' + self.typecode + ', &ret, TRUE, TRUE);')
+            ret = '&ret'
+        info.codeafter.append(self.ret_tmpl %
+                              { 'typecode': self.typecode,
+                                'ret': ret,
+                                'copy': ownsreturn and 'TRUE' or 'FALSE'})
 
 class CustomBoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -568,14 +578,21 @@ class GtkTreePathArg(ArgType):
         info.codeafter.append(self.freepath % {'name': pname})
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('GtkTreePath', '*ret')
-        info.codeafter.append('    if (ret) {\n' +
-                              '        PyObject *py_ret = pygtk_tree_path_to_pyobject(ret);\n' +
-                              '        gtk_tree_path_free(ret);\n' +
-                              '        return py_ret;\n' +
-                              '    }\n' +
-                              '    Py_INCREF(Py_None);\n' +
-                              '    return Py_None;')
-													       
+        if ownsreturn:
+            info.codeafter.append('    if (ret) {\n'
+                                  '        PyObject *py_ret = pygtk_tree_path_to_pyobject(ret);\n'
+                                  '        gtk_tree_path_free(ret);\n'
+                                  '        return py_ret;\n'
+                                  '    }\n'
+                                  '    Py_INCREF(Py_None);\n'
+                                  '    return Py_None;')
+        else:
+            info.codeafter.append('    if (ret) {\n'
+                                  '        PyObject *py_ret = pygtk_tree_path_to_pyobject(ret);\n'
+                                  '        return py_ret;\n'
+                                  '    }\n'
+                                  '    Py_INCREF(Py_None);\n'
+                                  '    return Py_None;')
 						       
 class GdkRectanglePtrArg(ArgType):
     null = ('    if (PyTuple_Check(py_%(name)s)) {\n'
