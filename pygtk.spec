@@ -51,7 +51,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %files
 %dir %{_prefix}/lib/python?.?/site-packages/gtk
 %{_prefix}/lib/python?.?/site-packages/gtk/__init__.py*
-%{_prefix}/lib/python?.?/site-packages/gtk/GDK.py*
+%{_prefix}/lib/python?.?/site-packages/gtk/keysyms.py*
 
 %{_prefix}/lib/python?.?/site-packages/gobjectmodule.so
 %{_prefix}/lib/python?.?/site-packages/pangomodule.so
