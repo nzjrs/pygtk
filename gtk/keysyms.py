@@ -1,319 +1,3 @@
-#
-# GDK.py -- this file contains GDK constants relevant to pygtk
-#
-
-# GdkInputCondition's
-INPUT_READ      = 1 << 0
-INPUT_WRITE     = 1 << 1
-INPUT_EXCEPTION = 1 << 2
-
-# GdkEventType's
-NOTHING           = -1
-DELETE            = 0
-DESTROY           = 1
-EXPOSE            = 2
-MOTION_NOTIFY     = 3
-BUTTON_PRESS      = 4
-_2BUTTON_PRESS    = 5
-_3BUTTON_PRESS    = 6
-BUTTON_RELEASE    = 7
-KEY_PRESS         = 8
-KEY_RELEASE       = 9
-ENTER_NOTIFY      = 10
-LEAVE_NOTIFY      = 11
-FOCUS_CHANGE      = 12
-CONFIGURE         = 13
-MAP               = 14
-UNMAP             = 15
-PROPERTY_NOTIFY   = 16
-SELECTION_CLEAR   = 17
-SELECTION_REQUEST = 18
-SELECTION_NOTIFY  = 19
-PROXIMITY_IN      = 20
-PROXIMITY_OUT     = 21
-DRAG_ENTER        = 22
-DRAG_LEAVE        = 23
-DRAG_MOTION       = 24
-DRAG_STATUS       = 25
-DROP_START        = 26
-DROP_FINISHED     = 27
-CLIENT_EVENT      = 28
-VISIBILITY_NOTIFY = 29
-NO_EXPOSE         = 30
-
-# GdkEventMask's
-EXPOSURE_MASK            = 1 << 1
-POINTER_MOTION_MASK      = 1 << 2
-POINTER_MOTION_HINT_MASK = 1 << 3
-BUTTON_MOTION_MASK       = 1 << 4
-BUTTON1_MOTION_MASK      = 1 << 5
-BUTTON2_MOTION_MASK      = 1 << 6
-BUTTON3_MOTION_MASK      = 1 << 7
-BUTTON_PRESS_MASK        = 1 << 8
-BUTTON_RELEASE_MASK      = 1 << 9
-KEY_PRESS_MASK           = 1 << 10
-KEY_RELEASE_MASK         = 1 << 11
-ENTER_NOTIFY_MASK        = 1 << 12
-LEAVE_NOTIFY_MASK        = 1 << 13
-FOCUS_CHANGE_MASK        = 1 << 14
-STRUCTURE_MASK           = 1 << 15
-PROPERTY_CHANGE_MASK     = 1 << 16
-VISIBILITY_NOTIFY_MASK   = 1 << 17
-PROXIMITY_IN_MASK        = 1 << 18
-PROXIMITY_OUT_MASK       = 1 << 19
-SUBSTRUCTURE_MASK        = 1 << 20
-ALL_EVENTS_MASK          = 0x0FFFFF
-
-# GdkFontType's
-FONT_FONT    = 0
-FONT_FONTSET = 0
-
-# GdkNotifyType's
-NOTIFY_ANCESTOR          = 0
-NOTIFY_VIRTUAL           = 1
-NOTIFY_INFERIOR          = 2
-NOTIFY_NONLINEAR         = 3
-NOTIFY_NONLINEAR_VIRTUAL = 4
-NOTIFY_UNKNOWN           = 5
-
-# GdkCrossingMode's
-CROSSING_NORMAL = 0
-CROSSING_GRAB   = 1
-CROSSING_UNGRAB = 2
-
-# GdkModifierType's
-SHIFT_MASK   = 1 << 0
-LOCK_MASK    = 1 << 1
-CONTROL_MASK = 1 << 2
-MOD1_MASK    = 1 << 3
-MOD2_MASK    = 1 << 4
-MOD3_MASK    = 1 << 5
-MOD4_MASK    = 1 << 6
-MOD5_MASK    = 1 << 7
-BUTTON1_MASK = 1 << 8
-BUTTON2_MASK = 1 << 9
-BUTTON3_MASK = 1 << 10
-BUTTON4_MASK = 1 << 11
-BUTTON5_MASK = 1 << 12
-RELEASE_MASK = 1 << 13
-
-# GdkPropertyState's
-PROPERTY_NEW_VALUE = 0
-PROPERTY_DELETE    = 1
-
-# GdkPropMode's
-PROP_MODE_REPLACE = 0
-PROP_MODE_PREPEND = 1
-PROP_MODE_APPEND  = 2
-
-# GdkDragAction's
-ACTION_DEFAULT = 1 << 0
-ACTION_COPY    = 1 << 1
-ACTION_MOVE    = 1 << 2
-ACTION_LINK    = 1 << 3
-ACTION_PRIVATE = 1 << 4
-ACTION_ASK     = 1 << 5
-
-# GdkDragProtocol's
-DRAG_PROTO_MOTIF   = 0
-DRAG_PROTO_XDND    = 1
-DRAG_PROTO_ROOTWIN = 2
-DRAG_PROTO_NONE    = 3
-
-# GdkSelectionType's
-SELECTION_TYPE_ATOM     = 4
-SELECTION_TYPE_BITMAP   = 5
-SELECTION_TYPE_COLORMAP = 7
-SELECTION_TYPE_DRAWABLE = 17
-SELECTION_TYPE_INTEGER  = 19
-SELECTION_TYPE_PIXMAP   = 20
-SELECTION_TYPE_WINDOW   = 33
-SELECTION_TYPE_STRING   = 31
-
-# GdkInputSource's
-SOURCE_MOUSE  = 0
-SOURCE_PEN    = 1
-SOURCE_ERASER = 2
-SOURCE_CURSOR = 3
-
-# GdkInputMode's
-MODE_DISABLED = 0
-MODE_SCREEN   = 1
-MODE_WINDOW   = 2
-
-# GdkExtensionMode's
-EXTENSION_EVENTS_NONE   = 0
-EXTENSION_EVENTS_ALL    = 1
-EXTENSION_EVENTS_CURSOR = 2
-
-# Motif WM Hints
-DECOR_ALL      = 1 << 0
-DECOR_BORDER   = 1 << 1
-DECOR_RESIZEH  = 1 << 2
-DECOR_TITLE    = 1 << 3
-DECOR_MENU     = 1 << 4
-DECOR_MINIMIZE = 1 << 5
-DECOR_MAXIMIZE = 1 << 6
-FUNC_ALL      = 1 << 0
-FUNC_RESIZE   = 1 << 1
-FUNC_MOVE     = 1 << 2
-FUNC_MINIMIZE = 1 << 3
-FUNC_MAXIMIZE = 1 << 4
-FUNC_CLOSE    = 1 << 5
-
-# GdkVisibilityState's
-VISIBILITY_UNOBSCURED     = 0
-VISIBILITY_PARTIAL        = 1
-VISIBILITY_FULLY_OBSCURED = 2
-
-# GdkFunction's
-COPY        = 0
-INVERT      = 1
-XOR         = 2
-CLEAR       = 3
-AND         = 4
-AND_REVERSE = 5
-AND_INVERT  = 6
-NOOP        = 7
-OR          = 8
-EQUIV       = 9
-OR_REVERSE  = 10
-COPY_INVERT = 11
-OR_INVERT   = 12
-NAND        = 13
-SET         = 14
-
-# GdkFill's
-SOLID           = 0
-TILED           = 1
-STIPPLED        = 2
-OPAQUE_STIPPLED = 3
-
-# GdkFillRule's
-EVEN_ODD_RULE = 0
-WINGDING_RULE = 1
-
-# GdkLineStyle's
-LINE_SOLID       = 0
-LINE_ON_OFF_DASH = 1
-LINE_DOUBLE_DASH = 2
-
-# GdkCapStyle's
-CAP_NOT_LAST   = 0
-CAP_BUTT       = 1
-CAP_ROUND      = 2
-CAP_PROJECTING = 3
-
-# GdkJoinStyle's
-JOIN_MITER = 0
-JOIN_ROUND = 1
-JOIN_BEVEL = 2
-
-# GdkRgbDither's
-RGB_DITHER_NONE   = 0
-RGB_DITHER_NORMAL = 1
-RGB_DITHER_MAX    = 2
-
-# GdkCursorType's
-X_CURSOR = 0
-ARROW = 2
-BASED_ARROW_DOWN = 4
-BASED_ARROW_UP = 6
-BOAT = 8
-BOGOSITY = 10
-BOTTOM_LEFT_CORNER = 12
-BOTTOM_RIGHT_CORNER = 14
-BOTTOM_SIDE = 16
-BOTTOM_TEE = 18
-BOX_SPIRAL = 20
-CENTER_PTR = 22
-CIRCLE = 24
-CLOCK = 26
-COFFEE_MUG = 28
-CROSS = 30
-CROSS_REVERSE = 32
-CROSSHAIR = 34
-DIAMOND_CROSS = 36
-DOT = 38
-DOTBOX = 40
-DOUBLE_ARROW = 42
-DRAFT_LARGE = 44
-DRAFT_SMALL = 46
-DRAPED_BOX = 48
-EXCHANGE = 50
-FLEUR = 52
-GOBBLER = 54
-GUMBY = 56
-HAND1 = 58
-HAND2 = 60
-HEART = 62
-ICON = 64
-IRON_CROSS = 66
-LEFT_PTR = 68
-LEFT_SIDE = 70
-LEFT_TEE = 72
-LEFTBUTTON = 74
-LL_ANGLE = 76
-LR_ANGLE = 78
-MAN = 80
-MIDDLEBUTTON = 82
-MOUSE = 84
-PENCIL = 86
-PIRATE = 88
-PLUS = 90
-QUESTION_ARROW = 92
-RIGHT_PTR = 94
-RIGHT_SIDE = 96
-RIGHT_TEE = 98
-RIGHTBUTTON = 100
-RTL_LOGO = 102
-SAILBOAT = 104
-SB_DOWN_ARROW = 106
-SB_H_DOUBLE_ARROW = 108
-SB_LEFT_ARROW = 110
-SB_RIGHT_ARROW = 112
-SB_UP_ARROW = 114
-SB_V_DOUBLE_ARROW = 116
-SHUTTLE = 118
-SIZING = 120
-SPIDER = 122
-SPRAYCAN = 124
-STAR = 126
-TARGET = 128
-TCROSS = 130
-TOP_LEFT_ARROW = 132
-TOP_LEFT_CORNER = 134
-TOP_RIGHT_CORNER = 136
-TOP_SIDE = 138
-TOP_TEE = 140
-TREK = 142
-UL_ANGLE = 144
-UMBRELLA = 146
-UR_ANGLE = 148
-WATCH = 150
-XTERM = 152
-CURSOR_IS_PIXMAP = -1
-
-# GdkWindowState:
-WINDOW_STATE_WITHDRAWN = 1 << 0
-WINDOW_STATE_ICONIFIED = 1 << 1
-WINDOW_STATE_MAXIMIZED = 1 << 2
-WINDOW_STATE_STICKY    = 1 << 3
-
-# GdkSettingAction:
-SETTING_ACTION_NEW     = 0
-SETTING_ACTION_CHANGED = 1
-SETTING_ACTION_DELETED = 2
-
-# GdkScrollDirection:
-SCROLL_UP    = 0
-SCROLL_DOWN  = 1
-SCROLL_LEFT  = 2
-SCROLL_RIGHT = 3
-
-
-# these are the Key Symbols for GDK
-# they were created with sed -n 's/#define GDK)\([^ ]*\)/\1 =/p' <gdkkeysyms.h
 VoidSymbol = 0xFFFFFF
 BackSpace = 0xFF08
 Tab = 0xFF09
@@ -326,6 +10,10 @@ Sys_Req = 0xFF15
 Escape = 0xFF1B
 Delete = 0xFFFF
 Multi_key = 0xFF20
+Codeinput = 0xFF37
+SingleCandidate = 0xFF3C
+MultipleCandidate = 0xFF3D
+PreviousCandidate = 0xFF3E
 Kanji = 0xFF21
 Muhenkan = 0xFF22
 Henkan_Mode = 0xFF23
@@ -343,6 +31,9 @@ Kana_Lock = 0xFF2D
 Kana_Shift = 0xFF2E
 Eisu_Shift = 0xFF2F
 Eisu_toggle = 0xFF30
+Kanji_Bangou = 0xFF37
+Zen_Koho = 0xFF3D
+Mae_Koho = 0xFF3E
 Home = 0xFF50
 Left = 0xFF51
 Up = 0xFF52
@@ -532,11 +223,23 @@ dead_ogonek = 0xFE5C
 dead_iota = 0xFE5D
 dead_voiced_sound = 0xFE5E
 dead_semivoiced_sound = 0xFE5F
+dead_belowdot = 0xFE60
 First_Virtual_Screen = 0xFED0
 Prev_Virtual_Screen = 0xFED1
 Next_Virtual_Screen = 0xFED2
 Last_Virtual_Screen = 0xFED4
 Terminate_Server = 0xFED5
+AccessX_Enable = 0xFE70
+AccessX_Feedback_Enable = 0xFE71
+RepeatKeys_Enable = 0xFE72
+SlowKeys_Enable = 0xFE73
+BounceKeys_Enable = 0xFE74
+StickyKeys_Enable = 0xFE75
+MouseKeys_Enable = 0xFE76
+MouseKeys_Accel_Enable = 0xFE77
+Overlay1_Enable = 0xFE78
+Overlay2_Enable = 0xFE79
+AudibleBell_Enable = 0xFE7A
 Pointer_Left = 0xFEE0
 Pointer_Right = 0xFEE1
 Pointer_Up = 0xFEE2
@@ -562,6 +265,7 @@ Pointer_Drag1 = 0xFEF5
 Pointer_Drag2 = 0xFEF6
 Pointer_Drag3 = 0xFEF7
 Pointer_Drag4 = 0xFEF8
+Pointer_Drag5 = 0xFEFD
 Pointer_EnableKeys = 0xFEF9
 Pointer_Accelerate = 0xFEFA
 Pointer_DfltBtnNext = 0xFEFB
@@ -906,6 +610,9 @@ kcedilla = 0x3f3
 uogonek = 0x3f9
 utilde = 0x3fd
 umacron = 0x3fe
+OE = 0x13bc
+oe = 0x13bd
+Ydiaeresis = 0x13be
 overline = 0x47e
 kana_fullstop = 0x4a1
 kana_openingbracket = 0x4a2
@@ -1044,6 +751,7 @@ Cyrillic_nje = 0x6aa
 Serbian_nje = 0x6aa
 Serbian_tshe = 0x6ab
 Macedonia_kje = 0x6ac
+Ukrainian_ghe_with_upturn = 0x6ad
 Byelorussian_shortu = 0x6ae
 Cyrillic_dzhe = 0x6af
 Serbian_dze = 0x6af
@@ -1066,6 +774,7 @@ Cyrillic_NJE = 0x6ba
 Serbian_NJE = 0x6ba
 Serbian_TSHE = 0x6bb
 Macedonia_KJE = 0x6bc
+Ukrainian_GHE_WITH_UPTURN = 0x6bd
 Byelorussian_SHORTU = 0x6be
 Cyrillic_DZHE = 0x6bf
 Serbian_DZE = 0x6bf
@@ -1613,3 +1322,157 @@ Hangul_J_PanSios = 0xef8
 Hangul_J_KkogjiDalrinIeung = 0xef9
 Hangul_J_YeorinHieuh = 0xefa
 Korean_Won = 0xeff
+Armenian_eternity = 0x14a1
+Armenian_section_sign = 0x14a2
+Armenian_full_stop = 0x14a3
+Armenian_verjaket = 0x14a3
+Armenian_parenright = 0x14a4
+Armenian_parenleft = 0x14a5
+Armenian_guillemotright = 0x14a6
+Armenian_guillemotleft = 0x14a7
+Armenian_em_dash = 0x14a8
+Armenian_dot = 0x14a9
+Armenian_mijaket = 0x14a9
+Armenian_separation_mark = 0x14aa
+Armenian_but = 0x14aa
+Armenian_comma = 0x14ab
+Armenian_en_dash = 0x14ac
+Armenian_hyphen = 0x14ad
+Armenian_yentamna = 0x14ad
+Armenian_ellipsis = 0x14ae
+Armenian_exclam = 0x14af
+Armenian_amanak = 0x14af
+Armenian_accent = 0x14b0
+Armenian_shesht = 0x14b0
+Armenian_question = 0x14b1
+Armenian_paruyk = 0x14b1
+Armenian_AYB = 0x14b2
+Armenian_ayb = 0x14b3
+Armenian_BEN = 0x14b4
+Armenian_ben = 0x14b5
+Armenian_GIM = 0x14b6
+Armenian_gim = 0x14b7
+Armenian_DA = 0x14b8
+Armenian_da = 0x14b9
+Armenian_YECH = 0x14ba
+Armenian_yech = 0x14bb
+Armenian_ZA = 0x14bc
+Armenian_za = 0x14bd
+Armenian_E = 0x14be
+Armenian_e = 0x14bf
+Armenian_AT = 0x14c0
+Armenian_at = 0x14c1
+Armenian_TO = 0x14c2
+Armenian_to = 0x14c3
+Armenian_ZHE = 0x14c4
+Armenian_zhe = 0x14c5
+Armenian_INI = 0x14c6
+Armenian_ini = 0x14c7
+Armenian_LYUN = 0x14c8
+Armenian_lyun = 0x14c9
+Armenian_KHE = 0x14ca
+Armenian_khe = 0x14cb
+Armenian_TSA = 0x14cc
+Armenian_tsa = 0x14cd
+Armenian_KEN = 0x14ce
+Armenian_ken = 0x14cf
+Armenian_HO = 0x14d0
+Armenian_ho = 0x14d1
+Armenian_DZA = 0x14d2
+Armenian_dza = 0x14d3
+Armenian_GHAT = 0x14d4
+Armenian_ghat = 0x14d5
+Armenian_TCHE = 0x14d6
+Armenian_tche = 0x14d7
+Armenian_MEN = 0x14d8
+Armenian_men = 0x14d9
+Armenian_HI = 0x14da
+Armenian_hi = 0x14db
+Armenian_NU = 0x14dc
+Armenian_nu = 0x14dd
+Armenian_SHA = 0x14de
+Armenian_sha = 0x14df
+Armenian_VO = 0x14e0
+Armenian_vo = 0x14e1
+Armenian_CHA = 0x14e2
+Armenian_cha = 0x14e3
+Armenian_PE = 0x14e4
+Armenian_pe = 0x14e5
+Armenian_JE = 0x14e6
+Armenian_je = 0x14e7
+Armenian_RA = 0x14e8
+Armenian_ra = 0x14e9
+Armenian_SE = 0x14ea
+Armenian_se = 0x14eb
+Armenian_VEV = 0x14ec
+Armenian_vev = 0x14ed
+Armenian_TYUN = 0x14ee
+Armenian_tyun = 0x14ef
+Armenian_RE = 0x14f0
+Armenian_re = 0x14f1
+Armenian_TSO = 0x14f2
+Armenian_tso = 0x14f3
+Armenian_VYUN = 0x14f4
+Armenian_vyun = 0x14f5
+Armenian_PYUR = 0x14f6
+Armenian_pyur = 0x14f7
+Armenian_KE = 0x14f8
+Armenian_ke = 0x14f9
+Armenian_O = 0x14fa
+Armenian_o = 0x14fb
+Armenian_FE = 0x14fc
+Armenian_fe = 0x14fd
+Armenian_apostrophe = 0x14fe
+Armenian_ligature_ew = 0x14ff
+Georgian_an = 0x15d0
+Georgian_ban = 0x15d1
+Georgian_gan = 0x15d2
+Georgian_don = 0x15d3
+Georgian_en = 0x15d4
+Georgian_vin = 0x15d5
+Georgian_zen = 0x15d6
+Georgian_tan = 0x15d7
+Georgian_in = 0x15d8
+Georgian_kan = 0x15d9
+Georgian_las = 0x15da
+Georgian_man = 0x15db
+Georgian_nar = 0x15dc
+Georgian_on = 0x15dd
+Georgian_par = 0x15de
+Georgian_zhar = 0x15df
+Georgian_rae = 0x15e0
+Georgian_san = 0x15e1
+Georgian_tar = 0x15e2
+Georgian_un = 0x15e3
+Georgian_phar = 0x15e4
+Georgian_khar = 0x15e5
+Georgian_ghan = 0x15e6
+Georgian_qar = 0x15e7
+Georgian_shin = 0x15e8
+Georgian_chin = 0x15e9
+Georgian_can = 0x15ea
+Georgian_jil = 0x15eb
+Georgian_cil = 0x15ec
+Georgian_char = 0x15ed
+Georgian_xan = 0x15ee
+Georgian_jhan = 0x15ef
+Georgian_hae = 0x15f0
+Georgian_he = 0x15f1
+Georgian_hie = 0x15f2
+Georgian_we = 0x15f3
+Georgian_har = 0x15f4
+Georgian_hoe = 0x15f5
+Georgian_fi = 0x15f6
+EcuSign = 0x20a0
+ColonSign = 0x20a1
+CruzeiroSign = 0x20a2
+FFrancSign = 0x20a3
+LiraSign = 0x20a4
+MillSign = 0x20a5
+NairaSign = 0x20a6
+PesetaSign = 0x20a7
+RupeeSign = 0x20a8
+WonSign = 0x20a9
+NewSheqelSign = 0x20aa
+DongSign = 0x20ab
+EuroSign = 0x20ac

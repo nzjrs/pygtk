@@ -2,7 +2,7 @@
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) $(LIBGLADE_CFLAGS) -Wall
 
 pygtkdir = $(pythondir)/gtk
-pygtk_PYTHON = __init__.py GDK.py
+pygtk_PYTHON = __init__.py keysyms.py
 
 if BUILD_LIBGLADE
 glademodule_la = glademodule.la

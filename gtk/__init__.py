@@ -19,7 +19,7 @@ import gobject
 del gobject
 
 # load the required modules:
-import GDK
+import keysyms
 from _gtk import *
 import gdk # this is created by the _gtk import
 
