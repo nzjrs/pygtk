@@ -2055,15 +2055,24 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
     int i, len;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!:GtkItemFactory.create_items", kwlist,
-				     &PyList_Type, &list))
+				     "O:GtkItemFactory.create_items", kwlist,
+				     &list))
 	return NULL;
+    
+    if (!PySequence_Check(list)) {
+	PyErr_SetString(PyExc_TypeError, "entries must be a sequence");
+	return NULL;
+    }
+    
     ifact = GTK_ITEM_FACTORY(self->obj);
-    len = PyList_Size(list);
+    len = PySequence_Size(list);
     for (i = 0; i < len; i++) {
-	PyObject *item = PyList_GetItem(list, i);
+	PyObject *item = PySequence_GetItem(list, i);
+	Py_DECREF(item);
+
+	memset(&ent, 0, sizeof(ent));
 	cb = Py_None;
-	memset(&ent, 0, sizeof(GtkItemFactoryEntry));
+	
 	if (!PyArg_ParseTuple(item, "s|zOizO", &(ent.path), &(ent.accelerator),
 			      &cb, &(ent.callback_action), &(ent.item_type),
 			      &extra_data)) {
@@ -2077,16 +2086,16 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
 	    ent.callback = (GtkItemFactoryCallback)pygtk_item_factory_cb;
 	}
 	
-	if(extra_data != NULL) {
-	     if(PyString_Check(extra_data)) {
-	         ent.extra_data = PyString_AsString(extra_data);
-	     } else if(pygobject_check(extra_data, &PyGdkPixbuf_Type)) {
-		 ent.extra_data = GDK_PIXBUF(pygobject_get(extra_data));
-	     } else {
-		 PyErr_SetString(PyExc_TypeError, 
-				 "last argument must be a GdkPixBuf or a string");
-		 return NULL;
-	     }
+	if (extra_data != NULL) {
+	    if (PyString_Check(extra_data)) {
+		ent.extra_data = PyString_AsString(extra_data);
+	    } else if (pygobject_check(extra_data, &PyGdkPixbuf_Type)) {
+		ent.extra_data = GDK_PIXBUF(pygobject_get(extra_data));
+	    } else {
+		PyErr_SetString(PyExc_TypeError, 
+				"last argument must be a GdkPixBuf or a string");
+		return NULL;
+	    }
 	}
 	gtk_item_factory_create_item(ifact, &ent, cb, 1);
     }
