@@ -2,18 +2,18 @@
 
 ; object definitions ...
 
-(define-object Accessible
-  (in-module "Gtk")
-  (parent "AtkObject")
-  (c-name "GtkAccessible")
-  (gtype-id "GTK_TYPE_ACCESSIBLE")
-)
-
 (define-object AccelGroup
   (in-module "Gtk")
   (parent "GObject")
   (c-name "GtkAccelGroup")
   (gtype-id "GTK_TYPE_ACCEL_GROUP")
+)
+
+(define-object Accessible
+  (in-module "Gtk")
+  (parent "AtkObject")
+  (c-name "GtkAccessible")
+  (gtype-id "GTK_TYPE_ACCESSIBLE")
 )
 
 (define-object IconFactory
@@ -1067,6 +1067,12 @@
   )
 )
 
+(define-boxed TextAttributes
+  (in-module "Gtk")
+  (c-name "GtkTextAttributes")
+  (gtype-id "GTK_TYPE_TEXT_ATTRIBUTES")
+)
+
 (define-boxed TextIter
   (in-module "Gtk")
   (c-name "GtkTextIter")
@@ -1120,6 +1126,17 @@
     '("prelit" "GTK_CELL_RENDERER_PRELIT")
     '("insensitive" "GTK_CELL_RENDERER_INSENSITIVE")
     '("sorted" "GTK_CELL_RENDERER_SORTED")
+  )
+)
+
+(define-enum CellRendererMode
+  (in-module "Gtk")
+  (c-name "GtkCellRendererMode")
+  (gtype-id "GTK_TYPE_CELL_RENDERER_MODE")
+  (values
+    '("inert" "GTK_CELL_RENDERER_MODE_INERT")
+    '("activatable" "GTK_CELL_RENDERER_MODE_ACTIVATABLE")
+    '("editable" "GTK_CELL_RENDERER_MODE_EDITABLE")
   )
 )
 
@@ -1215,7 +1232,6 @@
   (gtype-id "GTK_TYPE_DEBUG_FLAG")
   (values
     '("misc" "GTK_DEBUG_MISC")
-    '("dnd" "GTK_DEBUG_DND")
     '("plugsocket" "GTK_DEBUG_PLUGSOCKET")
     '("text" "GTK_DEBUG_TEXT")
     '("tree" "GTK_DEBUG_TREE")
@@ -1399,6 +1415,7 @@
     '("small-toolbar" "GTK_ICON_SIZE_SMALL_TOOLBAR")
     '("large-toolbar" "GTK_ICON_SIZE_LARGE_TOOLBAR")
     '("button" "GTK_ICON_SIZE_BUTTON")
+    '("dnd" "GTK_ICON_SIZE_DND")
     '("dialog" "GTK_ICON_SIZE_DIALOG")
   )
 )
@@ -1423,16 +1440,6 @@
     '("none" "GTK_TEXT_DIR_NONE")
     '("ltr" "GTK_TEXT_DIR_LTR")
     '("rtl" "GTK_TEXT_DIR_RTL")
-  )
-)
-
-(define-enum TextSearchFlags
-  (in-module "Gtk")
-  (c-name "GtkTextSearchFlags")
-  (gtype-id "GTK_TYPE_TEXT_SEARCH_FLAGS")
-  (values
-    '("visible-only" "GTK_TEXT_SEARCH_VISIBLE_ONLY")
-    '("text-only" "GTK_TEXT_SEARCH_TEXT_ONLY")
   )
 )
 
@@ -1542,9 +1549,9 @@
     '("lowest" "GTK_PATH_PRIO_LOWEST")
     '("gtk" "GTK_PATH_PRIO_GTK")
     '("application" "GTK_PATH_PRIO_APPLICATION")
+    '("theme" "GTK_PATH_PRIO_THEME")
     '("rc" "GTK_PATH_PRIO_RC")
     '("highest" "GTK_PATH_PRIO_HIGHEST")
-    '("mask" "GTK_PATH_PRIO_MASK")
   )
 )
 
@@ -1620,11 +1627,11 @@
   (gtype-id "GTK_TYPE_SCROLL_TYPE")
   (values
     '("none" "GTK_SCROLL_NONE")
+    '("jump" "GTK_SCROLL_JUMP")
     '("step-backward" "GTK_SCROLL_STEP_BACKWARD")
     '("step-forward" "GTK_SCROLL_STEP_FORWARD")
     '("page-backward" "GTK_SCROLL_PAGE_BACKWARD")
     '("page-forward" "GTK_SCROLL_PAGE_FORWARD")
-    '("jump" "GTK_SCROLL_JUMP")
     '("step-up" "GTK_SCROLL_STEP_UP")
     '("step-down" "GTK_SCROLL_STEP_DOWN")
     '("page-up" "GTK_SCROLL_PAGE_UP")
@@ -1633,6 +1640,8 @@
     '("step-right" "GTK_SCROLL_STEP_RIGHT")
     '("page-left" "GTK_SCROLL_PAGE_LEFT")
     '("page-right" "GTK_SCROLL_PAGE_RIGHT")
+    '("start" "GTK_SCROLL_START")
+    '("end" "GTK_SCROLL_END")
   )
 )
 
@@ -1641,10 +1650,10 @@
   (c-name "GtkSelectionMode")
   (gtype-id "GTK_TYPE_SELECTION_MODE")
   (values
+    '("none" "GTK_SELECTION_NONE")
     '("single" "GTK_SELECTION_SINGLE")
     '("browse" "GTK_SELECTION_BROWSE")
     '("multiple" "GTK_SELECTION_MULTIPLE")
-    '("extended" "GTK_SELECTION_EXTENDED")
   )
 )
 
@@ -1828,7 +1837,7 @@
   (c-name "GtkObjectFlags")
   (gtype-id "GTK_TYPE_OBJECT_FLAGS")
   (values
-    '("destroyed" "GTK_DESTROYED")
+    '("in-destruction" "GTK_IN_DESTRUCTIOND")
     '("floating" "GTK_FLOATING")
     '("reserved-1" "GTK_RESERVED_1")
     '("reserved-2" "GTK_RESERVED_2")
@@ -1855,13 +1864,16 @@
   (values
     '("user-style" "PRIVATE_GTK_USER_STYLE")
     '("resize-pending" "PRIVATE_GTK_RESIZE_PENDING")
-    '("resize-needed" "PRIVATE_GTK_RESIZE_NEEDED")
     '("leave-pending" "PRIVATE_GTK_LEAVE_PENDING")
     '("has-shape-mask" "PRIVATE_GTK_HAS_SHAPE_MASK")
     '("in-reparent" "PRIVATE_GTK_IN_REPARENT")
     '("direction-set" "PRIVATE_GTK_DIRECTION_SET")
     '("direction-ltr" "PRIVATE_GTK_DIRECTION_LTR")
     '("anchored" "PRIVATE_GTK_ANCHORED")
+    '("child-visible" "PRIVATE_GTK_CHILD_VISIBLE")
+    '("redraw-on-alloc" "PRIVATE_GTK_REDRAW_ON_ALLOC")
+    '("alloc-needed" "PRIVATE_GTK_ALLOC_NEEDED")
+    '("request-needed" "PRIVATE_GTK_REQUEST_NEEDED")
   )
 )
 
@@ -1931,6 +1943,7 @@
     '("lowest" "GTK_RC_TOKEN_LOWEST")
     '("gtk" "GTK_RC_TOKEN_GTK")
     '("application" "GTK_RC_TOKEN_APPLICATION")
+    '("theme" "GTK_RC_TOKEN_THEME")
     '("rc" "GTK_RC_TOKEN_RC")
     '("highest" "GTK_RC_TOKEN_HIGHEST")
     '("engine" "GTK_RC_TOKEN_ENGINE")
@@ -1986,8 +1999,8 @@
   (c-name "GtkTextSearchFlags")
   (gtype-id "GTK_TYPE_TEXT_SEARCH_FLAGS")
   (values
-    '("visible_only" "GTK_TEXT_SEARCH_VISIBLE_ONLY")
-    '("text_only" "GTK_TEXT_SEARCH_TEXT_ONLY")
+    '("visible-only" "GTK_TEXT_SEARCH_VISIBLE_ONLY")
+    '("text-only" "GTK_TEXT_SEARCH_TEXT_ONLY")
   )
 )
 
@@ -2044,7 +2057,19 @@
   (c-name "GtkTreeModelFlags")
   (gtype-id "GTK_TYPE_TREE_MODEL_FLAGS")
   (values
-    '("t" "GTK_TREE_MODEL_ITERS_PERSIST")
+    '("iters-persist" "GTK_TREE_MODEL_ITERS_PERSIST")
+    '("list-only" "GTK_TREE_MODEL_LIST_ONLY")
+  )
+)
+
+(define-enum TreeViewColumnSizing
+  (in-module "Gtk")
+  (c-name "GtkTreeViewColumnSizing")
+  (gtype-id "GTK_TYPE_TREE_VIEW_COLUMN_SIZING")
+  (values
+    '("grow-only" "GTK_TREE_VIEW_COLUMN_GROW_ONLY")
+    '("autosize" "GTK_TREE_VIEW_COLUMN_AUTOSIZE")
+    '("fixed" "GTK_TREE_VIEW_COLUMN_FIXED")
   )
 )
 
@@ -2057,17 +2082,6 @@
     '("after" "GTK_TREE_VIEW_DROP_AFTER")
     '("into-or-before" "GTK_TREE_VIEW_DROP_INTO_OR_BEFORE")
     '("into-or-after" "GTK_TREE_VIEW_DROP_INTO_OR_AFTER")
-  )
-)
-
-(define-enum TreeViewColumnSizing
-  (in-module "Gtk")
-  (c-name "GtkTreeViewColumnSizing")
-  (gtype-id "GTK_TYPE_TREE_VIEW_COLUMN_SIZING")
-  (values
-    '("resizeable" "GTK_TREE_VIEW_COLUMN_RESIZEABLE")
-    '("autosize" "GTK_TREE_VIEW_COLUMN_AUTOSIZE")
-    '("fixed" "GTK_TREE_VIEW_COLUMN_FIXED")
   )
 )
 
