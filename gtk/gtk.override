@@ -260,7 +260,7 @@ _wrap_gtk_paint_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
     gboolean fill;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                    "O!OOOO!zOi:GdkDrawable.draw_polygon",
+                                    "O!OOOO!zOi:GdkStyle.paint_polygon",
                                      kwlist, &PyGdkWindow_Type, &window,
                                      &py_state_type, &py_shadow_type, &py_area,
                                      &PyGtkWidget_Type, &widget, &detail,
@@ -374,6 +374,98 @@ _wrap_gtk_selection_data_get_targets(PyObject *self)
     }
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_clipboard_set_with_data kwargs
+static void
+clipboard_get_func(GtkClipboard *clipboard, GtkSelectionData *selection_data,
+		   guint info, gpointer user_data)
+{
+    PyObject *callback, *args, *ret;
+
+    pyg_block_threads();
+    callback = PyTuple_GetItem((PyObject *)user_data, 0);
+    args = Py_BuildValue("(NNiO)",
+			 pygobject_new((GObject *)clipboard),
+			 pyg_boxed_new(GTK_TYPE_SELECTION_DATA,
+				       selection_data, FALSE, FALSE),
+			 info, PyTuple_GetItem((PyObject *)user_data, 2));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    pyg_unblock_threads();
+}
+static void
+clipboard_clear_func(GtkClipboard *clipboard, gpointer user_data)
+{
+    PyObject *callback, *args, *ret;
+
+    pyg_block_threads();
+    callback = PyTuple_GetItem((PyObject *)user_data, 1);
+    args = Py_BuildValue("(NO)",
+			 pygobject_new((GObject *)clipboard),
+			 PyTuple_GetItem((PyObject *)user_data, 2));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    Py_DECREF((PyObject *)user_data);
+    pyg_unblock_threads();
+}
+static PyObject *
+_wrap_gtk_clipboard_set_with_data(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", "get_func", "clear_func", "user_data", NULL };
+    PyObject *py_targets, *get_func, *clear_func = Py_None, *user_data = Py_None;
+    GtkTargetEntry *targets;
+    gint n_targets, i;
+    gboolean ret;
+    PyObject *data, *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO|OO:GtkClipboard.set_with_data",kwlist,
+                                     &py_targets, &get_func, &clear_func,
+				     &user_data))
+        return NULL;
+    if (!PyCallable_Check(get_func)) {
+	PyErr_SetString(PyExc_TypeError, "get_func must be callable");
+	return NULL;
+    }
+    if (clear_func != Py_None && !PyCallable_Check(clear_func)) {
+	PyErr_SetString(PyExc_TypeError,"clear_func must be callable or None");
+	return NULL;
+    }
+    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
+	return NULL;
+    n_targets = PySequence_Fast_GET_SIZE(py_targets);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
+        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+                              &targets[i].flags, &targets[i].info)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "list items should be of form (string,int,int)");
+            g_free(targets);
+	    Py_DECREF(py_targets);
+            return NULL;
+        }
+    }
+    data = Py_BuildValue("(OOO)", get_func, clear_func, user_data);
+    ret = gtk_clipboard_set_with_data(GTK_CLIPBOARD(self->obj),
+				      targets, n_targets,
+				      clipboard_get_func, clipboard_clear_func,
+				      data);
+    g_free(targets);
+    Py_DECREF(py_targets);
+    if (!ret) {
+	Py_DECREF(data);
+    }
+
+    py_ret = ret ? Py_True : Py_False;
+    Py_INCREF(py_ret);
+    return py_ret;
 }
 %%
 override gtk_label_get noargs
@@ -2075,7 +2167,7 @@ _wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
                                 PyObject *kwargs)
 {
     static char *kwlist[] = { "context", "target_list", NULL };
-    PyObject *context, *py_target_list;
+    PyObject *context, *py_targets;
     gint i, n_targets;
     GtkTargetEntry *targets;
     GtkTargetList *target_list;
@@ -2084,23 +2176,21 @@ _wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O!O:GtkWidget.drag_dest_find_target",
                                      kwlist, &PyGdkDragContext_Type, &context,
-                                     &py_target_list))
+                                     &py_targets))
         return NULL;
-    if (!PySequence_Check(py_target_list)) {
-        PyErr_SetString(PyExc_TypeError, "target_list must be a sequence");
-        return NULL;
-    }
-    n_targets = PySequence_Length(py_target_list);
+    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
+	return NULL;
+    n_targets = PySequence_Fast_GET_SIZE(py_targets);
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_GetItem(py_target_list, i);
-        Py_DECREF(item);
+        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
         if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
                             "list items should be of form (string,int,int)");
             g_free(targets);
+	    Py_DECREF(py_targets);
             return NULL;
         }
     }
@@ -2111,6 +2201,7 @@ _wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
                                      GDK_DRAG_CONTEXT(pygobject_get(context)),
                                      target_list);
     gtk_target_list_unref(target_list);
+    Py_DECREF(py_targets);
 
     return PyGdkAtom_New(atom);
 }
@@ -2150,30 +2241,28 @@ _wrap_gtk_drag_dest_set_target_list(PyGObject *self, PyObject *args,
                                     PyObject *kwargs)
 {
     static char *kwlist[] = { "target_list", NULL };
-    PyObject *py_target_list;
+    PyObject *py_targets;
     gint i, n_targets;
     GtkTargetEntry *targets;
     GtkTargetList *target_list;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O:GtkWidget.drag_dest_set_target_list",
-                                     kwlist, &py_target_list))
+                                     kwlist, &py_targets))
         return NULL;
-    if (!PySequence_Check(py_target_list)) {
-        PyErr_SetString(PyExc_TypeError, "target_list must be a sequence");
-        return NULL;
-    }
-    n_targets = PySequence_Length(py_target_list);
+    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
+	return NULL;
+    n_targets = PySequence_Fast_GET_SIZE(py_targets);
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_GetItem(py_target_list, i);
-        Py_DECREF(item);
+        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
         if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
                             "list items should be of form (string,int,int)");
             g_free(targets);
+	    Py_DECREF(py_targets);
             return NULL;
         }
     }
@@ -2182,6 +2271,7 @@ _wrap_gtk_drag_dest_set_target_list(PyGObject *self, PyObject *args,
 
     gtk_drag_dest_set_target_list(GTK_WIDGET(self->obj), target_list);
     gtk_target_list_unref(target_list);
+    Py_DECREF(py_targets);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -2207,27 +2297,26 @@ _wrap_gtk_drag_source_set(PyGObject *self, PyObject *args, PyObject *kwargs)
     if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
                              py_actions, (gint *)&actions))
         return NULL;
-    if (!PySequence_Check(py_targets)) {
-        PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
-        return NULL;
-    }
-    n_targets = PySequence_Length(py_targets);
+    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
+	return NULL;
+    n_targets = PySequence_Fast_GET_SIZE(py_targets);
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_GetItem(py_targets, i);
-        Py_DECREF(item);
+        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
         if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
                             "list items should be of form (string,int,int)");
             g_free(targets);
+	    Py_DECREF(py_targets);
             return NULL;
         }
     }
     gtk_drag_source_set(GTK_WIDGET(self->obj), sbmask, targets, n_targets,
                         actions);
     g_free(targets);
+    Py_DECREF(py_targets);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -2256,21 +2345,19 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_TypeError, "event must be a GdkEvent");
         return NULL;
     }
-    if (!PySequence_Check(py_targets)) {
-        PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
-        return NULL;
-    }
-    n_targets = PySequence_Length(py_targets);
+    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
+	return NULL;
+    n_targets = PySequence_Fast_GET_SIZE(py_targets);
     tents = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_GetItem(py_targets, i);
-        Py_DECREF(item);
+        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
         if (!PyArg_ParseTuple(item, "zii", &tents[i].target,
                               &tents[i].flags, &tents[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
                             "list items should be of form (string,int,int)");
             g_free(tents);
+	    Py_DECREF(py_targets);
             return NULL;
         }
     }
@@ -2279,6 +2366,7 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
     context = gtk_drag_begin(GTK_WIDGET(self->obj), targets, actions, button,
                              pyg_boxed_get(event, GdkEvent));
     gtk_target_list_unref(targets);
+    Py_DECREF(py_targets);
     return pygobject_new((GObject *)context);
 }
 %%
@@ -2301,27 +2389,26 @@ _wrap_gtk_selection_add_targets(PyGObject *self, PyObject *args,
     if (PyErr_Occurred())
         return NULL;
 
-    if (!PySequence_Check(py_targets)) {
-        PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
-        return NULL;
-    }
-    n_targets = PySequence_Length(py_targets);
+    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
+	return NULL;
+    n_targets = PySequence_Fast_GET_SIZE(py_targets);
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_GetItem(py_targets, i);
-        Py_DECREF(item);
+        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
         if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
-                            "sequence items should be of form (string,int,int)");
+                            "list items should be of form (string,int,int)");
             g_free(targets);
+	    Py_DECREF(py_targets);
             return NULL;
         }
     }
     gtk_selection_add_targets(GTK_WIDGET(self->obj), selection,
                               targets, n_targets);
     g_free(targets);
+    Py_DECREF(py_targets);
     Py_INCREF(Py_None);
     return Py_None;
 }
