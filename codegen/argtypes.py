@@ -776,6 +776,7 @@ matcher.register('gint8', arg)
 matcher.register('guint16', arg)
 matcher.register('gint16', arg)
 matcher.register('gint32', arg)
+matcher.register('GTime', arg)
 
 arg = BoolArg()
 matcher.register('gboolean', arg)
