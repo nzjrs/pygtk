@@ -16,6 +16,13 @@
   (gtype-id "GTK_TYPE_ACCESSIBLE")
 )
 
+(define-object Clipboard
+  (in-module "Gtk")
+  (parent "GObject")
+  (c-name "GtkClipboard")
+  (gtype-id "GTK_TYPE_CLIPBOARD")
+)
+
 (define-object IconFactory
   (in-module "Gtk")
   (parent "GObject")
@@ -1051,13 +1058,6 @@
   (gtype-id "GTK_TYPE_WINDOW_GROUP")
 )
 
-; For Gtk+ 2.2
-;(define-object Clipboard
-;  (in-module "Gtk")
-;  (parent "GObject")
-;  (c-name "GtkClipboard")
-;  (gtype-id "GTK_TYPE_CLIPBOARD")
-;)
 
 ;; Boxed types ...
 
@@ -1069,6 +1069,14 @@
     '("gint" "width")
     '("gint" "height")
   )
+)
+
+(define-boxed Border
+  (in-module "Gtk")
+  (c-name "GtkBorder")
+  (gtype-id "GTK_TYPE_BORDER")
+  (copy-func "gtk_border_copy")
+  (release-func "gtk_border_free")
 )
 
 (define-pointer CTreeNode
@@ -1157,6 +1165,14 @@
   (gtype-id "GTK_TYPE_TREE_ITER")
   (copy-func "gtk_tree_iter_copy")
   (release-func "gtk_tree_iter_free")
+)
+
+(define-boxed TreeRowReference
+  (in-module "Gtk")
+  (c-name "GtkTreeRowReference")
+  (gtype-id "GTK_TYPE_TREE_ROW_REFERENCE")
+  (copy-func "gtk_tree_row_reference_copy")
+  (release-func "gtk_tree_row_reference_free")
 )
 
 
@@ -1848,6 +1864,26 @@
   (values
     '("ascending" "GTK_SORT_ASCENDING")
     '("descending" "GTK_SORT_DESCENDING")
+  )
+)
+
+(define-enum IMPreeditStyle
+  (in-module "Gtk")
+  (c-name "GtkIMPreeditStyle")
+  (gtype-id "GTK_TYPE_IM_PREEDIT_STYLE")
+  (values
+    '("nothing" "GTK_IM_PREEDIT_NOTHING")
+    '("callback" "GTK_IM_PREEDIT_CALLBACK")
+  )
+)
+
+(define-enum IMStatusStyle
+  (in-module "Gtk")
+  (c-name "GtkIMStatusStyle")
+  (gtype-id "GTK_TYPE_IM_STATUS_STYLE")
+  (values
+    '("nothing" "GTK_IM_STATUS_NOTHING")
+    '("callback" "GTK_IM_STATUS_CALLBACK")
   )
 )
 

@@ -31,6 +31,10 @@ headers
 #define PYGTK_CONTAINER_FORALL 1
 #define countof(array) (sizeof(array)/sizeof(array[0]))
 
+/* make GDK_DISPLAY() the case macro */
+#undef GDK_DISPLAY
+#define GDK_DISPLAY(object) (GDK_DISPLAY_OBJECT(object))
+
 /* from the gdk portion ... */
 extern PyTypeObject PyGdkColormap_Type;
 extern PyTypeObject PyGdkGC_Type;
@@ -40,6 +44,8 @@ extern PyTypeObject PyGdkImage_Type;
 extern PyTypeObject PyGdkPixbuf_Type;
 extern PyTypeObject PyGdkPixbufAnimation_Type;
 extern PyTypeObject PyGdkDragContext_Type;
+extern PyTypeObject PyGdkDisplay_Type;
+extern PyTypeObject PyGdkScreen_Type;
 %%
 include 
   gtkclist.override
