@@ -2757,11 +2757,11 @@ _wrap_gtk_toolbar_append_item(PyGObject *self, PyObject *args,
 			      "icon", "callback", "user_data", NULL };
     char *text, *tooltip_text, *tooltip_private_text;
     PyGObject *py_icon;
-    PyObject *callback, *param;
+    PyObject *callback, *param=NULL;
     GtkWidget *icon = NULL, *ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "zzzOOO:GtkToolbar.append_item", kwlist,
+				     "zzzOO|O:GtkToolbar.append_item", kwlist,
 				     &text, &tooltip_text,
 				     &tooltip_private_text, &py_icon,
 				     &callback, &param))
