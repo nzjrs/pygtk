@@ -41,7 +41,7 @@ LIBGLADE_REQUIRED = '2.0.0'
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
 
-GLOBAL_INC += ['.', 'gtk']
+GLOBAL_INC += ['.', 'gtk', 'gobject']
 GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('PYGTK_MINOR_VERSION', MINOR_VERSION),
                   ('PYGTK_MICRO_VERSION', MICRO_VERSION)]
@@ -116,7 +116,7 @@ gobject = PkgConfigExtension(name='gobject', pkc_name='gobject-2.0',
                                       'gobject/pygmaincontext.c',
                                       'gobject/pygmainloop.c',
                                       'gobject/pygparamspec.c',
-                                      'gobject/pygointer.c',
+                                      'gobject/pygpointer.c',
                                       'gobject/pygtype.c',
                                       ])
 
