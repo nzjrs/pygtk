@@ -10,7 +10,7 @@ import gobject
 
 # to create a new GtkTreeModel from python, you must derive from
 # TreeModel.
-class MyTreeModel(gtk.TreeModel):
+class MyTreeModel(gtk.GenericTreeModel):
     '''This class represents the model of a tree.  The iterators used
     to represent positions are converted to python objects when passed
     to the on_* methods.  This means you can use any python object to
@@ -27,7 +27,7 @@ class MyTreeModel(gtk.TreeModel):
     def __init__(self):
 	'''constructor for the model.  Make sure you call
 	PyTreeModel.__init__'''
-	gtk.TreeModel.__init__(self)
+	gtk.GenericTreeModel.__init__(self)
 
     # the implementations for TreeModel methods are prefixed with on_
     def on_get_flags(self):
