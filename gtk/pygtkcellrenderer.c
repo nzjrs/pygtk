@@ -25,7 +25,6 @@
 
 #include "pygtkcellrenderer.h"
 #include <Python.h>
-#include "pygobject.h"
 #include "pygtk-private.h"
 
 /* define this to print out debug messages */
