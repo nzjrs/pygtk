@@ -24,7 +24,6 @@ ignore
   gtk_widget_destroyed
   gtk_widget_get
   gtk_widget_getv
-  gtk_widget_new 
   gtk_widget_newv
   gtk_widget_set
   gtk_widget_setv
@@ -361,4 +360,11 @@ _wrap_gtk_widget_hide_on_delete(PyGObject *self, PyObject *args)
     /* args is just ignored, so obj.connect(signal, func) always works */
 
     return PyBool_FromLong(gtk_widget_hide_on_delete(GTK_WIDGET(self->obj)));
+}
+%%
+override gtk_widget_new kwargs
+static int
+_wrap_gtk_widget_new(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    return PyGObject_Type.tp_init(self, args, kwargs);
 }

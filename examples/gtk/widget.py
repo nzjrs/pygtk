@@ -20,7 +20,7 @@ class PyGtkWidget(gtk.Widget):
                      'size-request': 'override',
 		     }
     def __init__(self):
-        self.__gobject_init__()
+        gtk.Widget.__init__(self)
 
         self.draw_gc = None
         self.layout = self.create_pango_layout(TEXT)
