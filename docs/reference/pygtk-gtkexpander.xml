@@ -226,13 +226,13 @@ of showing and hiding the child automatically.</para>
 hide the expanded widget yourself, such as when you want to actually create
 the widget at expansion time. In this case, create a <link
 linkend="class-gtkexpander"><classname>gtk.Expander</classname></link> but
-do not add a child to it. The expander widget has an expanded property which
-can be used to monitor its expansion state. You should watch this property
-with a signal connection as follows:</para>
+do not add a child to it. The expander widget has the "expanded" property
+that can be used to monitor its expansion state. You should watch this
+property with a signal connection as follows:</para>
 
       <programlisting>
   expander = gtk.expander_new_with_mnemonic("_More Options")
-  expander.connect("expanded", expander_callback)
+  expander.connect("notify::expanded", expander_callback)
 
   ...
 
@@ -242,6 +242,11 @@ with a signal connection as follows:</para>
     else:
       # Hide or destroy widgets
 </programlisting>
+
+      <para>The "activate" signal can also be used to track the expansion
+though it occurs before the "expanded" property is changed so the logic of
+the <function>expander_callback</function>() function would have to be
+reversed.</para>
 
     </refsect2>
 
