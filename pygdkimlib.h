@@ -35,7 +35,7 @@ struct _PyGdkImlib_FunctionStruct *_PyGdkI_API;
 #define PyGdkImlibImage_Type *(_PyGdkI_API->image_type)
 #define PyGdkImlibImage_New (_PyGdkI_API->image_new)
 
-#define init_pygkimlib() { \
+#define init_pygdkimlib() { \
     PyObject *pygtk = PyImport_ImportModule("_gdkimlib"); \
     if (pygtk != NULL) { \
 	PyObject *module_dict = PyModule_GetDict(pygtk); \
