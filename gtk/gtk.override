@@ -4321,3 +4321,142 @@ _wrap_gtk_entry_completion_set_match_func(PyGObject *self, PyObject *args)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_file_chooser_get_filenames noargs
+static PyObject *
+_wrap_gtk_file_chooser_get_filenames(PyGObject *self)
+{
+    PyObject *py_list;
+    GSList *slist, *tmp;
+    int i, slen;
+
+    slist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(self->obj));
+    slen = g_slist_length(slist);
+    if ((py_list = PyList_New(slen)) == NULL)
+        return NULL;
+
+    for (i = 0, tmp = slist; i < slen && tmp != NULL; tmp = tmp->next, i++) {
+        PyObject *obj = PyString_FromString((char *)tmp->data);
+        if (obj == NULL) {
+	    g_slist_foreach(slist, (GFunc)g_free, NULL);
+	    g_slist_free(slist);
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_SetItem(py_list, i, obj);
+    }
+    g_slist_foreach(slist, (GFunc)g_free, NULL);
+    g_slist_free(slist);
+    return py_list;
+}
+%%
+override gtk_file_chooser_get_uris noargs
+static PyObject *
+_wrap_gtk_file_chooser_get_uris(PyGObject *self)
+{
+    PyObject *py_list;
+    GSList *slist, *tmp;
+    int i, slen;
+
+    slist = gtk_file_chooser_get_uris(GTK_FILE_CHOOSER(self->obj));
+    slen = g_slist_length(slist);
+    if ((py_list = PyList_New(slen)) == NULL)
+        return NULL;
+
+    for (i = 0, tmp = slist; i < slen && tmp != NULL; tmp = tmp->next, i++) {
+        PyObject *obj = PyString_FromString((char *)tmp->data);
+        if (obj == NULL) {
+	    g_slist_foreach(slist, (GFunc)g_free, NULL);
+	    g_slist_free(slist);
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_SetItem(py_list, i, obj);
+    }
+    g_slist_foreach(slist, (GFunc)g_free, NULL);
+    g_slist_free(slist);
+    return py_list;
+}
+%%
+override gtk_file_chooser_list_filters noargs
+static PyObject *
+_wrap_gtk_file_chooser_list_filters(PyGObject *self)
+{
+    PyObject *py_list;
+    GSList *slist, *tmp;
+    int i, slen;
+
+    slist = gtk_file_chooser_list_filters(GTK_FILE_CHOOSER(self->obj));
+    slen = g_slist_length(slist);
+    if ((py_list = PyList_New(slen)) == NULL)
+        return NULL;
+
+    for (i = 0, tmp = slist; i < slen && tmp != NULL; tmp = tmp->next, i++) {
+        PyObject *obj = pygobject_new(G_OBJECT(tmp->data));
+        if (obj == NULL) {
+	    g_slist_free(slist);
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_SetItem(py_list, i, obj);
+    }
+    g_slist_free(slist);
+    return py_list;
+}
+%%
+override gtk_file_chooser_list_shortcut_folder_uris noargs
+static PyObject *
+_wrap_gtk_file_chooser_list_shortcut_folder_uris(PyGObject *self)
+{
+    PyObject *py_list;
+    GSList *slist, *tmp;
+    int i, slen;
+
+    slist = gtk_file_chooser_list_shortcut_folder_uris(GTK_FILE_CHOOSER(self->obj));
+
+    slen = g_slist_length(slist);
+    if ((py_list = PyList_New(slen)) == NULL)
+        return NULL;
+
+    for (i = 0, tmp = slist; i < slen && tmp != NULL; tmp = tmp->next, i++) {
+        PyObject *obj = PyString_FromString((char *)tmp->data);
+        if (obj == NULL) {
+	    g_slist_foreach(slist, (GFunc)g_free, NULL);
+	    g_slist_free(slist);
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_SetItem(py_list, i, obj);
+    }
+    g_slist_foreach(slist, (GFunc)g_free, NULL);
+    g_slist_free(slist);
+    return py_list;
+}
+%%
+override gtk_file_chooser_list_shortcut_folders noargs
+static PyObject *
+_wrap_gtk_file_chooser_list_shortcut_folders(PyGObject *self)
+{
+    PyObject *py_list;
+    GSList *slist, *tmp;
+    int i, slen;
+
+    slist = gtk_file_chooser_list_shortcut_folders(GTK_FILE_CHOOSER(self->obj));
+    slen = g_slist_length(slist);
+    if ((py_list = PyList_New(slen)) == NULL)
+        return NULL;
+
+    for (i = 0, tmp = slist; i < slen && tmp != NULL; tmp = tmp->next, i++) {
+        PyObject *obj = PyString_FromString((char *)tmp->data);
+        if (obj == NULL) {
+	    g_slist_foreach(slist, (GFunc)g_free, NULL);
+	    g_slist_free(slist);
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_SetItem(py_list, i, obj);
+    }
+    g_slist_foreach(slist, (GFunc)g_free, NULL);
+    g_slist_free(slist);
+    return py_list;
+}
