@@ -262,9 +262,14 @@ _wrap_gtk_container_child_set(PyGObject *self, PyObject *args)
     GObjectClass *class;
     int len, i;
 
+    if ((len = PyTuple_Size(args)) < 1) {
+        PyErr_SetString(PyExc_TypeError, "requires at least one argument");
+        return NULL;
+    }
     pychild = (PyGObject*)PyTuple_GetItem(args, 0);
     if (!pygobject_check(pychild, &PyGtkWidget_Type)) {
-        PyErr_SetString(PyExc_TypeError, "first argument should be a GtkWidget");
+        PyErr_SetString(PyExc_TypeError,
+                        "first argument should be a GtkWidget");
         return NULL;
     }
 
@@ -278,7 +283,6 @@ _wrap_gtk_container_child_set(PyGObject *self, PyObject *args)
         return NULL;
     }
 
-    len = PyTuple_Size(args);
     if ((len - 1) % 2) {
         PyErr_SetString(PyExc_TypeError,
                         "Argument list must be column, value pairs.  No -1 "
@@ -337,9 +341,14 @@ _wrap_gtk_container_child_get(PyGObject *self, PyObject *args)
     int len, i;
     PyObject *tuple;
 
+    if ((len = PyTuple_Size(args)) < 1) {
+        PyErr_SetString(PyExc_TypeError, "requires at least one argument");
+        return NULL;
+    }
     pychild = (PyGObject*)PyTuple_GetItem(args, 0);
     if (!pygobject_check(pychild, &PyGtkWidget_Type)) {
-        PyErr_SetString(PyExc_TypeError, "first argument should be a GtkWidget");
+        PyErr_SetString(PyExc_TypeError,
+                        "first argument should be a GtkWidget");
         return NULL;
     }
 
@@ -353,7 +362,6 @@ _wrap_gtk_container_child_get(PyGObject *self, PyObject *args)
         return NULL;
     }
 
-    len = PyTuple_Size(args);
     tuple = PyTuple_New(len-1);
     class = G_OBJECT_GET_CLASS(self->obj);
     for (i = 1; i < len; i++) {
@@ -407,16 +415,20 @@ _wrap_gtk_container_add_with_properties(PyGObject *self, PyObject *args)
     GObjectClass *class;
     int len, i;
 
+    if ((len = PyTuple_Size(args)) < 1) {
+        PyErr_SetString(PyExc_TypeError, "requires at least one argument");
+        return NULL;
+    }
     pychild = (PyGObject*)PyTuple_GetItem(args, 0);
     if (!pygobject_check(pychild, &PyGtkWidget_Type)) {
-        PyErr_SetString(PyExc_TypeError, "first argument should be a GtkWidget");
+        PyErr_SetString(PyExc_TypeError,
+                        "first argument should be a GtkWidget");
         return NULL;
     }
 
     container = GTK_CONTAINER(self->obj);
     child = GTK_WIDGET(pychild->obj);
 
-    len = PyTuple_Size(args);
     if ((len - 1) % 2) {
         PyErr_SetString(PyExc_TypeError,
                         "Argument list must be column, value pairs.  No -1 "
