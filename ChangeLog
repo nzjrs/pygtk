@@ -1,3 +1,21 @@
+2003-12-17  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk-types.defs (TextSearchFlags): GtkTextSearchFlags is a
+	flags value, rather than an enum.
+
+2003-12-16  James Henstridge  <james@daa.com.au>
+
+	* configure.in (CFLAGS): add -fno-strict-aliasing to CFLAGS if the
+	compiler supports it.  The Python API breaks some of the strict
+	aliasing rules.
+
+	* acinclude.m4 (JH_ADD_CFLAG): new macro to check whether the
+	compiler supports a particular cflag.
+
+	* codegen/codegen.py
+	(GInterface.get_initial_class_substdict): GInterface wrappers
+	should be sizeof(PyObject), since they are mixins.
+
 2003-12-19  Johan Dahlin  <johan@gnome.org>
 
 	* gtk/gdk.defs (fill): Change to guint32. Patch by

@@ -500,7 +500,7 @@ class GObjectWrapper(Wrapper):
 
 class GInterfaceWrapper(GObjectWrapper):
     def get_initial_class_substdict(self):
-        return { 'tp_basicsize'      : 'PyGObject',
+        return { 'tp_basicsize'      : 'PyObject',
                  'tp_weaklistoffset' : '0',
                  'tp_dictoffset'     : '0'}
 

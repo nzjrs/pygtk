@@ -139,20 +139,10 @@ if test "x$enable_numpy" != xno; then
   CPPFLAGS="$save_CPPFLAGS"
 fi
 
-dnl add debugging options ...
-changequote(,)dnl
-if test "x$GCC" = xyes; then
-  case " $CFLAGS " in
-  *[\	\ ]-Wall[\	\ ]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
-
-  case " $CFLAGS " in
-  *[\	\ ]-std=c9x[\	\ ]*) ;;
-  *) CFLAGS="$CFLAGS -std=c9x" ;;
-  esac
-fi
-changequote([,])dnl
+dnl add required cflags ...
+JH_ADD_CFLAG([-Wall])
+JH_ADD_CFLAG([-std=c9x])
+JH_ADD_CFLAG([-fno-strict-aliasing])
 
 AC_CONFIG_FILES(
   Makefile
