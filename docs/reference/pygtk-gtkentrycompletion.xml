@@ -212,10 +212,11 @@ something like:</para>
   liststore = gtk.ListStore(gobject.TYPE_STRING, gtk.gdk.Pixbuf)
   completion.set_model(liststore)
   pixbufcell = gtk.CellRendererPixbuf()
-  ec.pack_start(pixbufcell)
-  ec.add_attribute(pixbufcell, 'pixbuf', 1)
-  ec.set_text_column(0)  # creates a gtk.CellRendererText and packs it in the
-                         # completion. Also sets the 'text' attribute
+  completion.pack_start(pixbufcell)
+  completion.add_attribute(pixbufcell, 'pixbuf', 1)
+  # create a gtk.CellRendererText and pack it in the completion. Also set the
+  # 'text' attribute
+  completion.set_text_column(0)
   # load up the liststore with string - pixbuf data - assuming pixbuf created
   ls.append(['string text', pixbuf])
 </programlisting>
