@@ -1,18 +1,9 @@
 # order is important here (for now)
 import ltihooks, ExtensionClass, gobject, gtk
 
-def create_label_win(unistr):
-    w = gtk.GtkWindow()
-    w.set_border_width(10)
-    l = gtk.GtkLabel(unistr)
-    w.add(l)
-    l.show()
-    w.show()
-    return w, l
-
-a1 = create_label_win(u'This is an example of \u03A0\u03B1\u03BD\u8A9E in gtk')
-a2 = create_label_win(
-u'''\u03A0\u03B1\u03BD\u8A9E
+# string taken from pango examples directory and converted from utf8
+# to python unicode string escapes
+hellos = u'''\u03A0\u03B1\u03BD\u8A9E
 This is a list of ways to say hello in various languages. Its purpose is to illustrate a number of scripts.
 
 (Converted into UTF-8)
@@ -57,6 +48,12 @@ Difference among chinese characters in GB, JIS, KSC, BIG5:\u200E
  KSC\t--\t\u5143\u6C23\t\u958B\u767C
  BIG5\t--\t\u5143\u6C23\t\u958B\u767C
 
-''')
+'''
+w = gtk.GtkWindow()
+w.set_border_width(10)
+l = gtk.GtkLabel(hellos)
+w.add(l)
+l.show()
+w.show()
 
 gtk.main()
