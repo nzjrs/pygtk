@@ -33,6 +33,7 @@ gtkmodule.o: gtkmodule_defs.c gtkmodule_impl.c
 
 EXTRA_DIST = \
 	pygtk.spec \
+	MAPPING \
 	examples/imlib/view.py \
 	examples/ide/gtkcons.py \
 	examples/ide/gtkdb.py \

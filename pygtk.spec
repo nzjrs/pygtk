@@ -42,6 +42,6 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{py_prefix}/lib/python%{py_ver}/site-packages/_gtkmodule.so
 %{py_prefix}/lib/python%{py_ver}/site-packages/_gdkimlibmodule.so
 
-%doc AUTHORS NEWS README ChangeLog description.py
+%doc AUTHORS NEWS README MAPPING ChangeLog description.py
 %doc examples
 

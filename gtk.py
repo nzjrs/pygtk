@@ -58,34 +58,34 @@ class GtkObject:
 		# they will always be available with the object.  Due to
 		# reference counting problems, we can't always pass the
 		# same GtkObject instance to a callback.
-		if attr[0] == '_' or not self.__dict__.has_key('_o'):
-			raise AttributeError, attr
-		dict = self.get_data('Python-Attributes')
-		if dict and dict.has_key(attr):
-			return dict[attr]
+		#if attr[0] == '_' or not self.__dict__.has_key('_o'):
+		#	raise AttributeError, attr
+		#dict = self.get_data('Python-Attributes')
+		#if dict and dict.has_key(attr):
+		#	return dict[attr]
 		raise AttributeError, attr
-	def __setattr__(self, attr, value):
-		if attr[0] == '_' or self.__dict__.has_key(attr) or \
-		   not self.__dict__.has_key('_o'):
-			self.__dict__[attr] = value
-		dict = self.get_data('Python-Attributes')
-		if not dict:
-			dict = {}
-			self.set_data('Python-Attributes', dict)
-		dict[attr] = value
-	def __delattr__(self, attr):
-		if self.__dict__.has_key(attr):
-			del self.__dict__[attr]
-			return
-		if not self.__dict__.has_key('_o'):
-			raise AttributeError, \
-			      'delete non-existing instance attribute'
-		dict = self.get_data('Python-Attributes')
-		if dict and dict.has_key(attr):
-			del dict[attr]
-		else:
-			raise AttributeError, \
-			      'delete non-existing instance attribute'
+	#def __setattr__(self, attr, value):
+	#	if attr[0] == '_' or self.__dict__.has_key(attr) or \
+	#	   not self.__dict__.has_key('_o'):
+	#		self.__dict__[attr] = value
+	#	dict = self.get_data('Python-Attributes')
+	#	if not dict:
+	#		dict = {}
+	#		self.set_data('Python-Attributes', dict)
+	#	dict[attr] = value
+	#def __delattr__(self, attr):
+	#	if self.__dict__.has_key(attr):
+	#		del self.__dict__[attr]
+	#		return
+	#	if not self.__dict__.has_key('_o'):
+	#		raise AttributeError, \
+	#		      'delete non-existing instance attribute'
+	#	dict = self.get_data('Python-Attributes')
+	#	if dict and dict.has_key(attr):
+	#		del dict[attr]
+	#	else:
+	#		raise AttributeError, \
+	#		      'delete non-existing instance attribute'
 			
 	def flags(self, mask=None):
 		if mask:

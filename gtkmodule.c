@@ -651,17 +651,17 @@ static PyObject *PyGtkStyle_GetAttr(PyGtkStyle_Object *self, char *attr) {
   if (!strcmp(attr, "fg_gc"))
     return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
   if (!strcmp(attr, "bg_gc"))
-    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->bg_gc);
   if (!strcmp(attr, "light_gc"))
-    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->light_gc);
   if (!strcmp(attr, "dark_gc"))
-    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->dark_gc);
   if (!strcmp(attr, "mid_gc"))
-    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->mid_gc);
   if (!strcmp(attr, "text_gc"))
-    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->text_gc);
   if (!strcmp(attr, "base_gc"))
-    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
+    return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->base_gc);
   if (!strcmp(attr, "black_gc"))
     return PyGdkGC_New(style->black_gc);
   if (!strcmp(attr, "white_gc"))
@@ -2013,11 +2013,26 @@ PyGdkCursor_Repr(PyGdkCursor_Object *self) {
     while (vals->value_name != NULL && vals->value != self->obj->type)
       vals++;
     if (vals->value_nick) cname = vals->value_nick;
-    else cname = "*unknown";
+    else cname = "*unknown*";
   }
 
   g_snprintf(buf, 256, "<GdkCursor '%s'>", cname);
   return PyString_FromString(buf);
+}
+
+static PyObject *PyGdkCursor_GetAttr(PyGdkCursor_Object *self, char *attr) {
+  if (!strcmp(attr, "type"))
+    return PyInt_FromLong(self->obj->type);
+  else if (!strcmp(attr, "name")) {
+    GtkEnumValue *vals = gtk_type_enum_get_values(GTK_TYPE_GDK_CURSOR_TYPE);
+
+    while (vals->value_name != NULL && vals->value != self->obj->type)
+      vals++;
+    if (vals->value_nick) return PyString_FromString(vals->value_nick);
+    return PyString_FromString("*unknown*");
+  }
+  PyErr_SetString(PyExc_AttributeError, attr);
+  return NULL;
 }
 
 static PyTypeObject PyGdkCursor_Type = {
@@ -2028,7 +2043,7 @@ static PyTypeObject PyGdkCursor_Type = {
   0,
   (destructor)PyGdkCursor_Dealloc,
   (printfunc)0,
-  (getattrfunc)0,
+  (getattrfunc)PyGdkCursor_GetAttr,
   (setattrfunc)0,
   (cmpfunc)PyGdkCursor_Compare,
   (reprfunc)PyGdkCursor_Repr,

@@ -1,3 +1,30 @@
+1999-02-23  James Henstridge  <james@daa.com.au>
+
+	* README, Makefile.am, pygtk.spec: added references to the MAPPING
+	file.
+
+	* MAPPING: new file describing the mapping of GTK+ onto python as
+	pygtk does it.
+
+1999-02-22  James Henstridge  <james@daa.com.au>
+
+	* description.py (GdkCursor): added information about this type.
+
+	* gtk.py: commented out the __getattr__, __setattr__ and __delattr__
+	methods of GtkObject.  There were too many things that broke because
+	of these changes.  If I can get these to work correctly in the
+	future, I will consider re-enabling it, but not till then.
+	
+	* examples/testgtk/testgtk.py (create_cursor_test): added a cursor
+	test to the python testgtk.  It is adapted from the translation sent
+	in by Osamu Tanimoto.
+
+	* gtkmodule.c: fixed a bit of bad copy'n'paste in the GC part of the
+	style wrapper code.  Thanks go to Osamu Tanimoto <tanimoto@rios.co.jp>.
+	(PyGdkCursor_GetAttr): now GdkCursor objects have a type attribute
+	that returns the type number for the object, and a name attribute
+	that gives a string representation of that type number.
+
 1999-02-20  James Henstridge  <james@daa.com.au>
 
 	* gtk.py (GtkTooltips.set_tip): made tip_private argument optional.

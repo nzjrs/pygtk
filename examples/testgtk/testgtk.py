@@ -1442,6 +1442,99 @@ def create_idle_test(_button):
 		button.show()
 	wins["idle_test"].show()
 
+def create_cursor_test(_button):
+	if not wins.has_key("cursor_test"):
+		def expose_event(darea, event):
+			drawable = darea.get_window()
+			white_gc = darea.get_style().white_gc
+			grey_gc = darea.get_style().bg_gc[STATE_NORMAL]
+			black_gc = darea.get_style().black_gc
+			max_width = drawable.width
+			max_height = drawable.height
+			draw_rectangle(drawable, white_gc, TRUE, 0, 0,
+				       max_width, max_height / 2)
+			draw_rectangle(drawable, black_gc, TRUE, 0,
+				       max_height/2, max_width, max_height / 2)
+			draw_rectangle(drawable, grey_gc, TRUE,
+				       max_width / 3, max_height / 3,
+				       max_width / 3, max_height / 3)
+
+		def button_press(widget, event, spinner):
+			if event.type == GDK.BUTTON_PRESS:
+				if event.button == 1:
+					spinner.spin(SPIN_STEP_FORWARD, 0)
+				elif event.button == 3:
+					spinner.spin(SPIN_STEP_BACKWARD, 0)
+		def set_cursor(spinner, widget, cur_name):
+			c = spinner.get_value_as_int()
+			c = c & 0xfe
+			cursor = cursor_new(c)
+			widget.get_window().set_cursor(cursor)
+			cur_name.set_text(cursor.name)
+		
+		win = GtkWindow()
+		wins["cursor_test"] = win
+		win.connect("delete_event", lambda _w, _e, win=win: win.hide())
+		win.set_title("Cursor Test")
+
+		main_vbox = GtkVBox(FALSE, 5)
+		main_vbox.set_border_width(0)
+		win.add(main_vbox)
+		main_vbox.show()
+
+		vbox = GtkVBox(FALSE, 5)
+		vbox.set_border_width(10)
+		main_vbox.pack_start(vbox)
+		vbox.show()
+
+		hbox = GtkHBox(FALSE, 5)
+		vbox.pack_start(hbox, expand=FALSE)
+		hbox.show()
+
+		label = GtkLabel('Cursor value: ')
+		label.set_alignment(0, 0.5)
+		hbox.pack_start(label, expand=FALSE)
+		label.show()
+
+		spinner = GtkSpinButton(GtkAdjustment(0,0,152,2,10,0), 0, 0)
+		hbox.pack_start(spinner)
+		spinner.show()
+
+		frame = GtkFrame("Cursor Area")
+		frame.set_border_width(10)
+		frame.set_label_align(0.5, 0)
+		vbox.pack_start(frame)
+		frame.show()
+
+		darea = GtkDrawingArea()
+		darea.set_usize(80, 80)
+		frame.add(darea)
+		darea.show()
+
+		cur_name = GtkLabel("")
+		vbox.pack_start(cur_name, expand=FALSE)
+		cur_name.show()
+		
+		darea.connect("expose_event", expose_event)
+		darea.add_events(GDK.EXPOSURE_MASK | GDK.BUTTON_PRESS_MASK)
+		darea.connect("button_press_event", button_press, spinner)
+		spinner.connect("changed", set_cursor, darea, cur_name)
+
+		hsep = GtkHSeparator()
+		main_vbox.pack_start(hsep, expand=FALSE)
+		hsep.show()
+
+		hbox = GtkHBox(FALSE, 5)
+		hbox.set_border_width(10)
+		main_vbox.pack_start(hbox, expand=FALSE)
+		hbox.show()
+
+		button = GtkButton("Close")
+		button.connect("clicked", win.hide)
+		hbox.pack_start(button)
+		button.show()
+	wins["cursor_test"].show()
+
 def do_exit(button):
 	mainquit()
 
@@ -1484,6 +1577,7 @@ def create_main_window():
 		"test idle": create_idle_test,
 		"test": None, #create_test
 		"status bar": create_statusbar_test,
+		"cursor": create_cursor_test,
 	}
 	win = GtkWindow()
 	win.set_name("main window")

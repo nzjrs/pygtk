@@ -129,6 +129,12 @@ class GdkColormap:
 		that has been allocated in the colormap"""
 		pass
 
+class GdkCursor:
+	"""the type number of this cursor, or -1 for a pixmap cursor"""
+	type = _
+	"""the string name for this type of cursor"""
+	name = _
+
 class GdkDragContext:
 	"""This event holds the context of a DND drag"""
 
