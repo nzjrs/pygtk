@@ -258,11 +258,196 @@ static PyTypeObject PyPangoAttribute_Type = {
     (PyObject *)0,			/* tp_bases */
 };
 
+/* ------------- PangoAttrIterator ------------- */
+
+typedef struct {
+    PyObject_HEAD
+    PangoAttrIterator *iter;
+} PyPangoAttrIterator;
+staticforward PyTypeObject PyPangoAttrIterator_Type;
+
+static PyObject *
+pypango_attr_iterator_new(PangoAttrIterator *iter)
+{
+    PyPangoAttrIterator *self;
+
+    self = (PyPangoAttrIterator *)PyObject_NEW(PyPangoAttrIterator,
+					   &PyPangoAttrIterator_Type);
+    if (self == NULL)
+	return NULL;
+    self->iter = iter;
+
+    return (PyObject *)self;
+}
+
+static void
+pypango_attr_iterator_dealloc(PyPangoAttrIterator *self)
+{
+    pango_attr_iterator_destroy(self->iter);
+    PyObject_DEL(self);
+}
+
+static int
+pypango_attr_iterator_compare(PyPangoAttrIterator *self,
+			      PyPangoAttrIterator *v)
+{
+    if (self->iter == v->iter)
+	return 0;
+    if (self->iter > v->iter)
+	return -1;
+    return 1;
+}
+
+static long
+pypango_attr_iterator_hash(PyPangoAttrIterator *self)
+{
+    return (long)self->iter;
+}
+
+static PyObject *
+pypango_attr_iterator_copy(PyPangoAttrIterator *self)
+{
+    return pypango_attr_iterator_new(pango_attr_iterator_copy(self->iter));
+}
+
+static PyObject *
+pypango_attr_iterator_range(PyPangoAttrIterator *self)
+{
+    gint start, end;
+
+    pango_attr_iterator_range(self->iter, &start, &end);
+    return Py_BuildValue("ii", start, end);
+}
+
+static PyObject *
+pypango_attr_iterator_next(PyPangoAttrIterator *self)
+{
+    PyObject *py_ret;
+
+    py_ret = pango_attr_iterator_next(self->iter) ? Py_True : Py_False;
+
+    Py_INCREF(py_ret);
+    return py_ret;
+}
+
+static PyObject *
+pypango_attr_iterator_get(PyPangoAttrIterator *self, PyObject *args,
+			  PyObject *kwargs)
+{
+    static char *kwlist[] = { "type", NULL };
+    PyObject *py_type;
+    PangoAttrType type;
+    PangoAttribute *attr;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:pango.AttrIterator.get",
+				     kwlist, &py_type))
+	return NULL;
+
+    if (pyg_enum_get_value(PANGO_TYPE_ATTR_TYPE, py_type, (gint*)&type))
+	return NULL;
+
+    if (!(attr = pango_attr_iterator_get(self->iter, type))) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+
+    return pypango_attr_new(attr, attr->start_index, attr->end_index);
+}
+
+static PyObject *
+pypango_attr_iterator_get_font(PyPangoAttrIterator *self)
+{
+    PangoFontDescription *desc;
+    PangoLanguage *language;
+    GSList *extra_attrs, *tmp;
+    PyObject *py_desc, *py_language, *py_extra_attrs;
+
+    if (!(desc = pango_font_description_new())) {
+	PyErr_SetString(PyExc_RuntimeError, "can't get font info");
+	return NULL;
+    }
+    pango_attr_iterator_get_font(self->iter, desc, &language, &extra_attrs);
+    py_desc = pyg_boxed_new(PANGO_TYPE_FONT_DESCRIPTION, desc, TRUE, TRUE);
+    py_language = pyg_boxed_new(PANGO_TYPE_LANGUAGE, language, TRUE, TRUE);
+
+    py_extra_attrs = PyList_New(0);
+    for (tmp = extra_attrs; tmp != NULL; tmp = tmp->next) {
+	PangoAttribute *attr = (PangoAttribute *)tmp->data;
+	PyObject *py_attr = pypango_attr_new(attr, attr->start_index,
+					  attr->end_index);
+	PyList_Append(py_extra_attrs, py_attr);
+	Py_DECREF(py_attr);
+    }
+    g_slist_free(extra_attrs);
+
+    return Py_BuildValue("OOO", py_desc, py_language, py_extra_attrs);
+}
+
+static PyMethodDef pypango_attr_iterator_methods[] = {
+    { "copy", (PyCFunction)pypango_attr_iterator_copy, METH_NOARGS },
+    { "range", (PyCFunction)pypango_attr_iterator_range, METH_NOARGS },
+    { "next", (PyCFunction)pypango_attr_iterator_next, METH_NOARGS },
+    { "get", (PyCFunction)pypango_attr_iterator_get, METH_VARARGS|METH_KEYWORDS },
+    { "get_font", (PyCFunction)pypango_attr_iterator_get_font, METH_NOARGS },
+    { NULL, NULL, 0 }
+};
+
+static PyTypeObject PyPangoAttrIterator_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,					/* ob_size */
+    "pango.AttrIterator",			/* tp_name */
+    sizeof(PyPangoAttrIterator),		/* tp_basicsize */
+    0,					/* tp_itemsize */
+    /* methods */
+    (destructor)pypango_attr_iterator_dealloc,	/* tp_dealloc */
+    (printfunc)0,			/* tp_print */
+    (getattrfunc)0,			/* tp_getattr */
+    (setattrfunc)0,			/* tp_setattr */
+    (cmpfunc)pypango_attr_iterator_compare,	/* tp_compare */
+    (reprfunc)0,			/* tp_repr */
+    0,					/* tp_as_number */
+    0,					/* tp_as_sequence */
+    0,					/* tp_as_mapping */
+    (hashfunc)pypango_attr_iterator_hash,	/* tp_hash */
+    (ternaryfunc)0,			/* tp_call */
+    (reprfunc)0,			/* tp_str */
+    (getattrofunc)0,			/* tp_getattro */
+    (setattrofunc)0,			/* tp_setattro */
+    0,					/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,			/* tp_flags */
+    NULL, /* Documentation string */
+    (traverseproc)0,			/* tp_traverse */
+    (inquiry)0,				/* tp_clear */
+    (richcmpfunc)0,			/* tp_richcompare */
+    0,					/* tp_weaklistoffset */
+    (getiterfunc)0,			/* tp_iter */
+    (iternextfunc)0,			/* tp_iternext */
+    pypango_attr_iterator_methods,	/* tp_methods */
+    0,					/* tp_members */
+    0,					/* tp_getset */
+    (PyTypeObject *)0,			/* tp_base */
+    (PyObject *)0,			/* tp_dict */
+    0,					/* tp_descr_get */
+    0,					/* tp_descr_set */
+    0,					/* tp_dictoffset */
+    (initproc)0,			/* tp_init */
+    (allocfunc)0,			/* tp_alloc */
+    (newfunc)0,				/* tp_new */
+    0,					/* tp_free */
+    (inquiry)0,				/* tp_is_gc */
+    (PyObject *)0,			/* tp_bases */
+};
+
 %%
 init
     PyPangoAttribute_Type.tp_alloc = PyType_GenericAlloc;
     PyPangoAttribute_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyPangoAttribute_Type) < 0)
+        return;
+
+    PyPangoAttrIterator_Type.tp_alloc = PyType_GenericAlloc;
+    PyPangoAttrIterator_Type.tp_new = PyType_GenericNew;
+    if (PyType_Ready(&PyPangoAttrIterator_Type) < 0)
         return;
 %%
 modulename pango
@@ -1191,4 +1376,14 @@ _wrap_pango_color_parse(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     self->free_on_dealloc = TRUE;
 
     return 0;
+}
+%%
+override pango_attr_list_get_iterator noargs
+static PyObject *
+_wrap_pango_attr_list_get_iterator(PyGBoxed *self)
+{
+    PangoAttrList *list = pyg_boxed_get(self, PangoAttrList);
+    PangoAttrIterator *iter = pango_attr_list_get_iterator(list);
+
+    return pypango_attr_iterator_new(iter);
 }
