@@ -10,6 +10,25 @@ icons</refpurpose>
   </refnamediv>
 
   <refsect1>
+    <title>Synopsis</title>
+
+    <programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--stock-add">gtk.stock_add</link></methodname>
+	<methodparam><parameter role="keyword">items</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--stock-lookup">gtk.stock_lookup</link></methodname>
+	<methodparam><parameter>stock_id</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--stock-list-ids">gtk.stock_list_ids</link></methodname>
+	<methodparam><parameter role="keyword"></parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+  </refsect1>
+
+  <refsect1>
     <title>Description</title>
 
     <para>Stock items represent commonly-used menu or toolbar items such as
@@ -566,6 +585,106 @@ Available in GTK+ 2.4 and above.</simpara>
     </variablelist>
 
     <para></para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gtk--stock-add">
+      <title>gtk.stock_add</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.stock_add</methodname>
+	  <methodparam><parameter
+			 role="keyword">items</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">items</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list or tuple containing 5-tuples of stock
+	  items</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.stock_add</function>() function registers each
+of the stock items in the list or tuple specified by
+<parameter>items</parameter>. The stock items are specified by a 5-tuple
+containing:</para>
+
+      <itemizedlist>
+	<listitem>
+	  <simpara>stock_id - a string identifier</simpara>
+	</listitem>
+	<listitem>
+	  <simpara>label - a string to use for a label</simpara>
+	</listitem>
+	<listitem>
+	  <simpara>modifier - a set of modifiers</simpara>
+	</listitem>
+	<listitem>
+	  <simpara>keyval - an integer key value (see <link
+	  linkend="class-gdkkeymap"><classname>gtk.gdk.Keymap</classname></link>)</simpara>
+	</listitem>
+	<listitem>
+	  <simpara>translation_domain - a string identifier of a translation
+	  domain</simpara>
+	</listitem>
+      </itemizedlist>
+
+      <para>If an item already exists with the same stock ID as one of the
+items, the old item gets replaced.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--stock-lookup">
+      <title>gtk.stock_lookup</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.stock_lookup</methodname>
+	  <methodparam><parameter>stock_id</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>stock_id</parameter>&nbsp;:</term>
+	  <listitem><simpara>a stock item name</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 5-tuple containing the stock item info or
+	  <literal>None</literal> if <parameter>stock_id</parameter> is
+	  unknown</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.stock_lookup</function>() function looks up
+the stock item identified by <parameter>stock_id</parameter> and returns a
+5-tuple containing its information. If <parameter>stock_id</parameter> is
+not known this function returns <literal>None</literal></para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--stock-list-ids">
+      <title>gtk.stock_list_ids</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.stock_list_ids</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>ist of known stock IDs</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.stock_list_ids</function>() function returns a
+list of all known stock IDs added to a <link
+linkend="class-gtkiconfactory"><classname>gtk.IconFactory</classname></link>
+or registered with the <link
+linkend="function-gtk--stock-add"><function>gtk.stock_add</function>()</link>
+function.</para>
+
+    </refsect2>
 
   </refsect1>
 
