@@ -1347,7 +1347,7 @@ _wrap_gtk_tree_model_get_iter(PyGObject *self, PyObject *args,PyObject *kwargs)
 				     kwlist, &PyTuple_Type, &py_path))
 	return NULL;
 
-    path = pygtk_tree_path_from_pyobject(args);
+    path = pygtk_tree_path_from_pyobject(py_path);
     if (!path) {
 	PyErr_SetString(PyExc_TypeError, "GtkTreeModel.get_iter requires a tuple of integers as an argument");
 	return NULL;
