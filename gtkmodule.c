@@ -4837,7 +4837,7 @@ static PyObject *_wrap_gtk_ctree_node_get_row_data(PyObject *self, PyObject *arg
   PyObject *ctree, *node, *data;
 
   if (!PyArg_ParseTuple(args, "O!O!:gtk_ctree_node_get_row_data", &PyGtk_Type,
-			&ctree, &PyGtkCTreeNode_Type, *node))
+			&ctree, &PyGtkCTreeNode_Type, &node))
     return NULL;
   data = gtk_ctree_node_get_row_data(GTK_CTREE(PyGtk_Get(ctree)),
 				     PyGtkCTreeNode_Get(node));
@@ -4853,7 +4853,7 @@ static PyObject *_wrap_gtk_ctree_base_nodes(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, "O!:gtk_ctree_base_nodes", &PyGtk_Type, &ctree))
     return NULL;
   /* the first row is always a base node */
-  node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+  node = GTK_CTREE_NODE(GTK_CLIST(PyGtk_Get(ctree))->row_list);
   ret = PyList_New(0);
   while (node) {
     PyList_Append(ret, PyGtkCTreeNode_New(node));
