@@ -4068,3 +4068,15 @@ _wrap_gdk_query_visual_types(PyObject *self)
 
     return py_types;
 }
+%%
+override gdk_window_at_pointer noargs
+static PyObject *
+_wrap_gdk_window_at_pointer(PyObject *self)
+{
+    GdkWindow *window;
+    gint x, y;
+
+    window = gdk_window_at_pointer(&x, &y);
+
+    return Py_BuildValue("(Nii)", pygobject_new((GObject *)window), x, y);
+}
