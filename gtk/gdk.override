@@ -3686,3 +3686,65 @@ _wrap_gdk_pixbuf_fill(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gdk_window_add_filter kwargs
+static int
+pygdk_filter_func_marshal(GdkXEvent *xevent,
+			  GdkEvent *event,
+			  PyGtkCustomNotify *cunote)
+{
+    PyObject *ret;
+    PyObject *pyevent;
+    int retval;
+    
+    pyg_block_threads();
+    pyevent = pyg_boxed_new(GDK_TYPE_EVENT, event, TRUE, TRUE);
+
+    if (cunote->data)
+        ret = PyObject_CallFunction(cunote->func, "OO", pyevent, cunote->data);
+
+    else
+        ret = PyObject_CallFunction(cunote->func, "O", pyevent);
+    
+    if (ret == NULL) {
+        PyErr_Print();
+	retval = PyInt_AsLong(GDK_FILTER_CONTINUE);
+    } else {
+	retval = PyInt_AsLong(ret);
+    }
+    
+    pyg_unblock_threads();
+    return retval;
+}
+static PyObject*
+_wrap_gdk_window_add_filter(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "entries", "callback_data", NULL };
+    PyGtkCustomNotify *cunote;
+    PyObject *pyfunc, *pydata = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:GdkWindow.add_filter", kwlist,
+                                     &pyfunc, &pydata))
+        return NULL;
+     
+    
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pydata;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+
+    pyg_block_threads();
+    g_object_weak_ref(G_OBJECT(self->obj),
+		      (GWeakNotify) pygtk_custom_destroy_notify,
+		      cunote);
+    pyg_unblock_threads();
+    
+    gdk_window_add_filter (GDK_WINDOW(self->obj),
+			   (GdkFilterFunc)pygdk_filter_func_marshal,
+			   cunote);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
