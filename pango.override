@@ -384,12 +384,34 @@ pypango_attr_iterator_get_font(PyPangoAttrIterator *self)
     return Py_BuildValue("OOO", py_desc, py_language, py_extra_attrs);
 }
 
+static PyObject *
+pypango_attr_iterator_get_attrs(PyPangoAttrIterator *self)
+{
+    GSList *alist;
+    PyObject *py_list;
+    guint i, len;
+
+    alist = pango_attr_iterator_get_attrs(self->iter);
+
+    len = g_slist_length(alist);
+    py_list = PyTuple_New(len);
+    for (i = 0; i < len; i++) {
+	PangoAttribute *attr = (PangoAttribute *)g_slist_nth_data(alist, i);
+	
+	PyTuple_SetItem(py_list, i, pypango_attr_new(attr, attr->start_index,
+						     attr->end_index));
+    }
+
+    return py_list;
+}
+
 static PyMethodDef pypango_attr_iterator_methods[] = {
     { "copy", (PyCFunction)pypango_attr_iterator_copy, METH_NOARGS },
     { "range", (PyCFunction)pypango_attr_iterator_range, METH_NOARGS },
     { "next", (PyCFunction)pypango_attr_iterator_next, METH_NOARGS },
     { "get", (PyCFunction)pypango_attr_iterator_get, METH_VARARGS|METH_KEYWORDS },
     { "get_font", (PyCFunction)pypango_attr_iterator_get_font, METH_NOARGS },
+    { "get_attrs", (PyCFunction)pypango_attr_iterator_get_attrs, METH_NOARGS },
     { NULL, NULL, 0 }
 };
 
