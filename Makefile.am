@@ -109,6 +109,7 @@ EXTRA_DIST += \
   examples/gobject/properties.py \
   examples/pango/utf8-demo.py \
   examples/pygtk-demo/pygtk-demo.py \
+  examples/pygtk-demo/gtk-logo-rgb.gif \
   examples/pygtk-demo/demos/__init__.py \
   examples/pygtk-demo/demos/appwindow.py \
   examples/pygtk-demo/demos/buttonbox.py \

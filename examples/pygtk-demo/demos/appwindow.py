@@ -51,8 +51,6 @@ def toolbar_cb(button, window):
     dialog.show()
 
 def register_stock_icons ():
-    # TODO: Fix this
-    
     items = [('demo-gtk-logo', '_GTK!', 0, 0, '')]
     
     # Register our stock items
@@ -63,12 +61,12 @@ def register_stock_icons ():
     factory.add_default ()
     
     pixbuf = gtk.gdk.pixbuf_new_from_file ('gtk-logo-rgb.gif')
-    
+    pixbuf.add_alpha(True, 0xff, 0xff, 0xff)
+
     # Register icon to accompany stock item
     if pixbuf:
 	icon_set = gtk.IconSet (pixbuf)
 	factory.add ('demo-gtk-logo', icon_set)
-	icon_set.unref()
     else:
 	print 'failed to load GTK logo for toolbar'
 	
@@ -87,7 +85,7 @@ mark_set_callback = (lambda buffer, new_location, mark, statusbar:
     
 
 def main():
-    #register_stock_icons ()
+    register_stock_icons ()
     
     # Create the toplevel window
     window = gtk.Window()
