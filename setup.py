@@ -4,10 +4,8 @@
 #
 # TODO:
 # pygtk.spec(.in)
-# Numeric support
 # win32 testing
 # install *.pyc for codegen
-# GtkGL
 #
 """Python Bindings for the GTK Widget Set.
 
@@ -35,6 +33,7 @@ ATK_REQUIRED      = '1.0.0'
 PANGO_REQUIRED    = '1.0.0'
 GTK_REQUIRED      = '2.0.0'
 LIBGLADE_REQUIRED = '2.0.0'
+GTKGL_REQUIRED    = '1.99.0'
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
@@ -144,6 +143,15 @@ gtk = TemplateExtension(name='gtk', pkc_name='gtk+-2.0',
                         defs='gtk/gtk.defs')
 gtk.templates.append(gdk_template)
 
+gtkgl = TemplateExtension(name='gtkgl', pkc_name='gtkgl-2.0',
+                             pkc_version=LIBGLADE_REQUIRED,
+                             output='gtk.gtkgl',
+                             defs='gtk/gtkgl.defs',
+                             sources=['gtk/gtkglmodule.c',
+                                      'gtk/gtkgl.c'],
+                             register=['gtk/gtk-types.defs',
+                                       'gtk/gtkgl.defs'],
+                             override='gtk/gtkgl.override')
 # Libglade
 libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
                              pkc_version=LIBGLADE_REQUIRED,
@@ -178,6 +186,12 @@ if pango.can_build():
     ext_modules.append(pango)
     data_files.append((DEFS_DIR, ('pango.defs', 'pango-types.defs')))
 if gtk.can_build():
+    try:
+        import Numeric
+        GLOBAL_MACROS.append(('HAVE_NUMPY', 1))
+    except ImportError:
+        print ('* Numeric module could not be found, '
+               'will build without Numeric support.')
     ext_modules.append(gtk)
     data_files.append((INCLUDE_DIR, ('gtk/pygtk.h',)))
     data_files.append((DEFS_DIR, ('gtk/gdk.defs', 'gtk/gdk-types.defs',
@@ -187,7 +201,10 @@ if gtk.can_build():
 if libglade.can_build():
     ext_modules.append(libglade)
     data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
-
+if gtkgl.can_build():
+    ext_modules.append(gtkgl)
+    data_files.append((DEFS_DIR, ('gtk/gtkgl.defs',)))
+    
 if '--enable-threading' in sys.argv:
     try:
         import thread
@@ -202,7 +219,6 @@ if '--enable-threading' in sys.argv:
             module.extra_link_args += raw.split()
             raw = getoutput('pkg-config --cflags-only-I %s' % name)
             module.extra_compile_args.append(raw)
-
 doclines = __doc__.split("\n")
 
 setup(name="pygtk",
