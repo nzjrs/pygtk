@@ -1,3 +1,26 @@
+2004-08-04  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* everywhere: s/PyGILState_Ensure/pyg_gil_state_ensure;
+	s/PyGILState_Relase/pyg_gil_state_release;
+	s/Py_BEGIN_ALLOW_THREADS/pyg_begin_allow_threads;
+	s/Py_END_ALLOW_THREADS/pyg_end_allow_threads;
+
+	* gobject/pygobject-private.h, gobject/pygobject.h: Add new macros
+	pyg_threads_enabled, pyg_gil_state_ensure, pyg_gil_state_release,
+	pyg_begin_allow_threads,
+	pyg_end_allow_threads. pyg_threads_enabled indicates whether
+	threads are currently enabled.  The others just mimick the
+	equivalent python functions, except that they do nothing when
+	threads are not enabled.
+
+	* gobject/pygobject.h: Add boolean flag to pygobject API structure
+	indicating whether threading is activated; also add enable_threads
+	api entry point.
+
+	* gobject/gobjectmodule.c (pyg_enable_threads): New pygobject API
+	function to activate pygtk thread awareness.
+	(pyg_threads_init): gobject.threads_init(), calls pyg_enable_threads.
+
 2004-08-04  Johan Dahlin  <johan@gnome.org>
 
 	* gtk/gtk.override (_wrap_gtk_accel_map_lookup_entry):

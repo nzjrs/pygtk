@@ -494,7 +494,7 @@ pygtk_container_for_common_marshal(GtkWidget *widget,
 
     g_assert(cunote->func);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     py_widget = pygobject_new((GObject*)widget);
     if (cunote->data)
@@ -510,7 +510,7 @@ pygtk_container_for_common_marshal(GtkWidget *widget,
 
     Py_XDECREF(retobj);
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 pygtk_container_for_common(PyGObject *self, PyObject *args, unsigned for_index)

@@ -85,9 +85,9 @@ _pygtk_log_func(const gchar *log_domain,
 {
     PyGILState_STATE state;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     PyErr_Warn(PyGtkWarning, (char *) message);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 
 static gboolean
@@ -96,7 +96,7 @@ python_do_pending_calls(gpointer data)
     gboolean quit = FALSE;
     PyGILState_STATE state;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     if (PyErr_CheckSignals() == -1) {
 	PyErr_SetNone(PyExc_KeyboardInterrupt);
@@ -105,7 +105,7 @@ python_do_pending_calls(gpointer data)
     if (quit && gtk_main_level() > 0)
 	gtk_main_quit();
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return TRUE;
 }
 

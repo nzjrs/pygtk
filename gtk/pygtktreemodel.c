@@ -225,7 +225,7 @@ pygtk_generic_tree_model_get_flags(GtkTreeModel *tree_model)
     guint ret = 0;
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), 0);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -242,7 +242,7 @@ pygtk_generic_tree_model_get_flags(GtkTreeModel *tree_model)
 	PyErr_Print();
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -256,7 +256,7 @@ pygtk_generic_tree_model_get_n_columns(GtkTreeModel *tree_model)
     g_return_val_if_fail(tree_model != NULL, 0);
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), 0);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -272,7 +272,7 @@ pygtk_generic_tree_model_get_n_columns(GtkTreeModel *tree_model)
     } else {
 	PyErr_Print();
     }
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -285,7 +285,7 @@ pygtk_generic_tree_model_get_column_type(GtkTreeModel *tree_model, gint index)
     
     g_return_val_if_fail(tree_model != NULL, G_TYPE_INVALID);
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), G_TYPE_INVALID);
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -302,7 +302,7 @@ pygtk_generic_tree_model_get_column_type(GtkTreeModel *tree_model, gint index)
     } else {
 	PyErr_Print();
     }
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -319,7 +319,7 @@ pygtk_generic_tree_model_get_iter(GtkTreeModel *tree_model,
     g_return_val_if_fail(iter != NULL, FALSE);
     g_return_val_if_fail(path != NULL, FALSE);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -350,7 +350,7 @@ pygtk_generic_tree_model_get_iter(GtkTreeModel *tree_model,
 	iter->user_data = NULL;
     }
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -365,7 +365,7 @@ pygtk_generic_tree_model_get_path(GtkTreeModel *tree_model, GtkTreeIter *iter)
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), NULL);
     g_return_val_if_fail(VALID_ITER(iter, tree_model), NULL);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -391,7 +391,7 @@ pygtk_generic_tree_model_get_path(GtkTreeModel *tree_model, GtkTreeIter *iter)
 	PyErr_Print();
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return path;
 }
 
@@ -406,7 +406,7 @@ pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
     g_return_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model));
     g_return_if_fail(VALID_ITER(iter, tree_model));
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -433,7 +433,7 @@ pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
     } else {
 	PyErr_Print();
     }
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 
 static gboolean
@@ -447,7 +447,7 @@ pygtk_generic_tree_model_iter_next(GtkTreeModel *tree_model, GtkTreeIter *iter)
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), FALSE);
     g_return_val_if_fail(VALID_ITER(iter, tree_model), FALSE);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -479,7 +479,7 @@ pygtk_generic_tree_model_iter_next(GtkTreeModel *tree_model, GtkTreeIter *iter)
 	PyErr_Print();
     }
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -497,7 +497,7 @@ pygtk_generic_tree_model_iter_children(GtkTreeModel *tree_model,
     g_return_val_if_fail(iter != NULL, FALSE);
     g_return_val_if_fail(parent == NULL || parent->stamp == PYGTK_GENERIC_TREE_MODEL(tree_model)->stamp, FALSE);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -528,7 +528,7 @@ pygtk_generic_tree_model_iter_children(GtkTreeModel *tree_model,
 	PyErr_Print();
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -544,7 +544,7 @@ pygtk_generic_tree_model_iter_has_child(GtkTreeModel *tree_model,
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), FALSE);
     g_return_val_if_fail(VALID_ITER(iter, tree_model), FALSE);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -567,7 +567,7 @@ pygtk_generic_tree_model_iter_has_child(GtkTreeModel *tree_model,
 	PyErr_Print();
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -583,7 +583,7 @@ pygtk_generic_tree_model_iter_n_children(GtkTreeModel *tree_model,
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), 0);
     g_return_val_if_fail(iter == NULL || iter->stamp == PYGTK_GENERIC_TREE_MODEL(tree_model)->stamp, 0);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -605,7 +605,7 @@ pygtk_generic_tree_model_iter_n_children(GtkTreeModel *tree_model,
 	PyErr_Print();
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -623,7 +623,7 @@ pygtk_generic_tree_model_iter_nth_child(GtkTreeModel *tree_model,
     g_return_val_if_fail(iter != NULL, FALSE);
     g_return_val_if_fail(parent == NULL || parent->stamp == PYGTK_GENERIC_TREE_MODEL(tree_model)->stamp, FALSE);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -654,7 +654,7 @@ pygtk_generic_tree_model_iter_nth_child(GtkTreeModel *tree_model,
 	PyErr_Print();
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -672,7 +672,7 @@ pygtk_generic_tree_model_iter_parent(GtkTreeModel *tree_model,
     g_return_val_if_fail(iter != NULL, FALSE);
     g_return_val_if_fail(VALID_ITER(child, tree_model), FALSE);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -703,7 +703,7 @@ pygtk_generic_tree_model_iter_parent(GtkTreeModel *tree_model,
 	PyErr_Print();
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 
@@ -717,7 +717,7 @@ pygtk_generic_tree_model_unref_node(GtkTreeModel *tree_model, GtkTreeIter *iter)
     g_return_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model));
     g_return_if_fail(VALID_ITER(iter, tree_model));
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -742,7 +742,7 @@ pygtk_generic_tree_model_unref_node(GtkTreeModel *tree_model, GtkTreeIter *iter)
     }
     Py_DECREF(self);
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 
 static void
@@ -755,7 +755,7 @@ pygtk_generic_tree_model_ref_node(GtkTreeModel *tree_model, GtkTreeIter *iter)
     g_return_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model));
     g_return_if_fail(VALID_ITER(iter, tree_model));
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
@@ -780,7 +780,7 @@ pygtk_generic_tree_model_ref_node(GtkTreeModel *tree_model, GtkTreeIter *iter)
     }
     Py_DECREF(self);
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 
 void

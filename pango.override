@@ -1522,7 +1522,7 @@ pypango_attr_list_filter_cb(PangoAttribute *attr, gpointer data)
     PyObject *retobj, *py_attr;
     gboolean ret = FALSE;
     
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     py_attr = pypango_attr_new(pango_attribute_copy(attr),
 			       attr->start_index, attr->end_index);
@@ -1540,7 +1540,7 @@ pypango_attr_list_filter_cb(PangoAttribute *attr, gpointer data)
         PyErr_Print();
     }
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 static PyObject *
@@ -1616,7 +1616,7 @@ pypango_fontset_foreach_cb(PangoFontset *fontset, PangoFont *font,
     PyObject *retobj, *py_font, *py_fontset;
     gboolean ret = FALSE;
     
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     py_fontset = pygobject_new((GObject *)fontset);
     py_font = pygobject_new((GObject *)font);
@@ -1635,7 +1635,7 @@ pypango_fontset_foreach_cb(PangoFontset *fontset, PangoFont *font,
         PyErr_Print();
     }
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 static PyObject *

@@ -33,10 +33,10 @@ pygtk_custom_destroy_notify(gpointer user_data)
     PyGtkCustomNotify *cunote = user_data;
     PyGILState_STATE state;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     Py_XDECREF(cunote->func);
     Py_XDECREF(cunote->data);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     
     g_free(cunote);
 }

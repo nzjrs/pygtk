@@ -440,7 +440,7 @@ clipboard_get_func(GtkClipboard *clipboard, GtkSelectionData *selection_data,
     PyObject *callback, *args, *ret;
     PyGILState_STATE state;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     callback = PyTuple_GetItem((PyObject *)user_data, 0);
     args = Py_BuildValue("(NNiO)",
 			 pygobject_new((GObject *)clipboard),
@@ -451,7 +451,7 @@ clipboard_get_func(GtkClipboard *clipboard, GtkSelectionData *selection_data,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static void
 clipboard_clear_func(GtkClipboard *clipboard, gpointer user_data)
@@ -459,7 +459,7 @@ clipboard_clear_func(GtkClipboard *clipboard, gpointer user_data)
     PyGILState_STATE state;
     PyObject *callback, *args, *ret;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     callback = PyTuple_GetItem((PyObject *)user_data, 1);
     args = Py_BuildValue("(NO)",
 			 pygobject_new((GObject *)clipboard),
@@ -469,7 +469,7 @@ clipboard_clear_func(GtkClipboard *clipboard, gpointer user_data)
 	PyErr_Print();
     Py_XDECREF(ret);
     Py_DECREF((PyObject *)user_data);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 _wrap_gtk_clipboard_set_with_data(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -859,9 +859,9 @@ override gtk_main noargs
 static PyObject *
 _wrap_gtk_main(PyObject *self)
 {
-    Py_BEGIN_ALLOW_THREADS;
+    pyg_begin_allow_threads;
     gtk_main();
-    Py_END_ALLOW_THREADS;
+    pyg_end_allow_threads;
     if (PyErr_Occurred())
         return NULL;
     Py_INCREF(Py_None);
@@ -878,9 +878,9 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration", kwlist,
                                     &block))
         return NULL;
-    Py_BEGIN_ALLOW_THREADS;
+    pyg_begin_allow_threads;
     ret = gtk_main_iteration_do(block);
-    Py_END_ALLOW_THREADS;
+    pyg_end_allow_threads;
 
     return PyBool_FromLong(ret);
 }
@@ -913,9 +913,10 @@ _wrap_gtk_main_iteration_do(PyObject *self, PyObject *args, PyObject *kwargs)
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration_do",
                                     kwlist, &block))
         return NULL;
-    Py_BEGIN_ALLOW_THREADS;
+
+    pyg_begin_allow_threads;
     ret = gtk_main_iteration_do(block);
-    Py_END_ALLOW_THREADS;
+    pyg_end_allow_threads;
 
     return PyBool_FromLong(ret);
 }
@@ -930,7 +931,7 @@ quit_handler_marshal(gpointer user_data)
 
     g_return_val_if_fail(user_data != NULL, FALSE);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     tuple = (PyObject *)user_data;
     ret = PyObject_CallObject(PyTuple_GetItem(tuple, 0),
@@ -942,7 +943,7 @@ quit_handler_marshal(gpointer user_data)
         res = PyObject_IsTrue(ret);
         Py_DECREF(ret);
     }
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 
     return res;
 }
@@ -1031,7 +1032,7 @@ pygtk_item_factory_cb(PyGtkCustomNotify *cunote,
     PyGILState_STATE state;
     PyObject *ret;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     if (cunote->data)
         ret = PyObject_CallFunction(cunote->func, "OiO", cunote->data, action,
                                     pygobject_new((GObject *)widget));
@@ -1042,7 +1043,7 @@ pygtk_item_factory_cb(PyGtkCustomNotify *cunote,
         PyErr_Print();
     } else
         Py_DECREF(ret);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
@@ -1117,11 +1118,11 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
         }
         if (cunote != NULL) {
 	    PyGILState_STATE state;
-	    state = PyGILState_Ensure();
+	    state = pyg_gil_state_ensure();
             g_object_weak_ref(G_OBJECT(ifact),
                               (GWeakNotify) pygtk_custom_destroy_notify,
                               cunote);
-	    PyGILState_Release(state);
+	    pyg_gil_state_release(state);
         }
 
         gtk_item_factory_create_item(ifact, &ent, cunote, 1);
@@ -1138,7 +1139,7 @@ pygtk_menu_position(GtkMenu *menu, int *x, int *y, gboolean *push_in,
     PyObject *ret;
     PyGILState_STATE state;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     ret = PyObject_CallFunction(func, "O", pygobject_new((GObject *)menu));
     if (ret == NULL || !PyArg_ParseTuple(ret, "iii", x, y, push_in)) {
         PyErr_Print();
@@ -1146,7 +1147,7 @@ pygtk_menu_position(GtkMenu *menu, int *x, int *y, gboolean *push_in,
     } else {
         Py_DECREF(ret);
     }
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -1499,7 +1500,7 @@ pygtk_menu_detach (GtkWidget *attach_widget, GtkMenu *menu)
     if (!func)
         return;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     ret = PyObject_CallFunction (func, "OO",
                                  pygobject_new ((GObject *) menu),
@@ -1511,7 +1512,7 @@ pygtk_menu_detach (GtkWidget *attach_widget, GtkMenu *menu)
     else
         Py_DECREF (ret);
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 _wrap_gtk_menu_attach_to_widget (PyGObject *self, PyObject *args,
@@ -2707,9 +2708,9 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
                               PyInt_AsLong(id));
     }
     
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     g_object_ref(self->obj); /* we don't own the first reference of windows */
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 
     pygobject_register_wrapper((PyObject *)self);
     return 0;
@@ -2721,10 +2722,9 @@ _wrap_gtk_dialog_run(PyGObject *self)
 {
     gint retval;
 
-    Py_BEGIN_ALLOW_THREADS;
+    pyg_begin_allow_threads;
     retval = gtk_dialog_run(GTK_DIALOG(self->obj));
-    Py_END_ALLOW_THREADS;
-
+    pyg_end_allow_threads;
     return PyInt_FromLong(retval);
 }
 %%
@@ -2809,9 +2809,9 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkMessageDialog object");
         return -1;
     }
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     g_object_ref(self->obj); /* we don't own the first reference of windows */
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 
     if (pyg_type_from_object((PyObject *) self) != GTK_TYPE_MESSAGE_DIALOG) {
         PyErr_SetString(PyExc_RuntimeError, "__gobject_init__ must be used "
@@ -3925,9 +3925,9 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
         gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
                               PyInt_AsLong(id));
     }
-    Py_BEGIN_ALLOW_THREADS;
+    pyg_begin_allow_threads;
     g_object_ref(self->obj); /* we don't own the first reference of windows */
-    Py_END_ALLOW_THREADS;
+    pyg_end_allow_threads;
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -4007,7 +4007,7 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
         return NULL;
     }
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     
     len = PySequence_Size(entries);
     for (i = 0; i < len; i++) {
@@ -4046,7 +4046,7 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
 	
     }
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     
     Py_INCREF(Py_None);
     return Py_None;
@@ -4075,7 +4075,7 @@ _wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyOb
         return NULL;
     }
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     len = PySequence_Size(entries);
     for (i = 0; i < len; i++) {
@@ -4115,7 +4115,7 @@ _wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyOb
 	
     }
 
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     
     Py_INCREF(Py_None);
     return Py_None;
@@ -4148,7 +4148,7 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
         return NULL;
     }
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     
     len = PySequence_Size(entries);
     for (i = 0; i < len; i++) {
@@ -4199,7 +4199,7 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
 	g_object_unref(first_action);
     }
     
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 	
     Py_INCREF(Py_None);
     return Py_None;
@@ -4465,7 +4465,7 @@ pygtk_entry_completion_match_func_cb(GtkEntryCompletion *completion,
  
     g_assert(cunote->func);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
  
     py_completion = pygobject_new((GObject *)completion);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
@@ -4485,7 +4485,7 @@ pygtk_entry_completion_match_func_cb(GtkEntryCompletion *completion,
 	PyErr_Print();
     }
  
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 static PyObject *
@@ -4758,7 +4758,7 @@ pygtk_file_filter_add_custom_cb(const GtkFileFilterInfo *filter_info,
  
     g_assert(cunote->func);
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
 
     py_filter_info = PyTuple_New(4);
 
@@ -4809,7 +4809,7 @@ pygtk_file_filter_add_custom_cb(const GtkFileFilterInfo *filter_info,
 	PyErr_Print();
     }
  
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
     return ret;
 }
 static PyObject *
@@ -4936,7 +4936,7 @@ clipboard_request_contents_cb(GtkClipboard *clipboard,
     PyGILState_STATE state;
     PyObject *callback, *args, *ret;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     callback = PyTuple_GetItem((PyObject *)user_data, 0);
     args = Py_BuildValue("(NNO)",
 			 pygobject_new((GObject *)clipboard),
@@ -4947,7 +4947,7 @@ clipboard_request_contents_cb(GtkClipboard *clipboard,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 _wrap_gtk_clipboard_request_contents(PyGObject *self, PyObject *args,
@@ -4994,7 +4994,7 @@ clipboard_request_text_cb(GtkClipboard *clipboard,
         Py_INCREF(Py_None);
     }
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     callback = PyTuple_GetItem((PyObject *)user_data, 0);
     args = Py_BuildValue("(NNO)",
 			 pygobject_new((GObject *)clipboard),
@@ -5004,7 +5004,7 @@ clipboard_request_text_cb(GtkClipboard *clipboard,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 _wrap_gtk_clipboard_request_text(PyGObject *self, PyObject *args,
@@ -5041,7 +5041,7 @@ clipboard_request_targets_cb(GtkClipboard *clipboard,
     PyObject *callback, *args, *ret, *py_atoms;
     int i;
 
-    state = PyGILState_Ensure();
+    state = pyg_gil_state_ensure();
     callback = PyTuple_GetItem((PyObject *)user_data, 0);
     if (atoms) {
         py_atoms = PyTuple_New(n_atoms);
@@ -5057,7 +5057,7 @@ clipboard_request_targets_cb(GtkClipboard *clipboard,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
-    PyGILState_Release(state);
+    pyg_gil_state_release(state);
 }
 static PyObject *
 _wrap_gtk_clipboard_request_targets(PyGObject *self, PyObject *args,
