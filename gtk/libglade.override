@@ -1,145 +1,39 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
-/* we define this here, as pygtk is imported in libglademodule.c */
-#define NO_IMPORT_PYGTK
-#include "pygtk.h"
-
-#include <gtk/gtk.h>
+#include <pygobject.h>
 #include <glade/glade.h>
 
-static PyExtensionClass *_PyGtkData_Type;
+static PyExtensionClass *_PyGObject_Type;
+#define PyGObject_Type (*_PyGObject_Type)
 static PyExtensionClass *_PyGtkWidget_Type;
-#define PyGtkData_Type (*_PyGtkData_Type)
 #define PyGtkWidget_Type (*_PyGtkWidget_Type)
 %%
 init
 {
-    PyObject *pygtk = PyImport_ImportModule("gtk._gtk");
-    if (pygtk != NULL) {
-	PyObject *module_dict = PyModule_GetDict(pygtk);
+    PyObject *module;
 
-	_PyGtkData_Type =
-	    (PyExtensionClass *)PyDict_GetItemString(module_dict, "GtkData");
-	_PyGtkWidget_Type =
-	    (PyExtensionClass *)PyDict_GetItemString(module_dict, "GtkWidget");
+    if ((module = PyImport_ImportModule("gobject")) != NULL) {
+        PyObject *module_dict = PyModule_GetDict(module);
+
+        _PyGObject_Type = (PyExtensionClass *)
+	    PyDict_GetItemString(module_dict, "GObject");
     } else {
-	Py_FatalError("could not import gtk._gtk");
-	return;
+        Py_FatalError("could not import gobject");
+        return;
+    }
+    if ((module = PyImport_ImportModule("gtk._gtk")) != NULL) {
+        PyObject *module_dict = PyModule_GetDict(module);
+
+        _PyGtkWidget_Type = (PyExtensionClass *)
+	    PyDict_GetItemString(module_dict, "GtkWidget");
+    } else {
+        Py_FatalError("could not import gtk._gtk");
+        return;
     }
 }
 %%
-ignore-glob
-  *_get_type
+ignore_glob *_get_type
 %%
-ignore
-  glade_xml_new
-  glade_xml_signal_connect_full
-  glade_xml_signal_connect_data
-  glade_xml_signal_autoconnect_full
-%%
-override glade_xml_signal_connect kwargs
-static void
-connect_one(const gchar *handler_name, GtkObject *obj,
-	    const gchar *signal_name, const gchar *signal_data,
-	    GtkObject *connect_object, gboolean after, gpointer user_data)
-{
-    PyObject *callback = user_data;
-
-    if (connect_object) {
-	PyObject *func, *extra, *other;
-
-	other = PyGtk_New(connect_object);
-	if (PyTuple_Check(callback)) {
-	    func = PyTuple_GetItem(callback, 0);
-	    extra = PyTuple_GetItem(callback, 1);
-	    callback = Py_BuildValue("(OON)", func, extra, other);
-	} else {
-	    callback = Py_BuildValue("(O()N)", callback, other);
-	}
-    } else
-	Py_INCREF(callback);
-
-    gtk_signal_connect_full(obj, signal_name, NULL, pygtk_callback_marshal,
-			    callback, pygtk_destroy_notify, FALSE, after);
-}
-
-static PyObject *
-_wrap_glade_xml_signal_connect(PyGtk_Object *self, PyObject *args,
-			       PyObject *kwargs)
-{
-    static char *kwlist[] = { "handlername", "func", "user_data", NULL };
-    PyObject *func, *cbargs = NULL, *data;
-    gchar *handlername;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "sO|O!:GladeXML.signal_connect", kwlist,
-				     &handlername, &func,
-				     &PyTuple_Type, &cbargs))
-	return NULL;
-    if (!PyCallable_Check(func)) {
-	PyErr_SetString(PyExc_TypeError, "func must be callable");
-	return NULL;
-    }
-    if (cbargs)
-	Py_INCREF(cbargs);
-    else
-	cbargs = PyTuple_New(0);
-    data = Py_BuildValue("(ON)", func, cbargs);
-    glade_xml_signal_connect_full(GLADE_XML(self->obj), handlername,
-				  connect_one, data);
-    Py_DECREF(data);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override glade_xml_autoconnect kwargs
-static void
-connect_many(const gchar *handler_name, GtkObject *obj,
-	     const gchar *signal_name, const gchar *signal_data,
-	     GtkObject *connect_object, gboolean after, gpointer user_data)
-{
-    PyObject *handler_dict = user_data;
-    PyObject *callback;
-
-    callback = PyDict_GetItemString(handler_dict, (gchar *)handler_name);
-    if (!callback) {
-	PyErr_Clear();
-	return;
-    }
-    if (!PyCallable_Check(callback) && !PyTuple_Check(callback))
-	return;
-
-    if (connect_object) {
-	PyObject *func, *extra, *other;
-
-	other = PyGtk_New(connect_object);
-	if (PyTuple_Check(callback)) {
-	    func = PyTuple_GetItem(callback, 0);
-	    extra = PyTuple_GetItem(callback, 1);
-	    callback = Py_BuildValue("(OON)", func, extra, other);
-	} else {
-	    callback = Py_BuildValue("(O()N)", callback, other);
-	}
-    } else
-	Py_INCREF(callback);
-
-    gtk_signal_connect_full(obj, signal_name, NULL,
-			    (GtkCallbackMarshal)PyGtk_CallbackMarshal,
-			    callback, PyGtk_DestroyNotify, FALSE, after);
-}
-static PyObject *
-_wrap_glade_xml_signal_autoconnect(PyGtk_Object *self, PyObject *args,
-				   PyObject *kwargs)
-{
-    static char *kwlist[] = { "dict", NULL };
-    PyObject *dict;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!:GladeXML.signal_autoconnect", kwlist,
-				     &PyDict_Type, &dict))
-	return NULL;
-    glade_xml_signal_autoconnect_full(GLADE_XML(self->obj), connect_many,dict);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
+ignore glade_init glade_provide glade_require glade_xml_construct
+  glade_set_custom_handler

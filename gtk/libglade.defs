@@ -1,138 +1,165 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(object XML
-  (in-module Glade)
-  (parent Data (Gtk))
-  (c-name GladeXML)
+(define-object XML
+  (in-module "Glade")
+  (parent "GObject")
+  (c-name "GladeXML")
+  (gtype-id "GLADE_TYPE_XML")
 )
 
 ;; Enumerations and flags ...
 
 
-;; From /usr/include/glade/glade-xml.h
+;; From /opt/gtk2/include/glade-2.0/glade/glade-init.h
 
-(function glade_xml_get_type
-  (c-name glade_xml_get_type)
-  (return-type GtkType)
+(define-function glade_require
+  (c-name "glade_require")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "library")
+  )
 )
 
-(function glade_xml_new
-  (c-name glade_xml_new)
-  (return-type GladeXML*)
-  (parameter (type-and-name const-char* fname))
-  (parameter (type-and-name const-char* root) (null-ok) (default "NULL"))
+(define-function glade_provide
+  (c-name "glade_provide")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "library")
+  )
 )
 
-(function glade_xml_new_with_domain
-  (c-name glade_xml_new_with_domain)
-  (is-constructor-of GladeXML)
-  (return-type GladeXML*)
-  (parameter (type-and-name const-char* fname))
-  (parameter (type-and-name const-char* root) (null-ok) (default "NULL"))
-  (parameter (type-and-name const-char* domain) (null-ok) (default "NULL"))
+
+
+;; From /opt/gtk2/include/glade-2.0/glade/glade-xml.h
+
+(define-function glade_xml_get_type
+  (c-name "glade_xml_get_type")
+  (return-type "GType")
 )
 
-(function xml_new_from_memory
-  (c-name glade_xml_new_from_memory)
-  (return-type GladeXML*)
-  (parameter (type-and-name char* buffer))
-  (parameter (type-and-name int size))
-  (parameter (type-and-name const-char* root) (null-ok))
-  (parameter (type-and-name const-char* domain) (null-ok))
+(define-function glade_xml_new
+  (c-name "glade_xml_new")
+  (is-constructor-of "GladeXML")
+  (return-type "GladeXML*")
+  (parameters
+    '("const-char*" "fname")
+    '("const-char*" "root")
+    '("const-char*" "domain")
+  )
 )
 
-(method construct
-  (of-object XML (Glade))
-  (c-name glade_xml_construct)
-  (return-type gboolean)
-  (parameter (type-and-name const-char* fname))
-  (parameter (type-and-name const-char* root))
-  (parameter (type-and-name const-char* domain))
+(define-function xml_new_from_buffer
+  (c-name "glade_xml_new_from_buffer")
+  (return-type "GladeXML*")
+  (parameters
+    '("const-char*" "buffer")
+    '("int" "size")
+    '("const-char*" "root")
+    '("const-char*" "domain")
+  )
 )
 
-(method signal_connect
-  (of-object XML (Glade))
-  (c-name glade_xml_signal_connect)
-  (return-type none)
-  (parameter (type-and-name const-char* handlername))
-  (parameter (type-and-name GtkSignalFunc func))
+(define-method construct
+  (of-object "GladeXML")
+  (c-name "glade_xml_construct")
+  (return-type "gboolean")
+  (parameters
+    '("const-char*" "fname")
+    '("const-char*" "root")
+    '("const-char*" "domain")
+  )
 )
 
-(method signal_connect_data
-  (of-object XML (Glade))
-  (c-name glade_xml_signal_connect_data)
-  (return-type none)
-  (parameter (type-and-name const-char* handlername))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name gpointer user_data))
+(define-method signal_connect
+  (of-object "GladeXML")
+  (c-name "glade_xml_signal_connect")
+  (return-type "none")
+  (parameters
+    '("const-char*" "handlername")
+    '("GtkSignalFunc" "func")
+  )
 )
 
-(method signal_autoconnect
-  (of-object XML (Glade))
-  (c-name glade_xml_signal_autoconnect)
-  (return-type none)
+(define-method signal_connect_data
+  (of-object "GladeXML")
+  (c-name "glade_xml_signal_connect_data")
+  (return-type "none")
+  (parameters
+    '("const-char*" "handlername")
+    '("GtkSignalFunc" "func")
+    '("gpointer" "user_data")
+  )
 )
 
-(method signal_connect_full
-  (of-object XML (Glade))
-  (c-name glade_xml_signal_connect_full)
-  (return-type none)
-  (parameter (type-and-name const-gchar* handler_name))
-  (parameter (type-and-name GladeXMLConnectFunc func))
-  (parameter (type-and-name gpointer user_data))
+(define-method signal_autoconnect
+  (of-object "GladeXML")
+  (c-name "glade_xml_signal_autoconnect")
+  (return-type "none")
 )
 
-(method signal_autoconnect_full
-  (of-object XML (Glade))
-  (c-name glade_xml_signal_autoconnect_full)
-  (return-type none)
-  (parameter (type-and-name GladeXMLConnectFunc func))
-  (parameter (type-and-name gpointer user_data))
+(define-method signal_connect_full
+  (of-object "GladeXML")
+  (c-name "glade_xml_signal_connect_full")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "handler_name")
+    '("GladeXMLConnectFunc" "func")
+    '("gpointer" "user_data")
+  )
 )
 
-(method get_widget
-  (of-object XML (Glade))
-  (c-name glade_xml_get_widget)
-  (return-type GtkWidget*)
-  (parameter (type-and-name const-char* name))
+(define-method signal_autoconnect_full
+  (of-object "GladeXML")
+  (c-name "glade_xml_signal_autoconnect_full")
+  (return-type "none")
+  (parameters
+    '("GladeXMLConnectFunc" "func")
+    '("gpointer" "user_data")
+  )
 )
 
-(method get_widget_prefix
-  (of-object XML (Glade))
-  (c-name glade_xml_get_widget_prefix)
-  (return-type GList*)
-  (parameter (type-and-name const-char* name))
+(define-method get_widget
+  (of-object "GladeXML")
+  (c-name "glade_xml_get_widget")
+  (return-type "GtkWidget*")
+  (parameters
+    '("const-char*" "name")
+  )
 )
 
-(method get_widget_by_long_name
-  (of-object XML (Glade))
-  (c-name glade_xml_get_widget_by_long_name)
-  (return-type GtkWidget*)
-  (parameter (type-and-name const-char* longname))
+(define-method get_widget_prefix
+  (of-object "GladeXML")
+  (c-name "glade_xml_get_widget_prefix")
+  (return-type "GList*")
+  (parameters
+    '("const-char*" "name")
+  )
 )
 
-(method relative_file
-  (of-object XML (Glade))
-  (c-name glade_xml_relative_file)
-  (return-type gchar*)
-  (parameter (type-and-name const-gchar* filename))
+(define-method relative_file
+  (of-object "GladeXML")
+  (c-name "glade_xml_relative_file")
+  (return-type "gchar*")
+  (parameters
+    '("const-gchar*" "filename")
+  )
 )
 
-(function get_widget_name
-  (c-name glade_get_widget_name)
-  (return-type const-gchar*)
-  (parameter (type-and-name GtkWidget* widget))
+(define-function get_widget_tree
+  (c-name "glade_get_widget_tree")
+  (return-type "GladeXML*")
+  (parameters
+    '("GtkWidget*" "widget")
+  )
 )
 
-(function get_widget_long_name
-  (c-name glade_get_widget_long_name)
-  (return-type const-gchar*)
-  (parameter (type-and-name GtkWidget* widget))
+(define-function glade_set_custom_handler
+  (c-name "glade_set_custom_handler")
+  (return-type "none")
+  (parameters
+    '("GladeXMLCustomWidgetHandler" "handler")
+    '("gpointer" "user_data")
+  )
 )
 
-(function get_widget_tree
-  (c-name glade_get_widget_tree)
-  (return-type GladeXML*)
-  (parameter (type-and-name GtkWidget* widget))
-)
 

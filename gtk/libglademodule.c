@@ -4,28 +4,27 @@
 #endif
 #include <Python.h>
 #include <pygtk.h>
-
 #include <glade/glade.h>
 
-
-void libglade_register_classes(PyObject *d);
-extern PyMethodDef libglade_functions[];
+void pylibglade_register_classes(PyObject *d);
+extern PyMethodDef pylibglade_functions[];
+extern PyExtensionClass PyGladeXML_Type;
 
 DL_EXPORT(void)
 initlibglade(void)
 {
     PyObject *m, *d;
 
-    init_pygtk();
-    glade_init();
-
-    m = Py_InitModule("libglade", libglade_functions);
+    m = Py_InitModule("gtk.libglade", pylibglade_functions);
     d = PyModule_GetDict(m);
 
-    libglade_register_classes(d);
+    init_pygobject();
+    init_pygtk();
 
-    /* add anything else to the module dictionary (such as constants) */
+    glade_init();
+
+    pylibglade_register_classes(d);
 
     if (PyErr_Occurred())
-        Py_FatalError("could not initialise module libglade");
+        Py_FatalError("could not initialise module gtk.libglade");
 }
