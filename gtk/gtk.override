@@ -1334,15 +1334,22 @@ _wrap_gtk_curve_set_vector(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
-override gtk_tree_model_get_iter
+override gtk_tree_model_get_iter kwargs
 static PyObject *
-_wrap_gtk_tree_model_get_iter(PyGObject *self, PyObject *args) {
+_wrap_gtk_tree_model_get_iter(PyGObject *self, PyObject *args,PyObject *kwargs)
+{
+    static char *kwlist[] = { "path", NULL };
+    PyObject *py_path;
     GtkTreeIter iter;
     GtkTreePath *path;
 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkTreeModel.get_iter",
+				     kwlist, &PyTuple_Type, &py_path))
+	return NULL;
+
     path = pygtk_tree_path_from_pyobject(args);
     if (!path) {
-	PyErr_SetString(PyExc_TypeError, "GtkTreeModel.get_iter requires at least one integer argument");
+	PyErr_SetString(PyExc_TypeError, "GtkTreeModel.get_iter requires a tuple of integers as an argument");
 	return NULL;
     }
     if (gtk_tree_model_get_iter(GTK_TREE_MODEL(self->obj), &iter, path)) {
@@ -1889,10 +1896,41 @@ _wrap_gtk_tree_model_iter_children(PyGObject *self, PyObject *args,
 }
 %%
 override gtk_tree_model_foreach
+static gboolean
+pygtk_tree_foreach_marshal(GtkTreeModel *model,
+			   GtkTreePath *path,
+			   GtkTreeIter *iter,
+			   gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *py_model, *py_path, *py_iter, *retobj;
+    gboolean ret;
+
+    g_assert(cunote->func);
+    
+    py_model = pygobject_new((GObject *)model);
+    py_path = pygtk_tree_path_to_pyobject(path);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    if (cunote->data)
+	retobj = PyEval_CallFunction(cunote->func, "(NNNO)",
+				     py_model, py_path, py_iter,
+				     cunote->data);
+    else
+	retobj = PyEval_CallFunction(cunote->func, "(NNN)",
+				     py_model, py_path, py_iter);
+
+    if (retobj != NULL) {
+	ret = PyObject_IsTrue(retobj);
+	Py_DECREF(retobj);
+    } else {
+	ret = TRUE;
+    }
+    return ret;
+}
 static PyObject *
 _wrap_gtk_tree_model_foreach(PyGObject *self, PyObject *args)
 {
-    static void pygtk_tree_foreach_marshal(GtkTreeModel *model,
+    static gboolean pygtk_tree_foreach_marshal(GtkTreeModel *model,
 					   GtkTreePath *path,
 					   GtkTreeIter *iter,
 					   gpointer data);
@@ -1907,6 +1945,9 @@ _wrap_gtk_tree_model_foreach(PyGObject *self, PyObject *args)
     cunote.data = pyarg;
     gtk_tree_model_foreach(GTK_TREE_MODEL(self->obj),
 			   pygtk_tree_foreach_marshal, &cunote);
+
+    if (PyErr_Occurred())
+	return NULL;
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -2145,10 +2186,10 @@ _wrap_gtk_tree_selection_get_selected(PyGObject *self)
 %%
 override gtk_tree_selection_selected_foreach
 static void
-pygtk_tree_foreach_marshal(GtkTreeModel *model,
-			   GtkTreePath *path,
-			   GtkTreeIter *iter,
-			   gpointer data)
+pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
+				     GtkTreePath *path,
+				     GtkTreeIter *iter,
+				     gpointer data)
 {
     PyGtkCustomNotify *cunote = data;
     PyObject *py_model, *py_path, *py_iter, *retobj;
@@ -2186,7 +2227,8 @@ _wrap_gtk_tree_selection_selected_foreach(PyGObject *self, PyObject *args)
     cunote.func = pyfunc;
     cunote.data = pyarg;
     gtk_tree_selection_selected_foreach(GTK_TREE_SELECTION(self->obj),
-					pygtk_tree_foreach_marshal, &cunote);
+					pygtk_tree_selection_foreach_marshal,
+					&cunote);
     
     Py_INCREF(Py_None);
     return Py_None;
