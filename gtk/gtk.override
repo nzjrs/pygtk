@@ -9,6 +9,10 @@ headers
 #include "pygtktreemodel.h"
 #include "pygtkcellrenderer.h"
 
+#define PYGTK_CONTAINER_FOREACH 0
+#define PYGTK_CONTAINER_FORALL 1
+#define countof(array) (sizeof(array)/sizeof(array[0]))
+
 /* from the gdk portion ... */
 extern PyTypeObject PyGdkColormap_Type;
 extern PyTypeObject PyGdkGC_Type;
@@ -1008,8 +1012,8 @@ _wrap_gtk_container_add_with_properties(PyGObject *self, PyObject *args)
 %%
 override gtk_container_foreach
 static void
-pygtk_container_foreach_marshal(GtkWidget *widget,
-                                gpointer data)
+pygtk_container_for_common_marshal(GtkWidget *widget,
+				   gpointer data)
 {
     PyGtkCustomNotify *cunote = data;
     PyObject *py_widget, *retobj;
@@ -1035,23 +1039,45 @@ pygtk_container_foreach_marshal(GtkWidget *widget,
     pyg_unblock_threads();
 }
 static PyObject *
-_wrap_gtk_container_foreach(PyGObject *self, PyObject *args)
+pygtk_container_for_common(PyGObject *self, PyObject *args, unsigned for_index)
 {
     PyObject *pyfunc, *pyarg = NULL;
     PyGtkCustomNotify cunote;
+    static struct {
+        char *parse_arg;
+        void (*for_func)(GtkContainer *container, GtkCallback callback,
+                          gpointer callback_data);
+    } table[] = {
+            { "O|O:GtkContainer.foreach", gtk_container_foreach },
+            { "O|O:GtkContainer.forall", gtk_container_forall }
+    };
 
-    if(!PyArg_ParseTuple(args, "O|O:GtkContainer.foreach",
-                         &pyfunc, &pyarg))
-        return NULL;
+    g_assert(for_index < countof(table));
 
+    if (!PyArg_ParseTuple(args, table[for_index].parse_arg,
+                          &pyfunc, &pyarg))
+         return NULL;
+ 
     cunote.func = pyfunc;
     cunote.data = pyarg;
-    gtk_container_foreach(GTK_CONTAINER(self->obj),
-                          pygtk_container_foreach_marshal,
-                          &cunote);
+    table[for_index].for_func(GTK_CONTAINER(self->obj),
+			      pygtk_container_for_common_marshal,
+			      &cunote);
 
     Py_INCREF(Py_None);
     return Py_None;
+}
+static PyObject *
+_wrap_gtk_container_foreach(PyGObject *self, PyObject *args)
+{
+    return pygtk_container_for_common(self, args, PYGTK_CONTAINER_FOREACH);
+}
+%%
+override gtk_container_forall
+static PyObject *
+_wrap_gtk_container_forall(PyGObject *self, PyObject *args)
+{
+    return pygtk_container_for_common(self, args, PYGTK_CONTAINER_FORALL);
 }
 %%
 override gtk_label_get noargs
@@ -3657,7 +3683,6 @@ ignore
   gtk_container_child_args_collect
   gtk_container_child_arg_get_info
   gtk_container_foreach_full
-  gtk_container_forall
   gtk_container_add_with_args
   gtk_container_addv
   gtk_container_child_set_valist
