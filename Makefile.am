@@ -3,9 +3,9 @@ AUTOMAKE_OPTIONS = 1.5
 
 SUBDIRS = codegen gtk
 
-INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS)
+INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS) $(ATK_CFLAGS)
 
-pyexec_LTLIBRARIES = gobjectmodule.la pangomodule.la
+pyexec_LTLIBRARIES = gobjectmodule.la pangomodule.la atkmodule.la
 
 gobjectmodule_la_LDFLAGS = -module -avoid-version \
  -export-symbols-regex initgobject
@@ -21,15 +21,22 @@ pangomodule_la_SOURCES = \
   pango.c
 pangomodule_la_LIBADD = $(PANGO_LIBS)
 
-$(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango-types.defs \
-		   $(srcdir)/pango.override
-	-chmod a+w $(srcdir)
-	cd $(srcdir) \
-	&& $(PYTHON) codegen/codegen.py \
-	    --override pango.override \
-	    --prefix pypango pango.defs > gen-pango.c \
-	&& cp gen-pango.c pango.c \
-	&& rm -f gen-pango.c
+atkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initatk
+atkmodule_la_SOURCES = \
+  atkmodule.c \
+  atk.c
+atkmodule_la_LIBADD = $(ATK_LIBS)
+
+%.c: $(srcdir)/%.defs $(srcdir)/%.override
+	(cd $(srcdir)\
+	 && $(PYTHON) codegen/codegen.py \
+	    --register pango-types.defs \
+	    --register gtk/gdk-types.defs \
+	    --register gtk/gtk-types.defs \
+	    --override $*.override \
+	    --prefix py$* $*.defs) > gen-$*.c \
+	 && cp gen-$*.c $*.c \
+	 && rm -f gen-$*.c
 
 pkginclude_HEADERS = pygobject.h
 pkgincludedir = $(includedir)/pygtk-2.0
@@ -38,6 +45,8 @@ noinst_PYTHON = ltihooks.py
 
 dist-hook:
 	-rm -f $(distdir)/pango.c
+
+DISTCLEANFILES = pango.c atk.c
 
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA = pango.defs pango-types.defs
@@ -51,6 +60,8 @@ EXTRA_DIST = \
   pygtk-2.0.pc.in \
   MAPPING \
   THREADS \
+  atk.defs \
+  atk.override \
   pango.defs \
   pango-types.defs \
   pango.override \

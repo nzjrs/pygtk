@@ -501,8 +501,12 @@ class ArgMatcher:
     def register(self, ptype, handler):
 	self.argtypes[ptype] = handler
     def register_enum(self, ptype, typecode):
-	self.register(ptype, EnumArg(ptype, typecode))
+        if typecode is None:
+            typecode = "G_TYPE_NONE"
+        self.register(ptype, EnumArg(ptype, typecode))
     def register_flag(self, ptype, typecode):
+        if typecode is None:
+            typecode = "G_TYPE_NONE"
 	self.register(ptype, FlagsArg(ptype, typecode))
     def register_object(self, ptype, parent, typecode):
         oa = ObjectArg(ptype, parent, typecode)

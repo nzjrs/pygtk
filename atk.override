@@ -1,0 +1,54 @@
+/* -*- Mode: C; c-basic-offset: 4 -*- */
+%%
+headers
+#include <Python.h>
+
+#include "pygobject.h"
+#include <atk/atk.h>
+#include <atk/atknoopobjectfactory.h>
+#include <atk/atknoopobject.h>
+%%
+import gobject.GObject as PyGObject_Type
+%%
+ignore-glob
+  *_get_type
+%%
+override atk_relation_new kwargs
+static PyObject *
+_wrap_atk_relation_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", "relationship", NULL };
+    AtkObject **targets;
+    AtkRelation *ret;
+    int relationship, count, i;
+    PyObject *py_targets;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "Oi#:relation_new", kwlist,
+				     &py_targets, &relationship))
+	return NULL;
+
+    if (!PySequence_Check(py_targets)) {
+	PyErr_SetString(PyExc_TypeError, "targets argument must be a sequence");
+	return NULL;
+    }
+
+    count = PySequence_Length(py_targets);
+    targets = g_new(AtkObject *, count);
+    for (i = 0; i < count; i++) {
+	PyObject *item = PySequence_GetItem(py_targets, i);
+	Py_DECREF(item); /* PySequence_GetItem INCREF's */
+	if (!pygobject_check(item, &PyAtkObject_Type)) {
+	    PyErr_SetString(PyExc_TypeError, "targets argument must be a sequence of AtkObjects.");
+	    g_free(targets);
+	    return NULL;
+	}
+	    
+	targets[i] = (AtkObject *) pygobject_get(item);
+    }
+
+    ret = atk_relation_new(targets, count, relationship);
+    g_free(targets);
+    
+    return pygobject_new((GObject *) ret);
+}

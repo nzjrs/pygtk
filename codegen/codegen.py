@@ -836,12 +836,17 @@ def write_enums(parser, prefix, fp=sys.stdout):
     fp.write('\n/* ----------- enums and flags ----------- */\n\n')
     fp.write('void\n' + prefix + '_add_constants(PyObject *module, const gchar *strip_prefix)\n{\n')
     for enum in parser.enums:
-        if enum.deftype == 'enum':
-            fp.write('    pyg_enum_add_constants(module, %s, strip_prefix);\n'
-                     % (enum.typecode,))
+        if enum.typecode is None:
+            for nick, value in enum.values:
+                fp.write('    PyModule_AddIntConstant(module, pyg_constant_strip_prefix("%s", strip_prefix), %s);\n'
+                         % (value, value))
         else:
-            fp.write('    pyg_flags_add_constants(module, %s, strip_prefix);\n'
-                     % (enum.typecode,))
+            if enum.deftype == 'enum':
+                fp.write('    pyg_enum_add_constants(module, %s, strip_prefix);\n'
+                         % (enum.typecode,))
+            else:
+                fp.write('    pyg_flags_add_constants(module, %s, strip_prefix);\n'
+                         % (enum.typecode,))
     fp.write('}\n\n')
 
 def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):

@@ -1,3 +1,43 @@
+2001-11-27  Matt Wilson  <msw@redhat.com>
+
+	* atk.defs, atk.override, atkmodule.c: added start of atk wrapper
+
+	* gtk/Makefile.am (DISTCLEANFILES): remove generated files
+	($(srcdir)/gtk.c): modify targets to output generated files in the
+	builddir, not the srcdir.
+	($(srcdir)/gdk.c): likewise.
+	($(srcdir)/libglade.c): likewise.
+
+	* codegen/h2def.py (define_func): add check to workaround broken
+	string.replace semantics on python 1.5
+
+	* codegen/codegen.py (write_enums): if the enum or flag doesn't
+	have a GType, just add those enum values listed in the defs file
+	by hand.
+
+	* codegen/argtypes.py (ArgMatcher.register_enum): if defs file
+	doesn't specify a GType for the enum, use G_TYPE_NONE.
+	(ArgMatcher.register_flag): likewise.
+
+	* gobjectmodule.c (pyg_enum_get_value): allow enums to pass
+	G_TYPE_NONE in as the type, disabling the string to value
+	conversion.
+	(pyg_flags_get_value): likewise.
+	(pyg_constant_strip_prefix): new function to combine common
+	codepath.	
+	(pyg_enum_add_constants): use pyg_constant_strip_prefix
+	(pyg_flags_add_constants): likewise.
+	(functions): make pyg_constant_strip_prefix available to users of
+	pygobject
+
+	* pygobject.h: added pyg_constant_strip_prefix wrapper
+
+	* configure.in: added ATK test, subst for ATK_CFLAGS and ATK_LIBS.
+
+	* Makefile.am (%.c): added generic codegen target for pango and
+	atk.  Added DISTCLEANFILES so that generated files will be
+	removed.  Added atk targets, cflags, ldflags.
+
 2001-11-26  Matt Wilson  <msw@redhat.com>
 
 	* configure.in: bump up required versions of gtk, pango, and glib.

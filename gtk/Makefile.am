@@ -34,42 +34,39 @@ glademodule_la_SOURCES = \
 pkginclude_HEADERS = pygtk.h
 pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 
-# chmod hack here is because automake guys decided distdir should be
-# read only for the next version :(
+DISTCLEANFILES = gtk.c gdk.c libglade.c
+
 $(srcdir)/gtk.c: $(srcdir)/gtk.defs $(srcdir)/gdk.defs \
 		 $(srcdir)/gtk-extrafuncs.defs $(srcdir)/gtk-types.defs \
 		 $(srcdir)/gtk.override
-	-chmod a+w $(srcdir)
-	cd $(srcdir) \
-	&& $(PYTHON) ../codegen/codegen.py \
+	(cd $(srcdir) \
+	 && $(PYTHON) ../codegen/codegen.py \
 	    --register ../pango-types.defs \
 	    --register gdk-types.defs \
 	    --override gtk.override \
-	    --prefix pygtk gtk.defs > gen-gtk.c \
+	    --prefix pygtk gtk.defs) > gen-gtk.c \
 	&& cp gen-gtk.c gtk.c \
 	&& rm -f gen-gtk.c
 
 $(srcdir)/gdk.c: $(srcdir)/gdk.defs $(srcdir)/gdk-types.defs \
 		 $(srcdir)/gdk.override
-	-chmod a+w $(srcdir)
-	cd $(srcdir) \
-	&& $(PYTHON) ../codegen/codegen.py \
+	(cd $(srcdir) \
+	 && $(PYTHON) ../codegen/codegen.py \
 	    --register ../pango-types.defs \
 	    --register gtk-types.defs \
 	    --override gdk.override \
-	    --prefix pygdk gdk.defs > gen-gdk.c \
+	    --prefix pygdk gdk.defs) > gen-gdk.c \
 	&& cp gen-gdk.c gdk.c \
 	&& rm -f gen-gdk.c
 
 $(srcdir)/libglade.c: $(srcdir)/libglade.defs $(srcdir)/libglade.override
-	-chmod a+w $(srcdir)
-	cd $(srcdir) \
-	&& $(PYTHON) ../codegen/codegen.py \
+	(cd $(srcdir) \
+	 && $(PYTHON) ../codegen/codegen.py \
 	    --register ../pango-types.defs \
 	    --register gdk-types.defs \
 	    --register gtk-types.defs \
 	    --override libglade.override \
-	    --prefix pylibglade libglade.defs > gen-libglade.c \
+	    --prefix pylibglade libglade.defs) > gen-libglade.c \
 	&& cp gen-libglade.c libglade.c \
 	&& rm -f gen-libglade.c
 
