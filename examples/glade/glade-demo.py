@@ -9,7 +9,7 @@ else:
     fname = 'test.glade'
 
 # create widget tree ...
-xml = glade.XML(fname, None, None)
+xml = glade.XML(fname)
 
 def gtk_main_quit(*args):
     gtk.main_quit()

@@ -3,6 +3,8 @@
 #  include "config.h"
 #endif
 #include <Python.h>
+/* include this first, before NO_IMPORT_PYGOBJECT is defined */
+#include <pygobject.h>
 #include <pygtk.h>
 #include <glade/glade.h>
 
