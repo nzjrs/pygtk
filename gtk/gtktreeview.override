@@ -25,7 +25,7 @@ headers
 #include "pygtkcellrenderer.h"
 
 static void
-pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
+pygtk_cell_data_func_marshal (GtkCellLayout *cell_layout,
                               GtkCellRenderer   *cell,
                               GtkTreeModel      *tree_model,
                               GtkTreeIter       *iter,
@@ -59,6 +59,7 @@ ignore
   gtk_tree_row_reference_inserted
   gtk_tree_row_reference_deleted
   gtk_tree_row_reference_reordered
+  gtk_tree_view_column_set_cell_data_func
 %%
 override gtk_tree_view_get_visible_rect noargs
 static PyObject *
@@ -157,33 +158,33 @@ _wrap_gtk_tree_view_column_get_cell_renderers(PyGObject *self)
     return ret;
 }
 %%
-override gtk_tree_view_column_set_cell_data_func kwargs
+override gtk_cell_layout_set_cell_data_func kwargs
 static void
-pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
+pygtk_cell_data_func_marshal (GtkCellLayout *cell_layout,
                               GtkCellRenderer *cell,
                               GtkTreeModel *tree_model,
                               GtkTreeIter *iter, gpointer data)
 {
     PyGtkCustomNotify *cunote = data;
     PyObject *retobj;
-    PyObject *pytreecolumn, *pycell, *pytreemodel, *pyiter;
+    PyObject *pycelllayout, *pycell, *pytreemodel, *pyiter;
 
     g_assert (cunote->func);
 
     pyg_block_threads();
 
-    pytreecolumn = pygobject_new((GObject *)tree_column);
+    pycelllayout = pygobject_new((GObject *)cell_layout);
     pycell = pygobject_new((GObject *)cell);
     pytreemodel = pygobject_new((GObject *)tree_model);
     pyiter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,
                            TRUE, TRUE);
     if (cunote->data)
         retobj = PyEval_CallFunction(cunote->func, "(NNNNO)",
-                                     pytreecolumn, pycell,
+                                     pycelllayout, pycell,
                                      pytreemodel, pyiter, cunote->data);
     else
         retobj = PyEval_CallFunction(cunote->func, "(NNNN)",
-                                     pytreecolumn, pycell,
+                                     pycelllayout, pycell,
                                      pytreemodel, pyiter);
 
     if (retobj == NULL) {
@@ -195,14 +196,14 @@ pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
 }
 
 static PyObject *
-_wrap_gtk_tree_view_column_set_cell_data_func (PyGObject *self, PyObject *args,
+_wrap_gtk_cell_layout_set_cell_data_func (PyGObject *self, PyObject *args,
                                                PyObject *kwargs)
 {
-    PyObject *pycell,*pyfunc, *pyarg = NULL;
+    PyObject *pycell, *pyfunc, *pyarg = NULL;
     GtkCellRenderer *cell;
     PyGtkCustomNotify *cunote;
 
-    if (!PyArg_ParseTuple(args, "OO|O:GtkTreeViewColumn.set_cell_data_func",
+    if (!PyArg_ParseTuple(args, "OO|O:GtkCellLayout.set_cell_data_func",
                           &pycell, &pyfunc, &pyarg))
         return NULL;
 
@@ -215,8 +216,8 @@ _wrap_gtk_tree_view_column_set_cell_data_func (PyGObject *self, PyObject *args,
     }
 
     if (pyfunc == Py_None) {
-	gtk_tree_view_column_set_cell_data_func(
-	    GTK_TREE_VIEW_COLUMN(self->obj), cell, NULL, NULL, NULL);
+	gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(self->obj), cell,
+                                           NULL, NULL, NULL);
     } else {
 	cunote = g_new0(PyGtkCustomNotify, 1);
 	cunote->func = pyfunc;
@@ -224,9 +225,10 @@ _wrap_gtk_tree_view_column_set_cell_data_func (PyGObject *self, PyObject *args,
 	Py_INCREF(cunote->func);
 	Py_XINCREF(cunote->data);
 
-	gtk_tree_view_column_set_cell_data_func(
-	    GTK_TREE_VIEW_COLUMN(self->obj), cell,
-	    pygtk_cell_data_func_marshal, cunote, pygtk_custom_destroy_notify);
+	gtk_cell_layout_set_cell_data_func(GTK_CELL_LAYOUT(self->obj), cell,
+                                           pygtk_cell_data_func_marshal,
+                                           cunote,
+                                           pygtk_custom_destroy_notify);
     }
 
     Py_INCREF(Py_None);
@@ -270,7 +272,7 @@ _wrap_gtk_tree_view_insert_column_with_data_func (PyGObject *self,
         position,
         title,
         cell,
-        pygtk_cell_data_func_marshal,
+        (GtkTreeCellDataFunc)pygtk_cell_data_func_marshal,
         cunote,
         pygtk_custom_destroy_notify);
     return PyInt_FromLong(retval);
