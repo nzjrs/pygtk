@@ -5702,3 +5702,45 @@ _wrap_gtk_adjustment_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+%%
+override-slot GtkMisc.tp_init
+static int
+_wrap_gtk_misc_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    return PyGtkWidget_Type.tp_init(self, args, kwargs);
+}
+%%
+override-slot GtkBin.tp_init
+static int
+_wrap_gtk_bin_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    return PyGtkContainer_Type.tp_init(self, args, kwargs);
+}
+%%
+override-slot GtkItem.tp_init
+static int
+_wrap_gtk_item_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    return PyGtkBin_Type.tp_init(self, args, kwargs);
+}
+%%
+override-slot GtkBox.tp_init
+static int
+_wrap_gtk_box_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    return PyGtkContainer_Type.tp_init(self, args, kwargs);
+}
+%%
+override-slot GtkButtonBox.tp_init
+static int
+_wrap_gtk_button_box_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    return PyGtkBox_Type.tp_init(self, args, kwargs);
+}
+%%
+override-slot GtkSeparator.tp_init
+static int
+_wrap_gtk_separator_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    return PyGtkWidget_Type.tp_init(self, args, kwargs);
+}
