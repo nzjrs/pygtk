@@ -1,6 +1,12 @@
 """This file contains a simple parser for the XML output of GLADE.
 
-It is not a true XML parser, since it requires tags to be of the form
+There are two parsers in this file.  One uses xmllib, so will only be
+used if xmllib is in your python module library (it is included with
+python >= 1.5).  The second one is less complete, but will parse most
+GLADE XML files.
+
+The second one is not a true XML parser, since it requires tags to be
+of the form:
 
   <tag>
     <tag2>data</tag2>
@@ -143,3 +149,88 @@ def read(fname):
 def read_string(string):
 	return read_stream(StringIO(string))
 
+try:
+	# this is a better implementation that uses the xmllib library.
+	import xmllib
+	class myParser(xmllib.XMLParser):
+		def __init__(self):
+			xmllib.XMLParser.__init__(self)
+			self.base = TagTree(parent=None, tag='XML-Base')
+			self.cstack = [self.base]
+			self.curName = None
+			self.curData = ""
+		def unknown_starttag(self, tag, attrs):
+			tag = string.lower(tag)
+			if self.curName:
+				cur = self.curName
+				tree = TagTree(parent=self.cstack[-1],
+					       tag=cur)
+				if self.cstack[-1].has_key(cur):
+					oldval = self.cstack[-1][cur]
+					if type(oldval) == type(()):
+						self.cstack[-1][cur] = \
+							oldval + (tree,)
+					else:
+						self.cstack[-1][cur] = \
+							(oldval,tree)
+				else:
+					self.cstack[-1][cur] = tree
+				self.cstack.append(tree)
+				# for glade files, tags with child tags don't
+				# have any data associated with them
+				self.curData = ""
+			self.curName = tag
+		def unknown_endtag(self, tag):
+			tag = string.lower(tag)
+			self.curData = string.strip(self.curData)
+			if self.curName:
+				if self.curName != tag:
+					raise error, \
+					      "unmatching tags: %s and %s" % \
+					      (self.curName, tag)
+				if self.cstack[-1].has_key(tag):
+					oldval = self.cstack[-1][tag]
+					if type(oldval) == type(()):
+						self.cstack[-1][tag] = \
+							oldval +(self.curData,)
+					else:
+						self.cstack[-1][tag] = \
+							(oldval,self.curData)
+				else:
+					self.cstack[-1][tag] = self.curData
+			else:
+				if not self.cstack:
+					raise error, "no tags to match " + tag
+				if self.cstack[-1].tag != tag:
+					raise error, \
+					      "unmatching tags: %s and %s" % \
+					      (self.cstack[-1].tag, tag)
+				del self.cstack[-1]
+			self.curName = None
+			self.curData = ""
+		def handle_data(self, data):
+			self.curData = self.curData + data
+
+	def read_string(string):
+		parser = myParser()
+		parser.feed(string)
+		if len(parser.cstack) != 1:
+			raise error, "some unclosed tags are present"
+		return parser.base
+
+	def read_stream(fp):
+		parser = myParser()
+		data = fp.read(8192)
+		while data:
+			parser.feed(data)
+			data = fp.read(8192)
+		if len(parser.cstack) != 1:
+			raise error, "some unclosed tags are present"
+		return parser.base
+
+	def read(fname):
+		return read_stream(open(fname, "r"))
+
+except ImportError:
+	pass
+	

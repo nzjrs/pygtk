@@ -270,9 +270,14 @@ def radiobutton_new(node):
 		rb.set_mode(FALSE)
 	return rb
 def optionmenu_new(node):
-	menu = GtkOptionMenu()
-	# My XML parser won't do the <items> tag yet ...
-	return menu
+	omenu = GtkOptionMenu()
+	menu = GtkMenu()
+	for item in string.split(node.get_string('items', ''), '\n'):
+		mi = GtkMenuItem(item)
+		menu.append(mi)
+		mi.show()
+	omenu.set_menu(menu)
+	return omenu
 def combo_new(node):
 	combo = GtkCombo()
 	if node.get_bool('case_sensitive', FALSE):
