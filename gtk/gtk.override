@@ -610,7 +610,7 @@ _wrap_gdk_event_getattr(PyObject *self, char *attr)
 	if (!strcmp(attr, "is_hint"))
 	    return PyInt_FromLong(event->motion.is_hint);
 	if (!strcmp(attr, "device"))
-	    return PyGdkDevice_New(event->motion.device);
+	    return pygobject_new((GObject *)event->motion.device);
 	if (!strcmp(attr, "x_root"))
 	    return PyFloat_FromDouble(event->motion.x_root);
 	if (!strcmp(attr, "y_root"))
@@ -644,7 +644,7 @@ _wrap_gdk_event_getattr(PyObject *self, char *attr)
 	if (!strcmp(attr, "button"))
 	    return PyInt_FromLong(event->button.button);
 	if (!strcmp(attr, "device"))
-	    return PyGdkDevice_New(event->button.device);
+	    return pygobject_new((GObject *)event->button.device);
 	if (!strcmp(attr, "x_root"))
 	    return PyFloat_FromDouble(event->button.x_root);
 	if (!strcmp(attr, "y_root"))
@@ -728,7 +728,7 @@ _wrap_gdk_event_getattr(PyObject *self, char *attr)
 	if (!strcmp(attr, "time"))
 	    return PyInt_FromLong(event->proximity.time);
 	if (!strcmp(attr, "device"))
-	    return PyGdkDevice_New(event->proximity.device);
+	    return pygobject_new((GObject *)event->proximity.device);
 	break;
     case GDK_DRAG_ENTER:        /*GdkEventDND               dnd*/
     case GDK_DRAG_LEAVE:        /*GdkEventDND               dnd*/
@@ -771,7 +771,7 @@ _wrap_gdk_event_getattr(PyObject *self, char *attr)
 	if (!strcmp(attr, "direction"))
 	    return PyInt_FromLong(event->scroll.direction);
 	if (!strcmp(attr, "device"))
-	    return PyGdkDevice_New(event->scroll.device);
+	    return pygobject_new((GObject *)event->scroll.device);
 	if (!strcmp(attr, "x_root"))
 	    return PyFloat_FromDouble(event->scroll.x_root);
 	if (!strcmp(attr, "y_root"))
@@ -794,6 +794,141 @@ _wrap_gdk_event_getattr(PyObject *self, char *attr)
     }
     PyErr_SetString(PyExc_AttributeError, attr);
     return NULL;
+}
+%%
+override_attr GdkDevice.axes
+GdkDevice *device = GDK_DEVICE(self->obj);
+PyObject *ret;
+gint i;
+
+ret = PyTuple_New(device->num_axes);
+for (i = 0; i < device->num_axes; i++)
+    PyTuple_SetItem(ret, i, Py_BuildValue("(idd)",
+					  device->axes[i].use,
+					  device->axes[i].min,
+					  device->axes[i].max));
+return ret;
+%%
+override_attr GdkDevice.keys
+GdkDevice *device = GDK_DEVICE(self->obj);
+PyObject *ret;
+gint i;
+
+ret = PyTuple_New(device->num_keys);
+for (i = 0; i < device->num_keys; i++)
+    PyTuple_SetItem(ret, i, Py_BuildValue("(ii)",
+					  device->keys[i].keyval,
+					  device->keys[i].modifiers));
+return ret;
+%%
+override gdk_device_get_state kwargs
+static PyObject *
+_wrap_gdk_device_get_state(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "window", NULL };
+    GdkDevice *device = GDK_DEVICE(self->obj);
+    PyGObject *window;
+    gdouble *axes;
+    GdkModifierType mask;
+    PyObject *py_axes;
+    guint i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkDevice.get_state",
+				     kwlist, &window))
+	return NULL;
+    if (!pygobject_check(window, &PyGdkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
+	return NULL;
+    }
+    axes = g_new0(gdouble, device->num_axes);
+    gdk_device_get_state(device, GDK_WINDOW(window->obj), axes, &mask);
+    py_axes = PyTuple_New(device->num_axes);
+    for (i = 0; i < device->num_axes; i++)
+	PyTuple_SetItem(py_axes, i, PyFloat_FromDouble(axes[i]));
+    g_free(axes);
+    return Py_BuildValue("(Ni)", py_axes, mask);
+}
+%%
+ignore gdk_device_free_history
+%%
+override gdk_device_get_history kwargs
+static PyObject *
+_wrap_gdk_device_get_history(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "window", "start", "stop", NULL };
+    GdkDevice *device = GDK_DEVICE(self->obj);
+    PyGObject *window;
+    guint start, stop;
+    GdkTimeCoord **events;
+    gint n_events;
+    PyObject *pyevents;
+    guint i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "Oii:GdkDevice.get_history", kwlist,
+				     &window, &start, &stop))
+	return NULL;
+    if (!pygobject_check(window, &PyGdkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
+	return NULL;
+    }
+    gdk_device_get_history(device, GDK_WINDOW(window->obj), start, stop,
+			   &events, &n_events);
+    pyevents = PyTuple_New(n_events);
+    for (i = 0; i < n_events; i++) {
+	PyObject *axes;
+	gint j;
+
+	axes = PyTuple_New(device->num_axes);
+	for (j = 0; j < device->num_axes; j++)
+	    PyTuple_SetItem(axes, j, PyFloat_FromDouble(events[i]->axes[j]));
+	PyTuple_SetItem(pyevents, i, Py_BuildValue("(iN)", events[i]->time,
+						   axes));
+    }
+    gdk_device_free_history(events, n_events);
+    return pyevents;
+}
+%%
+override gdk_device_get_axis kwargs
+static PyObject *
+_wrap_gdk_device_get_axis(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "axes", "use", NULL };
+    GdkDevice *device = GDK_DEVICE(self->obj);
+    PyObject *py_axes;
+    gdouble *axes, value;
+    GdkAxisUse use;
+    gboolean ret;
+    gint i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi:GdkDevice.get_axis",
+				     kwlist, &py_axes, &use))
+	return NULL;
+    if (!PySequence_Check(py_axes)) {
+	PyErr_SetString(PyExc_TypeError, "axes must be a sequence");
+	return NULL;
+    }
+    if (PySequence_Length(py_axes) != device->num_axes) {
+	PyErr_SetString(PyExc_TypeError, "axes has the wrong length");
+	return NULL;
+    }
+    axes = g_new(gdouble, device->num_axes);
+    for (i = 0; i < device->num_axes; i++) {
+	PyObject *item = PySequence_GetItem(py_axes, i);
+
+	axes[i] = PyFloat_AsDouble(item);
+	Py_DECREF(item);
+	if (PyErr_Occurred()) {
+	    g_free(axes);
+	    return NULL;
+       }
+    }
+    ret = gdk_device_get_axis(device, axes, use, &value);
+    g_free(axes);
+    if (ret)
+	return PyFloat_FromDouble(value);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 %%
 ignore gtk_selection_data_copy gtk_selection_data_free

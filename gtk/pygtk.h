@@ -22,9 +22,6 @@ struct _PyGtk_FunctionStruct {
 
     PyTypeObject *gtkCTreeNode_type;
     PyObject *(* gtkCTreeNode_new)(GtkCTreeNode *node);
-
-    PyTypeObject *gdkDevice_type;
-    PyObject *(* gdkDevice_new)(GdkDevice *device);
 };
 
 /* structure definitions for the various object types in PyGTK */
@@ -39,15 +36,9 @@ typedef struct {
     GtkCTreeNode *node;
 } PyGtkCTreeNode_Object;
 
-typedef struct {
-    PyObject_HEAD
-    GdkDevice *obj;
-} PyGdkDevice_Object;
-
 /* routines to get the C object value out of the PyObject wrapper */
 #define PyGdkAtom_Get(v) (((PyGdkAtom_Object *)(v))->atom)
 #define PyGtkCTreeNode_Get(v) (((PyGtkCTreeNode_Object *)(v))->node)
-#define PyGdkDevice_Get(v) (((PyGdkDevice_Object *)(v))->obj)
 
 /* this section is dependent on whether we are being included from gtkmodule.c
  * or not.  A similar source level interface should be provided in both
@@ -65,17 +56,14 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 /* type objects */
 #define PyGdkAtom_Type          *(_PyGtk_API->gdkAtom_type)
 #define PyGtkCTreeNode_Type     *(_PyGtk_API->gtkCTreeNode_type)
-#define PyGdkDevice_Type        *(_PyGtk_API->gdkDevice_type)
 
 /* type checking routines */
 #define PyGdkAtom_Check(v) ((v)->ob_type == _PyGtk_API->gdkAtom_type)
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == _PyGtk_API->gtkCTreeNode_type)
-#define PyGdkDevice_Check(v) ((v)->ob_type == _PyGtk_API->gdkDevice_type)
 
 /* type objects */
 #define PyGdkAtom_New          (_PyGtk_API->gdkAtom_new)
 #define PyGtkCTreeNode_New     (_PyGtk_API->gtkCTreeNode_new)
-#define PyGdkDevice_New        (_PyGtk_API->gdkDevice_new)
 
 /* miscelaneous other functions */
 #define pygtk_block_threads (_PyGtk_API->block_threads)

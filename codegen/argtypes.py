@@ -588,8 +588,6 @@ matcher.register('FILE*', arg)
 
 matcher.register_custom_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
                               'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
-matcher.register_custom_boxed('GdkDevice', 'PyGdkDevice_Type',
-                              'PyGdkDevice_Get', 'PyGdkDevice_New')
 
 matcher.register('GdkAtom', AtomArg())
 

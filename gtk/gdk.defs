@@ -6,6 +6,20 @@
   (c-name GdkColormap)
 )
 
+(object Device
+  (in-module Gdk)
+  (parent Object (G))
+  (c-name GdkDevice)
+  (field (type-and-name gchar* name))
+  (field (type-and-name GdkInputSource source))
+  (field (type-and-name GdkInputMode mode))
+  (field (type-and-name gboolean has_cursor))
+  (field (type-and-name gint num_axes))
+  (field (type-and-name GdkDeviceAxis* axes))
+  (field (type-and-name gint num_keys))
+  (field (type-and-name GdkDeviceKey* keys))
+)
+
 (object DragContext
   (in-module Gdk)
   (parent Object (G))
@@ -1627,9 +1641,81 @@
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkinput.h
 
-(function input_list_devices
-  (c-name gdk_input_list_devices)
+(function gdk_device_get_type
+  (c-name gdk_device_get_type)
+  (return-type GType)
+)
+
+(function gdk_devices_list
+  (c-name gdk_devices_list)
   (return-type GList*)
+)
+
+(method set_source
+  (of-object Device (Gdk))
+  (c-name gdk_device_set_source)
+  (return-type none)
+  (parameter (type-and-name GdkInputSource source))
+)
+
+(method set_mode
+  (of-object Device (Gdk))
+  (c-name gdk_device_set_mode)
+  (return-type gboolean)
+  (parameter (type-and-name GdkInputMode mode))
+)
+
+(method set_key
+  (of-object Device (Gdk))
+  (c-name gdk_device_set_key)
+  (return-type none)
+  (parameter (type-and-name guint index))
+  (parameter (type-and-name guint keyval))
+  (parameter (type-and-name GdkModifierType modifiers))
+)
+
+(method set_axis_use
+  (of-object Device (Gdk))
+  (c-name gdk_device_set_axis_use)
+  (return-type none)
+  (parameter (type-and-name guint index))
+  (parameter (type-and-name GdkAxisUse use))
+)
+
+(method get_state
+  (of-object Device (Gdk))
+  (c-name gdk_device_get_state)
+  (return-type none)
+  (parameter (type-and-name GdkWindow* window))
+  (parameter (type-and-name gdouble* axes))
+  (parameter (type-and-name GdkModifierType* mask))
+)
+
+(method get_history
+  (of-object Device (Gdk))
+  (c-name gdk_device_get_history)
+  (return-type gboolean)
+  (parameter (type-and-name GdkWindow* window))
+  (parameter (type-and-name guint32 start))
+  (parameter (type-and-name guint32 stop))
+  (parameter (type-and-name GdkTimeCoord*** events))
+  (parameter (type-and-name gint* n_events))
+)
+
+(function gdk_device_free_history
+  (c-name gdk_device_free_history)
+  (return-type none)
+  (parameter (type-and-name GdkTimeCoord** events))
+  (parameter (type-and-name gint n_events))
+)
+
+(method get_axis
+  (of-object Device (Gdk))
+  (c-name gdk_device_get_axis)
+  (return-type gboolean)
+  (parameter (type-and-name gdouble* axes))
+  (parameter (type-and-name GdkAxisUse use))
+  (parameter (type-and-name gdouble* value))
 )
 
 (method input_set_extension_events

@@ -16,17 +16,14 @@
 /* type objects */
 extern PyTypeObject PyGdkAtom_Type;
 extern PyTypeObject PyGtkCTreeNode_Type;
-extern PyTypeObject PyGdkDevice_Type;
 
 /* check the type of a PyObject */
 #define PyGdkAtom_Check(v) ((v)->ob_type == &PyGdkAtom_Type)
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == &PyGtkCTreeNode_Type)
-#define PyGdkDevice_Check(v) ((v)->ob_type == &PyGdkDevice_Type)
 
 /* constructors for PyObject wrappers ... */
 PyObject *PyGdkAtom_New(GdkAtom atom);
 PyObject *PyGtkCTreeNode_New(GtkCTreeNode *node);
-PyObject *PyGdkDevice_New(GdkDevice *device);
 
 /* miscelaneous functions */
 void pygtk_block_threads(void);

@@ -23,7 +23,6 @@ static struct _PyGtk_FunctionStruct functions = {
 
     &PyGdkAtom_Type,  PyGdkAtom_New,
     &PyGtkCTreeNode_Type,  PyGtkCTreeNode_New,
-    &PyGdkDevice_Type, PyGdkDevice_New,
 };
 
 DL_EXPORT(void)
