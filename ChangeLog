@@ -1,5 +1,43 @@
 2002-07-09  James Henstridge  <james@daa.com.au>
 
+	Reworking of Arjan Molenaar's (arjanmolenaar@hetnet.nl) patch from
+	bug 71435.
+
+	* gtk/libglade.override (connect_one): watch the closure.
+	(connect_many): watch the closure.
+
+	* gtk/gtk.override (_wrap_gtk_toolbar_append_item): watch closure
+	for signal.
+	(_wrap_gtk_toolbar_prepend_item): same here.
+	(_wrap_gtk_toolbar_insert_item): same here.
+	(_wrap_gtk_toolbar_insert_stock): same here.
+	(_wrap_gtk_toolbar_append_element): same here.
+	(_wrap_gtk_toolbar_prepend_element): same here.
+	(_wrap_gtk_toolbar_insert_element): same here.
+
+	* pygobject.h (_PyGObject_Functions): add pygobject_watch_closure
+	to the list of exported functions.
+
+	* pygobject.c (pygobject_watch_closure): new function to watch a
+	closure.  We perform cyclic garbage collection on watched
+	closures.  The closure will automatically be unwatched when it
+	gets invalidated.
+	(pygobject_traverse): traverse watched closures as well.
+	(pygobject_clear): invalidate all watched closures
+	(pygobject_dealloc): invalidate watched closures on dealloc too.
+	(PyGObject_Type): register the invalidate handler.
+	(pygobject_connect): watch the closure we connect here.
+	(pygobject_connect_after): same here..
+	(pygobject_connect_object): same here.
+	(pygobject_connect_object_after): same here.
+
+	* pygtype.c (pyg_closure_new): clean up closure on invalidate,
+	rather than finalize (on invalidate, we break references).
+
+	* pygobject.h (PyGObject): add closures member to store references
+	to PyGClosures.
+
+	
 	* gtk/gtk.override (_wrap_gtk_tree_model_iter_next): change so
 	that it returns the next item, rather than modifying the iter.
 	(_wrap_gtk_tree_model_iter_parent): add wrapper, so that we return

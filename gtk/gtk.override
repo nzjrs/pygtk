@@ -4121,7 +4121,7 @@ _wrap_gtk_toolbar_append_item(PyGObject *self, PyObject *args,
 			      "icon", "callback", "user_data", NULL };
     char *text, *tooltip_text, *tooltip_private_text;
     PyGObject *py_icon;
-    PyObject *callback, *param=NULL;
+    PyObject *callback, *param = NULL, *py_ret;
     GtkWidget *icon = NULL, *ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -4139,12 +4139,15 @@ _wrap_gtk_toolbar_append_item(PyGObject *self, PyObject *args,
     }
     ret = gtk_toolbar_append_item(GTK_TOOLBAR(self->obj), text, tooltip_text,
 				  tooltip_private_text, icon, NULL, NULL);
+    py_ret = pygobject_new((GObject *)ret);
     if (ret && PyCallable_Check(callback)) {
-	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, param, NULL),
-				 FALSE);
+	GClosure *closure;
+
+	closure = pyg_closure_new(callback, param, NULL);
+	g_signal_connect_closure(ret, "clicked", closure, FALSE);
+	pygobject_watch_closure(py_ret, closure);
     }
-    return pygobject_new((GObject *)ret);
+    return py_ret;
 }
 %%
 override gtk_toolbar_prepend_item kwargs
@@ -4156,7 +4159,7 @@ _wrap_gtk_toolbar_prepend_item(PyGObject *self, PyObject *args,
 			      "icon", "callback", "user_data", NULL };
     char *text, *tooltip_text, *tooltip_private_text;
     PyGObject *py_icon;
-    PyObject *callback, *param;
+    PyObject *callback, *param, *py_ret;
     GtkWidget *icon = NULL, *ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -4174,12 +4177,15 @@ _wrap_gtk_toolbar_prepend_item(PyGObject *self, PyObject *args,
     }
     ret = gtk_toolbar_prepend_item(GTK_TOOLBAR(self->obj), text, tooltip_text,
 				  tooltip_private_text, icon, NULL, NULL);
+    py_ret = pygobject_new((GObject *)ret);
     if (ret && PyCallable_Check(callback)) {
-	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, param, NULL),
-				 FALSE);
+	GClosure *closure;
+
+	closure = pyg_closure_new(callback, param, NULL);
+	g_signal_connect_closure(ret, "clicked", closure, FALSE);
+	pygobject_watch_closure(py_ret, closure);
     }
-    return pygobject_new((GObject *)ret);
+    return py_ret;
 }
 %%
 override gtk_toolbar_insert_item kwargs
@@ -4192,7 +4198,7 @@ _wrap_gtk_toolbar_insert_item(PyGObject *self, PyObject *args,
 			      NULL };
     char *text, *tooltip_text, *tooltip_private_text;
     PyGObject *py_icon;
-    PyObject *callback, *param;
+    PyObject *callback, *param, *py_ret;
     GtkWidget *icon = NULL, *ret;
     int position;
 
@@ -4212,12 +4218,15 @@ _wrap_gtk_toolbar_insert_item(PyGObject *self, PyObject *args,
     ret = gtk_toolbar_insert_item(GTK_TOOLBAR(self->obj), text, tooltip_text,
 				  tooltip_private_text, icon, NULL, NULL,
 				  position);
+    py_ret = pygobject_new((GObject *)ret);
     if (ret && PyCallable_Check(callback)) {
-	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, param, NULL),
-				 FALSE);
+	GClosure *closure;
+
+	closure = pyg_closure_new(callback, param, NULL);
+	g_signal_connect_closure(ret, "clicked", closure, FALSE);
+	pygobject_watch_closure(py_ret, closure);
     }
-    return pygobject_new((GObject *)ret);
+    return py_ret;
 }
 %%
 override gtk_toolbar_insert_stock kwargs
@@ -4229,7 +4238,7 @@ _wrap_gtk_toolbar_insert_stock(PyGObject *self, PyObject *args,
 			      "callback", "user_data", "position",
 			      NULL };
     char *stock_id, *tooltip_text, *tooltip_private_text;
-    PyObject *callback, *param;
+    PyObject *callback, *param, *py_ret;
     GtkWidget *ret;
     int position;
 
@@ -4243,12 +4252,15 @@ _wrap_gtk_toolbar_insert_stock(PyGObject *self, PyObject *args,
     ret = gtk_toolbar_insert_stock(GTK_TOOLBAR(self->obj), stock_id, tooltip_text,
 				  tooltip_private_text, NULL, NULL,
 				  position);
+    py_ret = pygobject_new((GObject *)ret);
     if (ret && PyCallable_Check(callback)) {
-	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, param, NULL),
-				 FALSE);
+	GClosure *closure;
+
+	closure = pyg_closure_new(callback, param, NULL);
+	g_signal_connect_closure(ret, "clicked", closure, FALSE);
+	pygobject_watch_closure(py_ret, closure);
     }
-    return pygobject_new((GObject *)ret);
+    return py_ret;
 }
 %%
 override gtk_toolbar_append_element kwargs
@@ -4260,7 +4272,7 @@ _wrap_gtk_toolbar_append_element(PyGObject *self, PyObject *args,
 			      "tooltip_private_text", "icon", "callback",
 			      "user_data", NULL };
     char *text, *tooltip_text, *tooltip_private_text;
-    PyObject *py_type, *callback, *param;
+    PyObject *py_type, *callback, *param, *py_ret;
     PyGObject *py_widget, *py_icon;
     GtkWidget *widget = NULL, *icon = NULL, *ret;
     GtkToolbarChildType type;
@@ -4293,15 +4305,18 @@ _wrap_gtk_toolbar_append_element(PyGObject *self, PyObject *args,
     ret = gtk_toolbar_append_element(GTK_TOOLBAR(self->obj), type, widget,
 				     text, tooltip_text, tooltip_private_text,
 				     icon, NULL, NULL);
+    py_ret = pygobject_new((GObject *)ret);
     if (ret && PyCallable_Check(callback) &&
 	(type == GTK_TOOLBAR_CHILD_BUTTON ||
 	 type == GTK_TOOLBAR_CHILD_TOGGLEBUTTON ||
 	 type == GTK_TOOLBAR_CHILD_RADIOBUTTON)) {
-	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, param, NULL),
-				 FALSE);
+	GClosure *closure;
+
+	closure = pyg_closure_new(callback, param, NULL);
+	g_signal_connect_closure(ret, "clicked", closure, FALSE);
+	pygobject_watch_closure(py_ret, closure);
     }
-    return pygobject_new((GObject *)ret);
+    return py_ret;
 }
 %%
 override gtk_toolbar_prepend_element kwargs
@@ -4313,7 +4328,7 @@ _wrap_gtk_toolbar_prepend_element(PyGObject *self, PyObject *args,
 			      "tooltip_private_text", "icon", "callback",
 			      "user_data", NULL };
     char *text, *tooltip_text, *tooltip_private_text;
-    PyObject *py_type, *callback, *param;
+    PyObject *py_type, *callback, *param, *py_ret;
     PyGObject *py_widget, *py_icon;
     GtkWidget *widget = NULL, *icon = NULL, *ret;
     GtkToolbarChildType type;
@@ -4346,15 +4361,18 @@ _wrap_gtk_toolbar_prepend_element(PyGObject *self, PyObject *args,
     ret = gtk_toolbar_prepend_element(GTK_TOOLBAR(self->obj), type, widget,
 				      text, tooltip_text, tooltip_private_text,
 				      icon, NULL, NULL);
+    py_ret = pygobject_new((GObject *)ret);
     if (ret && PyCallable_Check(callback) &&
 	(type == GTK_TOOLBAR_CHILD_BUTTON ||
 	 type == GTK_TOOLBAR_CHILD_TOGGLEBUTTON ||
 	 type == GTK_TOOLBAR_CHILD_RADIOBUTTON)) {
-	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, param, NULL),
-				 FALSE);
+	GClosure *closure;
+
+	closure = pyg_closure_new(callback, param, NULL);
+	g_signal_connect_closure(ret, "clicked", closure, FALSE);
+	pygobject_watch_closure(py_ret, closure);
     }
-    return pygobject_new((GObject *)ret);
+    return py_ret;
 }
 %%
 override gtk_toolbar_insert_element kwargs
@@ -4366,7 +4384,7 @@ _wrap_gtk_toolbar_insert_element(PyGObject *self, PyObject *args,
 			      "tooltip_private_text", "icon", "callback",
 			      "user_data", "position", NULL };
     char *text, *tooltip_text, *tooltip_private_text;
-    PyObject *py_type, *callback, *param;
+    PyObject *py_type, *callback, *param, *py_ret;
     PyGObject *py_widget, *py_icon;
     GtkWidget *widget = NULL, *icon = NULL, *ret;
     GtkToolbarChildType type;
@@ -4400,15 +4418,18 @@ _wrap_gtk_toolbar_insert_element(PyGObject *self, PyObject *args,
     ret = gtk_toolbar_insert_element(GTK_TOOLBAR(self->obj), type, widget,
 				     text, tooltip_text, tooltip_private_text,
 				     icon, NULL, NULL, position);
+    py_ret = pygobject_new((GObject *)ret);
     if (ret && PyCallable_Check(callback) &&
 	(type == GTK_TOOLBAR_CHILD_BUTTON ||
 	 type == GTK_TOOLBAR_CHILD_TOGGLEBUTTON ||
 	 type == GTK_TOOLBAR_CHILD_RADIOBUTTON)) {
-	g_signal_connect_closure(ret, "clicked",
-				 pyg_closure_new(callback, param, NULL),
-				 FALSE);
+	GClosure *closure;
+
+	closure = pyg_closure_new(callback, param, NULL);
+	g_signal_connect_closure(ret, "clicked", closure, FALSE);
+	pygobject_watch_closure(py_ret, closure);
     }
-    return pygobject_new((GObject *)ret);
+    return py_ret;
 }
 %%
 override gtk_notebook_query_tab_label_packing kwargs

@@ -34,6 +34,7 @@ connect_one(const gchar *handler_name, GObject *obj,
     GClosure *closure = NULL;
     PyObject *callback = PyTuple_GetItem((PyObject *)user_data, 0);
     PyObject *extra = PyTuple_GetItem((PyObject *)user_data, 1);
+    PyObject *self;
 
     if (connect_object) {
         PyObject *other;
@@ -44,7 +45,10 @@ connect_one(const gchar *handler_name, GObject *obj,
 	closure = pyg_closure_new(callback, extra, NULL);
     }
 
+    self = pygobject_new(obj);
     g_signal_connect_closure(obj, signal_name, closure, after);
+    pygobject_watch_closure(self, closure);
+    Py_DECREF(self);
 }
 
 static PyObject *
@@ -89,7 +93,7 @@ connect_many(const gchar *handler_name, GObject *obj,
 	     GObject *connect_object, gboolean after, gpointer user_data)
 {
     PyObject *handler_dict = user_data;
-    PyObject *tuple;
+    PyObject *tuple, *self;
     GClosure *closure = NULL;
 
     tuple = PyDict_GetItemString(handler_dict, (gchar *)handler_name);
@@ -122,7 +126,10 @@ connect_many(const gchar *handler_name, GObject *obj,
 	return;
     }
 
+    self = pygobject_new(obj);
     g_signal_connect_closure(obj, signal_name, closure, after);
+    pygobject_watch_closure(self, closure);
+    Py_DECREF(self);
 }
 
 static PyObject *
