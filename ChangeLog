@@ -3,6 +3,9 @@
 	* gtk/gdk.override (_wrap_gdk_window_set_user_data): Raise
 	TypeError instead of value error when user data is not of
 	gtk.Widget type.
+	(_wrap_gdk_window_set_user_data): Add weak reference to the widget
+	for increased safety, just in case the widget is ever destroyed
+	before the window, however unlikely that may be...
 
 2004-06-26  Lorenzo Gil Sanchez  <lgs@cvs.gnome.org>
 

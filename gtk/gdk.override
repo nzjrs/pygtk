@@ -3970,25 +3970,58 @@ _wrap_gdk_window_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 %%
 override gdk_window_set_user_data kwargs
+static void
+__gdk_window_set_user_data_weak_notify(gpointer data,
+                                       GObject *where_the_object_was)
+{
+    PyGObject *window = (PyGObject *) data;
+    gdk_window_set_user_data(GDK_WINDOW(window->obj), NULL);
+}
+
+static void
+__gdk_window_destroy(GdkWindow *self)
+{
+    gpointer old_user_data = NULL;
+      /* Remove any existing weak reference */
+    gdk_window_get_user_data(self, &old_user_data);
+    if (old_user_data)
+        g_object_weak_unref(G_OBJECT(old_user_data),
+                            __gdk_window_set_user_data_weak_notify, self);
+}
+
 static PyObject *
 _wrap_gdk_window_set_user_data(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "user_data", NULL };
     PyGObject *user_data;
+    gpointer old_user_data = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "O:GdkWindow.set_user_data",
 				     kwlist, &user_data))
         return NULL;
 
-    if (pygobject_check(user_data, &PyGtkWidget_Type))
-	gdk_window_set_user_data(GDK_WINDOW(self->obj), GTK_WIDGET(user_data->obj));
-    else {
+    if (!pygobject_check(user_data, &PyGtkWidget_Type)) {
 	PyErr_SetString(PyExc_TypeError, "Only GtkWidgets are allowed as user data."
                         " Maybe you want to use GObject.set_data()");
 	return NULL;
     }
-	
+      /* Remove any existing weak reference */
+    gdk_window_get_user_data(GDK_WINDOW(self->obj), &old_user_data);
+    if (old_user_data)
+        g_object_weak_unref(old_user_data,
+                            __gdk_window_set_user_data_weak_notify, self);
+
+      /* Add new weak reference */
+    gdk_window_set_user_data(GDK_WINDOW(self->obj), GTK_WIDGET(user_data->obj));
+    g_object_weak_ref(self->obj, __gdk_window_set_user_data_weak_notify, self);
+
+      /* connect (only once) "destroy" signal to remove our weak
+       * reference, if any */
+    if (!g_signal_handler_find(self, G_SIGNAL_MATCH_FUNC, 0, 0, 0, 
+                               __gdk_window_destroy, NULL))
+        g_signal_connect(self, "destroy", (GCallback) __gdk_window_destroy, NULL);
+
     Py_INCREF(Py_None);
     return Py_None;
 }
