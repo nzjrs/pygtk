@@ -34,7 +34,7 @@ typedef struct {
 staticforward PyTypeObject PyPangoAttribute_Type;
 
 static PyObject *
-pypango_attr_new(PangoAttribute *attr)
+pypango_attr_new(PangoAttribute *attr, guint start, guint end)
 {
     PyPangoAttribute *self;
 
@@ -43,6 +43,8 @@ pypango_attr_new(PangoAttribute *attr)
     if (self == NULL)
 	return NULL;
     self->attr = attr;
+    attr->start_index = start;
+    attr->end_index = end;
 
     return (PyObject *)self;
 }
@@ -73,7 +75,8 @@ pypango_attr_hash(PyPangoAttribute *self)
 static PyObject *
 pypango_attr_copy(PyPangoAttribute *self)
 {
-    return pypango_attr_new(pango_attribute_copy(self->attr));
+    return pypango_attr_new(pango_attribute_copy(self->attr),
+			    self->attr->start_index, self->attr->end_index);
 }
 
 static PyMethodDef pypango_attr_methods[] = {
@@ -302,178 +305,197 @@ override pango_attr_language_new kwargs
 static PyObject *
 _wrap_pango_attr_language_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "language", NULL };
+    static char *kwlist[] = { "language", "start_index", "end_index", NULL };
     char *slanguage;
     PangoLanguage *language;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:PangoAttrLanguage",
-				     kwlist, &slanguage))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ii:PangoAttrLanguage",
+				     kwlist, &slanguage, &start, &end))
 	return NULL;
 
     language = pango_language_from_string(slanguage);
 
-    return pypango_attr_new(pango_attr_language_new(language));
+    return pypango_attr_new(pango_attr_language_new(language), start, end);
 }
 %%
 override pango_attr_family_new kwargs
 static PyObject *
 _wrap_pango_attr_family_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "family", NULL };
+    static char *kwlist[] = { "family", "start_index", "end_index", NULL };
     char *family;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:PangoAttrFamily", kwlist,
-				     &family))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ii:PangoAttrFamily",
+				     kwlist, &family, &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_family_new(family));
+    return pypango_attr_new(pango_attr_family_new(family), start, end);
 }
 %%
 override pango_attr_foreground_new kwargs
 static PyObject *
 _wrap_pango_attr_foreground_new(PyObject *self,PyObject *args,PyObject *kwargs)
 {
-    static char *kwlist[] = { "red", "green", "blue", NULL };
+    static char *kwlist[] = { "red", "green", "blue", "start_index",
+			      "end_index", NULL };
     guint16 red, green, blue;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "HHH:PangoAttrForeground",
-				     kwlist, &red, &green, &blue))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "HHH|ii:PangoAttrForeground",
+				     kwlist, &red, &green, &blue,
+				     &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_foreground_new(red, green, blue));
+    return pypango_attr_new(pango_attr_foreground_new(red, green, blue),
+			    start, end);
 }
 %%
 override pango_attr_background_new kwargs
 static PyObject *
 _wrap_pango_attr_background_new(PyObject *self,PyObject *args,PyObject *kwargs)
 {
-    static char *kwlist[] = { "red", "green", "blue", NULL };
+    static char *kwlist[] = { "red", "green", "blue", "start_index",
+			      "end_index", NULL };
     guint16 red, green, blue;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "HHH:PangoAttrBackground",
-				     kwlist, &red, &green, &blue))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "HHH|ii:PangoAttrBackground",
+				     kwlist, &red, &green, &blue,
+				     &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_background_new(red, green, blue));
+    return pypango_attr_new(pango_attr_background_new(red, green, blue),
+			    start, end);
 }
 %%
 override pango_attr_size_new kwargs
 static PyObject *
 _wrap_pango_attr_size_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "size", NULL };
+    static char *kwlist[] = { "size", "start_index", "end_index", NULL };
     int size;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoAttrSize", kwlist,
-				     &size))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|ii:PangoAttrSize",
+				     kwlist, &size, &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_size_new(size));
+    return pypango_attr_new(pango_attr_size_new(size), start, end);
 }
 %%
 override pango_attr_style_new kwargs
 static PyObject *
 _wrap_pango_attr_style_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "style", NULL };
+    static char *kwlist[] = { "style", "start_index", "end_index", NULL };
     PyObject *py_style;
     PangoStyle style;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrStyle", kwlist,
-				     &py_style))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|ii:PangoAttrStyle",
+				     kwlist, &py_style, &start, &end))
 	return NULL;
     if (pyg_enum_get_value(PANGO_TYPE_STYLE, py_style, (gint *)&style))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_style_new(style));
+    return pypango_attr_new(pango_attr_style_new(style), start, end);
 }
 %%
 override pango_attr_weight_new kwargs
 static PyObject *
 _wrap_pango_attr_weight_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "weight", NULL };
+    static char *kwlist[] = { "weight", "start_index", "end_index", NULL };
     PyObject *py_weight;
     PangoWeight weight;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrWeight", kwlist,
-				     &py_weight))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|ii:PangoAttrWeight",
+				     kwlist, &py_weight, &start, &end))
 	return NULL;
     if (pyg_enum_get_value(PANGO_TYPE_WEIGHT, py_weight, (gint *)&weight))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_weight_new(weight));
+    return pypango_attr_new(pango_attr_weight_new(weight), start, end);
 }
 %%
 override pango_attr_variant_new kwargs
 static PyObject *
 _wrap_pango_attr_variant_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "variant", NULL };
+    static char *kwlist[] = { "variant", "start_index", "end_index", NULL };
     PyObject *py_variant;
     PangoVariant variant;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrVariant",
-				     kwlist, &py_variant))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|ii:PangoAttrVariant",
+				     kwlist, &py_variant, &start, &end))
 	return NULL;
     if (pyg_enum_get_value(PANGO_TYPE_VARIANT, py_variant, (gint *)&variant))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_variant_new(variant));
+    return pypango_attr_new(pango_attr_variant_new(variant), start, end);
 }
 %%
 override pango_attr_stretch_new kwargs
 static PyObject *
 _wrap_pango_attr_stretch_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "stretch", NULL };
+    static char *kwlist[] = { "stretch", "start_index", "end_index", NULL };
     PyObject *py_stretch;
     PangoStretch stretch;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrStretch",
-				     kwlist, &py_stretch))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|ii:PangoAttrStretch",
+				     kwlist, &py_stretch, &start, &end))
 	return NULL;
     if (pyg_enum_get_value(PANGO_TYPE_STRETCH, py_stretch, (gint *)&stretch))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_stretch_new(stretch));
+    return pypango_attr_new(pango_attr_stretch_new(stretch), start, end);
 }
 %%
 override pango_attr_font_desc_new kwargs
 static PyObject *
 _wrap_pango_attr_font_desc_new(PyObject *self, PyObject *args,PyObject *kwargs)
 {
-    static char *kwlist[] = { "desc", NULL };
+    static char *kwlist[] = { "desc", "start_index", "end_index", NULL };
     PyObject *font_desc;
     PangoFontDescription *desc;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrFontDesc",
-				     kwlist, &font_desc))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|ii:PangoAttrFontDesc",
+				     kwlist, &font_desc, &start, &end))
 	return NULL;
     if (!pyg_boxed_check(font_desc, PANGO_TYPE_FONT_DESCRIPTION)) {
 	PyErr_SetString(PyExc_TypeError,"desc must be a PangoFontDescription");
 	return NULL;
     }
     desc = pyg_boxed_get(font_desc, PangoFontDescription);
-    return pypango_attr_new(pango_attr_font_desc_new(desc));
+    return pypango_attr_new(pango_attr_font_desc_new(desc), start, end);
 }
 %%
 override pango_attr_underline_new kwargs
 static PyObject *
 _wrap_pango_attr_underline_new(PyObject *self, PyObject *args,PyObject *kwargs)
 {
-    static char *kwlist[] = { "underline", NULL };
+    static char *kwlist[] = { "underline", "start_index", "end_index", NULL };
     PyObject *py_underline;
     PangoUnderline underline;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:PangoAttrUnderline",
-				     kwlist, &py_underline))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|ii:PangoAttrUnderline",
+				     kwlist, &py_underline, &start, &end))
 	return NULL;
     if (pyg_enum_get_value(PANGO_TYPE_UNDERLINE, py_underline,
 			   (gint *)&underline))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_underline_new(underline));
+    return pypango_attr_new(pango_attr_underline_new(underline), start, end);
 }
 %%
 override pango_attr_strikethrough_new kwargs
@@ -481,60 +503,88 @@ static PyObject *
 _wrap_pango_attr_strikethrough_new(PyObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
-    static char *kwlist[] = { "strikethrough", NULL };
+    static char *kwlist[] = { "strikethrough", "start_index",
+			      "end_index", NULL };
     gboolean strikethrough;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoAttrStrikethrough",
-				     kwlist, &strikethrough))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i|ii:PangoAttrStrikethrough",
+				     kwlist, &strikethrough, &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_strikethrough_new(strikethrough));
+    return pypango_attr_new(pango_attr_strikethrough_new(strikethrough),
+			    start, end);
 }
 %%
 override pango_attr_rise_new kwargs
 static PyObject *
 _wrap_pango_attr_rise_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "rise", NULL };
+    static char *kwlist[] = { "rise", "start_index", "end_index", NULL };
     gint rise;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoAttrRise",
-				     kwlist, &rise))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|ii:PangoAttrRise",
+				     kwlist, &rise, &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_rise_new(rise));
+    return pypango_attr_new(pango_attr_rise_new(rise), start, end);
 }
 %%
 override pango_attr_shape_new kwargs
 static PyObject *
 _wrap_pango_attr_shape_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "ink_rect", "logical_rect", NULL };
+    static char *kwlist[] = { "ink_rect", "logical_rect", "start_index",
+			      "end_index", NULL };
     PangoRectangle ink_rect, logical_rect;
+    PyObject *py_ink_rect, *py_logical_rect;
+    guint start = 0, end = 1;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "(iiii)(iiii):PangoAttrShape", kwlist,
-				     &ink_rect.x, &ink_rect.y,
-				     &ink_rect.width, &ink_rect.height,
-				     &logical_rect.x, &logical_rect.y,
-				     &logical_rect.width,&logical_rect.height))
+				     "OO|ii:PangoAttrShape", kwlist,
+				     &py_ink_rect, &py_logical_rect,
+				     &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_shape_new(&ink_rect, &logical_rect));
+    if (!PyTuple_Check(py_ink_rect)
+	|| !PyArg_ParseTuple(py_ink_rect, "iiii",
+			     &ink_rect.x, &ink_rect.y,
+			     &ink_rect.width, &ink_rect.height)) {
+	PyErr_Clear();
+	PyErr_SetString(PyExc_TypeError,
+			"ink_rect must be a 4-tuple of integers");
+	return NULL;
+    }
+
+    if (!PyTuple_Check(py_logical_rect)
+	|| !PyArg_ParseTuple(py_logical_rect, "iiii",
+			     &logical_rect.x, &logical_rect.y,
+			     &logical_rect.width,&logical_rect.height)) {
+	PyErr_Clear();
+	PyErr_SetString(PyExc_TypeError,
+			"logical_rect must be a 4-tuple of integers");
+	return NULL;
+    }
+
+    return pypango_attr_new(pango_attr_shape_new(&ink_rect, &logical_rect),
+			    start, end);
 }
 %%
 override pango_attr_scale_new kwargs
 static PyObject *
 _wrap_pango_attr_scale_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "scale", NULL };
+    static char *kwlist[] = { "scale", "start_index", "end_index", NULL };
     double scale;
+    guint start = 0, end = 1;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "d:PangoAttrScale",
-				     kwlist, &scale))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "d|ii:PangoAttrScale",
+				     kwlist, &scale, &start, &end))
 	return NULL;
 
-    return pypango_attr_new(pango_attr_scale_new(scale));
+    return pypango_attr_new(pango_attr_scale_new(scale), start, end);
 }
 %%
 override pango_attr_list_insert kwargs
