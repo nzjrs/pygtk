@@ -51,7 +51,7 @@ class FileOutput:
 
 # have to do return type processing
 functmpl = 'static PyObject *\n' + \
-	   '_wrap_%(cname)s(PyObject *self, PyObject *args, PyObject *kwargs)\n' + \
+	   '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n' + \
 	   '{\n' + \
 	   '%(varlist)s' + \
            '%(parseargs)s' + \
@@ -62,7 +62,7 @@ functmpl = 'static PyObject *\n' + \
 funccalltmpl = '%(cname)s(%(arglist)s);'
 
 methtmpl = 'static PyObject *\n' + \
-	   '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n' + \
+	   '_wrap_%(cname)s(PyGObject *self%(extraparams)s)\n' + \
 	   '{\n' + \
 	   '%(varlist)s' + \
            '%(parseargs)s' + \
@@ -193,7 +193,7 @@ interfacetypetmpl = 'PyTypeObject Py%(class)s_Type = {\n' + \
 	   '};\n\n'
 
 boxedmethtmpl = 'static PyObject *\n' + \
-                '_wrap_%(cname)s(PyObject *self, PyObject *args, PyObject *kwargs)\n' + \
+                '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n' + \
                 '{\n' + \
                 '%(varlist)s' + \
                 '%(parseargs)s' + \
@@ -323,10 +323,12 @@ def write_function(funcobj, fp=sys.stdout):
 
         dict['parseargs'] = parsetmpl % parsedict
         dict['varlist'] = info.get_kwlist() + info.get_varlist()
+        dict['extraparams'] = ', PyObject *args, PyObject *kwargs'
         flags = 'METH_VARARGS|METH_KEYWORDS'
     else:
         dict['parseargs'] = ''
-        dict['varlist']    = info.get_varlist()
+        dict['varlist'] = info.get_varlist()
+        dict['extraparams'] = ''
         flags = 'METH_NOARGS'
 
     fp.write(functmpl % dict)
@@ -372,12 +374,13 @@ def write_method(objname, castmacro, methobj, fp=sys.stdout):
                      'parselist': info.get_parselist()}
 
         dict['parseargs'] = parsetmpl % parsedict
-
         dict['varlist'] = info.get_kwlist() + info.get_varlist()
+        dict['extraparams'] = ', PyObject *args, PyObject *kwargs'
         flags = 'METH_VARARGS|METH_KEYWORDS'
     else:
         dict['parseargs'] = ''
         dict['varlist']   = info.get_varlist()
+        dict['extraparams'] = ''
         flags = 'METH_NOARGS'
 
     fp.write(methtmpl % dict)
@@ -612,10 +615,12 @@ def write_boxed_method(objname, methobj, fp=sys.stdout):
 
         dict['parseargs'] = parsetmpl % parsedict
         dict['varlist'] = info.get_kwlist() + info.get_varlist()
+        dict['extraparams'] = ', PyObject *args, PyObject *kwargs'
         flags = 'METH_VARARGS|METH_KEYWORDS'
     else:
         dict['parseargs'] = ''
         dict['varlist']    = info.get_varlist()
+        dict['extraparams'] = ''
         flags = 'METH_NOARGS'
 
     fp.write(boxedmethtmpl % dict)
