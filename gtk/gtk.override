@@ -1861,6 +1861,28 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
     return 0;
 }
 %%
+override gtk_tree_view_column_get_cell_renderers noargs
+static PyObject *
+_wrap_gtk_tree_view_column_get_cell_renderers(PyGObject *self)
+{
+    GList *list, *tmp;
+    PyObject *ret;
+
+    list = gtk_tree_view_column_get_cell_renderers(
+			GTK_TREE_VIEW_COLUMN(self->obj));
+
+    ret = PyList_New(0);
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+	GtkWidget *renderer = tmp->data;
+	PyObject *item = pygobject_new((GObject *)renderer);
+
+	PyList_Append(ret, item);
+	Py_DECREF(item);
+    }
+    g_list_free(list);
+    return ret;
+}
+%%
 override gtk_tree_view_column_set_cell_data_func kwargs
 static void
 pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
@@ -1926,6 +1948,40 @@ _wrap_gtk_tree_view_column_set_cell_data_func (PyGObject *self, PyObject *args,
 					     cunote,
 					     pygtk_custom_destroy_notify);
 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_column_set_attributes kwargs
+static PyObject *
+_wrap_gtk_tree_view_column_set_attributes(PyGObject *self, PyObject *args,
+					  PyObject *kwargs)
+{
+    PyObject *py_cell, *key, *item;
+    GtkCellRenderer *cell;
+    gint i = 0;
+
+    if (!PyArg_ParseTuple(args, "O!:GtkTreeViewColumn.set_attributes",
+			  &PyGtkCellRenderer_Type, &py_cell))
+	return NULL;
+    cell = GTK_CELL_RENDERER(pygobject_get(py_cell));
+    gtk_tree_view_column_clear_attributes(GTK_TREE_VIEW_COLUMN(self->obj),
+					  cell);
+    if (kwargs) {
+	while (PyDict_Next(kwargs, &i, &key, &item)) {
+	    gchar *attr = PyString_AsString(key);
+
+	    if (!PyInt_Check(item)) {
+		gchar err[128];
+		g_snprintf(err, sizeof(err),
+			   "%s must be an integer column number", attr);
+		PyErr_SetString(PyExc_TypeError, err);
+		return NULL;
+	    }
+	    gtk_tree_view_column_add_attribute(GTK_TREE_VIEW_COLUMN(self->obj),
+					       cell, attr, PyInt_AsLong(item));
+	}
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -4552,6 +4608,118 @@ _wrap_gtk_text_iter_backward_search(PyGBoxed *self, PyObject *args,
     return Py_None;
 }
 %%
+override gtk_text_buffer_insert_with_tags
+static PyObject *
+_wrap_gtk_text_buffer_insert_with_tags(PyGObject *self, PyObject *args)
+{
+    PyObject *first, *py_iter;
+    gint len, i, text_len, start_offset;
+    gchar *text;
+    GtkTextIter *iter, start;
+
+    len = PyTuple_Size(args);
+    if (len < 2) {
+	PyErr_SetString(PyExc_TypeError,
+	    "GtkTextBuffer.insert_with_tags requires at least 2 arguments");
+	return NULL;
+    }
+    first = PySequence_GetSlice(args, 0, 2);
+    if (!PyArg_ParseTuple(first, "Os#:GtkTextBuffer.insert_with_tags",
+			  &py_iter, &text, &text_len)) {
+	Py_DECREF(first);
+	return NULL;
+    }
+    Py_DECREF(first);
+    if (!pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTextIter");
+	return NULL;
+    }
+    iter = pyg_boxed_get(py_iter, GtkTextIter);
+
+    /* check types */
+    for (i = 2; i < len; i++) {
+	PyObject *item = PyTuple_GetItem(args, i);
+
+	if (!pygobject_check(item, &PyGtkTextTag_Type)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "additional argument must be a GtkTextTag");
+	    return NULL;
+	}
+    }
+
+    start_offset = gtk_text_iter_get_offset(iter);
+    gtk_text_buffer_insert(GTK_TEXT_BUFFER(self->obj), iter, text, text_len);
+    gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(self->obj),
+				       &start, start_offset);
+
+    for (i = 2; i < len; i++) {
+	PyObject *item = PyTuple_GetItem(args, i);
+	GtkTextTag *tag = GTK_TEXT_TAG(pygobject_get(item));
+
+	gtk_text_buffer_apply_tag(GTK_TEXT_BUFFER(self->obj), tag,&start,iter);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_text_buffer_insert_with_tags_by_name
+static PyObject *
+_wrap_gtk_text_buffer_insert_with_tags_by_name(PyGObject *self, PyObject *args)
+{
+    PyObject *first, *py_iter;
+    gint len, i, text_len, start_offset;
+    gchar *text;
+    GtkTextIter *iter, start;
+
+    len = PyTuple_Size(args);
+    if (len < 2) {
+	PyErr_SetString(PyExc_TypeError,
+			"GtkTextBuffer.insert_with_tags_by_name "
+			"requires at least 2 arguments");
+	return NULL;
+    }
+    first = PySequence_GetSlice(args, 0, 2);
+    if (!PyArg_ParseTuple(first, "Os#:GtkTextBuffer.insert_with_tags_by_name",
+			  &py_iter, &text, &text_len)) {
+	Py_DECREF(first);
+	return NULL;
+    }
+    Py_DECREF(first);
+    if (!pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTextIter");
+	return NULL;
+    }
+    iter = pyg_boxed_get(py_iter, GtkTextIter);
+
+    /* check types */
+    for (i = 2; i < len; i++) {
+	PyObject *item = PyTuple_GetItem(args, i);
+
+	if (!PyString_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "additional argument must be a string");
+	    return NULL;
+	}
+    }
+
+    start_offset = gtk_text_iter_get_offset(iter);
+    gtk_text_buffer_insert(GTK_TEXT_BUFFER(self->obj), iter, text, text_len);
+    gtk_text_buffer_get_iter_at_offset(GTK_TEXT_BUFFER(self->obj),
+				       &start, start_offset);
+
+    for (i = 2; i < len; i++) {
+	PyObject *item = PyTuple_GetItem(args, i);
+	const gchar *tagname = PyString_AsString(item);
+
+	gtk_text_buffer_apply_tag_by_name(GTK_TEXT_BUFFER(self->obj),
+					  tagname, &start, iter);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_text_buffer_create_tag kwargs
 static PyObject *
 _wrap_gtk_text_buffer_create_tag(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -4702,6 +4870,27 @@ _wrap_gtk_text_buffer_set_text(PyGObject *self, PyObject *args, PyObject *kwargs
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(self->obj), text, len);
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_text_child_anchor_get_widgets noargs
+static PyObject *
+_wrap_gtk_text_child_anchor_get_widgets(PyGObject *self)
+{
+    GList *list, *tmp;
+    PyObject *ret;
+
+    list = gtk_text_child_anchor_get_widgets(GTK_TEXT_CHILD_ANCHOR(self->obj));
+
+    ret = PyList_New(0);
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+	GtkWidget *widget = tmp->data;
+	PyObject *item = pygobject_new((GObject *)widget);
+
+	PyList_Append(ret, item);
+	Py_DECREF(item);
+    }
+    g_list_free(list);
+    return ret;
 }
 %%
 ignore gtk_dialog_new
