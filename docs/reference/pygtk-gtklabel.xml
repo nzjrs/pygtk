@@ -157,6 +157,39 @@ linkend="method-gtklabel--get-layout">get_layout</link></methodname>
 linkend="method-gtklabel--get-layout-offsets">get_layout_offsets</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--set-ellipsize">set_ellipsize</link></methodname>
+	<methodparam><parameter
+		       role="keyword">mode</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--get-ellipsize">get_ellipsize</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--set-width-chars">set_width_chars</link></methodname>
+	<methodparam><parameter
+		       role="keyword">n_chars</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--get-width-chars">get_width_chars</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--set-single-line-mode">set_single_line_mode</link></methodname>
+	<methodparam><parameter
+		       role="keyword">single_line_mode</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--get-single-line-mode">get_single_line_mode</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -185,12 +218,6 @@ linkend="method-gtklabel--get-layout-offsets">get_layout_offsets</link></methodn
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"label"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The text of the label</entry>
-	    </row>
-
-	    <row valign="top">
 	      <entry>"attributes"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>A list of Pango style attributes to apply to the text
@@ -198,18 +225,30 @@ of the label.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"use-markup"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the text of the label
-includes XML markup.</entry>
+	      <entry>"cursor-position"</entry>
+	      <entry>Read</entry>
+	      <entry>The current position of the insertion cursor in
+chars. Allowed values: >= 0. Default value: 0</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"use-underline"</entry>
+	      <entry>"ellipsize"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, an underscore in the text
-indicates the next character should be used for the mnemonic accelerator
-key</entry>
+
+	      <entry>The preferred place to ellipsize the string, if the
+label does not have enough room to display the entire string, specified as
+one of the <link linkend="pango-ellipsize-mode-constants">Pango Ellipsize
+Mode Constants</link>. Note that setting this property to a value other than
+<literal>pango.ELLIPSIZE_NONE</literal> has the side-effect that the label
+requests only enough space to display the ellipsis "...". In particular,
+this means that ellipsizing labels don't work well in notebook tabs, unless
+the tab's "tab-expand" property is set to <literal>TRUE</literal>. Other
+means to set a label's width are with the <link
+linkend="method-gtkwidget--set-size-request"><methodname>gtk.Widget.set_size_request</methodname>()</link>
+and <link
+linkend="method-gtklabel--set-width-chars"><methodname>set_width_chars</methodname>()</link>
+methods. Default value: <literal>pango.ELLIPSIZE_NONE</literal>. Available
+in GTK+ 2.6 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -220,34 +259,21 @@ relative to each other. The possible values are:
 <literal>gtk.JUSTIFY_LEFT</literal>, <literal>gtk.JUSTIFY_RIGHT</literal>,
 <literal>gtk.JUSTIFY_CENTER</literal>, <literal>gtk.JUSTIFY_FILL</literal>.
 This does NOT affect the alignment of the label within its
-allocation.</entry>
+allocation. Default value: <literal>gtk.JUSTIFY_LEFT</literal></entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"pattern"</entry>
-	      <entry>Write</entry>
-	      <entry>A string with _ characters in positions used to
-identify to characters in the text to underline.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"wrap"</entry>
+	      <entry>"label"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, wrap lines if the text
-becomes too wide.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"selectable"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the label text can be
-selected with the mouse.</entry>
+	      <entry>The text of the label. Default value:
+<literal>None</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"mnemonic-keyval"</entry>
 	      <entry>Read</entry>
-	      <entry>The mnemonic accelerator key for this label.</entry>
+	      <entry>The mnemonic accelerator key for this label. Default
+value: 16777215</entry>
 	    </row>
 
 	    <row valign="top">
@@ -258,17 +284,70 @@ key is pressed.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"cursor-position"</entry>
-	      <entry>Read</entry>
-	      <entry>The current position of the insertion cursor in
-chars.</entry>
+	      <entry>"pattern"</entry>
+	      <entry>Write</entry>
+	      <entry>A string with _ characters in positions used to
+identify to characters in the text to underline. Default value:
+<literal>None</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"selectable"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the label text can be
+selected with the mouse. Default value: <literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"selection-bound"</entry>
 	      <entry>Read</entry>
 	      <entry>The position of the opposite end of the selection from
-the cursor in chars.</entry>
+the cursor in chars. Allowed values: >= 0. Default value: 0.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"single-line-mode"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>TRUE</literal> the label is in single line
+mode. In single line mode, the height of the label does not depend on the
+actual text, it is always set to ascent + descent of the font. This can be
+an advantage in situations where resizing the label because of text changes
+would be distracting, e.g. in a statusbar. Default value:
+<literal>FALSE</literal>. Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"use-markup"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the text of the label
+includes XML markup. Default value: <literal>FALSE</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"use-underline"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, an underscore in the text
+indicates the next character should be used for the mnemonic accelerator
+key. Default value: <literal>FALSE</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"width-chars"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The desired width of the label, in characters. If this
+property is set to -1, the width will be calculated automatically, otherwise
+the label will request either 3 characters or the property value, whichever
+is greater. Allowed values: >= -1. Default value: -1. Available in GTK+
+2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"wrap"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, wrap lines if the text
+becomes too wide. Default value: <literal>FALSE</literal></entry>
 	    </row>
 
 	  </tbody>
@@ -360,30 +439,127 @@ can be used to provide event handling capabilities to a <link
 linkend="class-gtklabel"><classname>gtk.Label</classname></link> widget if
 needed.</para>
 
-    <para>Label text may be specified with embedded underscore characters
+    <refsect2>
+      <title>Mnemonics</title>
+
+      <para>Label text may be specified with embedded underscore characters
 that are used to indicate that the following character should be underlined
 and used as the mnemonic accelerator (if it's the first underlined
 character). The <link
-linkend="method-gtklabel--set-text-with-mnemonic"><methodname>set_text_with_mnemonic</methodname>()</link> 
+linkend="method-gtklabel--set-text-with-mnemonic"><methodname>set_text_with_mnemonic</methodname>()</link>
 method is used to parse the label text for a mnemonic characters. Mnemonics
 automatically activate any activatable widget the label is inside, such as a
 <link linkend="class-gtkbutton"><classname>gtk.Button</classname></link>; if
 the label is not inside an activatable widget, you have to tell the label
 about the target using the <link
-linkend="method-gtklabel--set-mnemonic-widget"><methodname>set_mnemonic_widget</methodname>()</link> 
-method.</para>
+linkend="method-gtklabel--set-mnemonic-widget"><methodname>set_mnemonic_widget</methodname>()</link>
+method. Here's a simple example where the label is inside a button:</para>
+
+      <programlisting>
+  # Pressing Alt+H will activate this button
+  button = gtk.Button()
+  label = gtk.Label("_Hello")
+  label.set_use_underline(True)
+  button.add(label)
+</programlisting>
+
+      <para>As a convenience you can create a button with a mnemonic label
+as follows:</para>
+
+      <programlisting>
+  # Pressing Alt+H will activate this button
+  button = gtk.Button(label="_Hello", use_underline=True)
+</programlisting>
+
+      <para>To create a mnemonic for a widget alongside the label, such as a
+<link linkend="class-gtkentry"><classname>gtk.Entry</classname></link>, you
+have to point the label at the entry with the <link
+linkend="method-gtklabel--set-mnemonic-widget"><methodname>set_mnemonic_widget</methodname>()</link>
+method:</para>
+
+      <programlisting>
+  # Pressing Alt+H will focus the entry
+  entry = gtk.Entry()
+  label = gtk.Label("_Hello")
+  label.set_use_underline(True)
+  label.set_mnemonic_widget(entry)
+</programlisting>
+
+    </refsect2>
+
+    <refsect2>
+      <title>Markup (styled text)</title>
 
     <para>To make it easy to format text in a label (changing colors, fonts,
-etc.), the label text can be provided in the Pango markup format which is a
-simple XML markup format. The <link
+etc.), the label text can be provided in the <link
+linkend="pango-markup-language">Pango markup format</link> which is a simple
+XML markup format. The <link
 linkend="method-gtklabel--set-markup"><methodname>gtk.Label.set_markup</methodname>()</link>
 method sets the label using text in valid markup format (e.g. '&lt;', '&gt;'
 and '&amp;' characters must be replaced by &amp;lt;, &amp;gt; and &amp;amp;
-respectively.</para>
+respectively. For example:</para>
 
-    <para>The label text layout can be modified using methods that affect
-line wrapping and justification. A label can be made selectable so the user
-can copy the text to a clipboard.</para>
+      <programlisting>
+  label = gtk.Label()
+  label.set_markup("&lt;small&gt;Small text&lt;/small&gt;");
+</programlisting>
+
+      <para>The markup passed to the <link
+linkend="method-gtklabel--set-markup"><methodname>set_markup</methodname>()</link>
+method must be valid. For example, the literal &lt;&gt;&amp; characters must
+be escaped as &amp;lt;, &amp;gt;, and &amp;amp;. If you pass text obtained
+from the user, file, or a network to the <link
+linkend="method-gtklabel--set-markup"><methodname>set_markup</methodname>()</link>
+method, you'll want to escape it with the Python Library
+<function>xml.sax.saxutils.escape</function>() function.</para>
+
+      <para>Markup strings are just a convenient way to set the <link
+linkend="class-pangoattrlist"><classname>pango.AttrList</classname></link>
+on a label. Using the <link
+linkend="method-gtklabel--set-attributes"><methodname>set_attributes</methodname>()</link>
+method may be a simpler way to set attributes in some cases. Be careful
+though; <link
+linkend="class-pangoattrlist"><classname>pango.AttrList</classname></link>
+tends to cause internationalization problems, unless you're applying
+attributes to the entire string because specifying the start_index and
+end_index for a <link
+linkend="class-pangoattribute"><classname>pango.Attribute</classname></link>
+requires knowledge of the exact string being displayed, so translations will
+cause problems.</para>
+
+    </refsect2>
+
+    <refsect2>
+      <title>Selectable labels</title>
+
+      <para>Labels can be made selectable with the <link
+linkend="method-gtklabel--set-selectable"><methodname>set_selectable</methodname>()</link>
+method. Selectable labels allow the user to copy the label contents to the
+clipboard. Only labels that contain useful-to-copy information such as error
+messages should be made selectable.</para>
+
+    </refsect2>
+
+    <refsect2>
+      <title>Text layout</title>
+
+      <para>A label can contain any number of paragraphs, but will have
+performance problems if it contains more than a small number. Paragraphs are
+separated by newlines or other paragraph separators understood by
+Pango.</para>
+
+      <para>Labels can automatically wrap text if you call the <link
+linkend="method-gtklabel--set-line-wrap"><methodname>set_line_wrap</methodname>()</link>
+method.</para>
+
+      <para>The <link
+linkend="method-gtklabel--set-justify"><methodname>set_justify</methodname>()</link>
+method sets how the lines in a label align with one another. If you want to
+set how the label as a whole aligns in its available space, see the <link
+linkend="method-gtkmisc--set-alignment"><methodname>gtk.Misc.set_alignment</methodname>()</link>
+method.</para>
+
+    </refsect2>
 
   </refsect1>
 
@@ -1075,6 +1251,144 @@ linkend="class-pangolayout"><classname>pango.Layout</classname></link>
 functions you need to convert to and from pixels using
 <function>pango.PIXELS()</function> or
 <literal>pango.SCALE</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--set-ellipsize">
+      <title>gtk.Label.set_ellipsize</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_ellipsize</methodname>
+	  <methodparam><parameter
+			 role="keyword">mode</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">mode</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="pango-ellipsize-mode-constants">Pango Ellipsize Mode</link>
+to use</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set_ellipsize</methodname>() method sets the
+"ellipsize" property to the value of
+<parameter>mode</parameter>. <parameter>mode</parameter> should be one of
+the <link linkend="pango-ellipsize-mode-constants">Pango Ellipsize Mode
+Constants</link>. The "ellipsize" property specifies if and where an ellipse
+should be used if there is not enough room for the label text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--get-ellipsize">
+      <title>gtk.Label.get_ellipsize</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_ellipsize</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the current ellipsize mode</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_ellipsize</methodname>() method returns the
+value of the "ellipsize" property which contains one of the <link
+linkend="pango-ellipsize-mode-constants">Pango Ellipsize Mode
+Constants</link>. The "ellipsize" property specifies if and where an ellipse
+should be used if there is not enough room for the label text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--set-width-chars">
+      <title>gtk.Label.set_width_chars</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_width_chars</methodname>
+	  <methodparam><parameter
+			 role="keyword">n_chars</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">n_chars</parameter>&nbsp;:</term>
+	  <listitem><simpara> the new desired width, in
+characters.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set_width_chars</methodname>() method sets the
+"width-chars" property to the value of <parameter>n_chars</parameter>. The
+"width-chars" property specifies the desired width of the label in
+characters.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--get-width-chars">
+      <title>gtk.Label.get_width_chars</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_width_chars</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the desired width of the label in
+characters.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_width_chars</methodname>() method returns
+the value of the "width-chars" property that specifies the desired width of
+the label in characters.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--set-single-line-mode">
+      <title>gtk.Label.set_single_line_mode</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_single_line_mode</methodname>
+	  <methodparam><parameter
+			 role="keyword">single_line_mode</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">single_line_mode</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> the label is in
+single line mode.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname></methodname>() method sets the
+"single-line-mode" property to the value of
+<parameter>single_line_mode</parameter>. If
+<parameter>single_line_mode</parameter> is <literal>TRUE</literal> the label
+is in single line mode where the height of the label does not depend on the
+actual text, it is always set to ascent + descent of the font.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--get-single-line-mode">
+      <title>gtk.Label.get_single_line_mode</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_single_line_mode</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_single_line_mode</methodname>() method
+returns the value of the "single-line-mode" property. See the <link
+linkend="method-gtklabel--set-single-line-mode"><methodname>set_single_line_mode</methodname>()</link>
+method for more information.</para>
 
     </refsect2>
 
