@@ -67,7 +67,7 @@
  */
 
 
-#ifdef WITH_THREAD
+#ifdef ENABLE_PYGTK_THREADING
 static GStaticPrivate pythreadstate_key = G_STATIC_PRIVATE_INIT;
 static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
 
@@ -100,7 +100,7 @@ static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
    }
 
 
-#else /* !WITH_THREADS */
+#else /* !ENABLE_PYGTK_THREADING */
 #  define PyGTK_BLOCK_THREADS
 #  define PyGTK_UNBLOCK_THREADS
 #endif

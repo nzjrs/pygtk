@@ -1,5 +1,18 @@
 2001-02-15  James Henstridge  <james@daa.com.au>
 
+	* acconfig.h: add ENABLE_PYGTK_THREADING constant here.
+
+	* configure.in (enable_thread): add support for a --disable-thread
+	configure option, so you can disable pygtk threading when
+	compiling with a threaded pygtk.
+
+	* gtkmodule.c: change define from WITH_THREAD to
+	ENABLE_PYGTK_THREADING.
+
+	* examples/glade/glade.py: replace with the glade example from the
+	extension-class-branch, which uses libglade -- don't want examples
+	of using the deprecated pyglade module.
+
 	* gtkmodule.c (GtkStyle_...): guard against NULL values in some
 	parts.
 	(PyGdkWindow_GetAttr): make some attributes inaccessible for

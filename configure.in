@@ -9,7 +9,19 @@ AC_PROG_LIBTOOL
 AM_PATH_PYTHON(module)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
-AM_CHECK_PYMOD(thread,,extra_mods=gthread,extra_mods=)
+AC_ARG_ENABLE(thread,
+[  --disable-thread           Disable pygtk threading support],,
+enable_thread=yes)
+AM_CHECK_PYMOD(thread,,,enable_thread=no)
+AC_MSG_CHECKING(whether to enable threading in pygtk)
+if test "x$enable_thread" != xno; then
+  extra_mods=gthread
+  AC_DEFINE(ENABLE_PYGTK_THREADING)
+  AC_MSG_RESULT(yes)
+else
+  extra_mods=
+  AC_MSG_RESULT(no)
+fi
 
 AM_PATH_GTK(1.2.6,,,$extra_mods)
 AM_PATH_GDK_IMLIB(1.8, build_imlib=true, build_imlib=false)
