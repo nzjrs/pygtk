@@ -56,6 +56,14 @@ linkend="method-gdkevent--get-root-coords">get_root_coords</link></methodname>
 linkend="method-gdkevent--get-axis">get_axis</link></methodname>
 	<methodparam><parameter>axis_use</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkevent--set-screen">set_screen</link></methodname>
+	<methodparam><parameter role="keyword">screen</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkevent--get-screen">get_screen</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -2002,6 +2010,61 @@ value.</simpara>
 
       <para>If an axis with the specified axis use is not found, this method
 returns <literal>None</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkevent--set-screen">
+      <title>gtk.gdk.Event.set_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_screen</methodname>
+	  <methodparam><parameter role="keyword">screen</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>set_screen</methodname>() method sets the <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link> to
+the value of <parameter>screen</parameter>. The event must have been
+allocated by <literal>PyGTK</literal>, for instance, by the <link
+linkend="method-gdkevent--copy"><methodname>gtk.gdk.Event.copy()</methodname></link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkevent--get-screen">
+      <title>gtk.gdk.Event.get_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_screen</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the screen for the event</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_screen</methodname>() method returns the
+<link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+for the event. The screen is typically the screen for the event window, but
+for events such as mouse events, it is the screen where the the pointer was
+when the event occurs - that is, the screen that has the root window for the
+event.</para>
 
     </refsect2>
 
