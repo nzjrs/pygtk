@@ -1,13 +1,14 @@
-import ltihooks
+import pygtk
+pygtk.require('2.0')
+
 import gobject
-print gobject
 import pango
 import gtk
 from gtk import gdk
 
 TEXT = 'A GtkWidget implemented in PyGTK'
 
-class Widget(gtk.Widget):
+class PyGtkWidget(gtk.Widget):
     __gsignals__ = { 'realize': 'override',
                      'expose-event' : 'override',
                      'size-allocate': 'override'}   
@@ -24,8 +25,8 @@ class Widget(gtk.Widget):
         self.window = gdk.Window(self.get_parent_window(),
                                  width=self.allocation.width,
                                  height=self.allocation.height,
-                                 window_type=gtk.gdk.WINDOW_CHILD,
-                                 wclass=gtk.gdk.INPUT_OUTPUT,
+                                 window_type=gdk.WINDOW_CHILD,
+                                 wclass=gdk.INPUT_OUTPUT,
                                  event_mask=self.get_events() | gdk.EXPOSURE_MASK)
         self.draw_gc = gdk.GC(self.window,
                               line_width=5,
@@ -69,13 +70,13 @@ class Widget(gtk.Widget):
         event.width = allocation.width
         event.height = allocation.height
         self.event(event)
-
 gobject.type_register(Widget)
 
 win = gtk.Window()
 win.set_title(TEXT)
 win.connect('delete-event', gtk.main_quit)
-w = Widget()
+
+w = PyGtkWidget()
 w.set_size_request(400, 200)
 win.add(w)
 
