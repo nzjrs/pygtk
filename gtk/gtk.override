@@ -3613,7 +3613,7 @@ _wrap_gtk_ctree_insert_node(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_TypeError, "parent must be a CTreeNode or None");
 	return NULL;
     }
-    if (pyg_pointer_check(py_parent, GTK_TYPE_CTREE_NODE))
+    if (pyg_pointer_check(py_sibling, GTK_TYPE_CTREE_NODE))
 	sibling = pyg_pointer_get(py_sibling, GtkCTreeNode);
     else if ((PyObject *)py_sibling != Py_None) {
 	PyErr_SetString(PyExc_TypeError,"sibling must be a CTreeNode or None");
