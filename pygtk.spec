@@ -60,16 +60,21 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
-%{_prefix}/lib/python?.?/site-packages/gtk.py*
-%{_prefix}/lib/python?.?/site-packages/GtkExtra.py*
-%{_prefix}/lib/python?.?/site-packages/GTK.py*
-%{_prefix}/lib/python?.?/site-packages/GDK.py*
-%{_prefix}/lib/python?.?/site-packages/GdkImlib.py*
-%{_prefix}/lib/python?.?/site-packages/pyglade/*.py*
+%defattr(644, root, root, 755)
+%{_prefix}/lib/python?.?/site-packages/pygtk.pth
+%{_prefix}/lib/python?.?/site-packages/pygtk.py*
+%dir %{_prefix}/lib/python?.?/site-packages/gtk-1.2
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/gtk.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/GtkExtra.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/GTK.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/GDK.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/GdkImlib.py*
+%dir %{_prefix}/lib/python?.?/site-packages/gtk-1.2/pyglade
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/pyglade/*.py*
 
-%{_prefix}/lib/python?.?/site-packages/_gtkmodule.so
-%{_prefix}/lib/python?.?/site-packages/_gdkimlibmodule.so
-%{_prefix}/lib/python?.?/site-packages/gdkpixbufmodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/_gtkmodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/_gdkimlibmodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/gdkpixbufmodule.so
 
 %{_prefix}/include/pygtk
 
@@ -77,14 +82,17 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %doc examples
 
 %files glarea
-%{_prefix}/lib/python?.?/site-packages/gtkgl.py*
-%{_prefix}/lib/python?.?/site-packages/_gtkglmodule.so
+%defattr(644, root, root, 755)
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/gtkgl.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/_gtkglmodule.so
 
 %files libglade
-%{_prefix}/lib/python?.?/site-packages/libglade.py*
-%{_prefix}/lib/python?.?/site-packages/_libglademodule.so
+%defattr(644, root, root, 755)
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/libglade.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-1.2/_libglademodule.so
 
 %files devel
+%defattr(644, root, root, 755)
 %{_prefix}/bin/pygtk-codegen-1.2
 %dir %{_prefix}/include/pygtk
 %{_prefix}/include/pygtk/*.h

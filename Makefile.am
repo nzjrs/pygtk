@@ -1,66 +1,71 @@
-AUTOMAKE_OPTIONS = 1.5
+AUTOMAKE_OPTIONS = 1.6
 
 SUBDIRS = generate pyglade
 
 INCLUDES= $(PYTHON_INCLUDES) $(GTK_CFLAGS) $(GDK_IMLIB_CFLAGS) \
-	$(GTKGL_CFLAGS) $(LIBGLADE_CFLAGS) $(GDK_PIXBUF_CFLAGS)
+  $(GTKGL_CFLAGS) $(LIBGLADE_CFLAGS) $(GDK_PIXBUF_CFLAGS)
+
+# this file is common to all pygtk versions.
+python_PYTHON = pygtk.py
+
+# install pth file.
+install-data-local:
+	$(mkinstalldirs) $(DESTDIR)$(pythondir)
+	echo "gtk-1.2" > $(DESTDIR)$(pythondir)/pygtk.pth
+install-exec-local:
+	$(mkinstalldirs) $(DESTDIR)$(pyexecdir)
+	echo "gtk-1.2" > $(DESTDIR)$(pyexecdir)/pygtk.pth
+uninstall-local:
+	rm -f $(DESTDIR)$(pythondir)/pygtk.pth $(DESTDIR)$(pyexecdir)/pygtk.pth
+
+pkgpythondir = $(pythondir)/gtk-1.2
+pkgpyexecdir = $(pyexecdir)/gtk-1.2
+
+noinst_PYTHON = mkgtk.py description.py
+
+pkgpyexec_LTLIBRARIES = _gtkmodule.la $(gdkimlibmodule) $(gtkglmodule) \
+  $(libglademodule) $(gdkpixbufmodule)
+pkgpython_PYTHON = gtk.py GTK.py GDK.py GtkExtra.py $(gdkimlibpy) \
+  $(gtkglpy) $(libgladepy)
 
 if BUILD_IMLIB
-imlib_libs = _gdkimlibmodule.la
-imlib_mods = GdkImlib.py
-else
-imlib_libs =
-imlib_mods =
+gdkimlibmodule = _gdkimlibmodule.la
+gdkimlibpy = GdkImlib.py
 endif
 if BUILD_GTKGL
-gtkgl_libs = _gtkglmodule.la
-gtkgl_mods = gtkgl.py
-else
-gtkgl_libs =
-gtkgl_mods =
+gtkglmodule = _gtkglmodule.la
+gtkglpy = gtkgl.py
 endif
 if BUILD_LIBGLADE
-libglade_libs = _libglademodule.la
-libglade_mods = libglade.py
-else
-libglade_libs =
-libglade_mods =
+libglademodule = _libglademodule.la
+libgladepy = libglade.py
 endif
 if BUILD_PIXBUF
-pixbuf_libs = gdkpixbufmodule.la
-else
-pixbuf_libs =
+gdkpixbufmodule = gdkpixbufmodule.la
 endif
 
-pyexec_LTLIBRARIES = _gtkmodule.la $(imlib_libs) $(gtkgl_libs) \
-  $(libglade_libs) $(pixbuf_libs)
-
-_gtkmodule_la_LDFLAGS = -module -avoid-version
+_gtkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtk
 _gtkmodule_la_SOURCES = gtkmodule.c
 _gtkmodule_la_LIBADD = $(GTK_LIBS)
 
 
-_gdkimlibmodule_la_LDFLAGS = -module -avoid-version
+_gdkimlibmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gdkimlib
 _gdkimlibmodule_la_SOURCES = gdkimlibmodule.c
 _gdkimlibmodule_la_LIBADD = $(GDK_IMLIB_LIBS)
 
-_gtkglmodule_la_LDFLAGS = -module -avoid-version
+_gtkglmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtkgl
 _gtkglmodule_la_SOURCES = gtkglmodule.c
 _gtkglmodule_la_LIBADD = $(GTKGL_LIBS) $(GTK_LIBS)
 
-_libglademodule_la_LDFLAGS = -module -avoid-version
+_libglademodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_libglade
 _libglademodule_la_SOURCES = libglademodule.c
 _libglademodule_la_LIBADD = $(LIBGLADE_LIBS)
 
-gdkpixbufmodule_la_LDFLAGS = -module -avoid-version
+gdkpixbufmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initgdkpixbuf
 gdkpixbufmodule_la_SOURCES = gdkpixbufmodule.c
 gdkpixbufmodule_la_LIBADD = $(GDK_PIXBUF_LIBS)
 
 pkginclude_HEADERS = pygtk.h pygdkimlib.h pygdkpixbuf.h
-
-python_PYTHON = gtk.py GTK.py GDK.py GtkExtra.py \
-	$(imlib_mods) $(gtkgl_mods) $(libglade_mods)
-noinst_PYTHON = mkgtk.py description.py
 
 # stuff to automatically generate gtkmodule_*.c
 
