@@ -1,17 +1,19 @@
 # require automake-1.7
 AUTOMAKE_OPTIONS = 1.7
 
-SUBDIRS = codegen gobject gtk docs examples tests 
+SUBDIRS = codegen gobject . gtk docs examples tests 
+
+PLATFORM_VERSION = 2.0
 
 CLEANFILES =
 EXTRA_DIST = $(defs_DATA)
 pyexec_LTLIBRARIES =
 
-defsdir = $(pkgdatadir)/2.0/defs
+defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = pygtk-2.0.pc
+pkgconfig_DATA = pygtk-$(PLATFORM_VERSION).pc
 
 INCLUDES = \
 	$(PYTHON_INCLUDES) \
@@ -35,10 +37,10 @@ python_PYTHON = pygtk.py
 # install pth file.
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(pythondir)
-	echo "gtk-2.0" > $(DESTDIR)$(pythondir)/pygtk.pth
+	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pythondir)/pygtk.pth
 install-exec-local:
 	$(mkinstalldirs) $(DESTDIR)$(pyexecdir)
-	echo "gtk-2.0" > $(DESTDIR)$(pyexecdir)/pygtk.pth
+	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pyexecdir)/pygtk.pth
 uninstall-local:
 	rm -f $(DESTDIR)$(pythondir)/pygtk.pth $(DESTDIR)$(pyexecdir)/pygtk.pth
 
@@ -89,7 +91,7 @@ noinst_PYTHON = ltihooks.py
 EXTRA_DIST += \
   pygtk.spec \
   pygtk.spec.in \
-  pygtk-2.0.pc.in \
+  pygtk-$(PLATFORM_VERSION).pc.in \
   MAPPING \
   THREADS \
   config.h.win32 \

@@ -1,3 +1,5 @@
+PLATFORM_VERSION = 2.0
+
 pkgpythondir = $(pythondir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
 
@@ -6,14 +8,14 @@ pygtk_PYTHON = __init__.py keysyms.py compat.py
 
 pygtkexecdir = $(pkgpyexecdir)/gtk
 
-defsdir = $(pkgdatadir)/2.0/defs
+defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 EXTRA_DIST = $(defs_DATA)
 CLEANFILES =
 
 EXTRA_DIST += makefile.msc gtk-fake-win32.c
 
-pkgincludedir = $(includedir)/pygtk-2.0/pygtk
+pkgincludedir = $(includedir)/pygtk-$(PLATFORM_VERSION)/pygtk
 pkginclude_HEADERS = pygtk.h
 
 INCLUDES = -I$(top_srcdir)/gobject $(PYTHON_INCLUDES) 
