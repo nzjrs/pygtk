@@ -50,6 +50,27 @@ extern PyTypeObject PyGdkDrawable_Type;
 extern PyTypeObject PyGdkDisplay_Type;
 extern PyTypeObject PyGdkScreen_Type;
 extern PyTypeObject PyGdkRectangle_Type;
+
+
+static gboolean
+pygtk_util_pyobject_as_double(PyObject *obj, gdouble *value, const char *argument_name)
+{
+    PyObject *number;
+
+    if (!PyNumber_Check(obj)) {
+        PyErr_Format(PyExc_TypeError, "'%s' must be a number", argument_name);
+        return FALSE;
+    }
+    number = PyNumber_Float(obj);
+    if (!number) {
+        PyErr_Format(PyExc_TypeError, "Could not convert '%s' to a float", argument_name);
+        return FALSE;
+    }
+    *value = PyFloat_AsDouble(number);
+    Py_DECREF(number);
+    return TRUE;
+}
+
 %%
 include 
   gtkclist.override
@@ -3102,11 +3123,8 @@ _wrap_gtk_adjustment__set_value(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!PyFloat_Check(value)) {
-        PyErr_SetString(PyExc_TypeError, "value must be a double");
+    if (!pygtk_util_pyobject_as_double(value, &adjustment->value, "value"))
         return -1;
-    }
-    adjustment->value = PyFloat_AsDouble(value);
     gtk_adjustment_value_changed(adjustment);
     return 0;
 }
@@ -3118,11 +3136,8 @@ _wrap_gtk_adjustment__set_lower(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!PyFloat_Check(value)) {
-        PyErr_SetString(PyExc_TypeError, "lower must be a double");
+    if (!pygtk_util_pyobject_as_double(value, &adjustment->lower, "lower"))
         return -1;
-    }
-    adjustment->lower = PyFloat_AsDouble(value);
     gtk_adjustment_changed(adjustment);
     return 0;
 }
@@ -3134,11 +3149,8 @@ _wrap_gtk_adjustment__set_upper(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!PyFloat_Check(value)) {
-        PyErr_SetString(PyExc_TypeError, "upper must be a double");
+    if (!pygtk_util_pyobject_as_double(value, &adjustment->upper, "upper"))
         return -1;
-    }
-    adjustment->upper = PyFloat_AsDouble(value);
     gtk_adjustment_changed(adjustment);
     return 0;
 }
@@ -3150,11 +3162,9 @@ _wrap_gtk_adjustment__set_step_increment(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!PyFloat_Check(value)) {
-        PyErr_SetString(PyExc_TypeError, "step_increment must be a double");
+    if (!pygtk_util_pyobject_as_double(value, &adjustment->step_increment,
+                                       "step_increment"))
         return -1;
-    }
-    adjustment->step_increment = PyFloat_AsDouble(value);
     gtk_adjustment_changed(adjustment);
     return 0;
 }
@@ -3166,11 +3176,9 @@ _wrap_gtk_adjustment__set_page_increment(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!PyFloat_Check(value)) {
-        PyErr_SetString(PyExc_TypeError, "page_increment must be a double");
+    if (!pygtk_util_pyobject_as_double(value, &adjustment->page_increment,
+                                       "page_increment"))
         return -1;
-    }
-    adjustment->page_increment = PyFloat_AsDouble(value);
     gtk_adjustment_changed(adjustment);
     return 0;
 }
@@ -3182,11 +3190,8 @@ _wrap_gtk_adjustment__set_page_size(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!PyFloat_Check(value)) {
-        PyErr_SetString(PyExc_TypeError, "page_increment must be a double");
+    if (!pygtk_util_pyobject_as_double(value, &adjustment->page_size, "page_size"))
         return -1;
-    }
-    adjustment->page_size = PyFloat_AsDouble(value);
     gtk_adjustment_changed(adjustment);
     return 0;
 }

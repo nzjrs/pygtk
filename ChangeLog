@@ -1,5 +1,15 @@
 2004-06-27  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
 
+	* gtk/gtk.override (_wrap_gtk_adjustment__set_value): Use
+	pygtk_util_pyobject_as_double to convert the value.
+	(_wrap_gtk_adjustment__set_lower): idem
+	(_wrap_gtk_adjustment__set_upper): idem
+	(_wrap_gtk_adjustment__set_step_increment): idem
+	(_wrap_gtk_adjustment__set_page_increment): idem
+	(_wrap_gtk_adjustment__set_page_size): idem
+	(pygtk_util_pyobject_as_double): New utility function to convert
+	any numeric object to C double.
+
 	* gtk/gdk.override (_wrap_gdk_window_set_user_data): Raise
 	TypeError instead of value error when user data is not of
 	gtk.Widget type.
