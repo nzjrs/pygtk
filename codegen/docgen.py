@@ -43,12 +43,12 @@ class DocWriter:
 	ancestry = [ (obj_def.c_name, obj_def.implements) ]
         try:
             parent = obj_def.parent
-            while parent != (None, None):
-                if parent[1] + parent[0] == 'GObject':
+            while parent != None:
+                if parent == 'GObject':
                     ancestry.append(('GObject', []))
-                    parent = (None, None)
+                    parent = None
                 else:
-                    parent_def = self.parser.find_object(parent[1] + parent[0])
+                    parent_def = self.parser.find_object(parent)
                     ancestry.append((parent_def.c_name, parent_def.implements))
                     parent = parent_def.parent
         except ValueError:
@@ -97,7 +97,7 @@ class DocWriter:
                string.join(map(lambda x: x[1], func_def.params), ', ') + \
                ')'
     def create_method_prototype(self, meth_def):
-        return meth_def.of_object[1] + meth_def.of_object[0] + '.' + \
+        return meth_def.of_object + '.' + \
                meth_def.name + '(' + \
                string.join(map(lambda x: x[1], meth_def.params), ', ') + \
                ')'
@@ -176,8 +176,7 @@ class DocbookDocWriter(DocWriter):
     def make_class_ref(self, obj_name):
         return 'class-' + string.translate(obj_name, self.__transtable)
     def make_method_ref(self, meth_def):
-        return 'method-' + string.translate(meth_def.of_object[1] +
-                                            meth_def.of_object[0],
+        return 'method-' + string.translate(meth_def.of_object,
                                             self.__transtable) + \
             '--' + string.translate(meth_def.name, self.__transtable)
 
@@ -194,9 +193,8 @@ class DocbookDocWriter(DocWriter):
                     return '<function>' + info.name + '()</function>'
             if info.__class__ == defsparser.MethodDef:
                 return '<link linkend="' + self.make_method_ref(info) + \
-                       '"><function>' + info.of_object[1] + \
-                       info.of_object[0] + '.' + info.name + \
-                       '()</function></link>'
+                       '"><function>' + info.of_object + '.' + \
+                       info.name + '()</function></link>'
         # fall through through
         return '<function>' + match.group(1) + '()</function>'
     __parameter_pat = re.compile(r'\@(\w+)')
@@ -218,9 +216,8 @@ class DocbookDocWriter(DocWriter):
                     return '<function>' + info.name + '</function>'
             if info.__class__ == defsparser.MethodDef:
                 return '<link linkend="' + self.make_method_ref(info) + \
-                       '"><function>' + info.of_object[1] + \
-                       info.of_object[0] + '.' + info.name + \
-                       '</function></link>'
+                       '"><function>' + info.of_object + '.' + \
+                       info.name + '</function></link>'
             if info.__class__ == defsparser.ObjectDef:
                 return '<link linkend="' + self.make_class_ref(info.c_name) + \
                        '"><type>' + info.c_name + '</type></link>'
@@ -360,8 +357,8 @@ class DocbookDocWriter(DocWriter):
 
     def write_method(self, meth_def, func_doc, fp):
         fp.write('  <sect3 id="' + self.make_method_ref(meth_def) + '">\n')
-        fp.write('    <title>' + meth_def.of_object[1] +
-                 meth_def.of_object[0] + '.' + meth_def.name + '</title>\n\n')
+        fp.write('    <title>' + meth_def.of_object + '.' +
+                 meth_def.name + '</title>\n\n')
         prototype = self.create_method_prototype(meth_def)
         fp.write(prototype + '\n')
         varlist_started = 0
@@ -428,9 +425,15 @@ class DocbookDocWriter(DocWriter):
         fp.write('</article>\n')
 
 if __name__ == '__main__':
-    opts, args = getopt.getopt(sys.argv[1:], "d:s:o:",
-			       ["defs-file=", "override=", "source-dir=",
-                                "output-prefix="])
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "d:s:o:",
+                                   ["defs-file=", "override=", "source-dir=",
+                                    "output-prefix="])
+    except getopt.error, e:
+        sys.stderr.write('docgen.py: %s\n' % e)
+	sys.stderr.write(
+	    'usage: docgen.py -d file.defs [-s /src/dir] [-o output-prefix]\n')
+        sys.exit(1)
     defs_file = None
     overrides_file = None
     source_dirs = []
@@ -446,7 +449,8 @@ if __name__ == '__main__':
 	    output_prefix = arg
     if len(args) != 0 or not defs_file:
 	sys.stderr.write(
-	    'usage: docgen.py -d file.defs [-s /src/dir] [-o output-prefix]')
+	    'usage: docgen.py -d file.defs [-s /src/dir] [-o output-prefix]\n')
+        sys.exit(1)
 
     d = DocbookDocWriter(defs_file, overrides_file, source_dirs)
     d.output_docs(output_prefix)
