@@ -64,7 +64,7 @@ class Window(gtk.Window):
             ('Close',    gtk.STOCK_CLOSE, '_Close', '<control>W', 'Close the current window', self.file_close_cb),
             ('Quit',     gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Quit application', self.file_quit_cb),
             ('HelpMenu', None, '_Help'),
-            ('About',    None, '_About', None, 'About application', 'help_about_cb'),
+            ('About',    None, '_About', None, 'About application', self.help_about_cb),
             ]
         ag.add_actions(actions)
         self.ui = gtk.UIManager()
