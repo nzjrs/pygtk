@@ -3845,3 +3845,137 @@ _wrap_gdk_event_get_state(PyGObject *self)
     gdk_event_get_state(event, &state);
     return PyInt_FromLong(state);
 }
+%%
+override gdk_keyval_convert_case kwargs
+static PyObject *
+_wrap_gdk_keyval_convert_case(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "symbol", NULL };
+    guint symbol, upper, lower;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:keyval_convert_case",
+				     kwlist, &symbol))
+	return NULL;
+
+    gdk_keyval_convert_case(symbol, &lower, &upper);
+
+    return Py_BuildValue("(ii)", lower, upper);
+}
+%%
+override gdk_keymap_get_entries_for_keyval kwargs
+static PyObject *
+_wrap_gdk_keymap_get_entries_for_keyval(PyGObject *self, PyObject *args,
+					PyObject *kwargs)
+{
+    static char *kwlist[] = { "keyval", NULL };
+    guint keyval;
+    GdkKeymapKey *keys;
+    gint n_keys;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:gtk.gdk.Keymap.get_entries_for_keyval",
+				     kwlist, &keyval))
+	return NULL;
+
+    if (gdk_keymap_get_entries_for_keyval(GDK_KEYMAP(self->obj), keyval,
+					  &keys, &n_keys)) {
+	int i;
+	PyObject * list = PyTuple_New(n_keys);
+
+	for (i = 0; i < n_keys; i++) {
+	    PyTuple_SetItem(list, i,
+			    Py_BuildValue("(iii)", keys[i].keycode,
+					  keys[i].group, keys[i].level));
+	}
+	g_free(keys);
+
+	return list;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gdk_keymap_get_entries_for_keycode kwargs
+static PyObject *
+_wrap_gdk_keymap_get_entries_for_keycode(PyGObject *self, PyObject *args,
+					 PyObject *kwargs)
+{
+    static char *kwlist[] = { "hardware_keycode", NULL };
+    guint keycode;
+    GdkKeymapKey *keys;
+    guint *keyvals;
+    gint n_keys;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:gtk.gdk.Keymap.get_entries_for_keycode",
+				     kwlist, &keycode))
+	return NULL;
+
+    if (gdk_keymap_get_entries_for_keycode(GDK_KEYMAP(self->obj), keycode,
+					  &keys, &keyvals, &n_keys)) {
+	int i;
+	PyObject * list = PyTuple_New(n_keys);
+
+	for (i = 0; i < n_keys; i++) {
+	    PyTuple_SetItem(list, i,
+			    Py_BuildValue("(iiii)", keyvals[i],
+					  keys[i].keycode,
+					  keys[i].group, keys[i].level));
+	}
+	g_free(keys);
+
+	return list;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gdk_keymap_lookup_key kwargs
+static PyObject *
+_wrap_gdk_keymap_lookup_key(PyGObject *self, PyObject *args,
+			    PyObject *kwargs)
+{
+    static char *kwlist[] = { "keycode", "group", "level", NULL };
+    GdkKeymapKey key;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iii:gtk.gdk.Keymap.lookup_key",
+				     kwlist, &key.keycode, &key.group,
+				     &key.level))
+	return NULL;
+
+    return PyInt_FromLong(gdk_keymap_lookup_key(GDK_KEYMAP(self->obj), &key));
+}
+%%
+override gdk_keymap_translate_keyboard_state kwargs
+static PyObject *
+_wrap_gdk_keymap_translate_keyboard_state(PyGObject *self, PyObject *args,
+					  PyObject *kwargs)
+{
+    static char *kwlist[] = { "keycode", "state", "group", NULL };
+    guint keycode, keyval;
+    gint group, effective_group, level;;
+    GdkModifierType state, modifiers;
+    PyObject *py_state;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iOi:gtk.gdk.Keymap.translate_keyboard_state",
+				     kwlist, &keycode, &py_state,
+				     &group))
+	return NULL;
+
+    if (pyg_flags_get_value(GDK_TYPE_MODIFIER_TYPE, py_state,
+			    (gint *)&state))
+        return NULL;
+
+    if (gdk_keymap_translate_keyboard_state(GDK_KEYMAP(self->obj), keycode,
+					    state, group, &keyval,
+					    &effective_group, &level,
+					    &modifiers))
+	return Py_BuildValue("(iiii)", keyval, effective_group, level,
+			     modifiers);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
