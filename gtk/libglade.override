@@ -228,4 +228,42 @@ _wrap_glade_textdomain(PyObject *self, PyObject *args, PyObject *kwargs)
     }
     return PyString_FromString(ret);
 }
+%%
+override glade_set_custom_widget_callbacks kwargs
+static GtkWidget * custom_widget_handler (GladeXML *xml,
+                                          gchar *func_name, gchar *name,
+                                          gchar *string1, gchar *string2,
+                                          gint int1, gint int2, gpointer user_data)
+{
+    PyObject *handler_dict = user_data;
+    PyObject *tuple;
 
+    tuple = PyMapping_GetItemString(handler_dict, (gchar *)func_name);
+    if (!tuple) {
+        PyErr_Clear();
+        tuple = PyObject_GetAttrString(handler_dict, (gchar *)func_name);
+        if (!tuple) {
+            PyErr_Clear();
+            return NULL;
+        }
+    }
+    if (PyCallable_Check(tuple)) {
+        PyObject *ret;
+        ret = PyObject_CallFunction(tuple, NULL);
+        return GTK_WIDGET (pygobject_get (ret));
+    }
+    return NULL;
+}
+static PyObject *
+_wrap_glade_set_custom_widget_callbacks(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "dict", NULL };
+    PyObject *object;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GladeXML.set_custom_widget_callbacks", kwlist,
+				     &object))
+	return NULL;
+    glade_set_custom_handler((GladeXMLCustomWidgetHandler)custom_widget_handler, object);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
