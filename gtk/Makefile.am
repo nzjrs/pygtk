@@ -56,6 +56,22 @@ CLEANFILES += libglade.c
 defs_DATA += libglade.defs
 EXTRA_DIST += libglade.override
 
+# gtkgl module
+if BUILD_GTKGL
+glmodule_la = glmodule.la
+endif
+pygtkexec_LTLIBRARIES += $(glmodule_la)
+glmodule_la_CFLAGS = $(GTKGL_CFLAGS)
+glmodule_la_LDFLAGS = -module -avoid-version \
+			 -export-symbols-regex initlibgtkgl
+glmodule_la_LIBADD = $(GTKGL_LIBS)
+glmodule_la_SOURCES = gtkglmodule.c
+libgl.c: $(COMMONDEFS) gtkgl.override
+nodist_glmodule_la_SOURCES = gtkgl.c
+CLEANFILES += gtkgl.c
+defs_DATA += gtkgl.defs
+EXTRA_DIST += gtkgl.override
+
 .defs.c:
 	(cd $(srcdir) \
 	 && $(PYTHON) ../codegen/codegen.py \
@@ -67,4 +83,3 @@ EXTRA_DIST += libglade.override
 	    --prefix py$* $*.defs) > gen-$*.c \
 	&& cp gen-$*.c $*.c \
 	&& rm -f gen-$*.c
-

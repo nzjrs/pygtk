@@ -1,29 +1,19 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
-#define NO_IMPORT_PYGTK
+#define NO_IMPORT_PYGOBJECT
+#include "pygobject.h"
 #include "pygtk.h"
 
 #include <gtkgl/gtkglarea.h>
-
-static PyExtensionClass *_PyGtkDrawingArea_Type;
-#define PyGtkDrawingArea_Type (*_PyGtkDrawingArea_Type)
+#include <gtk/gtk.h>
 
 %%
-init
-{
-    PyObject *pygtk = PyImport_ImportModule("gtk._gtk");
-    if (pygtk != NULL) {
-	PyObject *module_dict = PyModule_GetDict(pygtk);
-
-	_PyGtkDrawingArea_Type =
-	    (PyExtensionClass *)PyDict_GetItemString(module_dict,
-						     "GtkDrawingArea");
-    } else {
-	Py_FatalError("could not import gtk._gtk");
-	return;
-    }
-}
+modulename gl
+%%
+import gobject.GObject as PyGObject_Type
+import gtk.gdk.Visual as PyGdkVisual_Type
+import gtk.DrawingArea as PyGtkDrawingArea_Type
 %%
 ignore
   gtk_gl_area_get_type
@@ -48,7 +38,7 @@ ignore
 %%
 override gtk_gl_area_share_new kwargs
 static PyObject *
-_wrap_gtk_gl_area_share_new(PyGtk_Object *self, PyObject *args,
+_wrap_gtk_gl_area_share_new(PyGObject *self, PyObject *args,
 			    PyObject *kwargs)
 {
     char *kwlist[] = { "attr_list", "share", NULL };
@@ -59,10 +49,10 @@ _wrap_gtk_gl_area_share_new(PyGtk_Object *self, PyObject *args,
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|O:GtkGLArea.__init__",
 				     kwlist, &py_attr_list, &py_share))
-	return NULL;
+	return -1;
     if (!PySequence_Check(py_attr_list)) {
 	PyErr_SetString(PyExc_TypeError, "attr_list must be a sequence");
-	return NULL;
+	return -1;
     }
     len = PySequence_Length(py_attr_list);
     attr_list = g_new(gint, len+1);
@@ -73,31 +63,35 @@ _wrap_gtk_gl_area_share_new(PyGtk_Object *self, PyObject *args,
 	if (!PyInt_Check(item)) {
 	    g_free(attr_list);
 	    PyErr_SetString(PyExc_TypeError, "attr_list items must be ints");
-	    return NULL;
+	    return -1;
 	}
 	attr_list[i] = PyInt_AsLong(item);
     }
     attr_list[len] = GDK_GL_NONE; /* sentinel */
-    if (PyGtk_Check(py_share, &PyGtkGLArea_Type))
-	share = GTK_GL_AREA(PyGtk_Get(py_share));
-    else if (py_share != Py_None) {
+
+    if (!pygobject_check(py_share, &PyGtkGLArea_Type)) {
+	if ( pygobject_get(py_share) != NULL )
+	    share = GTK_GL_AREA(pygobject_get(py_share));
+    } else if (py_share != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "share must be a GtkGLArea or None");
-	return NULL;
+	return -1;
     }
-    self->obj = (GtkObject *)gtk_gl_area_share_new(attr_list, share);
+
+    pygobject_get(self) = (GObject *)gtk_gl_area_share_new(attr_list, share);
     if (!self->obj) {
 	PyErr_SetString(PyExc_RuntimeError,
 			"could not create GtkGLArea object");
-	return NULL;
+	return -1;
     }
-    pyg_register_wrapper((PyObject *)self);
-    Py_INCREF(Py_None);
-    return Py_None;
+    pygobject_register_wrapper((PyObject *)self);
+    //Py_INCREF(Py_None);
+    //return Py_None;
+    return 0;
 }
 %%
 override gdk_gl_wait_gdk noargs
 static PyObject *
-_wrap_gdk_gl_wait_gdk(PyObject *self)
+_wrap_gdk_gl_wait_gdk(PyGObject *self)
 {
     pyg_unblock_threads();
     gdk_gl_wait_gdk();
@@ -108,7 +102,7 @@ _wrap_gdk_gl_wait_gdk(PyObject *self)
 %%
 override gdk_gl_wait_gl noargs
 static PyObject *
-_wrap_gdk_gl_wait_gl(PyObject *self)
+_wrap_gdk_gl_wait_gl(PyGObject *self)
 {
     pyg_unblock_threads();
     gdk_gl_wait_gl();

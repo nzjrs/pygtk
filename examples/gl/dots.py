@@ -10,7 +10,7 @@ import string, sys
 from OpenGL.GL import *
 
 import gtk
-import gtkgl
+from gtk import gl
 
 MY_LIST=1
 NUMDOTS = 500
@@ -96,13 +96,13 @@ def reshape(glarea, allocation):
 
 def main():
 	global glarea, timer_id
-	win = gtk.GtkWindow()
+	win = gtk.Window()
 	win.set_title("GL Dots")
 	win.connect("destroy", gtk.mainquit)
 	
-	glarea = gtkgl.GtkGLArea((gtkgl.RGBA, gtkgl.DOUBLEBUFFER))
-	glarea.add_events(gtk.GDK.BUTTON_PRESS_MASK)
-	glarea.size(300, 300)
+	glarea = gtk.gl.Area((gtk.gl.RGBA, gtk.gl.DOUBLEBUFFER))
+	glarea.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+	glarea.set_size_request(300, 300)
 
 	setup_viewport()
 	glarea.connect_after("size_allocate", reshape)
@@ -116,14 +116,14 @@ def main():
 	win.show()
 
 	gtk.mainloop()
-	glarea.destroy()
+	#glarea.destroy()
 
-if gtkgl.query():
-	print "Use the mouse buttons to control some of the dots."
+#if gtkgl.query():
+#	print "Use the mouse buttons to control some of the dots."
 
-	main()
-else:
-	print "Your X server does not support GLX"
+main()
+#else:
+#	print "Your X server does not support GLX"
 
 
 

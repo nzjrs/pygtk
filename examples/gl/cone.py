@@ -1,5 +1,7 @@
+#!/usr/bin/env python2.2
+
 import gtk
-import gtkgl
+from gtk import gl
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -52,36 +54,36 @@ def realise(glarea):
 		glDepthFunc(GL_LESS)
 		glEnable(GL_DEPTH_TEST)
 
-if not gtkgl.query():
-	print "OpenGL not supported.  Bye."
-	raise SystemExit
+#if not gtkgl.query():
+#	print "OpenGL not supported.  Bye."
+#	raise SystemExit
 
-win = gtk.GtkWindow()
+win = gtk.Window()
 win.connect("destroy", gtk.mainquit)
 win.set_title("Cone")
 
-table = gtk.GtkTable(2, 3)
+table = gtk.Table(2, 3)
 table.set_border_width(5)
 table.set_col_spacings(5)
 table.set_row_spacings(5)
 win.add(table)
 table.show()
 
-vadj = gtk.GtkAdjustment(250, 0, 360, 5, 5, 0)
-vscale = gtk.GtkVScale(vadj)
+vadj = gtk.Adjustment(250, 0, 360, 5, 5, 0)
+vscale = gtk.VScale(vadj)
 table.attach(vscale, 1,2, 0,1, xoptions=gtk.FILL)
 vscale.show()
 
-hadj = gtk.GtkAdjustment(0, 0, 360, 5, 5, 0)
-hscale = gtk.GtkHScale(hadj)
+hadj = gtk.Adjustment(0, 0, 360, 5, 5, 0)
+hscale = gtk.HScale(hadj)
 table.attach(hscale, 0,1, 1,2, yoptions=gtk.FILL)
 hscale.show()
 
 vadj.connect("value_changed", vchanged)
 hadj.connect("value_changed", hchanged)
 
-glarea = gtkgl.GtkGLArea((gtkgl.RGBA, gtkgl.DOUBLEBUFFER, gtkgl.DEPTH_SIZE, 1))
-glarea.size(300, 300)
+glarea = gtk.gl.Area((gtk.gl.RGBA, gtk.gl.DOUBLEBUFFER, gtk.gl.DEPTH_SIZE, 1))
+glarea.set_size_request(300, 300)
 
 glarea.connect("realize", realise)
 glarea.connect("expose_event", redraw)
@@ -92,4 +94,4 @@ glarea.show()
 win.show()
 
 gtk.mainloop()
-glarea.destroy()
+#glarea.destroy()

@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.2
 
 # A translation of the gears demo that comes with mesa, modified to use
 # a few GtkHScale widgets for the rotation, rather than the keyboard.
 
 from OpenGL.GL import *
-import gtk
-import gtkgl
+import gobject, gtk
+from gtk import gl
 
 import math
 
@@ -244,21 +244,20 @@ def init(glarea):
 
 	glEnable( GL_NORMALIZE )
 
+#if not gtkgl.query():
+#	print "OpenGL not supported.  Bye."
+#	raise SystemExit
 
-if not gtkgl.query():
-	print "OpenGL not supported.  Bye."
-	raise SystemExit
-
-win = gtk.GtkWindow()
+win = gobject.new(gtk.Window,
+		  title='Gears')
 win.connect("destroy", gtk.mainquit)
-win.set_title("Gears")
 
-table = gtk.GtkTable(4, 2)
+table = gtk.Table(4, 2)
 win.add(table)
 table.show()
 
-glarea = gtkgl.GtkGLArea((gtkgl.RGBA, gtkgl.DEPTH_SIZE, 1, gtkgl.DOUBLEBUFFER))
-glarea.size(300, 300)
+glarea = gtk.gl.Area((gtk.gl.RGBA, gtk.gl.DEPTH_SIZE, 1, gtk.gl.DOUBLEBUFFER))
+glarea.set_size_request(300, 300)
 
 glarea.connect("realize", init)
 glarea.connect("size_allocate", reshape)
@@ -272,14 +271,14 @@ glarea.show()
 for row, label, start, cb in ((1,'X Rotation', view_rotx, xchange),
 			      (2,'Y Rotation', view_roty, ychange),
 			      (3,'Z Rotation', view_rotz, zchange)):
-	l = gtk.GtkLabel(label)
+	l = gtk.Label(label)
 	table.attach(l, 0,1, row,row+1, xoptions=0, yoptions=gtk.FILL)
 	l.show()
 
-	adj = gtk.GtkAdjustment(start, 0, 360, 5, 5, 0)
+	adj = gtk.Adjustment(start, 0, 360, 5, 5, 0)
 	adj.connect("value_changed", cb)
 
-	scale = gtk.GtkHScale(adj)
+	scale = gtk.HScale(adj)
 	table.attach(scale, 1,2, row,row+1, yoptions=gtk.FILL)
 	scale.show()
 
@@ -287,4 +286,4 @@ win.show()
 
 gtk.mainloop()
 
-glarea.destroy()
+#glarea.destroy()

@@ -3,7 +3,8 @@
 #  include "config.h"
 #endif
 #include <Python.h>
-#include <pygtk.h>
+//#include <pygtk.h>
+#include <pygobject.h>
 
 #include <gtkgl/gtkglarea.h>
 
@@ -15,10 +16,11 @@ initgl(void)
 {
     PyObject *m, *d, *c;
 
+    init_pygobject();
+    //init_pygtk();
+
     m = Py_InitModule("gl", pygtkgl_functions);
     d = PyModule_GetDict(m);
-
-    init_pygtk();
 
     pygtkgl_register_classes(d);
 
