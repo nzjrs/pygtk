@@ -2706,7 +2706,7 @@ _wrap_gtk_tree_selection_select_range(PyGObject *self, PyObject *args,
 override gtk_tree_model_filter_set_modify_func kwargs
 static void
 pygtk_filter_modify_func_marshal(GtkTreeModel *model, GtkTreeIter *iter,
-                          GValue *value, gint column, gpointer data)
+                                 GValue *value, gint column, gpointer data)
 {
     PyGtkCustomNotify *cunote = data;
     PyObject *py_value, *py_model, *py_iter;
@@ -2789,6 +2789,88 @@ _wrap_gtk_tree_model_filter_set_modify_func(PyGObject *self, PyObject *args,
 
     g_free(types);
 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_set_column_drag_function kwargs
+static gboolean
+pygtk_column_drag_func_marshal(GtkTreeView *tree_view,
+                               GtkTreeViewColumn *column,
+                               GtkTreeViewColumn *prev_column,
+                               GtkTreeViewColumn *next_column,
+                               gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *py_tree_view, *py_column, *py_prev_column, *py_next_column;
+    PyObject *retobj;
+    gboolean ret = FALSE;
+
+    g_assert (cunote->func);
+
+    pyg_block_threads();
+
+    py_tree_view = pygobject_new((GObject *)tree_view);
+    py_column = pygobject_new((GObject *)column);
+    py_prev_column = pygobject_new((GObject *)prev_column);
+    /* Workaround for drag part of GTK+ bug #143355 */
+    if (prev_column == next_column)
+        next_column = NULL;
+    py_next_column = pygobject_new((GObject *)next_column);
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(NNNNO)",
+                                     py_tree_view, py_column, py_prev_column,
+                                     py_next_column, cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(NNNN)",
+                                     py_tree_view, py_column, py_prev_column,
+                                     py_next_column);
+
+    if (retobj)
+        ret = retobj == Py_True ? TRUE : FALSE;
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+    }
+    Py_XDECREF(retobj);
+
+    pyg_unblock_threads();
+    return ret;    
+}
+static PyObject *
+_wrap_gtk_tree_view_set_column_drag_function(PyGObject *self, PyObject *args,
+                                             PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "user_data", NULL };
+    PyObject *py_func = NULL, *py_arg = NULL;
+    PyGtkCustomNotify *cunote;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|OO:GtkTreeView.set_column_drag_func",
+				     kwlist, &py_func, &py_arg))
+        return NULL;
+
+    if (!py_func || py_func == Py_None) {
+        gtk_tree_view_set_column_drag_function(GTK_TREE_VIEW(self->obj),
+                                               NULL, NULL, NULL);
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    if (!PyCallable_Check(py_func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+
+    cunote = g_new(PyGtkCustomNotify, 1);
+    Py_INCREF(py_func);
+    cunote->func = py_func;
+    Py_XINCREF(py_arg);
+    cunote->data = py_arg;
+
+    gtk_tree_view_set_column_drag_function(GTK_TREE_VIEW(self->obj),
+                                           pygtk_column_drag_func_marshal,
+                                           cunote,
+                                           pygtk_custom_destroy_notify);
     Py_INCREF(Py_None);
     return Py_None;
 }
