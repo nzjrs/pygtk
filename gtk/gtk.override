@@ -1028,7 +1028,6 @@ pygtk_container_foreach_marshal(GtkWidget *widget,
 
     if (retobj == NULL) {
         PyErr_Print();
-        PyErr_Clear();
     }
 
     Py_XDECREF(retobj);
@@ -1946,7 +1945,6 @@ pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
         ret = PyInt_AsLong(retobj);
     if (PyErr_Occurred()) {
         PyErr_Print();
-        PyErr_Clear();
         ret = 0;
     }
     Py_XDECREF(retobj);
@@ -2907,7 +2905,6 @@ pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
 
     if (retobj == NULL) {
         PyErr_Print();
-        PyErr_Clear();
     } else
         Py_DECREF(retobj);
 
@@ -3315,7 +3312,6 @@ pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
 
     if (retobj == NULL) {
         PyErr_Print();
-        PyErr_Clear();
     }
 
     Py_XDECREF(retobj);
@@ -3368,7 +3364,6 @@ pygtk_tree_selection_marshal(GtkTreeSelection *selection,
 
     if (retobj == NULL) {
         PyErr_Print();
-        PyErr_Clear();
     }
 
     Py_DECREF(pypath);
@@ -3876,7 +3871,6 @@ pygtk_item_factory_cb(PyGtkCustomNotify *cunote,
                                     pygobject_new((GObject *)widget));
     if (ret == NULL) {
         PyErr_Print();
-        PyErr_Clear();
     } else
         Py_DECREF(ret);
     pyg_unblock_threads();
@@ -3965,7 +3959,6 @@ pygtk_menu_position(GtkMenu *menu, int *x, int *y, gboolean *push_in,
     ret = PyObject_CallFunction(func, "O", pygobject_new((GObject *)menu));
     if (ret == NULL || !PyArg_ParseTuple(ret, "iii", x, y, push_in)) {
         PyErr_Print();
-        PyErr_Clear();
         Py_XDECREF(ret);
     } else {
         Py_DECREF(ret);
@@ -4279,7 +4272,6 @@ pygtk_menu_detach (GtkWidget *attach_widget, GtkMenu *menu)
                                  pygobject_new ((GObject *) attach_widget));
     if (ret == NULL) {
         PyErr_Print ();
-        PyErr_Clear ();
         Py_XDECREF (ret);
     }
     else

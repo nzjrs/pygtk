@@ -209,7 +209,6 @@ pygtk_generic_tree_model_get_flags(GtkTreeModel *tree_model)
 	return ret;
     } else {
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return 0;
     }
@@ -240,7 +239,6 @@ pygtk_generic_tree_model_get_n_columns(GtkTreeModel *tree_model)
 	return ret;
     } else {
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return 0;
     }
@@ -271,7 +269,6 @@ pygtk_generic_tree_model_get_column_type(GtkTreeModel *tree_model, gint index)
 	return ret;
     } else {
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return G_TYPE_INVALID;
     }
@@ -317,7 +314,6 @@ pygtk_generic_tree_model_get_iter(GtkTreeModel *tree_model,
 	}
     } else {
 	PyErr_Print();
-	PyErr_Clear();
 	iter->user_data = NULL;
 	pyg_unblock_threads();
 	return FALSE;
@@ -352,7 +348,6 @@ pygtk_generic_tree_model_get_path(GtkTreeModel *tree_model, GtkTreeIter *iter)
 	return path;
     } else {
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return NULL;
     }
@@ -388,7 +383,6 @@ pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
 	Py_DECREF(py_value);
     } else {
 	PyErr_Print();
-	PyErr_Clear();
     }
     pyg_unblock_threads();
 }
@@ -430,7 +424,6 @@ pygtk_generic_tree_model_iter_next(GtkTreeModel *tree_model, GtkTreeIter *iter)
     } else {
 	iter->user_data = NULL;
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return FALSE;
     }
@@ -476,7 +469,6 @@ pygtk_generic_tree_model_iter_children(GtkTreeModel *tree_model, GtkTreeIter *it
     } else {
 	iter->user_data = NULL;
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return FALSE;
     }
@@ -509,7 +501,6 @@ pygtk_generic_tree_model_iter_has_child(GtkTreeModel *tree_model, GtkTreeIter *i
 	return ret;
     } else {
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return FALSE;
     }
@@ -542,7 +533,6 @@ pygtk_generic_tree_model_iter_n_children(GtkTreeModel *tree_model, GtkTreeIter *
 	return ret;
     } else {
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return 0;
     }
@@ -588,7 +578,6 @@ pygtk_generic_tree_model_iter_nth_child(GtkTreeModel *tree_model, GtkTreeIter  *
     } else {
 	iter->user_data = NULL;
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return FALSE;
     }
@@ -634,7 +623,6 @@ pygtk_generic_tree_model_iter_parent(GtkTreeModel *tree_model, GtkTreeIter *iter
     } else {
 	iter->user_data = NULL;
 	PyErr_Print();
-	PyErr_Clear();
 	pyg_unblock_threads();
 	return FALSE;
     }

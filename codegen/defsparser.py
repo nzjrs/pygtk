@@ -16,7 +16,7 @@ class IncludeParser(scmexpr.Parser):
         self.filename = oldfile
 
 class DefsParser(IncludeParser):
-    def __init__(self, arg, defines):
+    def __init__(self, arg, defines={}):
 	IncludeParser.__init__(self, arg)
 	self.objects = []
         self.interfaces = []
