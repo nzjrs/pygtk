@@ -321,10 +321,25 @@ def write_constructor(objname, funcobj, fp=sys.stdout):
     dict['arglist']   = string.join(arglist, ', ')
     fp.write(consttmpl % dict)
 
-def write_getattr(parser, objobj, fp=sys.stdout):
+def write_getattr(parser, objobj, overrides, fp=sys.stdout):
     uline = argtypes._to_upper_str(objobj.c_name)[1:]
+    funcname = '_wrap_' + string.lower(uline) + '_getattr'
+
+    if overrides.is_overriden(funcname[6:]):
+        fp.write(overrides.override(funcname[6:]))
+        fp.write('\n\n')
+        return funcname
+    
     attrchecks = ''
     for ftype, fname in objobj.fields:
+        attrname = objobj.c_name + '.' + fname
+        if overrides.attr_is_overriden(attrname):
+            code = overrides.attr_override(attrname)
+            code = '        ' + string.replace(code, '\n', '\n        ')
+            attrchecks = attrchecks + attrchecktmpl % { 'attr': fixname(fname),
+                                                        'varlist': '',
+                                                        'code': code }
+            continue
         try:
             varlist = argtypes.VarList()
             handler = argtypes.matcher.get(ftype)
@@ -340,7 +355,6 @@ def write_getattr(parser, objobj, fp=sys.stdout):
             sys.stderr.write("couldn't write check for " + objobj.c_name +
                              '.' + fname + '\n')
 	    #traceback.print_exc()
-    funcname = '_wrap_' + string.lower(uline) + '_getattr'
     fp.write(getattrtmpl % {'getattr':    funcname,
                             'attrchecks': attrchecks })
     return funcname
@@ -415,7 +429,7 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
     # write the type template
     dict = { 'class': objobj.c_name }
     if objobj.fields:
-        dict['getattr'] = write_getattr(parser, objobj, fp)
+        dict['getattr'] = write_getattr(parser, objobj, overrides, fp)
     else:
         dict['getattr'] = '0'
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
@@ -534,11 +548,26 @@ def write_boxed_constructor(objname, funcobj, fp=sys.stdout):
     dict['arglist']   = string.join(arglist, ', ')
     fp.write(boxedconsttmpl % dict)
 
-def write_boxed_getattr(parser, boxedobj, fp=sys.stdout):
+def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
     typecode = argtypes._enum_name(boxedobj.c_name)
     uline = argtypes._to_upper_str(boxedobj.c_name)[1:]
+    funcname = '_wrap_' + string.lower(uline) + '_getattr'
+
+    if overrides.is_overriden(funcname[6:]):
+        fp.write(overrides.override(funcname[6:]))
+        fp.write('\n\n')
+        return funcname
+
     attrchecks = ''
     for ftype, fname in boxedobj.fields:
+        attrname = boxedobj.c_name + '.' + fname
+        if overrides.attr_is_overriden(attrname):
+            code = overrides.attr_override(attrname)
+            code = '        ' + string.replace(code, '\n', '\n        ')
+            attrchecks = attrchecks + attrchecktmpl % { 'attr': fixname(fname),
+                                                        'varlist': '',
+                                                        'code': code }
+            continue
         try:
             varlist = argtypes.VarList()
             handler = argtypes.matcher.get(ftype)
@@ -612,7 +641,7 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
     # write the type template
     dict = { 'typename': boxedobj.c_name }
     if boxedobj.fields:
-        dict['getattr'] = write_boxed_getattr(parser, boxedobj, fp)
+        dict['getattr'] = write_boxed_getattr(parser, boxedobj, overrides, fp)
     else:
         dict['getattr'] = '0'
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['typename'] + '_methods)'

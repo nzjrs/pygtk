@@ -12,6 +12,7 @@ class Overrides:
 	self.glob_ignores = []
 	self.overrides = {}
 	self.kwargs = {}
+        self.override_attrs = {}
         self.headers = ''
         self.init = ''
 	if fp == None: return
@@ -40,6 +41,9 @@ class Overrides:
 	    if 'kwargs' in words[1:]:
 		self.kwargs[func] = 1
 	    self.overrides[func] = rest
+        elif words[0] == 'override_attr':
+            attr = words[1]
+            self.override_attrs[attr] = rest
         elif words[0] == 'headers':
             self.headers = self.headers + '\n' + rest
         elif words[0] == 'init':
@@ -58,6 +62,10 @@ class Overrides:
 	return self.overrides[name]
     def wants_kwargs(self, name):
 	return self.kwargs.has_key(name)
+    def attr_is_overriden(self, attr):
+        return self.override_attrs.has_key(attr)
+    def attr_override(self, attr):
+        return self.override_attrs[attr]
     def get_headers(self):
         return self.headers
     def get_init(self):
