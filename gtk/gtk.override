@@ -5848,29 +5848,31 @@ static PyObject *
 _wrap_gtk_cell_renderer_get_size(PyGObject *self, PyObject *args,
 				 PyObject *kwargs)
 {
-    static char *kwlist[] = { "widget", NULL };
-    gint x_offset, y_offset, width, height;
+    static char *kwlist[] = { "widget", "cell_area", NULL };
+    gint x_offset = 0, y_offset = 0, width = 0, height = 0;
     GdkRectangle cell_area;
-    PyObject *py_widget;
+    PyObject *py_widget, *py_cell_area = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O:GtkCellRenderer.get_size", kwlist,
-				     &py_widget))
+				     "O|O:GtkCellRenderer.get_size", kwlist,
+				     &py_widget, &py_cell_area))
         return NULL;
 
     if (!pygobject_check(py_widget, &PyGtkWidget_Type)) {
 	PyErr_SetString(PyExc_TypeError, "widget must be a GtkWidget");
 	return NULL;
     }
+    if (py_cell_area != Py_None) {
+	if (!pygdk_rectangle_from_pyobject(py_cell_area, &cell_area))
+	    return NULL;
+    }
 
     gtk_cell_renderer_get_size(GTK_CELL_RENDERER(self->obj),
 			       GTK_WIDGET(pygobject_get(py_widget)),
-			       &cell_area, &x_offset, &y_offset, &width,
-			       &height);
+			       (py_cell_area == Py_None) ? NULL : &cell_area,
+			       &x_offset, &y_offset, &width, &height);
 
-    return Py_BuildValue("(Niiii)", pyg_boxed_new(GDK_TYPE_RECTANGLE,
-						  &cell_area, TRUE, TRUE),
-			 x_offset, y_offset, width, height);
+    return Py_BuildValue("(iiii)", x_offset, y_offset, width, height);
 }
 %%
 override gtk_cell_renderer_get_fixed_size noargs

@@ -1,5 +1,12 @@
 2002-07-20  James Henstridge  <james@daa.com.au>
 
+	* gtk/pygtkcellrenderer.c (pygtk_generic_cell_renderer_*): fix up
+	arguments, and use "O" format code for PyObject_CallMethod --
+	can't rely on "N" causing the argument to be unrefed.
+
+	* gtk/gtk.override (_wrap_gtk_cell_renderer_get_size): cell_area
+	is an argument; not a return.
+
 	* gtk/gtk.override (GtkTreeModel.tp_as_number): add nonzero method
 	to tree models, so that they evaluate to a truth value even if
 	they have zero elements. (at request of msw).

@@ -93,7 +93,7 @@ pygtk_generic_cell_renderer_get_size (GtkCellRenderer *cell,
 				      gint            *width,
 				      gint            *height)
 {
-    PyObject *self, *py_ret, *py_cell_area;
+    PyObject *self, *py_ret, *py_widget, *py_cell_area;
 
     g_return_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell));
 
@@ -102,27 +102,26 @@ pygtk_generic_cell_renderer_get_size (GtkCellRenderer *cell,
 #ifdef DEBUG_CELL_RENDERER
     g_message ("get_size()");
 #endif
-    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_size", "N",
-				 pygobject_new ((GObject *)widget));
+    py_widget = pygobject_new((GObject *)widget);
+    py_cell_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE);
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_size", "OO",
+				 py_widget, py_cell_area);
 
     if (!py_ret) {
 	PyErr_Print();
 	PyErr_Clear();
+	Py_DECREF(py_widget);
+	Py_DECREF(py_cell_area);
 	return;
     }
+    Py_DECREF(py_widget);
+    Py_DECREF(py_cell_area);
 
-    if (!PyArg_ParseTuple(py_ret, "Oiiii", &py_cell_area, x_offset, y_offset,
-			  width, height)) {
+    if (!PyArg_ParseTuple(py_ret, "iiii", x_offset, y_offset, width, height)) {
 	PyErr_Clear();
 	Py_DECREF(py_ret);
 	g_warning("could not parse return value of get_size() method.  "
-		  "Should be of form(cell_area, x_offset, y_offset, "
-		  "width, height)");
-	return;
-    }
-    if (!pygdk_rectangle_from_pyobject(py_cell_area, cell_area)) {
-	PyErr_Print();
-	PyErr_Clear();
+		  "Should be of form (x_offset, y_offset, width, height)");
 	return;
     }
     /* success */
@@ -137,7 +136,8 @@ pygtk_generic_cell_renderer_render (GtkCellRenderer      *cell,
 				    GdkRectangle         *expose_area,
 				    GtkCellRendererState  flags)
 {
-    PyObject *self, *py_ret;
+    PyObject *self, *py_ret, *py_window, *py_widget;
+    PyObject *py_background_area, *py_cell_area, *py_expose_area;
 
     g_return_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell));
 
@@ -146,19 +146,23 @@ pygtk_generic_cell_renderer_render (GtkCellRenderer      *cell,
 #ifdef DEBUG_CELL_RENDERER
     g_message ("render()");
 #endif
-    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "render", "NNNNNi",
-		pygobject_new((GObject *)window),
-		pygobject_new((GObject *)widget),
-		pyg_boxed_new(GDK_TYPE_RECTANGLE, background_area, TRUE, TRUE),
-		pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE),
-		pyg_boxed_new(GDK_TYPE_RECTANGLE, expose_area, TRUE, TRUE),
-		flags);
+    py_window = pygobject_new((GObject *)window);
+    py_widget = pygobject_new((GObject *)widget);
+    py_background_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, background_area, TRUE, TRUE);
+    py_cell_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE);
+    py_expose_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, expose_area, TRUE, TRUE);
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "render", "OOOOOi",
+				 py_window, py_widget, py_background_area,
+				 py_cell_area, py_expose_area, flags);
     if (!py_ret) {
 	PyErr_Print();
 	PyErr_Clear();
-	return;
     }
-    /* success */
+    Py_DECREF(py_window);
+    Py_DECREF(py_widget);
+    Py_DECREF(py_background_area);
+    Py_DECREF(py_cell_area);
+    Py_DECREF(py_expose_area);
 }
 
 static gboolean
@@ -170,7 +174,8 @@ pygtk_generic_cell_renderer_activate (GtkCellRenderer      *cell,
 				      GdkRectangle         *cell_area,
 				      GtkCellRendererState  flags)
 {
-    PyObject *self, *py_ret;
+    PyObject *self, *py_ret, *py_event, *py_widget;
+    PyObject *py_background_area, *py_cell_area;
     gboolean ret;
 
     g_return_val_if_fail(PYGTK_IS_GENERIC_CELL_RENDERER (cell), FALSE);
@@ -180,18 +185,26 @@ pygtk_generic_cell_renderer_activate (GtkCellRenderer      *cell,
 #ifdef DEBUG_CELL_RENDERER
     g_message ("activate()");
 #endif
-    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "activate", "NNzNNNi",
-		pyg_boxed_new(GDK_TYPE_EVENT, event, FALSE, FALSE),
-		pygobject_new((GObject *)widget),
-		path,
-		pyg_boxed_new(GDK_TYPE_RECTANGLE, background_area, TRUE, TRUE),
-		pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE),
-		flags);
+    py_event = pyg_boxed_new(GDK_TYPE_EVENT, event, FALSE, FALSE);
+    py_widget = pygobject_new((GObject *)widget);
+    py_background_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, background_area, TRUE, TRUE);
+    py_cell_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE);
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "activate", "OOzOOi",
+				 py_event, py_widget, path, py_background_area,
+				 py_cell_area, flags);
     if (!py_ret) {
 	PyErr_Print();
 	PyErr_Clear();
+	Py_DECREF(py_event);
+	Py_DECREF(py_widget);
+	Py_DECREF(py_background_area);
+	Py_DECREF(py_cell_area);
 	return FALSE;
     }
+    Py_DECREF(py_event);
+    Py_DECREF(py_widget);
+    Py_DECREF(py_background_area);
+    Py_DECREF(py_cell_area);
     ret = PyObject_IsTrue(py_ret);
     Py_DECREF(py_ret);
     return ret;
@@ -206,7 +219,8 @@ pygtk_generic_cell_renderer_start_editing (GtkCellRenderer      *cell,
 					   GdkRectangle         *cell_area,
 					   GtkCellRendererState  flags)
 {
-    PyObject *self, *py_ret;
+    PyObject *self, *py_ret, *py_event, *py_widget;
+    PyObject *py_background_area, *py_cell_area;
     GtkCellEditable *ret = NULL;
     extern PyTypeObject PyGtkCellEditable_Type;
 
@@ -217,18 +231,26 @@ pygtk_generic_cell_renderer_start_editing (GtkCellRenderer      *cell,
 #ifdef DEBUG_CELL_RENDERER
     g_message ("start_editing()");
 #endif
-    py_ret = PyObject_CallMethod(self, METHOD_PREFIX"start_editing", "NNzNNNi",
-		pyg_boxed_new(GDK_TYPE_EVENT, event, FALSE, FALSE),
-		pygobject_new((GObject *)widget),
-		path,
-		pyg_boxed_new(GDK_TYPE_RECTANGLE, background_area, TRUE, TRUE),
-		pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE),
-		flags);
+    py_event = pyg_boxed_new(GDK_TYPE_EVENT, event, FALSE, FALSE);
+    py_widget = pygobject_new((GObject *)widget);
+    py_background_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, background_area, TRUE, TRUE);
+    py_cell_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE);
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "start_editing", "OOzOOi",
+				 py_event, py_widget, path, py_background_area,
+				 py_cell_area, flags);
     if (!py_ret) {
 	PyErr_Print();
 	PyErr_Clear();
-	return FALSE;
+	Py_DECREF(py_event);
+	Py_DECREF(py_widget);
+	Py_DECREF(py_background_area);
+	Py_DECREF(py_cell_area);
+	return NULL;
     }
+    Py_DECREF(py_event);
+    Py_DECREF(py_widget);
+    Py_DECREF(py_background_area);
+    Py_DECREF(py_cell_area);
     if (pygobject_check(py_ret, &PyGtkCellEditable_Type)) {
 	ret = GTK_CELL_EDITABLE(g_object_ref(pygobject_get(py_ret)));
     } else {
