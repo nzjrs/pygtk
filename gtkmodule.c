@@ -1489,12 +1489,46 @@ static PyObject *PyGdkWindow_PropertyDelete(PyGdkWindow_Object *self,
     return Py_None;
 }
 
+static PyObject *PyGdkWindow_Raise(PyGdkWindow_Object *self,
+				   PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":GdkWindow._raise"))
+    return NULL;
+  gdk_window_raise(self->obj);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject *PyGdkWindow_Lower(PyGdkWindow_Object *self,
+				   PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":GdkWindow.lower"))
+    return NULL;
+  gdk_window_lower(self->obj);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject *PyGdkWindow_InputGetPointer(PyGdkWindow_Object *self,
+					     PyObject *args) {
+  guint32 deviceid;
+  gdouble x = 0.0, y = 0.0, pressure = 0.0, xtilt = 0.0, ytilt = 0.0;
+  GdkModifierType mask = 0;
+
+  if (!PyArg_ParseTuple(args, "i:GdkWindow.input_get_pointer", &deviceid))
+    return NULL;
+  gdk_input_window_get_pointer(self->obj, deviceid, &x, &y, &pressure,
+			       &xtilt, &ytilt, &mask);
+  return Py_BuildValue("(dddddi)", x, y, pressure, xtilt, ytilt, mask);
+}
+
 static PyMethodDef PyGdkWindow_methods[] = {
   {"new_gc", (PyCFunction)PyGdkWindow_NewGC, METH_VARARGS|METH_KEYWORDS, NULL},
   {"set_cursor", (PyCFunction)PyGdkWindow_SetCursor, METH_VARARGS, NULL},
   {"property_get", (PyCFunction)PyGdkWindow_PropertyGet, METH_VARARGS, NULL},
   {"property_change", (PyCFunction)PyGdkWindow_PropertyChange, METH_VARARGS, NULL},
   {"property_delete", (PyCFunction)PyGdkWindow_PropertyDelete, METH_VARARGS, NULL},
+  {"_raise", (PyCFunction)PyGdkWindow_Raise, METH_VARARGS, NULL},
+  {"lower", (PyCFunction)PyGdkWindow_Lower, METH_VARARGS, NULL},
+  {"input_get_pointer", (PyCFunction)PyGdkWindow_InputGetPointer, METH_VARARGS, NULL},
   {NULL, 0, 0, NULL}
 };
 

@@ -2,6 +2,12 @@
 import gtk; _gtk = gtk; del gtk
 import _libglade
 
+# enable gnome functionality if it is installed.
+try:
+	import _gladegnome
+except:
+	pass
+
 class GladeXML(_gtk.GtkData):
 	def __init__(self, filename=None, root=None, domain=None, _obj=None):
 		if _obj: self._o = _obj; return

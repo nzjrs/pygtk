@@ -652,9 +652,11 @@ class GtkFrame(GtkBin):
 
 class GtkAspectFrame(GtkFrame):
 	get_type = _gtk.gtk_aspect_frame_get_type
-	def __init__(self, xa=0, ya=0, ratio=1, obey_child=1, _obj=None):
+	def __init__(self, label=None, xa=0, ya=0, ratio=1, obey_child=1,
+		     _obj=None):
 		if _obj: self._o = _obj; return
-		self._o = _gtk.gtk_aspect_frame_new(xa, ya, ratio, obey_child)
+		self._o = _gtk.gtk_aspect_frame_new(label, xa, ya, ratio,
+						    obey_child)
 	def set(self, xa, ya, ratio, obey_child):
 		_gtk.gtk_aspect_frame_set(self._o, xa, ya, ratio, obey_child)
 
@@ -2023,6 +2025,16 @@ class GtkEditable(GtkWidget):
 	get_type = _gtk.gtk_editable_get_type
 	def __init__(self, _obj=None):
 		if _obj: self._o = _obj; return
+	def __getattr__(self, attr):
+		attrs = {
+		'selection_start_pos':
+		_gtk.gtk_editable_get_selection_start_pos,
+		'selection_end_pos':
+		_gtk.gtk_editable_get_selection_end_pos,
+		}
+		if attrs.has_key(attr):
+			return attrs[attr](self._o)
+		return GtkWidget.__getattr__(self, attr)
 	def select_region(self, start, end):
 		_gtk.gtk_editable_select_region(self._o, start, end)
 	def insert_text(self, new_text):
