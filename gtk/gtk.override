@@ -3627,3 +3627,34 @@ _wrap_gtk_binding_entry_remove(PyObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 
+%%
+override gtk_accel_group_connect kwargs
+static PyObject *
+_wrap_gtk_accel_group_connect(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "accel_key", "accel_mods", "accel_flags", "callback", NULL };
+    int accel_key;
+    PyObject *py_accel_mods = NULL, *py_accel_flags = NULL, *py_callback;
+    GdkModifierType accel_mods;
+    GtkAccelFlags accel_flags;
+    GClosure *closure;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iOOO:GtkAccelGroup.connect", kwlist,
+				     &accel_key, &py_accel_mods, &py_accel_flags,
+				     &py_callback))
+        return NULL;
+    if (!PyCallable_Check(py_callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback argument not callable");
+	return NULL;
+    }
+    if (pyg_flags_get_value(GDK_TYPE_MODIFIER_TYPE, py_accel_mods, (gint *)&accel_mods))
+        return NULL;
+    if (pyg_flags_get_value(GTK_TYPE_ACCEL_FLAGS, py_accel_flags, (gint *)&accel_flags))
+        return NULL;
+    closure = pyg_closure_new(py_callback, NULL, NULL);
+    pygobject_watch_closure((PyObject *)self, closure);
+    gtk_accel_group_connect(GTK_ACCEL_GROUP(self->obj), accel_key,
+			    accel_mods, accel_flags, closure);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
