@@ -10,7 +10,7 @@ Group: Development/Languages
 Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{version}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
-Requires: gtk+ >= 1.2.8
+Requires: gtk+ >= 1.2.10
 Requires: imlib
 Requires: python >= 1.5.2
 

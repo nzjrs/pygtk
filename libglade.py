@@ -56,6 +56,14 @@ class GladeXML(_gtk.GtkData):
 			return _gtk._obj2inst(wid)
 		else:
 			return wid
+	def get_widget_prefix(self,prefix):
+		lst = _libglade.glade_xml_get_widget_prefix(self._o,prefix)
+		if not lst:
+			return lst
+		res = []
+		for wid in lst:
+			res.append(_gtk._obj2inst(wid))
+		return res
 _gtk._name2cls['GladeXML'] = GladeXML
 
 def get_widget_name(widget):

@@ -136,6 +136,42 @@ static PyObject *_wrap_glade_xml_get_widget(PyObject *self, PyObject *args) {
     return Py_None;
 }
 
+static PyObject *
+_wrap_glade_xml_get_widget_prefix(PyObject *self, PyObject *args)
+{
+    PyObject *xml;
+    PyObject *listitem;
+    char *prefix;
+    GList *list,*flist;
+    GtkWidget *widget;
+    PyObject *result_list;
+
+    if (!PyArg_ParseTuple(args, "O!s:glade_xml_get_widget_prefix",
+			  &PyGtk_Type, &xml, &prefix))
+	return NULL;
+    flist = glade_xml_get_widget_prefix(GLADE_XML(PyGtk_Get(xml)), prefix);
+    if (flist) {
+	list = g_list_first(flist);
+	result_list = PyList_New(0);
+	if (!result_list)
+	    return result_list;
+	while (list) {
+	    widget = list->data;
+	    listitem = PyGtk_New((GtkObject *)widget);
+	    if (!listitem) {
+		g_list_free(flist);
+		return listitem;
+	    }
+	    PyList_Append(result_list,listitem);
+	    list = list->next;
+	}
+	g_list_free(flist);
+	return result_list;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyObject *_wrap_glade_xml_get_widget_by_long_name(PyObject *self, PyObject *args) {
     PyObject *xml;
     char *name;
@@ -192,6 +228,7 @@ static PyMethodDef libgladeMethods[] = {
     { "glade_xml_signal_connect", _wrap_glade_xml_signal_connect, 1 },
     { "glade_xml_signal_autoconnect", _wrap_glade_xml_signal_autoconnect, 1 },
     { "glade_xml_get_widget", _wrap_glade_xml_get_widget, 1 },
+    { "glade_xml_get_widget_prefix", _wrap_glade_xml_get_widget_prefix, 1},
     { "glade_xml_get_widget_by_long_name", _wrap_glade_xml_get_widget_by_long_name, 1 },
     { "glade_get_widget_name", _wrap_glade_get_widget_name, 1 },
     { "glade_get_widget_long_name", _wrap_glade_get_widget_long_name, 1 },
