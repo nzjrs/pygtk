@@ -1,3 +1,17 @@
+2000-11-10  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk.override: add gtk_tree_model_get_{iter,path,value}
+	functions.
+	(_wrap_gtk_list_store_*): add constructor and set_cell
+	implementations, and impls of the insertion functions that return
+	the new GtkTreeIter, rather than treating it as an out argument.
+	(_wrap_gtk_list_store_set_cell): allow string versions of type
+	codes for convenience.
+	(_wrap_gtk_list_store_insert): directly access column_headers
+	structure member as the get_column_type method doesn't exist.
+	(_wrap_gtk_tree_store_*): constructor, set_cell and tree iter
+	creation methods added.  Ignore [gs]et{,v}.
+
 2000-11-09  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.defs (ListStore, TreeStore): these implement the

@@ -474,6 +474,7 @@ matcher.register('gint16', arg)
 matcher.register('guint32', arg)
 matcher.register('gint32', arg)
 matcher.register('GtkType', arg)
+matcher.register('GType', arg)
 
 arg = DoubleArg()
 matcher.register('double', arg)
