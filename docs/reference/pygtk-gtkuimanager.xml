@@ -542,7 +542,9 @@ items.</para>
 	<varlistentry>
 	  <term><parameter role="keyword">pos</parameter>&nbsp;:</term>
 	  <listitem><simpara>the position at which the group will be
-	  inserted.</simpara></listitem>
+	  inserted. If <parameter>pos</parameter> is negative
+	  <parameter>action_group</parameter> is inserted at the end of the
+	  list.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -828,7 +830,8 @@ the parsing of the file.</para>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">path</parameter>&nbsp;:</term>
-	  <listitem><simpara>a path</simpara></listitem>
+	  <listitem><simpara>a path where the element should be
+	  added</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
@@ -858,12 +861,77 @@ the parsing of the file.</para>
       </note>
 
       <para>The <methodname>add_ui</methodname>() method adds a UI element
-to the current contents of the ui manager. If <parameter>type</parameter> is
-<literal>gtk.UI_MANAGER_AUTO</literal>, PyGTK inserts a menuitem, toolitem
-or separator if such an element can be inserted at the place determined by
-<parameter>path</parameter>. Otherwise <parameter>type</parameter> must
-indicate an element that can be inserted at the place determined by
-<parameter>path</parameter>.</para>
+of the type specified by <parameter>type</parameter> to the current contents
+of the ui manager at the location specified by
+<parameter>path</parameter>. Note that path must not start with "/ui" though
+"ui" is acceptable. For example "/menubar" or "ui/menubar" is acceptable but
+"/ui/menubar" is not. <parameter>type</parameter> must be one of:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_AUTO</literal></term>
+	  <listitem>
+	    <simpara>The type of the UI element (menuitem, toolitem or
+separator) is set according to the context.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_MENUBAR</literal></term>
+	  <listitem>
+	    <simpara>A menubar. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_MENU</literal></term>
+	  <listitem>
+	    <simpara>A menu.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_TOOLBAR</literal></term>
+	  <listitem>
+	    <simpara>A toolbar.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_PLACEHOLDER</literal></term>
+	  <listitem>
+	    <simpara>A placeholder.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_POPUP</literal></term>
+	  <listitem>
+	    <simpara>A popup menu.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_MENUITEM</literal></term>
+	  <listitem>
+	    <simpara>A menuitem.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_TOOLITEM</literal></term>
+	  <listitem>
+	    <simpara>A toolitem.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_SEPARATOR</literal></term>
+	  <listitem>
+	    <simpara>A separator.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.UI_MANAGER_ACCELERATOR</literal></term>
+	  <listitem>
+	    <simpara>An accelerator.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para></para>
 
     </refsect2>
 
@@ -969,7 +1037,8 @@ main window before showing it:</para>
       <para>The <methodname>new_merge_id</methodname>() method returns an
 unused merge id, suitable for use with the <link
 linkend="method-gtkuimanager--add-ui"><methodname>add_ui()</methodname></link>
-method.</para>
+method. The returned merge ids are monotonically increasing integer
+values.</para>
 
     </refsect2>
 
