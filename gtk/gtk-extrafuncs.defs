@@ -1,47 +1,52 @@
 ; -*- scheme -*-
 
-(method flags
-  (of-object Object (Gtk))
-  (c-name GTK_OBJECT_FLAGS)
-  (return-type guint)
+(define-method flags
+  (of-object "GtkObject")
+  (c-name "GTK_OBJECT_FLAGS")
+  (return-type "guint")
 )
 
-(method set_flags
-  (of-object Object (Gtk))
-  (c-name GTK_OBJECT_SET_FLAGS)
-  (return-type none)
-  (parameter (type-and-name guint flags))
+(define-method set_flags
+  (of-object "GtkObject")
+  (c-name "GTK_OBJECT_SET_FLAGS")
+  (return-type "none")
+  (parameters
+    '("guint" "flags")
+  )
 )
 
-(method unset_flags
-  (of-object Object (Gtk))
-  (c-name GTK_OBJECT_UNSET_FLAGS)
-  (return-type none)
-  (parameter (type-and-name guint flags))
+(define-method unset_flags
+  (of-object "GtkObject")
+  (c-name "GTK_OBJECT_UNSET_FLAGS")
+  (return-type "none")
+  (parameters
+    '("guint" "flags")
+  )
 )
 
-(method get_allocation
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_get_allocation)
-  (return-type GtkAllocation)
+(define-method get_allocation
+  (of-object "GtkWidget")
+  (c-name "gtk_widget_get_allocation")
+  (return-type "GtkAllocation")
 )
 
 ;; PyGtkTreeModel
 
-(object TreeModel
-  (in-module PyGtk)
-  (parent Object (G))
-  (c-name PyGtkTreeModel)
-  (implements GtkTreeModel)
+(define-object TreeModel
+  (in-module "PyGtk")
+  (parent "GObject")
+  (c-name "PyGtkTreeModel")
+  (gtype-id "PYGTK_TYPE_TREE_MODEL")
+  (implements "GtkTreeModel")
 )
 
-(function pygtk_tree_model_get_type
-  (c-name pygtk_tree_model_get_type)
-  (return-type GtkType)
+(define-function pygtk_tree_model_get_type
+  (c-name "pygtk_tree_model_get_type")
+  (return-type "GtkType")
 )
 
-(function pygtk_tree_model_new
-  (c-name pygtk_tree_model_new)
+(define-function pygtk_tree_model_new
+  (c-name "pygtk_tree_model_new")
   (is-constructor-of PyGtkTreeModel)
-  (return-type PyGtkTreeModel*)
+  (return-type "PyGtkTreeModel*")
 )

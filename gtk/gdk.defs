@@ -1,1246 +1,1519 @@
 ;; -*- scheme -*-
 ; object definitions ...
-(object Colormap
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkColormap)
+(define-object Colormap
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkColormap")
+  (gtype-id "GDK_TYPE_COLORMAP")
 )
 
-(object Device
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkDevice)
-  (field (type-and-name gchar* name))
-  (field (type-and-name GdkInputSource source))
-  (field (type-and-name GdkInputMode mode))
-  (field (type-and-name gboolean has_cursor))
-  (field (type-and-name gint num_axes))
-  (field (type-and-name GdkDeviceAxis* axes))
-  (field (type-and-name gint num_keys))
-  (field (type-and-name GdkDeviceKey* keys))
+(define-object Device
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkDevice")
+  (gtype-id "GDK_TYPE_DEVICE")
+  (fields
+    '("gchar*" "name")
+    '("GdkInputSource" "source")
+    '("GdkInputMode" "mode")
+    '("gboolean" "has_cursor")
+    '("gint" "num_axes")
+    '("GdkDeviceAxis*" "axes")
+    '("gint" "num_keys")
+    '("GdkDeviceKey*" "keys")
+  )
 )
 
-(object DragContext
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkDragContext)
-  (field (type-and-name GdkDragProtocol protocol))
-  (field (type-and-name gboolean is_source))
-  (field (type-and-name GdkWindow* source_window))
-  (field (type-and-name GdkWindow* dest_window))
-  (field (type-and-name GList* targets))
-  (field (type-and-name GdkDragAction actions))
-  (field (type-and-name GdkDragAction suggested_action))
-  (field (type-and-name GdkDragAction action))
-  (field (type-and-name guint32 start_time))
+(define-object DragContext
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkDragContext")
+  (gtype-id "GDK_TYPE_DRAG_CONTEXT")
+  (fields
+    '("GdkDragProtocol" "protocol")
+    '("gboolean" "is_source")
+    '("GdkWindow*" "source_window")
+    '("GdkWindow*" "dest_window")
+    '("GList*" "targets")
+    '("GdkDragAction" "actions")
+    '("GdkDragAction" "suggested_action")
+    '("GdkDragAction" "action")
+    '("guint32" "start_time")
+  )
 )
 
-(object Drawable
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkDrawable)
+(define-object Drawable
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkDrawable")
+  (gtype-id "GDK_TYPE_DRAWABLE")
 )
 
 ; this is fudged a little ...
-(object Window
-  (in-module Gdk)
-  (parent Drawable (Gdk))
-  (c-name GdkWindow)
+(define-object Window
+  (in-module "Gdk")
+  (parent "GdkDrawable")
+  (c-name "GdkWindow")
+  (gtype-id "GDK_TYPE_WINDOW")
 )
 
-(object Pixmap
-  (in-module Gdk)
-  (parent Drawable (Gdk))
-  (c-name GdkPixmap)
+(define-object Pixmap
+  (in-module "Gdk")
+  (parent "GdkDrawable")
+  (c-name "GdkPixmap")
+  (gtype-id "GDK_TYPE_PIXMAP")
 )
 
-(object GC
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkGC)
+(define-object GC
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkGC")
+  (gtype-id "GDK_TYPE_GC")
 )
 
-(object Image
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkImage)
+(define-object Image
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkImage")
+  (gtype-id "GDK_TYPE_IMAGE")
 )
 
-(object Pixbuf
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkPixbuf)
+(define-object Pixbuf
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkPixbuf")
+  (gtype-id "GDK_TYPE_PIXBUF")
 )
 
-(object PixbufAnimation
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkPixbufAnimation)
+(define-object PixbufAnimation
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkPixbufAnimation")
+  (gtype-id "GDK_TYPE_PIXBUF_ANIMATION")
 )
 
-(object PixbufAnimationIter
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkPixbufAnimationIter)
+(define-object PixbufAnimationIter
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkPixbufAnimationIter")
+  (gtype-id "GDK_TYPE_PIXBUF_ANIMATION_ITER")
 )
 
-(object Visual
-  (in-module Gdk)
-  (parent Object (G))
-  (c-name GdkVisual)
-  (field (type-and-name GdkVisualType type))
-  (field (type-and-name gint depth))
-  (field (type-and-name GdkByteOrder byte_order))
-  (field (type-and-name gint colormap_size))
-  (field (type-and-name gint bits_per_rgb))
-  (field (type-and-name guint32 red_mask))
-  (field (type-and-name gint red_shift))
-  (field (type-and-name gint red_prec))
-  (field (type-and-name guint32 green_mask))
-  (field (type-and-name gint green_shift))
-  (field (type-and-name gint green_prec))
-  (field (type-and-name guint32 blue_mask))
-  (field (type-and-name gint blue_shift))
-  (field (type-and-name gint blue_prec))
+(define-object Visual
+  (in-module "Gdk")
+  (parent "GObject")
+  (c-name "GdkVisual")
+  (gtype-id "GDK_TYPE_VISUAL")
+  (fields
+    '("GdkVisualType" "type")
+    '("gint" "depth")
+    '("GdkByteOrder" "byte_order")
+    '("gint" "colormap_size")
+    '("gint" "bits_per_rgb")
+    '("guint32" "red_mask")
+    '("gint" "red_shift")
+    '("gint" "red_prec")
+    '("guint32" "green_mask")
+    '("gint" "green_shift")
+    '("gint" "green_prec")
+    '("guint32" "blue_mask")
+    '("gint" "blue_shift")
+    '("gint" "blue_prec")
+  )
 )
 
 
 ;; Boxed types ...
 
-(boxed Event
-  (in-module Gdk)
-  (c-name GdkEvent)
-  (copy-func gdk_event_copy)
-  (release-func gdk_event_free)
+(define-boxed Event
+  (in-module "Gdk")
+  (c-name "GdkEvent")
+  (gtype-id "GDK_TYPE_EVENT")
+  (copy-func "gdk_event_copy")
+  (release-func "gdk_event_free")
 )
 
-(boxed Font
-  (in-module Gdk)
-  (c-name GdkFont)
-  (copy-func gdk_font_ref)
-  (release-func gdk_font_unref)
-  (field (type-and-name GdkFontType type))
-  (field (type-and-name gint ascent))
-  (field (type-and-name gint descent))
+(define-boxed Font
+  (in-module "Gdk")
+  (c-name "GdkFont")
+  (gtype-id "GDK_TYPE_FONT")
+  (copy-func "gdk_font_ref")
+  (release-func "gdk_font_unref")
+  (fields
+    '("GdkFontType" "type")
+    '("gint" "ascent")
+    '("gint" "descent")
+  )
 )
 
-(boxed Color
-  (in-module Gdk)
-  (c-name GdkColor)
-  (copy-func gdk_color_copy)
-  (release-func gdk_color_free)
-  (field (type-and-name guint32 pixel))
-  (field (type-and-name guint16 red))
-  (field (type-and-name guint16 green))
-  (field (type-and-name guint16 blue))
+(define-boxed Color
+  (in-module "Gdk")
+  (c-name "GdkColor")
+  (gtype-id "GDK_TYPE_COLOR")
+  (copy-func "gdk_color_copy")
+  (release-func "gdk_color_free")
+  (fields
+    '("guint32" "pixel")
+    '("guint16" "red")
+    '("guint16" "green")
+    '("guint16" "blue")
+  )
 )
 
-(boxed Cursor
-  (in-module Gdk)
-  (c-name GdkCursor)
-  (copy-func gdk_cursor_ref)
-  (release-func gdk_cursor_unref)
-  (field (type-and-name GdkCursorType type))
+(define-boxed Cursor
+  (in-module "Gdk")
+  (c-name "GdkCursor")
+  (gtype-id "GDK_TYPE_CURSOR")
+  (copy-func "gdk_cursor_ref")
+  (release-func "gdk_cursor_unref")
+  (fields
+    '("GdkCursorType" "type")
+  )
 )
 
 
 ;; Enumerations and flags ...
 
-(enum ColorContextMode
-  (in-module Gdk)
-  (c-name GdkColorContextMode)
-  (value (name undefined) (c-name GDK_CC_MODE_UNDEFINED))
-  (value (name bw) (c-name GDK_CC_MODE_BW))
-  (value (name std-cmap) (c-name GDK_CC_MODE_STD_CMAP))
-  (value (name true) (c-name GDK_CC_MODE_TRUE))
-  (value (name my-gray) (c-name GDK_CC_MODE_MY_GRAY))
-  (value (name palette) (c-name GDK_CC_MODE_PALETTE))
+(define-enum ColorContextMode
+  (in-module "Gdk")
+  (c-name "GdkColorContextMode")
+  (gtype-id "GDK_TYPE_COLOR_CONTEXT_MODE")
+  (values
+    '("undefined" "GDK_CC_MODE_UNDEFINED")
+    '("bw" "GDK_CC_MODE_BW")
+    '("std-cmap" "GDK_CC_MODE_STD_CMAP")
+    '("true" "GDK_CC_MODE_TRUE")
+    '("my-gray" "GDK_CC_MODE_MY_GRAY")
+    '("palette" "GDK_CC_MODE_PALETTE")
+  )
 )
 
-(enum CursorType
-  (in-module Gdk)
-  (c-name GdkCursorType)
+(define-enum CursorType
+  (in-module "Gdk")
+  (c-name "GdkCursorType")
+  (gtype-id "GDK_TYPE_CURSOR_TYPE")
 ;  (value (name #include) (c-name #include))
-  (value (name gdk-cursor-is-pixmap) (c-name GDK_CURSOR_IS_PIXMAP))
+  (values
+    '("gdk-cursor-is-pixmap" "GDK_CURSOR_IS_PIXMAP")
+  )
 )
 
-(flags DragAction
-  (in-module Gdk)
-  (c-name GdkDragAction)
-  (value (name default) (c-name GDK_ACTION_DEFAULT))
-  (value (name copy) (c-name GDK_ACTION_COPY))
-  (value (name move) (c-name GDK_ACTION_MOVE))
-  (value (name link) (c-name GDK_ACTION_LINK))
-  (value (name private) (c-name GDK_ACTION_PRIVATE))
-  (value (name ask) (c-name GDK_ACTION_ASK))
+(define-flags DragAction
+  (in-module "Gdk")
+  (c-name "GdkDragAction")
+  (gtype-id "GDK_TYPE_DRAG_ACTION")
+  (values
+    '("default" "GDK_ACTION_DEFAULT")
+    '("copy" "GDK_ACTION_COPY")
+    '("move" "GDK_ACTION_MOVE")
+    '("link" "GDK_ACTION_LINK")
+    '("private" "GDK_ACTION_PRIVATE")
+    '("ask" "GDK_ACTION_ASK")
+  )
 )
 
-(enum DragProtocol
-  (in-module Gdk)
-  (c-name GdkDragProtocol)
-  (value (name motif) (c-name GDK_DRAG_PROTO_MOTIF))
-  (value (name xdnd) (c-name GDK_DRAG_PROTO_XDND))
-  (value (name rootwin) (c-name GDK_DRAG_PROTO_ROOTWIN))
-  (value (name none) (c-name GDK_DRAG_PROTO_NONE))
-  (value (name win32-dropfiles) (c-name GDK_DRAG_PROTO_WIN32_DROPFILES))
-  (value (name ole2) (c-name GDK_DRAG_PROTO_OLE2))
-  (value (name local) (c-name GDK_DRAG_PROTO_LOCAL))
+(define-enum DragProtocol
+  (in-module "Gdk")
+  (c-name "GdkDragProtocol")
+  (gtype-id "GDK_TYPE_DRAG_PROTOCOL")
+  (values
+    '("motif" "GDK_DRAG_PROTO_MOTIF")
+    '("xdnd" "GDK_DRAG_PROTO_XDND")
+    '("rootwin" "GDK_DRAG_PROTO_ROOTWIN")
+    '("none" "GDK_DRAG_PROTO_NONE")
+    '("win32-dropfiles" "GDK_DRAG_PROTO_WIN32_DROPFILES")
+    '("ole2" "GDK_DRAG_PROTO_OLE2")
+    '("local" "GDK_DRAG_PROTO_LOCAL")
+  )
 )
 
-(enum FilterReturn
-  (in-module Gdk)
-  (c-name GdkFilterReturn)
-  (value (name continue) (c-name GDK_FILTER_CONTINUE))
-  (value (name translate) (c-name GDK_FILTER_TRANSLATE))
-  (value (name remove) (c-name GDK_FILTER_REMOVE))
+(define-enum FilterReturn
+  (in-module "Gdk")
+  (c-name "GdkFilterReturn")
+  (gtype-id "GDK_TYPE_FILTER_RETURN")
+  (values
+    '("continue" "GDK_FILTER_CONTINUE")
+    '("translate" "GDK_FILTER_TRANSLATE")
+    '("remove" "GDK_FILTER_REMOVE")
+  )
 )
 
-(enum EventType
-  (in-module Gdk)
-  (c-name GdkEventType)
-  (value (name nothing) (c-name GDK_NOTHING))
-  (value (name delete) (c-name GDK_DELETE))
-  (value (name destroy) (c-name GDK_DESTROY))
-  (value (name expose) (c-name GDK_EXPOSE))
-  (value (name motion-notify) (c-name GDK_MOTION_NOTIFY))
-  (value (name button-press) (c-name GDK_BUTTON_PRESS))
-  (value (name 2button-press) (c-name GDK_2BUTTON_PRESS))
-  (value (name 3button-press) (c-name GDK_3BUTTON_PRESS))
-  (value (name button-release) (c-name GDK_BUTTON_RELEASE))
-  (value (name key-press) (c-name GDK_KEY_PRESS))
-  (value (name key-release) (c-name GDK_KEY_RELEASE))
-  (value (name enter-notify) (c-name GDK_ENTER_NOTIFY))
-  (value (name leave-notify) (c-name GDK_LEAVE_NOTIFY))
-  (value (name focus-change) (c-name GDK_FOCUS_CHANGE))
-  (value (name configure) (c-name GDK_CONFIGURE))
-  (value (name map) (c-name GDK_MAP))
-  (value (name unmap) (c-name GDK_UNMAP))
-  (value (name property-notify) (c-name GDK_PROPERTY_NOTIFY))
-  (value (name selection-clear) (c-name GDK_SELECTION_CLEAR))
-  (value (name selection-request) (c-name GDK_SELECTION_REQUEST))
-  (value (name selection-notify) (c-name GDK_SELECTION_NOTIFY))
-  (value (name proximity-in) (c-name GDK_PROXIMITY_IN))
-  (value (name proximity-out) (c-name GDK_PROXIMITY_OUT))
-  (value (name drag-enter) (c-name GDK_DRAG_ENTER))
-  (value (name drag-leave) (c-name GDK_DRAG_LEAVE))
-  (value (name drag-motion) (c-name GDK_DRAG_MOTION))
-  (value (name drag-status) (c-name GDK_DRAG_STATUS))
-  (value (name drop-start) (c-name GDK_DROP_START))
-  (value (name drop-finished) (c-name GDK_DROP_FINISHED))
-  (value (name client-event) (c-name GDK_CLIENT_EVENT))
-  (value (name visibility-notify) (c-name GDK_VISIBILITY_NOTIFY))
-  (value (name no-expose) (c-name GDK_NO_EXPOSE))
-  (value (name scroll) (c-name GDK_SCROLL))
-  (value (name window-state) (c-name GDK_WINDOW_STATE))
+(define-enum EventType
+  (in-module "Gdk")
+  (c-name "GdkEventType")
+  (gtype-id "GDK_TYPE_EVENT_TYPE")
+  (values
+    '("nothing" "GDK_NOTHING")
+    '("delete" "GDK_DELETE")
+    '("destroy" "GDK_DESTROY")
+    '("expose" "GDK_EXPOSE")
+    '("motion-notify" "GDK_MOTION_NOTIFY")
+    '("button-press" "GDK_BUTTON_PRESS")
+    '("2button-press" "GDK_2BUTTON_PRESS")
+    '("3button-press" "GDK_3BUTTON_PRESS")
+    '("button-release" "GDK_BUTTON_RELEASE")
+    '("key-press" "GDK_KEY_PRESS")
+    '("key-release" "GDK_KEY_RELEASE")
+    '("enter-notify" "GDK_ENTER_NOTIFY")
+    '("leave-notify" "GDK_LEAVE_NOTIFY")
+    '("focus-change" "GDK_FOCUS_CHANGE")
+    '("configure" "GDK_CONFIGURE")
+    '("map" "GDK_MAP")
+    '("unmap" "GDK_UNMAP")
+    '("property-notify" "GDK_PROPERTY_NOTIFY")
+    '("selection-clear" "GDK_SELECTION_CLEAR")
+    '("selection-request" "GDK_SELECTION_REQUEST")
+    '("selection-notify" "GDK_SELECTION_NOTIFY")
+    '("proximity-in" "GDK_PROXIMITY_IN")
+    '("proximity-out" "GDK_PROXIMITY_OUT")
+    '("drag-enter" "GDK_DRAG_ENTER")
+    '("drag-leave" "GDK_DRAG_LEAVE")
+    '("drag-motion" "GDK_DRAG_MOTION")
+    '("drag-status" "GDK_DRAG_STATUS")
+    '("drop-start" "GDK_DROP_START")
+    '("drop-finished" "GDK_DROP_FINISHED")
+    '("client-event" "GDK_CLIENT_EVENT")
+    '("visibility-notify" "GDK_VISIBILITY_NOTIFY")
+    '("no-expose" "GDK_NO_EXPOSE")
+    '("scroll" "GDK_SCROLL")
+    '("window-state" "GDK_WINDOW_STATE")
+  )
 )
 
-(flags EventMask
-  (in-module Gdk)
-  (c-name GdkEventMask)
-  (value (name exposure-mask) (c-name GDK_EXPOSURE_MASK))
-  (value (name pointer-motion-mask) (c-name GDK_POINTER_MOTION_MASK))
-  (value (name pointer-motion-hint-mask) (c-name GDK_POINTER_MOTION_HINT_MASK))
-  (value (name button-motion-mask) (c-name GDK_BUTTON_MOTION_MASK))
-  (value (name button1-motion-mask) (c-name GDK_BUTTON1_MOTION_MASK))
-  (value (name button2-motion-mask) (c-name GDK_BUTTON2_MOTION_MASK))
-  (value (name button3-motion-mask) (c-name GDK_BUTTON3_MOTION_MASK))
-  (value (name button-press-mask) (c-name GDK_BUTTON_PRESS_MASK))
-  (value (name button-release-mask) (c-name GDK_BUTTON_RELEASE_MASK))
-  (value (name key-press-mask) (c-name GDK_KEY_PRESS_MASK))
-  (value (name key-release-mask) (c-name GDK_KEY_RELEASE_MASK))
-  (value (name enter-notify-mask) (c-name GDK_ENTER_NOTIFY_MASK))
-  (value (name leave-notify-mask) (c-name GDK_LEAVE_NOTIFY_MASK))
-  (value (name focus-change-mask) (c-name GDK_FOCUS_CHANGE_MASK))
-  (value (name structure-mask) (c-name GDK_STRUCTURE_MASK))
-  (value (name property-change-mask) (c-name GDK_PROPERTY_CHANGE_MASK))
-  (value (name visibility-notify-mask) (c-name GDK_VISIBILITY_NOTIFY_MASK))
-  (value (name proximity-in-mask) (c-name GDK_PROXIMITY_IN_MASK))
-  (value (name proximity-out-mask) (c-name GDK_PROXIMITY_OUT_MASK))
-  (value (name substructure-mask) (c-name GDK_SUBSTRUCTURE_MASK))
-  (value (name scroll-mask) (c-name GDK_SCROLL_MASK))
-  (value (name all-events-mask) (c-name GDK_ALL_EVENTS_MASK))
+(define-flags EventMask
+  (in-module "Gdk")
+  (c-name "GdkEventMask")
+  (gtype-id "GDK_TYPE_EVENT_MASK")
+  (values
+    '("exposure-mask" "GDK_EXPOSURE_MASK")
+    '("pointer-motion-mask" "GDK_POINTER_MOTION_MASK")
+    '("pointer-motion-hint-mask" "GDK_POINTER_MOTION_HINT_MASK")
+    '("button-motion-mask" "GDK_BUTTON_MOTION_MASK")
+    '("button1-motion-mask" "GDK_BUTTON1_MOTION_MASK")
+    '("button2-motion-mask" "GDK_BUTTON2_MOTION_MASK")
+    '("button3-motion-mask" "GDK_BUTTON3_MOTION_MASK")
+    '("button-press-mask" "GDK_BUTTON_PRESS_MASK")
+    '("button-release-mask" "GDK_BUTTON_RELEASE_MASK")
+    '("key-press-mask" "GDK_KEY_PRESS_MASK")
+    '("key-release-mask" "GDK_KEY_RELEASE_MASK")
+    '("enter-notify-mask" "GDK_ENTER_NOTIFY_MASK")
+    '("leave-notify-mask" "GDK_LEAVE_NOTIFY_MASK")
+    '("focus-change-mask" "GDK_FOCUS_CHANGE_MASK")
+    '("structure-mask" "GDK_STRUCTURE_MASK")
+    '("property-change-mask" "GDK_PROPERTY_CHANGE_MASK")
+    '("visibility-notify-mask" "GDK_VISIBILITY_NOTIFY_MASK")
+    '("proximity-in-mask" "GDK_PROXIMITY_IN_MASK")
+    '("proximity-out-mask" "GDK_PROXIMITY_OUT_MASK")
+    '("substructure-mask" "GDK_SUBSTRUCTURE_MASK")
+    '("scroll-mask" "GDK_SCROLL_MASK")
+    '("all-events-mask" "GDK_ALL_EVENTS_MASK")
+  )
 )
 
-(enum VisibilityState
-  (in-module Gdk)
-  (c-name GdkVisibilityState)
-  (value (name unobscured) (c-name GDK_VISIBILITY_UNOBSCURED))
-  (value (name partial) (c-name GDK_VISIBILITY_PARTIAL))
-  (value (name fully-obscured) (c-name GDK_VISIBILITY_FULLY_OBSCURED))
+(define-enum VisibilityState
+  (in-module "Gdk")
+  (c-name "GdkVisibilityState")
+  (gtype-id "GDK_TYPE_VISIBILITY_STATE")
+  (values
+    '("unobscured" "GDK_VISIBILITY_UNOBSCURED")
+    '("partial" "GDK_VISIBILITY_PARTIAL")
+    '("fully-obscured" "GDK_VISIBILITY_FULLY_OBSCURED")
+  )
 )
 
-(enum ScrollDirection
-  (in-module Gdk)
-  (c-name GdkScrollDirection)
-  (value (name up) (c-name GDK_SCROLL_UP))
-  (value (name down) (c-name GDK_SCROLL_DOWN))
-  (value (name left) (c-name GDK_SCROLL_LEFT))
-  (value (name right) (c-name GDK_SCROLL_RIGHT))
+(define-enum ScrollDirection
+  (in-module "Gdk")
+  (c-name "GdkScrollDirection")
+  (gtype-id "GDK_TYPE_SCROLL_DIRECTION")
+  (values
+    '("up" "GDK_SCROLL_UP")
+    '("down" "GDK_SCROLL_DOWN")
+    '("left" "GDK_SCROLL_LEFT")
+    '("right" "GDK_SCROLL_RIGHT")
+  )
 )
 
-(enum NotifyType
-  (in-module Gdk)
-  (c-name GdkNotifyType)
-  (value (name ancestor) (c-name GDK_NOTIFY_ANCESTOR))
-  (value (name virtual) (c-name GDK_NOTIFY_VIRTUAL))
-  (value (name inferior) (c-name GDK_NOTIFY_INFERIOR))
-  (value (name nonlinear) (c-name GDK_NOTIFY_NONLINEAR))
-  (value (name nonlinear-virtual) (c-name GDK_NOTIFY_NONLINEAR_VIRTUAL))
-  (value (name unknown) (c-name GDK_NOTIFY_UNKNOWN))
+(define-enum NotifyType
+  (in-module "Gdk")
+  (c-name "GdkNotifyType")
+  (gtype-id "GDK_TYPE_NOTIFY_TYPE")
+  (values
+    '("ancestor" "GDK_NOTIFY_ANCESTOR")
+    '("virtual" "GDK_NOTIFY_VIRTUAL")
+    '("inferior" "GDK_NOTIFY_INFERIOR")
+    '("nonlinear" "GDK_NOTIFY_NONLINEAR")
+    '("nonlinear-virtual" "GDK_NOTIFY_NONLINEAR_VIRTUAL")
+    '("unknown" "GDK_NOTIFY_UNKNOWN")
+  )
 )
 
-(enum CrossingMode
-  (in-module Gdk)
-  (c-name GdkCrossingMode)
-  (value (name normal) (c-name GDK_CROSSING_NORMAL))
-  (value (name grab) (c-name GDK_CROSSING_GRAB))
-  (value (name ungrab) (c-name GDK_CROSSING_UNGRAB))
+(define-enum CrossingMode
+  (in-module "Gdk")
+  (c-name "GdkCrossingMode")
+  (gtype-id "GDK_TYPE_CROSSING_MODE")
+  (values
+    '("normal" "GDK_CROSSING_NORMAL")
+    '("grab" "GDK_CROSSING_GRAB")
+    '("ungrab" "GDK_CROSSING_UNGRAB")
+  )
 )
 
-(enum PropertyState
-  (in-module Gdk)
-  (c-name GdkPropertyState)
-  (value (name new-value) (c-name GDK_PROPERTY_NEW_VALUE))
-  (value (name delete) (c-name GDK_PROPERTY_DELETE))
+(define-enum PropertyState
+  (in-module "Gdk")
+  (c-name "GdkPropertyState")
+  (gtype-id "GDK_TYPE_PROPERTY_STATE")
+  (values
+    '("new-value" "GDK_PROPERTY_NEW_VALUE")
+    '("delete" "GDK_PROPERTY_DELETE")
+  )
 )
 
-(flags WindowState
-  (in-module Gdk)
-  (c-name GdkWindowState)
-  (value (name withdrawn) (c-name GDK_WINDOW_STATE_WITHDRAWN))
-  (value (name iconified) (c-name GDK_WINDOW_STATE_ICONIFIED))
-  (value (name maximized) (c-name GDK_WINDOW_STATE_MAXIMIZED))
-  (value (name sticky) (c-name GDK_WINDOW_STATE_STICKY))
+(define-flags WindowState
+  (in-module "Gdk")
+  (c-name "GdkWindowState")
+  (gtype-id "GDK_TYPE_WINDOW_STATE")
+  (values
+    '("withdrawn" "GDK_WINDOW_STATE_WITHDRAWN")
+    '("iconified" "GDK_WINDOW_STATE_ICONIFIED")
+    '("maximized" "GDK_WINDOW_STATE_MAXIMIZED")
+    '("sticky" "GDK_WINDOW_STATE_STICKY")
+  )
 )
 
-(enum FontType
-  (in-module Gdk)
-  (c-name GdkFontType)
-  (value (name font) (c-name GDK_FONT_FONT))
-  (value (name fontset) (c-name GDK_FONT_FONTSET))
+(define-enum FontType
+  (in-module "Gdk")
+  (c-name "GdkFontType")
+  (gtype-id "GDK_TYPE_FONT_TYPE")
+  (values
+    '("font" "GDK_FONT_FONT")
+    '("fontset" "GDK_FONT_FONTSET")
+  )
 )
 
-(enum CapStyle
-  (in-module Gdk)
-  (c-name GdkCapStyle)
-  (value (name not-last) (c-name GDK_CAP_NOT_LAST))
-  (value (name butt) (c-name GDK_CAP_BUTT))
-  (value (name round) (c-name GDK_CAP_ROUND))
-  (value (name projecting) (c-name GDK_CAP_PROJECTING))
+(define-enum CapStyle
+  (in-module "Gdk")
+  (c-name "GdkCapStyle")
+  (gtype-id "GDK_TYPE_CAP_STYLE")
+  (values
+    '("not-last" "GDK_CAP_NOT_LAST")
+    '("butt" "GDK_CAP_BUTT")
+    '("round" "GDK_CAP_ROUND")
+    '("projecting" "GDK_CAP_PROJECTING")
+  )
 )
 
-(enum Fill
-  (in-module Gdk)
-  (c-name GdkFill)
-  (value (name solid) (c-name GDK_SOLID))
-  (value (name tiled) (c-name GDK_TILED))
-  (value (name stippled) (c-name GDK_STIPPLED))
-  (value (name opaque-stippled) (c-name GDK_OPAQUE_STIPPLED))
+(define-enum Fill
+  (in-module "Gdk")
+  (c-name "GdkFill")
+  (gtype-id "GDK_TYPE_FILL")
+  (values
+    '("solid" "GDK_SOLID")
+    '("tiled" "GDK_TILED")
+    '("stippled" "GDK_STIPPLED")
+    '("opaque-stippled" "GDK_OPAQUE_STIPPLED")
+  )
 )
 
-(enum Function
-  (in-module Gdk)
-  (c-name GdkFunction)
-  (value (name copy) (c-name GDK_COPY))
-  (value (name invert) (c-name GDK_INVERT))
-  (value (name xor) (c-name GDK_XOR))
-  (value (name clear) (c-name GDK_CLEAR))
-  (value (name and) (c-name GDK_AND))
-  (value (name and-reverse) (c-name GDK_AND_REVERSE))
-  (value (name and-invert) (c-name GDK_AND_INVERT))
-  (value (name noop) (c-name GDK_NOOP))
-  (value (name or) (c-name GDK_OR))
-  (value (name equiv) (c-name GDK_EQUIV))
-  (value (name or-reverse) (c-name GDK_OR_REVERSE))
-  (value (name copy-invert) (c-name GDK_COPY_INVERT))
-  (value (name or-invert) (c-name GDK_OR_INVERT))
-  (value (name nand) (c-name GDK_NAND))
-  (value (name nor) (c-name GDK_NOR))
-  (value (name set) (c-name GDK_SET))
+(define-enum Function
+  (in-module "Gdk")
+  (c-name "GdkFunction")
+  (gtype-id "GDK_TYPE_FUNCTION")
+  (values
+    '("copy" "GDK_COPY")
+    '("invert" "GDK_INVERT")
+    '("xor" "GDK_XOR")
+    '("clear" "GDK_CLEAR")
+    '("and" "GDK_AND")
+    '("and-reverse" "GDK_AND_REVERSE")
+    '("and-invert" "GDK_AND_INVERT")
+    '("noop" "GDK_NOOP")
+    '("or" "GDK_OR")
+    '("equiv" "GDK_EQUIV")
+    '("or-reverse" "GDK_OR_REVERSE")
+    '("copy-invert" "GDK_COPY_INVERT")
+    '("or-invert" "GDK_OR_INVERT")
+    '("nand" "GDK_NAND")
+    '("nor" "GDK_NOR")
+    '("set" "GDK_SET")
+  )
 )
 
-(enum JoinStyle
-  (in-module Gdk)
-  (c-name GdkJoinStyle)
-  (value (name miter) (c-name GDK_JOIN_MITER))
-  (value (name round) (c-name GDK_JOIN_ROUND))
-  (value (name bevel) (c-name GDK_JOIN_BEVEL))
+(define-enum JoinStyle
+  (in-module "Gdk")
+  (c-name "GdkJoinStyle")
+  (gtype-id "GDK_TYPE_JOIN_STYLE")
+  (values
+    '("miter" "GDK_JOIN_MITER")
+    '("round" "GDK_JOIN_ROUND")
+    '("bevel" "GDK_JOIN_BEVEL")
+  )
 )
 
-(enum LineStyle
-  (in-module Gdk)
-  (c-name GdkLineStyle)
-  (value (name solid) (c-name GDK_LINE_SOLID))
-  (value (name on-off-dash) (c-name GDK_LINE_ON_OFF_DASH))
-  (value (name double-dash) (c-name GDK_LINE_DOUBLE_DASH))
+(define-enum LineStyle
+  (in-module "Gdk")
+  (c-name "GdkLineStyle")
+  (gtype-id "GDK_TYPE_LINE_STYLE")
+  (values
+    '("solid" "GDK_LINE_SOLID")
+    '("on-off-dash" "GDK_LINE_ON_OFF_DASH")
+    '("double-dash" "GDK_LINE_DOUBLE_DASH")
+  )
 )
 
-(enum SubwindowMode
-  (in-module Gdk)
-  (c-name GdkSubwindowMode)
-  (value (name clip-by-children) (c-name GDK_CLIP_BY_CHILDREN))
-  (value (name include-inferiors) (c-name GDK_INCLUDE_INFERIORS))
+(define-enum SubwindowMode
+  (in-module "Gdk")
+  (c-name "GdkSubwindowMode")
+  (gtype-id "GDK_TYPE_SUBWINDOW_MODE")
+  (values
+    '("clip-by-children" "GDK_CLIP_BY_CHILDREN")
+    '("include-inferiors" "GDK_INCLUDE_INFERIORS")
+  )
 )
 
-(flags GCValuesMask
-  (in-module Gdk)
-  (c-name GdkGCValuesMask)
-  (value (name foreground) (c-name GDK_GC_FOREGROUND))
-  (value (name background) (c-name GDK_GC_BACKGROUND))
-  (value (name font) (c-name GDK_GC_FONT))
-  (value (name function) (c-name GDK_GC_FUNCTION))
-  (value (name fill) (c-name GDK_GC_FILL))
-  (value (name tile) (c-name GDK_GC_TILE))
-  (value (name stipple) (c-name GDK_GC_STIPPLE))
-  (value (name clip-mask) (c-name GDK_GC_CLIP_MASK))
-  (value (name subwindow) (c-name GDK_GC_SUBWINDOW))
-  (value (name ts-x-origin) (c-name GDK_GC_TS_X_ORIGIN))
-  (value (name ts-y-origin) (c-name GDK_GC_TS_Y_ORIGIN))
-  (value (name clip-x-origin) (c-name GDK_GC_CLIP_X_ORIGIN))
-  (value (name clip-y-origin) (c-name GDK_GC_CLIP_Y_ORIGIN))
-  (value (name exposures) (c-name GDK_GC_EXPOSURES))
-  (value (name line-width) (c-name GDK_GC_LINE_WIDTH))
-  (value (name line-style) (c-name GDK_GC_LINE_STYLE))
-  (value (name cap-style) (c-name GDK_GC_CAP_STYLE))
-  (value (name join-style) (c-name GDK_GC_JOIN_STYLE))
+(define-flags GCValuesMask
+  (in-module "Gdk")
+  (c-name "GdkGCValuesMask")
+  (gtype-id "GDK_TYPE_GC_VALUES_MASK")
+  (values
+    '("foreground" "GDK_GC_FOREGROUND")
+    '("background" "GDK_GC_BACKGROUND")
+    '("font" "GDK_GC_FONT")
+    '("function" "GDK_GC_FUNCTION")
+    '("fill" "GDK_GC_FILL")
+    '("tile" "GDK_GC_TILE")
+    '("stipple" "GDK_GC_STIPPLE")
+    '("clip-mask" "GDK_GC_CLIP_MASK")
+    '("subwindow" "GDK_GC_SUBWINDOW")
+    '("ts-x-origin" "GDK_GC_TS_X_ORIGIN")
+    '("ts-y-origin" "GDK_GC_TS_Y_ORIGIN")
+    '("clip-x-origin" "GDK_GC_CLIP_X_ORIGIN")
+    '("clip-y-origin" "GDK_GC_CLIP_Y_ORIGIN")
+    '("exposures" "GDK_GC_EXPOSURES")
+    '("line-width" "GDK_GC_LINE_WIDTH")
+    '("line-style" "GDK_GC_LINE_STYLE")
+    '("cap-style" "GDK_GC_CAP_STYLE")
+    '("join-style" "GDK_GC_JOIN_STYLE")
+  )
 )
 
-(enum IMStyle
-  (in-module Gdk)
-  (c-name GdkIMStyle)
-  (value (name preedit-area) (c-name GDK_IM_PREEDIT_AREA))
-  (value (name preedit-callbacks) (c-name GDK_IM_PREEDIT_CALLBACKS))
-  (value (name preedit-position) (c-name GDK_IM_PREEDIT_POSITION))
-  (value (name preedit-nothing) (c-name GDK_IM_PREEDIT_NOTHING))
-  (value (name preedit-none) (c-name GDK_IM_PREEDIT_NONE))
-  (value (name preedit-mask) (c-name GDK_IM_PREEDIT_MASK))
-  (value (name status-area) (c-name GDK_IM_STATUS_AREA))
-  (value (name status-callbacks) (c-name GDK_IM_STATUS_CALLBACKS))
-  (value (name status-nothing) (c-name GDK_IM_STATUS_NOTHING))
-  (value (name status-none) (c-name GDK_IM_STATUS_NONE))
-  (value (name status-mask) (c-name GDK_IM_STATUS_MASK))
+(define-enum IMStyle
+  (in-module "Gdk")
+  (c-name "GdkIMStyle")
+  (gtype-id "GDK_TYPE_IM_STYLE")
+  (values
+    '("preedit-area" "GDK_IM_PREEDIT_AREA")
+    '("preedit-callbacks" "GDK_IM_PREEDIT_CALLBACKS")
+    '("preedit-position" "GDK_IM_PREEDIT_POSITION")
+    '("preedit-nothing" "GDK_IM_PREEDIT_NOTHING")
+    '("preedit-none" "GDK_IM_PREEDIT_NONE")
+    '("preedit-mask" "GDK_IM_PREEDIT_MASK")
+    '("status-area" "GDK_IM_STATUS_AREA")
+    '("status-callbacks" "GDK_IM_STATUS_CALLBACKS")
+    '("status-nothing" "GDK_IM_STATUS_NOTHING")
+    '("status-none" "GDK_IM_STATUS_NONE")
+    '("status-mask" "GDK_IM_STATUS_MASK")
+  )
 )
 
-(flags ICAttributesType
-  (in-module Gdk)
-  (c-name GdkICAttributesType)
-  (value (name style) (c-name GDK_IC_STYLE))
-  (value (name client-window) (c-name GDK_IC_CLIENT_WINDOW))
-  (value (name focus-window) (c-name GDK_IC_FOCUS_WINDOW))
-  (value (name filter-events) (c-name GDK_IC_FILTER_EVENTS))
-  (value (name spot-location) (c-name GDK_IC_SPOT_LOCATION))
-  (value (name line-spacing) (c-name GDK_IC_LINE_SPACING))
-  (value (name cursor) (c-name GDK_IC_CURSOR))
-  (value (name preedit-fontset) (c-name GDK_IC_PREEDIT_FONTSET))
-  (value (name preedit-area) (c-name GDK_IC_PREEDIT_AREA))
-  (value (name preedit-area-needed) (c-name GDK_IC_PREEDIT_AREA_NEEDED))
-  (value (name preedit-foreground) (c-name GDK_IC_PREEDIT_FOREGROUND))
-  (value (name preedit-background) (c-name GDK_IC_PREEDIT_BACKGROUND))
-  (value (name preedit-pixmap) (c-name GDK_IC_PREEDIT_PIXMAP))
-  (value (name preedit-colormap) (c-name GDK_IC_PREEDIT_COLORMAP))
-  (value (name status-fontset) (c-name GDK_IC_STATUS_FONTSET))
-  (value (name status-area) (c-name GDK_IC_STATUS_AREA))
-  (value (name status-area-needed) (c-name GDK_IC_STATUS_AREA_NEEDED))
-  (value (name status-foreground) (c-name GDK_IC_STATUS_FOREGROUND))
-  (value (name status-background) (c-name GDK_IC_STATUS_BACKGROUND))
-  (value (name status-pixmap) (c-name GDK_IC_STATUS_PIXMAP))
-  (value (name status-colormap) (c-name GDK_IC_STATUS_COLORMAP))
-  (value (name all-req) (c-name GDK_IC_ALL_REQ))
-  (value (name preedit-area-req) (c-name GDK_IC_PREEDIT_AREA_REQ))
-  (value (name preedit-position-req) (c-name GDK_IC_PREEDIT_POSITION_REQ))
-  (value (name status-area-req) (c-name GDK_IC_STATUS_AREA_REQ))
+(define-flags ICAttributesType
+  (in-module "Gdk")
+  (c-name "GdkICAttributesType")
+  (gtype-id "GDK_TYPE_IC_ATTRIBUTES_TYPE")
+  (values
+    '("style" "GDK_IC_STYLE")
+    '("client-window" "GDK_IC_CLIENT_WINDOW")
+    '("focus-window" "GDK_IC_FOCUS_WINDOW")
+    '("filter-events" "GDK_IC_FILTER_EVENTS")
+    '("spot-location" "GDK_IC_SPOT_LOCATION")
+    '("line-spacing" "GDK_IC_LINE_SPACING")
+    '("cursor" "GDK_IC_CURSOR")
+    '("preedit-fontset" "GDK_IC_PREEDIT_FONTSET")
+    '("preedit-area" "GDK_IC_PREEDIT_AREA")
+    '("preedit-area-needed" "GDK_IC_PREEDIT_AREA_NEEDED")
+    '("preedit-foreground" "GDK_IC_PREEDIT_FOREGROUND")
+    '("preedit-background" "GDK_IC_PREEDIT_BACKGROUND")
+    '("preedit-pixmap" "GDK_IC_PREEDIT_PIXMAP")
+    '("preedit-colormap" "GDK_IC_PREEDIT_COLORMAP")
+    '("status-fontset" "GDK_IC_STATUS_FONTSET")
+    '("status-area" "GDK_IC_STATUS_AREA")
+    '("status-area-needed" "GDK_IC_STATUS_AREA_NEEDED")
+    '("status-foreground" "GDK_IC_STATUS_FOREGROUND")
+    '("status-background" "GDK_IC_STATUS_BACKGROUND")
+    '("status-pixmap" "GDK_IC_STATUS_PIXMAP")
+    '("status-colormap" "GDK_IC_STATUS_COLORMAP")
+    '("all-req" "GDK_IC_ALL_REQ")
+    '("preedit-area-req" "GDK_IC_PREEDIT_AREA_REQ")
+    '("preedit-position-req" "GDK_IC_PREEDIT_POSITION_REQ")
+    '("status-area-req" "GDK_IC_STATUS_AREA_REQ")
+  )
 )
 
-(enum ImageType
-  (in-module Gdk)
-  (c-name GdkImageType)
-  (value (name normal) (c-name GDK_IMAGE_NORMAL))
-  (value (name shared) (c-name GDK_IMAGE_SHARED))
-  (value (name fastest) (c-name GDK_IMAGE_FASTEST))
+(define-enum ImageType
+  (in-module "Gdk")
+  (c-name "GdkImageType")
+  (gtype-id "GDK_TYPE_IMAGE_TYPE")
+  (values
+    '("normal" "GDK_IMAGE_NORMAL")
+    '("shared" "GDK_IMAGE_SHARED")
+    '("fastest" "GDK_IMAGE_FASTEST")
+  )
 )
 
-(enum ExtensionMode
-  (in-module Gdk)
-  (c-name GdkExtensionMode)
-  (value (name none) (c-name GDK_EXTENSION_EVENTS_NONE))
-  (value (name all) (c-name GDK_EXTENSION_EVENTS_ALL))
-  (value (name cursor) (c-name GDK_EXTENSION_EVENTS_CURSOR))
+(define-enum ExtensionMode
+  (in-module "Gdk")
+  (c-name "GdkExtensionMode")
+  (gtype-id "GDK_TYPE_EXTENSION_MODE")
+  (values
+    '("none" "GDK_EXTENSION_EVENTS_NONE")
+    '("all" "GDK_EXTENSION_EVENTS_ALL")
+    '("cursor" "GDK_EXTENSION_EVENTS_CURSOR")
+  )
 )
 
-(enum InputSource
-  (in-module Gdk)
-  (c-name GdkInputSource)
-  (value (name mouse) (c-name GDK_SOURCE_MOUSE))
-  (value (name pen) (c-name GDK_SOURCE_PEN))
-  (value (name eraser) (c-name GDK_SOURCE_ERASER))
-  (value (name cursor) (c-name GDK_SOURCE_CURSOR))
+(define-enum InputSource
+  (in-module "Gdk")
+  (c-name "GdkInputSource")
+  (gtype-id "GDK_TYPE_INPUT_SOURCE")
+  (values
+    '("mouse" "GDK_SOURCE_MOUSE")
+    '("pen" "GDK_SOURCE_PEN")
+    '("eraser" "GDK_SOURCE_ERASER")
+    '("cursor" "GDK_SOURCE_CURSOR")
+  )
 )
 
-(enum InputMode
-  (in-module Gdk)
-  (c-name GdkInputMode)
-  (value (name disabled) (c-name GDK_MODE_DISABLED))
-  (value (name screen) (c-name GDK_MODE_SCREEN))
-  (value (name window) (c-name GDK_MODE_WINDOW))
+(define-enum InputMode
+  (in-module "Gdk")
+  (c-name "GdkInputMode")
+  (gtype-id "GDK_TYPE_INPUT_MODE")
+  (values
+    '("disabled" "GDK_MODE_DISABLED")
+    '("screen" "GDK_MODE_SCREEN")
+    '("window" "GDK_MODE_WINDOW")
+  )
 )
 
-(enum AxisUse
-  (in-module Gdk)
-  (c-name GdkAxisUse)
-  (value (name ignore) (c-name GDK_AXIS_IGNORE))
-  (value (name x) (c-name GDK_AXIS_X))
-  (value (name y) (c-name GDK_AXIS_Y))
-  (value (name pressure) (c-name GDK_AXIS_PRESSURE))
-  (value (name xtilt) (c-name GDK_AXIS_XTILT))
-  (value (name ytilt) (c-name GDK_AXIS_YTILT))
-  (value (name wheel) (c-name GDK_AXIS_WHEEL))
-  (value (name last) (c-name GDK_AXIS_LAST))
+(define-enum AxisUse
+  (in-module "Gdk")
+  (c-name "GdkAxisUse")
+  (gtype-id "GDK_TYPE_AXIS_USE")
+  (values
+    '("ignore" "GDK_AXIS_IGNORE")
+    '("x" "GDK_AXIS_X")
+    '("y" "GDK_AXIS_Y")
+    '("pressure" "GDK_AXIS_PRESSURE")
+    '("xtilt" "GDK_AXIS_XTILT")
+    '("ytilt" "GDK_AXIS_YTILT")
+    '("wheel" "GDK_AXIS_WHEEL")
+    '("last" "GDK_AXIS_LAST")
+  )
 )
 
-(flags ColorInfoFlags
-  (in-module Gdk)
-  (c-name GdkColorInfoFlags)
-  (value (name e) (c-name GDK_COLOR_WRITEABLE))
+(define-flags ColorInfoFlags
+  (in-module "Gdk")
+  (c-name "GdkColorInfoFlags")
+  (gtype-id "GDK_TYPE_COLOR_INFO_FLAGS")
+  (values
+    '("e" "GDK_COLOR_WRITEABLE")
+  )
 )
 
-(enum PropMode
-  (in-module Gdk)
-  (c-name GdkPropMode)
-  (value (name replace) (c-name GDK_PROP_MODE_REPLACE))
-  (value (name prepend) (c-name GDK_PROP_MODE_PREPEND))
-  (value (name append) (c-name GDK_PROP_MODE_APPEND))
+(define-enum PropMode
+  (in-module "Gdk")
+  (c-name "GdkPropMode")
+  (gtype-id "GDK_TYPE_PROP_MODE")
+  (values
+    '("replace" "GDK_PROP_MODE_REPLACE")
+    '("prepend" "GDK_PROP_MODE_PREPEND")
+    '("append" "GDK_PROP_MODE_APPEND")
+  )
 )
 
-(enum FillRule
-  (in-module Gdk)
-  (c-name GdkFillRule)
-  (value (name even-odd-rule) (c-name GDK_EVEN_ODD_RULE))
-  (value (name winding-rule) (c-name GDK_WINDING_RULE))
+(define-enum FillRule
+  (in-module "Gdk")
+  (c-name "GdkFillRule")
+  (gtype-id "GDK_TYPE_FILL_RULE")
+  (values
+    '("even-odd-rule" "GDK_EVEN_ODD_RULE")
+    '("winding-rule" "GDK_WINDING_RULE")
+  )
 )
 
-(enum OverlapType
-  (in-module Gdk)
-  (c-name GdkOverlapType)
-  (value (name in) (c-name GDK_OVERLAP_RECTANGLE_IN))
-  (value (name out) (c-name GDK_OVERLAP_RECTANGLE_OUT))
-  (value (name part) (c-name GDK_OVERLAP_RECTANGLE_PART))
+(define-enum OverlapType
+  (in-module "Gdk")
+  (c-name "GdkOverlapType")
+  (gtype-id "GDK_TYPE_OVERLAP_TYPE")
+  (values
+    '("in" "GDK_OVERLAP_RECTANGLE_IN")
+    '("out" "GDK_OVERLAP_RECTANGLE_OUT")
+    '("part" "GDK_OVERLAP_RECTANGLE_PART")
+  )
 )
 
-(enum RgbDither
-  (in-module Gdk)
-  (c-name GdkRgbDither)
-  (value (name none) (c-name GDK_RGB_DITHER_NONE))
-  (value (name normal) (c-name GDK_RGB_DITHER_NORMAL))
-  (value (name max) (c-name GDK_RGB_DITHER_MAX))
+(define-enum RgbDither
+  (in-module "Gdk")
+  (c-name "GdkRgbDither")
+  (gtype-id "GDK_TYPE_RGB_DITHER")
+  (values
+    '("none" "GDK_RGB_DITHER_NONE")
+    '("normal" "GDK_RGB_DITHER_NORMAL")
+    '("max" "GDK_RGB_DITHER_MAX")
+  )
 )
 
-(enum Selection
-  (in-module Gdk)
-  (c-name GdkSelection)
-  (value (name primary) (c-name GDK_SELECTION_PRIMARY))
-  (value (name secondary) (c-name GDK_SELECTION_SECONDARY))
+(define-enum Selection
+  (in-module "Gdk")
+  (c-name "GdkSelection")
+  (gtype-id "GDK_TYPE_SELECTION")
+  (values
+    '("primary" "GDK_SELECTION_PRIMARY")
+    '("secondary" "GDK_SELECTION_SECONDARY")
+  )
 )
 
-(enum Target
-  (in-module Gdk)
-  (c-name GdkTarget)
-  (value (name bitmap) (c-name GDK_TARGET_BITMAP))
-  (value (name colormap) (c-name GDK_TARGET_COLORMAP))
-  (value (name drawable) (c-name GDK_TARGET_DRAWABLE))
-  (value (name pixmap) (c-name GDK_TARGET_PIXMAP))
-  (value (name string) (c-name GDK_TARGET_STRING))
+(define-enum Target
+  (in-module "Gdk")
+  (c-name "GdkTarget")
+  (gtype-id "GDK_TYPE_TARGET")
+  (values
+    '("bitmap" "GDK_TARGET_BITMAP")
+    '("colormap" "GDK_TARGET_COLORMAP")
+    '("drawable" "GDK_TARGET_DRAWABLE")
+    '("pixmap" "GDK_TARGET_PIXMAP")
+    '("string" "GDK_TARGET_STRING")
+  )
 )
 
-(enum SelectionType
-  (in-module Gdk)
-  (c-name GdkSelectionType)
-  (value (name atom) (c-name GDK_SELECTION_TYPE_ATOM))
-  (value (name bitmap) (c-name GDK_SELECTION_TYPE_BITMAP))
-  (value (name colormap) (c-name GDK_SELECTION_TYPE_COLORMAP))
-  (value (name drawable) (c-name GDK_SELECTION_TYPE_DRAWABLE))
-  (value (name integer) (c-name GDK_SELECTION_TYPE_INTEGER))
-  (value (name pixmap) (c-name GDK_SELECTION_TYPE_PIXMAP))
-  (value (name window) (c-name GDK_SELECTION_TYPE_WINDOW))
-  (value (name string) (c-name GDK_SELECTION_TYPE_STRING))
+(define-enum SelectionType
+  (in-module "Gdk")
+  (c-name "GdkSelectionType")
+  (gtype-id "GDK_TYPE_SELECTION_TYPE")
+  (values
+    '("atom" "GDK_SELECTION_TYPE_ATOM")
+    '("bitmap" "GDK_SELECTION_TYPE_BITMAP")
+    '("colormap" "GDK_SELECTION_TYPE_COLORMAP")
+    '("drawable" "GDK_SELECTION_TYPE_DRAWABLE")
+    '("integer" "GDK_SELECTION_TYPE_INTEGER")
+    '("pixmap" "GDK_SELECTION_TYPE_PIXMAP")
+    '("window" "GDK_SELECTION_TYPE_WINDOW")
+    '("string" "GDK_SELECTION_TYPE_STRING")
+  )
 )
 
-(enum ByteOrder
-  (in-module Gdk)
-  (c-name GdkByteOrder)
-  (value (name lsb-first) (c-name GDK_LSB_FIRST))
-  (value (name msb-first) (c-name GDK_MSB_FIRST))
+(define-enum ByteOrder
+  (in-module "Gdk")
+  (c-name "GdkByteOrder")
+  (gtype-id "GDK_TYPE_BYTE_ORDER")
+  (values
+    '("lsb-first" "GDK_LSB_FIRST")
+    '("msb-first" "GDK_MSB_FIRST")
+  )
 )
 
-(flags ModifierType
-  (in-module Gdk)
-  (c-name GdkModifierType)
-  (value (name shift-mask) (c-name GDK_SHIFT_MASK))
-  (value (name lock-mask) (c-name GDK_LOCK_MASK))
-  (value (name control-mask) (c-name GDK_CONTROL_MASK))
-  (value (name mod1-mask) (c-name GDK_MOD1_MASK))
-  (value (name mod2-mask) (c-name GDK_MOD2_MASK))
-  (value (name mod3-mask) (c-name GDK_MOD3_MASK))
-  (value (name mod4-mask) (c-name GDK_MOD4_MASK))
-  (value (name mod5-mask) (c-name GDK_MOD5_MASK))
-  (value (name button1-mask) (c-name GDK_BUTTON1_MASK))
-  (value (name button2-mask) (c-name GDK_BUTTON2_MASK))
-  (value (name button3-mask) (c-name GDK_BUTTON3_MASK))
-  (value (name button4-mask) (c-name GDK_BUTTON4_MASK))
-  (value (name button5-mask) (c-name GDK_BUTTON5_MASK))
-  (value (name release-mask) (c-name GDK_RELEASE_MASK))
-  (value (name modifier-mask) (c-name GDK_MODIFIER_MASK))
+(define-flags ModifierType
+  (in-module "Gdk")
+  (c-name "GdkModifierType")
+  (gtype-id "GDK_TYPE_MODIFIER_TYPE")
+  (values
+    '("shift-mask" "GDK_SHIFT_MASK")
+    '("lock-mask" "GDK_LOCK_MASK")
+    '("control-mask" "GDK_CONTROL_MASK")
+    '("mod1-mask" "GDK_MOD1_MASK")
+    '("mod2-mask" "GDK_MOD2_MASK")
+    '("mod3-mask" "GDK_MOD3_MASK")
+    '("mod4-mask" "GDK_MOD4_MASK")
+    '("mod5-mask" "GDK_MOD5_MASK")
+    '("button1-mask" "GDK_BUTTON1_MASK")
+    '("button2-mask" "GDK_BUTTON2_MASK")
+    '("button3-mask" "GDK_BUTTON3_MASK")
+    '("button4-mask" "GDK_BUTTON4_MASK")
+    '("button5-mask" "GDK_BUTTON5_MASK")
+    '("release-mask" "GDK_RELEASE_MASK")
+    '("modifier-mask" "GDK_MODIFIER_MASK")
+  )
 )
 
-(flags InputCondition
-  (in-module Gdk)
-  (c-name GdkInputCondition)
-  (value (name read) (c-name GDK_INPUT_READ))
-  (value (name write) (c-name GDK_INPUT_WRITE))
-  (value (name exception) (c-name GDK_INPUT_EXCEPTION))
+(define-flags InputCondition
+  (in-module "Gdk")
+  (c-name "GdkInputCondition")
+  (gtype-id "GDK_TYPE_INPUT_CONDITION")
+  (values
+    '("read" "GDK_INPUT_READ")
+    '("write" "GDK_INPUT_WRITE")
+    '("exception" "GDK_INPUT_EXCEPTION")
+  )
 )
 
-(enum Status
-  (in-module Gdk)
-  (c-name GdkStatus)
-  (value (name ok) (c-name GDK_OK))
-  (value (name error) (c-name GDK_ERROR))
-  (value (name error-param) (c-name GDK_ERROR_PARAM))
-  (value (name error-file) (c-name GDK_ERROR_FILE))
-  (value (name error-mem) (c-name GDK_ERROR_MEM))
+(define-enum Status
+  (in-module "Gdk")
+  (c-name "GdkStatus")
+  (gtype-id "GDK_TYPE_STATUS")
+  (values
+    '("ok" "GDK_OK")
+    '("error" "GDK_ERROR")
+    '("error-param" "GDK_ERROR_PARAM")
+    '("error-file" "GDK_ERROR_FILE")
+    '("error-mem" "GDK_ERROR_MEM")
+  )
 )
 
-(enum GrabStatus
-  (in-module Gdk)
-  (c-name GdkGrabStatus)
-  (value (name success) (c-name GDK_GRAB_SUCCESS))
-  (value (name already-grabbed) (c-name GDK_GRAB_ALREADY_GRABBED))
-  (value (name invalid-time) (c-name GDK_GRAB_INVALID_TIME))
-  (value (name not-viewable) (c-name GDK_GRAB_NOT_VIEWABLE))
-  (value (name frozen) (c-name GDK_GRAB_FROZEN))
+(define-enum GrabStatus
+  (in-module "Gdk")
+  (c-name "GdkGrabStatus")
+  (gtype-id "GDK_TYPE_GRAB_STATUS")
+  (values
+    '("success" "GDK_GRAB_SUCCESS")
+    '("already-grabbed" "GDK_GRAB_ALREADY_GRABBED")
+    '("invalid-time" "GDK_GRAB_INVALID_TIME")
+    '("not-viewable" "GDK_GRAB_NOT_VIEWABLE")
+    '("frozen" "GDK_GRAB_FROZEN")
+  )
 )
 
-(enum VisualType
-  (in-module Gdk)
-  (c-name GdkVisualType)
-  (value (name static-gray) (c-name GDK_VISUAL_STATIC_GRAY))
-  (value (name grayscale) (c-name GDK_VISUAL_GRAYSCALE))
-  (value (name static-color) (c-name GDK_VISUAL_STATIC_COLOR))
-  (value (name pseudo-color) (c-name GDK_VISUAL_PSEUDO_COLOR))
-  (value (name true-color) (c-name GDK_VISUAL_TRUE_COLOR))
-  (value (name direct-color) (c-name GDK_VISUAL_DIRECT_COLOR))
+(define-enum VisualType
+  (in-module "Gdk")
+  (c-name "GdkVisualType")
+  (gtype-id "GDK_TYPE_VISUAL_TYPE")
+  (values
+    '("static-gray" "GDK_VISUAL_STATIC_GRAY")
+    '("grayscale" "GDK_VISUAL_GRAYSCALE")
+    '("static-color" "GDK_VISUAL_STATIC_COLOR")
+    '("pseudo-color" "GDK_VISUAL_PSEUDO_COLOR")
+    '("true-color" "GDK_VISUAL_TRUE_COLOR")
+    '("direct-color" "GDK_VISUAL_DIRECT_COLOR")
+  )
 )
 
-(enum WindowClass
-  (in-module Gdk)
-  (c-name GdkWindowClass)
-  (value (name utput) (c-name GDK_INPUT_OUTPUT))
-  (value (name nly) (c-name GDK_INPUT_ONLY))
+(define-enum WindowClass
+  (in-module "Gdk")
+  (c-name "GdkWindowClass")
+  (gtype-id "GDK_TYPE_WINDOW_CLASS")
+  (values
+    '("utput" "GDK_INPUT_OUTPUT")
+    '("nly" "GDK_INPUT_ONLY")
+  )
 )
 
-(enum WindowType
-  (in-module Gdk)
-  (c-name GdkWindowType)
-  (value (name root) (c-name GDK_WINDOW_ROOT))
-  (value (name toplevel) (c-name GDK_WINDOW_TOPLEVEL))
-  (value (name child) (c-name GDK_WINDOW_CHILD))
-  (value (name dialog) (c-name GDK_WINDOW_DIALOG))
-  (value (name temp) (c-name GDK_WINDOW_TEMP))
-  (value (name foreign) (c-name GDK_WINDOW_FOREIGN))
+(define-enum WindowType
+  (in-module "Gdk")
+  (c-name "GdkWindowType")
+  (gtype-id "GDK_TYPE_WINDOW_TYPE")
+  (values
+    '("root" "GDK_WINDOW_ROOT")
+    '("toplevel" "GDK_WINDOW_TOPLEVEL")
+    '("child" "GDK_WINDOW_CHILD")
+    '("dialog" "GDK_WINDOW_DIALOG")
+    '("temp" "GDK_WINDOW_TEMP")
+    '("foreign" "GDK_WINDOW_FOREIGN")
+  )
 )
 
-(flags WindowAttributesType
-  (in-module Gdk)
-  (c-name GdkWindowAttributesType)
-  (value (name title) (c-name GDK_WA_TITLE))
-  (value (name x) (c-name GDK_WA_X))
-  (value (name y) (c-name GDK_WA_Y))
-  (value (name cursor) (c-name GDK_WA_CURSOR))
-  (value (name colormap) (c-name GDK_WA_COLORMAP))
-  (value (name visual) (c-name GDK_WA_VISUAL))
-  (value (name wmclass) (c-name GDK_WA_WMCLASS))
-  (value (name noredir) (c-name GDK_WA_NOREDIR))
+(define-flags WindowAttributesType
+  (in-module "Gdk")
+  (c-name "GdkWindowAttributesType")
+  (gtype-id "GDK_TYPE_WINDOW_ATTRIBUTES_TYPE")
+  (values
+    '("title" "GDK_WA_TITLE")
+    '("x" "GDK_WA_X")
+    '("y" "GDK_WA_Y")
+    '("cursor" "GDK_WA_CURSOR")
+    '("colormap" "GDK_WA_COLORMAP")
+    '("visual" "GDK_WA_VISUAL")
+    '("wmclass" "GDK_WA_WMCLASS")
+    '("noredir" "GDK_WA_NOREDIR")
+  )
 )
 
-(flags WindowHints
-  (in-module Gdk)
-  (c-name GdkWindowHints)
-  (value (name pos) (c-name GDK_HINT_POS))
-  (value (name min-size) (c-name GDK_HINT_MIN_SIZE))
-  (value (name max-size) (c-name GDK_HINT_MAX_SIZE))
-  (value (name base-size) (c-name GDK_HINT_BASE_SIZE))
-  (value (name aspect) (c-name GDK_HINT_ASPECT))
-  (value (name resize-inc) (c-name GDK_HINT_RESIZE_INC))
-  (value (name win-gravity) (c-name GDK_HINT_WIN_GRAVITY))
+(define-flags WindowHints
+  (in-module "Gdk")
+  (c-name "GdkWindowHints")
+  (gtype-id "GDK_TYPE_WINDOW_HINTS")
+  (values
+    '("pos" "GDK_HINT_POS")
+    '("min-size" "GDK_HINT_MIN_SIZE")
+    '("max-size" "GDK_HINT_MAX_SIZE")
+    '("base-size" "GDK_HINT_BASE_SIZE")
+    '("aspect" "GDK_HINT_ASPECT")
+    '("resize-inc" "GDK_HINT_RESIZE_INC")
+    '("win-gravity" "GDK_HINT_WIN_GRAVITY")
+  )
 )
 
-(enum WindowTypeHint
-  (in-module Gdk)
-  (c-name GdkWindowTypeHint)
-  (value (name normal) (c-name GDK_WINDOW_TYPE_HINT_NORMAL))
-  (value (name dialog) (c-name GDK_WINDOW_TYPE_HINT_DIALOG))
-  (value (name menu) (c-name GDK_WINDOW_TYPE_HINT_MENU))
-  (value (name toolbar) (c-name GDK_WINDOW_TYPE_HINT_TOOLBAR))
+(define-enum WindowTypeHint
+  (in-module "Gdk")
+  (c-name "GdkWindowTypeHint")
+  (gtype-id "GDK_TYPE_WINDOW_TYPE_HINT")
+  (values
+    '("normal" "GDK_WINDOW_TYPE_HINT_NORMAL")
+    '("dialog" "GDK_WINDOW_TYPE_HINT_DIALOG")
+    '("menu" "GDK_WINDOW_TYPE_HINT_MENU")
+    '("toolbar" "GDK_WINDOW_TYPE_HINT_TOOLBAR")
+  )
 )
 
-(flags WMDecoration
-  (in-module Gdk)
-  (c-name GdkWMDecoration)
-  (value (name all) (c-name GDK_DECOR_ALL))
-  (value (name border) (c-name GDK_DECOR_BORDER))
-  (value (name resizeh) (c-name GDK_DECOR_RESIZEH))
-  (value (name title) (c-name GDK_DECOR_TITLE))
-  (value (name menu) (c-name GDK_DECOR_MENU))
-  (value (name minimize) (c-name GDK_DECOR_MINIMIZE))
-  (value (name maximize) (c-name GDK_DECOR_MAXIMIZE))
+(define-flags WMDecoration
+  (in-module "Gdk")
+  (c-name "GdkWMDecoration")
+  (gtype-id "GDK_TYPE_WM_DECORATION")
+  (values
+    '("all" "GDK_DECOR_ALL")
+    '("border" "GDK_DECOR_BORDER")
+    '("resizeh" "GDK_DECOR_RESIZEH")
+    '("title" "GDK_DECOR_TITLE")
+    '("menu" "GDK_DECOR_MENU")
+    '("minimize" "GDK_DECOR_MINIMIZE")
+    '("maximize" "GDK_DECOR_MAXIMIZE")
+  )
 )
 
-(flags WMFunction
-  (in-module Gdk)
-  (c-name GdkWMFunction)
-  (value (name all) (c-name GDK_FUNC_ALL))
-  (value (name resize) (c-name GDK_FUNC_RESIZE))
-  (value (name move) (c-name GDK_FUNC_MOVE))
-  (value (name minimize) (c-name GDK_FUNC_MINIMIZE))
-  (value (name maximize) (c-name GDK_FUNC_MAXIMIZE))
-  (value (name close) (c-name GDK_FUNC_CLOSE))
+(define-flags WMFunction
+  (in-module "Gdk")
+  (c-name "GdkWMFunction")
+  (gtype-id "GDK_TYPE_WM_FUNCTION")
+  (values
+    '("all" "GDK_FUNC_ALL")
+    '("resize" "GDK_FUNC_RESIZE")
+    '("move" "GDK_FUNC_MOVE")
+    '("minimize" "GDK_FUNC_MINIMIZE")
+    '("maximize" "GDK_FUNC_MAXIMIZE")
+    '("close" "GDK_FUNC_CLOSE")
+  )
 )
 
-(enum Gravity
-  (in-module Gdk)
-  (c-name GdkGravity)
-  (value (name north-west) (c-name GDK_GRAVITY_NORTH_WEST))
-  (value (name north) (c-name GDK_GRAVITY_NORTH))
-  (value (name north-east) (c-name GDK_GRAVITY_NORTH_EAST))
-  (value (name west) (c-name GDK_GRAVITY_WEST))
-  (value (name center) (c-name GDK_GRAVITY_CENTER))
-  (value (name east) (c-name GDK_GRAVITY_EAST))
-  (value (name south-west) (c-name GDK_GRAVITY_SOUTH_WEST))
-  (value (name south) (c-name GDK_GRAVITY_SOUTH))
-  (value (name south-east) (c-name GDK_GRAVITY_SOUTH_EAST))
-  (value (name static) (c-name GDK_GRAVITY_STATIC))
+(define-enum Gravity
+  (in-module "Gdk")
+  (c-name "GdkGravity")
+  (gtype-id "GDK_TYPE_GRAVITY")
+  (values
+    '("north-west" "GDK_GRAVITY_NORTH_WEST")
+    '("north" "GDK_GRAVITY_NORTH")
+    '("north-east" "GDK_GRAVITY_NORTH_EAST")
+    '("west" "GDK_GRAVITY_WEST")
+    '("center" "GDK_GRAVITY_CENTER")
+    '("east" "GDK_GRAVITY_EAST")
+    '("south-west" "GDK_GRAVITY_SOUTH_WEST")
+    '("south" "GDK_GRAVITY_SOUTH")
+    '("south-east" "GDK_GRAVITY_SOUTH_EAST")
+    '("static" "GDK_GRAVITY_STATIC")
+  )
 )
 
-(enum PixbufAlphaMode
-  (in-module Gdk)
-  (c-name GdkPixbufAlphaMode)
-  (value (name bilevel) (c-name GDK_PIXBUF_ALPHA_BILEVEL))
-  (value (name full) (c-name GDK_PIXBUF_ALPHA_FULL))
+(define-enum PixbufAlphaMode
+  (in-module "Gdk")
+  (c-name "GdkPixbufAlphaMode")
+  (gtype-id "GDK_TYPE_PIXBUF_ALPHA_MODE")
+  (values
+    '("bilevel" "GDK_PIXBUF_ALPHA_BILEVEL")
+    '("full" "GDK_PIXBUF_ALPHA_FULL")
+  )
 )
 
-(enum Colorspace
-  (in-module Gdk)
-  (c-name GdkColorspace)
-  (value (name b) (c-name GDK_COLORSPACE_RGB))
+(define-enum Colorspace
+  (in-module "Gdk")
+  (c-name "GdkColorspace")
+  (gtype-id "GDK_TYPE_COLORSPACE")
+  (values
+    '("b" "GDK_COLORSPACE_RGB")
+  )
 )
 
-(enum PixbufError
-  (in-module Gdk)
-  (c-name GdkPixbufError)
-  (value (name corrupt-image) (c-name GDK_PIXBUF_ERROR_CORRUPT_IMAGE))
-  (value (name insufficient-memory) (c-name GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY))
-  (value (name bad-option-value) (c-name GDK_PIXBUF_ERROR_BAD_OPTION_VALUE))
-  (value (name unknown-type) (c-name GDK_PIXBUF_ERROR_UNKNOWN_TYPE))
-  (value (name unsupported-operation) (c-name GDK_PIXBUF_ERROR_UNSUPPORTED_OPERATION))
-  (value (name failed) (c-name GDK_PIXBUF_ERROR_FAILED))
+(define-enum PixbufError
+  (in-module "Gdk")
+  (c-name "GdkPixbufError")
+  (gtype-id "GDK_TYPE_PIXBUF_ERROR")
+  (values
+    '("corrupt-image" "GDK_PIXBUF_ERROR_CORRUPT_IMAGE")
+    '("insufficient-memory" "GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY")
+    '("bad-option-value" "GDK_PIXBUF_ERROR_BAD_OPTION_VALUE")
+    '("unknown-type" "GDK_PIXBUF_ERROR_UNKNOWN_TYPE")
+    '("unsupported-operation" "GDK_PIXBUF_ERROR_UNSUPPORTED_OPERATION")
+    '("failed" "GDK_PIXBUF_ERROR_FAILED")
+  )
 )
 
-(enum InterpType
-  (in-module Gdk)
-  (c-name GdkInterpType)
-  (value (name nearest) (c-name GDK_INTERP_NEAREST))
-  (value (name tiles) (c-name GDK_INTERP_TILES))
-  (value (name bilinear) (c-name GDK_INTERP_BILINEAR))
-  (value (name hyper) (c-name GDK_INTERP_HYPER))
+(define-enum InterpType
+  (in-module "Gdk")
+  (c-name "GdkInterpType")
+  (gtype-id "GDK_TYPE_INTERP_TYPE")
+  (values
+    '("nearest" "GDK_INTERP_NEAREST")
+    '("tiles" "GDK_INTERP_TILES")
+    '("bilinear" "GDK_INTERP_BILINEAR")
+    '("hyper" "GDK_INTERP_HYPER")
+  )
 )
 
-(enum PixbufFrameAction
-  (in-module Gdk)
-  (c-name GdkPixbufFrameAction)
-  (value (name retain) (c-name GDK_PIXBUF_FRAME_RETAIN))
-  (value (name dispose) (c-name GDK_PIXBUF_FRAME_DISPOSE))
-  (value (name revert) (c-name GDK_PIXBUF_FRAME_REVERT))
+(define-enum PixbufFrameAction
+  (in-module "Gdk")
+  (c-name "GdkPixbufFrameAction")
+  (gtype-id "GDK_TYPE_PIXBUF_FRAME_ACTION")
+  (values
+    '("retain" "GDK_PIXBUF_FRAME_RETAIN")
+    '("dispose" "GDK_PIXBUF_FRAME_DISPOSE")
+    '("revert" "GDK_PIXBUF_FRAME_REVERT")
+  )
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkcolor.h
 
-(function gdk_colormap_get_type
-  (c-name gdk_colormap_get_type)
-  (return-type GType)
+(define-function gdk_colormap_get_type
+  (c-name "gdk_colormap_get_type")
+  (return-type "GType")
 )
 
-(function gdk_colormap_new
-  (c-name gdk_colormap_new)
+(define-function gdk_colormap_new
+  (c-name "gdk_colormap_new")
   (is-constructor-of GdkColormap)
-  (return-type GdkColormap*)
-  (parameter (type-and-name GdkVisual* visual))
-  (parameter (type-and-name gboolean allocate))
+  (return-type "GdkColormap*")
+  (parameters
+    '("GdkVisual*" "visual")
+    '("gboolean" "allocate")
+  )
 )
 
-(function colormap_get_system
-  (c-name gdk_colormap_get_system)
-  (return-type GdkColormap*)
+(define-function colormap_get_system
+  (c-name "gdk_colormap_get_system")
+  (return-type "GdkColormap*")
 )
 
-(function colormap_get_system_size
-  (c-name gdk_colormap_get_system_size)
-  (return-type gint)
+(define-function colormap_get_system_size
+  (c-name "gdk_colormap_get_system_size")
+  (return-type "gint")
 )
 
-(method change
-  (of-object Colormap (Gdk))
-  (c-name gdk_colormap_change)
-  (return-type none)
-  (parameter (type-and-name gint ncolors))
+(define-method change
+  (of-object "GdkColormap")
+  (c-name "gdk_colormap_change")
+  (return-type "none")
+  (parameters
+    '("gint" "ncolors")
+  )
 )
 
-(method alloc_color
-  (of-object Colormap (Gdk))
-  (c-name gdk_colormap_alloc_color)
-  (return-type gboolean)
-  (parameter (type-and-name GdkColor* color))
-  (parameter (type-and-name gboolean writeable))
-  (parameter (type-and-name gboolean best_match))
+(define-method alloc_color
+  (of-object "GdkColormap")
+  (c-name "gdk_colormap_alloc_color")
+  (return-type "gboolean")
+  (parameters
+    '("GdkColor*" "color")
+    '("gboolean" "writeable")
+    '("gboolean" "best_match")
+  )
 )
 
-(method get_visual
-  (of-object Colormap (Gdk))
-  (c-name gdk_colormap_get_visual)
-  (return-type GdkVisual*)
+(define-method get_visual
+  (of-object "GdkColormap")
+  (c-name "gdk_colormap_get_visual")
+  (return-type "GdkVisual*")
 )
 
-(function gdk_color_parse
-  (c-name gdk_color_parse)
-  (return-type gint)
-  (parameter (type-and-name const-gchar* spec))
-  (parameter (type-and-name GdkColor* color))
+(define-function gdk_color_parse
+  (c-name "gdk_color_parse")
+  (return-type "gint")
+  (parameters
+    '("const-gchar*" "spec")
+    '("GdkColor*" "color")
+  )
 )
 
-(method white
-  (of-object Colormap (Gdk))
-  (c-name gdk_color_white)
-  (return-type gint)
-  (parameter (type-and-name GdkColor* color))
+(define-method white
+  (of-object "GdkColormap")
+  (c-name "gdk_color_white")
+  (return-type "gint")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
-(method black
-  (of-object Colormap (Gdk))
-  (c-name gdk_color_black)
-  (return-type gint)
-  (parameter (type-and-name GdkColor* color))
+(define-method black
+  (of-object "GdkColormap")
+  (c-name "gdk_color_black")
+  (return-type "gint")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
-(method alloc
-  (of-object Colormap (Gdk))
-  (c-name gdk_color_alloc)
-  (return-type gint)
-  (parameter (type-and-name GdkColor* color))
+(define-method alloc
+  (of-object "GdkColormap")
+  (c-name "gdk_color_alloc")
+  (return-type "gint")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
-(method change
-  (of-object Colormap (Gdk))
-  (c-name gdk_color_change)
-  (return-type gint)
-  (parameter (type-and-name GdkColor* color))
+(define-method change
+  (of-object "GdkColormap")
+  (c-name "gdk_color_change")
+  (return-type "gint")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkcursor.h
 
-(function cursor_new
+(define-function cursor_new
   (is-constructor-of GdkCursor)
-  (c-name gdk_cursor_new)
-  (return-type GdkCursor*)
-  (parameter (type-and-name GdkCursorType cursor_type))
+  (c-name "gdk_cursor_new")
+  (return-type "GdkCursor*")
+  (parameters
+    '("GdkCursorType" "cursor_type")
+  )
 )
 
-(function cursor_new_from_pixmap
+(define-function cursor_new_from_pixmap
   (is-constructor-of GdkCursor)
-  (c-name gdk_cursor_new_from_pixmap)
-  (return-type GdkCursor*)
-  (parameter (type-and-name GdkPixmap* source))
-  (parameter (type-and-name GdkPixmap* mask))
-  (parameter (type-and-name GdkColor* fg))
-  (parameter (type-and-name GdkColor* bg))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+  (c-name "gdk_cursor_new_from_pixmap")
+  (return-type "GdkCursor*")
+  (parameters
+    '("GdkPixmap*" "source")
+    '("GdkPixmap*" "mask")
+    '("GdkColor*" "fg")
+    '("GdkColor*" "bg")
+    '("gint" "x")
+    '("gint" "y")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkdnd.h
 
-(function gdk_drag_context_get_type
-  (c-name gdk_drag_context_get_type)
-  (return-type GType)
+(define-function gdk_drag_context_get_type
+  (c-name "gdk_drag_context_get_type")
+  (return-type "GType")
 )
 
-(function gdk_drag_context_new
+(define-function gdk_drag_context_new
   (is-constructor-of GdkDragContext)
-  (c-name gdk_drag_context_new)
-  (return-type GdkDragContext*)
+  (c-name "gdk_drag_context_new")
+  (return-type "GdkDragContext*")
 )
 
-(method ref
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_context_ref)
-  (return-type none)
+(define-method ref
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_context_ref")
+  (return-type "none")
 )
 
-(method unref
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_context_unref)
-  (return-type none)
+(define-method unref
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_context_unref")
+  (return-type "none")
 )
 
-(method drag_status
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_status)
-  (return-type none)
-  (parameter (type-and-name GdkDragAction action))
-  (parameter (type-and-name guint32 time))
+(define-method drag_status
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_status")
+  (return-type "none")
+  (parameters
+    '("GdkDragAction" "action")
+    '("guint32" "time")
+  )
 )
 
-(method drop_reply
-  (of-object DragContext (Gdk))
-  (c-name gdk_drop_reply)
-  (return-type none)
-  (parameter (type-and-name gboolean ok))
-  (parameter (type-and-name guint32 time))
+(define-method drop_reply
+  (of-object "GdkDragContext")
+  (c-name "gdk_drop_reply")
+  (return-type "none")
+  (parameters
+    '("gboolean" "ok")
+    '("guint32" "time")
+  )
 )
 
-(method drop_finish
-  (of-object DragContext (Gdk))
-  (c-name gdk_drop_finish)
-  (return-type none)
-  (parameter (type-and-name gboolean success))
-  (parameter (type-and-name guint32 time))
+(define-method drop_finish
+  (of-object "GdkDragContext")
+  (c-name "gdk_drop_finish")
+  (return-type "none")
+  (parameters
+    '("gboolean" "success")
+    '("guint32" "time")
+  )
 )
 
-(method drag_get_selection
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_get_selection)
-  (return-type GdkAtom)
+(define-method drag_get_selection
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_get_selection")
+  (return-type "GdkAtom")
 )
 
-(method drag_begin
-  (of-object Window (Gdk))
-  (c-name gdk_drag_begin)
-  (return-type GdkDragContext*)
-  (parameter (type-and-name GList* targets))
+(define-method drag_begin
+  (of-object "GdkWindow")
+  (c-name "gdk_drag_begin")
+  (return-type "GdkDragContext*")
+  (parameters
+    '("GList*" "targets")
+  )
 )
 
-(function drag_get_protocol
-  (c-name gdk_drag_get_protocol)
-  (return-type guint32)
-  (parameter (type-and-name guint32 xid))
-  (parameter (type-and-name GdkDragProtocol* protocol))
+(define-function drag_get_protocol
+  (c-name "gdk_drag_get_protocol")
+  (return-type "guint32")
+  (parameters
+    '("guint32" "xid")
+    '("GdkDragProtocol*" "protocol")
+  )
 )
 
-(method drag_find_window
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_find_window)
-  (return-type none)
-  (parameter (type-and-name GdkWindow* drag_window))
-  (parameter (type-and-name gint x_root))
-  (parameter (type-and-name gint y_root))
-  (parameter (type-and-name GdkWindow** dest_window))
-  (parameter (type-and-name GdkDragProtocol* protocol))
+(define-method drag_find_window
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_find_window")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "drag_window")
+    '("gint" "x_root")
+    '("gint" "y_root")
+    '("GdkWindow**" "dest_window")
+    '("GdkDragProtocol*" "protocol")
+  )
 )
 
-(method drag_motion
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_motion)
-  (return-type gboolean)
-  (parameter (type-and-name GdkWindow* dest_window))
-  (parameter (type-and-name GdkDragProtocol protocol))
-  (parameter (type-and-name gint x_root))
-  (parameter (type-and-name gint y_root))
-  (parameter (type-and-name GdkDragAction suggested_action))
-  (parameter (type-and-name GdkDragAction possible_actions))
-  (parameter (type-and-name guint32 time))
+(define-method drag_motion
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_motion")
+  (return-type "gboolean")
+  (parameters
+    '("GdkWindow*" "dest_window")
+    '("GdkDragProtocol" "protocol")
+    '("gint" "x_root")
+    '("gint" "y_root")
+    '("GdkDragAction" "suggested_action")
+    '("GdkDragAction" "possible_actions")
+    '("guint32" "time")
+  )
 )
 
-(method drag_drop
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_drop)
-  (return-type none)
-  (parameter (type-and-name guint32 time))
+(define-method drag_drop
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_drop")
+  (return-type "none")
+  (parameters
+    '("guint32" "time")
+  )
 )
 
-(method drag_abort
-  (of-object DragContext (Gdk))
-  (c-name gdk_drag_abort)
-  (return-type none)
-  (parameter (type-and-name guint32 time))
+(define-method drag_abort
+  (of-object "GdkDragContext")
+  (c-name "gdk_drag_abort")
+  (return-type "none")
+  (parameters
+    '("guint32" "time")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkdrawable.h
 
-(function gdk_drawable_get_type
-  (c-name gdk_drawable_get_type)
-  (return-type GType)
+(define-function gdk_drawable_get_type
+  (c-name "gdk_drawable_get_type")
+  (return-type "GType")
 )
 
-(method set_data
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_set_data)
-  (return-type none)
-  (parameter (type-and-name const-gchar* key))
-  (parameter (type-and-name gpointer data))
-  (parameter (type-and-name GDestroyNotify destroy_func))
+(define-method set_data
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_set_data")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "key")
+    '("gpointer" "data")
+    '("GDestroyNotify" "destroy_func")
+  )
 )
 
-(method get_data
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_get_data)
-  (return-type gpointer)
-  (parameter (type-and-name const-gchar* key))
+(define-method get_data
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_get_data")
+  (return-type "gpointer")
+  (parameters
+    '("const-gchar*" "key")
+  )
 )
 
-(method get_size
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_get_size)
-  (return-type none)
-  (parameter (type-and-name gint* width))
-  (parameter (type-and-name gint* height))
+(define-method get_size
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_get_size")
+  (return-type "none")
+  (parameters
+    '("gint*" "width")
+    '("gint*" "height")
+  )
 )
 
-(method set_colormap
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_set_colormap)
-  (return-type none)
-  (parameter (type-and-name GdkColormap* colormap))
+(define-method set_colormap
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_set_colormap")
+  (return-type "none")
+  (parameters
+    '("GdkColormap*" "colormap")
+  )
 )
 
-(method get_colormap
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_get_colormap)
-  (return-type GdkColormap*)
+(define-method get_colormap
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_get_colormap")
+  (return-type "GdkColormap*")
 )
 
-(method get_visual
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_get_visual)
-  (return-type GdkVisual*)
+(define-method get_visual
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_get_visual")
+  (return-type "GdkVisual*")
 )
 
-(method get_depth
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_get_depth)
-  (return-type gint)
+(define-method get_depth
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_get_depth")
+  (return-type "gint")
 )
 
-(method ref
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_ref)
-  (return-type GdkDrawable*)
+(define-method ref
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_ref")
+  (return-type "GdkDrawable*")
 )
 
-(method unref
-  (of-object Drawable (Gdk))
-  (c-name gdk_drawable_unref)
-  (return-type none)
+(define-method unref
+  (of-object "GdkDrawable")
+  (c-name "gdk_drawable_unref")
+  (return-type "none")
 )
 
-(method draw_point
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_point)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+(define-method draw_point
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_point")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+  )
 )
 
-(method draw_line
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_line)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x1))
-  (parameter (type-and-name gint y1))
-  (parameter (type-and-name gint x2))
-  (parameter (type-and-name gint y2))
+(define-method draw_line
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_line")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x1")
+    '("gint" "y1")
+    '("gint" "x2")
+    '("gint" "y2")
+  )
 )
 
-(method draw_rectangle
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_rectangle)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint filled))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method draw_rectangle
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_rectangle")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "filled")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method draw_arc
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_arc)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint filled))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name gint angle1))
-  (parameter (type-and-name gint angle2))
+(define-method draw_arc
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_arc")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "filled")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("gint" "angle1")
+    '("gint" "angle2")
+  )
 )
 
-(method draw_polygon
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_polygon)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint filled))
-  (parameter (type-and-name GdkPoint* points))
-  (parameter (type-and-name gint npoints))
+(define-method draw_polygon
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_polygon")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "filled")
+    '("GdkPoint*" "points")
+    '("gint" "npoints")
+  )
 )
 
-(method draw_string
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_string)
-  (return-type none)
-  (parameter (type-and-name GdkFont* font))
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name const-gchar* string))
+(define-method draw_string
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_string")
+  (return-type "none")
+  (parameters
+    '("GdkFont*" "font")
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("const-gchar*" "string")
+  )
 )
 
-(method draw_text
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_text)
-  (return-type none)
-  (parameter (type-and-name GdkFont* font))
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length))
+(define-method draw_text
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_text")
+  (return-type "none")
+  (parameters
+    '("GdkFont*" "font")
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("const-gchar*" "text")
+    '("gint" "text_length")
+  )
 )
 
-(method draw_text_wc
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_text_wc)
-  (return-type none)
-  (parameter (type-and-name GdkFont* font))
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name const-GdkWChar* text))
-  (parameter (type-and-name gint text_length))
+(define-method draw_text_wc
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_text_wc")
+  (return-type "none")
+  (parameters
+    '("GdkFont*" "font")
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("const-GdkWChar*" "text")
+    '("gint" "text_length")
+  )
 )
 
-(method draw_drawable
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_drawable)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name GdkDrawable* src))
-  (parameter (type-and-name gint xsrc))
-  (parameter (type-and-name gint ysrc))
-  (parameter (type-and-name gint xdest))
-  (parameter (type-and-name gint ydest))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method draw_drawable
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_drawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkDrawable*" "src")
+    '("gint" "xsrc")
+    '("gint" "ysrc")
+    '("gint" "xdest")
+    '("gint" "ydest")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method draw_image
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_image)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name GdkImage* image))
-  (parameter (type-and-name gint xsrc))
-  (parameter (type-and-name gint ysrc))
-  (parameter (type-and-name gint xdest))
-  (parameter (type-and-name gint ydest))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method draw_image
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_image")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkImage*" "image")
+    '("gint" "xsrc")
+    '("gint" "ysrc")
+    '("gint" "xdest")
+    '("gint" "ydest")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method draw_points
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_points)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name GdkPoint* points))
-  (parameter (type-and-name gint npoints))
+(define-method draw_points
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_points")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkPoint*" "points")
+    '("gint" "npoints")
+  )
 )
 
-(method draw_segments
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_segments)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name GdkSegment* segs))
-  (parameter (type-and-name gint nsegs))
+(define-method draw_segments
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_segments")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkSegment*" "segs")
+    '("gint" "nsegs")
+  )
 )
 
-(method draw_lines
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_lines)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name GdkPoint* points))
-  (parameter (type-and-name gint npoints))
+(define-method draw_lines
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_lines")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkPoint*" "points")
+    '("gint" "npoints")
+  )
 )
 
-(method draw_glyphs
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_glyphs)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name PangoFont* font))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name PangoGlyphString* glyphs))
+(define-method draw_glyphs
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_glyphs")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("PangoFont*" "font")
+    '("gint" "x")
+    '("gint" "y")
+    '("PangoGlyphString*" "glyphs")
+  )
 )
 
-(method draw_layout_line
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_layout_line)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name PangoLayoutLine* line))
+(define-method draw_layout_line
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_layout_line")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("PangoLayoutLine*" "line")
+  )
 )
 
-(method draw_layout
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_layout)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name PangoLayout* layout))
+(define-method draw_layout
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_layout")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("PangoLayout*" "layout")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkevents.h
 
-(method get_time
-  (of-object Event (Gdk))
-  (c-name gdk_event_get_time)
-  (return-type guint32)
+(define-method get_time
+  (of-object "GdkEvent")
+  (c-name "gdk_event_get_time")
+  (return-type "guint32")
 )
 
-(function set_show_events
-  (c-name gdk_set_show_events)
-  (return-type none)
-  (parameter (type-and-name gboolean show_events))
+(define-function set_show_events
+  (c-name "gdk_set_show_events")
+  (return-type "none")
+  (parameters
+    '("gboolean" "show_events")
+  )
 )
 
-(function get_show_events
-  (c-name gdk_get_show_events)
-  (return-type gboolean)
+(define-function get_show_events
+  (c-name "gdk_get_show_events")
+  (return-type "gboolean")
 )
 
 
@@ -1248,1677 +1521,1973 @@
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkfont.h
 
-(function font_load
+(define-function font_load
   (is-constructor-of GdkFont)
-  (c-name gdk_font_load)
-  (return-type GdkFont*)
-  (parameter (type-and-name const-gchar* font_name))
+  (c-name "gdk_font_load")
+  (return-type "GdkFont*")
+  (parameters
+    '("const-gchar*" "font_name")
+  )
 )
 
-(function fontset_load
-  (c-name gdk_fontset_load)
-  (return-type GdkFont*)
-  (parameter (type-and-name const-gchar* fontset_name))
+(define-function fontset_load
+  (c-name "gdk_fontset_load")
+  (return-type "GdkFont*")
+  (parameters
+    '("const-gchar*" "fontset_name")
+  )
 )
 
-(function font_from_description
-  (c-name gdk_font_from_description)
-  (return-type GdkFont*)
-  (parameter (type-and-name PangoFontDescription* font_desc))
+(define-function font_from_description
+  (c-name "gdk_font_from_description")
+  (return-type "GdkFont*")
+  (parameters
+    '("PangoFontDescription*" "font_desc")
+  )
 )
 
-(method id
-  (of-object Font (Gdk))
-  (c-name gdk_font_id)
-  (return-type gint)
+(define-method id
+  (of-object "GdkFont")
+  (c-name "gdk_font_id")
+  (return-type "gint")
 )
 
-(method string_width
-  (of-object Font (Gdk))
-  (c-name gdk_string_width)
-  (return-type gint)
-  (parameter (type-and-name const-gchar* string))
+(define-method string_width
+  (of-object "GdkFont")
+  (c-name "gdk_string_width")
+  (return-type "gint")
+  (parameters
+    '("const-gchar*" "string")
+  )
 )
 
-(method width
-  (of-object Font (Gdk))
-  (c-name gdk_text_width)
-  (return-type gint)
-  (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length) (default "-1"))
+(define-method width
+  (of-object "GdkFont")
+  (c-name "gdk_text_width")
+  (return-type "gint")
+  (parameters
+    '("const-gchar*" "text")
+    '("gint" "text_length" (default "-1"))
+  )
 )
 
-(method text_width_wc
-  (of-object Font (Gdk))
-  (c-name gdk_text_width_wc)
-  (return-type gint)
-  (parameter (type-and-name const-GdkWChar* text))
-  (parameter (type-and-name gint text_length))
+(define-method text_width_wc
+  (of-object "GdkFont")
+  (c-name "gdk_text_width_wc")
+  (return-type "gint")
+  (parameters
+    '("const-GdkWChar*" "text")
+    '("gint" "text_length")
+  )
 )
 
-(method char_width
-  (of-object Font (Gdk))
-  (c-name gdk_char_width)
-  (return-type gint)
-  (parameter (type-and-name gchar character))
+(define-method char_width
+  (of-object "GdkFont")
+  (c-name "gdk_char_width")
+  (return-type "gint")
+  (parameters
+    '("gchar" "character")
+  )
 )
 
-(method char_width_wc
-  (of-object Font (Gdk))
-  (c-name gdk_char_width_wc)
-  (return-type gint)
-  (parameter (type-and-name GdkWChar character))
+(define-method char_width_wc
+  (of-object "GdkFont")
+  (c-name "gdk_char_width_wc")
+  (return-type "gint")
+  (parameters
+    '("GdkWChar" "character")
+  )
 )
 
-(method string_measure
-  (of-object Font (Gdk))
-  (c-name gdk_string_measure)
-  (return-type gint)
-  (parameter (type-and-name const-gchar* string))
+(define-method string_measure
+  (of-object "GdkFont")
+  (c-name "gdk_string_measure")
+  (return-type "gint")
+  (parameters
+    '("const-gchar*" "string")
+  )
 )
 
-(method measure
-  (of-object Font (Gdk))
-  (c-name gdk_text_measure)
-  (return-type gint)
-  (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length) (default "-1"))
+(define-method measure
+  (of-object "GdkFont")
+  (c-name "gdk_text_measure")
+  (return-type "gint")
+  (parameters
+    '("const-gchar*" "text")
+    '("gint" "text_length" (default "-1"))
+  )
 )
 
-(method char_measure
-  (of-object Font (Gdk))
-  (c-name gdk_char_measure)
-  (return-type gint)
-  (parameter (type-and-name gchar character))
+(define-method char_measure
+  (of-object "GdkFont")
+  (c-name "gdk_char_measure")
+  (return-type "gint")
+  (parameters
+    '("gchar" "character")
+  )
 )
 
-(method string_height
-  (of-object Font (Gdk))
-  (c-name gdk_string_height)
-  (return-type gint)
-  (parameter (type-and-name const-gchar* string))
+(define-method string_height
+  (of-object "GdkFont")
+  (c-name "gdk_string_height")
+  (return-type "gint")
+  (parameters
+    '("const-gchar*" "string")
+  )
 )
 
-(method height
-  (of-object Font (Gdk))
-  (c-name gdk_text_height)
-  (return-type gint)
-  (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length) (default "-1"))
+(define-method height
+  (of-object "GdkFont")
+  (c-name "gdk_text_height")
+  (return-type "gint")
+  (parameters
+    '("const-gchar*" "text")
+    '("gint" "text_length" (default "-1"))
+  )
 )
 
-(method char_height
-  (of-object Font (Gdk))
-  (c-name gdk_char_height)
-  (return-type gint)
-  (parameter (type-and-name gchar character))
+(define-method char_height
+  (of-object "GdkFont")
+  (c-name "gdk_char_height")
+  (return-type "gint")
+  (parameters
+    '("gchar" "character")
+  )
 )
 
-(method extents
-  (of-object Font (Gdk))
-  (c-name gdk_text_extents)
-  (return-type none)
-  (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length))
-  (parameter (type-and-name gint* lbearing))
-  (parameter (type-and-name gint* rbearing))
-  (parameter (type-and-name gint* width))
-  (parameter (type-and-name gint* ascent))
-  (parameter (type-and-name gint* descent))
+(define-method extents
+  (of-object "GdkFont")
+  (c-name "gdk_text_extents")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "text")
+    '("gint" "text_length")
+    '("gint*" "lbearing")
+    '("gint*" "rbearing")
+    '("gint*" "width")
+    '("gint*" "ascent")
+    '("gint*" "descent")
+  )
 )
 
-(method text_extents_wc
-  (of-object Font (Gdk))
-  (c-name gdk_text_extents_wc)
-  (return-type none)
-  (parameter (type-and-name const-GdkWChar* text))
-  (parameter (type-and-name gint text_length))
-  (parameter (type-and-name gint* lbearing))
-  (parameter (type-and-name gint* rbearing))
-  (parameter (type-and-name gint* width))
-  (parameter (type-and-name gint* ascent))
-  (parameter (type-and-name gint* descent))
+(define-method text_extents_wc
+  (of-object "GdkFont")
+  (c-name "gdk_text_extents_wc")
+  (return-type "none")
+  (parameters
+    '("const-GdkWChar*" "text")
+    '("gint" "text_length")
+    '("gint*" "lbearing")
+    '("gint*" "rbearing")
+    '("gint*" "width")
+    '("gint*" "ascent")
+    '("gint*" "descent")
+  )
 )
 
-(method string_extents
-  (of-object Font (Gdk))
-  (c-name gdk_string_extents)
-  (return-type none)
-  (parameter (type-and-name const-gchar* string))
-  (parameter (type-and-name gint* lbearing))
-  (parameter (type-and-name gint* rbearing))
-  (parameter (type-and-name gint* width))
-  (parameter (type-and-name gint* ascent))
-  (parameter (type-and-name gint* descent))
+(define-method string_extents
+  (of-object "GdkFont")
+  (c-name "gdk_string_extents")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "string")
+    '("gint*" "lbearing")
+    '("gint*" "rbearing")
+    '("gint*" "width")
+    '("gint*" "ascent")
+    '("gint*" "descent")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkgc.h
 
-(function gdk_gc_get_type
-  (c-name gdk_gc_get_type)
-  (return-type GType)
+(define-function gdk_gc_get_type
+  (c-name "gdk_gc_get_type")
+  (return-type "GType")
 )
 
-(function gdk_gc_new
-  (c-name gdk_gc_new)
-  (return-type GdkGC*)
-  (parameter (type-and-name GdkDrawable* drawable))
+(define-function gdk_gc_new
+  (c-name "gdk_gc_new")
+  (return-type "GdkGC*")
+  (parameters
+    '("GdkDrawable*" "drawable")
+  )
 )
 
-(method new_gc
-  (of-object Drawable (Gdk))
-  (c-name gdk_gc_new_with_values)
-  (return-type GdkGC*)
-  (parameter (type-and-name GdkGCValues* values))
-  (parameter (type-and-name GdkGCValuesMask values_mask))
+(define-method new_gc
+  (of-object "GdkDrawable")
+  (c-name "gdk_gc_new_with_values")
+  (return-type "GdkGC*")
+  (parameters
+    '("GdkGCValues*" "values")
+    '("GdkGCValuesMask" "values_mask")
+  )
 )
 
-(method get_values
-  (of-object GC (Gdk))
-  (c-name gdk_gc_get_values)
-  (return-type none)
-  (parameter (type-and-name GdkGCValues* values))
+(define-method get_values
+  (of-object "GdkGC")
+  (c-name "gdk_gc_get_values")
+  (return-type "none")
+  (parameters
+    '("GdkGCValues*" "values")
+  )
 )
 
-(method set_values
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_values)
-  (return-type none)
-  (parameter (type-and-name GdkGCValues* values))
-  (parameter (type-and-name GdkGCValuesMask values_mask))
+(define-method set_values
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_values")
+  (return-type "none")
+  (parameters
+    '("GdkGCValues*" "values")
+    '("GdkGCValuesMask" "values_mask")
+  )
 )
 
-(method set_foreground
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_foreground)
-  (return-type none)
-  (parameter (type-and-name GdkColor* color))
+(define-method set_foreground
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_foreground")
+  (return-type "none")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
-(method set_background
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_background)
-  (return-type none)
-  (parameter (type-and-name GdkColor* color))
+(define-method set_background
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_background")
+  (return-type "none")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
-(method set_font
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_font)
-  (return-type none)
-  (parameter (type-and-name GdkFont* font))
+(define-method set_font
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_font")
+  (return-type "none")
+  (parameters
+    '("GdkFont*" "font")
+  )
 )
 
-(method set_function
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_function)
-  (return-type none)
-  (parameter (type-and-name GdkFunction function))
+(define-method set_function
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_function")
+  (return-type "none")
+  (parameters
+    '("GdkFunction" "function")
+  )
 )
 
-(method set_fill
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_fill)
-  (return-type none)
-  (parameter (type-and-name GdkFill fill))
+(define-method set_fill
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_fill")
+  (return-type "none")
+  (parameters
+    '("GdkFill" "fill")
+  )
 )
 
-(method set_tile
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_tile)
-  (return-type none)
-  (parameter (type-and-name GdkPixmap* tile))
+(define-method set_tile
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_tile")
+  (return-type "none")
+  (parameters
+    '("GdkPixmap*" "tile")
+  )
 )
 
-(method set_stipple
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_stipple)
-  (return-type none)
-  (parameter (type-and-name GdkPixmap* stipple))
+(define-method set_stipple
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_stipple")
+  (return-type "none")
+  (parameters
+    '("GdkPixmap*" "stipple")
+  )
 )
 
-(method set_ts_origin
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_ts_origin)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+(define-method set_ts_origin
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_ts_origin")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+  )
 )
 
-(method set_clip_origin
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_clip_origin)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+(define-method set_clip_origin
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_clip_origin")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+  )
 )
 
-(method set_clip_mask
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_clip_mask)
-  (return-type none)
-  (parameter (type-and-name GdkBitmap* mask))
+(define-method set_clip_mask
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_clip_mask")
+  (return-type "none")
+  (parameters
+    '("GdkBitmap*" "mask")
+  )
 )
 
-(method set_clip_rectangle
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_clip_rectangle)
-  (return-type none)
-  (parameter (type-and-name GdkRectangle* rectangle))
+(define-method set_clip_rectangle
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_clip_rectangle")
+  (return-type "none")
+  (parameters
+    '("GdkRectangle*" "rectangle")
+  )
 )
 
-(method set_clip_region
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_clip_region)
-  (return-type none)
-  (parameter (type-and-name GdkRegion* region))
+(define-method set_clip_region
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_clip_region")
+  (return-type "none")
+  (parameters
+    '("GdkRegion*" "region")
+  )
 )
 
-(method set_subwindow
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_subwindow)
-  (return-type none)
-  (parameter (type-and-name GdkSubwindowMode mode))
+(define-method set_subwindow
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_subwindow")
+  (return-type "none")
+  (parameters
+    '("GdkSubwindowMode" "mode")
+  )
 )
 
-(method set_exposures
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_exposures)
-  (return-type none)
-  (parameter (type-and-name gboolean exposures))
+(define-method set_exposures
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_exposures")
+  (return-type "none")
+  (parameters
+    '("gboolean" "exposures")
+  )
 )
 
-(method set_line_attributes
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_line_attributes)
-  (return-type none)
-  (parameter (type-and-name gint line_width))
-  (parameter (type-and-name GdkLineStyle line_style))
-  (parameter (type-and-name GdkCapStyle cap_style))
-  (parameter (type-and-name GdkJoinStyle join_style))
+(define-method set_line_attributes
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_line_attributes")
+  (return-type "none")
+  (parameters
+    '("gint" "line_width")
+    '("GdkLineStyle" "line_style")
+    '("GdkCapStyle" "cap_style")
+    '("GdkJoinStyle" "join_style")
+  )
 )
 
-(method set_dashes
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_dashes)
-  (return-type none)
-  (parameter (type-and-name gint dash_offset))
-  (parameter (type-and-name gint8[] dash_list))
-  (parameter (type-and-name gint n))
+(define-method set_dashes
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_dashes")
+  (return-type "none")
+  (parameters
+    '("gint" "dash_offset")
+    '("gint8[]" "dash_list")
+    '("gint" "n")
+  )
 )
 
-(method copy
-  (of-object GC (Gdk))
-  (c-name gdk_gc_copy)
-  (return-type none)
-  (parameter (type-and-name GdkGC* src_gc))
+(define-method copy
+  (of-object "GdkGC")
+  (c-name "gdk_gc_copy")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "src_gc")
+  )
 )
 
-(method set_colormap
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_colormap)
-  (return-type none)
-  (parameter (type-and-name GdkColormap* colormap))
+(define-method set_colormap
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_colormap")
+  (return-type "none")
+  (parameters
+    '("GdkColormap*" "colormap")
+  )
 )
 
-(method get_colormap
-  (of-object GC (Gdk))
-  (c-name gdk_gc_get_colormap)
-  (return-type GdkColormap*)
+(define-method get_colormap
+  (of-object "GdkGC")
+  (c-name "gdk_gc_get_colormap")
+  (return-type "GdkColormap*")
 )
 
-(method set_rgb_fg_color
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_rgb_fg_color)
-  (return-type none)
-  (parameter (type-and-name GdkColor* color))
+(define-method set_rgb_fg_color
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_rgb_fg_color")
+  (return-type "none")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
-(method set_rgb_bg_color
-  (of-object GC (Gdk))
-  (c-name gdk_gc_set_rgb_bg_color)
-  (return-type none)
-  (parameter (type-and-name GdkColor* color))
+(define-method set_rgb_bg_color
+  (of-object "GdkGC")
+  (c-name "gdk_gc_set_rgb_bg_color")
+  (return-type "none")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkimage.h
 
-(function gdk_image_get_type
-  (c-name gdk_image_get_type)
-  (return-type GType)
+(define-function gdk_image_get_type
+  (c-name "gdk_image_get_type")
+  (return-type "GType")
 )
 
-(function gdk_image_new_bitmap
-  (c-name gdk_image_new_bitmap)
-  (return-type GdkImage*)
-  (parameter (type-and-name GdkVisual* visual))
-  (parameter (type-and-name gpointer data))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-function gdk_image_new_bitmap
+  (c-name "gdk_image_new_bitmap")
+  (return-type "GdkImage*")
+  (parameters
+    '("GdkVisual*" "visual")
+    '("gpointer" "data")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(function gdk_image_new
+(define-function gdk_image_new
   (is-constructor-of GdkImage)
-  (c-name gdk_image_new)
-  (return-type GdkImage*)
-  (parameter (type-and-name GdkImageType type))
-  (parameter (type-and-name GdkVisual* visual))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+  (c-name "gdk_image_new")
+  (return-type "GdkImage*")
+  (parameters
+    '("GdkImageType" "type")
+    '("GdkVisual*" "visual")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method image_get
-  (of-object Drawable (Gdk))
-  (c-name gdk_image_get)
-  (return-type GdkImage*)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method image_get
+  (of-object "GdkDrawable")
+  (c-name "gdk_image_get")
+  (return-type "GdkImage*")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method put_pixel
-  (of-object Image (Gdk))
-  (c-name gdk_image_put_pixel)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name guint32 pixel))
+(define-method put_pixel
+  (of-object "GdkImage")
+  (c-name "gdk_image_put_pixel")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("guint32" "pixel")
+  )
 )
 
-(method get_pixel
-  (of-object Image (Gdk))
-  (c-name gdk_image_get_pixel)
-  (return-type guint32)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+(define-method get_pixel
+  (of-object "GdkImage")
+  (c-name "gdk_image_get_pixel")
+  (return-type "guint32")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkinput.h
 
-(function gdk_device_get_type
-  (c-name gdk_device_get_type)
-  (return-type GType)
+(define-function gdk_device_get_type
+  (c-name "gdk_device_get_type")
+  (return-type "GType")
 )
 
-(function gdk_devices_list
-  (c-name gdk_devices_list)
-  (return-type GList*)
+(define-function gdk_devices_list
+  (c-name "gdk_devices_list")
+  (return-type "GList*")
 )
 
-(method set_source
-  (of-object Device (Gdk))
-  (c-name gdk_device_set_source)
-  (return-type none)
-  (parameter (type-and-name GdkInputSource source))
+(define-method set_source
+  (of-object "GdkDevice")
+  (c-name "gdk_device_set_source")
+  (return-type "none")
+  (parameters
+    '("GdkInputSource" "source")
+  )
 )
 
-(method set_mode
-  (of-object Device (Gdk))
-  (c-name gdk_device_set_mode)
-  (return-type gboolean)
-  (parameter (type-and-name GdkInputMode mode))
+(define-method set_mode
+  (of-object "GdkDevice")
+  (c-name "gdk_device_set_mode")
+  (return-type "gboolean")
+  (parameters
+    '("GdkInputMode" "mode")
+  )
 )
 
-(method set_key
-  (of-object Device (Gdk))
-  (c-name gdk_device_set_key)
-  (return-type none)
-  (parameter (type-and-name guint index))
-  (parameter (type-and-name guint keyval))
-  (parameter (type-and-name GdkModifierType modifiers))
+(define-method set_key
+  (of-object "GdkDevice")
+  (c-name "gdk_device_set_key")
+  (return-type "none")
+  (parameters
+    '("guint" "index")
+    '("guint" "keyval")
+    '("GdkModifierType" "modifiers")
+  )
 )
 
-(method set_axis_use
-  (of-object Device (Gdk))
-  (c-name gdk_device_set_axis_use)
-  (return-type none)
-  (parameter (type-and-name guint index))
-  (parameter (type-and-name GdkAxisUse use))
+(define-method set_axis_use
+  (of-object "GdkDevice")
+  (c-name "gdk_device_set_axis_use")
+  (return-type "none")
+  (parameters
+    '("guint" "index")
+    '("GdkAxisUse" "use")
+  )
 )
 
-(method get_state
-  (of-object Device (Gdk))
-  (c-name gdk_device_get_state)
-  (return-type none)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name gdouble* axes))
-  (parameter (type-and-name GdkModifierType* mask))
+(define-method get_state
+  (of-object "GdkDevice")
+  (c-name "gdk_device_get_state")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "window")
+    '("gdouble*" "axes")
+    '("GdkModifierType*" "mask")
+  )
 )
 
-(method get_history
-  (of-object Device (Gdk))
-  (c-name gdk_device_get_history)
-  (return-type gboolean)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name guint32 start))
-  (parameter (type-and-name guint32 stop))
-  (parameter (type-and-name GdkTimeCoord*** events))
-  (parameter (type-and-name gint* n_events))
+(define-method get_history
+  (of-object "GdkDevice")
+  (c-name "gdk_device_get_history")
+  (return-type "gboolean")
+  (parameters
+    '("GdkWindow*" "window")
+    '("guint32" "start")
+    '("guint32" "stop")
+    '("GdkTimeCoord***" "events")
+    '("gint*" "n_events")
+  )
 )
 
-(function gdk_device_free_history
-  (c-name gdk_device_free_history)
-  (return-type none)
-  (parameter (type-and-name GdkTimeCoord** events))
-  (parameter (type-and-name gint n_events))
+(define-function gdk_device_free_history
+  (c-name "gdk_device_free_history")
+  (return-type "none")
+  (parameters
+    '("GdkTimeCoord**" "events")
+    '("gint" "n_events")
+  )
 )
 
-(method get_axis
-  (of-object Device (Gdk))
-  (c-name gdk_device_get_axis)
-  (return-type gboolean)
-  (parameter (type-and-name gdouble* axes))
-  (parameter (type-and-name GdkAxisUse use))
-  (parameter (type-and-name gdouble* value))
+(define-method get_axis
+  (of-object "GdkDevice")
+  (c-name "gdk_device_get_axis")
+  (return-type "gboolean")
+  (parameters
+    '("gdouble*" "axes")
+    '("GdkAxisUse" "use")
+    '("gdouble*" "value")
+  )
 )
 
-(method input_set_extension_events
-  (of-object Window (Gdk))
-  (c-name gdk_input_set_extension_events)
-  (return-type none)
-  (parameter (type-and-name gint mask))
-  (parameter (type-and-name GdkExtensionMode mode))
+(define-method input_set_extension_events
+  (of-object "GdkWindow")
+  (c-name "gdk_input_set_extension_events")
+  (return-type "none")
+  (parameters
+    '("gint" "mask")
+    '("GdkExtensionMode" "mode")
+  )
 )
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk-pixbuf/gdk-pixbuf.h
 
-(method get_colorspace
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_colorspace)
-  (return-type GdkColorspace)
+(define-method get_colorspace
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_colorspace")
+  (return-type "GdkColorspace")
 )
 
-(method get_n_channels
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_n_channels)
-  (return-type int)
+(define-method get_n_channels
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_n_channels")
+  (return-type "int")
 )
 
-(method get_has_alpha
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_has_alpha)
-  (return-type gboolean)
+(define-method get_has_alpha
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_has_alpha")
+  (return-type "gboolean")
 )
 
-(method get_bits_per_sample
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_bits_per_sample)
-  (return-type int)
+(define-method get_bits_per_sample
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_bits_per_sample")
+  (return-type "int")
 )
 
-(method get_pixels
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_pixels)
-  (return-type guchar*)
+(define-method get_pixels
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_pixels")
+  (return-type "guchar*")
 )
 
-(method get_width
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_width)
-  (return-type int)
+(define-method get_width
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_width")
+  (return-type "int")
 )
 
-(method get_height
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_height)
-  (return-type int)
+(define-method get_height
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_height")
+  (return-type "int")
 )
 
-(method get_rowstride
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_rowstride)
-  (return-type int)
+(define-method get_rowstride
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_rowstride")
+  (return-type "int")
 )
 
-(function gdk_pixbuf_new
+(define-function gdk_pixbuf_new
   (is-constructor-of GdkPixbuf)
-  (c-name gdk_pixbuf_new)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name GdkColorspace colorspace))
-  (parameter (type-and-name gboolean has_alpha))
-  (parameter (type-and-name int bits_per_sample))
-  (parameter (type-and-name int width))
-  (parameter (type-and-name int height))
+  (c-name "gdk_pixbuf_new")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("GdkColorspace" "colorspace")
+    '("gboolean" "has_alpha")
+    '("int" "bits_per_sample")
+    '("int" "width")
+    '("int" "height")
+  )
 )
 
-(method copy
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_copy)
-  (return-type GdkPixbuf*)
+(define-method copy
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_copy")
+  (return-type "GdkPixbuf*")
 )
 
-(function gdk_pixbuf_new_from_file
+(define-function gdk_pixbuf_new_from_file
   (is-constructor-of GdkPixbuf)
-  (c-name gdk_pixbuf_new_from_file)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name const-char* filename))
-  (parameter (type-and-name GError** error))
+  (c-name "gdk_pixbuf_new_from_file")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("const-char*" "filename")
+    '("GError**" "error")
+  )
 )
 
-(function pixbuf_new_from_data
-  (c-name gdk_pixbuf_new_from_data)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name const-guchar* data))
-  (parameter (type-and-name GdkColorspace colorspace))
-  (parameter (type-and-name gboolean has_alpha))
-  (parameter (type-and-name int bits_per_sample))
-  (parameter (type-and-name int width))
-  (parameter (type-and-name int height))
-  (parameter (type-and-name int rowstride))
-  (parameter (type-and-name GdkPixbufDestroyNotify destroy_fn))
-  (parameter (type-and-name gpointer destroy_fn_data))
+(define-function pixbuf_new_from_data
+  (c-name "gdk_pixbuf_new_from_data")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("const-guchar*" "data")
+    '("GdkColorspace" "colorspace")
+    '("gboolean" "has_alpha")
+    '("int" "bits_per_sample")
+    '("int" "width")
+    '("int" "height")
+    '("int" "rowstride")
+    '("GdkPixbufDestroyNotify" "destroy_fn")
+    '("gpointer" "destroy_fn_data")
+  )
 )
 
-(function pixbuf_new_from_xpm_data
-  (c-name gdk_pixbuf_new_from_xpm_data)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name const-char** data))
+(define-function pixbuf_new_from_xpm_data
+  (c-name "gdk_pixbuf_new_from_xpm_data")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("const-char**" "data")
+  )
 )
 
-(function pixbuf_new_from_stream
-  (c-name gdk_pixbuf_new_from_stream)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name gint stream_length))
-  (parameter (type-and-name const-guchar* stream))
-  (parameter (type-and-name gboolean copy_pixels))
-  (parameter (type-and-name GError** error))
+(define-function pixbuf_new_from_stream
+  (c-name "gdk_pixbuf_new_from_stream")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("gint" "stream_length")
+    '("const-guchar*" "stream")
+    '("gboolean" "copy_pixels")
+    '("GError**" "error")
+  )
 )
 
-(method save
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_save)
-  (return-type gboolean)
-  (parameter (type-and-name const-char* filename))
-  (parameter (type-and-name const-char* type))
-  (parameter (type-and-name GError** error))
-  (varargs t)
+(define-method save
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_save")
+  (return-type "gboolean")
+  (parameters
+    '("const-char*" "filename")
+    '("const-char*" "type")
+    '("GError**" "error")
+  )
+  (varargs #t)
 )
 
-(method savev
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_savev)
-  (return-type gboolean)
-  (parameter (type-and-name const-char* filename))
-  (parameter (type-and-name const-char* type))
-  (parameter (type-and-name char** option_keys))
-  (parameter (type-and-name char** option_values))
-  (parameter (type-and-name GError** error))
+(define-method savev
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_savev")
+  (return-type "gboolean")
+  (parameters
+    '("const-char*" "filename")
+    '("const-char*" "type")
+    '("char**" "option_keys")
+    '("char**" "option_values")
+    '("GError**" "error")
+  )
 )
 
-(method add_alpha
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_add_alpha)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name gboolean substitute_color))
-  (parameter (type-and-name guchar r))
-  (parameter (type-and-name guchar g))
-  (parameter (type-and-name guchar b))
+(define-method add_alpha
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_add_alpha")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("gboolean" "substitute_color")
+    '("guchar" "r")
+    '("guchar" "g")
+    '("guchar" "b")
+  )
 )
 
-(method copy_area
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_copy_area)
-  (return-type none)
-  (parameter (type-and-name int src_x))
-  (parameter (type-and-name int src_y))
-  (parameter (type-and-name int width))
-  (parameter (type-and-name int height))
-  (parameter (type-and-name GdkPixbuf* dest_pixbuf))
-  (parameter (type-and-name int dest_x))
-  (parameter (type-and-name int dest_y))
+(define-method copy_area
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_copy_area")
+  (return-type "none")
+  (parameters
+    '("int" "src_x")
+    '("int" "src_y")
+    '("int" "width")
+    '("int" "height")
+    '("GdkPixbuf*" "dest_pixbuf")
+    '("int" "dest_x")
+    '("int" "dest_y")
+  )
 )
 
-(method saturate_and_pixelate
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_saturate_and_pixelate)
-  (return-type none)
-  (parameter (type-and-name GdkPixbuf* dest))
-  (parameter (type-and-name gfloat saturation))
-  (parameter (type-and-name gboolean pixelate))
+(define-method saturate_and_pixelate
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_saturate_and_pixelate")
+  (return-type "none")
+  (parameters
+    '("GdkPixbuf*" "dest")
+    '("gfloat" "saturation")
+    '("gboolean" "pixelate")
+  )
 )
 
-(method scale
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_scale)
-  (return-type none)
-  (parameter (type-and-name GdkPixbuf* dest))
-  (parameter (type-and-name int dest_x))
-  (parameter (type-and-name int dest_y))
-  (parameter (type-and-name int dest_width))
-  (parameter (type-and-name int dest_height))
-  (parameter (type-and-name double offset_x))
-  (parameter (type-and-name double offset_y))
-  (parameter (type-and-name double scale_x))
-  (parameter (type-and-name double scale_y))
-  (parameter (type-and-name GdkInterpType interp_type))
+(define-method scale
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_scale")
+  (return-type "none")
+  (parameters
+    '("GdkPixbuf*" "dest")
+    '("int" "dest_x")
+    '("int" "dest_y")
+    '("int" "dest_width")
+    '("int" "dest_height")
+    '("double" "offset_x")
+    '("double" "offset_y")
+    '("double" "scale_x")
+    '("double" "scale_y")
+    '("GdkInterpType" "interp_type")
+  )
 )
 
-(method composite
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_composite)
-  (return-type none)
-  (parameter (type-and-name GdkPixbuf* dest))
-  (parameter (type-and-name int dest_x))
-  (parameter (type-and-name int dest_y))
-  (parameter (type-and-name int dest_width))
-  (parameter (type-and-name int dest_height))
-  (parameter (type-and-name double offset_x))
-  (parameter (type-and-name double offset_y))
-  (parameter (type-and-name double scale_x))
-  (parameter (type-and-name double scale_y))
-  (parameter (type-and-name GdkInterpType interp_type))
-  (parameter (type-and-name int overall_alpha))
+(define-method composite
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_composite")
+  (return-type "none")
+  (parameters
+    '("GdkPixbuf*" "dest")
+    '("int" "dest_x")
+    '("int" "dest_y")
+    '("int" "dest_width")
+    '("int" "dest_height")
+    '("double" "offset_x")
+    '("double" "offset_y")
+    '("double" "scale_x")
+    '("double" "scale_y")
+    '("GdkInterpType" "interp_type")
+    '("int" "overall_alpha")
+  )
 )
 
-(method composite_color
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_composite_color)
-  (return-type none)
-  (parameter (type-and-name GdkPixbuf* dest))
-  (parameter (type-and-name int dest_x))
-  (parameter (type-and-name int dest_y))
-  (parameter (type-and-name int dest_width))
-  (parameter (type-and-name int dest_height))
-  (parameter (type-and-name double offset_x))
-  (parameter (type-and-name double offset_y))
-  (parameter (type-and-name double scale_x))
-  (parameter (type-and-name double scale_y))
-  (parameter (type-and-name GdkInterpType interp_type))
-  (parameter (type-and-name int overall_alpha))
-  (parameter (type-and-name int check_x))
-  (parameter (type-and-name int check_y))
-  (parameter (type-and-name int check_size))
-  (parameter (type-and-name guint32 color1))
-  (parameter (type-and-name guint32 color2))
+(define-method composite_color
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_composite_color")
+  (return-type "none")
+  (parameters
+    '("GdkPixbuf*" "dest")
+    '("int" "dest_x")
+    '("int" "dest_y")
+    '("int" "dest_width")
+    '("int" "dest_height")
+    '("double" "offset_x")
+    '("double" "offset_y")
+    '("double" "scale_x")
+    '("double" "scale_y")
+    '("GdkInterpType" "interp_type")
+    '("int" "overall_alpha")
+    '("int" "check_x")
+    '("int" "check_y")
+    '("int" "check_size")
+    '("guint32" "color1")
+    '("guint32" "color2")
+  )
 )
 
-(method scale_simple
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_scale_simple)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name int dest_width))
-  (parameter (type-and-name int dest_height))
-  (parameter (type-and-name GdkInterpType interp_type))
+(define-method scale_simple
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_scale_simple")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("int" "dest_width")
+    '("int" "dest_height")
+    '("GdkInterpType" "interp_type")
+  )
 )
 
-(method composite_color_simple
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_composite_color_simple)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name int dest_width))
-  (parameter (type-and-name int dest_height))
-  (parameter (type-and-name GdkInterpType interp_type))
-  (parameter (type-and-name int overall_alpha))
-  (parameter (type-and-name int check_size))
-  (parameter (type-and-name guint32 color1))
-  (parameter (type-and-name guint32 color2))
+(define-method composite_color_simple
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_composite_color_simple")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("int" "dest_width")
+    '("int" "dest_height")
+    '("GdkInterpType" "interp_type")
+    '("int" "overall_alpha")
+    '("int" "check_size")
+    '("guint32" "color1")
+    '("guint32" "color2")
+  )
 )
 
-(function gdk_pixbuf_animation_get_type
-  (c-name gdk_pixbuf_animation_get_type)
-  (return-type GType)
+(define-function gdk_pixbuf_animation_get_type
+  (c-name "gdk_pixbuf_animation_get_type")
+  (return-type "GType")
 )
 
-(function gdk_pixbuf_animation_new_from_file
+(define-function gdk_pixbuf_animation_new_from_file
   (is-constructor-of GdkPixbufAnimation)
-  (c-name gdk_pixbuf_animation_new_from_file)
-  (return-type GdkPixbufAnimation*)
-  (parameter (type-and-name const-char* filename))
-  (parameter (type-and-name GError** error))
+  (c-name "gdk_pixbuf_animation_new_from_file")
+  (return-type "GdkPixbufAnimation*")
+  (parameters
+    '("const-char*" "filename")
+    '("GError**" "error")
+  )
 )
 
-(method get_width
-  (of-object PixbufAnimation (Gdk))
-  (c-name gdk_pixbuf_animation_get_width)
-  (return-type int)
+(define-method get_width
+  (of-object "GdkPixbufAnimation")
+  (c-name "gdk_pixbuf_animation_get_width")
+  (return-type "int")
 )
 
-(method get_height
-  (of-object PixbufAnimation (Gdk))
-  (c-name gdk_pixbuf_animation_get_height)
-  (return-type int)
+(define-method get_height
+  (of-object "GdkPixbufAnimation")
+  (c-name "gdk_pixbuf_animation_get_height")
+  (return-type "int")
 )
 
-(method is_static_image
-  (of-object PixbufAnimation (Gdk))
-  (c-name gdk_pixbuf_animation_is_static_image)
-  (return-type gboolean)
+(define-method is_static_image
+  (of-object "GdkPixbufAnimation")
+  (c-name "gdk_pixbuf_animation_is_static_image")
+  (return-type "gboolean")
 )
 
-(method get_static_image
-  (of-object PixbufAnimation (Gdk))
-  (c-name gdk_pixbuf_animation_get_static_image)
-  (return-type GdkPixbuf*)
+(define-method get_static_image
+  (of-object "GdkPixbufAnimation")
+  (c-name "gdk_pixbuf_animation_get_static_image")
+  (return-type "GdkPixbuf*")
 )
 
-(method get_iter
-  (of-object PixbufAnimation (Gdk))
-  (c-name gdk_pixbuf_animation_get_iter)
-  (return-type GdkPixbufAnimationIter*)
-  (parameter (type-and-name const-GTimeVal* start_time))
+(define-method get_iter
+  (of-object "GdkPixbufAnimation")
+  (c-name "gdk_pixbuf_animation_get_iter")
+  (return-type "GdkPixbufAnimationIter*")
+  (parameters
+    '("const-GTimeVal*" "start_time")
+  )
 )
 
-(function pixbuf_animation_iter_get_type
-  (c-name gdk_pixbuf_animation_iter_get_type)
-  (return-type GType)
+(define-function pixbuf_animation_iter_get_type
+  (c-name "gdk_pixbuf_animation_iter_get_type")
+  (return-type "GType")
 )
 
-(method get_delay_time
-  (of-object PixbufAnimationIter (Gdk))
-  (c-name gdk_pixbuf_animation_iter_get_delay_time)
-  (return-type int)
+(define-method get_delay_time
+  (of-object "GdkPixbufAnimationIter")
+  (c-name "gdk_pixbuf_animation_iter_get_delay_time")
+  (return-type "int")
 )
 
-(method get_pixbuf
-  (of-object PixbufAnimationIter (Gdk))
-  (c-name gdk_pixbuf_animation_iter_get_pixbuf)
-  (return-type GdkPixbuf*)
+(define-method get_pixbuf
+  (of-object "GdkPixbufAnimationIter")
+  (c-name "gdk_pixbuf_animation_iter_get_pixbuf")
+  (return-type "GdkPixbuf*")
 )
 
-(method on_currently_loading_frame
-  (of-object PixbufAnimationIter (Gdk))
-  (c-name gdk_pixbuf_animation_iter_on_currently_loading_frame)
-  (return-type gboolean)
+(define-method on_currently_loading_frame
+  (of-object "GdkPixbufAnimationIter")
+  (c-name "gdk_pixbuf_animation_iter_on_currently_loading_frame")
+  (return-type "gboolean")
 )
 
-(method advance
-  (of-object PixbufAnimationIter (Gdk))
-  (c-name gdk_pixbuf_animation_iter_advance)
-  (return-type gboolean)
-  (parameter (type-and-name const-GTimeVal* current_time))
+(define-method advance
+  (of-object "GdkPixbufAnimationIter")
+  (c-name "gdk_pixbuf_animation_iter_advance")
+  (return-type "gboolean")
+  (parameters
+    '("const-GTimeVal*" "current_time")
+  )
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkpixbuf.h
 
-(method render_to_drawable
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_render_to_drawable)
-  (return-type none)
-  (parameter (type-and-name GdkDrawable* drawable))
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name int src_x))
-  (parameter (type-and-name int src_y))
-  (parameter (type-and-name int dest_x))
-  (parameter (type-and-name int dest_y))
-  (parameter (type-and-name int width))
-  (parameter (type-and-name int height))
-  (parameter (type-and-name GdkRgbDither dither))
-  (parameter (type-and-name int x_dither))
-  (parameter (type-and-name int y_dither))
+(define-method render_to_drawable
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_render_to_drawable")
+  (return-type "none")
+  (parameters
+    '("GdkDrawable*" "drawable")
+    '("GdkGC*" "gc")
+    '("int" "src_x")
+    '("int" "src_y")
+    '("int" "dest_x")
+    '("int" "dest_y")
+    '("int" "width")
+    '("int" "height")
+    '("GdkRgbDither" "dither")
+    '("int" "x_dither")
+    '("int" "y_dither")
+  )
 )
 
-(method render_to_drawable_alpha
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_render_to_drawable_alpha)
-  (return-type none)
-  (parameter (type-and-name GdkDrawable* drawable))
-  (parameter (type-and-name int src_x))
-  (parameter (type-and-name int src_y))
-  (parameter (type-and-name int dest_x))
-  (parameter (type-and-name int dest_y))
-  (parameter (type-and-name int width))
-  (parameter (type-and-name int height))
-  (parameter (type-and-name GdkPixbufAlphaMode alpha_mode))
-  (parameter (type-and-name int alpha_threshold))
-  (parameter (type-and-name GdkRgbDither dither))
-  (parameter (type-and-name int x_dither))
-  (parameter (type-and-name int y_dither))
+(define-method render_to_drawable_alpha
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_render_to_drawable_alpha")
+  (return-type "none")
+  (parameters
+    '("GdkDrawable*" "drawable")
+    '("int" "src_x")
+    '("int" "src_y")
+    '("int" "dest_x")
+    '("int" "dest_y")
+    '("int" "width")
+    '("int" "height")
+    '("GdkPixbufAlphaMode" "alpha_mode")
+    '("int" "alpha_threshold")
+    '("GdkRgbDither" "dither")
+    '("int" "x_dither")
+    '("int" "y_dither")
+  )
 )
 
-(method render_pixmap_and_mask
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_render_pixmap_and_mask)
-  (return-type none)
-  (parameter (type-and-name GdkPixmap** pixmap_return))
-  (parameter (type-and-name GdkBitmap** mask_return))
-  (parameter (type-and-name int alpha_threshold))
+(define-method render_pixmap_and_mask
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_render_pixmap_and_mask")
+  (return-type "none")
+  (parameters
+    '("GdkPixmap**" "pixmap_return")
+    '("GdkBitmap**" "mask_return")
+    '("int" "alpha_threshold")
+  )
 )
 
-(method get_from_drawable
-  (of-object Pixbuf (Gdk))
-  (c-name gdk_pixbuf_get_from_drawable)
-  (return-type GdkPixbuf*)
-  (parameter (type-and-name GdkDrawable* src))
-  (parameter (type-and-name GdkColormap* cmap))
-  (parameter (type-and-name int src_x))
-  (parameter (type-and-name int src_y))
-  (parameter (type-and-name int dest_x))
-  (parameter (type-and-name int dest_y))
-  (parameter (type-and-name int width))
-  (parameter (type-and-name int height))
+(define-method get_from_drawable
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_from_drawable")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("GdkDrawable*" "src")
+    '("GdkColormap*" "cmap")
+    '("int" "src_x")
+    '("int" "src_y")
+    '("int" "dest_x")
+    '("int" "dest_y")
+    '("int" "width")
+    '("int" "height")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkpixmap.h
 
-(function gdk_pixmap_get_type
-  (c-name gdk_pixmap_get_type)
-  (return-type GType)
+(define-function gdk_pixmap_get_type
+  (c-name "gdk_pixmap_get_type")
+  (return-type "GType")
 )
 
-(function gdk_pixmap_new
+(define-function gdk_pixmap_new
   (is-constructor-of GdkPixmap)
-  (c-name gdk_pixmap_new)
-  (return-type GdkPixmap*)
-  (parameter (type-and-name GdkWindow* window) (null-ok))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name gint depth) (default -1))
+  (c-name "gdk_pixmap_new")
+  (return-type "GdkPixmap*")
+  (parameters
+    '("GdkWindow*" "window" (null-ok))
+    '("gint" "width")
+    '("gint" "height")
+    '("gint" "depth" (default -1))
+  )
 )
 
-(function bitmap_create_from_data
-  (c-name gdk_bitmap_create_from_data)
-  (return-type GdkBitmap*)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name const-gchar* data))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-function bitmap_create_from_data
+  (c-name "gdk_bitmap_create_from_data")
+  (return-type "GdkBitmap*")
+  (parameters
+    '("GdkWindow*" "window")
+    '("const-gchar*" "data")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(function pixmap_create_from_data
-  (c-name gdk_pixmap_create_from_data)
-  (return-type GdkPixmap*)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name const-gchar* data))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name gint depth))
-  (parameter (type-and-name GdkColor* fg))
-  (parameter (type-and-name GdkColor* bg))
+(define-function pixmap_create_from_data
+  (c-name "gdk_pixmap_create_from_data")
+  (return-type "GdkPixmap*")
+  (parameters
+    '("GdkWindow*" "window")
+    '("const-gchar*" "data")
+    '("gint" "width")
+    '("gint" "height")
+    '("gint" "depth")
+    '("GdkColor*" "fg")
+    '("GdkColor*" "bg")
+  )
 )
 
-(function pixmap_create_from_xpm
-  (c-name gdk_pixmap_create_from_xpm)
-  (return-type GdkPixmap*)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name GdkBitmap** mask))
-  (parameter (type-and-name GdkColor* transparent_color))
-  (parameter (type-and-name const-gchar* filename))
+(define-function pixmap_create_from_xpm
+  (c-name "gdk_pixmap_create_from_xpm")
+  (return-type "GdkPixmap*")
+  (parameters
+    '("GdkWindow*" "window")
+    '("GdkBitmap**" "mask")
+    '("GdkColor*" "transparent_color")
+    '("const-gchar*" "filename")
+  )
 )
 
-(function pixmap_colormap_create_from_xpm
-  (c-name gdk_pixmap_colormap_create_from_xpm)
-  (return-type GdkPixmap*)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name GdkColormap* colormap))
-  (parameter (type-and-name GdkBitmap** mask))
-  (parameter (type-and-name GdkColor* transparent_color))
-  (parameter (type-and-name const-gchar* filename))
+(define-function pixmap_colormap_create_from_xpm
+  (c-name "gdk_pixmap_colormap_create_from_xpm")
+  (return-type "GdkPixmap*")
+  (parameters
+    '("GdkWindow*" "window")
+    '("GdkColormap*" "colormap")
+    '("GdkBitmap**" "mask")
+    '("GdkColor*" "transparent_color")
+    '("const-gchar*" "filename")
+  )
 )
 
-(function pixmap_create_from_xpm_d
-  (c-name gdk_pixmap_create_from_xpm_d)
-  (return-type GdkPixmap*)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name GdkBitmap** mask))
-  (parameter (type-and-name GdkColor* transparent_color))
-  (parameter (type-and-name gchar** data))
+(define-function pixmap_create_from_xpm_d
+  (c-name "gdk_pixmap_create_from_xpm_d")
+  (return-type "GdkPixmap*")
+  (parameters
+    '("GdkWindow*" "window")
+    '("GdkBitmap**" "mask")
+    '("GdkColor*" "transparent_color")
+    '("gchar**" "data")
+  )
 )
 
-(function pixmap_colormap_create_from_xpm_d
-  (c-name gdk_pixmap_colormap_create_from_xpm_d)
-  (return-type GdkPixmap*)
-  (parameter (type-and-name GdkWindow* window))
-  (parameter (type-and-name GdkColormap* colormap))
-  (parameter (type-and-name GdkBitmap** mask))
-  (parameter (type-and-name GdkColor* transparent_color))
-  (parameter (type-and-name gchar** data))
+(define-function pixmap_colormap_create_from_xpm_d
+  (c-name "gdk_pixmap_colormap_create_from_xpm_d")
+  (return-type "GdkPixmap*")
+  (parameters
+    '("GdkWindow*" "window")
+    '("GdkColormap*" "colormap")
+    '("GdkBitmap**" "mask")
+    '("GdkColor*" "transparent_color")
+    '("gchar**" "data")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkproperty.h
 
-(method name
-  (of-object Atom (Gdk))
-  (c-name gdk_atom_name)
-  (return-type gchar*)
+(define-method name
+  (of-object "GdkAtom")
+  (c-name "gdk_atom_name")
+  (return-type "gchar*")
 )
 
-(method property_get
-  (of-object Window (Gdk))
-  (c-name gdk_property_get)
-  (return-type gboolean)
-  (parameter (type-and-name GdkAtom property))
-  (parameter (type-and-name GdkAtom type))
-  (parameter (type-and-name gulong offset))
-  (parameter (type-and-name gulong length))
-  (parameter (type-and-name gint pdelete))
-  (parameter (type-and-name GdkAtom* actual_property_type))
-  (parameter (type-and-name gint* actual_format))
-  (parameter (type-and-name gint* actual_length))
-  (parameter (type-and-name guchar** data))
+(define-method property_get
+  (of-object "GdkWindow")
+  (c-name "gdk_property_get")
+  (return-type "gboolean")
+  (parameters
+    '("GdkAtom" "property")
+    '("GdkAtom" "type")
+    '("gulong" "offset")
+    '("gulong" "length")
+    '("gint" "pdelete")
+    '("GdkAtom*" "actual_property_type")
+    '("gint*" "actual_format")
+    '("gint*" "actual_length")
+    '("guchar**" "data")
+  )
 )
 
-(method property_change
-  (of-object Window (Gdk))
-  (c-name gdk_property_change)
-  (return-type none)
-  (parameter (type-and-name GdkAtom property))
-  (parameter (type-and-name GdkAtom type))
-  (parameter (type-and-name gint format))
-  (parameter (type-and-name GdkPropMode mode))
-  (parameter (type-and-name const-guchar* data))
-  (parameter (type-and-name gint nelements))
+(define-method property_change
+  (of-object "GdkWindow")
+  (c-name "gdk_property_change")
+  (return-type "none")
+  (parameters
+    '("GdkAtom" "property")
+    '("GdkAtom" "type")
+    '("gint" "format")
+    '("GdkPropMode" "mode")
+    '("const-guchar*" "data")
+    '("gint" "nelements")
+  )
 )
 
-(method property_delete
-  (of-object Window (Gdk))
-  (c-name gdk_property_delete)
-  (return-type none)
-  (parameter (type-and-name GdkAtom property))
+(define-method property_delete
+  (of-object "GdkWindow")
+  (c-name "gdk_property_delete")
+  (return-type "none")
+  (parameters
+    '("GdkAtom" "property")
+  )
 )
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkrgb.h
 
-(function gdk_rgb_xpixel_from_rgb
-  (c-name gdk_rgb_xpixel_from_rgb)
-  (return-type gulong)
-  (parameter (type-and-name guint32 rgb))
+(define-function gdk_rgb_xpixel_from_rgb
+  (c-name "gdk_rgb_xpixel_from_rgb")
+  (return-type "gulong")
+  (parameters
+    '("guint32" "rgb")
+  )
 )
 
-(function gdk_rgb_gc_set_foreground
-  (c-name gdk_rgb_gc_set_foreground)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name guint32 rgb))
+(define-function gdk_rgb_gc_set_foreground
+  (c-name "gdk_rgb_gc_set_foreground")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("guint32" "rgb")
+  )
 )
 
-(function gdk_rgb_gc_set_background
-  (c-name gdk_rgb_gc_set_background)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name guint32 rgb))
+(define-function gdk_rgb_gc_set_background
+  (c-name "gdk_rgb_gc_set_background")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("guint32" "rgb")
+  )
 )
 
-(method draw_rgb_image
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_rgb_image)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name GdkRgbDither dith))
-  (parameter (type-and-name guchar* rgb_buf))
-  (parameter (type-and-name gint rowstride))
+(define-method draw_rgb_image
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_rgb_image")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("GdkRgbDither" "dith")
+    '("guchar*" "rgb_buf")
+    '("gint" "rowstride")
+  )
 )
 
-(method draw_rgb_image_dithalign
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_rgb_image_dithalign)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name GdkRgbDither dith))
-  (parameter (type-and-name guchar* rgb_buf))
-  (parameter (type-and-name gint rowstride))
-  (parameter (type-and-name gint xdith))
-  (parameter (type-and-name gint ydith))
+(define-method draw_rgb_image_dithalign
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_rgb_image_dithalign")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("GdkRgbDither" "dith")
+    '("guchar*" "rgb_buf")
+    '("gint" "rowstride")
+    '("gint" "xdith")
+    '("gint" "ydith")
+  )
 )
 
-(method draw_rgb_32_image
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_rgb_32_image)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name GdkRgbDither dith))
-  (parameter (type-and-name guchar* buf))
-  (parameter (type-and-name gint rowstride))
+(define-method draw_rgb_32_image
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_rgb_32_image")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("GdkRgbDither" "dith")
+    '("guchar*" "buf")
+    '("gint" "rowstride")
+  )
 )
 
-(method draw_gray_image
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_gray_image)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name GdkRgbDither dith))
-  (parameter (type-and-name guchar* buf))
-  (parameter (type-and-name gint rowstride))
+(define-method draw_gray_image
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_gray_image")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("GdkRgbDither" "dith")
+    '("guchar*" "buf")
+    '("gint" "rowstride")
+  )
 )
 
-(function rgb_cmap_new
-  (c-name gdk_rgb_cmap_new)
-  (return-type GdkRgbCmap*)
-  (parameter (type-and-name guint32* colors))
-  (parameter (type-and-name gint n_colors))
+(define-function rgb_cmap_new
+  (c-name "gdk_rgb_cmap_new")
+  (return-type "GdkRgbCmap*")
+  (parameters
+    '("guint32*" "colors")
+    '("gint" "n_colors")
+  )
 )
 
-(method draw_indexed_image
-  (of-object Drawable (Gdk))
-  (c-name gdk_draw_indexed_image)
-  (return-type none)
-  (parameter (type-and-name GdkGC* gc))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
-  (parameter (type-and-name GdkRgbDither dith))
-  (parameter (type-and-name guchar* buf))
-  (parameter (type-and-name gint rowstride))
-  (parameter (type-and-name GdkRgbCmap* cmap))
+(define-method draw_indexed_image
+  (of-object "GdkDrawable")
+  (c-name "gdk_draw_indexed_image")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("GdkRgbDither" "dith")
+    '("guchar*" "buf")
+    '("gint" "rowstride")
+    '("GdkRgbCmap*" "cmap")
+  )
 )
 
-(function rgb_ditherable
-  (c-name gdk_rgb_ditherable)
-  (return-type gboolean)
+(define-function rgb_ditherable
+  (c-name "gdk_rgb_ditherable")
+  (return-type "gboolean")
 )
 
-(function rgb_set_verbose
-  (c-name gdk_rgb_set_verbose)
-  (return-type none)
-  (parameter (type-and-name gboolean verbose))
+(define-function rgb_set_verbose
+  (c-name "gdk_rgb_set_verbose")
+  (return-type "none")
+  (parameters
+    '("gboolean" "verbose")
+  )
 )
 
-(function rgb_set_install
-  (c-name gdk_rgb_set_install)
-  (return-type none)
-  (parameter (type-and-name gboolean install))
+(define-function rgb_set_install
+  (c-name "gdk_rgb_set_install")
+  (return-type "none")
+  (parameters
+    '("gboolean" "install")
+  )
 )
 
-(function rgb_set_min_colors
-  (c-name gdk_rgb_set_min_colors)
-  (return-type none)
-  (parameter (type-and-name gint min_colors))
+(define-function rgb_set_min_colors
+  (c-name "gdk_rgb_set_min_colors")
+  (return-type "none")
+  (parameters
+    '("gint" "min_colors")
+  )
 )
 
-(function rgb_get_cmap
-  (c-name gdk_rgb_get_cmap)
-  (return-type GdkColormap*)
+(define-function rgb_get_cmap
+  (c-name "gdk_rgb_get_cmap")
+  (return-type "GdkColormap*")
 )
 
-(function rgb_get_visual
-  (c-name gdk_rgb_get_visual)
-  (return-type GdkVisual*)
+(define-function rgb_get_visual
+  (c-name "gdk_rgb_get_visual")
+  (return-type "GdkVisual*")
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkselection.h
 
-(function selection_owner_get
-  (c-name gdk_selection_owner_get)
-  (return-type GdkWindow*)
-  (parameter (type-and-name GdkAtom selection))
+(define-function selection_owner_get
+  (c-name "gdk_selection_owner_get")
+  (return-type "GdkWindow*")
+  (parameters
+    '("GdkAtom" "selection")
+  )
 )
 
-(method selection_convert
-  (of-object Window (Gdk))
-  (c-name gdk_selection_convert)
-  (return-type none)
-  (parameter (type-and-name GdkAtom selection))
-  (parameter (type-and-name GdkAtom target))
-  (parameter (type-and-name guint32 time))
+(define-method selection_convert
+  (of-object "GdkWindow")
+  (c-name "gdk_selection_convert")
+  (return-type "none")
+  (parameters
+    '("GdkAtom" "selection")
+    '("GdkAtom" "target")
+    '("guint32" "time")
+  )
 )
 
-(method selection_property_get
-  (of-object Window (Gdk))
-  (c-name gdk_selection_property_get)
-  (return-type gboolean)
-  (parameter (type-and-name guchar** data))
-  (parameter (type-and-name GdkAtom* prop_type))
-  (parameter (type-and-name gint* prop_format))
+(define-method selection_property_get
+  (of-object "GdkWindow")
+  (c-name "gdk_selection_property_get")
+  (return-type "gboolean")
+  (parameters
+    '("guchar**" "data")
+    '("GdkAtom*" "prop_type")
+    '("gint*" "prop_format")
+  )
 )
 
-(function selection_send_notify
-  (c-name gdk_selection_send_notify)
-  (return-type none)
-  (parameter (type-and-name guint32 requestor))
-  (parameter (type-and-name GdkAtom selection))
-  (parameter (type-and-name GdkAtom target))
-  (parameter (type-and-name GdkAtom property))
-  (parameter (type-and-name guint32 time))
+(define-function selection_send_notify
+  (c-name "gdk_selection_send_notify")
+  (return-type "none")
+  (parameters
+    '("guint32" "requestor")
+    '("GdkAtom" "selection")
+    '("GdkAtom" "target")
+    '("GdkAtom" "property")
+    '("guint32" "time")
+  )
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkvisual.h
 
-(function visual_get_best_depth
-  (c-name gdk_visual_get_best_depth)
-  (return-type gint)
+(define-function visual_get_best_depth
+  (c-name "gdk_visual_get_best_depth")
+  (return-type "gint")
 )
 
-(function visual_get_best_type
-  (c-name gdk_visual_get_best_type)
-  (return-type GdkVisualType)
+(define-function visual_get_best_type
+  (c-name "gdk_visual_get_best_type")
+  (return-type "GdkVisualType")
 )
 
-(function visual_get_system
-  (c-name gdk_visual_get_system)
-  (return-type GdkVisual*)
+(define-function visual_get_system
+  (c-name "gdk_visual_get_system")
+  (return-type "GdkVisual*")
 )
 
-(function visual_get_best
-  (c-name gdk_visual_get_best)
-  (return-type GdkVisual*)
+(define-function visual_get_best
+  (c-name "gdk_visual_get_best")
+  (return-type "GdkVisual*")
 )
 
-(function visual_get_best_with_depth
-  (c-name gdk_visual_get_best_with_depth)
-  (return-type GdkVisual*)
-  (parameter (type-and-name gint depth))
+(define-function visual_get_best_with_depth
+  (c-name "gdk_visual_get_best_with_depth")
+  (return-type "GdkVisual*")
+  (parameters
+    '("gint" "depth")
+  )
 )
 
-(function visual_get_best_with_type
-  (c-name gdk_visual_get_best_with_type)
-  (return-type GdkVisual*)
-  (parameter (type-and-name GdkVisualType visual_type))
+(define-function visual_get_best_with_type
+  (c-name "gdk_visual_get_best_with_type")
+  (return-type "GdkVisual*")
+  (parameters
+    '("GdkVisualType" "visual_type")
+  )
 )
 
-(function visual_get_best_with_both
+(define-function visual_get_best_with_both
   (is-constructor-of GdkVisual)
-  (c-name gdk_visual_get_best_with_both)
-  (return-type GdkVisual*)
-  (parameter (type-and-name gint depth))
-  (parameter (type-and-name GdkVisualType visual_type))
+  (c-name "gdk_visual_get_best_with_both")
+  (return-type "GdkVisual*")
+  (parameters
+    '("gint" "depth")
+    '("GdkVisualType" "visual_type")
+  )
 )
 
-(function query_depths
-  (c-name gdk_query_depths)
-  (return-type none)
-  (parameter (type-and-name gint** depths))
-  (parameter (type-and-name gint* count))
+(define-function query_depths
+  (c-name "gdk_query_depths")
+  (return-type "none")
+  (parameters
+    '("gint**" "depths")
+    '("gint*" "count")
+  )
 )
 
-(function query_visual_types
-  (c-name gdk_query_visual_types)
-  (return-type none)
-  (parameter (type-and-name GdkVisualType** visual_types))
-  (parameter (type-and-name gint* count))
+(define-function query_visual_types
+  (c-name "gdk_query_visual_types")
+  (return-type "none")
+  (parameters
+    '("GdkVisualType**" "visual_types")
+    '("gint*" "count")
+  )
 )
 
-(function list_visuals
-  (c-name gdk_list_visuals)
-  (return-type GList*)
+(define-function list_visuals
+  (c-name "gdk_list_visuals")
+  (return-type "GList*")
 )
 
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkwindow.h
 
-(function gdk_window_object_get_type
-  (c-name gdk_window_object_get_type)
-  (return-type GType)
+(define-function gdk_window_object_get_type
+  (c-name "gdk_window_object_get_type")
+  (return-type "GType")
 )
 
-(function new
+(define-function new
   (is-constructor-of GdkWindow)
-  (c-name gdk_window_new)
-  (return-type GdkWindow*)
-  (parameter (type-and-name GdkWindow* parent))
-  (parameter (type-and-name GdkWindowAttr* attributes))
-  (parameter (type-and-name gint attributes_mask))
+  (c-name "gdk_window_new")
+  (return-type "GdkWindow*")
+  (parameters
+    '("GdkWindow*" "parent")
+    '("GdkWindowAttr*" "attributes")
+    '("gint" "attributes_mask")
+  )
 )
 
-(method destroy
-  (of-object Window (Gdk))
-  (c-name gdk_window_destroy)
-  (return-type none)
+(define-method destroy
+  (of-object "GdkWindow")
+  (c-name "gdk_window_destroy")
+  (return-type "none")
 )
 
-(method get_window_type
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_window_type)
-  (return-type GdkWindowType)
+(define-method get_window_type
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_window_type")
+  (return-type "GdkWindowType")
 )
 
-(function window_at_pointer
-  (c-name gdk_window_at_pointer)
-  (return-type GdkWindow*)
-  (parameter (type-and-name gint* win_x))
-  (parameter (type-and-name gint* win_y))
+(define-function window_at_pointer
+  (c-name "gdk_window_at_pointer")
+  (return-type "GdkWindow*")
+  (parameters
+    '("gint*" "win_x")
+    '("gint*" "win_y")
+  )
 )
 
-(method show
-  (of-object Window (Gdk))
-  (c-name gdk_window_show)
-  (return-type none)
+(define-method show
+  (of-object "GdkWindow")
+  (c-name "gdk_window_show")
+  (return-type "none")
 )
 
-(method hide
-  (of-object Window (Gdk))
-  (c-name gdk_window_hide)
-  (return-type none)
+(define-method hide
+  (of-object "GdkWindow")
+  (c-name "gdk_window_hide")
+  (return-type "none")
 )
 
-(method withdraw
-  (of-object Window (Gdk))
-  (c-name gdk_window_withdraw)
-  (return-type none)
+(define-method withdraw
+  (of-object "GdkWindow")
+  (c-name "gdk_window_withdraw")
+  (return-type "none")
 )
 
-(method move
-  (of-object Window (Gdk))
-  (c-name gdk_window_move)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+(define-method move
+  (of-object "GdkWindow")
+  (c-name "gdk_window_move")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+  )
 )
 
-(method resize
-  (of-object Window (Gdk))
-  (c-name gdk_window_resize)
-  (return-type none)
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method resize
+  (of-object "GdkWindow")
+  (c-name "gdk_window_resize")
+  (return-type "none")
+  (parameters
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method move_resize
-  (of-object Window (Gdk))
-  (c-name gdk_window_move_resize)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method move_resize
+  (of-object "GdkWindow")
+  (c-name "gdk_window_move_resize")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method reparent
-  (of-object Window (Gdk))
-  (c-name gdk_window_reparent)
-  (return-type none)
-  (parameter (type-and-name GdkWindow* new_parent))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+(define-method reparent
+  (of-object "GdkWindow")
+  (c-name "gdk_window_reparent")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "new_parent")
+    '("gint" "x")
+    '("gint" "y")
+  )
 )
 
-(method clear
-  (of-object Window (Gdk))
-  (c-name gdk_window_clear)
-  (return-type none)
+(define-method clear
+  (of-object "GdkWindow")
+  (c-name "gdk_window_clear")
+  (return-type "none")
 )
 
-(method clear_area
-  (of-object Window (Gdk))
-  (c-name gdk_window_clear_area)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method clear_area
+  (of-object "GdkWindow")
+  (c-name "gdk_window_clear_area")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method clear_area_e
-  (of-object Window (Gdk))
-  (c-name gdk_window_clear_area_e)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+(define-method clear_area_e
+  (of-object "GdkWindow")
+  (c-name "gdk_window_clear_area_e")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
 )
 
-(method raise
-  (of-object Window (Gdk))
-  (c-name gdk_window_raise)
-  (return-type none)
+(define-method raise
+  (of-object "GdkWindow")
+  (c-name "gdk_window_raise")
+  (return-type "none")
 )
 
-(method lower
-  (of-object Window (Gdk))
-  (c-name gdk_window_lower)
-  (return-type none)
+(define-method lower
+  (of-object "GdkWindow")
+  (c-name "gdk_window_lower")
+  (return-type "none")
 )
 
-(method set_override_redirect
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_override_redirect)
-  (return-type none)
-  (parameter (type-and-name gboolean override_redirect))
+(define-method set_override_redirect
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_override_redirect")
+  (return-type "none")
+  (parameters
+    '("gboolean" "override_redirect")
+  )
 )
 
-(method add_filter
-  (of-object Window (Gdk))
-  (c-name gdk_window_add_filter)
-  (return-type none)
-  (parameter (type-and-name GdkFilterFunc function))
-  (parameter (type-and-name gpointer data))
+(define-method add_filter
+  (of-object "GdkWindow")
+  (c-name "gdk_window_add_filter")
+  (return-type "none")
+  (parameters
+    '("GdkFilterFunc" "function")
+    '("gpointer" "data")
+  )
 )
 
-(method remove_filter
-  (of-object Window (Gdk))
-  (c-name gdk_window_remove_filter)
-  (return-type none)
-  (parameter (type-and-name GdkFilterFunc function))
-  (parameter (type-and-name gpointer data))
+(define-method remove_filter
+  (of-object "GdkWindow")
+  (c-name "gdk_window_remove_filter")
+  (return-type "none")
+  (parameters
+    '("GdkFilterFunc" "function")
+    '("gpointer" "data")
+  )
 )
 
-(method scroll
-  (of-object Window (Gdk))
-  (c-name gdk_window_scroll)
-  (return-type none)
-  (parameter (type-and-name gint dx))
-  (parameter (type-and-name gint dy))
+(define-method scroll
+  (of-object "GdkWindow")
+  (c-name "gdk_window_scroll")
+  (return-type "none")
+  (parameters
+    '("gint" "dx")
+    '("gint" "dy")
+  )
 )
 
-(method shape_combine_mask
-  (of-object Window (Gdk))
-  (c-name gdk_window_shape_combine_mask)
-  (return-type none)
-  (parameter (type-and-name GdkBitmap* shape_mask))
-  (parameter (type-and-name gint offset_x))
-  (parameter (type-and-name gint offset_y))
+(define-method shape_combine_mask
+  (of-object "GdkWindow")
+  (c-name "gdk_window_shape_combine_mask")
+  (return-type "none")
+  (parameters
+    '("GdkBitmap*" "shape_mask")
+    '("gint" "offset_x")
+    '("gint" "offset_y")
+  )
 )
 
-(method set_child_shapes
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_child_shapes)
-  (return-type none)
+(define-method set_child_shapes
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_child_shapes")
+  (return-type "none")
 )
 
-(method merge_child_shapes
-  (of-object Window (Gdk))
-  (c-name gdk_window_merge_child_shapes)
-  (return-type none)
+(define-method merge_child_shapes
+  (of-object "GdkWindow")
+  (c-name "gdk_window_merge_child_shapes")
+  (return-type "none")
 )
 
-(method is_visible
-  (of-object Window (Gdk))
-  (c-name gdk_window_is_visible)
-  (return-type gboolean)
+(define-method is_visible
+  (of-object "GdkWindow")
+  (c-name "gdk_window_is_visible")
+  (return-type "gboolean")
 )
 
-(method is_viewable
-  (of-object Window (Gdk))
-  (c-name gdk_window_is_viewable)
-  (return-type gboolean)
+(define-method is_viewable
+  (of-object "GdkWindow")
+  (c-name "gdk_window_is_viewable")
+  (return-type "gboolean")
 )
 
-(method set_static_gravities
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_static_gravities)
-  (return-type gboolean)
-  (parameter (type-and-name gboolean use_static))
+(define-method set_static_gravities
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_static_gravities")
+  (return-type "gboolean")
+  (parameters
+    '("gboolean" "use_static")
+  )
 )
 
-(method set_hints
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_hints)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint min_width))
-  (parameter (type-and-name gint min_height))
-  (parameter (type-and-name gint max_width))
-  (parameter (type-and-name gint max_height))
-  (parameter (type-and-name gint flags))
+(define-method set_hints
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_hints")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "min_width")
+    '("gint" "min_height")
+    '("gint" "max_width")
+    '("gint" "max_height")
+    '("gint" "flags")
+  )
 )
 
-(method set_geometry_hints
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_geometry_hints)
-  (return-type none)
-  (parameter (type-and-name GdkGeometry* geometry))
-  (parameter (type-and-name GdkWindowHints flags))
+(define-method set_geometry_hints
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_geometry_hints")
+  (return-type "none")
+  (parameters
+    '("GdkGeometry*" "geometry")
+    '("GdkWindowHints" "flags")
+  )
 )
 
-(function set_sm_client_id
-  (c-name gdk_set_sm_client_id)
-  (return-type none)
-  (parameter (type-and-name const-gchar* sm_client_id))
+(define-function set_sm_client_id
+  (c-name "gdk_set_sm_client_id")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "sm_client_id")
+  )
 )
 
-(method begin_paint_rect
-  (of-object Window (Gdk))
-  (c-name gdk_window_begin_paint_rect)
-  (return-type none)
-  (parameter (type-and-name GdkRectangle* rectangle))
+(define-method begin_paint_rect
+  (of-object "GdkWindow")
+  (c-name "gdk_window_begin_paint_rect")
+  (return-type "none")
+  (parameters
+    '("GdkRectangle*" "rectangle")
+  )
 )
 
-(method begin_paint_region
-  (of-object Window (Gdk))
-  (c-name gdk_window_begin_paint_region)
-  (return-type none)
-  (parameter (type-and-name GdkRegion* region))
+(define-method begin_paint_region
+  (of-object "GdkWindow")
+  (c-name "gdk_window_begin_paint_region")
+  (return-type "none")
+  (parameters
+    '("GdkRegion*" "region")
+  )
 )
 
-(method end_paint
-  (of-object Window (Gdk))
-  (c-name gdk_window_end_paint)
-  (return-type none)
+(define-method end_paint
+  (of-object "GdkWindow")
+  (c-name "gdk_window_end_paint")
+  (return-type "none")
 )
 
-(method set_title
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_title)
-  (return-type none)
-  (parameter (type-and-name const-gchar* title))
+(define-method set_title
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_title")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "title")
+  )
 )
 
-(method set_role
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_role)
-  (return-type none)
-  (parameter (type-and-name const-gchar* role))
+(define-method set_role
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_role")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "role")
+  )
 )
 
-(method set_transient_for
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_transient_for)
-  (return-type none)
-  (parameter (type-and-name GdkWindow* leader))
+(define-method set_transient_for
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_transient_for")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "leader")
+  )
 )
 
-(method set_background
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_background)
-  (return-type none)
-  (parameter (type-and-name GdkColor* color))
+(define-method set_background
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_background")
+  (return-type "none")
+  (parameters
+    '("GdkColor*" "color")
+  )
 )
 
-(method set_back_pixmap
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_back_pixmap)
-  (return-type none)
-  (parameter (type-and-name GdkPixmap* pixmap))
-  (parameter (type-and-name gboolean parent_relative))
+(define-method set_back_pixmap
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_back_pixmap")
+  (return-type "none")
+  (parameters
+    '("GdkPixmap*" "pixmap")
+    '("gboolean" "parent_relative")
+  )
 )
 
-(method set_cursor
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_cursor)
-  (return-type none)
-  (parameter (type-and-name GdkCursor* cursor))
+(define-method set_cursor
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_cursor")
+  (return-type "none")
+  (parameters
+    '("GdkCursor*" "cursor")
+  )
 )
 
-(method get_geometry
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_geometry)
-  (return-type none)
-  (parameter (type-and-name gint* x))
-  (parameter (type-and-name gint* y))
-  (parameter (type-and-name gint* width))
-  (parameter (type-and-name gint* height))
-  (parameter (type-and-name gint* depth))
+(define-method get_geometry
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_geometry")
+  (return-type "none")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+    '("gint*" "width")
+    '("gint*" "height")
+    '("gint*" "depth")
+  )
 )
 
-(method get_position
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_position)
-  (return-type none)
-  (parameter (type-and-name gint* x))
-  (parameter (type-and-name gint* y))
+(define-method get_position
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_position")
+  (return-type "none")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+  )
 )
 
-(method get_origin
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_origin)
-  (return-type gint)
-  (parameter (type-and-name gint* x))
-  (parameter (type-and-name gint* y))
+(define-method get_origin
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_origin")
+  (return-type "gint")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+  )
 )
 
-(method get_deskrelative_origin
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_deskrelative_origin)
-  (return-type gboolean)
-  (parameter (type-and-name gint* x))
-  (parameter (type-and-name gint* y))
+(define-method get_deskrelative_origin
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_deskrelative_origin")
+  (return-type "gboolean")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+  )
 )
 
-(method get_root_origin
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_root_origin)
-  (return-type none)
-  (parameter (type-and-name gint* x))
-  (parameter (type-and-name gint* y))
+(define-method get_root_origin
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_root_origin")
+  (return-type "none")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+  )
 )
 
-(method get_pointer
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_pointer)
-  (return-type GdkWindow*)
-  (parameter (type-and-name gint* x))
-  (parameter (type-and-name gint* y))
-  (parameter (type-and-name GdkModifierType* mask))
+(define-method get_pointer
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_pointer")
+  (return-type "GdkWindow*")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+    '("GdkModifierType*" "mask")
+  )
 )
 
-(method get_parent
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_parent)
-  (return-type GdkWindow*)
+(define-method get_parent
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_parent")
+  (return-type "GdkWindow*")
 )
 
-(method get_toplevel
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_toplevel)
-  (return-type GdkWindow*)
+(define-method get_toplevel
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_toplevel")
+  (return-type "GdkWindow*")
 )
 
-(method get_children
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_children)
-  (return-type GList*)
+(define-method get_children
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_children")
+  (return-type "GList*")
 )
 
-(method peek_children
-  (of-object Window (Gdk))
-  (c-name gdk_window_peek_children)
-  (return-type GList*)
+(define-method peek_children
+  (of-object "GdkWindow")
+  (c-name "gdk_window_peek_children")
+  (return-type "GList*")
 )
 
-(method get_events
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_events)
-  (return-type GdkEventMask)
+(define-method get_events
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_events")
+  (return-type "GdkEventMask")
 )
 
-(method set_events
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_events)
-  (return-type none)
-  (parameter (type-and-name GdkEventMask event_mask))
+(define-method set_events
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_events")
+  (return-type "none")
+  (parameters
+    '("GdkEventMask" "event_mask")
+  )
 )
 
-(method set_icon
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_icon)
-  (return-type none)
-  (parameter (type-and-name GdkWindow* icon_window))
-  (parameter (type-and-name GdkPixmap* pixmap))
-  (parameter (type-and-name GdkBitmap* mask))
+(define-method set_icon
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_icon")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "icon_window")
+    '("GdkPixmap*" "pixmap")
+    '("GdkBitmap*" "mask")
+  )
 )
 
-(method set_icon_name
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_icon_name)
-  (return-type none)
-  (parameter (type-and-name const-gchar* name))
+(define-method set_icon_name
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_icon_name")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "name")
+  )
 )
 
-(method set_group
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_group)
-  (return-type none)
-  (parameter (type-and-name GdkWindow* leader))
+(define-method set_group
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_group")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "leader")
+  )
 )
 
-(method set_decorations
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_decorations)
-  (return-type none)
-  (parameter (type-and-name GdkWMDecoration decorations))
+(define-method set_decorations
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_decorations")
+  (return-type "none")
+  (parameters
+    '("GdkWMDecoration" "decorations")
+  )
 )
 
-(method set_functions
-  (of-object Window (Gdk))
-  (c-name gdk_window_set_functions)
-  (return-type none)
-  (parameter (type-and-name GdkWMFunction functions))
+(define-method set_functions
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_functions")
+  (return-type "none")
+  (parameters
+    '("GdkWMFunction" "functions")
+  )
 )
 
-(function gdk_window_get_toplevels
-  (c-name gdk_window_get_toplevels)
-  (return-type GList*)
+(define-function gdk_window_get_toplevels
+  (c-name "gdk_window_get_toplevels")
+  (return-type "GList*")
 )
 
-(method register_dnd
-  (of-object Window (Gdk))
-  (c-name gdk_window_register_dnd)
-  (return-type none)
+(define-method register_dnd
+  (of-object "GdkWindow")
+  (c-name "gdk_window_register_dnd")
+  (return-type "none")
 )
 
-(method invalidate_rect
-  (of-object Window (Gdk))
-  (c-name gdk_window_invalidate_rect)
-  (return-type none)
-  (parameter (type-and-name GdkRectangle* rect))
-  (parameter (type-and-name gboolean invalidate_children))
+(define-method invalidate_rect
+  (of-object "GdkWindow")
+  (c-name "gdk_window_invalidate_rect")
+  (return-type "none")
+  (parameters
+    '("GdkRectangle*" "rect")
+    '("gboolean" "invalidate_children")
+  )
 )
 
-(method invalidate_region
-  (of-object Window (Gdk))
-  (c-name gdk_window_invalidate_region)
-  (return-type none)
-  (parameter (type-and-name GdkRegion* region))
-  (parameter (type-and-name gboolean invalidate_children))
+(define-method invalidate_region
+  (of-object "GdkWindow")
+  (c-name "gdk_window_invalidate_region")
+  (return-type "none")
+  (parameters
+    '("GdkRegion*" "region")
+    '("gboolean" "invalidate_children")
+  )
 )
 
-(method get_update_area
-  (of-object Window (Gdk))
-  (c-name gdk_window_get_update_area)
-  (return-type GdkRegion*)
+(define-method get_update_area
+  (of-object "GdkWindow")
+  (c-name "gdk_window_get_update_area")
+  (return-type "GdkRegion*")
 )
 
-(method freeze_updates
-  (of-object Window (Gdk))
-  (c-name gdk_window_freeze_updates)
-  (return-type none)
+(define-method freeze_updates
+  (of-object "GdkWindow")
+  (c-name "gdk_window_freeze_updates")
+  (return-type "none")
 )
 
-(method thaw_updates
-  (of-object Window (Gdk))
-  (c-name gdk_window_thaw_updates)
-  (return-type none)
+(define-method thaw_updates
+  (of-object "GdkWindow")
+  (c-name "gdk_window_thaw_updates")
+  (return-type "none")
 )
 
-(method process_updates
-  (of-object Window (Gdk))
-  (c-name gdk_window_process_updates)
-  (return-type none)
-  (parameter (type-and-name gboolean update_children))
+(define-method process_updates
+  (of-object "GdkWindow")
+  (c-name "gdk_window_process_updates")
+  (return-type "none")
+  (parameters
+    '("gboolean" "update_children")
+  )
 )
 
 

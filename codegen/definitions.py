@@ -17,8 +17,9 @@ class ObjectDef(Definition):
     def __init__(self, name, *args):
 	self.name = name
 	self.module = None
+	self.parent = None
 	self.c_name = None
-	self.parent = (None, None)
+        self.typecode = None
 	self.fields = []
         self.implements = []
 	for arg in args:
@@ -27,16 +28,14 @@ class ObjectDef(Definition):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
 	    elif arg[0] == 'parent':
-		if len(arg) > 2:
-		    self.parent = (arg[1], arg[2][0])
-		else:
-		    self.parent = (arg[1], None)
+                self.parent = arg[1]
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
-	    elif arg[0] == 'field':
-		for parg in arg[1:]:
-		    if parg[0] == 'type-and-name':
-			self.fields.append((parg[1], parg[2]))
+	    elif arg[0] == 'gtype-id':
+		self.typecode = arg[1]
+	    elif arg[0] == 'fields':
+                for parg in arg[1:]:
+                    self.fields.append((parg[0], parg[1]))
             elif arg[0] == 'implements':
                 self.implements.append(arg[1])
     def merge(self, old):
@@ -46,20 +45,22 @@ class ObjectDef(Definition):
 	self.fields = old.fields
         self.implements = old.implements
     def write_defs(self, fp=sys.stdout):
-	fp.write('(object ' + self.name + '\n')
+	fp.write('(define-object ' + self.name + '\n')
 	if self.module:
-	    fp.write('  (in-module ' + self.module + ')\n')
+	    fp.write('  (in-module "' + self.module + '")\n')
 	if self.parent != (None, None):	
-	    fp.write('  (parent ' + self.parent[0])
-	    if self.parent[1]:
-		fp.write(' (' + self.parent[1] + ')')
-	    fp.write(')\n')
-	if self.c_name:
-	    fp.write('  (c-name ' + self.c_name + ')\n')
-	for (ftype, fname) in self.fields:
-	    fp.write('  (field (type-and-name ' + ftype + ' ' + fname + '))\n')
+	    fp.write('  (parent "' + self.parent + '")\n')
         for interface in self.implements:
-            fp.write('  (implements ' + interface + ')\n')
+            fp.write('  (implements "' + interface + '")\n')
+	if self.c_name:
+	    fp.write('  (c-name "' + self.c_name + '")\n')
+	if self.typecode:
+	    fp.write('  (gtype-id "' + self.typecode + '")\n')
+        if self.fields:
+            fp.write('  (fields\n')
+            for (ftype, fname) in self.fields:
+                fp.write('    \'("' + ftype + '" "' + fname + '")\n')
+            fp.write('  )\n')
 	fp.write(')\n\n')
 
 class InterfaceDef(Definition):
@@ -67,6 +68,7 @@ class InterfaceDef(Definition):
 	self.name = name
 	self.module = None
 	self.c_name = None
+        self.typecode = None
 	self.fields = []
 	for arg in args:
 	    if type(arg) != type(()) or len(arg) < 2:
@@ -75,12 +77,16 @@ class InterfaceDef(Definition):
 		self.module = arg[1]
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
+	    elif arg[0] == 'gtype-id':
+		self.typecode = arg[1]
     def write_defs(self, fp=sys.stdout):
-	fp.write('(interface ' + self.name + '\n')
+	fp.write('(define-interface ' + self.name + '\n')
 	if self.module:
-	    fp.write('  (in-module ' + self.module + ')\n')
+	    fp.write('  (in-module "' + self.module + '")\n')
 	if self.c_name:
-	    fp.write('  (c-name ' + self.c_name + ')\n')
+	    fp.write('  (c-name "' + self.c_name + '")\n')
+	if self.typecode:
+	    fp.write('  (gtype-id "' + self.typecode + '")\n')
 	fp.write(')\n\n')
 
 class EnumDef(Definition):
@@ -89,6 +95,7 @@ class EnumDef(Definition):
 	self.name = name
 	self.in_module = None
 	self.c_name = None
+        self.typecode = None
 	self.values = []
 	for arg in args:
 	    if type(arg) != type(()) or len(arg) < 2:
@@ -97,24 +104,24 @@ class EnumDef(Definition):
 		self.in_module = arg[1]
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
-	    elif arg[0] == 'value':
-		vname = None
-		vcname = None
-		for parg in arg[1:]:
-		    if parg[0] == 'name':
-			vname = parg[1]
-		    elif parg[0] == 'c-name':
-			vcname = parg[1]
-		self.values.append((vname, vcname))
+	    elif arg[0] == 'gtype-id':
+		self.typecode = arg[1]
+	    elif arg[0] == 'values':
+                for varg in arg[1:]:
+                    self.values.append((varg[0], varg[1]))
     def merge(self, old):
 	pass
     def write_defs(self, fp=sys.stdout):
-	fp.write('(' + self.deftype + ' ' + self.name + '\n')
+	fp.write('(define-' + self.deftype + ' ' + self.name + '\n')
 	if self.in_module:
-	    fp.write('  (in-module ' + self.in_module + ')\n')
-	fp.write('  (c-name ' + self.c_name + ')\n')
-	for name, val in self.values:
-	    fp.write('  (value (name ' + name + ') (c-name ' + val + '))\n')
+	    fp.write('  (in-module "' + self.in_module + '")\n')
+	fp.write('  (c-name "' + self.c_name + '")\n')
+	fp.write('  (gtype-id "' + self.typecode + '")\n')
+        if self.values:
+            fp.write('  (values\n')
+            for name, val in self.values:
+                fp.write('    \'("' + name + '" "' + val + '")\n')
+            fp.write('  )\n')
 	fp.write(')\n\n')
 
 class FlagsDef(EnumDef):
@@ -127,6 +134,7 @@ class BoxedDef(Definition):
 	self.name = name
 	self.module = None
 	self.c_name = None
+        self.typecode = None
         self.copy = None
         self.release = None
 	self.fields = []
@@ -137,31 +145,37 @@ class BoxedDef(Definition):
 		self.module = arg[1]
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
+	    elif arg[0] == 'gtype-id':
+		self.typecode = arg[1]
             elif arg[0] == 'copy-func':
                 self.copy = arg[1]
             elif arg[0] == 'release-func':
                 self.release = arg[1]
-	    elif arg[0] == 'field':
-		for parg in arg[1:]:
-		    if parg[0] == 'type-and-name':
-			self.fields.append((parg[1], parg[2]))
+	    elif arg[0] == 'fields':
+                for parg in arg[1:]:
+                    self.fields.append((parg[0], parg[1]))
     def merge(self, old):
 	# currently the .h parser doesn't try to work out what fields of
 	# an object structure should be public, so we just copy the list
 	# from the old version ...
 	self.fields = old.fields
     def write_defs(self, fp=sys.stdout):
-	fp.write('(boxed ' + self.name + '\n')
+	fp.write('(define-boxed ' + self.name + '\n')
 	if self.module:
-	    fp.write('  (in-module ' + self.module + ')\n')
+	    fp.write('  (in-module "' + self.module + '")\n')
 	if self.c_name:
-	    fp.write('  (c-name ' + self.c_name + ')\n')
+	    fp.write('  (c-name "' + self.c_name + '")\n')
+	if self.typecode:
+	    fp.write('  (gtype-id "' + self.typecode + '")\n')
         if self.copy:
-            fp.write('  (copy-func ' + self.copy + ')\n')
+            fp.write('  (copy-func "' + self.copy + '")\n')
         if self.release:
-            fp.write('  (release-func ' + self.release + ')\n')
-	for (ftype, fname) in self.fields:
-	    fp.write('  (field (type-and-name ' + ftype + ' ' + fname + '))\n')
+            fp.write('  (release-func "' + self.release + '")\n')
+        if self.fields:
+            fp.write('  (fields\n')
+            for (ftype, fname) in self.fields:
+                fp.write('    \'("' + ftype + '" "' + fname + '")\n')
+            fp.write('  )\n')
 	fp.write(')\n\n')
 
 class MethodDef(Definition):
@@ -169,37 +183,35 @@ class MethodDef(Definition):
 	self.name = name
 	self.ret = None
 	self.c_name = None
-	self.of_object = (None, None)
+        self.typecode = None
+	self.of_object = None
 	self.params = [] # of form (type, name, default, nullok)
         self.varargs = 0
 	for arg in args:
 	    if type(arg) != type(()) or len(arg) < 2:
 		continue
 	    if arg[0] == 'of-object':
-		if len(arg) > 2:
-		    self.of_object = (arg[1], arg[2][0])
-		else:
-		    self.of_object = (arg[1], None)
+                self.of_object = arg[1]
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
+	    elif arg[0] == 'gtype-id':
+		self.typecode = arg[1]
 	    elif arg[0] == 'return-type':
 		self.ret = arg[1]
-	    elif arg[0] == 'parameter':
-		ptype = None
-		pname = None
-		pdflt = None
-		pnull = 0
-		for parg in arg[1:]:
-		    if parg[0] == 'type-and-name':
-			ptype = parg[1]
-			pname = parg[2]
-		    elif parg[0] == 'default':
-			pdflt = parg[1]
-		    elif parg[0] == 'null-ok':
-			pnull = 1
-		self.params.append((ptype, pname, pdflt, pnull))
+	    elif arg[0] == 'parameters':
+                for parg in arg[1:]:
+                    ptype = parg[0]
+                    pname = parg[1]
+                    pdflt = None
+                    pnull = 0
+                    for farg in parg[2:]:
+                        if farg[0] == 'default':
+                            pdflt = farg[1]
+                        elif farg[0] == 'null-ok':
+                            pnull = 1
+                    self.params.append((ptype, pname, pdflt, pnull))
             elif arg[0] == 'varargs':
-                self.varargs = arg[1] == 't'
+                self.varargs = arg[1] in ('t', '#t')
     def merge(self, old):
 	# here we merge extra parameter flags accross to the new object.
 	for i in range(len(self.params)):
@@ -209,21 +221,23 @@ class MethodDef(Definition):
 		    self.params[i] = (ptype, pname, p2[2], p2[3])
 		    break
     def write_defs(self, fp=sys.stdout):
-	fp.write('(method ' + self.name + '\n')
+	fp.write('(define-method ' + self.name + '\n')
 	if self.of_object != (None, None):
-	    fp.write('  (of-object ' + self.of_object[0])
-	    if self.of_object[1]:
-		fp.write(' (' + self.of_object[1] + ')')
-	    fp.write(')\n')
+	    fp.write('  (of-object "' + self.of_object + '")\n')
 	if self.c_name:
-	    fp.write('  (c-name ' + self.c_name + ')\n')
+	    fp.write('  (c-name "' + self.c_name + '")\n')
+	if self.typecode:
+	    fp.write('  (gtype-id "' + self.typecode + '")\n')
 	if self.ret:
-	    fp.write('  (return-type ' + self.ret + ')\n')
-	for ptype, pname, pdflt, pnull in self.params:
-	    fp.write('  (parameter (type-and-name ' + ptype + ' ' + pname +')')
-	    if pdflt: fp.write(' (default "' + pdflt + '")')
-	    if pnull: fp.write(' (null-ok)')
-	    fp.write(')\n')
+	    fp.write('  (return-type "' + self.ret + '")\n')
+        if self.params:
+            fp.write('  (parameters\n')
+            for ptype, pname, pdflt, pnull in self.params:
+                fp.write('    \'("' + ptype + '" "' + pname +'"')
+                if pdflt: fp.write(' (default "' + pdflt + '")')
+                if pnull: fp.write(' (null-ok)')
+                fp.write(')\n')
+            fp.write('  )\n')
 	fp.write(')\n\n')
 
 class FunctionDef(Definition):
@@ -233,6 +247,7 @@ class FunctionDef(Definition):
 	self.is_constructor_of = None
 	self.ret = None
 	self.c_name = None
+        self.typecode = None
 	self.params = [] # of form (type, name, default, nullok)
         self.varargs = 0
 	for arg in args:
@@ -244,24 +259,24 @@ class FunctionDef(Definition):
 		self.is_constructor_of = arg[1]
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
+	    elif arg[0] == 'gtype-id':
+		self.typecode = arg[1]
 	    elif arg[0] == 'return-type':
 		self.ret = arg[1]
-	    elif arg[0] == 'parameter':
-		ptype = None
-		pname = None
-		pdflt = None
-		pnull = 0
-		for parg in arg[1:]:
-		    if parg[0] == 'type-and-name':
-			ptype = parg[1]
-			pname = parg[2]
-		    elif parg[0] == 'default':
-			pdflt = parg[1]
-		    elif parg[0] == 'null-ok':
-			pnull = 1
-		self.params.append((ptype, pname, pdflt, pnull)) 
+	    elif arg[0] == 'parameters':
+                for parg in arg[1:]:
+                    ptype = parg[0]
+                    pname = parg[1]
+                    pdflt = None
+                    pnull = 0
+                    for farg in parg[2:]:
+                        if farg[0] == 'default':
+                            pdflt = farg[1]
+                        elif farg[0] == 'null-ok':
+                            pnull = 1
+                    self.params.append((ptype, pname, pdflt, pnull))
             elif arg[0] == 'varargs':
-                self.varargs = arg[1] == 't'
+                self.varargs = arg[1] in ('t', '#t')
     _method_write_defs = MethodDef.__dict__['write_defs']
     def merge(self, old):
 	# here we merge extra parameter flags accross to the new object.
@@ -280,19 +295,24 @@ class FunctionDef(Definition):
 	    self.of_object = old.of_object
 	    del self.params[0]
     def write_defs(self, fp=sys.stdout):
-	fp.write('(function ' + self.name + '\n')
+	fp.write('(define-function ' + self.name + '\n')
 	if self.in_module:
-	    fp.write('  (in-module (' + self.in_module + '))\n')
+	    fp.write('  (in-module "' + self.in_module + '")\n')
 	if self.is_constructor_of:
-	    fp.write('  (is-constructor-of ' + self.is_constructor_of + ')\n')
+	    fp.write('  (is-constructor-of "' + self.is_constructor_of +'")\n')
 	if self.c_name:
-	    fp.write('  (c-name ' + self.c_name + ')\n')
+	    fp.write('  (c-name "' + self.c_name + '")\n')
+	if self.typecode:
+	    fp.write('  (gtype-id "' + self.typecode + '")\n')
 	if self.ret:
-	    fp.write('  (return-type ' + self.ret + ')\n')
-	for ptype, pname, pdflt, pnull in self.params:
-	    fp.write('  (parameter (type-and-name ' + ptype + ' ' + pname +')')
-	    if pdflt: fp.write(' (default "' + pdflt + '")')
-	    if pnull: fp.write(' (null-ok)')
-	    fp.write(')\n')
+	    fp.write('  (return-type "' + self.ret + '")\n')
+        if self.params:
+            fp.write('  (parameters\n')
+            for ptype, pname, pdflt, pnull in self.params:
+                fp.write('    \'("' + ptype + '" "' + pname +'"')
+                if pdflt: fp.write(' (default "' + pdflt + '")')
+                if pnull: fp.write(' (null-ok)')
+                fp.write(')\n')
+            fp.write('  )\n')
 	fp.write(')\n\n')
 

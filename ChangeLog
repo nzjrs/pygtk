@@ -1,5 +1,33 @@
 2001-07-08  James Henstridge  <james@daa.com.au>
 
+	* gtk/gdk.defs, gtk/gtk-extrafuncs.defs, gtk/gtk.defs: update to
+	new format.
+
+	* pango.defs: update to new format.
+
+	* codegen/codegen.py: various fixes to make it work with the new
+	defs format.
+
+	* codegen/argtypes.py (ObjectArg.__init__): take the typecode as
+	an argument, and use it to deduce the cast macro (s/_TYPE_/_/).
+	(BoxedArg.__init__): take typecode as argument explicitly.
+	(EnumArg.__init__): take typecode as argument explicitly.
+	(FlagsArg.__init__): take typecode as argument explicitly.
+	(ArgMatcher.register_enum): pass typecode argument.
+	(ArgMatcher.register_flag): same here.
+	(ArgMatcher.register_object): same here.
+	(ArgMatcher.register_boxed): same here.
+
+	* codegen/definitions.py (ObjectDef): update parser for new format.
+	(InterfaceDef): same here.
+	(EnumDef): same here.
+	(BoxedDef): same here.
+	(MethodDef): same here.
+	(FunctionDef): same here.
+
+	* codegen/defsparser.py (DefsParser): add define- prefix to the
+	defs we look for.
+
 	* codegen/defsconvert.py (convert): new program to convert v2 defs
 	to v3 defs.  It will probably only work with files in the style
 	created by the h2def.py program.

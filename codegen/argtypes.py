@@ -3,57 +3,6 @@ import sys
 import string
 import traceback
 
-_conv_special_cases = {
-    'GObject': '_G_OBJECT',
-    'GtkCList': '_GTK_CLIST',
-    'GtkCTree': '_GTK_CTREE',
-    'GtkCTreePos': '_GTK_CTREE_POS',
-    'GtkCTreeLineStyle': '_GTK_CTREE_LINE_STYLE',
-    'GtkCTreeExpanderStyle': '_GTK_CTREE_EXPANDER_STYLE',
-    'GtkCTreeExpansionStyle': '_GTK_CTREE_EXPANSION_STYLE',
-    'GnomeRootWin': '_GNOME_ROOTWIN',
-    'GnomeAppBar': '_GNOME_APPBAR',
-    'GnomeDEntryEdit': '_GNOME_DENTRY_EDIT',
-    'PyGtkTreeModel': '_PYGTK_TREE_MODEL'
-}
-
-def _to_upper_str(str):
-    """Converts a typename to the equivalent upercase and underscores
-    name.  This is used to form the type conversion macros and enum/flag
-    name variables"""
-    if _conv_special_cases.has_key(str):
-	return _conv_special_cases[str]
-    ret = []
-    while str:
-	if len(str) > 1 and str[0] in string.uppercase and \
-	   str[1] in string.lowercase:
-	    ret.append("_" + str[:2])
-	    str = str[2:]
-	elif len(str) > 3 and \
-	     str[0] in string.lowercase and \
-	     str[1] in 'HV' and \
-	     str[2] in string.uppercase and \
-	     str[3] in string.lowercase:
-	    ret.append(str[0] + "_" + str[1:3])
-	    str = str[3:]
-	elif len(str) > 2 and \
-	     str[0] in string.lowercase and \
-	     str[1] in string.uppercase and \
-	     str[2] in string.uppercase:
-	    ret.append(str[0] + "_" + str[1])
-	    str = str[2:]
-	else:
-	    ret.append(str[0])
-	    str = str[1:]
-    return string.upper(string.join(ret, ''))
-
-def _enum_name(typename):
-    """create a GTK_TYPE_* name from the given type"""
-    part = _to_upper_str(typename)
-    second_underscore = string.index(part, '_', 1)
-    return part[1:second_underscore] + '_TYPE' + part[second_underscore:]
-
-
 class VarList:
     """Nicely format a C variable list"""
     def __init__(self):
@@ -243,9 +192,9 @@ class FileArg(ArgType):
 class EnumArg(ArgType):
     enum = '    if (pyg_enum_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
 	   '        return NULL;\n'
-    def __init__(self, enumname):
+    def __init__(self, enumname, typecode):
 	self.enumname = enumname
-	self.typecode = _enum_name(enumname)
+	self.typecode = typecode
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
 	if pdflt:
@@ -263,9 +212,9 @@ class EnumArg(ArgType):
 class FlagsArg(ArgType):
     flag = '    if (pyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
 	   '        return NULL;\n'
-    def __init__(self, flagname):
+    def __init__(self, flagname, typecode):
 	self.flagname = flagname
-	self.typecode = _enum_name(flagname)
+	self.typecode = typecode
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
 	if pdflt:
@@ -307,9 +256,9 @@ class ObjectArg(ArgType):
 	    '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n' + \
 	    '        return NULL;\n' + \
 	    '    }\n'
-    def __init__(self, objname, parent):
+    def __init__(self, objname, parent, typecode):
 	self.objname = objname
-	self.cast = _to_upper_str(objname)[1:]
+	self.cast = string.replace(typecode, '_TYPE_', '_', 1)
         self.parent = parent
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
@@ -365,9 +314,9 @@ class BoxedArg(ArgType):
 	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s");\n' + \
 	   '        return NULL;\n' + \
 	   '    }\n'
-    def __init__(self, ptype):
+    def __init__(self, ptype, typecode):
 	self.typename = ptype
-	self.typecode = _enum_name(ptype)
+	self.typecode = typecode
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
 	if pnull:
@@ -502,20 +451,20 @@ class ArgMatcher:
 
     def register(self, ptype, handler):
 	self.argtypes[ptype] = handler
-    def register_enum(self, ptype):
-	self.register(ptype, EnumArg(ptype))
-    def register_flag(self, ptype):
-	self.register(ptype, FlagsArg(ptype))
-    def register_object(self, ptype, parent):
-        oa = ObjectArg(ptype, parent)
+    def register_enum(self, ptype, typecode):
+	self.register(ptype, EnumArg(ptype, typecode))
+    def register_flag(self, ptype, typecode):
+	self.register(ptype, FlagsArg(ptype, typecode))
+    def register_object(self, ptype, parent, typecode):
+        oa = ObjectArg(ptype, parent, typecode)
         self.register(ptype, oa)  # in case I forget the * in the .defs
 	self.register(ptype+'*', oa)
         if ptype == 'GdkPixmap':
             # hack to handle GdkBitmap synonym.
             self.register('GdkBitmap', oa)
             self.register('GdkBitmap*', oa)
-    def register_boxed(self, ptype):
-        arg = BoxedArg(ptype)
+    def register_boxed(self, ptype, typecode):
+        arg = BoxedArg(ptype, typecode)
 	self.register(ptype+'*', arg)
         self.register('const-'+ptype+'*', arg)
     def register_custom_boxed(self, ptype, pytype, getter, new):
@@ -597,6 +546,6 @@ matcher.register('GtkType', GTypeArg())
 matcher.register('GError**', GErrorArg())
 matcher.register('GtkTreePath*', GtkTreePathArg())
 
-matcher.register_object('GObject', None)
+matcher.register_object('GObject', None, 'G_TYPE_OBJECT')
 
 del arg

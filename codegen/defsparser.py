@@ -26,31 +26,31 @@ class DefsParser(IncludeParser):
 	self.c_name = {}     # hash of c names of functions
 	self.methods = {}    # hash of methods of particular objects
 
-    def object(self, *args):
+    def define_object(self, *args):
 	odef = apply(ObjectDef, args)
 	self.objects.append(odef)
 	self.c_name[odef.c_name] = odef
-    def interface(self, *args):
+    def define_interface(self, *args):
         idef = apply(InterfaceDef, args)
         self.interfaces.append(idef)
         self.c_name[idef.c_name] = idef
-    def enum(self, *args):
+    def define_enum(self, *args):
         edef = apply(EnumDef, args)
         self.enums.append(edef)
         self.c_name[edef.c_name] = edef
-    def flags(self, *args):
+    def define_flags(self, *args):
         fdef = apply(FlagsDef, args)
         self.enums.append(fdef)
         self.c_name[fdef.c_name] = fdef
-    def boxed(self, *args):
+    def define_boxed(self, *args):
         bdef = apply(BoxedDef, args)
         self.boxes.append(bdef)
         self.c_name[bdef.c_name] = bdef
-    def function(self, *args):
+    def define_function(self, *args):
 	fdef = apply(FunctionDef, args)
 	self.functions.append(fdef)
 	self.c_name[fdef.c_name] = fdef
-    def method(self, *args):
+    def define_method(self, *args):
 	mdef = apply(MethodDef, args)
 	self.functions.append(mdef)
 	self.c_name[mdef.c_name] = mdef
@@ -88,7 +88,7 @@ class DefsParser(IncludeParser):
                 return func
 
     def find_methods(self, obj):
-        objname = obj.name, obj.module
+        objname = obj.c_name
         return filter(lambda func, on=objname: isinstance(func, MethodDef) and
                       func.of_object == on, self.functions)
 

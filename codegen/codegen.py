@@ -238,7 +238,7 @@ def write_function(funcobj, fp=sys.stdout):
 
     fp.write(functmpl % dict)
 
-def write_method(objname, methobj, fp=sys.stdout):
+def write_method(objname, castmacro, methobj, fp=sys.stdout):
     varlist = argtypes.VarList()
     parsestr = ''
     parselist = ['']
@@ -253,7 +253,7 @@ def write_method(objname, methobj, fp=sys.stdout):
 	'cname':   methobj.c_name,
 	'varlist': varlist,
 	'class':   objname,
-	'cast':    argtypes._to_upper_str(objname)[1:]
+	'cast':    castmacro
     }
 
     # create the keyword argument name list ...
@@ -281,7 +281,7 @@ def write_method(objname, methobj, fp=sys.stdout):
 
     fp.write(methtmpl % dict)
 
-def write_constructor(objname, funcobj, fp=sys.stdout):
+def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
     varlist = argtypes.VarList()
     parsestr = ''
     parselist = ['']
@@ -293,7 +293,7 @@ def write_constructor(objname, funcobj, fp=sys.stdout):
 	'cname':   funcobj.c_name,
 	'varlist': varlist,
 	'class':   objname,
-	'cast':    argtypes._to_upper_str(objname)[1:],
+	'cast':    castmacro,
 	'gtkobjectsink': ''
     }
 
@@ -321,9 +321,8 @@ def write_constructor(objname, funcobj, fp=sys.stdout):
     dict['arglist']   = string.join(arglist, ', ')
     fp.write(consttmpl % dict)
 
-def write_getattr(parser, objobj, overrides, fp=sys.stdout):
-    uline = argtypes._to_upper_str(objobj.c_name)[1:]
-    funcname = '_wrap_' + string.lower(uline) + '_getattr'
+def write_getattr(parser, objobj, castmacro, overrides, fp=sys.stdout):
+    funcname = '_wrap_' + string.lower(castmacro) + '_getattr'
 
     if overrides.is_overriden(funcname[6:]):
         fp.write(overrides.override(funcname[6:]))
@@ -347,7 +346,7 @@ def write_getattr(parser, objobj, overrides, fp=sys.stdout):
             varlist = argtypes.VarList()
             handler = argtypes.matcher.get(ftype)
             code = handler.write_return(ftype, varlist) % \
-                   {'func': uline + '(self->obj)->' + fname}
+                   {'func': castmacro + '(self->obj)->' + fname}
             if code:
                 # indent code ...
                 code = '    ' + string.replace(code, '\n', '\n    ')
@@ -366,6 +365,7 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
     fp.write('\n/* ----------- ' + objobj.c_name + ' ----------- */\n\n')
     constructor = parser.find_constructor(objobj, overrides)
     methods = []
+    castmacro = string.replace(objobj.typecode, '_TYPE_', '_', 1)
     if constructor:
 	try:
             methtype = 'METH_VARARGS'
@@ -375,7 +375,7 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
                 if overrides.wants_kwargs(constructor.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
             else:
-                write_constructor(objobj.c_name, constructor, fp)
+                write_constructor(objobj.c_name, castmacro, constructor, fp)
                 methtype = methtype + '|METH_KEYWORDS'
 	    methods.append(methdeftmpl %
 			   { 'name':  '__init__',
@@ -413,7 +413,7 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
             else:
-                write_method(objobj.c_name, meth, fp)
+                write_method(objobj.c_name, castmacro, meth, fp)
                 methtype = methtype + '|METH_KEYWORDS'
 	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
 					   'cname': '_wrap_' + meth.c_name,
@@ -431,13 +431,14 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
 
     # write the type template
     dict = { 'class': objobj.c_name }
-    dict['getattr'] = write_getattr(parser, objobj, overrides, fp)
+    dict['getattr'] = write_getattr(parser, objobj, castmacro, overrides, fp)
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
     fp.write(typetmpl % dict)
 
 def write_interface(parser, interface, overrides, fp=sys.stdout):
     fp.write('\n/* ----------- ' + interface.c_name + ' ----------- */\n\n')
     methods = []
+    castmacro = string.replace(interface.typecode, '_TYPE_', '_', 1)
     for meth in parser.find_methods(interface):
         if overrides.is_ignored(meth.c_name):
             continue
@@ -449,7 +450,7 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
             else:
-                write_method(interface.c_name, meth, fp)
+                write_method(interface.c_name, castmacro, meth, fp)
                 methtype = methtype + '|METH_KEYWORDS'
 	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
 					   'cname': '_wrap_' + meth.c_name,
@@ -513,7 +514,7 @@ def write_boxed_method(objname, methobj, fp=sys.stdout):
 
     fp.write(boxedmethtmpl % dict)
 
-def write_boxed_constructor(objname, funcobj, fp=sys.stdout):
+def write_boxed_constructor(objname, typecode, funcobj, fp=sys.stdout):
     varlist = argtypes.VarList()
     parsestr = ''
     parselist = ['']
@@ -525,7 +526,7 @@ def write_boxed_constructor(objname, funcobj, fp=sys.stdout):
 	'cname':   funcobj.c_name,
 	'varlist': varlist,
 	'typename': objname,
-        'typecode': argtypes._enum_name(objname),
+        'typecode': typecode,
     }
 
     # create the keyword argument name list ...
@@ -549,8 +550,8 @@ def write_boxed_constructor(objname, funcobj, fp=sys.stdout):
     fp.write(boxedconsttmpl % dict)
 
 def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
-    typecode = argtypes._enum_name(boxedobj.c_name)
-    uline = argtypes._to_upper_str(boxedobj.c_name)[1:]
+    typecode = boxedobj.typecode
+    uline = string.replace(typecode, '_TYPE_', '_', 1)
     funcname = '_wrap_' + string.lower(uline) + '_getattr'
 
     if overrides.is_overriden(funcname[6:]):
@@ -604,7 +605,8 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
                 if overrides.wants_kwargs(constructor.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
             else:
-                write_boxed_constructor(boxedobj.c_name, constructor, fp)
+                write_boxed_constructor(boxedobj.c_name, boxedobj.typecode,
+                                        constructor, fp)
                 methtype = methtype + '|METH_KEYWORDS'
 	    methods.append(methdeftmpl %
 			   { 'name':  '__init__',
@@ -708,20 +710,17 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write(overrides.get_init() + '\n')
 
     for boxed in parser.boxes:
-        typecode = argtypes._enum_name(boxed.c_name)
         fp.write('    pyg_register_boxed(d, "' + boxed.c_name +
-                 '", ' + typecode + ', &Py' + boxed.c_name + '_Type);\n')
+                 '", ' + boxed.typecode + ', &Py' + boxed.c_name + '_Type);\n')
     for interface in parser.interfaces:
-        uclass = string.lower(argtypes._to_upper_str(interface.c_name)[1:])
+        uclass = string.lower(string.replace(interface.typecode, '_TYPE_', '_', 1))
         fp.write('    pyg_register_interface(d, "' + interface.c_name +
                  '", '+ uclass + '_get_type, &Py' + interface.c_name +
                  '_Type);\n')
     objects = parser.objects[:]
     pos = 0
     while pos < len(objects):
-        parent = None
-        if objects[pos].parent != (None, None):
-            parent = objects[pos].parent[1] + objects[pos].parent[0]
+        parent = objects[pos].parent
         for i in range(pos+1, len(objects)):
             if objects[i].c_name == parent:
                 objects.insert(i+1, objects[pos])
@@ -731,10 +730,10 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
             pos = pos + 1
     for obj in objects:
         bases = []
-        if obj.parent != (None, None):
-            bases.append(obj.parent[1] + obj.parent[0])
+        if obj.parent != None:
+            bases.append(obj.parent)
         bases = bases + obj.implements
-        uclass = string.lower(argtypes._to_upper_str(obj.c_name)[1:])
+        uclass = string.lower(string.replace(obj.typecode, '_TYPE_', '_', 1))
         if bases:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
                      '", ' + uclass + '_get_type, &Py' + obj.c_name +
@@ -749,20 +748,16 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
 
 def register_types(parser):
     for boxed in parser.boxes:
-        argtypes.matcher.register_boxed(boxed.c_name)
+        argtypes.matcher.register_boxed(boxed.c_name, boxed.typecode)
     for obj in parser.objects:
-        if obj.parent != (None, None):
-            argtypes.matcher.register_object(obj.c_name,
-                                             obj.parent[1] + obj.parent[0])
-        else:
-            argtypes.matcher.register_object(obj.c_name, None)
+        argtypes.matcher.register_object(obj.c_name, obj.parent, obj.typecode)
     for obj in parser.interfaces:
-        argtypes.matcher.register_object(obj.c_name, None)
+        argtypes.matcher.register_object(obj.c_name, None, obj.typecode)
     for enum in parser.enums:
 	if enum.deftype == 'flags':
-	    argtypes.matcher.register_flag(enum.c_name)
+	    argtypes.matcher.register_flag(enum.c_name, enum.typecode)
 	else:
-	    argtypes.matcher.register_enum(enum.c_name)
+	    argtypes.matcher.register_enum(enum.c_name, enum.typecode)
 
 if __name__ == '__main__':
     o = override.Overrides(None)
