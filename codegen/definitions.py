@@ -426,11 +426,21 @@ class FunctionDef(Definition):
 	if self.deprecated:
 	    fp.write('  (deprecated "' + self.deprecated + '")\n')
         if self.params:
-            fp.write('  (parameters\n')
-            for ptype, pname, pdflt, pnull in self.params:
-                fp.write('    \'("' + ptype + '" "' + pname +'"')
-                if pdflt: fp.write(' (default "' + pdflt + '")')
-                if pnull: fp.write(' (null-ok)')
-                fp.write(')\n')
-            fp.write('  )\n')
+            if isinstance(self.params[0], Parameter):
+                fp.write('  (parameters\n')
+                for ptype, pname, pdflt, pnull in self.params:
+                    fp.write('    \'("' + ptype + '" "' + pname +'"')
+                    if pdflt: fp.write(' (default "' + pdflt + '")')
+                    if pnull: fp.write(' (null-ok)')
+                    fp.write(')\n')
+                fp.write('  )\n')
+            elif isinstance(self.params[0], Property):
+                fp.write('  (properties\n')
+                for prop in self.params:
+                    fp.write('    \'("' + prop.pname +'"')
+                    if prop.optional: fp.write(' (optional)')
+                    fp.write(')\n')
+                fp.write('  )\n')
+            else:
+                assert False, "strange parameter list"
 	fp.write(')\n\n')
