@@ -32,6 +32,7 @@
 import sys, string, traceback
 import pygtk
 pygtk.require('2.0')
+import gobject
 import gtk
 
 stdout = sys.stdout
@@ -210,15 +211,15 @@ class Console(gtk.VBox):
         if event.keyval == gtk.keysyms.Tab:
             self.line.emit_stop_by_name("key_press_event")
             self.line.append_text('\t')
-            gtk.idle_add(self.focus_text)
+            gobject.idle_add(self.focus_text)
         elif event.keyval in (gtk.keysyms.KP_Up, gtk.keysyms.Up):
             self.line.emit_stop_by_name("key_press_event")
             self.historyUp()
-            gtk.idle_add(self.focus_text)
+            gobject.idle_add(self.focus_text)
         elif event.keyval in (gtk.keysyms.KP_Down, gtk.keysyms.Down):
             self.line.emit_stop_by_name("key_press_event")
             self.historyDown()
-            gtk.idle_add(self.focus_text)
+            gobject.idle_add(self.focus_text)
         elif event.keyval in (gtk.keysyms.D, gtk.keysyms.d) and \
              event.state & gtk.gdk.CONTROL_MASK:
             self.line.emit_stop_by_name("key_press_event")

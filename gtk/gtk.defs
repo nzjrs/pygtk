@@ -735,6 +735,12 @@
   (return-type "none")
 )
 
+(define-method get_accel_path
+  (of-object "GtkAction")
+  (c-name "gtk_action_get_accel_path")
+  (return-type "const-gchar*")
+)
+
 (define-method block_activate_from
   (of-object "GtkAction")
   (c-name "gtk_action_block_activate_from")
@@ -1715,6 +1721,20 @@
   )
 )
 
+(define-method set_image
+  (of-object "GtkButton")
+  (c-name "gtk_button_set_image")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "image")
+  )
+)
+
+(define-method get_image
+  (of-object "GtkButton")
+  (c-name "gtk_button_get_image")
+  (return-type "GtkWidget*")
+)
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcalendar.h
@@ -2028,6 +2048,15 @@
   (return-type "none")
 )
 
+(define-method stop_editing
+  (of-object "GtkCellRenderer")
+  (c-name "gtk_cell_renderer_stop_editing")
+  (return-type "none")
+  (parameters
+    '("gboolean" "canceled")
+  )
+)
+
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcellrenderercombo.h
@@ -2043,7 +2072,7 @@
   (return-type "GtkCellRenderer*")
 )
 
-
+ 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcellrendererpixbuf.h
 
@@ -5065,6 +5094,16 @@
   (varargs #t)
 )
 
+(define-method set_alternative_button_order_from_array
+  (of-object "GtkDialog")
+  (c-name "gtk_dialog_set_alternative_button_order_from_array")
+  (return-type "none")
+  (parameters
+    '("gint" "n_params")
+    '("gint*" "new_order")
+  )
+)
+
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkdnd.h
 
@@ -6506,6 +6545,12 @@
   (parameters
     '("const-gchar*" "pattern")
   )
+)
+
+(define-method add_pixbuf_formats
+  (of-object "GtkFileFilter")
+  (c-name "gtk_file_filter_add_pixbuf_formats")
+  (return-type "none")
 )
 
 (define-method add_custom
@@ -8295,6 +8340,96 @@
   (return-type "GtkOrientation")
 )
 
+(define-method set_columns
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_columns")
+  (return-type "none")
+  (parameters
+    '("gint" "columns")
+  )
+)
+
+(define-method get_columns
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_columns")
+  (return-type "gint")
+)
+
+(define-method set_item_width
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_item_width")
+  (return-type "none")
+  (parameters
+    '("gint" "item_width")
+  )
+)
+
+(define-method get_item_width
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_item_width")
+  (return-type "gint")
+)
+
+(define-method set_spacing
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_spacing")
+  (return-type "none")
+  (parameters
+    '("gint" "spacing")
+  )
+)
+
+(define-method get_spacing
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_spacing")
+  (return-type "gint")
+)
+
+(define-method set_row_spacing
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_row_spacing")
+  (return-type "none")
+  (parameters
+    '("gint" "row_spacing")
+  )
+)
+
+(define-method get_row_spacing
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_row_spacing")
+  (return-type "gint")
+)
+
+(define-method set_column_spacing
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_column_spacing")
+  (return-type "none")
+  (parameters
+    '("gint" "column_spacing")
+  )
+)
+
+(define-method get_column_spacing
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_column_spacing")
+  (return-type "gint")
+)
+
+(define-method set_margin
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_margin")
+  (return-type "none")
+  (parameters
+    '("gint" "margin")
+  )
+)
+
+(define-method get_margin
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_margin")
+  (return-type "gint")
+)
+
 (define-method get_path_at_pos
   (of-object "GtkIconView")
   (c-name "gtk_icon_view_get_path_at_pos")
@@ -9474,6 +9609,21 @@
   (return-type "PangoEllipsizeMode")
 )
 
+(define-method set_angle
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set_angle")
+  (return-type "none")
+  (parameters
+    '("gint" "angle")
+  )
+)
+
+(define-method get_angle
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_angle")
+  (return-type "gint")
+)
+
 (define-method set_width_chars
   (of-object "GtkLabel")
   (c-name "gtk_label_set_width_chars")
@@ -9489,7 +9639,35 @@
   (return-type "gint")
 )
 
+(define-method set_max_width_chars
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set_max_width_chars")
+  (return-type "none")
+  (parameters
+    '("gint" "n_chars")
+  )
+)
 
+(define-method get_max_width_chars
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_max_width_chars")
+  (return-type "gint")
+)
+
+(define-method set_single_line_mode
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set_single_line_mode")
+  (return-type "none")
+  (parameters
+    '("gboolean" "single_line_mode")
+  )
+)
+
+(define-method get_single_line_mode
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_single_line_mode")
+  (return-type "gboolean")
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtklayout.h
 
@@ -9967,6 +10145,30 @@
   (parameters
     '("GtkTreeIter*" "iter")
     '("GtkTreeIter*" "sibling")
+  )
+)
+
+(define-method insert_with_values
+  (of-object "GtkListStore")
+  (c-name "gtk_list_store_insert_with_values")
+  (return-type "none")
+  (parameters
+    '("GtkTreeIter*" "iter")
+    '("gint" "position")
+  )
+  (varargs #t)
+)
+
+(define-method insert_with_valuesv
+  (of-object "GtkListStore")
+  (c-name "gtk_list_store_insert_with_valuesv")
+  (return-type "none")
+  (parameters
+    '("GtkTreeIter*" "iter")
+    '("gint" "position")
+    '("gint*" "columns")
+    '("GValue*" "values")
+    '("gint" "n_values")
   )
 )
 
@@ -12056,6 +12258,20 @@
   (deprecated "")
 )
 
+(define-method set_ellipsize
+  (of-object "GtkProgressBar")
+  (c-name "gtk_progress_bar_set_ellipsize")
+  (return-type "none")
+  (parameters
+    '("PangoEllipsizeMode" "mode")
+  )
+)
+
+(define-method get_ellipsize
+  (of-object "GtkProgressBar")
+  (c-name "gtk_progress_bar_get_ellipsize")
+  (return-type "PangoEllipsizeMode")
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkradioaction.h
 
@@ -16343,6 +16559,18 @@
   (return-type "none")
   (parameters
     '("GtkTextIter*" "iter")
+    '("gint" "x")
+    '("gint" "y")
+  )
+)
+
+(define-method get_iter_at_position
+  (of-object "GtkTextView")
+  (c-name "gtk_text_view_get_iter_at_position")
+  (return-type "none")
+  (parameters
+    '("GtkTextIter*" "iter")
+    '("gint*" "trailing")
     '("gint" "x")
     '("gint" "y")
   )

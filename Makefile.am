@@ -98,6 +98,7 @@ EXTRA_DIST += \
   makefile.msc \
   setup.py \
   dsextras.py \
+  pygtk_postinstall.py \
   MANIFEST.in \
   PKG-INFO \
   PKG-INFO.in \

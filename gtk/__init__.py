@@ -40,17 +40,56 @@ threads_init = gdk.threads_init
 threads_enter = gdk.threads_enter
 threads_leave = gdk.threads_leave
 
-idle_add       = _gobject.idle_add
-idle_remove    = _gobject.source_remove
-timeout_add    = _gobject.timeout_add
-timeout_remove = _gobject.source_remove
-input_add      = _gobject.io_add_watch
-input_add_full = _gobject.io_add_watch
-input_remove   = _gobject.source_remove
-
 gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
 gdk.INPUT_EXCEPTION = _gobject.IO_PRI
+
+# other deprecated symbols
+class _Deprecated:
+    def __init__(self, func, oldname, module=''):
+        self.func = func
+        self.oldname = oldname
+        self.name = func.__name__
+        if module:
+            self.module = module
+        else:
+            self.module = 'gtk'
+            
+    def __repr__(self):
+        return '<deprecated function %s>' % (self.oldname)
+    
+    def __call__(self, *args, **kwargs):
+        oldname = 'gtk.' + self.oldname
+	newname = self.module + '.' + self.name
+        message = '%s is deprecated, use %s instead' % (oldname, newname)
+        # DeprecationWarning is imported from _gtk, so it's not the same
+        # as the one found in exceptions.
+        _warn(message, DeprecationWarning, 2)
+        try:
+	    return self.func(*args, **kwargs)
+	except TypeError, e:
+	    msg = str(e).replace(self.name, self.oldname)
+	    raise TypeError(msg)
+	    
+# old names compatibility ...
+idle_add       = _Deprecated(_gobject.idle_add, 'idle_add', 'gobject')
+idle_remove    = _Deprecated(_gobject.source_remove, 'idle_remove', 'gobject')
+timeout_add    = _Deprecated(_gobject.timeout_add, 'timeout_add', 'gobject')
+timeout_remove = _Deprecated(_gobject.source_remove, 'timeout_remove', 'gobject')
+input_add      = _Deprecated(_gobject.io_add_watch, 'input_add', 'gobject')
+input_add_full = _Deprecated(_gobject.io_add_watch, 'input_add_full', 'gobject')
+input_remove   = _Deprecated(_gobject.source_remove, 'input_remove', 'gobject')
+
+mainloop = _Deprecated(main, 'mainloop')
+mainquit = _Deprecated(main_quit, 'mainquit')
+mainiteration = _Deprecated(main_iteration, 'mainiteration')
+load_font = _Deprecated(gdk.Font, 'load_font', 'gtk.gdk')
+load_fontset = _Deprecated(gdk.fontset_load, 'load_fontset', 'gtk.gdk')
+create_pixmap = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gtk.gdk')
+create_pixmap_from_xpm = _Deprecated(gdk.pixmap_create_from_xpm,
+                                     'pixmap_create_from_xpm', 'gtk.gdk')
+create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
+                                       'pixmap_create_from_xpm_d', 'gtk.gdk')
 
 # _gobject deprecation
 from types import ModuleType as _module
@@ -64,40 +103,5 @@ class _GObjectWrapper(_module):
         return getattr(self._gobject, attr)
 _gobject = _GObjectWrapper('gtk._gobject')
 del _GObjectWrapper, _module
-
-# other deprecated symbols
-class _Deprecated:
-    def __init__(self, func, oldname, module=''):
-        self.func = func
-        self.oldname = oldname
-        self.name = func.__name__
-        if module:
-            self.module = 'gtk.' + module
-        else:
-            self.module = 'gtk'
-            
-    def __repr__(self):
-        return '<deprecated function %s>' % (self.oldname)
-    
-    def __call__(self, *args, **kwargs):
-        message = 'gtk.%s is deprecated, use %s.%s instead' % (self.oldname,
-                                                               self.module,
-                                                               self.name)
-        # DeprecationWarning is imported from _gtk, so it's not the same
-        # as the one found in exceptions.
-        _warn(message, DeprecationWarning, 2)
-        return self.func(*args, **kwargs)
-
-# old names compatibility ...
-mainloop = _Deprecated(main, 'mainloop')
-mainquit = _Deprecated(main_quit, 'mainquit')
-mainiteration = _Deprecated(main_iteration, 'mainiteration')
-load_font = _Deprecated(gdk.Font, 'load_font', 'gdk')
-load_fontset = _Deprecated(gdk.fontset_load, 'load_fontset', 'gdk')
-create_pixmap = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gdk')
-create_pixmap_from_xpm = _Deprecated(gdk.pixmap_create_from_xpm,
-                                     'pixmap_create_from_xpm', 'gdk')
-create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
-                                       'pixmap_create_from_xpm_d', 'gdk')
 
 del _Deprecated
