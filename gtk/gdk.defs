@@ -4144,6 +4144,7 @@
 )
 
 (define-function gdk_pixbuf_loader_new
+  (deprecated "use gtk.gdk.PixbufLoader instead")
   (c-name "gdk_pixbuf_loader_new")
   (return-type "GdkPixbufLoader*")
 )
@@ -4154,6 +4155,15 @@
   (return-type "GdkPixbufLoader*")
   (parameters
     '("const-char*" "image_type")
+    '("GError**" "error")
+  )
+)
+
+(define-function pixbuf_loader_new_with_mime_type
+  (c-name "gdk_pixbuf_loader_new_with_mime_type")
+  (return-type "GdkPixbufLoader*")
+  (parameters
+    '("const-char*" "mime_type")
     '("GError**" "error")
   )
 )
@@ -4188,6 +4198,22 @@
   (parameters
     '("GError**" "error")
   )
+)
+
+(define-method set_size
+  (of-object "GdkPixbufLoader")
+  (c-name "gdk_pixbuf_loader_set_size")
+  (return-type "none")
+  (parameters
+    '("int" "width")
+    '("int" "height")
+  )
+)
+
+(define-method get_format
+  (of-object "GdkPixbufLoader")
+  (c-name "gdk_pixbuf_loader_get_format")
+  (return-type "GdkPixbufFormat*")
 )
 
 (define-method intersect

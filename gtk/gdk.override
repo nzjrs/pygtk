@@ -3311,6 +3311,56 @@ _wrap_gdk_pixbuf_animation_iter_advance(PyGObject *self, PyObject *args,
 %%
 override gdk_pixbuf_get_formats noargs
 static PyObject *
+pygtk_make_pixbuf_format_dict(GdkPixbufFormat *format)
+{
+    PyObject *item, *value;
+    gchar *sval, **aval;
+    gint i;
+
+    item = PyDict_New();
+
+    sval = gdk_pixbuf_format_get_name(format);
+    value = PyString_FromString(sval);
+    PyDict_SetItemString(item, "name", value);
+    Py_DECREF(value);
+    g_free(sval);
+
+    sval = gdk_pixbuf_format_get_description(format);
+    value = PyString_FromString(sval);
+    PyDict_SetItemString(item, "description", value);
+    Py_DECREF(value);
+    g_free(sval);
+
+    aval = gdk_pixbuf_format_get_mime_types(format);
+    value = PyList_New(0);
+    for (i = 0; aval[i] != NULL; i++) {
+	PyObject *string_item = PyString_FromString(aval[i]);
+	    
+	PyList_Append(value, string_item);
+	Py_DECREF(string_item);
+    }
+    PyDict_SetItemString(item, "mime_types", value);
+    Py_DECREF(value);
+    g_strfreev(aval);
+
+    aval = gdk_pixbuf_format_get_extensions(format);
+    value = PyList_New(0);
+    for (i = 0; aval[i] != NULL; i++) {
+	PyObject *string_item = PyString_FromString(aval[i]);
+	    
+	PyList_Append(value, string_item);
+	Py_DECREF(string_item);
+    }
+    PyDict_SetItemString(item, "extensions", value);
+    Py_DECREF(value);
+    g_strfreev(aval);
+
+    value = gdk_pixbuf_format_is_writable(format) ? Py_True : Py_False;
+    PyDict_SetItemString(item, "is_writable", value);
+
+    return item;
+}
+static PyObject *
 _wrap_gdk_pixbuf_get_formats(PyObject *self)
 {
     GSList *list, *tmp;
@@ -3319,52 +3369,8 @@ _wrap_gdk_pixbuf_get_formats(PyObject *self)
     list = gdk_pixbuf_get_formats();
     ret = PyList_New(0);
     for (tmp = list; tmp != NULL; tmp = tmp->next) {
-	GdkPixbufFormat *format = tmp->data;
-	PyObject *item, *value;
-	gchar *sval, **aval;
-	gint i;
-
-	item = PyDict_New();
-
-	sval = gdk_pixbuf_format_get_name(format);
-	value = PyString_FromString(sval);
-	PyDict_SetItemString(item, "name", value);
-	Py_DECREF(value);
-	g_free(sval);
-
-	sval = gdk_pixbuf_format_get_description(format);
-	value = PyString_FromString(sval);
-	PyDict_SetItemString(item, "description", value);
-	Py_DECREF(value);
-	g_free(sval);
-
-	aval = gdk_pixbuf_format_get_mime_types(format);
-	value = PyList_New(0);
-	for (i = 0; aval[i] != NULL; i++) {
-	    PyObject *string_item = PyString_FromString(aval[i]);
-	    
-	    PyList_Append(value, string_item);
-	    Py_DECREF(string_item);
-	}
-	PyDict_SetItemString(item, "mime_types", value);
-	Py_DECREF(value);
-	g_strfreev(aval);
-
-	aval = gdk_pixbuf_format_get_extensions(format);
-	value = PyList_New(0);
-	for (i = 0; aval[i] != NULL; i++) {
-	    PyObject *string_item = PyString_FromString(aval[i]);
-	    
-	    PyList_Append(value, string_item);
-	    Py_DECREF(string_item);
-	}
-	PyDict_SetItemString(item, "extensions", value);
-	Py_DECREF(value);
-	g_strfreev(aval);
-
-	value = gdk_pixbuf_format_is_writable(format) ? Py_True : Py_False;
-	PyDict_SetItemString(item, "is_writable", value);
-
+	PyObject *item;
+	item = pygtk_make_pixbuf_format_dict((GdkPixbufFormat *)(tmp->data));
 
 	PyList_Append(ret, item);
 	Py_DECREF(item);
@@ -3987,6 +3993,7 @@ static PyObject *
 _wrap_gdk_pixbuf_get_file_info(PyObject *self, PyObject *args,
 			       PyObject *kwargs)
 {
+    static PyObject *pygtk_make_pixbuf_format_dict();
     static char *kwlist[] = { "filename", NULL };
     gint width, height;
     GdkPixbufFormat *format;
@@ -4000,57 +4007,28 @@ _wrap_gdk_pixbuf_get_file_info(PyObject *self, PyObject *args,
     format = gdk_pixbuf_get_file_info(filename, &width, &height);
 
     if (format) {
-	PyObject *py_format, *value;
-	gchar *sval, **aval;
-	gint i;
+	PyObject *py_format;
 
-	py_format = PyDict_New();
-
-	sval = gdk_pixbuf_format_get_name(format);
-	value = PyString_FromString(sval);
-	PyDict_SetItemString(py_format, "name", value);
-	Py_DECREF(value);
-	g_free(sval);
-
-	sval = gdk_pixbuf_format_get_description(format);
-	value = PyString_FromString(sval);
-	PyDict_SetItemString(py_format, "description", value);
-	Py_DECREF(value);
-	g_free(sval);
-
-	aval = gdk_pixbuf_format_get_mime_types(format);
-	value = PyList_New(0);
-	for (i = 0; aval[i] != NULL; i++) {
-	    PyObject *string_item = PyString_FromString(aval[i]);
-	    
-	    PyList_Append(value, string_item);
-	    Py_DECREF(string_item);
-	}
-	PyDict_SetItemString(py_format, "mime_types", value);
-	Py_DECREF(value);
-	g_strfreev(aval);
-
-	aval = gdk_pixbuf_format_get_extensions(format);
-	value = PyList_New(0);
-	for (i = 0; aval[i] != NULL; i++) {
-	    PyObject *string_item = PyString_FromString(aval[i]);
-	    
-	    PyList_Append(value, string_item);
-	    Py_DECREF(string_item);
-	}
-	PyDict_SetItemString(py_format, "extensions", value);
-	Py_DECREF(value);
-	g_strfreev(aval);
-
-	value = gdk_pixbuf_format_is_writable(format) ? Py_True : Py_False;
-	PyDict_SetItemString(py_format, "is_writable", value);
-
+	py_format = pygtk_make_pixbuf_format_dict(format);
 	return Py_BuildValue("(Nii)", py_format, width, height);
     }
 
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gdk_pixbuf_loader_get_format noargs
+static PyObject *
+_wrap_gdk_pixbuf_loader_get_format(PyGObject *self)
+{
+    static PyObject *pygtk_make_pixbuf_format_dict();
+    GdkPixbufFormat *format;
 
-    
-    
+    format = gdk_pixbuf_loader_get_format(GDK_PIXBUF_LOADER(self->obj));
+
+    if (format)
+	return pygtk_make_pixbuf_format_dict(format);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
