@@ -43,7 +43,7 @@ def set_tooltips_cb(button, toolbar, enable):
     toolbar.set_tooltips(enable)
 
 def main():
-    win = gtk.GtkWindow()
+    win = gtk.Window()
     if __name__ == '__main__':
 	win.connect('destroy', lambda win: gtk.main_quit())
 
@@ -51,49 +51,50 @@ def main():
     win.set_policy(gtk.FALSE, gtk.TRUE, gtk.TRUE)
     win.set_border_width(5)
 
-    pix, mask = gtk.pixmap_colormap_create_from_xpm_d(None, win.get_colormap(),
-						      None, folder_icon)
+    pix, mask = gtk.gdk.pixmap_colormap_create_from_xpm_d(None,
+                                                          win.get_colormap(),
+                                                          None, folder_icon)
 
-    toolbar = gtk.GtkToolbar()
+    toolbar = gtk.Toolbar()
     win.add(toolbar)
     
     button = toolbar.append_item("Horizontal", "Horizontal toolbar layout",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
+				 None, gtk.Pixmap(pix, mask), None, None)
     button.connect("clicked", set_orient_cb, toolbar,
 		   gtk.ORIENTATION_HORIZONTAL)
 
     button = toolbar.append_item("Vertical", "Vertical toolbar layout",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
+				 None, gtk.Pixmap(pix, mask), None, None)
     button.connect("clicked", set_orient_cb, toolbar,
 		   gtk.ORIENTATION_VERTICAL)
 
     toolbar.append_space()
 
     button = toolbar.append_item("Icons", "Only show toolbar icons",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
+				 None, gtk.Pixmap(pix, mask), None, None)
     button.connect("clicked", set_style_cb, toolbar, gtk.TOOLBAR_ICONS)
 
     button = toolbar.append_item("Text", "Only show toolbar texts",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
+				 None, gtk.Pixmap(pix, mask), None, None)
     button.connect("clicked", set_style_cb, toolbar, gtk.TOOLBAR_TEXT)
 
     button = toolbar.append_item("Both", "Show toolbar icons and text",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
+				 None, gtk.Pixmap(pix, mask), None, None)
     button.connect("clicked", set_style_cb, toolbar, gtk.TOOLBAR_BOTH)
 
     toolbar.append_space()
 
-    entry = gtk.GtkEntry()
+    entry = gtk.Entry()
     toolbar.append_widget(entry, None, None)
 
     toolbar.append_space()
 
     button = toolbar.append_item("Enable", "Enable tooltips",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
+				 None, gtk.Pixmap(pix, mask), None, None)
     button.connect("clicked", set_tooltips_cb, toolbar, gtk.TRUE)
 
     button = toolbar.append_item("Disable", "Disable tooltips",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
+				 None, gtk.Pixmap(pix, mask), None, None)
     button.connect("clicked", set_tooltips_cb, toolbar, gtk.FALSE)
 
     win.show_all()

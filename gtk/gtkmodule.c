@@ -9,8 +9,10 @@
 
 void _pygtk_register_boxed_types(PyObject *moddict);
 void pygtk_register_classes(PyObject *d);
+void pygdk_register_classes(PyObject *d);
 
 extern PyMethodDef pygtk_functions[];
+extern PyMethodDef pygdk_functions[];
 
 static struct _PyGtk_FunctionStruct functions = {
     VERSION,
@@ -78,6 +80,12 @@ init_gtk(void)
     /* for addon libraries ... */
     PyDict_SetItemString(d, "_PyGtk_API",
 			 PyCObject_FromVoidPtr(&functions, NULL));
+
+    /* namespace all the gdk stuff in gtk.gdk ... */
+    m = Py_InitModule("gtk.gdk", pygdk_functions);
+    d = PyModule_GetDict(m);
+
+    pygdk_register_classes(d);
 
     if (PyErr_Occurred())
 	Py_FatalError("can't initialise module _gtk");

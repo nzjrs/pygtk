@@ -18,6 +18,7 @@ del gobject
 from GTK import *
 import GDK
 from _gtk import *
+import gdk # this is created by the _gtk import
 
 # old names compatibility ...
 mainloop = main
@@ -25,9 +26,9 @@ def mainquit(*args):
     main_quit()
 mainiteration = main_iteration
 
-load_font = GdkFont
-load_fontset = fontset_load
-create_pixmap = GtkPixmap
-create_pixmap_from_xpm = pixmap_create_from_xpm
-create_pixmap_from_xpm_d = pixmap_create_from_xpm_d
+load_font = gdk.Font
+load_fontset = gdk.fontset_load
+create_pixmap = gdk.Pixmap
+create_pixmap_from_xpm = gdk.pixmap_create_from_xpm
+create_pixmap_from_xpm_d = gdk.pixmap_create_from_xpm_d
 

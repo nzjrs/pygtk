@@ -1,3 +1,44 @@
+2001-09-14  James Henstridge  <james@daa.com.au>
+
+	merge from short-class-names-branch
+
+2001-09-12  James Henstridge  <james@daa.com.au>
+
+	* codegen/codegen.py (write_class, write_interface): set the short
+	name as the class name here.
+
+	* gobjectmodule.c (pygobject_register_class): pass ec->tp_name as
+	the name for the class passed to PyExtensionClass_Export*.
+
+	* codegen/codegen.py (write_source): pass the C name to
+	pygobject_register_class again.
+
+2001-09-11  James Henstridge  <james@daa.com.au>
+
+	* gtk/__init__.py (create_pixmap): few fixups to get things to
+	import correctly.
+
+	* gtk/gtkmodule.c (init_gtk): there is no _pygdk_register_boxed().
+
+	* gtk/libglade.override (init): same here.
+
+	* gtk/gtk.override (init): same here.
+
+	* gtk/gdk.override (init): use short class names here.
+
+	* gtk/gtkmodule.c (init_gtk): initialise both the gtk._gtk and
+	gtk.gdk modules.
+
+	* gtk/gtk.defs: don't include gdk.defs
+
+	* gtk/gtk.override: remove all GDK override wrappers.
+
+	* gtk/gdk.override: new file taking the overrides for GDK
+	functions.
+
+	* codegen/codegen.py (write_source): register only the short name
+	of the GObject, interface or boxed type.
+
 2001-09-13  Johan Dahlin  <zilch.am@home.se>
 
 	* gtk/gtk.defs (CellRendererTextPixbuf): removed.

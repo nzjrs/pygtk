@@ -12,10 +12,10 @@ import gtk
 def create_menu(depth, length=5):
     if depth < 1:
 	return None
-    menu = gtk.GtkMenu()
+    menu = gtk.Menu()
     group= None
     for i in range(length):
-	menuitem = gtk.GtkRadioMenuItem(group, 'item %2d - %d' % (depth, i))
+	menuitem = gtk.RadioMenuItem(group, 'item %2d - %d' % (depth, i))
 	group = menuitem
 	menu.add(menuitem)
 	menuitem.show()
@@ -25,46 +25,46 @@ def create_menu(depth, length=5):
     return menu
 
 def main():
-    window = gtk.GtkWindow()
+    window = gtk.Window()
     if __name__ == '__main__':
 	window.connect('destroy', lambda win: gtk.main_quit())
     window.set_title('Menus')
 
-    vbox = gtk.GtkVBox()
+    vbox = gtk.VBox()
     window.add(vbox)
 
-    menubar = gtk.GtkMenuBar()
+    menubar = gtk.MenuBar()
     vbox.pack_start(menubar, expand=gtk.FALSE)
 
-    menuitem = gtk.GtkMenuItem('test\nline2')
+    menuitem = gtk.MenuItem('test\nline2')
     menuitem.set_submenu(create_menu(2, 50))
     menubar.add(menuitem)
 
-    menuitem = gtk.GtkMenuItem('foo')
+    menuitem = gtk.MenuItem('foo')
     menuitem.set_submenu(create_menu(2))
     menubar.add(menuitem)
     
-    menuitem = gtk.GtkMenuItem('bar')
+    menuitem = gtk.MenuItem('bar')
     menuitem.set_submenu(create_menu(2))
     menuitem.right_justify()
     menubar.add(menuitem)
 
-    vbox2 = gtk.GtkVBox(spacing=10)
+    vbox2 = gtk.VBox(spacing=10)
     vbox2.set_border_width(10)
     vbox.pack_start(vbox2)
 
-    optionmenu = gtk.GtkOptionMenu()
+    optionmenu = gtk.OptionMenu()
     optionmenu.set_menu(create_menu(1,50))
     vbox2.pack_start(optionmenu)
 
-    separator = gtk.GtkHSeparator()
+    separator = gtk.HSeparator()
     vbox.pack_start(separator, expand=gtk.FALSE)
     
-    vbox2 = gtk.GtkVBox(spacing=10)
+    vbox2 = gtk.VBox(spacing=10)
     vbox2.set_border_width(10)
     vbox.pack_start(vbox2, expand=gtk.FALSE)
 
-    button = gtk.GtkButton('close')
+    button = gtk.Button('close')
     button.connect('clicked', lambda widget, window=window: window.destroy())
     vbox2.pack_start(button)
     button.set_flags(gtk.CAN_DEFAULT)

@@ -110,12 +110,12 @@ def popup_cb():
     global popup_timer, popdown_timer
     if not popped_up:
 	if not popup_win:
-	    popup_win = gtk.GtkWindow(gtk.WINDOW_POPUP)
+	    popup_win = gtk.Window(gtk.WINDOW_POPUP)
 	    popup_win.set_position(gtk.WIN_POS_MOUSE)
-	    table = gtk.GtkTable(3, 3)
+	    table = gtk.Table(3, 3)
 	    for k in range(9):
 		i, j = divmod(k, 3)
-		b = gtk.GtkButton("%d,%d" % (i,j))
+		b = gtk.Button("%d,%d" % (i,j))
 		table.attach(b, i,i+1,j,j+1)
 		b.drag_dest_set(gtk.DEST_DEFAULT_ALL, target, 
 				gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
@@ -142,35 +142,36 @@ def popsite_leave(w, context, time):
 def source_drag_data_delete(w, context, data):
     print 'Delete the data!'
 def create_pixmap(widget, xpm):
-    return gtk.pixmap_colormap_create_from_xpm_d(None, widget.get_colormap(),
-						None, xpm)
+    return gtk.gdk.pixmap_colormap_create_from_xpm_d(None,
+                                                     widget.get_colormap(),
+                                                     None, xpm)
 
 def main():
     global trashcan_open, trashcan_open_mask
     global trashcan_closed, trashcan_closed_mask
     global drag_icon, drag_mask
-    win = gtk.GtkWindow()
+    win = gtk.Window()
     if __name__ == '__main__':
 	win.connect('destroy', lambda win: gtk.main_quit())
-    table = gtk.GtkTable(2,2)
+    table = gtk.Table(2,2)
     win.add(table)
     drag_icon, drag_mask = create_pixmap(win, drag_icon_xpm)
     trashcan_open, trashcan_open_mask = create_pixmap(win, trashcan_open_xpm)
     trashcan_closed, trashcan_closed_mask = create_pixmap(win, trashcan_closed_xpm)
-    label = gtk.GtkLabel('Drop Here!\n')
+    label = gtk.Label('Drop Here!\n')
     label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
 			gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
     label.connect('drag_data_received', label_drag_data_received)
     table.attach(label, 0, 1, 0, 1)
 
-    label = gtk.GtkLabel('Popup\n')
+    label = gtk.Label('Popup\n')
     label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
 			gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
     table.attach(label, 1, 2, 1, 2)
     label.connect('drag_motion', popsite_motion)
     label.connect('drag_leave', popsite_leave)
 
-    pixmap = gtk.GtkPixmap(trashcan_closed, trashcan_closed_mask)
+    pixmap = gtk.Pixmap(trashcan_closed, trashcan_closed_mask)
     pixmap.drag_dest_set(0, [], 0)
     table.attach(pixmap, 1, 2, 0, 1)
     pixmap.connect('drag_leave', target_drag_leave)
@@ -178,7 +179,7 @@ def main():
     pixmap.connect('drag_drop', target_drag_drop)
     pixmap.connect('drag_data_received', target_drag_data_received)
 
-    b = gtk.GtkButton('Drag Here\n')
+    b = gtk.Button('Drag Here\n')
     b.drag_source_set(gtk.GDK.BUTTON1_MASK | gtk.GDK.BUTTON3_MASK,
 		      target, gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
     b.drag_source_set_icon(win.get_colormap(), drag_icon, drag_mask)

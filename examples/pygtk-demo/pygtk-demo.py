@@ -62,14 +62,14 @@ def launch_cb(button):
 	mod.main()
 
 def create_text(is_source=gtk.FALSE):
-    scrolled_window = gtk.GtkScrolledWindow()
+    scrolled_window = gtk.ScrolledWindow()
     scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
     scrolled_window.set_shadow_type(gtk.SHADOW_IN)
 
-    text_view = gtk.GtkTextView()
+    text_view = gtk.TextView()
     scrolled_window.add(text_view)
 
-    buffer = gtk.GtkTextBuffer(None)
+    buffer = gtk.TextBuffer(None)
     text_view.set_buffer(buffer)
     text_view.set_editable(gtk.FALSE)
     text_view.set_cursor_visible(gtk.FALSE)
@@ -81,8 +81,8 @@ def create_text(is_source=gtk.FALSE):
 def create_list():
     global model
 
-    model = gtk.GtkListStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
-    tree_view = gtk.GtkTreeView(model)
+    model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
+    tree_view = gtk.TreeView(model)
     selection = tree_view.get_selection()
     selection.set_mode('single')
     tree_view.set_usize(200, -1)
@@ -91,9 +91,9 @@ def create_list():
 	iter = model.append()
 	model.set_value(iter, TITLE_COLUMN, title)
 	model.set_value(iter, MODULE_COLUMN, module)
-    cell = gtk.GtkCellRendererText()
+    cell = gtk.CellRendererText()
     # this column 
-    column = gtk.GtkTreeViewColumn("Widget", cell, text=TITLE_COLUMN)
+    column = gtk.TreeViewColumn("Widget", cell, text=TITLE_COLUMN)
     tree_view.append_column(column)
 
     selection.connect('changed', selection_cb)
@@ -102,25 +102,25 @@ def create_list():
 def main():
     global info_buffer, source_buffer
 
-    window = gtk.GtkWindow()
+    window = gtk.Window()
     window.connect('destroy', lambda win: gtk.main_quit())
 
-    hbox = gtk.GtkHBox(gtk.FALSE, 3)
+    hbox = gtk.HBox(gtk.FALSE, 3)
     window.add(hbox)
 
     list = create_list()
     hbox.pack_start(list, expand=gtk.FALSE)
     
-    vbox = gtk.GtkVBox()
+    vbox = gtk.VBox()
     hbox.pack_start(vbox, expand=gtk.TRUE)
 
-    notebook = gtk.GtkNotebook()
+    notebook = gtk.Notebook()
     vbox.pack_start(notebook, expand=gtk.TRUE)
     scrolled_window, info_buffer = create_text(gtk.FALSE)
-    l = gtk.GtkLabel('') ; l.set_text_with_mnemonic('_Info')
+    l = gtk.Label('') ; l.set_text_with_mnemonic('_Info')
     notebook.append_page(scrolled_window, l)
     scrolled_window, source_buffer = create_text(gtk.TRUE)
-    l = gtk.GtkLabel('') ; l.set_text_with_mnemonic('_Source')
+    l = gtk.Label('') ; l.set_text_with_mnemonic('_Source')
     notebook.append_page(scrolled_window, l)
 
     tag = info_buffer.create_tag('title')
@@ -130,7 +130,7 @@ def main():
     tag.set_property('pixels_above_lines', 0)
     tag.set_property('pixels_below_lines', 0)
 
-    button = gtk.GtkButton('_Launch')
+    button = gtk.Button('_Launch')
     button.set_border_width(5)
     button.set_flags(gtk.CAN_DEFAULT)
     vbox.pack_start(button, expand=gtk.FALSE)

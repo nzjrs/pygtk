@@ -10,44 +10,44 @@ import gtk
 
 def create_bbox(horizontal=gtk.TRUE, title=None, spacing=0,
 		layout=gtk.BUTTONBOX_SPREAD):
-    frame = gtk.GtkFrame(title)
+    frame = gtk.Frame(title)
 
     if horizontal:
-	bbox = gtk.GtkHButtonBox()
+	bbox = gtk.HButtonBox()
     else:
-	bbox = gtk.GtkVButtonBox()
+	bbox = gtk.VButtonBox()
 
     bbox.set_border_width(5)
     bbox.set_layout(layout)
     bbox.set_spacing(spacing)
     frame.add(bbox)
 
-    button = gtk.GtkButton(stock='gtk-ok')
+    button = gtk.Button(stock='gtk-ok')
     bbox.add(button)
 
-    button = gtk.GtkButton(stock='gtk-cancel')
+    button = gtk.Button(stock='gtk-cancel')
     bbox.add(button)
 
-    button = gtk.GtkButton(stock='gtk-help')
+    button = gtk.Button(stock='gtk-help')
     bbox.add(button)
 
     return frame
 
 def main():
-    win = gtk.GtkWindow()
+    win = gtk.Window()
     if __name__ == '__main__':
 	win.connect('destroy', lambda win: gtk.main_quit())
 
     win.set_title('Button Boxes')
     win.set_border_width(10)
 
-    main_vbox = gtk.GtkVBox()
+    main_vbox = gtk.VBox()
     win.add(main_vbox)
     
-    frame_horiz = gtk.GtkFrame("Horizontal Button Boxes")
+    frame_horiz = gtk.Frame("Horizontal Button Boxes")
     main_vbox.pack_start(frame_horiz, padding=10)
 
-    vbox = gtk.GtkVBox()
+    vbox = gtk.VBox()
     vbox.set_border_width(10)
     frame_horiz.add(vbox)
 
@@ -60,10 +60,10 @@ def main():
     vbox.pack_start(create_bbox(gtk.TRUE, "End", 40, gtk.BUTTONBOX_END),
 		    padding=5)
 
-    frame_vert = gtk.GtkFrame("Vertical Button Boxes")
+    frame_vert = gtk.Frame("Vertical Button Boxes")
     main_vbox.pack_start(frame_vert, padding=10)
 
-    hbox = gtk.GtkHBox()
+    hbox = gtk.HBox()
     hbox.set_border_width(10)
     frame_vert.add(hbox)
 

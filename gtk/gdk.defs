@@ -3491,3 +3491,50 @@
 )
 
 
+;;; XXXX functions from GTK that extend GDK types.
+(define-method finish
+  (of-object "GdkDragContext")
+  (c-name "gtk_drag_finish")
+  (return-type "none")
+  (parameters
+    '("gboolean" "success")
+    '("gboolean" "del")
+    '("guint32" "time" (default "GDK_CURRENT_TIME"))
+  )
+)
+
+(define-method get_source_widget
+  (of-object "GdkDragContext")
+  (c-name "gtk_drag_get_source_widget")
+  (return-type "GtkWidget*")
+)
+
+(define-method set_icon_widget
+  (of-object "GdkDragContext")
+  (c-name "gtk_drag_set_icon_widget")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "widget")
+    '("gint" "hot_x")
+    '("gint" "hot_y")
+  )
+)
+
+(define-method set_icon_pixmap
+  (of-object "GdkDragContext")
+  (c-name "gtk_drag_set_icon_pixmap")
+  (return-type "none")
+  (parameters
+    '("GdkColormap*" "colormap")
+    '("GdkPixmap*" "pixmap")
+    '("GdkBitmap*" "mask")
+    '("gint" "hot_x")
+    '("gint" "hot_y")
+  )
+)
+
+(define-method set_icon_default
+  (of-object "GdkDragContext")
+  (c-name "gtk_drag_set_icon_default")
+  (return-type "none")
+)

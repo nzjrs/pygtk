@@ -21,7 +21,8 @@ _gtkmodule_la_SOURCES = \
   gtk-types.c \
   pygtktreemodel.h \
   pygtktreemodel.c \
-  gtk.c
+  gtk.c \
+  gdk.c
 
 libglademodule_la_LDFLAGS = -module -avoid-version \
   -export-symbols-regex initlibglade
@@ -40,10 +41,22 @@ $(srcdir)/gtk.c: $(srcdir)/gtk.defs $(srcdir)/gdk.defs \
 	cd $(srcdir) \
 	&& $(PYTHON) ../codegen/codegen.py \
 	    --register ../pango.defs \
+	    --register gdk.defs \
 	    --override gtk.override \
 	    --prefix pygtk gtk.defs > gen-gtk.c \
 	&& cp gen-gtk.c gtk.c \
 	&& rm -f gen-gtk.c
+
+$(srcdir)/gdk.c: $(srcdir)/gdk.defs $(srcdir)/gdk.override
+	-chmod a+w $(srcdir)
+	cd $(srcdir) \
+	&& $(PYTHON) ../codegen/codegen.py \
+	    --register ../pango.defs \
+	    --register gtk.defs \
+	    --override gdk.override \
+	    --prefix pygdk gdk.defs > gen-gdk.c \
+	&& cp gen-gdk.c gdk.c \
+	&& rm -f gen-gdk.c
 
 $(srcdir)/libglade.c: $(srcdir)/libglade.defs $(srcdir)/libglade.override
 	-chmod a+w $(srcdir)
