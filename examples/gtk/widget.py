@@ -11,11 +11,14 @@ if gtk.pygtk_version < (2,3,93):
     raise SystemExit
 
 TEXT = 'A GtkWidget implemented in PyGTK'
+BORDER_WIDTH = 10
 
 class PyGtkWidget(gtk.Widget):
     __gsignals__ = { 'realize': 'override',
                      'expose-event' : 'override',
-                     'size-allocate': 'override'}   
+                     'size-allocate': 'override',
+                     'size-request': 'override',
+		     }
     def __init__(self):
         self.__gobject_init__()
 
@@ -39,41 +42,30 @@ class PyGtkWidget(gtk.Widget):
 	self.window.set_user_data(self)
         self.style.attach(self.window)
         self.style.set_background(self.window, gtk.STATE_NORMAL)
-        
-        self.send_configure()
+
+    def do_size_request(self, allocation):
+	width, height = self.layout.get_size()
+	allocation.width = width // pango.SCALE + BORDER_WIDTH*4
+	allocation.height = height // pango.SCALE + BORDER_WIDTH*4
 
     def do_size_allocate(self, allocation):
         self.allocation = allocation
-
         if self.flags() & gtk.REALIZED:
             self.window.move_resize(*allocation)
-            self.send_configure()
 
     def do_expose_event(self, event):
         self.chain(event)
 
         x, y, w, h = self.allocation
-        width = 10
         self.window.draw_rectangle(self.draw_gc, False,
-                                   x + width, y + width,
-                                   w - width * 2, h - width * 2)
+                                   x + BORDER_WIDTH, y + BORDER_WIDTH,
+                                   w - BORDER_WIDTH * 2, h - BORDER_WIDTH * 2)
         fontw, fonth = self.layout.get_pixel_size()
         self.style.paint_layout(self.window, self.state, False,
                                 event.area, self, "label",
                                 (w - fontw) / 2, (h - fonth) / 2,
                                 self.layout)
-        
-    def send_configure(self):
-        allocation = self.allocation
-        
-        event = gdk.Event(gdk.CONFIGURE)
-        event.send_event = True
-        event.window = self.window
-        event.x = allocation.x
-        event.y = allocation.y
-        event.width = allocation.width
-        event.height = allocation.height
-        self.event(event)
+            
 gobject.type_register(PyGtkWidget)
 
 win = gtk.Window()
@@ -81,7 +73,6 @@ win.set_title(TEXT)
 win.connect('delete-event', gtk.main_quit)
 
 w = PyGtkWidget()
-w.set_size_request(400, 200)
 win.add(w)
 
 win.show_all()
