@@ -3664,15 +3664,6 @@
   (return-type "int")
 )
 
-(define-method get_option
-  (of-object "GdkPixbuf")
-  (c-name "gdk_pixbuf_get_option")
-  (return-type "const-char*")
-  (parameters
-    '("const-char*" "key")
-  )
-)
-
 (define-function gdk_pixbuf_new
   (is-constructor-of GdkPixbuf)
   (c-name "gdk_pixbuf_new")
@@ -3981,6 +3972,51 @@
     '("const-GTimeVal*" "current_time")
   )
 )
+
+(define-method get_option
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_get_option")
+  (return-type "const-char*")
+  (parameters
+    '("const-char*" "key")
+  )
+)
+
+(define-function pixbuf_get_formats
+  (c-name "gdk_pixbuf_get_formats")
+  (return-type "GSList*")
+)
+
+(define-method get_name
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_get_name")
+  (return-type "gchar*")
+)
+
+(define-method get_description
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_get_description")
+  (return-type "gchar*")
+)
+
+(define-method get_mime_types
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_get_mime_types")
+  (return-type "gchar**")
+)
+
+(define-method get_extensions
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_get_extensions")
+  (return-type "gchar**")
+)
+
+(define-method is_writable
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_is_writable")
+  (return-type "gboolean")
+)
+
 
 ;; From /opt/gnome/include/gtk-2.0/gdk-pixbuf/gdk-pixbuf-loader.h
 
