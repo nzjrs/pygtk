@@ -58,6 +58,9 @@ def parse(filename):
                 else:
                     yield closed
             elif line[pos] == '"': # quoted string
+                if not stack:
+                    raise error(filename, lineno,
+                                'string found outside of s-expression')
                 endpos = pos + 1
                 chars = []
                 while endpos < len(line):
@@ -82,6 +85,9 @@ def parse(filename):
                 pos = endpos
                 stack[-1] += (''.join(chars),)
             else: # symbol/number
+                if not stack:
+                    raise error(filename, lineno,
+                                'identifier found outside of s-expression')
                 endpos = pos
                 while endpos < len(line) and line[endpos] not in nonsymbol:
                     endpos += 1
