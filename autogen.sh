@@ -80,6 +80,7 @@ aclocal $ACLOCAL_FLAGS
 libtoolize --force
 
 automake -a $am_opt
+autoheader
 autoconf
 cd $ORIGDIR
 

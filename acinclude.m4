@@ -36,7 +36,9 @@ AC_DEFUN([AM_PATH_PYTHON_JH],
   dnl $prefix/lib/site-python in 1.4 to $prefix/lib/python1.5/site-packages
   dnl in 1.5, and I don't want to maintain that logic.
 
-  AC_PATH_PROGS(PYTHON, python python2.1 python2.0 python1.6 python1.5)
+  if test -z "$PYTHON"; then
+     AC_PATH_PROGS(PYTHON, python python2.1 python2.0 python1.6 python1.5)
+  fi
 
   dnl should we do the version check?
   ifelse([$1],[],,[
