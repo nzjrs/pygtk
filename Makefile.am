@@ -12,7 +12,7 @@ imlib_mods =
 endif
 if BUILD_GTKGL
 gtkgl_libs = _gtkglmodule$(SO)
-gtkgl_mods = GtkGL.py
+gtkgl_mods = gtkgl.py
 else
 gtkgl_libs =
 gtkgl_mods =
@@ -106,7 +106,11 @@ EXTRA_DIST = \
 	examples/glade/README \
 	examples/glade/test2.glade \
 	examples/glade/glade.py \
-	examples/glade/test.glade
+	examples/glade/test.glade \
+	examples/gl/README \
+	examples/gl/cone.py \
+	examples/gl/dots.py \
+	examples/gl/gears.py
 
 
 snap:

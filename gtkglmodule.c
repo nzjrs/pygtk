@@ -55,8 +55,8 @@ static PyObject *_wrap_gtk_gl_area_new(PyObject *self, PyObject *args) {
 	PyErr_SetString(PyExc_TypeError, "first argument must be a sequence");
 	return NULL;
     }
-    len = PySeqence_Length(seq);
-    attrList = g_new(int, len);
+    len = PySequence_Length(seq);
+    attrList = g_new(int, len+1);
     for (i = 0; i < len; i++) {
 	PyObject *item = PySequence_GetItem(seq, i);
 	if (!PyInt_Check(item)) {
@@ -66,6 +66,7 @@ static PyObject *_wrap_gtk_gl_area_new(PyObject *self, PyObject *args) {
 	}
 	attrList[i] = PyInt_AsLong(item);
     }
+    attrList[len] = GDK_GL_NONE; /* sentinel */
     widget = gtk_gl_area_new(attrList);
     g_free(attrList);
     return PyGtk_New((GtkObject *)widget);
@@ -84,8 +85,8 @@ static PyObject *_wrap_gtk_gl_area_share_new(PyObject *self, PyObject *args) {
 	PyErr_SetString(PyExc_TypeError, "first argument must be a sequence");
 	return NULL;
     }
-    len = PySeqence_Length(seq);
-    attrList = g_new(int, len);
+    len = PySequence_Length(seq);
+    attrList = g_new(int, len+1);
     for (i = 0; i < len; i++) {
 	PyObject *item = PySequence_GetItem(seq, i);
 	if (!PyInt_Check(item)) {
@@ -95,6 +96,7 @@ static PyObject *_wrap_gtk_gl_area_share_new(PyObject *self, PyObject *args) {
 	}
 	attrList[i] = PyInt_AsLong(item);
     }
+    attrList[len] = GDK_GL_NONE; /* sentinel */
     widget = gtk_gl_area_share_new(attrList, GTK_GL_AREA(PyGtk_Get(share)));
     g_free(attrList);
     return PyGtk_New((GtkObject *)widget);
