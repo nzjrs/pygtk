@@ -884,6 +884,7 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
         if (!strcmp(attr, "area")) {
 	    if (!pygdk_rectangle_from_pyobject(value, &event->expose.area))
 		return -1;
+            return 0;
 	} else if (!strcmp(attr, "count")) {
 	    INT_CHECK();
 	    event->expose.count = PyInt_AsLong(value);
