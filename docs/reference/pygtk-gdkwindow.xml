@@ -235,18 +235,18 @@ linkend="method-gdkwindow--set-override-redirect">set_override_redirect</link></
 	<methodparam><parameter
 		       role="keyword">override_redirect</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkwindow--add-filter">add_filter</link></methodname>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter></methodparam>
+      </methodsynopsis>
 
 <!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkwindow- -add-filter">add_filter</link></methodname>
-    <methodparam><parameter role="keyword">function</parameter></methodparam>
-    <methodparam><parameter role="keyword">data</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkwindow- -remove-filter">remove_filter</link></methodname>
-    <methodparam><parameter role="keyword">function</parameter></methodparam>
-    <methodparam><parameter role="keyword">data</parameter></methodparam>
-  </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkwindow- -remove-filter">remove_filter</link></methodname>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter></methodparam>
+      </methodsynopsis>
 END NOT IMPLEMENTED -->
 
       <methodsynopsis language="python">
@@ -1864,34 +1864,48 @@ does not work on MS Windows.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gdkwindow--add-filter">
+      <title>gtk.gdk.Window.add_filter</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>add_filter</methodname>
+          <methodparam><parameter role="keyword">function</parameter></methodparam>
+          <methodparam><parameter role="keyword">data</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">function</parameter>&nbsp;:</term>
+          <listitem><simpara>a function</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+          <listitem><simpara>data to pass to
+          <parameter>function</parameter></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>add_filter</methodname>() method adds an event
+filter function specified by <parameter>function</parameter> to the window,
+allowing you to intercept events before they reach GDK. This is a low-level
+operation and makes it easy to break GDK and/or GTK+, so you have to know
+what you're doing. Once added there is no way to remove a filter
+function. The function signature is:</para>
+
+      <programlisting>
+  def function(<parameter>event</parameter>, <parameter>user_data</parameter>)
+</programlisting>
+
+      <para>where <parameter>event</parameter> is a <link
+linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> and
+<parameter>user_data</parameter> is <parameter>data</parameter>.</para>
+
+    </refsect2>
+
 <!-- NOT IMPLEMENTED
-  <refsect2 id="method-gdkwindow- -add-filter">
-    <title>gtk.gdk.Window.add_filter</title>
-
-<programlisting><methodsynopsis language="python">
-    <methodname>add_filter</methodname>
-    <methodparam><parameter role="keyword">function</parameter></methodparam>
-    <methodparam><parameter role="keyword">data</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">function</parameter>&nbsp;:</term>
-      <listitem><simpara>filter callback</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">data</parameter>&nbsp;:</term>
-      <listitem><simpara>data to pass to filter callback</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Adds an event filter to the window, allowing you to intercept events
-before they reach GDK. This is a low-level operation and makes it
-easy to break GDK and/or GTK+, so you have to know what you're
-doing. Pass <literal>NULL</literal> for the window to get all events for all windows,
-instead of events for a specific window.
-</para>  </refsect2>
-
-
   <refsect2 id="method-gdkwindow- -remove-filter">
     <title>gtk.gdk.Window.remove_filter</title>
 
