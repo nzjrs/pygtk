@@ -342,20 +342,25 @@ pygtk_generic_tree_model_get_iter(GtkTreeModel *tree_model,
 static GtkTreePath *
 pygtk_generic_tree_model_get_path(GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
-    PyObject *self, *py_ret;
+    PyObject *self, *py_ret, *py_iter;
 
     g_return_val_if_fail(tree_model != NULL, NULL);
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), NULL);
     g_return_val_if_fail(iter != NULL, NULL);
+
+    pyg_block_threads();
+
     /* this call finds the wrapper for this GObject */
     self = pygobject_new((GObject *)tree_model);
 
 #ifdef DEBUG_TREE_MODEL
     g_message("get_path(%p)", iter);
 #endif
-    pyg_block_threads();
-    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_path",
-				 "(O)", (PyObject *)iter->user_data);
+    py_iter = (PyObject *)iter->user_data;
+    if (py_iter == NULL)
+	py_iter = Py_None;
+
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_path", "(O)", py_iter);
     if (py_ret) {
 	GtkTreePath *path = pygtk_tree_path_from_pyobject(py_ret);
 
@@ -376,7 +381,7 @@ static void
 pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
 			   gint column, GValue *value)
 {
-    PyObject *self, *py_value;
+    PyObject *self, *py_value, *py_iter;
 
     g_return_if_fail(tree_model != NULL);
     g_return_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model));
@@ -394,8 +399,11 @@ pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
     /* init value to column type */
     g_value_init(value, pygtk_generic_tree_model_get_column_type(tree_model, column));
 
+    py_iter = (PyObject *)iter->user_data;
+    if (py_iter == NULL)
+	py_iter = Py_None;
     py_value = PyObject_CallMethod(self, METHOD_PREFIX "get_value",
-				   "(Oi)", (PyObject *)iter->user_data,column);
+				   "(Oi)", py_iter,column);
 
     if (py_value) {
 	pyg_value_from_pyobject(value, py_value);
@@ -409,7 +417,7 @@ pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
 static gboolean
 pygtk_generic_tree_model_iter_next(GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
-    PyObject *self, *py_ret;
+    PyObject *self, *py_ret, *py_iter;
 
     g_return_val_if_fail(tree_model != NULL, FALSE);
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), FALSE);
@@ -423,8 +431,11 @@ pygtk_generic_tree_model_iter_next(GtkTreeModel *tree_model, GtkTreeIter *iter)
 #ifdef DEBUG_TREE_MODEL
     g_message("iter_next(%p)", iter);
 #endif
-    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_next",
-				 "(O)", (PyObject *)iter->user_data);
+    py_iter = (PyObject *)iter->user_data;
+    if (py_iter == NULL)
+	py_iter = Py_None;
+
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_next", "(O)", py_iter);
     if (py_ret) {
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
@@ -496,7 +507,7 @@ pygtk_generic_tree_model_iter_children(GtkTreeModel *tree_model, GtkTreeIter *it
 static gboolean
 pygtk_generic_tree_model_iter_has_child(GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
-    PyObject *self, *py_ret;
+    PyObject *self, *py_ret, *py_iter;
 
     g_return_val_if_fail(tree_model != NULL, FALSE);
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), FALSE);
@@ -510,8 +521,12 @@ pygtk_generic_tree_model_iter_has_child(GtkTreeModel *tree_model, GtkTreeIter *i
 #ifdef DEBUG_TREE_MODEL
     g_message("iter_has_child(%p)", iter);
 #endif
+    py_iter = (PyObject *)iter->user_data;
+    if (py_iter == NULL)
+	py_iter = Py_None;
+
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_has_child",
-				 "(O)", (PyObject *)iter->user_data);
+				 "(O)", py_iter);
     if (py_ret) {
 	gboolean ret = PyObject_IsTrue(py_ret);
 
@@ -528,7 +543,7 @@ pygtk_generic_tree_model_iter_has_child(GtkTreeModel *tree_model, GtkTreeIter *i
 static gint
 pygtk_generic_tree_model_iter_n_children(GtkTreeModel *tree_model, GtkTreeIter *iter)
 {
-    PyObject *self, *py_ret;
+    PyObject *self, *py_ret, *py_iter;
 
     g_return_val_if_fail(tree_model != NULL, FALSE);
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), FALSE);
@@ -542,8 +557,12 @@ pygtk_generic_tree_model_iter_n_children(GtkTreeModel *tree_model, GtkTreeIter *
 #ifdef DEBUG_TREE_MODEL
     g_message("iter_n_children(%p)", iter);
 #endif
+    py_iter = (PyObject *)iter->user_data;
+    if (py_iter == NULL)
+	py_iter = Py_None;
+
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_n_children",
-				 "(O)", (PyObject *)iter->user_data);
+				 "(O)", py_iter);
     if (py_ret) {
 	gint ret = PyInt_AsLong(py_ret);
 
