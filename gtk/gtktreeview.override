@@ -2711,3 +2711,48 @@ _wrap_gtk_tree_selection_select_all(PyGObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_tree_selection_select_range kwargs
+static PyObject *
+_wrap_gtk_tree_selection_select_range(PyGObject *self, PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "start_path", "end_path", NULL };
+    PyObject *py_start_path, *py_end_path;
+    GtkTreePath *start_path, *end_path;
+    GtkSelectionMode mode;
+
+    mode = gtk_tree_selection_get_mode(GTK_TREE_SELECTION(self->obj));
+    if (mode != GTK_SELECTION_MULTIPLE) {
+        PyErr_SetString(PyExc_TypeError,
+                        "gtk.TreeSelection.select_range requires that"
+                        " selection mode is gtk.SELECTION_MULTIPLE");
+        return NULL;
+    }
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO:GtkTreeSelection.select_range",
+                                     kwlist, &py_start_path, &py_end_path))
+        return NULL;
+    start_path = pygtk_tree_path_from_pyobject(py_start_path);
+    if (!start_path) {
+        PyErr_SetString(PyExc_TypeError,
+                        "could not convert start_path to a GtkTreePath");
+        return NULL;
+    }
+    end_path = pygtk_tree_path_from_pyobject(py_end_path);
+    if (!end_path) {
+        gtk_tree_path_free(start_path);
+        PyErr_SetString(PyExc_TypeError,
+                        "could not convert end_path to a GtkTreePath");
+        return NULL;
+    }
+    gtk_tree_selection_select_range(GTK_TREE_SELECTION(self->obj),
+                                    start_path, end_path);
+
+    gtk_tree_path_free(start_path);
+    gtk_tree_path_free(end_path);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
