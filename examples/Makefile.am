@@ -26,6 +26,7 @@ EXTRA_DIST = \
   pygtk-demo/demos/stock_browser.py \
   pygtk-demo/demos/toolbar.py \
   pygtk-demo/demos/treemodel.py \
+  pygtk-demo/demos/entrycompletion.py \
   ide/gtkcons.py \
   ide/gtkdb.py \
   ide/edit.py \
