@@ -463,6 +463,38 @@
   (return-type "GdkDisplay*")
 )
 
+(define-method supports_selection_notification
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_supports_selection_notification")
+  (return-type "gboolean")
+)
+
+(define-method request_selection_notification
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_request_selection_notification")
+  (return-type "gboolean")
+  (parameters
+    '("GdkAtom" "selection")
+  )
+)
+
+(define-method supports_clipboard_persistence
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_supports_clipboard_persistence")
+  (return-type "gboolean")
+)
+
+(define-method store_clipboard
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_store_clipboard")
+  (return-type "none")
+  (parameters
+    '("GdkWindow*" "clipboard_window")
+    '("guint32" "time_")
+    '("GdkAtom*" "targets")
+    '("gint" "n_targets")
+  )
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkdisplaymanager.h
 
@@ -691,6 +723,14 @@
   (return-type "none")
   (parameters
     '("guint32" "time")
+  )
+)
+
+(define-function gdk_drag_drop_succeeded
+  (c-name "gdk_drag_drop_succeeded")
+  (return-type "gboolean")
+  (parameters
+    '("GdkDragContext*" "context")
   )
 )
 
@@ -3660,6 +3700,34 @@
   )
 )
 
+(define-method set_focus_on_map
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_focus_on_map")
+  (return-type "none")
+  (parameters
+    '("gboolean" "focus_on_map")
+  )
+)
+
+(define-method enable_synchronized_configure
+  (of-object "GdkWindow")
+  (c-name "gdk_window_enable_synchronized_configure")
+  (return-type "none")
+)
+
+(define-method configure_finished
+  (of-object "GdkWindow")
+  (c-name "gdk_window_configure_finished")
+  (return-type "none")
+)
+
+(define-function gdk_set_pointer_hooks
+  (c-name "gdk_set_pointer_hooks")
+  (return-type "GdkPointerHooks*")
+  (parameters
+    '("const-GdkPointerHooks*" "new_hooks")
+  )
+)
 
 
 ;;; XXXX functions from GTK that extend GDK types.
