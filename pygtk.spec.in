@@ -73,6 +73,7 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
+find $RPM_BUILD_ROOT -type f -name "*.la" -exec rm -f {} ';'
 
 %files
 %defattr(644, root, root, 755)
@@ -81,7 +82,9 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %dir %{_prefix}/lib/python?.?/site-packages/gtk-2.0
 %dir %{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk
 %{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/__init__.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/compat.*
 %{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/keysyms.py*
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/dsextras*
 
 %defattr(755, root, root, 755)
 %{_prefix}/lib/python?.?/site-packages/gtk-2.0/atk.so
@@ -112,6 +115,8 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %dir %{_prefix}/share/pygtk/2.0/codegen
 %dir %{_prefix}/share/pygtk/2.0/defs
 %{_prefix}/share/pygtk/2.0/codegen/*
+%{_prefix}/share/pygtk/2.0/defs/atk.defs
+%{_prefix}/share/pygtk/2.0/defs/atk-types.defs
 %{_prefix}/share/pygtk/2.0/defs/pango.defs
 %{_prefix}/share/pygtk/2.0/defs/pango-types.defs
 %{_prefix}/share/pygtk/2.0/defs/gdk.defs
