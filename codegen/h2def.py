@@ -249,11 +249,11 @@ def define_func(buf,fp):
         func = m.group('func')
         ret = m.group('ret')
         args=m.group('args')
-        args=arg_split_pat.split(args,', ')
+        args=arg_split_pat.split(args)
         for i in range(len(args)):
             spaces = string.count(args[i], ' ')
             if spaces > 1:
-                args[i] = string.replace(args[i], ' ', '-', 0)
+                args[i] = string.replace(args[i], ' ', '-', spaces - 1)
             
         write_func(fp, func, ret, args)
 
