@@ -248,6 +248,10 @@ def clean_func(buf):
     pat = re.compile(r"""^(typedef|struct|enum)(\s|.|\n)*?;\s*""", re.MULTILINE) 
     buf=pat.sub('',buf)
 
+    #strip DECLS macros
+    pat = re.compile(r"""G_BEGIN_DECLS|BEGIN_LIBGTOP_DECLS""", re.MULTILINE) 
+    buf=pat.sub('',buf)
+
     #multiple whitespace
     pat = re.compile(r"""\s+""", re.MULTILINE) 
     buf=pat.sub(' ',buf)
