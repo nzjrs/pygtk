@@ -236,6 +236,10 @@ def clean_func(buf):
     # bulk comments
     buf = strip_comments(buf)
 
+    # compact continued lines
+    pat = re.compile(r"""\\\n""", re.MULTILINE) 
+    buf=pat.sub('',buf)
+
     # Preprocess directives
     pat = re.compile(r"""^[#].*?$""", re.MULTILINE) 
     buf=pat.sub('',buf)
@@ -251,6 +255,7 @@ def clean_func(buf):
     #clean up line ends
     pat = re.compile(r""";\s*""", re.MULTILINE) 
     buf=pat.sub('\n',buf)
+    buf = buf.lstrip()
 
     #associate *, &, and [] with type instead of variable
     #pat=re.compile(r'\s+([*|&]+)\s*(\w+)')
@@ -296,6 +301,8 @@ def define_func(buf,fp):
         write_func(fp, func, ret, args)
 
 get_type_pat = re.compile(r'(const-)?([A-Za-z0-9]+)\*?\s+')
+pointer_pat = re.compile('.*\*$')
+func_new_pat = re.compile('(\w+)_new$')
 
 def write_func(fp, name, ret, args):
     if len(args) >= 1:
@@ -334,10 +341,19 @@ def write_func(fp, name, ret, args):
                 fp.write(')\n\n')
                 return
     # it is either a constructor or normal function
-    # FIXME: put in constructor check
     fp.write('(define-function ' + name + '\n')
-    # do in-module thingee
     fp.write('  (c-name "' + name + '")\n')
+
+    # Hmmm... Let's asume that a constructor function name
+    # ends with '_new' and it returns a pointer.
+    m = func_new_pat.match(name)
+    if pointer_pat.match(ret) and m:
+        cname = ''
+	for s in m.group(1).split ('_'):
+	    cname += s.title()
+	if cname != '':
+	    fp.write('  (is-constructor-of "' + cname + '")\n')
+
     if ret != 'void':
         fp.write('  (return-type "' + ret + '")\n')
     else:
