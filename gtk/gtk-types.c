@@ -3570,6 +3570,20 @@ PyGtkSelectionData_to_value(GValue *value, PyObject *object)
     }
     return -1;
 }
+static PyObject *
+PyGtkTextIter_from_value(const GValue *value)
+{
+    return PyGtkTextIter_New(g_value_get_boxed(value));
+}
+static int
+PyGtkTextIter_to_value(GValue *value, PyObject *object)
+{
+    if (PyGtkTextIter_Check(object)) {
+	g_value_set_boxed(value, PyGtkTextIter_Get(object));
+	return 0;
+    }
+    return -1;
+}
 
 /* We have to set ob_type here because stupid win32 does not allow you
  * to use variables from another dll in a global variable initialisation.
@@ -3606,5 +3620,5 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GdkCursor);
     register_tp(GtkCTreeNode);
     register_tp(GdkDevice);
-    register_tp(GtkTextIter);
+    register_tp2(GtkTextIter, GTK_TYPE_TEXT_ITER);
 }
