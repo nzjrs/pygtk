@@ -53,8 +53,6 @@ linkend="method-gtktreeselection--get-selected">get_selected</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtktreeselection--get-selected-rows">get_selected_rows</link></methodname>
-	<methodparam><parameter
-		       role="keyword">model</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtktreeselection--count-selected-rows">count_selected_rows</link></methodname>
@@ -396,15 +394,8 @@ work if you use <parameter>selection</parameter> is
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>get_selected_rows</methodname>
-	  <methodparam><parameter role="keyword">model</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
-	<varlistentry>
-	  <term><parameter role="keyword">model</parameter>&nbsp;:</term>
-	  <listitem><simpara>the <link
-linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
-	  or <literal>None</literal>.</simpara></listitem>
-	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem><simpara>a 2-tuple containing the tree model and a list
@@ -419,11 +410,9 @@ linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
       <para>The <methodname>get_selected_rows</methodname>() method returns
 a 2-tuple containing a <link
 linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> and
-a list of the tree paths of all selected rows in the <link
-linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
-specified by <parameter>model</parameter>. Additionally, if you are planning
-on modifying the tree model after calling this method, you may want to
-convert the returned list into a list of <link
+a list of the tree paths of all selected rows. Additionally, if you are
+planning on modifying the tree model after calling this method, you may want
+to convert the returned list into a list of <link
 linkend="class-gtktreerowreference"><classname>gtk.TreeRowReference</classname></link>
 objects.  To do this, you can use the <link
 linkend="constructor-gtktreerowreference">gtk.TreeRowReference</link>()
