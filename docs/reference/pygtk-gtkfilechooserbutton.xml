@@ -21,6 +21,10 @@ linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname
     <methodparam><parameter role="keyword">title</parameter></methodparam>
     <methodparam><parameter role="keyword">backend</parameter><initializer>None</initializer></methodparam>
   </constructorsynopsis>
+<constructorsynopsis language="python">
+    <methodname><link linkend="constructor-gtkfilechooserbutton2">gtk.FileChooserButton</link></methodname>
+    <methodparam><parameter role="keyword">dialog</parameter></methodparam>
+  </constructorsynopsis>
 <methodsynopsis language="python">
     <methodname><link linkend="method-gtkfilechooserbutton--get-title">get_title</link></methodname>
     <methodparam><parameter role="keyword"></parameter></methodparam>
@@ -46,14 +50,6 @@ linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname
     <methodparam><parameter role="keyword">n_chars</parameter></methodparam>
   </methodsynopsis>
 </classsynopsis>
-
-<programlisting>
-<emphasis role="bold">Functions</emphasis>
-
-<methodsynopsis language="python">
-    <methodname><link linkend="function-gtk--file-chooser-button-new-with-dialog">gtk.file_chooser_button_new_with_dialog</link></methodname>
-    <methodparam><parameter role="keyword">dialog</parameter></methodparam>
-  </methodsynopsis></programlisting>
 
 </refsect1>
 
@@ -170,44 +166,79 @@ space to the widget.</para>
 
   </refsect1>
 
-  <refsect1 id="constructor-gtkfilechooserbutton">
+  <refsect1>
     <title>Constructor</title>
 
-    <programlisting><constructorsynopsis language="python">
-	<methodname>gtk.FileChooserButton</methodname>
-	<methodparam><parameter
-		       role="keyword">title</parameter></methodparam>
-	<methodparam><parameter
-		       role="keyword">backend</parameter><initializer>None</initializer></methodparam>
-      </constructorsynopsis></programlisting>
-    <variablelist>
-      <varlistentry>
-	<term><parameter role="keyword">title</parameter>&nbsp;:</term>
-	<listitem><simpara>the title of the browse dialog</simpara></listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><parameter role="keyword">backend</parameter>&nbsp;:</term>
-	<listitem><simpara>the name of a file system backend or
+    <refsect2 id="constructor-gtkfilechooserbutton">
+      <title>gtk.FileChooserButton</title>
+
+      <programlisting><constructorsynopsis language="python">
+          <methodname>gtk.FileChooserButton</methodname>
+          <methodparam><parameter
+                         role="keyword">title</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">backend</parameter><initializer>None</initializer></methodparam>
+        </constructorsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">title</parameter>&nbsp;:</term>
+          <listitem><simpara>the title of the browse dialog</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">backend</parameter>&nbsp;:</term>
+          <listitem><simpara>the name of a file system backend or
 <literal>None</literal></simpara></listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><emphasis>Returns</emphasis>&nbsp;:</term>
-	<listitem><simpara>a new <link
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a new <link
 linkend="class-gtkfilechooserbutton"><classname>gtk.FileChooserButton</classname></link></simpara></listitem>
-      </varlistentry>
-    </variablelist>
+        </varlistentry>
+      </variablelist>
 
-    <note>
-      <para>This constructor is available in PyGTK 2.6 and above.</para>
-    </note>
+      <note>
+        <para>This constructor is available in PyGTK 2.6 and above.</para>
+      </note>
 
-    <para>Creates a new button widget that opens a <link
+      <para>Creates a new button widget that opens a <link
 linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
 when clicked. The title of the <link
 linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
 is specified by <parameter>title</parameter>. If
 <parameter>backend</parameter> is specified it is the name of a file system
 backend.</para>
+
+    </refsect2>
+
+    <refsect2 id="constructor-gtkfilechooserbutton2">
+      <title>gtk.FileChooserButton</title>
+
+      <programlisting><constructorsynopsis language="python">
+          <methodname>gtk.FileChooserButton</methodname>
+          <methodparam><parameter
+                         role="keyword">dialog</parameter></methodparam>
+        </constructorsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">dialog</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a new <link
+linkend="class-gtkfilechooserbutton"><classname>gtk.FileChooserButton</classname></link></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This constructor is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>Creates a new button widget that opens a <link
+linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
+specified by <parameter>dialog</parameter> when clicked.</para>
+
+    </refsect2>
 
   </refsect1>
 
@@ -374,46 +405,6 @@ button</simpara></listitem>
 "width-chars" property to the value of <parameter>n_chars</parameter>. The
 "width-chars" property contains the width in characters that the button
 should be set to.</para>
-
-    </refsect2>
-
-  </refsect1>
-
-  <refsect1>
-    <title>Functions</title>
-
-    <refsect2 id="function-gtk--file-chooser-button-new-with-dialog">
-      <title>gtk.file_chooser_button_new_with_dialog</title>
-
-      <programlisting><methodsynopsis language="python">
-	  <methodname>gtk.file_chooser_button_new_with_dialog</methodname>
-	  <methodparam><parameter
-			 role="keyword">dialog</parameter></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-	<varlistentry>
-	  <term><parameter role="keyword">dialog</parameter>&nbsp;:</term>
-	  <listitem><simpara>a <link
-linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link></simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	<term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>a new <link
-linkend="class-gtkfilechooserbutton"><classname>gtk.FileChooserButton</classname></link></simpara></listitem>
-	</varlistentry>
-      </variablelist>
-
-      <note>
-        <para>This function is available in PyGTK 2.6 and above.</para>
-      </note>
-
-      <para>The
-<function>gtk.file_chooser_button_new_with_dialog</function>() function
-creates a new <link
-linkend="class-gtkfilechooserbutton"><classname>gtk.FileChooserButton</classname></link>
-using the <link
-linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
-specified by <methodname>dialog</methodname>.</para>
 
     </refsect2>
 
