@@ -74,7 +74,7 @@ AM_CHECK_PYMOD(thread,,,enable_thread=no)
 AC_MSG_CHECKING(whether to enable threading in pygtk)
 if test "x$enable_thread" != xno; then
   extra_mods=gthread
-  AC_DEFINE(ENABLE_PYGTK_THREADING)
+  AC_DEFINE(ENABLE_PYGTK_THREADING,,[enable threading support in pygtk])
   AC_MSG_RESULT(yes)
 else
   extra_mods=
@@ -122,18 +122,6 @@ AC_SUBST(LIBGLADE_LIBS)
 AM_CONDITIONAL(BUILD_LIBGLADE, $build_libglade)
 if test -n "$export_dynamic"; then
   LIBGLADE_LIBS=`echo $LIBGLADE_LIBS | sed -e "s/$export_dynamic//"`
-fi
-
-dnl gtkgl
-build_gtkgl=false
-PKG_CHECK_MODULES(GTKGL, gtkgl-2.0 >= gtkgl_required_version,
-  build_gtkgl=true,
-  build_gtkgl=false)
-AC_SUBST(GTKGL_CFLAGS)
-AC_SUBST(GTKGL_LIBS)
-AM_CONDITIONAL(BUILD_GTKGL, $build_gtkgl)
-if test -n "$export_dynamic"; then
-  GTKGL_LIBS=`echo $GTKGL_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
 

@@ -157,11 +157,7 @@ EXTRA_DIST += \
   examples/neil/README \
   examples/glade/README \
   examples/glade/glade-demo.py \
-  examples/glade/test.glade \
-  examples/gl/README \
-  examples/gl/cone.py \
-  examples/gl/dots.py \
-  examples/gl/gears.py
+  examples/glade/test.glade
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`

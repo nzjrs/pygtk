@@ -22,14 +22,5 @@
 #define _PYGTK_CONFIG_H_
 @TOP@
 
-/* define if Numeric Python support is to be used */
-#undef HAVE_NUMPY
-
-#undef HAVE_ARRAYOBJECT_H
-#undef HAVE_EXTENSIONS_ARRAYOBJECT_H
-#undef HAVE_NUMERIC_ARRAYOBJECT_H
-
-#undef ENABLE_PYGTK_THREADING
-
 @BOTTOM@
 #endif /* !_PYGTK_CONFIG_H_ */

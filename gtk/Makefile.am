@@ -90,20 +90,6 @@ CLEANFILES += libglade.c
 defs_DATA += libglade.defs
 EXTRA_DIST += libglade.override
 
-# gtkgl module
-if BUILD_GTKGL
-pygtkexec_LTLIBRARIES += gl.la
-endif
-gl_la_CFLAGS = $(GTKGL_CFLAGS)
-gl_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgl
-gl_la_LIBADD = $(GTKGL_LIBS)
-gl_la_SOURCES = gtkglmodule.c
-nodist_gl_la_SOURCES = gtkgl.c
-libgl.c: $(COMMONDEFS) gtkgl.override
-CLEANFILES += gtkgl.c
-defs_DATA += gtkgl.defs
-EXTRA_DIST += gtkgl.override
-
 .defs.c:
 	(cd $(srcdir) \
 	 && $(PYTHON) ../codegen/codegen.py \
