@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- Mode: Python; py-indent-offset: 4 -*-
-import sys, string, re, getopt
+import sys, os, string, re, getopt
 import defsparser
 import override
 import docextract
@@ -23,10 +23,19 @@ class DocWriter:
     def output_docs(self, output_prefix):
 	obj_defs = self.parser.objects[:]
 	obj_defs.sort(lambda a, b: cmp(a.c_name, b.c_name))
+        files = []
 	for obj_def in obj_defs:
-	    fp = open(self.create_filename(obj_def, output_prefix), 'w')
+            filename = self.create_filename(obj_def.c_name, output_prefix)
+	    fp = open(filename, 'w')
 	    self.output_object_docs(obj_def, fp)
 	    fp.close()
+            files.append((os.path.basename(filename), obj_def))
+        if files:
+            filename = self.create_filename('docs', output_prefix)
+	    fp = open(filename, 'w')
+            self.output_toc(files, fp)
+            fp.close()
+            
     def output_object_docs(self, obj_def, fp=sys.stdout):
 	self.write_class_header(obj_def.c_name, fp)
 
@@ -56,21 +65,27 @@ class DocWriter:
                                    self.docs.get(constructor.c_name, None),
                                    fp)
             self.close_section(fp)
-            
-        self.write_heading('Methods', fp)
+
         methods = self.parser.find_methods(obj_def)
-        for method in methods:
-            if self.overrides.is_ignored(method.c_name):
-                continue
-            self.write_method(method, self.docs.get(method.c_name, None), fp)
-        self.close_section(fp)
+        methods = filter(lambda meth, self=self:
+                         not self.overrides.is_ignored(meth.c_name), methods)
+        if methods:
+            self.write_heading('Methods', fp)
+            for method in methods:
+                self.write_method(method, self.docs.get(method.c_name, None), fp)
+            self.close_section(fp)
 
         self.write_class_footer(obj_def.c_name, fp)
 
+    def output_toc(self, files, fp=sys.stdout):
+        fp.write('TOC\n\n')
+        for filename, obj_def in files:
+            fp.write(obj_def.c_name + ' - ' + filename + '\n')
+
     # override the following to create a more complex output format
-    def create_filename(self, obj_def, output_prefix):
+    def create_filename(self, obj_name, output_prefix):
 	'''Create output filename for this particular object'''
-	return output_prefix + '-' + string.lower(obj_def.c_name) + '.txt'
+	return output_prefix + '-' + string.lower(obj_name) + '.txt'
 
     # these need to handle default args ...
     def create_constructor_prototype(self, func_def):
@@ -147,9 +162,9 @@ class DocWriter:
         fp.write('\n\n')
 
 class DocbookDocWriter(DocWriter):
-    def create_filename(self, obj_def, output_prefix):
+    def create_filename(self, obj_name, output_prefix):
 	'''Create output filename for this particular object'''
-	return output_prefix + '-' + string.lower(obj_def.c_name) + '.sgml'
+	return output_prefix + '-' + string.lower(obj_name) + '.sgml'
 
     # make string -> reference translation func
     __transtable = [ '-' ] * 256
@@ -174,16 +189,16 @@ class DocbookDocWriter(DocWriter):
                 if info.is_constructor_of is not None:
                     # should have a link here
                     return '<function>' + info.is_constructor_of + \
-                           '</function>()'
+                           '()</function>'
                 else:
-                    return '<function>' + info.name + '</function>()'
+                    return '<function>' + info.name + '()</function>'
             if info.__class__ == defsparser.MethodDef:
                 return '<link linkend="' + self.make_method_ref(info) + \
                        '"><function>' + info.of_object[1] + \
                        info.of_object[0] + '.' + info.name + \
-                       '</function>()</link>'
+                       '()</function></link>'
         # fall through through
-        return '<function>' + match.group(1) + '</function>()'
+        return '<function>' + match.group(1) + '()</function>'
     __parameter_pat = re.compile(r'\@(\w+)')
     def __format_param(self, match):
         return '<parameter>' + match.group(1) + '</parameter>'
@@ -206,6 +221,9 @@ class DocbookDocWriter(DocWriter):
                        '"><function>' + info.of_object[1] + \
                        info.of_object[0] + '.' + info.name + \
                        '</function></link>'
+            if info.__class__ == defsparser.ObjectDef:
+                return '<link linkend="' + self.make_class_ref(info.c_name) + \
+                       '"><type>' + info.c_name + '</type></link>'
         # fall through through
         return '<literal>' + match.group(1) + '</literal>'
     
@@ -239,6 +257,8 @@ class DocbookDocWriter(DocWriter):
                 sgml.append('=')
                 sgml.append(dflt)
             sgml.append('</paramdef>\n')
+        if not func_def.params:
+            sgml.append('      <paramdef></paramdef>')
         sgml.append('    </funcprototype>\n  </funcsynopsis>\n')
         return string.join(sgml, '')
     def create_function_prototype(self, func_def):
@@ -377,6 +397,35 @@ class DocbookDocWriter(DocWriter):
             fp.write(self.reformat_text(func_doc.description))
         fp.write('  </sect3>\n\n\n')
 
+    def output_toc(self, files, fp=sys.stdout):
+        fp.write('<!doctype article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [\n')
+        for filename, obj_def in files:
+            fp.write('  <!entity ' + string.translate(obj_def.c_name,
+                                                      self.__transtable) +
+                     ' SYSTEM "' + filename + '" >\n')
+        fp.write(']>\n\n')
+
+        fp.write('<article id="index">\n\n')
+        fp.write('  <artheader>\n')
+        fp.write('    <title>PyGTK Docs</title>\n')
+        fp.write('    <authorgroup>\n')
+        fp.write('      <author>\n')
+        fp.write('        <firstname>James</firstname>\n')
+        fp.write('        <surname>Henstridge</surname>\n')
+        fp.write('      </author>\n')
+        fp.write('    </authorgroup>\n')
+        fp.write('  </artheader>\n\n')
+
+        fp.write('  <sect1>\n')
+        fp.write('    <title>Class Heirachy</title>\n')
+        fp.write('    <para>Not done yet</para>\n')
+        fp.write('  </sect1>\n')
+
+        for filename, obj_def in files:
+            fp.write('&' +string.translate(obj_def.c_name, self.__transtable)+
+                     ';\n')
+
+        fp.write('</article>\n')
 
 if __name__ == '__main__':
     opts, args = getopt.getopt(sys.argv[1:], "d:s:o:",
