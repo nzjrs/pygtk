@@ -105,3 +105,7 @@ EXTRA_DIST += \
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
+
+dist-nodoc:
+	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-nodoc \
+	  SUBDIRS="codegen gobject . gtk examples tests"

@@ -77,9 +77,9 @@
     </xsl:variable>
 
     <sub name="{$title}" link="{$target}">
-      <xsl:apply-templates select="section|sect1|sect2|
-                                   refentry|refsect|refsect1|refsect2|
-                                   bridgehead|part"
+      <xsl:apply-templates select="section|sect1|
+                                   refentry|refsect|
+                                   bridgehead|part|chapter"
                            mode="generate.devhelp.toc.mode"/>
     </sub>
   </xsl:template>
@@ -110,7 +110,7 @@
     <xsl:value-of select="bookinfo/title"/>
   </xsl:template>
   <xsl:template match="refentry" mode="generate.devhelp.toc.title.mode">
-    <xsl:value-of select="refmeta/refentrytitle"/>
+    <xsl:value-of select="refnamediv/refname"/>
   </xsl:template>
   <xsl:template match="*" mode="generate.devhelp.toc.title.mode">
     <xsl:value-of select="title"/>
