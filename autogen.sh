@@ -3,8 +3,8 @@
 
 #name of package
 PKG_NAME=${PKG_NAME:-PyGTK}
-srcdir=${srcdir:-.}
-ACLOCAL_FLAGS="-I m4 $ACLOCAL_FLAGS"
+srcdir=`dirname $0`
+ACLOCAL_FLAGS="-I `pwd`/m4 $ACLOCAL_FLAGS"
 
 # default version requirements ...
 REQUIRED_AUTOCONF_VERSION=${REQUIRED_AUTOCONF_VERSION:-2.53}
