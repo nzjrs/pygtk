@@ -7787,6 +7787,43 @@ _wrap_gtk_text_tag_table_add(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+override gtk_text_tag_table_remove kwargs
+static PyObject *
+_wrap_gtk_text_tag_table_remove(PyGObject *self, PyObject *args,
+				PyObject *kwargs)
+{
+    static char *kwlist[] = { "tag", NULL };
+    GtkTextTag *tag;
+    GtkTextTagTable *table;
+    PyGObject *pytag;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkTextTagTable.remove",
+				     kwlist, &PyGtkTextTag_Type, &pytag)) {
+        return NULL;
+    }
+
+    tag = GTK_TEXT_TAG(pytag->obj);
+    table = GTK_TEXT_TAG_TABLE(self->obj);
+
+    if (tag->table != table) {
+        gchar buf[512];
+	if (tag->name)
+	    g_snprintf(buf, sizeof(buf),
+		       "The tag named '%s' is not in the tag table",
+		       tag->name);
+	else
+	    g_snprintf(buf, sizeof(buf),
+		       "The tag is not in the tag table");
+
+        PyErr_SetString(PyExc_ValueError, buf);
+        return NULL;
+    }
+
+    gtk_text_tag_table_remove(table, tag);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 %%
 ignore-win32
         GTK_TYPE_PLUG
