@@ -1,6 +1,6 @@
 -*- mode: m4 -*-
 AC_PREREQ(2.52)
-AC_INIT(pygtk, 0.6.8,
+AC_INIT(pygtk, 0.6.9,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-python&component=pygtk])
 AC_CONFIG_SRCDIR([gtkmodule.c])
 AM_CONFIG_HEADER(config.h)
@@ -27,7 +27,7 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AM_PATH_GTK(1.2.6,,,$extra_mods)
+AM_PATH_GTK(1.2.8,,,$extra_mods)
 AM_PATH_GDK_IMLIB(1.8, build_imlib=true, build_imlib=false)
 AM_CONDITIONAL(BUILD_IMLIB, $build_imlib)
 
@@ -37,7 +37,6 @@ AM_CONDITIONAL(BUILD_PIXBUF, $build_pixbuf)
 AM_PATH_GTKGL(build_gtkgl=true, build_gtkgl=false)
 AM_CONDITIONAL(BUILD_GTKGL, $build_gtkgl)
 
-dnl what to do about libglade-gnome ?
 AM_PATH_LIBGLADE(build_libglade=true, build_libglade=false)
 AM_CONDITIONAL(BUILD_LIBGLADE, $build_libglade)
 

@@ -3,14 +3,14 @@
 
 Summary: Python bindings for the GTK+ widget set.
 Name: pygtk
-Version: 0.6.8
+Version: 0.6.9
 Release: 1
 Copyright: GPL
 Group: Development/Languages
 Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{version}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
-Requires: gtk+ >= 1.2.6
+Requires: gtk+ >= 1.2.8
 Requires: imlib
 Requires: python >= 1.5.2
 
