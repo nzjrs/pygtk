@@ -245,6 +245,32 @@ _wrap_gtk_label_get(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
+override gtk_label_get_selection_bounds
+static PyObject *
+_wrap_gtk_label_get_selection_bounds(PyGObject *self, PyObject *args)
+{
+    gint start;
+    gint end;
+
+    if (!PyArg_ParseTuple(args,":GtkLabel.get_selection_bounds"))
+        return NULL;
+    gtk_label_get_selection_bounds(GTK_LABEL(self->obj), &start, &end);
+    return Py_BuildValue("(ii)", start, end);
+}
+%%
+override gtk_label_get_layout_offsets
+static PyObject *
+_wrap_gtk_label_get_layout_offsets(PyGObject *self, PyObject *args)
+{
+    gint x;
+    gint y;
+
+    if (!PyArg_ParseTuple(args,":GtkLabel.get_layout_offsets"))
+        return NULL;
+    gtk_label_get_layout_offsets(GTK_LABEL(self->obj), &x, &y);
+    return Py_BuildValue("(ii)", x, y);
+}
+%%
 override gtk_window_set_geometry_hints kwargs
 static PyObject *
 _wrap_gtk_window_set_geometry_hints(PyGObject *self, PyObject *args,
@@ -1918,6 +1944,32 @@ _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
+}
+%%
+override gtk_button_box_get_child_size
+static PyObject *
+_wrap_gtk_button_box_get_child_size(PyGObject *self, PyObject *args)
+{
+    gint min_width;
+    gint min_height;
+
+    if (!PyArg_ParseTuple(args,":GtkButtonBox.get_child_size"))
+        return NULL;
+    gtk_button_box_get_child_size(GTK_BUTTON_BOX(self->obj), &min_width, &min_height);
+    return Py_BuildValue("(ii)", min_width, min_height);
+}
+%%
+override gtk_button_box_get_child_ipadding
+static PyObject *
+_wrap_gtk_button_box_get_child_ipadding(PyGObject *self, PyObject *args)
+{
+    gint ipad_x;
+    gint ipad_y;
+
+    if (!PyArg_ParseTuple(args,":GtkButtonBox.get_child_ipadding"))
+        return NULL;
+    gtk_button_box_get_child_ipadding(GTK_BUTTON_BOX(self->obj), &ipad_x, &ipad_y);
+    return Py_BuildValue("(ii)", ipad_x, ipad_y);
 }
 %%
 ignore gtk_toggle_button_new_with_label gtk_toggle_button_new_with_mnemonic

@@ -253,7 +253,27 @@ _wrap_gdk_draw_lines(PyGObject *self, PyObject *args, PyObject *kwargs)
 ignore
   gdk_color_copy gdk_color_free
   gdk_color_hash gdk_color_equal
-  gdk_color_parse
+%%
+override gdk_color_parse kwargs
+static PyObject *
+_wrap_gdk_color_parse(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "spec", NULL };
+    const char *spec;
+    GdkColor color;
+    GdkColor *new_color;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:color_parse", kwlist,
+				     &spec))
+        return NULL;
+
+    gdk_color_parse (spec, &color);
+    
+    new_color = gdk_color_copy (&color);
+    
+    /* pyg_boxed_new handles NULL checking */    
+    return pyg_boxed_new (GDK_TYPE_COLOR, new_color, FALSE, TRUE);
+}
 %%
 override gdk_fontset_load kwargs
 static PyObject *
