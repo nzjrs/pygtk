@@ -83,6 +83,28 @@ linkend="method-gtkbutton--set-use-stock">set_use_stock</link></methodname>
 	<methodname><link
 linkend="method-gtkbutton--get-use-stock">get_use_stock</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkbutton--set-focus-on-click">set_focus_on_click</link></methodname>
+	<methodparam><parameter
+		       role="keyword">focus_on_click</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkbutton--get-focus-on-click">get_focus_on_click</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkbutton--set-alignment">set_alignment</link></methodname>
+	<methodparam><parameter
+		       role="keyword">xalign</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">yalign</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkbutton--get-alignment">get_alignment</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -112,6 +134,14 @@ linkend="method-gtkbutton--get-use-stock">get_use_stock</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"focus-on-click"</entry>
+	      <entry>Read/Write</entry>
+	      <entry>If <literal>TRUE</literal> the button grabs focus when
+	      it is clicked with the mouse. This property is available in GTK+
+2.4 and above.</entry>
+	  </row>
+
+	    <row valign="top">
 	      <entry>"label"</entry>
 	      <entry>Read/Write</entry>
 	<entry>Text of the label widget inside the button, if the button
@@ -139,6 +169,34 @@ accelerator key if it is the first character so marked</entry>
 	  <entry>Read/Write</entry>
 	  <entry>If <literal>TRUE</literal>, the label text is used to pick
 a stock item instead of being displayed</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"xalign"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If the
+	  child of the button is a <link
+	  linkend="class-gtkmisc"><classname>gtk.Misc</classname></link> or
+	  <link
+	  linkend="class-gtkalignment"><classname>gtk.Alignment</classname></link>,
+	  this property can be used to control it's horizontal
+	  alignment. The value ranges from 0.0 to 1.0 representing the fraction
+ of freespace to the left of the widget. This property is available in GTK+ 2.4
+ and above.</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"yalign"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If the
+	  child of the button is a <link
+	  linkend="class-gtkmisc"><classname>gtk.Misc</classname></link> or
+	  <link
+	  linkend="class-gtkalignment"><classname>gtk.Alignment</classname></link>,
+	  this property can be used to control it's vertical
+	  alignment. The value ranges from 0.0 to 1.0 representing the fraction
+of freespace above the widget. This property is available in GTK+ 2.4
+ and above.</entry>
 	</row>
 
 	</tbody>
@@ -652,7 +710,7 @@ button.</para>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem>
-	    <simpara>the value of hte "use_stock" property.</simpara>
+	    <simpara>the value of the "use_stock" property.</simpara>
 	  </listitem>
 	</varlistentry>
       </variablelist>
@@ -661,6 +719,128 @@ button.</para>
 value of the "use_stock" property. If <literal>TRUE</literal> the button
 label is used to select a stock item instead of being used directly as the
 label text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkbutton--set-focus-on-click">
+      <title>gtk.Button.set_focus_on_click</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_focus_on_click</methodname>
+	  <methodparam><parameter
+			 role="keyword">focus_on_click</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>focus_on_click</parameter>&nbsp;:</term>
+	  <listitem>
+	    <simpara>If <literal>TRUE</literal> the button grabs focus when
+	    clicked with the mouse.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_focus_on_click</methodname>() method sets
+the "focus-on-click" property to the value of
+<parameter>focus_on_click</parameter>. If
+<parameter>focus_on_click</parameter> is <literal>TRUE</literal>, the button
+grabs dfocus when it is clicked by the mouse.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkbutton--get-focus-on-click">
+      <title>gtk.Button.get_focus_on_click</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_focus_on_click</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem>
+	    <simpara>the value of the "focus-on-click" property.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_focus_on_click</methodname>() method returns
+the value of the "focus-on-click" property. If <literal>TRUE</literal> the
+button grabs focus when it is clicked by the mouse .</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkbutton--set-alignment">
+      <title>gtk.Button.set_alignment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_alignment</methodname>
+	  <methodparam><parameter
+			 role="keyword">xalign</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">yalign</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>xalign</parameter>&nbsp;:</term>
+	  <listitem>
+	    <simpara>the horizontal alignment of the child widget. The value
+	    ranges from 0.0 to 1.0 and represents the fraction of freespace
+	    to the left of the child widget.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>yalign</parameter>&nbsp;:</term>
+	  <listitem>
+	    <simpara>the vertical alignment of the child widget. The value
+	    ranges from 0.0 to 1.0 and represents the fraction of freespace
+	    above the child widget.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_alignment</methodname>() method sets the
+"xalign" and "yalign" properties to the value of
+<parameter>xalign</parameter> and <parameter>yalign</parameter>
+respectively. This property has no effect unless the child is a <link
+linkend="class-gtkmisc"><classname>gtk.Misc</classname></link> or a <link
+linkend="class-gtkaligment"><classname>gtk.Aligment</classname></link>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkbutton--get-alignment">
+      <title>gtk.Button.get_alignment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_alignment</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem>
+	    <simpara>a 2-tuple conatining the values of the "xalign" and
+	    "yalign" properties.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_alignment</methodname>() method returns the
+values of the "xalign" and "yalign" properties. See the <link linkend="method-gtkbutton--set-alignment"><methodname>set_alignment</methodname>()</link> method for more information.</para>
 
     </refsect2>
 
