@@ -49,7 +49,7 @@ endif
 pygtkexec_LTLIBRARIES += $(glademodule_la)
 glademodule_la_CFLAGS = $(LIBGLADE_CFLAGS)
 glademodule_la_LDFLAGS = -module -avoid-version \
-			 -export-symbols-regex initlibglade
+			 -export-symbols-regex initglade
 glademodule_la_LIBADD = $(LIBGLADE_LIBS)
 glademodule_la_SOURCES = libglademodule.c
 libglade.c: $(COMMONDEFS) libglade.override
@@ -65,7 +65,7 @@ endif
 pygtkexec_LTLIBRARIES += $(glmodule_la)
 glmodule_la_CFLAGS = $(GTKGL_CFLAGS)
 glmodule_la_LDFLAGS = -module -avoid-version \
-			 -export-symbols-regex initlibgtkgl
+			 -export-symbols-regex initgl
 glmodule_la_LIBADD = $(GTKGL_LIBS)
 glmodule_la_SOURCES = gtkglmodule.c
 libgl.c: $(COMMONDEFS) gtkgl.override
