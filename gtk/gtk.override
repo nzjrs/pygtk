@@ -4146,16 +4146,23 @@ _wrap_gtk_combo_box_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "model", NULL };
     PyGObject *pymodel = NULL;
  
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O!:GtkComboBox.__init__",
-				     kwlist, &PyGtkTreeModel_Type, &pymodel))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkComboBox.__init__",
+				     kwlist, &pymodel))
         return -1;
-    if (pymodel)
-	self->obj = (GObject *)gtk_combo_box_new_with_model(GTK_TREE_MODEL(pymodel->obj));
-    else
+    if (pymodel == NULL || (PyObject *)pymodel == Py_None)
 	self->obj = (GObject *)gtk_combo_box_new();
+    else if (pygobject_check(pymodel, &PyGtkTreeModel_Type))
+	self->obj = (GObject *)gtk_combo_box_new_with_model(
+	    GTK_TREE_MODEL(pymodel->obj));
+    else {
+	PyErr_SetString(PyExc_TypeError,
+			"model must be a gtk.TreeModel or None");
+	return -1;
+    }
  
     if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkComboBox object");
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkComboBox object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
@@ -4209,4 +4216,42 @@ _wrap_gtk_cell_layout_set_attributes(PyGObject *self, PyObject *args,
     }
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_combo_box_entry_new kwargs
+static int
+_wrap_gtk_combo_box_entry_new(PyGObject *self, PyObject *args,
+			      PyObject *kwargs)
+{
+    static char *kwlist[] = { "model", "column", NULL };
+    PyGObject *pymodel = NULL;
+    gint column = 0;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|Oi:GtkComboBoxEntry.__init__",
+				     kwlist, &pymodel, &column))
+        return -1;
+    if ((PyObject*)pymodel == Py_None || pymodel == NULL)
+	self->obj = (GObject *)gtk_combo_box_entry_new();
+    else if (pygobject_check(pymodel, &PyGtkTreeModel_Type)) {
+	gint ncol = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(pymodel->obj));
+
+	if (column < 0 || column >= ncol) {
+	    PyErr_SetString(PyExc_ValueError, "column value out of range");
+	    return -1;
+	}
+	self->obj = (GObject *)gtk_combo_box_entry_new_with_model(
+	    GTK_TREE_MODEL(pymodel->obj), column);
+    } else {
+	PyErr_SetString(PyExc_TypeError,
+			"model must be a gtk.TreeModel or None");
+	return -1;
+    }
+ 
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkComboBoxEntry object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
