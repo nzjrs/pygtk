@@ -41,10 +41,16 @@ init_gtk(void)
 
     /* initialise GTK ... */
     av = PySys_GetObject("argv");
-    argc = PyList_Size(av);
-    argv = g_new(char *, argc);
-    for (i = 0; i < argc; i++)
-	argv[i] = g_strdup(PyString_AsString(PyList_GetItem(av, i)));
+    if (av != NULL) {
+	argc = PyList_Size(av);
+	argv = g_new(char *, argc);
+	for (i = 0; i < argc; i++)
+	    argv[i] = g_strdup(PyString_AsString(PyList_GetItem(av, i)));
+    } else {
+	    argc = 0;
+	    argv = NULL
+    }
+	
     if (!gtk_init_check(&argc, &argv)) {
 	if (argv != NULL) {
 	    for (i = 0; i < argc; i++)
@@ -54,8 +60,8 @@ init_gtk(void)
 	PyErr_SetString(PyExc_RuntimeError, "could not open display");
 	return;
     }
-    PySys_SetArgv(argc, argv);
     if (argv != NULL) {
+	PySys_SetArgv(argc, argv);
 	for (i = 0; i < argc; i++)
 	    g_free(argv[i]);
 	g_free(argv);
@@ -94,8 +100,12 @@ init_gtk(void)
 	int i;
 	
 	ctmp = cur->data;
-	if(strncmp(ctmp, "gtk-", 4))
-	    continue;
+	if(strncmp(ctmp, "gtk-", 4)) {
+		g_free(cur->data);
+		stock_ids = cur->next;
+		g_slist_free_1(cur);
+		continue;
+	}
 	ctmp += 4;
 	
 	strcpy(buf + sizeof("STOCK"), ctmp);
