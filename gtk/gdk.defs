@@ -899,6 +899,45 @@
   )
 )
 
+;; From /opt/gtk2/include/gtk-2.0/gdk/gdk.h
+
+(define-function screen_width
+  (c-name "gdk_screen_width")
+  (return-type "gint")
+)
+
+(define-function screen_height
+  (c-name "gdk_screen_height")
+  (return-type "gint")
+)
+
+(define-function screen_width_mm
+  (c-name "gdk_screen_width_mm")
+  (return-type "gint")
+)
+
+(define-function screen_height_mm
+  (c-name "gdk_screen_height_mm")
+  (return-type "gint")
+)
+
+(define-function flush
+  (c-name "gdk_flush")
+  (return-type "none")
+)
+
+(define-function beep
+  (c-name "gdk_beep")
+  (return-type "none")
+)
+
+(define-function set_double_click_time
+  (c-name "gdk_set_double_click_time")
+  (return-type "none")
+  (parameters
+    '("guint" "msec")
+  )
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkcolor.h
 
@@ -953,7 +992,7 @@
   (return-type "GdkVisual*")
 )
 
-(define-function gdk_color_parse
+(define-function color_parse
   (c-name "gdk_color_parse")
   (return-type "gint")
   (parameters
@@ -1029,12 +1068,12 @@
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkdnd.h
 
-(define-function gdk_drag_context_get_type
+(define-function drag_context_get_type
   (c-name "gdk_drag_context_get_type")
   (return-type "GType")
 )
 
-(define-function gdk_drag_context_new
+(define-function drag_context_new
   (is-constructor-of GdkDragContext)
   (c-name "gdk_drag_context_new")
   (return-type "GdkDragContext*")
@@ -1654,7 +1693,7 @@
   (return-type "GType")
 )
 
-(define-function gdk_gc_new
+(define-function gc_new
   (c-name "gdk_gc_new")
   (return-type "GdkGC*")
   (parameters
@@ -1892,7 +1931,7 @@
   (return-type "GType")
 )
 
-(define-function gdk_image_new_bitmap
+(define-function image_new_bitmap
   (c-name "gdk_image_new_bitmap")
   (return-type "GdkImage*")
   (parameters
@@ -1952,12 +1991,12 @@
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkinput.h
 
-(define-function gdk_device_get_type
+(define-function device_get_type
   (c-name "gdk_device_get_type")
   (return-type "GType")
 )
 
-(define-function gdk_devices_list
+(define-function devices_list
   (c-name "gdk_devices_list")
   (return-type "GList*")
 )
@@ -2025,7 +2064,7 @@
   )
 )
 
-(define-function gdk_device_free_history
+(define-function device_free_history
   (c-name "gdk_device_free_history")
   (return-type "none")
   (parameters
@@ -2612,7 +2651,7 @@
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkrgb.h
 
-(define-function gdk_rgb_xpixel_from_rgb
+(define-function rgb_xpixel_from_rgb
   (c-name "gdk_rgb_xpixel_from_rgb")
   (return-type "gulong")
   (parameters
@@ -2620,7 +2659,7 @@
   )
 )
 
-(define-function gdk_rgb_gc_set_foreground
+(define-function rgb_gc_set_foreground
   (c-name "gdk_rgb_gc_set_foreground")
   (return-type "none")
   (parameters
@@ -2629,7 +2668,7 @@
   )
 )
 
-(define-function gdk_rgb_gc_set_background
+(define-function rgb_gc_set_background
   (c-name "gdk_rgb_gc_set_background")
   (return-type "none")
   (parameters
@@ -3377,9 +3416,14 @@
   )
 )
 
-(define-function gdk_window_get_toplevels
+(define-function window_get_toplevels
   (c-name "gdk_window_get_toplevels")
   (return-type "GList*")
+)
+
+(define-function get_default_root_window
+  (c-name "gdk_get_default_root_window")
+  (return-type "GdkWindow*")
 )
 
 (define-method register_dnd
