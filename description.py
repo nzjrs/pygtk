@@ -286,6 +286,9 @@ class GdkWindow:
 	pointer = (_, _)
 	pointer_state = _
 
+	"""The X window ID of the window"""
+	xid = _
+
 	def new_gc(self, foreground=None, background=None, font=None,
 		   tile=None, stipple=None, clip_mask=None,
 		   function=None, fill=None, subwindow_mode=None,
@@ -300,6 +303,21 @@ class GdkWindow:
 		pass
 	def set_cursor(self, cursor):
 		"""Sets the cursor for this window"""
+		pass
+
+	"""The property argument can be an atom, int or string here"""
+	def property_get(self, property, type=AnyPropertyType, delete=FALSE):
+		"""Gets a property on the window.  On success, returns a
+		tuple like (type, format, data) where type is an atom,
+		format is 8,16 or 32 and data is the data (a string for
+		format=8, a tuple of ints otherwise).  On failure, None is
+		returned.  The property may optionally be deleted as well."""
+		pass
+	def property_change(self, property, type, format, mode, data):
+		"""Change the value of a property."""
+		pass
+	def property_delete(self, property):
+		"""Delete a property if it exists."""
 		pass
 	
 """Aliases for GdkWindow.  GdkPixmap refers to an offscreen pixmap.

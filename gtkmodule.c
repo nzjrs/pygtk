@@ -22,6 +22,11 @@
 #include <sysmodule.h>
 #include <gtk/gtk.h>
 
+#define WITH_XSTUFF
+#ifdef WITH_XSTUFF
+#include <gdk/gdkx.h>
+#endif
+
 #define _INSIDE_PYGTK_
 #include "pygtk.h"
 
@@ -1316,9 +1321,176 @@ static PyObject *PyGdkWindow_SetCursor(PyGdkWindow_Object *self,
   return Py_None;
 }
 
+static PyObject *PyGdkWindow_PropertyGet(PyGdkWindow_Object *self,
+					 PyObject *args) {
+    GdkAtom property, type = 0;
+    gint pdelete = FALSE;
+
+    GdkAtom atype;
+    gint aformat, alength;
+    guchar *data;
+
+    if (!PyArg_ParseTuple(args, "i|ii:GdkWindow.property_get", &property,
+			  &type, &pdelete)) {
+	gchar *propname;
+
+	PyErr_Clear();
+	if (!PyArg_ParseTuple(args, "s|ii:GdkWindow.property_get", &propname,
+			      &type, &pdelete))
+	    return NULL;
+	property = gdk_atom_intern(propname, FALSE);
+    }
+    if (gdk_property_get(self->obj, property, type, 0, 9999, pdelete,
+			 &atype, &aformat, &alength, &data)) {
+	/* success */
+	PyObject *pdata;
+	gint i;
+	guint16 *data16;
+	guint32 *data32;
+	switch (aformat) {
+	case 8:
+	    pdata = PyString_FromStringAndSize(data, alength);
+	    break;
+	case 16:
+	    data16 = (guint16 *)data;
+	    pdata = PyTuple_New(alength);
+	    for (i = 0; i < alength; i++)
+		PyTuple_SetItem(pdata, i, PyInt_FromLong(data16[i]));
+	    break;
+	case 32:
+	    data32 = (guint32 *)data;
+	    pdata = PyTuple_New(alength);
+	    for (i = 0; i < alength; i++)
+		PyTuple_SetItem(pdata, i, PyInt_FromLong(data32[i]));
+	    break;
+	default:
+	    g_warning("got a property format != 8, 16 or 32");
+	    g_assert_not_reached();
+	}
+	g_free(data);
+	return Py_BuildValue("(OiO)", PyGdkAtom_New(atype), aformat, pdata);
+    } else {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+}
+
+static PyObject *PyGdkWindow_PropertyChange(PyGdkWindow_Object *self,
+					    PyObject *args) {
+    GdkAtom property, type;
+    gint format;
+    PyObject *py_mode, *pdata;
+    GdkPropMode mode;
+    guchar *data;
+    gint nelements;
+
+    if (!PyArg_ParseTuple(args, "iiiOO:GdkWindow.property_change", &property,
+			  &type, &format, &py_mode, &pdata)) {
+	gchar *propname;
+
+	PyErr_Clear();
+	if (!PyArg_ParseTuple(args, "siiOO:GdkWindow.property_change",
+			      &propname, &type, &format, &py_mode, &pdata))
+	    return NULL;
+	property = gdk_atom_intern(propname, FALSE);
+    }
+    if (PyGtkEnum_get_value(GTK_TYPE_GDK_PROP_MODE, py_mode, (gint *)&mode))
+	return NULL;
+    switch (format) {
+    case 8:
+	if (!PyString_Check(pdata)) {
+	    PyErr_SetString(PyExc_TypeError, "data not a string and format=8");
+	    return NULL;
+	}
+	data = PyString_AsString(pdata);
+	nelements = PyString_Size(pdata);
+	break;
+    case 16:
+	{
+	    guint16 *data16;
+	    gint i;
+
+	    if (!PySequence_Check(pdata)) {
+		PyErr_SetString(PyExc_TypeError, "data not a sequence and format=16");
+		return NULL;
+	    }
+	    nelements = PySequence_Length(pdata);
+	    data16 = g_new(guint16, nelements);
+	    data = (guchar *)data;
+	    for (i = 0; i < nelements; i++) {
+		PyObject *item = PyNumber_Int(PySequence_GetItem(pdata, i));
+		if (!item) {
+		    g_free(data16);
+		    PyErr_Clear();
+		    PyErr_SetString(PyExc_TypeError,"data element not an int");
+		    return NULL;
+		}
+		data16[i] = PyInt_AsLong(item);
+		Py_DECREF(item);
+	    }
+	}
+	break;
+    case 32:
+	{
+	    guint32 *data32;
+	    gint i;
+
+	    if (!PySequence_Check(pdata)) {
+		PyErr_SetString(PyExc_TypeError, "data not a sequence and format=32");
+		return NULL;
+	    }
+	    nelements = PySequence_Length(pdata);
+	    data32 = g_new(guint32, nelements);
+	    data = (guchar *)data;
+	    for (i = 0; i < nelements; i++) {
+		PyObject *item = PyNumber_Int(PySequence_GetItem(pdata, i));
+		if (!item) {
+		    g_free(data32);
+		    PyErr_Clear();
+		    PyErr_SetString(PyExc_TypeError,"data element not an int");
+		    return NULL;
+		}
+		data32[i] = PyInt_AsLong(item);
+		Py_DECREF(item);
+	    }
+	}
+	break;
+    default:
+	PyErr_SetString(PyExc_TypeError, "format must be 8, 16 or 32");
+	return NULL;
+	break;
+    }
+    gdk_property_change(self->obj, property, type, format, mode,
+			data, nelements);
+    if (format != 8)
+	g_free(data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *PyGdkWindow_PropertyDelete(PyGdkWindow_Object *self,
+					    PyObject *args) {
+    GdkAtom property;
+
+    if (!PyArg_ParseTuple(args, "i:GdkWindow.property_delete", &property)) {
+	gchar *propname;
+
+	PyErr_Clear();
+	if (!PyArg_ParseTuple(args, "s:GdkWindow.property_delete", &propname))
+	    return NULL;
+	property = gdk_atom_intern(propname, FALSE);
+    }
+    gdk_property_delete(self->obj, property);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef PyGdkWindow_methods[] = {
   {"new_gc", (PyCFunction)PyGdkWindow_NewGC, METH_VARARGS|METH_KEYWORDS, NULL},
   {"set_cursor", (PyCFunction)PyGdkWindow_SetCursor, METH_VARARGS, NULL},
+  {"property_get", (PyCFunction)PyGdkWindow_PropertyGet, METH_VARARGS, NULL},
+  {"property_change", (PyCFunction)PyGdkWindow_PropertyChange, METH_VARARGS, NULL},
+  {"property_delete", (PyCFunction)PyGdkWindow_PropertyDelete, METH_VARARGS, NULL},
   {NULL, 0, 0, NULL}
 };
 
@@ -1329,9 +1501,9 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
   GdkModifierType p_mask;
 
   if (!strcmp(key, "__members__"))
-    return Py_BuildValue("[ssssssssssss]", "children", "colormap", "depth",
+    return Py_BuildValue("[sssssssssssss]", "children", "colormap", "depth",
 			 "height", "parent", "pointer", "pointer_state",
-			 "toplevel", "type", "width", "x", "y");
+			 "toplevel", "type", "width", "x", "xid", "y");
   if (!strcmp(key, "width")) {
     gdk_window_get_size(win, &x, NULL);
     return PyInt_FromLong(x);
@@ -1358,8 +1530,13 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
     gdk_window_get_pointer(win, NULL, NULL, &p_mask);
     return PyInt_FromLong(p_mask);
   }
-  if (!strcmp(key, "parent"))
-    return PyGdkWindow_New(gdk_window_get_parent(win));
+  if (!strcmp(key, "parent")) {
+      GdkWindow *par = gdk_window_get_parent(win);
+      if (par)
+	  return PyGdkWindow_New(par);
+      Py_INCREF(Py_None);
+      return Py_None;
+  }
   if (!strcmp(key, "toplevel"))
     return PyGdkWindow_New(gdk_window_get_toplevel(win));
   if (!strcmp(key, "children")) {
@@ -1378,6 +1555,10 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
     gdk_window_get_geometry(win, NULL, NULL, NULL, NULL, &x);
     return PyInt_FromLong(x);
   }
+#ifdef WITH_XSTUFF
+  if (!strcmp(key, "xid"))
+      return PyInt_FromLong(GDK_WINDOW_XWINDOW(win));
+#endif
 
   return Py_FindMethod(PyGdkWindow_methods, (PyObject *)self, key);
 }
@@ -5075,6 +5256,21 @@ static PyObject *_wrap_gdk_color_alloc(PyObject *self, PyObject *args) {
     return PyGdkColor_New(&gdk_color);
 }
 
+#ifdef WITH_XSTUFF
+static PyObject *_wrap_gdk_window_foreign_new(PyObject *self, PyObject *args) {
+    guint32 winid;
+
+    if (!PyArg_ParseTuple(args, "i:gdk_window_foreign_new", &winid))
+	return NULL;
+    return PyGdkWindow_New(gdk_window_foreign_new(winid));
+}
+static PyObject *_wrap_gdk_get_root_win(PyObject *self, PyObject *args) {
+    if (!PyArg_ParseTuple(args, ":gdk_get_root_win"))
+	return NULL;
+    return PyGdkWindow_New(gdk_window_foreign_new(GDK_ROOT_WINDOW()));
+}
+#endif
+
 static PyObject *_wrap_gtk_label_get(PyObject *self, PyObject *args) {
     PyObject *label;
     char *text;
@@ -5750,6 +5946,10 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gdk_color_alloc", _wrap_gdk_color_alloc, 1 },
     { "gdk_threads_enter", _wrap_gdk_threads_enter, 1 },
     { "gdk_threads_leave", _wrap_gdk_threads_leave, 1 },
+#ifdef WITH_XSTUFF
+    { "gdk_window_foreign_new", _wrap_gdk_window_foreign_new, 1 },
+    { "gdk_get_root_win", _wrap_gdk_get_root_win, 1 },
+#endif
     { NULL, NULL }
 };
 

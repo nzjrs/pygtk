@@ -2662,3 +2662,10 @@ def threads_leave():
 
 def gdk_flush():
 	_gtk.gdk_flush()
+
+# these are prefixed with underscores, since they are low level, and
+# would break if pygtk was ported to windows.
+def _window_foreign_new(xid):
+	return _gtk.gdk_window_foreign_new(xid)
+def _root_window():
+	return _gtk.gdk_get_root_win()
