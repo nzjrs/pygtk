@@ -118,7 +118,7 @@ def popup_cb():
 		b = gtk.Button("%d,%d" % (i,j))
 		table.attach(b, i,i+1,j,j+1)
 		b.drag_dest_set(gtk.DEST_DEFAULT_ALL, target, 
-				gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
+				gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
 		b.connect('drag_motion', popup_motion)
 		b.connect('drag_leave', popup_leave)
 	    table.show_all()
@@ -160,13 +160,13 @@ def main():
     trashcan_closed, trashcan_closed_mask = create_pixmap(win, trashcan_closed_xpm)
     label = gtk.Label('Drop Here!\n')
     label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
-			gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
+			gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
     label.connect('drag_data_received', label_drag_data_received)
     table.attach(label, 0, 1, 0, 1)
 
     label = gtk.Label('Popup\n')
     label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
-			gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
+			gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
     table.attach(label, 1, 2, 1, 2)
     label.connect('drag_motion', popsite_motion)
     label.connect('drag_leave', popsite_leave)
@@ -180,8 +180,8 @@ def main():
     pixmap.connect('drag_data_received', target_drag_data_received)
 
     b = gtk.Button('Drag Here\n')
-    b.drag_source_set(gtk.GDK.BUTTON1_MASK | gtk.GDK.BUTTON3_MASK,
-		      target, gtk.GDK.ACTION_COPY | gtk.GDK.ACTION_MOVE)
+    b.drag_source_set(gtk.gdk.BUTTON1_MASK | gtk.gdk.BUTTON3_MASK,
+		      target, gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
     b.drag_source_set_icon(win.get_colormap(), drag_icon, drag_mask)
     table.attach(b, 0, 1, 1, 2)
     b.connect('drag_data_get', source_drag_data_get)
