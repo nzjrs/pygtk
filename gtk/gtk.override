@@ -4764,3 +4764,146 @@ _wrap_gtk_clipboard_wait_for_targets(PyGObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_clipboard_request_contents kwargs
+static void
+clipboard_request_contents_cb(GtkClipboard *clipboard,
+			      GtkSelectionData *selection_data,
+			      gpointer user_data)
+{
+    PyObject *callback, *args, *ret;
+
+    pyg_block_threads();
+    callback = PyTuple_GetItem((PyObject *)user_data, 0);
+    args = Py_BuildValue("(NNO)",
+			 pygobject_new((GObject *)clipboard),
+			 pyg_boxed_new(GTK_TYPE_SELECTION_DATA,
+				       selection_data, TRUE, TRUE),
+			 PyTuple_GetItem((PyObject *)user_data, 1));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    pyg_unblock_threads();
+}
+static PyObject *
+_wrap_gtk_clipboard_request_contents(PyGObject *self, PyObject *args,
+				     PyObject *kwargs)
+{
+    static char *kwlist[] = { "target", "callback", "user_data", NULL };
+    PyObject *py_target, *callback, *data, *user_data = Py_None;
+    GdkAtom target;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO|O:GtkClipboard.request_contents",
+				     kwlist, &py_target, &callback,
+				     &user_data))
+        return NULL;
+    if (!PyCallable_Check(callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback must be callable");
+	return NULL;
+    }
+    target = pygdk_atom_from_pyobject(py_target);
+    if (PyErr_Occurred())
+        return NULL;
+
+    data = Py_BuildValue("(OO)", callback, user_data);
+    gtk_clipboard_request_contents(GTK_CLIPBOARD(self->obj), target,
+				   clipboard_request_contents_cb,
+				   (gpointer)data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_clipboard_request_text kwargs
+static void
+clipboard_request_text_cb(GtkClipboard *clipboard,
+			  const gchar *text,
+			  gpointer user_data)
+{
+    PyObject *callback, *args, *ret;
+
+    pyg_block_threads();
+    callback = PyTuple_GetItem((PyObject *)user_data, 0);
+    args = Py_BuildValue("(NNO)",
+			 pygobject_new((GObject *)clipboard),
+			 PyString_FromString(text),
+			 PyTuple_GetItem((PyObject *)user_data, 1));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    pyg_unblock_threads();
+}
+static PyObject *
+_wrap_gtk_clipboard_request_text(PyGObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "callback", "user_data", NULL };
+    PyObject *callback, *data, *user_data = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:GtkClipboard.request_text",
+				     kwlist, &callback, &user_data))
+        return NULL;
+    if (!PyCallable_Check(callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback must be callable");
+	return NULL;
+    }
+
+    data = Py_BuildValue("(OO)", callback, user_data);
+    gtk_clipboard_request_text(GTK_CLIPBOARD(self->obj),
+			       clipboard_request_text_cb,
+			       (gpointer)data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_clipboard_request_targets kwargs
+static void
+clipboard_request_targets_cb(GtkClipboard *clipboard,
+			     GdkAtom *atoms,
+			     gint n_atoms,
+			     gpointer user_data)
+{
+    PyObject *callback, *args, *ret, *py_atoms;
+    int i;
+
+    pyg_block_threads();
+    callback = PyTuple_GetItem((PyObject *)user_data, 0);
+    py_atoms = PyTuple_New(n_atoms);
+    for (i = 0; i < n_atoms; i++)
+	PyTuple_SetItem(py_atoms, i, PyGdkAtom_New(atoms[i]));
+    args = Py_BuildValue("(NNO)",
+			 pygobject_new((GObject *)clipboard),
+			 py_atoms,
+			 PyTuple_GetItem((PyObject *)user_data, 1));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    pyg_unblock_threads();
+}
+static PyObject *
+_wrap_gtk_clipboard_request_targets(PyGObject *self, PyObject *args,
+				     PyObject *kwargs)
+{
+    static char *kwlist[] = { "callback", "user_data", NULL };
+    PyObject *callback, *data, *user_data = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:GtkClipboard.request_targets",
+				     kwlist, &callback, &user_data))
+        return NULL;
+    if (!PyCallable_Check(callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback must be callable");
+	return NULL;
+    }
+
+    data = Py_BuildValue("(OO)", callback, user_data);
+    gtk_clipboard_request_targets(GTK_CLIPBOARD(self->obj),
+				   clipboard_request_targets_cb,
+				   (gpointer)data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
