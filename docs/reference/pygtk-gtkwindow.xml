@@ -5,7 +5,7 @@
 <refentry id="class-gtkwindow">
   <refnamediv>
     <refname>gtk.Window</refname>
-    <refpurpose>a toplevel window that holds one child widget.</refpurpose>
+    <refpurpose>a top-level window that holds one child widget.</refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -421,6 +421,28 @@ linkend="method-gtkwindow--reshow-with-initial-size">reshow_with_initial_size</l
 linkend="method-gtkwindow--tooltips-get-info-from-tip-window">tooltips_get_info_from_tip_window</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--set-focus-on-map">set_focus_on_map</link></methodname>
+	<methodparam><parameter
+		       role="keyword">setting</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--get-focus-on-map">get_focus_on_map</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--set-icon-name">set_icon_name</link></methodname>
+	<methodparam><parameter
+		       role="keyword">name</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--get-icon-name">get_icon_name</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -445,6 +467,11 @@ linkend="function-gtk--window-get-default-icon-list">gtk.window_get_default_icon
       </methodsynopsis><methodsynopsis language="python">
 	<methodname><link linkend="function-gtk--window-list-toplevels">gtk.window_list_toplevels</link></methodname>
 	<methodparam></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gtk--window-set-default-icon-name">gtk.window_set_default_icon_name</link></methodname>
+	<methodparam><parameter
+		       role="keyword">name</parameter></methodparam>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -477,14 +504,15 @@ linkend="function-gtk--window-get-default-icon-list">gtk.window_get_default_icon
 	      <entry>"accept-focus"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the window should receive
-the input focus. Available in GTK+ 2.4 and above.</entry>
+the input focus. Default value: <literal>TRUE</literal>. Available in GTK+
+2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"allow-grow"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the user can expand the
-window beyond its minimum size.</entry>
+window beyond its minimum size. Default value: <literal>TRUE</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -492,35 +520,45 @@ window beyond its minimum size.</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the window has no minimum
 size. Setting this to <literal>TRUE</literal> is a bad
-idea 99% of the time.</entry>
+idea 99% of the time. Default value: <literal>FALSE</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"decorated"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the window should be
-decorated by the window manager. Available in GTK+ 2.4 and above.</entry>
+decorated by the window manager. Default value: <literal>TRUE</literal>.
+Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"default-height"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The default height of the window, used when initially
-showing the window.</entry>
+showing the window. Allowed values: >= -1. Default value: -1</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"default-width"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The default width of the window, used when initially
-showing the window.</entry>
+showing the window. Allowed values: >= -1. Default value: -1</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"destroy-with-parent"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the window should be
-destroyed when its parent is destroyed</entry>
+destroyed when its parent is destroyed. Default value:
+<literal>FALSE</literal>.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"focus-on-map"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the window should
+receive the input focus when mapped. Default value:
+<literal>TRUE</literal>. Available in GTK+ 2.6 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -530,7 +568,8 @@ destroyed when its parent is destroyed</entry>
 	      <entry>The window gravity of the window. See the <link
 linkend="method-gtkwindow--move"><methodname>move</methodname>()</link>
 method and the <link linkend="gdk-gravity-constants">gtk.gdk Gravity
-Constants</link> for more details about window gravity. Available in GTK+
+Constants</link> for more details about window gravity. Default value:
+<literal>gtk.gdk.GRAVITY_NORTH_WEST</literal>. Available in GTK+
 2.4 and above.</entry>
 	    </row>
 
@@ -538,7 +577,8 @@ Constants</link> for more details about window gravity. Available in GTK+
 	      <entry>"has-toplevel-focus"</entry>
 	      <entry>Read</entry>
 	      <entry>If <literal>TRUE</literal>, the input focus is within
-the window. Available in GTK+ 2.2 and above.</entry>
+the window. Default value: <literal>FALSE</literal>. Available in GTK+ 2.2
+and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -548,31 +588,44 @@ the window. Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"icon-name"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The name of the themed icon to use as the window icon.
+See <link
+linkend="class-gtkicontheme"><classname>gtk.IconTheme</classname></link>
+for more details. Default value: <literal>None</literal>. Available in
+GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"is-active"</entry>
 	      <entry>Read</entry>
 	      <entry>If <literal>TRUE</literal>, the toplevel is the current
-active window. Available in GTK+ 2.2 and above.</entry>
+active window. Default value: <literal>FALSE</literal>. Available in GTK+ 2.2
+and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"modal"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the window is modal (other
-windows are not usable while this one is up).</entry>
+windows are not usable while this one is up). Default value:
+<literal>FALSE</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"resizable"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the user can resize the
-window.</entry>
+window. Default value: <literal>TRUE</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"role"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Unique identifier for the window to be used when
-restoring a session. Available in GTK+ 2.4</entry>
+restoring a session. Default value: <literal>None</literal>. Available in
+GTK+ 2.4</entry>
 	    </row>
 
 	    <row valign="top">
@@ -586,39 +639,45 @@ Available in GTK+ 2.2</entry>
 	      <entry>"skip-pager-hint"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the window should not be
-in the pager. Available in GTK+ 2.2 and above.</entry>
+in the pager. Default value: <literal>FALSE</literal>. Available in GTK+ 2.2
+and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"skip-taskbar-hint"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the window should not be
-in the task bar. Available in GTK+ 2.2 and above.</entry>
+in the task bar. Default value: <literal>FALSE</literal>. Available in GTK+
+2.2 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"title"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The title of the window</entry>
+	      <entry>The title of the window. Default value: <literal>None</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"type"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The type of the window</entry>
+	      <entry>The type of the window. Default value:
+<literal>gtk.WINDOW_TOPLEVEL</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"type-hint"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Hint to help the desktop environment understand what
-kind of window this is and how to treat it. Available in GTK+ 2.2 and above.</entry>
+kind of window this is and how to treat it. Default value:
+<literal>gtk.gdk.WINDOW_TYPE_HINT_NORMAL</literal>. Available in GTK+ 2.2
+and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"window-position"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The initial position of the window.</entry>
+	      <entry>The initial position of the window. Default value:
+<literal>gtk.WIN_POS_NONE</literal></entry>
 	    </row>
 
 	  </tbody>
@@ -2646,7 +2705,7 @@ there may not be a window manager in which case iconification isn't
 possible, etc. But normally the window will end up iconified. Just don't
 write code that crashes if not. This method can be called before showing a
 window, in which case the window will be iconified before it ever appears
-onscreen. You can track iconification via the <link
+on-screen. You can track iconification via the <link
 linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
 linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
 signal.</para>
@@ -2725,7 +2784,7 @@ you shouldn't assume the window is definitely maximized afterward, because
 other entities (e.g. the user or window manager) could unmaximize it again,
 and not all window managers support maximization. But normally the window
 will end up maximized. This method can be called before showing a window, in
-which case the window will be maximized when it appears onscreen initially.
+which case the window will be maximized when it appears on-screen initially.
 You can track maximization via the <link
 linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
 linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
@@ -2832,7 +2891,7 @@ all window managers support keeping windows above. But normally the window
 will end kept above. Just don't write code that crashes if not.</para>
 
       <para>It's permitted to call this method before showing a window, so
-the window will be kept above when it appears onscreen initially.</para>
+the window will be kept above when it appears on-screen initially.</para>
 
       <para>You can track the above state via the <link
 linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
@@ -2875,7 +2934,7 @@ below. But normally the window will be kept below. Just don't write code
 that crashes if not.</para>
 
       <para>It's permitted to call this function before showing a window, in
-which case the window will be kept below when it appears onscreen
+which case the window will be kept below when it appears on-screen
 initially.</para>
 
       <para>You can track the below state via the <link
@@ -3170,7 +3229,7 @@ window</simpara></listitem>
 
       <para>The <methodname>get_size</methodname>() method returns a tuple
 containing the current width and height of the window. If the window is not
-onscreen, it returns the size <literal>PyGTK</literal> will suggest to the
+on-screen, it returns the size <literal>PyGTK</literal> will suggest to the
 window manager for the initial window size (but this is not reliably the
 same as the size the window manager will actually select). The size obtained
 by the <methodname>get_size</methodname>() method is the last size received
@@ -3197,7 +3256,7 @@ Those are not drawn by <literal>PyGTK</literal> which has no reliable method
 of determining their size.</para>
 
 	<para>If you are getting a window size in order to position the
-window onscreen, there may be a better way. The preferred way is to simply
+window on-screen, there may be a better way. The preferred way is to simply
 set the window's semantic type with the <link
 linkend="method-gtkwindow--set-type-hint"><methodname>set_type_hint</methodname>()</link> 
 method, that allows the window manager to center dialogs, etc. Also, if you
@@ -3428,6 +3487,116 @@ technologies - applications should have little use for it.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkwindow--set-focus-on-map">
+      <title>gtk.Window.set_focus_on_map</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_focus_on_map</methodname>
+	  <methodparam><parameter
+			 role="keyword">setting</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">setting</parameter>&nbsp;:</term>
+	  <listitem><simpara>If <literal>TRUE</literal> this window would
+like to receive focus when mapped.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_focus_on_map</methodname>() method sets the
+"focus-on-map" property to the value of <parameter>setting</parameter>. If
+<parameter>setting</parameter> is <literal>TRUE</literal> a hint is set
+asking the desktop environment to give focus to the window when it is
+mapped.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--get-focus-on-map">
+      <title>gtk.Window.get_focus_on_map</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_focus_on_map</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the window would
+like to receive focus when mapped.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_focus_on_map</methodname>() method returns
+the value of the "focus-on-map" property. See the <link
+linkend="method-gtkwindow--set-focus-on-map"><methodname>set_focus_on_map</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--set-icon-name">
+      <title>gtk.Window.set_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_icon_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+	  <listitem><simpara>he name of the themed icon or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_icon_name</methodname>() method sets the
+"icon-name" property to the value of <parameter>name</parameter>. If name is
+<literal>None</literal>, then the default themed icon will be used. The
+"icon-name" property contains the name of the icon used for the window. See
+the <link
+linkend="class-gtkicontheme"><classname>gtk.IconTheme</classname></link>
+reference for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--get-icon-name">
+      <title>gtk.Window.get_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_icon_name</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The name of the themed icon used for the
+window icon or <literal>None</literal> if no icon is set.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_icon_name</methodname>() method returns the
+name of the themed icon for the window, see the <link
+linkend="method-gtkwindow--set-icon-name"><methodname>set_icon_name</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -3543,7 +3712,7 @@ list</simpara></listitem>
       </variablelist>
 
       <para>The <function>gtk.window_get_default_icon_list</function>()
-function returns the applications's default icon list as set by the <link
+function returns the application's default icon list as set by the <link
 linkend="function-gtk--window-set-default-icon-list"><methodname>gtk.window_set_default_icon_list</methodname>()</link> 
 function. See the <link
 linkend="method-gtkwindow--set-icon-list"><methodname>set_icon_list</methodname>()</link> 
@@ -3608,6 +3777,35 @@ widgets</simpara></listitem>
 returns a list of all the toplevel <link
 linkend="class-gtkwindow"><classname>gtk.Window</classname></link> widgets
 in the application.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--window-set-default-icon-name">
+      <title>gtk.window_set_default_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.window_set_default_icon_name</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">setting</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, automatically do
+	  startup notification</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.window_set_default_icon_name</function>()
+function sets an icon to be used as fallback for windows that haven't had
+the <link
+linkend="method-gtkwindow--set-icon-list"><methodname>set_icon_list</methodname>()</link>
+method called on them from a named themed icon, see the <link
+linkend="method-gtkwindow--set-icon-name"><methodname>set_icon_name</methodname>()</link>
+method.</para>
 
     </refsect2>
 
