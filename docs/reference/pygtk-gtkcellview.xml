@@ -22,17 +22,6 @@ linkend="constructor-gtkcellview">gtk.CellView</link></methodname>
     <methodparam></methodparam>
   </constructorsynopsis>
 <methodsynopsis language="python">
-    <methodname><link linkend="method-gtkcellview--set-value">set_value</link></methodname>
-    <methodparam><parameter role="keyword">renderer</parameter></methodparam>
-    <methodparam><parameter role="keyword">property</parameter></methodparam>
-    <methodparam><parameter role="keyword">value</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtkcellview--set-values">set_values</link></methodname>
-    <methodparam><parameter role="keyword">renderer</parameter></methodparam>
-    <methodparam><parameter role="keyword">...</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
     <methodname><link linkend="method-gtkcellview--set-model">set_model</link></methodname>
     <methodparam><parameter role="keyword">model</parameter></methodparam>
   </methodsynopsis>
@@ -53,14 +42,6 @@ linkend="constructor-gtkcellview">gtk.CellView</link></methodname>
     <methodname><link linkend="method-gtkcellview--set-background-color">set_background_color</link></methodname>
     <methodparam><parameter role="keyword">color</parameter></methodparam>
   </methodsynopsis>
-
-<!-- REMOVED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtkcellview- -set-cell-data">set_cell_data</link></methodname>
-    <methodparam></methodparam>
-  </methodsynopsis>
-END REMOVED -->
-
 <methodsynopsis language="python">
     <methodname><link linkend="method-gtkcellview--get-cell-renderers">get_cell_renderers</link></methodname>
     <methodparam></methodparam>
@@ -179,87 +160,6 @@ widget.</para>
 
   <refsect1>
     <title>Methods</title>
-
-    <refsect2 id="method-gtkcellview--set-value">
-      <title>gtk.CellView.set_value</title>
-
-      <programlisting><methodsynopsis language="python">
-	  <methodname>set_value</methodname>
-	  <methodparam><parameter
-			 role="keyword">renderer</parameter></methodparam>
-	  <methodparam><parameter
-			 role="keyword">property</parameter></methodparam>
-	  <methodparam><parameter
-			 role="keyword">value</parameter></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-	<varlistentry>
-	  <term><parameter role="keyword">renderer</parameter>&nbsp;:</term>
-	  <listitem><simpara>a <link linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link></simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter role="keyword">property</parameter>&nbsp;:</term>
-	  <listitem><simpara>the name of a property of
-<parameter>renderer</parameter></simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter role="keyword">value</parameter>&nbsp;:</term>
-	  <listitem><simpara>a new value to set on
-<parameter>property</parameter></simpara></listitem>
-	</varlistentry>
-      </variablelist>
-
-      <note>
-        <para>This method is available in PyGTK 2.6 and above.</para>
-      </note>
-
-      <para>The <methodname>set_value</methodname>() method sets the
-property specified by <parameter>property</parameter> on the <link
-linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
-specified by <parameter>renderer</parameter> to the value specified by
-<parameter>value</parameter>. This method also forces a redraw of the cell
-view. This method is equivalent to calling the <link
-linkend="method-gobject--set-property"><methodname>gobject.GObject.set_property</methodname>()</link>
-method and forcing a redraw of the cell view.</para>
-
-    </refsect2>
-
-    <refsect2 id="method-gtkcellview--set-values">
-      <title>gtk.CellView.set_values</title>
-
-      <programlisting><methodsynopsis language="python">
-	  <methodname>set_values</methodname>
-	  <methodparam><parameter>renderer</parameter></methodparam>
-	  <methodparam><parameter>...</parameter></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-	<varlistentry>
-	  <term><parameter>renderer</parameter>&nbsp;:</term>
-	  <listitem><simpara></simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter>...</parameter>&nbsp;:</term>
-	  <listitem><simpara></simpara></listitem>
-	</varlistentry>
-      </variablelist>
-
-      <note>
-        <para>This method is available in PyGTK 2.6 and above.</para>
-      </note>
-
-      <para>The <methodname>set_values</methodname>() method sets multiple
-properties on the <link
-linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
-specified by <parameter>renderer</parameter>. The properties and values are
-specified one or more keyword arguments. This method forces a redraw of the
-cell view. For example, the following method call sets the "text" and
-"strikethrough" properties:</para>
-
-      <programlisting>
-  cellview.set_values(cellrenderertext, text='abcd', strikethrough=True)
-</programlisting>
-
-    </refsect2>
 
     <refsect2 id="method-gtkcellview--set-model">
       <title>gtk.CellView.set_model</title>
@@ -402,29 +302,6 @@ linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
 specified by <parameter>color</parameter>.</para>
 
     </refsect2>
-
-<!-- REMOVED
-    <refsect2 id="method-gtkcellview- -set-cell-data">
-      <title>gtk.CellView.set_cell_data</title>
-
-      <programlisting><methodsynopsis language="python">
-	  <methodname>set_cell_data</methodname>
-	  <methodparam></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-     </variablelist>
-
-      <note>
-        <para>This method is available in PyGTK 2.6 and above.</para>
-      </note>
-
-      <para>The <methodname>set_cell_data</methodname>() method refreshes
-the cell view data using the <link
-linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
-attributes and the cell data functions if set.</para>
-
-    </refsect2>
-END REMOVED -->
 
     <refsect2 id="method-gtkcellview--get-cell-renderers">
       <title>gtk.CellView.get_cell_renderers</title>
