@@ -361,8 +361,10 @@ pointing to the currently selected node.</simpara></listitem>
 tuple containing the treemodel and a treeiter pointing to the selected node
 in the treemodel if the treeselection is set to
 <literal>gtk.SELECTION_SINGLE</literal> or
-<literal>gtk.SELECTION_BROWSE</literal>. This method will not work if you
-use <parameter>selection</parameter> is
+<literal>gtk.SELECTION_BROWSE</literal>. The returned <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link> will
+be <literal>None</literal> if there is no row selected. This method will not
+work if you use <parameter>selection</parameter> is
 <literal>gtk.SELECTION_MULTIPLE</literal>.</para>
 
     </refsect2>
@@ -383,8 +385,8 @@ linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
 	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>a list containing a tree path for each selected
-	  row.</simpara></listitem>
+	  <listitem><simpara>a 2-tuple containing the tree model and a list
+	  of the tree paths of all selected rows.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -393,11 +395,13 @@ linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
       </note>
 
       <para>The <methodname>get_selected_rows</methodname>() method returns
+a 2-tuple containing a <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> and
 a list of the tree paths of all selected rows in the <link
 linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
 specified by <parameter>model</parameter>. Additionally, if you are planning
-on modifying the model after calling this function, you may want to convert
-the returned list into a list of <link
+on modifying the tree model after calling this method, you may want to
+convert the returned list into a list of <link
 linkend="class-gtktreerowreference"><classname>gtk.TreeRowReference</classname></link>
 objects.  To do this, you can use the <link
 linkend="constructor-gtktreerowreference">gtk.TreeRowReference</link>()
@@ -415,9 +419,7 @@ constructor.</para>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>The number of rows selected.
-
-Since: 2.2</simpara></listitem>
+	  <listitem><simpara>The number of rows selected.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -426,8 +428,9 @@ Since: 2.2</simpara></listitem>
       </note>
 
       <para>The <methodname>count_selected_rows</methodname>() method
-returns the number of rows that have been selected.</para> </refsect2>
+returns the number of rows that have been selected.</para>
 
+    </refsect2>
 
     <refsect2 id="method-gtktreeselection--selected-foreach">
       <title>gtk.TreeSelection.selected_foreach</title>
