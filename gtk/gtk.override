@@ -2636,8 +2636,11 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
                                      &PyTuple_Type, &py_buttons))
         return -1;
 
-    if (py_window != NULL && py_window != (PyGObject *) Py_None
-        && !pygobject_check(py_window, &PyGtkWindow_Type)) {
+    if (py_window == NULL || (PyObject*)py_window == Py_None)
+	parent = NULL;
+    else if (pygobject_check(py_window, &PyGtkWindow_Type))
+	parent = GTK_WINDOW(py_window->obj);
+    else {
         PyErr_SetString(PyExc_TypeError, "parent must be a GtkWindow or None");
         return -1;
     }
@@ -2653,15 +2656,7 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
         return -1;
     }
     
-    parent = ((py_window && py_window != (PyGObject *) Py_None) ?
-              GTK_WINDOW(py_window->obj) : NULL);
-    self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                             "title", title,
-                             "modal", !!(flags & GTK_DIALOG_MODAL),
-                             "destroy-with-parent", !!(flags & GTK_DIALOG_DESTROY_WITH_PARENT),
-                             "has-separator", !(flags & GTK_DIALOG_NO_SEPARATOR),
-                             (parent ? "parent" : NULL), parent,
-                             NULL);
+    self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
 
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError,
@@ -2669,6 +2664,21 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
         return -1;
     }
 
+  if (title)
+    gtk_window_set_title (GTK_WINDOW (self->obj), title);
+
+  if (parent)
+    gtk_window_set_transient_for (GTK_WINDOW (self->obj), parent);
+
+  if (flags & GTK_DIALOG_MODAL)
+    gtk_window_set_modal (GTK_WINDOW (self->obj), TRUE);
+  
+  if (flags & GTK_DIALOG_DESTROY_WITH_PARENT)
+    gtk_window_set_destroy_with_parent (GTK_WINDOW (self->obj), TRUE);
+
+  if (flags & GTK_DIALOG_NO_SEPARATOR)
+    gtk_dialog_set_has_separator (GTK_DIALOG (self->obj), FALSE);
+    
     for (i = 0; i < len; i += 2) {
         PyObject *text = PyTuple_GetItem(py_buttons, i);
         PyObject *id = PyTuple_GetItem(py_buttons, i + 1);
