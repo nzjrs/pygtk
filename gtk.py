@@ -2139,7 +2139,7 @@ class GtkProgress(GtkWidget):
 		print "reconfigure deprecated -- use configure"
 		self.configure(value, min, max)
 	def configure(self, value, min, max):
-		_gtk.gtk_progress_reconfigure(self._o, value, min, max)
+		_gtk.gtk_progress_configure(self._o, value, min, max)
 	def set_percentage(self, pcnt):
 		_gtk.gtk_progress_set_percentage(self._o, pcnt)
 	def set_value(self, value):
