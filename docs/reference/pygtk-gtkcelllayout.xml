@@ -37,15 +37,12 @@
 	<methodparam><parameter role="keyword">attribute</parameter></methodparam>
 	<methodparam><parameter role="keyword">column</parameter></methodparam>
       </methodsynopsis>
-<!-- NOT IMPLEMENTED
       <methodsynopsis language="python">
-	<methodname><link linkend="method-gtkcelllayout- -set-cell-data-func">set_cell_data_func</link></methodname>
+	<methodname><link linkend="method-gtkcelllayout--set-cell-data-func">set_cell_data_func</link></methodname>
 	<methodparam><parameter role="keyword">cell</parameter></methodparam>
 	<methodparam><parameter role="keyword">func</parameter></methodparam>
 	<methodparam><parameter role="keyword">func_data</parameter></methodparam>
-	<methodparam><parameter role="keyword">destroy</parameter></methodparam>
       </methodsynopsis>
-END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcelllayout--clear-attributes">clear_attributes</link></methodname>
 	<methodparam><parameter role="keyword">cell</parameter></methodparam>
@@ -251,8 +248,7 @@ get its values from column 2.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-    <refsect2 id="method-gtkcelllayout- -set-cell-data-func">
+    <refsect2 id="method-gtkcelllayout--set-cell-data-func">
       <title>gtk.CellLayout.set_cell_data_func</title>
 
       <programlisting><methodsynopsis language="python">
@@ -260,7 +256,6 @@ get its values from column 2.</para>
 	  <methodparam><parameter role="keyword">cell</parameter></methodparam>
 	  <methodparam><parameter role="keyword">func</parameter></methodparam>
 	  <methodparam><parameter role="keyword">func_data</parameter></methodparam>
-	  <methodparam><parameter role="keyword">destroy</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -269,15 +264,11 @@ get its values from column 2.</para>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">func</parameter>&nbsp;:</term>
-	  <listitem><simpara>The <literal>GtkCellLayoutDataFunc</literal> to use.</simpara></listitem>
+	  <listitem><simpara>The function to use.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">func_data</parameter>&nbsp;:</term>
 	  <listitem><simpara>The user data for <parameter>func</parameter>.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter role="keyword">destroy</parameter>&nbsp;:</term>
-	  <listitem><simpara>The destroy notification for <parameter>func_data</parameter>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -285,15 +276,47 @@ get its values from column 2.</para>
 	<para>This method is available in PyGTK 2.4 and above.</para>
       </note>
 
-      <para>Sets the <literal>GtkCellLayoutDataFunc</literal> to use for
-<parameter>cell_layout</parameter>. This method is used instead of the
-standard attributes mapping for setting the column value, and should set the
-value of <parameter>cell_layout</parameter>'s cell renderer(s) as
-appropriate. <parameter>func</parameter> may be <literal>NULL</literal> to
-remove and older one.</para>
+      <para>The <methodname>set_cell_data_func</methodname>() method sets
+the function (or method) specified by <parameter>func</parameter> to be used
+for setting the column value of the <link
+linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+specified by <parameter>cell</parameter> instead of using the standard
+attribute mapping method. <parameter>func</parameter> may be
+<literal>None</literal> to remove the current function. The signature of
+<parameter>func</parameter> is:</para>
+
+      <programlisting>
+<methodsynopsis language="python">
+          <methodname>celldatafunction</methodname>
+          <methodparam><parameter>celllayout</parameter></methodparam>
+          <methodparam><parameter>cell</parameter></methodparam>
+          <methodparam><parameter>model</parameter></methodparam>
+          <methodparam><parameter>iter</parameter></methodparam>
+          <methodparam><parameter>user_data</parameter></methodparam>
+        </methodsynopsis>
+<methodsynopsis language="python">
+          <methodname>celldatamethod</methodname>
+          <methodparam><parameter>self</parameter></methodparam>
+          <methodparam><parameter>celllayout</parameter></methodparam>
+          <methodparam><parameter>cell</parameter></methodparam>
+          <methodparam><parameter>model</parameter></methodparam>
+          <methodparam><parameter>iter</parameter></methodparam>
+          <methodparam><parameter>user_data</parameter></methodparam>
+        </methodsynopsis>
+</programlisting>
+
+      <para>where <parameter>celllayout</parameter> is the <link
+linkend="class-gtkcelllayout"><classname>gtk.CellLayout</classname></link>,
+<parameter>cell</parameter> is the <link
+linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+for <parameter>celllayout</parameter>, <parameter>model</parameter> is the
+<link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> and
+<parameter>iter</parameter> is the <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+pointing at the row.</para>
 
     </refsect2>
-END NOT IMPLEMENTED -->
 
     <refsect2 id="method-gtkcelllayout--clear-attributes">
       <title>gtk.CellLayout.clear_attributes</title>
