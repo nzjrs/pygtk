@@ -70,14 +70,10 @@
   (c-name GdkPixbufAnimationIter)
 )
 
-
-;; Boxed types ...
-
-(boxed Visual
+(object Visual
   (in-module Gdk)
+  (parent Object (G))
   (c-name GdkVisual)
-  (copy-func gdk_visual_ref)
-  (release-func gdk_visual_unref)
   (field (type-and-name GdkVisualType type))
   (field (type-and-name gint depth))
   (field (type-and-name GdkByteOrder byte_order))
@@ -93,6 +89,9 @@
   (field (type-and-name gint blue_shift))
   (field (type-and-name gint blue_prec))
 )
+
+
+;; Boxed types ...
 
 (boxed Font
   (in-module Gdk)

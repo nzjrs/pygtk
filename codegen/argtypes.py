@@ -547,6 +547,7 @@ matcher.register('static_string', arg)
 
 arg = UCharArg()
 matcher.register('unsigned-char*', arg)
+matcher.register('const-guchar*', arg)
 matcher.register('guchar*', arg)
 
 arg = CharArg()

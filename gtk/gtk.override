@@ -578,7 +578,7 @@ _wrap_gtk_selection_data_set(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     int format, length;
     guchar *data;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "iis#:GtkSelectionData.set", kwlist,
 				     &type, &format, &data, &length))
 	return NULL;
@@ -1251,6 +1251,21 @@ _wrap_gdk_drag_find_window(PyGObject *self, PyObject *args, PyObject *kwargs)
 			 protocol);
 }
 %%
+override_attr GdkDragContext.targets
+PyObject *atom, *ret = PyList_New(0);
+GList *tmp;
+if (ret == NULL)
+    return NULL;
+for (tmp = GDK_DRAG_CONTEXT(self->obj)->targets; tmp; tmp = tmp->next) {
+    if ((atom = PyGdkAtom_New(GPOINTER_TO_INT(tmp->data))) == NULL) {
+	Py_DECREF(ret);
+	return NULL;
+    }
+    PyList_Append(ret, atom);
+    Py_DECREF(atom);
+}
+return ret;
+%%
 override gdk_gc_new_with_values kwargs
 static PyObject *
 _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -1744,8 +1759,6 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     return ret;
 }
 %%
-ignore gtk_list_store_new_with_types
-%%
 override gtk_list_store_new
 static PyObject *
 _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
@@ -1754,7 +1767,8 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
     GtkListStore *ls;
 
     len = PyTuple_Size(args);
-    ls = gtk_list_store_new();
+    ls = gtk_list_store_new(0);
+#if 0
     gtk_list_store_set_n_columns(ls, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
@@ -1767,6 +1781,7 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
 	}
 	gtk_list_store_set_column_type(ls, i, type);
     }
+#endif
     self->obj = (GObject *)ls;
     pygobject_register_wrapper((PyObject *)self);
     Py_INCREF(Py_None);
@@ -1892,8 +1907,6 @@ _wrap_gtk_list_store_append(PyGObject *self, PyObject *args)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-ignore gtk_tree_store_new_with_types
-%%
 override gtk_tree_store_new
 static PyObject *
 _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
@@ -1902,7 +1915,8 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
     GtkTreeStore *ts;
 
     len = PyTuple_Size(args);
-    ts = gtk_tree_store_new();
+    ts = gtk_tree_store_new(0);
+#if 0
     gtk_tree_store_set_n_columns(ts, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
@@ -1915,6 +1929,7 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
 	}
 	gtk_tree_store_set_column_type(ts, i, type);
     }
+#endif
     self->obj = (GObject *)ts;
     pygobject_register_wrapper((PyObject *)self);
     Py_INCREF(Py_None);
