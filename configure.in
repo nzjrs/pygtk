@@ -38,7 +38,9 @@ AM_PATH_GTK_2_0(1.3.7,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],
 
 dnl check for libglade ...
 build_libglade=false
-PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= 1.99], build_libglade=true)
+PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= 1.99.1],
+  build_libglade=true,
+  build_libglade=false)
 AC_SUBST(LIBGLADE_CFLAGS)
 AC_SUBST(LIBGLADE_LIBS)
 AM_CONDITIONAL(BUILD_LIBGLADE, $build_libglade)
