@@ -4501,3 +4501,45 @@ _wrap_gtk_stock_add(PyGObject *self, PyObject *args, PyObject *kwargs)
     g_free(items);
     return NULL;
 }
+%%
+override gtk_layout_get_size noargs
+static PyObject *
+_wrap_gtk_layout_get_size(PyGObject *self)
+{
+    guint width, height;
+    gtk_layout_get_size(GTK_LAYOUT(self->obj), &width, &height);
+    
+    return Py_BuildValue("(ii)", width, height);
+}
+%%
+override gtk_frame_get_label_align noargs
+static PyObject *
+_wrap_gtk_frame_get_label_align(PyGObject *self)
+{
+    gfloat xalign, yalign;
+
+    gtk_frame_get_label_align(GTK_FRAME(self->obj), &xalign, &yalign);
+    return Py_BuildValue("(ff)", xalign, yalign);
+}
+%%
+override gtk_misc_get_alignment noargs
+static PyObject *
+_wrap_gtk_misc_get_alignment(PyGObject *self)
+{
+    gfloat xalign, yalign;
+
+    gtk_misc_get_alignment(GTK_MISC(self->obj), &xalign, &yalign);
+    return 
+Py_BuildValue("(ff)", xalign, yalign);
+}
+%%
+override gtk_ruler_get_range noargs
+static PyObject *
+_wrap_gtk_ruler_get_range(PyGObject *self)
+{
+    gdouble lower, upper, position, max_size;
+
+    gtk_ruler_get_range(GTK_RULER(self->obj), &lower, &upper, &position,
+			&max_size);
+    return Py_BuildValue("(dddd)", lower, upper, position, max_size);
+}
