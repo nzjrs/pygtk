@@ -3217,6 +3217,43 @@ _wrap_gtk_list_remove_items(PyGObject *self, PyObject *args,
 %%
 ignore gtk_list_remove_items_no_unref
 %%
+override-attr GtkList.selection
+static PyObject *
+_wrap_gtk_list__get_selection(PyGObject *self, void *closure)
+{
+    guint row;
+    GList *selection;
+    PyObject *item, *ret = PyList_New(0);
+
+    if (ret == NULL)
+	return NULL;
+
+    for (selection = GTK_LIST(self->obj)->selection; selection != NULL;
+	 selection = selection->next) {
+	item = pygobject_new((GObject *) GTK_LIST_ITEM(selection->data));
+
+	if (!item) {
+	    Py_DECREF(ret);
+	    return NULL;
+	}
+
+	PyList_Append(ret, item);
+	Py_DECREF(item);
+    }
+    return ret;
+}
+%%
+override gtk_list_get_selection
+static PyObject *
+_wrap_gtk_list__get_selection(PyGObject *self, void *closure);
+static PyObject *
+_wrap_gtk_list_get_selection(PyGObject *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":GtkList.get_selection"))
+        return NULL;
+    return _wrap_gtk_list__get_selection(self, NULL);
+}
+%%
 override gtk_color_selection_get_current_color
 static PyObject *
 _wrap_gtk_color_selection_get_current_color(PyGObject *self, PyObject *args)
