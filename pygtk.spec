@@ -22,7 +22,7 @@ Requires: python >= 1.5.2
 %description
 PyGTK is an extension module for python that gives you access to the GTK+
 widget set.  Just about anything you can write in C with GTK+ you can write
-in python with PyGTK (within reason), but with all of python's benefits.
+in python with PyGTK (within reason), but with all of benefits of python.
 
 %package glarea
 Summary: A wrapper for the GtkGLArea widget for use with PyGTK
@@ -43,6 +43,15 @@ Requires: pygtk = %{ver}
 This module contains a wrapper for the libglade library.  Libglade is a
 library similar to the pyglade module, except that it is written in C (so
 is faster) and is more complete.
+
+%package devel
+Summary: files needed to build wrappers for GTK+ addon libraries
+Group: Development/Languages
+Requires: pygtk = %{ver}
+
+%description devel
+This package contains files required to build wrappers for GTK+ addon
+libraries so that they interoperate with pygtk.
 
 %prep
 %setup
@@ -66,6 +75,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %{py_prefix}/lib/python%{py_ver}/site-packages/_gtkmodule.so
 %{py_prefix}/lib/python%{py_ver}/site-packages/_gdkimlibmodule.so
+%{py_prefix}/lib/python%{py_ver}/site-packages/gdkpixbufmodule.so
 
 %{py_prefix}/include/pygtk
 
@@ -79,3 +89,27 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %files libglade
 %{py_prefix}/lib/python%{py_ver}/site-packages/libglade.py*
 %{py_prefix}/lib/python%{py_ver}/site-packages/_libglademodule.so
+
+%files devel
+%{py_prefix}/bin/pygtk-codegen-1.2
+%dir %{py_prefix}/include/pygtk
+%{py_prefix}/include/pygtk/*.h
+%dir %{py_prefix}/share/pygtk
+%dir %{py_prefix}/share/pygtk/1.2
+%dir %{py_prefix}/share/pygtk/1.2/codegen
+%dir %{py_prefix}/share/pygtk/1.2/defs
+%{py_prefix}/share/pygtk/1.2/codegen/*
+%{py_prefix}/share/pygtk/1.2/defs/gtk.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkbase.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkcontainers.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkdata.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkdnd.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkedit.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkenums.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkgl.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtklists.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkmenus.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkmisc.defs
+%{py_prefix}/share/pygtk/1.2/defs/gtkranges.defs
+%{py_prefix}/share/pygtk/1.2/defs/libglade.defs
+

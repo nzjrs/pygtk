@@ -32,7 +32,6 @@ else
 pixbuf_libs =
 endif
 
-pyexecdir = $(PYTHON_SITE_EXEC)
 pyexec_LTLIBRARIES = _gtkmodule.la $(imlib_libs) $(gtkgl_libs) \
   $(libglade_libs) $(pixbuf_libs)
 
@@ -59,8 +58,7 @@ gdkpixbufmodule_la_LIBADD = $(GDK_PIXBUF_LIBS)
 
 pkginclude_HEADERS = pygtk.h pygdkimlib.h pygdkpixbuf.h
 
-pysitedir = $(PYTHON_SITE)
-pysite_PYTHON = gtk.py Gtkinter.py GTK.py GDK.py GtkExtra.py \
+python_PYTHON = gtk.py Gtkinter.py GTK.py GDK.py GtkExtra.py \
 	$(imlib_mods) $(gtkgl_mods) $(libglade_mods)
 noinst_PYTHON = mkgtk.py description.py
 
