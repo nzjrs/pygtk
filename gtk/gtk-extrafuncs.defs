@@ -30,23 +30,31 @@
   (return-type "GtkAllocation")
 )
 
+(define-method get_selection
+  (of-object "GtkList")
+  (c-name "gtk_list_get_selection")
+  (return-type "GList*")
+
+)
+
+
 ;; PyGtkTreeModel
 
-(define-object TreeModel
+(define-object GenericTreeModel
   (in-module "PyGtk")
   (parent "GObject")
-  (c-name "PyGtkTreeModel")
-  (gtype-id "PYGTK_TYPE_TREE_MODEL")
+  (c-name "GenericTreeModel")
+  (gtype-id "PYGTK_TYPE_GENERIC_TREE_MODEL")
   (implements "GtkTreeModel")
 )
 
-(define-function pygtk_tree_model_get_type
-  (c-name "pygtk_tree_model_get_type")
+(define-function pygtk_generic_tree_model_get_type
+  (c-name "pygtk_generic_tree_model_get_type")
   (return-type "GtkType")
 )
 
-(define-function pygtk_tree_model_new
-  (c-name "pygtk_tree_model_new")
-  (is-constructor-of PyGtkTreeModel)
-  (return-type "PyGtkTreeModel*")
+(define-function pygtk_generic_tree_model_new
+  (c-name "pygtk_generic_tree_model_new")
+  (is-constructor-of PyGtkGenericTreeModel)
+  (return-type "PyGtkGenericTreeModel*")
 )

@@ -21,7 +21,8 @@ pangomodule_la_SOURCES = \
   pango.c
 pangomodule_la_LIBADD = $(PANGO_LIBS)
 
-$(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango.override
+$(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango-types.defs \
+		   $(srcdir)/pango.override
 	-chmod a+w $(srcdir)
 	cd $(srcdir) \
 	&& $(PYTHON) codegen/codegen.py \
@@ -39,7 +40,7 @@ dist-hook:
 	-cp pygtk.spec $(distdir)
 
 defsdir = $(pkgdatadir)/2.0/defs
-defs_DATA = pango.defs
+defs_DATA = pango.defs pango-types.defs
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pygtk-2.0.pc
@@ -48,7 +49,9 @@ EXTRA_DIST = \
   pygtk.spec \
   pygtk-2.0.pc.in \
   MAPPING \
+  THREADS \
   pango.defs \
+  pango-types.defs \
   pango.override \
   examples/gobject/signal.py \
   examples/pygtk-demo/pygtk-demo.py \

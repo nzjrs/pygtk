@@ -36,23 +36,25 @@ pkginclude_HEADERS = pygtk.h
 # chmod hack here is because automake guys decided distdir should be
 # read only for the next version :(
 $(srcdir)/gtk.c: $(srcdir)/gtk.defs $(srcdir)/gdk.defs \
-		 $(srcdir)/gtk-extrafuncs.defs $(srcdir)/gtk.override
+		 $(srcdir)/gtk-extrafuncs.defs $(srcdir)/gtk-types.defs \
+		 $(srcdir)/gtk.override
 	-chmod a+w $(srcdir)
 	cd $(srcdir) \
 	&& $(PYTHON) ../codegen/codegen.py \
-	    --register ../pango.defs \
-	    --register gdk.defs \
+	    --register ../pango-types.defs \
+	    --register gdk-types.defs \
 	    --override gtk.override \
 	    --prefix pygtk gtk.defs > gen-gtk.c \
 	&& cp gen-gtk.c gtk.c \
 	&& rm -f gen-gtk.c
 
-$(srcdir)/gdk.c: $(srcdir)/gdk.defs $(srcdir)/gdk.override
+$(srcdir)/gdk.c: $(srcdir)/gdk.defs $(srcdir)/gdk-types.defs \
+		 $(srcdir)/gdk.override
 	-chmod a+w $(srcdir)
 	cd $(srcdir) \
 	&& $(PYTHON) ../codegen/codegen.py \
-	    --register ../pango.defs \
-	    --register gtk.defs \
+	    --register ../pango-types.defs \
+	    --register gtk-types.defs \
 	    --override gdk.override \
 	    --prefix pygdk gdk.defs > gen-gdk.c \
 	&& cp gen-gdk.c gdk.c \
@@ -62,8 +64,9 @@ $(srcdir)/libglade.c: $(srcdir)/libglade.defs $(srcdir)/libglade.override
 	-chmod a+w $(srcdir)
 	cd $(srcdir) \
 	&& $(PYTHON) ../codegen/codegen.py \
-	    --register ../pango.defs \
-	    --register gtk.defs \
+	    --register ../pango-types.defs \
+	    --register gdk-types.defs \
+	    --register gtk-types.defs \
 	    --override libglade.override \
 	    --prefix pylibglade libglade.defs > gen-libglade.c \
 	&& cp gen-libglade.c libglade.c \
@@ -74,7 +77,8 @@ dist-hook:
 	-rm -f $(distdir)/gtk.c $(distdir)/libglade.c
 
 defsdir = $(pkgdatadir)/2.0/defs
-defs_DATA = gtk.defs gtk-extrafuncs.defs gdk.defs libglade.defs
+defs_DATA = gtk.defs gtk-types.defs gtk-extrafuncs.defs \
+  gdk.defs gdk-types.defs libglade.defs
 
-EXTRA_DIST = gtk.defs gtk-extrafuncs.defs gdk.defs gtk.override \
-  gdk.override libglade.defs libglade.override
+EXTRA_DIST = gtk.defs gtk-types.defs gtk-extrafuncs.defs gtk.override \
+  gdk.defs gdk-types.defs gdk.override libglade.defs libglade.override
