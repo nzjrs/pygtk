@@ -48,7 +48,7 @@ init_gtk(void)
 	    argv[i] = g_strdup(PyString_AsString(PyList_GetItem(av, i)));
     } else {
 	    argc = 0;
-	    argv = NULL
+	    argv = NULL;
     }
 	
     if (!gtk_init_check(&argc, &argv)) {
