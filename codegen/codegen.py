@@ -67,9 +67,9 @@ class Wrapper:
         '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
         '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
         '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
-        '    %(tp_as_number)s,			/* tp_as_number */\n' \
-        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
-        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
+        '    (PyNumberMethods*)%(tp_as_number)s,     /* tp_as_number */\n' \
+        '    (PySequenceMethods*)%(tp_as_sequence)s, /* tp_as_sequence */\n' \
+        '    (PyMappingMethods*)%(tp_as_mapping)s,   /* tp_as_mapping */\n' \
         '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
         '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
         '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
@@ -478,13 +478,13 @@ class Wrapper:
                 elif self.overrides.wants_noargs(func):
                     methflags = 'METH_NOARGS'
 
-                    functions.append(self.methdef_tmpl %
-                                     { 'name':  func.split('_', 1)[1],
-                                       'cname': '_wrap_' + func,
-                                       'flags': methflags })
+                functions.append(self.methdef_tmpl %
+                                 { 'name':  func,
+                                   'cname': '_wrap_' + func,
+                                   'flags': methflags })
             except:
                 sys.stderr.write('Could not write function %s: %s\n'
-                                 % (fun, exc_info()))
+                                 % (func, exc_info()))
                 
         # write the PyMethodDef structure
         functions.append('    { NULL, NULL, 0 }\n')

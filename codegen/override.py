@@ -152,7 +152,6 @@ class Overrides:
                     self.defines[klass] = {}
                 self.defines[klass][func] = rest
             else:
-                func = self.modulename + '_' + func
                 self.functions[func] = rest
 
 	    if 'kwargs' in words[1:]:
