@@ -23,18 +23,12 @@ which hides parts of an underlying tree (new in PyGTK 2.4)</refpurpose>
 	<methodparam><parameter role="keyword">func</parameter></methodparam>
 	<methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtktreemodelfilter- -set-modify-func">set_modify_func</link></methodname>
-	<methodparam><parameter role="keyword">n_columns</parameter></methodparam>
 	<methodparam><parameter role="keyword">types</parameter></methodparam>
 	<methodparam><parameter role="keyword">func</parameter></methodparam>
-	<methodparam><parameter role="keyword">data</parameter></methodparam>
-	<methodparam><parameter role="keyword">destroy</parameter></methodparam>
+	<methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
-END NOT IMPLEMENTED -->
-
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtktreemodelfilter--set-visible-column">set_visible_column</link></methodname>
 	<methodparam><parameter role="keyword">column</parameter></methodparam>
@@ -136,16 +130,13 @@ gets a <parameter>model</parameter>, <parameter>iter</parameter> and
 <parameter>user_data</parameter> and returns a boolean indicating whether
 the row should be filtered or not.</simpara>
       </listitem>
-
-<!-- NOT IMPLEMENTED
       <listitem>
 	<simpara>Modify the "appearance" of the model, using a modify
 function. This is extremely powerful and allows for just changing some
-values and also for creating a completely different model based on the given
-child model.</simpara>
+values and also for creating a completely different synthetic model based on
+the child model. For example, you can create a model with columns
+synthesized from the data in the child model.</simpara>
       </listitem>
-END NOT IMPLEMENTED -->
-
       <listitem>
 	<simpara>Set a different root node, also known as a "virtual
 root". You can pass in a tree path indicating the root node for the filter
@@ -215,53 +206,82 @@ should be visible.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
     <refsect2 id="method-gtktreemodelfilter- -set-modify-func">
       <title>gtk.TreeModelFilter.set_modify_func</title>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>set_modify_func</methodname>
-	  <methodparam><parameter role="keyword">n_columns</parameter></methodparam>
 	  <methodparam><parameter role="keyword">types</parameter></methodparam>
 	  <methodparam><parameter role="keyword">func</parameter></methodparam>
-	  <methodparam><parameter role="keyword">data</parameter></methodparam>
-	  <methodparam><parameter role="keyword">destroy</parameter></methodparam>
+	  <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
-	  <term><parameter role="keyword">n_columns</parameter>&nbsp;:</term>
-	  <listitem><simpara>The number of columns in the filter model.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
 	  <term><parameter role="keyword">types</parameter>&nbsp;:</term>
-	  <listitem><simpara>The <literal>GType</literal>s of the columns.</simpara></listitem>
+	  <listitem><simpara>a sequence containing the column
+	  types</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">func</parameter>&nbsp;:</term>
-	  <listitem><simpara>A <literal>GtkTreeModelFilterModifyFunc</literal></simpara></listitem>
+	  <listitem><simpara>a function that is called to provide the data
+	  for a specific row and column</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">data</parameter>&nbsp;:</term>
-	  <listitem><simpara>User data to pass to the modify function, or <literal>NULL</literal>.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter role="keyword">destroy</parameter>&nbsp;:</term>
-	  <listitem><simpara>Destroy notifier of <parameter>data</parameter>, or <literal>NULL</literal>.</simpara></listitem>
+	  <listitem><simpara>user data to pass to the modify function, or
+	  <literal>None</literal>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
-      <para>
-With the <parameter>n_columns</parameter> and <parameter>types</parameter> parameters, you give an array of column
-types for this model (which will be exposed to the parent model/view).
-The <parameter>func</parameter>, <parameter>data</parameter> and <parameter>destroy</parameter> parameters are for specifying the modify
-function. The modify function will get called for <emphasis>each</emphasis>
-data access, the goal of the modify function is to return the data which 
-should be displayed at the location specified using the parameters of the 
-modify function.
-</para>
-      <para>
-Since: 2.4
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_modify_func</methodname>() method uses the
+list of column types specified by <parameter>types</parameter> and the
+function specified by <parameter>func</parameter> to provide a synthetic
+model based on the child model of the <link
+linkend="class-gtktreemodelfilter"><classname>gtk.TreeModelFilter</classname></link>. <parameter>data</parameter>
+is passed to <parameter>func</parameter> when it is
+called. <parameter>func</parameter> is called for each data access to return
+the data which should be displayed at the location specified using the
+parameters of the modify function.</para>
+
+      <para>The signature of func is:</para>
+
+      <programlisting>
+  def func(<parameter>model</parameter>, <parameter>iter</parameter>, <parameter>column</parameter>, <parameter>user_data</parameter>)
+</programlisting>
+
+      <para>where <parameter>model</parameter> is the <link
+linkend="class-gtktreemodelfilter"><classname>gtk.TreeModelFilter</classname></link>,
+<parameter>iter</parameter> is a <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+pointing at a row in <parameter>model</parameter>,
+<parameter>column</parameter> is the column number to provide the value for
+and <parameter>user_data</parameter> is
+<parameter>data</parameter>. <parameter>func</parameter> should returns the
+generated value for the specified location in
+<parameter>model</parameter>.</para>
+
+      <note>
+        <para>This method must be called before the <link
+linkend="class-gtktreemodelfilter"><classname>gtk.TreeModelFilter</classname></link>
+is associated with a <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link> and
+before either of the <link
+linkend="method-gtktreemodel--get-n-columns"><methodname>gtk.TreeModel.get_n_columns</methodname>()</link>
+or <link
+linkend="method-gtktreemodel--get-column-type"><methodname>gtk.TreeModel.get_column_type</methodname>()</link>
+methods are called. Also this method can only be called once - there is no
+way to change the modify function once it is set.</para>
+      </note>
+
+      <para>Since func is called for every access to a value in the model,
+it will be slow for models with a large number of rows and/or
+columns.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gtktreemodelfilter--set-visible-column">
       <title>gtk.TreeModelFilter.set_visible_column</title>
