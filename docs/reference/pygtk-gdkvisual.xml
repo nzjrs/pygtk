@@ -24,6 +24,10 @@ linkend="constructor-gdkvisual">gtk.gdk.Visual</link></methodname>
 	<methodparam><parameter
 		       role="keyword">visual_type</parameter></methodparam>
       </constructorsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkvisual--get-screen">get_screen</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
     
     <programlisting>
@@ -49,6 +53,12 @@ linkend="constructor-gdkvisual">gtk.gdk.Visual</link></methodname>
     <methodparam><parameter role="keyword">type</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gdk--visual-get-system">gtk.gdk.visual_get_system</link></methodname>
+    <methodparam><parameter role="keyword"></parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gdk--query-depths">gtk.gdk.query_depths</link></methodname>
+    <methodparam><parameter role="keyword"></parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gdk--query-visual-types">gtk.gdk.query_visual_types</link></methodname>
     <methodparam><parameter role="keyword"></parameter></methodparam>
   </methodsynopsis></programlisting>
 
@@ -76,21 +86,33 @@ linkend="constructor-gdkvisual">gtk.gdk.Visual</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"type"</entry>
+	      <entry>"bits_per_rgb"</entry>
 	      <entry>Read</entry>
-	      <entry>The type of this visual - one of:
-<literal>gtk.gdk.VISUAL_STATIC_GRAY</literal>,
-<literal>gtk.gdk.VISUAL_GRAYSCALE</literal>,
-<literal>gtk.gdk.VISUAL_STATIC_COLOR</literal>,
-<literal>gtk.gdk.VISUAL_PSEUDO_COLOR</literal>,
-<literal>gtk.gdk.VISUAL_TRUE_COLOR</literal>,
-<literal>gtk.gdk.VISUAL_DIRECT_COLOR</literal></entry>
+	      <entry>The number of significant bits per red, green, or blue
+when specifying colors for this visual. (For instance, for the <link
+linkend="method-gdkcolormap--alloc-color"><methodname>gtk.gdk.Colormap.alloc_color</methodname>()</link> 
+method)</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"depth"</entry>
+	      <entry>"blue_mask"</entry>
 	      <entry>Read</entry>
-	      <entry>The number of bits per pixel.</entry>
+	      <entry>A mask giving the bits in a pixel value that correspond
+to the blue field.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"blue_prec"</entry>
+	      <entry>Read</entry>
+	      <entry>See above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"blue_shift"</entry>
+	      <entry>Read</entry>
+	      <entry>The <parameter>blue_shift</parameter> and
+<parameter>blue_prec</parameter> give an alternate presentation of the
+information in <parameter>blue_mask</parameter>. </entry>
 	    </row>
 
 	    <row valign="top">
@@ -113,12 +135,30 @@ field is undefined.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"bits_per_rgb"</entry>
+	      <entry>"depth"</entry>
 	      <entry>Read</entry>
-	      <entry>The number of significant bits per red, green, or blue
-when specifying colors for this visual. (For instance, for the <link
-linkend="method-gdkcolormap--alloc-color"><methodname>gtk.gdk.Colormap.alloc_color</methodname>()</link> 
-method)</entry>
+	      <entry>The number of bits per pixel.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"green_mask"</entry>
+	      <entry>Read</entry>
+	      <entry>A mask giving the bits in a pixel value that correspond
+to the green field.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"green_prec"</entry>
+	      <entry>Read</entry>
+	      <entry>See above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"green_shift"</entry>
+	      <entry>Read</entry>
+	      <entry>The <parameter>green_shift</parameter> and
+<parameter>green_prec</parameter> give an alternate presentation of the
+information in <parameter>green_mask</parameter>.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -128,6 +168,12 @@ method)</entry>
 to the red field. Significant only for
 <literal>gtk.gdk.VISUAL_PSEUDOCOLOR</literal> and
 <literal>gtk.gdk.VISUAL_DIRECTCOLOR</literal>.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"red_prec"</entry>
+	      <entry>Read</entry>
+	      <entry>See above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -142,51 +188,15 @@ information in <parameter>red_mask</parameter>.
 	    </row>
 
 	    <row valign="top">
-	      <entry>"red_prec"</entry>
+	      <entry>"type"</entry>
 	      <entry>Read</entry>
-	      <entry>See above.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"green_mask"</entry>
-	      <entry>Read</entry>
-	      <entry>A mask giving the bits in a pixel value that correspond
-to the green field.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"green_shift"</entry>
-	      <entry>Read</entry>
-	      <entry>The <parameter>green_shift</parameter> and
-<parameter>green_prec</parameter> give an alternate presentation of the
-information in <parameter>green_mask</parameter>.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"green_prec"</entry>
-	      <entry>Read</entry>
-	      <entry>See above.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"blue_mask"</entry>
-	      <entry>Read</entry>
-	      <entry>A mask giving the bits in a pixel value that correspond
-to the blue field.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"blue_shift"</entry>
-	      <entry>Read</entry>
-	      <entry>The <parameter>blue_shift</parameter> and
-<parameter>blue_prec</parameter> give an alternate presentation of the
-information in <parameter>blue_mask</parameter>. </entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"blue_prec"</entry>
-	      <entry>Read</entry>
-	      <entry>See above.</entry>
+	      <entry>The type of this visual - one of:
+<literal>gtk.gdk.VISUAL_STATIC_GRAY</literal>,
+<literal>gtk.gdk.VISUAL_GRAYSCALE</literal>,
+<literal>gtk.gdk.VISUAL_STATIC_COLOR</literal>,
+<literal>gtk.gdk.VISUAL_PSEUDO_COLOR</literal>,
+<literal>gtk.gdk.VISUAL_TRUE_COLOR</literal>,
+<literal>gtk.gdk.VISUAL_DIRECT_COLOR</literal></entry>
 	    </row>
 
 	  </tbody>
@@ -339,6 +349,35 @@ directly. </simpara>
     </variablelist>
 
     <para></para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Methods</title>
+
+    <refsect2 id="method-gdkvisual--get-screen">
+      <title>gtk.gdk.Visual.get_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_screen</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the screen that this visual belongs
+to.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_screen</methodname>() method returns the
+<link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+that this visual belongs to.</para>
+
+    </refsect2>
 
   </refsect1>
 
@@ -558,6 +597,114 @@ linkend="class-gdkvisual"><classname>gtk.gdk.Visual</classname></link></simpara>
 
       <para>The <function>gtk.gdk.visual_get_system</function>() function
 returns the default gdkVisual for the system's default screen.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--query-depths">
+      <title>gtk.gdk.query_depths</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.query_depths</methodname>
+	  <variablelist>
+	    <varlistentry>
+	      <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	      <listitem><simpara>a tuple containing the unique supported
+	      visual depths</simpara></listitem>
+	    </varlistentry>
+	  </variablelist>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.query_depths</function>() function returns
+a tuple containing the unique supported visual depths for the default
+screen. It's equivalent to listing the visuals (see the <link
+linkend="function-gdk--list-visuals"><function>gtk.gdk.list_visuals</function>()</link>
+function) and then looking at the depth field in each visual, removing
+duplicates.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--query-visual-types">
+      <title>gtk.gdk.query_visual_types</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.query_visual_types</methodname>
+	  <variablelist>
+	    <varlistentry>
+	      <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	      <listitem><simpara>the system <link
+linkend="class-gdkvisual"><classname>gtk.gdk.Visual</classname></link></simpara></listitem>
+	    </varlistentry>
+	  </variablelist>
+	</methodsynopsis></programlisting>
+
+      <para>The <function>gtk.gdk.query_visual_types</function>() function
+returns a tuple containing the unique visual types supported by the default
+screen.It's equivalent to listing the visuals (see the <link
+linkend="function-gdk--list-visuals"><function>gtk.gdk.list_visuals</function>()</link>
+function) and then looking at the type field in each visual, removing
+duplicates.</para>
+
+      <para>The returned value will be one of:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.gdk.VISUAL_STATIC_GRAY</literal></term>
+	  <listitem>
+	    <simpara>Each pixel value indexes a grayscale value
+	    directly.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.VISUAL_GRAYSCALE</literal></term>
+	  <listitem>
+	    <simpara>Each pixel is an index into a color map that maps pixel
+	    values into grayscale values. The color map can be changed by an
+	    application.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.VISUAL_STATIC_COLOR</literal></term>
+	  <listitem>
+	    <simpara>Each pixel value is an index into a predefined,
+	    unmodifiable color map that maps pixel values into RGB
+	    values.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.VISUAL_PSEUDO_COLOR</literal></term>
+	  <listitem>
+	    <simpara>Each pixel is an index into a color map that maps pixel
+	    values into rgb values. The color map can be changed by an
+	    application.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.VISUAL_TRUE_COLOR</literal></term>
+	  <listitem>
+	    <simpara>Each pixel value directly contains red, green, and blue
+	    components. The red_mask, green_mask, and blue_mask fields of
+	    the <link
+	    linkend="class-gdkvisual"><classname>gtk.gdk.Visual</classname></link>
+	    structure describe how the components are assembled into a pixel
+	    value.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.VISUAL_DIRECT_COLOR</literal></term>
+	  <listitem>
+	    <simpara>Each pixel value contains red, green, and blue
+	    components as for <literal>gtk.gdk.VISUAL_TRUE_COLOR</literal>,
+	    but the components are mapped via a color table into the final
+	    output table instead of being converted directly.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para></para>
 
     </refsect2>
 
