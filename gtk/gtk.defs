@@ -74,13 +74,6 @@
   (gtype-id "GTK_TYPE_CELL_RENDERER_TEXT")
 )
 
-(define-object CellRendererTextPixbuf
-  (in-module "Gtk")
-  (parent "GtkCellRendererText")
-  (c-name "GtkCellRendererTextPixbuf")
-  (gtype-id "GTK_TYPE_CELL_RENDERER_TEXT_PIXBUF")
-)
-
 (define-object CellRendererPixbuf
   (in-module "Gtk")
   (parent "GtkCellRenderer")
@@ -2917,22 +2910,6 @@
   (is-constructor-of GtkCellRendererText)
   (return-type "GtkCellRenderer*")
 )
-
-
-
-;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcellrenderertextpixbuf.h
-
-(define-function gtk_cell_renderer_text_pixbuf_get_type
-  (c-name "gtk_cell_renderer_text_pixbuf_get_type")
-  (return-type "GtkType")
-)
-
-(define-function gtk_cell_renderer_text_pixbuf_new
-  (c-name "gtk_cell_renderer_text_pixbuf_new")
-  (is-constructor-of GtkCellRendererTextPixbuf)
-  (return-type "GtkCellRenderer*")
-)
-
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcellrenderertoggle.h
@@ -12968,15 +12945,6 @@
   )
 )
 
-(define-method spew
-  (of-object "GtkTextIter")
-  (c-name "gtk_text_iter_spew")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "desc")
-  )
-)
-
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtktextmark.h
 
@@ -14415,21 +14383,19 @@
   )
 )
 
-(define-method range_changed
+(define-method row_changed
   (of-object "GtkTreeModel")
-  (c-name "gtk_tree_model_range_changed")
+  (c-name "gtk_tree_model_row_changed")
   (return-type "none")
   (parameters
     '("GtkTreePath*" "start_path")
     '("GtkTreeIter*" "start_iter")
-    '("GtkTreePath*" "end_path")
-    '("GtkTreeIter*" "end_iter")
   )
 )
 
-(define-method inserted
+(define-method row_inserted
   (of-object "GtkTreeModel")
-  (c-name "gtk_tree_model_inserted")
+  (c-name "gtk_tree_model_row_inserted")
   (return-type "none")
   (parameters
     '("GtkTreePath*" "path")
@@ -14437,9 +14403,9 @@
   )
 )
 
-(define-method has_child_toggled
+(define-method row_has_child_toggled
   (of-object "GtkTreeModel")
-  (c-name "gtk_tree_model_has_child_toggled")
+  (c-name "gtk_tree_model_row_has_child_toggled")
   (return-type "none")
   (parameters
     '("GtkTreePath*" "path")
@@ -14447,18 +14413,18 @@
   )
 )
 
-(define-method deleted
+(define-method row_deleted
   (of-object "GtkTreeModel")
-  (c-name "gtk_tree_model_deleted")
+  (c-name "gtk_tree_model_row_deleted")
   (return-type "none")
   (parameters
     '("GtkTreePath*" "path")
   )
 )
 
-(define-method reordered
+(define-method rows_reordered
   (of-object "GtkTreeModel")
-  (c-name "gtk_tree_model_reordered")
+  (c-name "gtk_tree_model_rows_reordered")
   (return-type "none")
   (parameters
     '("GtkTreePath*" "path")
@@ -15299,8 +15265,6 @@
   (parameters
     '("GtkCellRenderer*" "cell")
     '("gboolean" "expand")
-    '("gboolean" "fill")
-    '("guint" "padding")
   )
 )
 
@@ -15311,8 +15275,6 @@
   (parameters
     '("GtkCellRenderer*" "cell")
     '("gboolean" "expand")
-    '("gboolean" "fill")
-    '("guint" "padding")
   )
 )
 
@@ -15406,12 +15368,18 @@
   (return-type "gint")
 )
 
-(define-method set_width
+(define-method get_fixed_width
   (of-object "GtkTreeViewColumn")
-  (c-name "gtk_tree_view_column_set_width")
+  (c-name "gtk_tree_view_column_get_fixed_width")
+  (return-type "gint")
+)
+
+(define-method set_fixed_width
+  (of-object "GtkTreeViewColumn")
+  (c-name "gtk_tree_view_column_set_fixed_width")
   (return-type "none")
   (parameters
-    '("gint" "size")
+    '("gint" "fixed_width")
   )
 )
 
