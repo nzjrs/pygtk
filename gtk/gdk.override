@@ -86,7 +86,7 @@ override gdk_threads_init noargs
  * given the nature of Python threading, this option is not
  * particularly appealing.
  */
-#ifdef ENABLE_PYGTK_THREADING
+#ifndef DISABLE_THREADING
 static GStaticPrivate pythreadstate_key = G_STATIC_PRIVATE_INIT;
 static GStaticPrivate lock_count_key = G_STATIC_PRIVATE_INIT;
 static PyInterpreterState *pyinterpstate = NULL;
@@ -97,9 +97,9 @@ pygdk_get_lock_count(void)
     gint *lock_count = g_static_private_get(&lock_count_key);
 
     if(!lock_count) {
-	lock_count = g_malloc(sizeof(gint));
-	*lock_count = 1;
-	g_static_private_set(&lock_count_key, lock_count, NULL);
+       lock_count = g_malloc(sizeof(gint));
+       *lock_count = 1;
+       g_static_private_set(&lock_count_key, lock_count, NULL);
     }
 
     return lock_count;
@@ -137,7 +137,7 @@ pygdk_unblock_threads (void)
 static PyObject *
 _wrap_gdk_threads_init(PyObject *self)
 {
-#ifdef ENABLE_PYGTK_THREADING
+#ifndef DISABLE_THREADING
     /* register gdk thread block/unblock routines with gobjectmodule */
     pyg_set_thread_block_funcs (pygdk_block_threads, pygdk_unblock_threads);
 

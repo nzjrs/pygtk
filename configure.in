@@ -73,12 +73,15 @@ AM_CHECK_PYMOD(thread,,,enable_thread=no)
 AC_MSG_CHECKING(whether to enable threading in pygtk)
 if test "x$enable_thread" != xno; then
   extra_mods=gthread
-  AC_DEFINE(ENABLE_PYGTK_THREADING,,[enable threading support in pygtk])
+  THREADING_CFLAGS=
   AC_MSG_RESULT(yes)
 else
   extra_mods=
+  THREADING_CFLAGS="-DDISABLE_THREADING"
   AC_MSG_RESULT(no)
 fi
+AC_SUBST(THREADING_CFLAGS)
+CPPFLAGS="${CPPFLAGS} $THREADING_CFLAGS"
 
 dnl get rid of the -export-dynamic stuff from the configure flags ...
 export_dynamic=`(./libtool --config; echo eval echo \\$export_dynamic_flag_spec) | sh`
