@@ -2654,3 +2654,59 @@
   (c-name "gtk_drag_set_icon_default")
   (return-type "none")
 )
+
+;; From /opt/gnome/include/gtk-2.0/gdk-pixbuf/gdk-pixbuf-loader.h
+
+(define-function gdk_pixbuf_loader_get_type
+  (c-name "gdk_pixbuf_loader_get_type")
+  (return-type "GType")
+)
+
+(define-function gdk_pixbuf_loader_new
+  (c-name "gdk_pixbuf_loader_new")
+  (return-type "GdkPixbufLoader*")
+)
+
+(define-function gdk_pixbuf_loader_new_with_type
+  (c-name "gdk_pixbuf_loader_new_with_type")
+  (is-constructor-of GdkPixbufLoader)
+  (return-type "GdkPixbufLoader*")
+  (parameters
+    '("const-char*" "image_type")
+    '("GError**" "error")
+  )
+)
+
+(define-method write
+  (of-object "GdkPixbufLoader")
+  (c-name "gdk_pixbuf_loader_write")
+  (return-type "gboolean")
+  (parameters
+    '("const-guchar*" "buf")
+    '("gsize" "count")
+    '("GError**" "error")
+  )
+)
+
+(define-method get_pixbuf
+  (of-object "GdkPixbufLoader")
+  (c-name "gdk_pixbuf_loader_get_pixbuf")
+  (return-type "GdkPixbuf*")
+)
+
+(define-method get_animation
+  (of-object "GdkPixbufLoader")
+  (c-name "gdk_pixbuf_loader_get_animation")
+  (return-type "GdkPixbufAnimation*")
+)
+
+(define-method close
+  (of-object "GdkPixbufLoader")
+  (c-name "gdk_pixbuf_loader_close")
+  (return-type "gboolean")
+  (parameters
+    '("GError**" "error")
+  )
+)
+
+
