@@ -1228,6 +1228,35 @@ _wrap_gtk_tree_model_get_iter_root(PyGObject *self, PyObject *args)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
+override gtk_tree_model_iter_children kwargs
+static PyObject *
+_wrap_gtk_tree_model_iter_children(PyGObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    PyObject *py_parent;
+    static char *kwlist[] = { "parent", NULL };
+    GtkTreeIter iter, *parent = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkTreeModel.iter_children", kwlist,
+				     &py_parent))
+        return NULL;
+    if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
+        parent = pyg_boxed_get(py_parent, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "parent should be a GtkTreeIter");
+        return NULL;
+    }
+
+    if (gtk_tree_model_iter_children(GTK_TREE_MODEL(self->obj),
+				     &iter, parent))
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    else {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+}
+%%
 ignore
   gtk_tree_view_new
   gtk_tree_view_column_new_with_attributes
