@@ -1,5 +1,21 @@
 2004-06-27  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
 
+	* codegen/definitions.py
+	(Definition.guess_return_value_ownership): new method (name to
+	guess default value for caller_owns_return.
+	(MethodDef.__init__): Call guess_return_value_ownership here.
+	(FunctionDef.__init__): And here as well.
+	(get_valid_scheme_definitions): new function to filter out invalid
+	elements in a definition.
+	(ObjectDef.__init__): Use get_valid_scheme_definitions here.
+	(InterfaceDef.__init__): and here
+	(EnumDef.__init__): here too
+	(BoxedDef.__init__): and here
+	(PointerDef.__init__): here as well
+	(MethodDef.__init__): idem
+	(FunctionDef.__init__): idem
+	Paches by Scott Tsai, with a bit of refactoring by me.
+
 	* gtk/gdk.override (_wrap_gdk_color_parse): Raise TypeError when
 	color cannot be parsed.  Fixes #144862.
 

@@ -1,6 +1,9 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 import sys
 
+def get_valid_scheme_definitions(defs):
+    return [x for x in defs if isinstance(x, tuple) and len(x) >= 2]
+
 class Definition:
     def __init__(self, *args):
 	"""Create a new defs object of this type.  The arguments are the
@@ -13,6 +16,16 @@ class Definition:
 	"""write out this definition in defs file format"""
 	raise RuntimeError, "this is an abstract class"
 
+    def guess_return_value_ownership(self):
+        "return 1 if caller owns return value"
+        if getattr(self, 'is_constructor_of', False):
+            self.caller_owns_return = True
+        elif self.ret in ('char*', 'gchar*', 'string'):
+            self.caller_owns_return = True
+        else:
+            self.caller_owns_return = False
+
+
 class ObjectDef(Definition):
     def __init__(self, name, *args):
 	self.name = name
@@ -22,9 +35,7 @@ class ObjectDef(Definition):
         self.typecode = None
 	self.fields = []
         self.implements = []
-	for arg in args:
-	    if type(arg) != type(()) or len(arg) < 2:
-		continue
+	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
 	    elif arg[0] == 'parent':
@@ -70,9 +81,7 @@ class InterfaceDef(Definition):
 	self.c_name = None
         self.typecode = None
 	self.fields = []
-	for arg in args:
-	    if type(arg) != type(()) or len(arg) < 2:
-		continue
+	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
 	    elif arg[0] == 'c-name':
@@ -97,9 +106,7 @@ class EnumDef(Definition):
 	self.c_name = None
         self.typecode = None
 	self.values = []
-	for arg in args:
-	    if type(arg) != type(()) or len(arg) < 2:
-		continue
+	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.in_module = arg[1]
 	    elif arg[0] == 'c-name':
@@ -138,9 +145,7 @@ class BoxedDef(Definition):
         self.copy = None
         self.release = None
 	self.fields = []
-	for arg in args:
-	    if type(arg) != type(()) or len(arg) < 2:
-		continue
+	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
 	    elif arg[0] == 'c-name':
@@ -185,9 +190,7 @@ class PointerDef(Definition):
 	self.c_name = None
         self.typecode = None
 	self.fields = []
-	for arg in args:
-	    if type(arg) != type(()) or len(arg) < 2:
-		continue
+	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
 	    elif arg[0] == 'c-name':
@@ -229,9 +232,7 @@ class MethodDef(Definition):
 	self.params = [] # of form (type, name, default, nullok)
         self.varargs = 0
         self.deprecated = None
-	for arg in args:
-	    if type(arg) != type(()) or len(arg) < 2:
-		continue
+	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'of-object':
                 self.of_object = arg[1]
 	    elif arg[0] == 'c-name':
@@ -266,12 +267,7 @@ class MethodDef(Definition):
             self.write_defs(sys.stderr)
 
         if self.caller_owns_return is None and self.ret is not None:
-            if self.ret[:6] == 'const-':
-                self.caller_owns_return = 0
-            elif self.ret in ('char*', 'gchar*', 'string'):
-                self.caller_owns_return = 1
-            else:
-                self.caller_owns_return = 0
+            self.guess_return_value_ownership()
         for item in ('c_name', 'of_object'):
             if self.__dict__[item] == None:
                 self.write_defs(sys.stderr)
@@ -320,9 +316,7 @@ class FunctionDef(Definition):
 	self.params = [] # of form (type, name, default, nullok)
         self.varargs = 0
         self.deprecated = None
-	for arg in args:
-	    if type(arg) != type(()) or len(arg) < 2:
-		continue
+	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.in_module = arg[1]
 	    elif arg[0] == 'is-constructor-of':
@@ -359,14 +353,7 @@ class FunctionDef(Definition):
             self.write_defs(sys.stderr)
 
         if self.caller_owns_return is None and self.ret is not None:
-            if self.ret[:6] == 'const-':
-                self.caller_owns_return = 0
-            elif self.is_constructor_of:
-                self.caller_owns_return = 1
-            elif self.ret in ('char*', 'gchar*', 'string'):
-                self.caller_owns_return = 1
-            else:
-                self.caller_owns_return = 0
+            self.guess_return_value_ownership()
         for item in ('c_name',):
             if self.__dict__[item] == None:
                 self.write_defs(sys.stderr)
@@ -416,4 +403,3 @@ class FunctionDef(Definition):
                 fp.write(')\n')
             fp.write('  )\n')
 	fp.write(')\n\n')
-
