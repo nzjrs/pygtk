@@ -1,6 +1,6 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 /* PyGTK imlib module - python bindings for gdk_imlib
- * Copyright (C) 1998 James Henstridge <james@daa.com.au>
+ * Copyright (C) 1998-2002 James Henstridge <james@daa.com.au>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

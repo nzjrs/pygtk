@@ -1,9 +1,26 @@
 -*- mode: m4 -*-
 AC_PREREQ(2.52)
-AC_INIT(pygtk, 0.6.9,
+
+dnl the pygtk version number
+m4_define(pygtk_major_version, 0)
+m4_define(pygtk_minor_version, 6)
+m4_define(pygtk_micro_version, 9)
+m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
+
+dnl required versions of other packages
+m4_define(gtk_required_version,    1.2.8)
+m4_define(imlib_required_version,  1.8)
+m4_define(pixbuf_required_version, 0.9.0)
+
+AC_INIT(pygtk, pygtk_version,
 	[http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-python&component=pygtk])
+
 AC_CONFIG_SRCDIR([gtkmodule.c])
 AM_CONFIG_HEADER(config.h)
+
+AC_DEFINE(PYGTK_MAJOR_VERSION, pygtk_major_version, [PyGtk major version])
+AC_DEFINE(PYGTK_MINOR_VERSION, pygtk_minor_version, [PyGtk minor version])
+AC_DEFINE(PYGTK_MICRO_VERSION, pygtk_micro_version, [PyGtk macro version])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
@@ -27,11 +44,11 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AM_PATH_GTK(1.2.8,,,$extra_mods)
-AM_PATH_GDK_IMLIB(1.8, build_imlib=true, build_imlib=false)
+AM_PATH_GTK(gtk_required_version,,,$extra_mods)
+AM_PATH_GDK_IMLIB(imlib_required_version, build_imlib=true, build_imlib=false)
 AM_CONDITIONAL(BUILD_IMLIB, $build_imlib)
 
-AM_PATH_GDK_PIXBUF(0.9.0, build_pixbuf=true, build_pixbuf=false)
+AM_PATH_GDK_PIXBUF(pixbuf_required_version, build_pixbuf=true, build_pixbuf=false)
 AM_CONDITIONAL(BUILD_PIXBUF, $build_pixbuf)
 
 AM_PATH_GTKGL(build_gtkgl=true, build_gtkgl=false)

@@ -22,6 +22,10 @@ import GDK    # make the GDK constants available
 import _gtk
 import sys, os
 
+# version numbers ...
+gtk_version = _gtk.gtk_version
+pygtk_version = _gtk.pygtk_version
+
 # this sets up i18n input stuff
 _gtk.gtk_set_locale()
 

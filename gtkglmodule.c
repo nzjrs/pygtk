@@ -1,6 +1,6 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 /* pygtk - python bindings for GTK+
- * Copyright (C) 1998-1999 James Henstridge <james@daa.com.au>
+ * Copyright (C) 1998-2002 James Henstridge <james@daa.com.au>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

@@ -1,6 +1,6 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 /* PyGTK libglade module - python bindings for libglade
- * Copyright (C) 1999 James Henstridge <james@daa.com.au>
+ * Copyright (C) 1999-2002 James Henstridge <james@daa.com.au>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

@@ -1,6 +1,6 @@
 /* -*- Mode: C; c-basic-offset: 2 -*- */
 /* PyGTK - python bindings for GTK+
- * Copyright (C) 1997-1999 James Henstridge <james@daa.com.au>
+ * Copyright (C) 1997-2002 James Henstridge <james@daa.com.au>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -3897,12 +3897,14 @@ static PyObject * _wrap_gtk_init(PyObject *self, PyObject *args) {
 
 static PyObject *_wrap_gtk_set_locale(PyObject *self, PyObject *args) {
     char *locale;
+    PyObject *py_locale;
 
     if (!PyArg_ParseTuple(args, ":gtk_set_locale"))
         return NULL;
     locale = gtk_set_locale();
+    py_locale = PyString_FromString(locale);
     setlocale(LC_NUMERIC, "C");
-    return PyString_FromString(locale);
+    return py_locale;
 }
 
 static PyObject *_wrap_gtk_main(PyObject *self, PyObject *args) {
@@ -7069,8 +7071,10 @@ static struct _PyGtk_FunctionStruct functions = {
     &PyGtkCTreeNode_Type,  PyGtkCTreeNode_New
 };
 
-void init_gtk() {
-     PyObject *m, *d, *private;
+DL_EXPORT(void)
+init_gtk(void) {
+     PyObject *m, *d, *tuple, *private;
+
      m = Py_InitModule("_gtk", _gtkmoduleMethods);
      d = PyModule_GetDict(m);
 
@@ -7103,93 +7107,17 @@ void init_gtk() {
      PyDict_SetItemString(d, "_PyGtk_API",
 			  PyCObject_FromVoidPtr(&functions, NULL));
 
-     private = PyDict_New();
-     PyDict_SetItemString(d, "_private", private); Py_DECREF(private);
-     PyDict_SetItemString(private, "PyGtk_New", 
-                          d=PyCObject_FromVoidPtr(PyGtk_New, NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtkAccelGroup_New",
-                          d=PyCObject_FromVoidPtr(PyGtkAccelGroup_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtkStyle_New",
-                          d=PyCObject_FromVoidPtr(PyGtkStyle_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkFont_New",
-                          d=PyCObject_FromVoidPtr(PyGdkFont_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkColor_New",
-                          d=PyCObject_FromVoidPtr(PyGdkColor_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkEvent_New",
-                          d=PyCObject_FromVoidPtr(PyGdkEvent_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkWindow_New",
-                          d=PyCObject_FromVoidPtr(PyGdkWindow_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkGC_New",
-                          d=PyCObject_FromVoidPtr(PyGdkGC_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkColormap_New",
-                          d=PyCObject_FromVoidPtr(PyGdkColormap_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkDragContext_New",
-                          d=PyCObject_FromVoidPtr(PyGdkDragContext_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtkSelectionData_New",
-                         d=PyCObject_FromVoidPtr(PyGtkSelectionData_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkAtom_New",
-                          d=PyCObject_FromVoidPtr(PyGdkAtom_New, NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGdkCursor_New",
-                          d=PyCObject_FromVoidPtr(PyGdkCursor_New, NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtkCTreeNode_New",
-                         d=PyCObject_FromVoidPtr(PyGtkCTreeNode_New,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtk_DestroyNotify",
-                          d=PyCObject_FromVoidPtr(PyGtk_DestroyNotify,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtk_CallbackMarshal",
-                          d=PyCObject_FromVoidPtr(PyGtk_CallbackMarshal,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "GtkArgs_AsTuple",
-                          d=PyCObject_FromVoidPtr(GtkArgs_AsTuple,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "GtkArgs_FromSequence",
-                          d=PyCObject_FromVoidPtr(GtkArgs_FromSequence,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "GtkArg_FromPyObject",
-                          d=PyCObject_FromVoidPtr(GtkArg_FromPyObject,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "GtkArg_AsPyObject",
-                          d=PyCObject_FromVoidPtr(GtkArg_AsPyObject,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "GtkRet_FromPyObject",
-                          d=PyCObject_FromVoidPtr(GtkRet_FromPyObject,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "GtkRet_AsPyObject",
-                          d=PyCObject_FromVoidPtr(GtkRet_AsPyObject,NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtkEnum_get_value",
-                          d=PyCObject_FromVoidPtr(PyGtkEnum_get_value, NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtkFlag_get_value",
-                          d=PyCObject_FromVoidPtr(PyGtkFlag_get_value, NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyDict_AsGtkArgs",
-                          d=PyCObject_FromVoidPtr(PyDict_AsGtkArgs, NULL));
-     Py_DECREF(d);
-
-     PyDict_SetItemString(private, "PyGtk_RegisterBoxed",
-                          d=PyCObject_FromVoidPtr(PyGtk_RegisterBoxed, NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtk_BlockThreads",
-			  d=PyCObject_FromVoidPtr(PyGtk_BlockThreads, NULL));
-     Py_DECREF(d);
-     PyDict_SetItemString(private, "PyGtk_UnblockThreads",
-			  d=PyCObject_FromVoidPtr(PyGtk_UnblockThreads, NULL));
-     Py_DECREF(d);
+     /* gtk+ version */
+     tuple = Py_BuildValue ("(iii)", gtk_major_version, gtk_minor_version,
+			    gtk_micro_version);
+     PyDict_SetItemString(d, "gtk_version", tuple);    
+     Py_DECREF(tuple);
+        
+     /* pygtk version */
+     tuple = Py_BuildValue ("(iii)", PYGTK_MAJOR_VERSION, PYGTK_MINOR_VERSION,
+			    PYGTK_MICRO_VERSION);
+     PyDict_SetItemString(d, "pygtk_version", tuple);
+     Py_DECREF(tuple);
 
      m = PyImport_ImportModule("os");
      if (m == NULL) {
