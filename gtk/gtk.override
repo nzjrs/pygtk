@@ -2198,6 +2198,9 @@ ignore
   gtk_menu_bar_append
   gtk_menu_bar_insert
   gtk_menu_bar_prepend
+  gtk_menu_append
+  gtk_menu_insert
+  gtk_menu_prepend
   gtk_radio_menu_item_group
   gtk_radio_menu_item_set_group
   gtk_radio_button_group
@@ -2880,6 +2883,42 @@ _wrap_gtk_radio_menu_item_new(PyGObject *self, PyObject *args,
 	return -1;
     }
     gtk_object_ref(GTK_OBJECT(self->obj));
+    gtk_object_sink(GTK_OBJECT(self->obj));
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+ignore
+  gtk_image_item_menu_new_with_label
+  gtk_image_menu_item_new_from_stock
+  gtk_image_menu_item_new_with_mnemonic
+%%
+override gtk_image_menu_item_new kwargs
+static int
+_wrap_gtk_image_menu_item_new(PyGObject *self, PyObject *args,PyObject *kwargs)
+{
+    static char *kwlist[] = { "stock_id", "accel_group", NULL };
+    gchar *stock_id = NULL;
+    PyObject *py_accel_group = Py_None;
+    GtkAccelGroup *accel_group= NULL;
+
+    if (!PyArg_ParseTuple(args, kwargs, "|zO:GtkImageMenuItem.__init__",kwlist,
+			  &stock_id, &py_accel_group))
+	return NULL;
+    if (pygobject_check(py_accel_group, &PyGtkAccelGroup_Type))
+	accel_group = GTK_ACCEL_GROUP(pygobject_get(py_accel_group));
+
+    if (stock_id)
+	self->obj = (GObject *)gtk_image_menu_item_new_from_stock(stock_id,
+								  accel_group);
+    else
+	self->obj = (GObject *)gtk_image_menu_item_new();
+
+    if (!self->obj) {
+	PyErr_SetString(PyExc_RuntimeError, "could not create GtkImageMenuItem object");
+	return -1;
+    }
+    g_object_ref(self->obj);
     gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;

@@ -4,6 +4,8 @@ sources, so I can use them for other purposes.'''
 
 import sys, os, string, re
 
+__all__ = ['extract']
+
 class FunctionDoc:
     def __init__(self):
 	self.name = None
@@ -121,3 +123,37 @@ def extract(dirs, doc_dict=None):
     for dir in dirs:
 	parse_dir(dir, doc_dict)
     return doc_dict
+
+tmpl_section_pat = re.compile(r'^<!-- ##### (\w+) (\w+) ##### -->$')
+def parse_tmpl(fp, doc_dict):
+    cur_doc = None
+
+    line = fp.readline()
+    while line:
+        match = tmpl_section_pat.match(line)
+        if match:
+            cur_doc = None  # new input shouldn't affect the old doc dict
+            sect_type = match.group(1)
+            sect_name = match.group(2)
+
+            if sect_type == 'FUNCTION':
+                cur_doc = doc_dict.get(sect_name)
+                if not cur_doc:
+                    cur_doc = FunctionDoc()
+                    cur_doc.set_name(sect_name)
+                    doc_dict[sect_name] = cur_doc
+
+        elif line == '<!-- # Unused Parameters # -->\n':
+            cur_doc = None # don't worry about unused params.
+        elif cur_doc:
+            if line[:10] == '@Returns: ':
+                if string.strip(line[10:]):
+                    cur_doc.append_return(line[10:])
+            elif line[0] == '@':
+                pass
+            else:
+                cur_doc.append_description(line)
+
+        line = fp.readline()
+
+                

@@ -538,7 +538,7 @@ class GdkRectanglePtrArg(ArgType):
 class GdkRectangleArg(ArgType):
     def write_return(self, ptype, info):
 	info.varlist.add('GdkRectangle', 'ret')
-	info.codeafter.append('    return pyg_boxed_new(ret, FALSE, TRUE);')
+	info.codeafter.append('    return pyg_boxed_new(GDK_RECTANGLE, ret, TRUE, TRUE);')
 	
 class ArgMatcher:
     def __init__(self):

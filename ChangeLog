@@ -1,3 +1,17 @@
+2002-03-17  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk.override (ignore): ignore the GtkMenu append, insert and
+	prepend methods (they are deprecated and shadow the methods you
+	should use ...).
+	(_wrap_gtk_image_menu_item_new): add wrapper for GtkImageMenuItem
+	constructor (from bug 71893).
+
+	* gtk/gdk.override (_wrap_gdk_pixbuf_get_pixels): implement
+	get_pixels to return the pixels as a string.
+
+	* codegen/argtypes.py (GdkRectangleArg.write_return): fix up
+	problem with return type found by Peter Kese.
+
 2002-03-16  James Henstridge  <james@daa.com.au>
 
 	* pygtype.c (add_property_docs): fix up property listing.

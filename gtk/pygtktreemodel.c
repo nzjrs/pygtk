@@ -287,8 +287,9 @@ pygtk_generic_tree_model_get_iter(GtkTreeModel *tree_model,
     if (py_ret) {
 	if (py_ret != Py_None) {
 	    iter->user_data = py_ret;
-	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references) {
 		Py_DECREF((PyObject *)iter->user_data);
+	    }
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -382,8 +383,9 @@ pygtk_generic_tree_model_iter_next(GtkTreeModel *tree_model, GtkTreeIter *iter)
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
-	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references) {
 		Py_DECREF((PyObject *)iter->user_data);
+	    }
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -421,8 +423,9 @@ pygtk_generic_tree_model_iter_children(GtkTreeModel *tree_model, GtkTreeIter *it
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
-	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references) {
 		Py_DECREF((PyObject *)iter->user_data);
+	    }
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -516,8 +519,9 @@ pygtk_generic_tree_model_iter_nth_child(GtkTreeModel *tree_model, GtkTreeIter  *
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
-	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references) {
 		Py_DECREF((PyObject *)iter->user_data);
+	    }
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -555,8 +559,9 @@ pygtk_generic_tree_model_iter_parent(GtkTreeModel *tree_model, GtkTreeIter *iter
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
-	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references) {
 		Py_DECREF((PyObject *)iter->user_data);
+	    }
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;

@@ -1548,6 +1548,27 @@ _wrap_gdk_pixbuf_render_pixmap_and_mask(PyGObject *self, PyObject *args,
     return ret;
 }
 %%
+override gdk_pixbuf_get_pixels noargs
+static PyObject *
+_wrap_gdk_pixbuf_get_pixels(PyGObject *self)
+{
+    GdkPixbuf *pixbuf;
+    guchar *pixels;
+    gint rowstride, height;
+
+    pixbuf = GDK_PIXBUF(self->obj);
+    pixels = gdk_pixbuf_get_pixels(pixbuf);
+    rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+    height = gdk_pixbuf_get_height(pixbuf);
+
+    if (pixels == NULL) {
+	PyErr_SetString(PyExc_ValueError, "could not get pixel data");
+	return NULL;
+    }
+
+    return PyString_FromStringAndSize(pixels, rowstride*height);
+}
+%%
 override gdk_colormap_alloc_color kwargs
 static PyObject *
 _wrap_gdk_colormap_alloc_color(PyGObject *self, PyObject *args,
