@@ -43,6 +43,7 @@ headers
 
 #ifdef HAVE_NUMPY
 #  include <Numeric/arrayobject.h>
+static int have_numpy(void);
 #endif
 
 extern PyTypeObject PyGtkWidget_Type;
@@ -3747,4 +3748,24 @@ _wrap_gdk_window_add_filter(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gdk_atom_intern kwargs
+static PyObject *
+_wrap_gdk_atom_intern(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "atom_name", "only_if_exists", NULL };
+    char *atom_name;
+    int only_if_exists = FALSE;
+    GdkAtom ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|i:atom_intern",
+				     kwlist, &atom_name, &only_if_exists))
+        return NULL;
+    ret = gdk_atom_intern(atom_name, only_if_exists);
+    if (ret == GDK_NONE) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+    return PyGdkAtom_New(ret);
 }
