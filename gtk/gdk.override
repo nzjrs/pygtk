@@ -1272,7 +1272,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
             }
         }
         if (!strcmp(attr, "state"))
-            return PyInt_FromLong(event->motion.state);
+            return pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                        event->motion.state);
         if (!strcmp(attr, "is_hint"))
             return PyInt_FromLong(event->motion.is_hint);
         if (!strcmp(attr, "device"))
@@ -1311,7 +1312,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
             }
         }
         if (!strcmp(attr, "state"))
-            return PyInt_FromLong(event->button.state);
+            return pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                        event->button.state);
         if (!strcmp(attr, "button"))
             return PyInt_FromLong(event->button.button);
         if (!strcmp(attr, "device"))
@@ -1331,7 +1333,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "time"))
             return PyInt_FromLong(event->key.time);
         if (!strcmp(attr, "state"))
-            return PyInt_FromLong(event->key.state);
+            return pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                        event->key.state);
         if (!strcmp(attr, "keyval"))
             return PyInt_FromLong(event->key.keyval);
         if (!strcmp(attr, "string"))
@@ -1363,13 +1366,16 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "y_root"))
             return PyFloat_FromDouble(event->crossing.y_root);
         if (!strcmp(attr, "mode"))
-            return pyg_enum_from_gtype(GDK_TYPE_CROSSING_MODE, event->crossing.mode);
+            return pyg_enum_from_gtype(GDK_TYPE_CROSSING_MODE,
+                                       event->crossing.mode);
         if (!strcmp(attr, "detail"))
-            return PyInt_FromLong(event->crossing.detail);
+            return pyg_enum_from_gtype(GDK_TYPE_NOTIFY_TYPE,
+                                        event->crossing.detail);
         if (!strcmp(attr, "focus"))
             return PyInt_FromLong(event->crossing.focus);
         if (!strcmp(attr, "state"))
-            return pyg_enum_from_gtype(GDK_TYPE_NOTIFY_TYPE, event->crossing.mode);
+            return pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                        event->crossing.state);
         break;
     case GDK_FOCUS_CHANGE:      /*GdkEventFocus             focus_change*/
         if (!strcmp(attr, "__members__"))
@@ -1491,7 +1497,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "y"))
             return PyFloat_FromDouble(event->scroll.y);
         if (!strcmp(attr, "state"))
-            return PyInt_FromLong(event->scroll.state);
+            return pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                        event->scroll.state);
         if (!strcmp(attr, "direction"))
             return pyg_enum_from_gtype(GDK_TYPE_SCROLL_DIRECTION, event->scroll.direction);
         if (!strcmp(attr, "device"))
@@ -1507,9 +1514,11 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
                                  "type", "window", "send_event",
                                  "changed_mask", "new_window_state");
         if (!strcmp(attr, "changed_mask"))
-            return PyInt_FromLong(event->window_state.changed_mask);
+            return pyg_flags_from_gtype(GDK_TYPE_WINDOW_STATE,
+                                        event->window_state.changed_mask);
         if (!strcmp(attr, "new_window_state"))
-            return PyInt_FromLong(event->window_state.new_window_state);
+            return pyg_flags_from_gtype(GDK_TYPE_WINDOW_STATE,
+                                        event->window_state.new_window_state);
         break;
     case GDK_SETTING:           /*GdkEventSetting           setting*/
         if (!strcmp(attr, "__members__"))
@@ -1610,9 +1619,10 @@ _wrap_gdk_device__get_keys(PyGObject *self, void *closure)
 
     ret = PyTuple_New(device->num_keys);
     for (i = 0; i < device->num_keys; i++)
-        PyTuple_SetItem(ret, i, Py_BuildValue("(ii)",
-                                              device->keys[i].keyval,
-                                              device->keys[i].modifiers));
+        PyTuple_SetItem(ret, i,
+                        Py_BuildValue("(iN)", device->keys[i].keyval,
+                                      pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                                           device->keys[i].modifiers)));
     return ret;
 }
 %%
@@ -1641,7 +1651,8 @@ _wrap_gdk_device_get_state(PyGObject *self, PyObject *args, PyObject *kwargs)
     for (i = 0; i < device->num_axes; i++)
         PyTuple_SetItem(py_axes, i, PyFloat_FromDouble(axes[i]));
     g_free(axes);
-    return Py_BuildValue("(Ni)", py_axes, mask);
+    return Py_BuildValue("(NN)", py_axes,
+                         pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE, mask));
 }
 %%
 ignore gdk_device_free_history
@@ -2497,7 +2508,8 @@ _wrap_gdk_window_get_pointer(PyGObject *self)
     GdkModifierType mask;
 
     gdk_window_get_pointer(GDK_WINDOW(self->obj), &x, &y, &mask);
-    return Py_BuildValue("(iii)", x, y, (gint)mask);
+    return Py_BuildValue("(iiN)", x, y,
+                         pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE, mask));
 }
 %%
 ignore gdk_window_peek_children
@@ -3763,7 +3775,7 @@ _wrap_gdk_window_get_decorations(PyGObject *self)
 
     gdk_window_get_decorations(GDK_WINDOW(self->obj), &decor);
 
-    return pyg_enum_from_gtype(GDK_TYPE_WM_DECORATION, decor);
+    return pyg_flags_from_gtype(GDK_TYPE_WM_DECORATION, decor);
 }
 %%
 override gdk_window_get_toplevels noargs
@@ -4008,8 +4020,9 @@ _wrap_gdk_display_get_pointer(PyGObject *self)
     GdkModifierType mask;
 
     gdk_display_get_pointer(GDK_DISPLAY_OBJECT(self->obj), &screen, &x, &y, &mask);
-    return Py_BuildValue("(Niii)", pygobject_new((GObject *)screen),
-			 x, y, (gint)mask);
+    return Py_BuildValue("(NiiN)", pygobject_new((GObject *)screen),
+			 x, y,
+                         pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE, mask));
 }
 %%
 override gdk_display_get_window_at_pointer noargs
@@ -4284,7 +4297,7 @@ _wrap_gdk_event_get_state(PyGObject *self)
     GdkModifierType state = 0;
 
     gdk_event_get_state(event, &state);
-    return PyInt_FromLong(state);
+    return pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE, state);
 }
 %%
 override gdk_keyval_convert_case kwargs
@@ -4415,8 +4428,9 @@ _wrap_gdk_keymap_translate_keyboard_state(PyGObject *self, PyObject *args,
 					    state, group, &keyval,
 					    &effective_group, &level,
 					    &modifiers))
-	return Py_BuildValue("(iiii)", keyval, effective_group, level,
-			     modifiers);
+	return Py_BuildValue("(iiiN)", keyval, effective_group, level,
+			     pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                                  modifiers));
     Py_INCREF(Py_None);
     return Py_None;
 }

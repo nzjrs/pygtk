@@ -3042,10 +3042,11 @@ _wrap_gtk_stock_lookup(PyGObject *self, PyObject *args)
     }
 
     if(gtk_stock_lookup(stock_id, &item)) {
-        return Py_BuildValue("zziiz",
+        return Py_BuildValue("zzNiz",
                              item.stock_id,
                              item.label,
-                             pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, item.modifier),
+                             pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                                  item.modifier),
                              item.keyval,
                              item.translation_domain);
     }
@@ -3641,7 +3642,9 @@ _wrap_gtk_accelerator_parse(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     gtk_accelerator_parse((const gchar *)accel, &keyval, &modifier);
 
-    return Py_BuildValue("iN", keyval, pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, modifier));
+    return Py_BuildValue("iN", keyval,
+                         pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE,
+                                              modifier));
 }
 %%
 override gtk_accel_map_lookup_entry kwargs
@@ -4824,7 +4827,7 @@ _wrap_gtk_file_filter_add_custom(PyGObject *self, PyObject *args)
                           &pyflags, &pyfunc, &pyarg))
         return NULL;
  
-    if (pyg_enum_get_value(GTK_TYPE_FILE_FILTER_FLAGS, pyflags,
+    if (pyg_flags_get_value(GTK_TYPE_FILE_FILTER_FLAGS, pyflags,
 			   (gint *)&flags))
         return NULL;
 
