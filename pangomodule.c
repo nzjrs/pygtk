@@ -67,6 +67,4 @@ initpango(void)
 
     /* add anything else to the module dictionary (such as constants) */
 
-    if (PyErr_Occurred())
-        Py_FatalError("could not initialise module pango");
 }

@@ -45,7 +45,4 @@ initglade(void)
     glade_init();
 
     pylibglade_register_classes(d);
-
-    if (PyErr_Occurred())
-        Py_FatalError("could not initialise module gtk.libglade");
 }

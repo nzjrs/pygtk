@@ -59,12 +59,14 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 	    _PyGtk_API = (struct _PyGtk_FunctionStruct*) \
 		PyCObject_AsVoidPtr(cobject); \
 	else { \
-	    Py_FatalError("could not find _PyGtk_API object"); \
+            PyErr_SetString(PyExc_RuntimeError, \
+                            "could not find _PyGtk_API object"); \
 	    return; \
-	} \
+        } \
     } else { \
-	Py_FatalError("could not import _gtk"); \
-	return; \
+        PyErr_SetString(PyExc_ImportError, \
+                        "could not import gtk._gtk"); \
+        return; \
     } \
 }
 

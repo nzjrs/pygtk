@@ -44,8 +44,4 @@ initatk(void)
 	
     pyatk_register_classes (d);
     pyatk_add_constants(m, "ATK_");    
-
-    if (PyErr_Occurred ()) {
-	Py_FatalError ("can't initialise module atk");
-    }
 }

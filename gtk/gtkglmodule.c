@@ -89,7 +89,4 @@ initgl(void)
     PyDict_SetItemString(d, "ACCUM_ALPHA_SIZE",
 			 c=PyInt_FromLong(GDK_GL_ACCUM_ALPHA_SIZE));
     Py_DECREF(c);
-
-    if (PyErr_Occurred())
-        Py_FatalError("could not initialise module gtk.gl");
 }

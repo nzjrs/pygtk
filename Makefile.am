@@ -1,5 +1,5 @@
-# require automake-1.6
-AUTOMAKE_OPTIONS = 1.6
+# require automake-1.7
+AUTOMAKE_OPTIONS = 1.7
 
 SUBDIRS = codegen gtk docs
 
@@ -41,11 +41,7 @@ pkgpyexec_LTLIBRARIES = \
   pango.la \
   atk.la
 
-if PLATFORM_WIN32
 common_ldflags = -module -avoid-version -no-undefined
-else
-common_ldflags = -module -avoid-version
-endif
 
 # gobject module
 gobject_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgobject

@@ -190,8 +190,5 @@ init_gtk(void)
     pygdk_register_classes(d);
     pygdk_add_constants(m, "GDK_");
 
-    if (PyErr_Occurred())
-	Py_FatalError("can't initialise module _gtk");
-    
     gtk_timeout_add(100, python_do_pending_calls, NULL);
 }

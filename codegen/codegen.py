@@ -671,8 +671,15 @@ def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
             fp.write('        PyObject *moddict = PyModule_GetDict(module);\n\n')
             for pyname, cname in bymod[module]:
                 fp.write('        _%s = (PyTypeObject *)PyDict_GetItemString(moddict, "%s");\n' % (cname, pyname))
+                fp.write('        if (_%s == NULL) {\n' % cname)
+                fp.write('            PyErr_SetString(PyExc_ImportError,\n')
+                fp.write('                "cannot import name %s from %s");\n'
+                         % (pyname, module))
+                fp.write('            return;\n')
+                fp.write('        }\n')
             fp.write('    } else {\n')
-            fp.write('        Py_FatalError("could not import %s");\n' %module)
+            fp.write('        PyErr_SetString(PyExc_ImportError,\n')
+            fp.write('            "could not import %s");\n' % module)
             fp.write('        return;\n')
             fp.write('    }\n')
         fp.write('\n')
