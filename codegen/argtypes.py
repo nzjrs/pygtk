@@ -586,8 +586,6 @@ matcher.register('FILE*', arg)
 
 # enums, flags, objects
 
-matcher.register_custom_boxed('GdkEvent', 'PyGdkEvent_Type',
-                              'PyGdkEvent_Get', 'PyGdkEvent_New')
 matcher.register_custom_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
                               'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
 matcher.register_custom_boxed('GdkDevice', 'PyGdkDevice_Type',

@@ -1,5 +1,17 @@
 2001-06-30  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtk.override (_wrap_gtk_selection_add_targets): fix up to
+	use PyGBoxed version of GdkEvent.
+
+	* gtk/gtk-types.c: remove GdkEvent stuff from here.  Also delete
+	the commented out GdkDragContext code, as the current GObject
+	implementation has the same features now.
+
+	* gtk/gtk.override (_wrap_gdk_event_getattr): implement the
+	getattr method for GdkEvents.
+
+	* gtk/gdk.defs (Event): add boxed type here.
+
 	* gobjectmodule.c (initgobject): remove g_type_init() argument.
 
 	* gtk/gdk.defs (Visual): make GdkVisual a boxed.

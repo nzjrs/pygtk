@@ -557,6 +557,245 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
+override gdk_event_getattr
+PyObject *
+_wrap_gdk_event_getattr(PyObject *self, char *attr)
+{
+    GdkEvent *event = pyg_boxed_get(self, GdkEvent);
+    guint i;
+
+    if (!strcmp(attr, "type"))
+	return PyInt_FromLong(event->type);
+    if (!strcmp(attr, "window"))
+	return pygobject_new((GObject *)event->any.window);
+    if (!strcmp(attr, "send_event"))
+	return PyInt_FromLong(event->any.send_event);
+
+    switch(event->type) {
+    case GDK_NOTHING: break;
+    case GDK_DELETE: break;
+    case GDK_DESTROY: break;
+    case GDK_EXPOSE:            /*GdkEventExpose            expose*/
+	if (!strcmp(attr, "area"))
+	    return Py_BuildValue("(iiii)",
+				 event->expose.area.x,
+				 event->expose.area.y,
+				 event->expose.area.width,
+				 event->expose.area.height);
+	if (!strcmp(attr, "count"))
+	    return PyInt_FromLong(event->expose.count);
+	break;
+    case GDK_MOTION_NOTIFY:     /*GdkEventMotion            motion*/
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->motion.time);
+	if (!strcmp(attr, "x"))
+	    return PyFloat_FromDouble(event->motion.x);
+	if (!strcmp(attr, "y"))
+	    return PyFloat_FromDouble(event->motion.y);
+	if (!strcmp(attr, "axes")) {
+	    if (event->motion.axes) {
+		PyObject *v = PyTuple_New(event->motion.device->num_axes);
+		if (!v) return NULL;
+		for (i = 0; i < event->motion.device->num_axes; i++)
+		    PyTuple_SetItem(v, i,PyFloat_FromDouble(
+						event->motion.axes[i]));
+		return v;
+	    } else {
+		Py_INCREF(Py_None);
+		return Py_None;
+	    }
+	}
+	if (!strcmp(attr, "state"))
+	    return PyInt_FromLong(event->motion.state);
+	if (!strcmp(attr, "is_hint"))
+	    return PyInt_FromLong(event->motion.is_hint);
+	if (!strcmp(attr, "device"))
+	    return PyGdkDevice_New(event->motion.device);
+	if (!strcmp(attr, "x_root"))
+	    return PyFloat_FromDouble(event->motion.x_root);
+	if (!strcmp(attr, "y_root"))
+	    return PyFloat_FromDouble(event->motion.y_root);
+	break;
+    case GDK_BUTTON_PRESS:      /*GdkEventButton            button*/
+    case GDK_2BUTTON_PRESS:     /*GdkEventButton            button*/
+    case GDK_3BUTTON_PRESS:     /*GdkEventButton            button*/
+    case GDK_BUTTON_RELEASE:    /*GdkEventButton            button*/
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->button.time);
+	if (!strcmp(attr, "x"))
+	    return PyFloat_FromDouble(event->button.x);
+	if (!strcmp(attr, "y"))
+	    return PyFloat_FromDouble(event->button.y);
+	if (!strcmp(attr, "axes")) {
+	    if (event->button.axes) {
+		PyObject *v = PyTuple_New(event->button.device->num_axes);
+		if (!v) return NULL;
+		for (i = 0; i < event->button.device->num_axes; i++)
+		    PyTuple_SetItem(v, i,PyFloat_FromDouble(
+						event->button.axes[i]));
+		return v;
+	    } else {
+		Py_INCREF(Py_None);
+		return Py_None;
+	    }
+	}
+	if (!strcmp(attr, "state"))
+	    return PyInt_FromLong(event->button.state);
+	if (!strcmp(attr, "button"))
+	    return PyInt_FromLong(event->button.button);
+	if (!strcmp(attr, "device"))
+	    return PyGdkDevice_New(event->button.device);
+	if (!strcmp(attr, "x_root"))
+	    return PyFloat_FromDouble(event->button.x_root);
+	if (!strcmp(attr, "y_root"))
+	    return PyFloat_FromDouble(event->button.y_root);
+	break;
+    case GDK_KEY_PRESS:         /*GdkEventKey               key*/
+    case GDK_KEY_RELEASE:       /*GdkEventKey               key*/
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->key.time);
+	if (!strcmp(attr, "state"))
+	    return PyInt_FromLong(event->key.state);
+	if (!strcmp(attr, "keyval"))
+	    return PyInt_FromLong(event->key.keyval);
+	if (!strcmp(attr, "string"))
+	    return PyString_FromStringAndSize(event->key.string,
+					      event->key.length);
+	break;
+    case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
+    case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
+	if (!strcmp(attr, "subwindow"))
+	    return pygobject_new((GObject *)event->crossing.subwindow);
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->crossing.time);
+	if (!strcmp(attr, "x"))
+	    return PyFloat_FromDouble(event->crossing.x);
+	if (!strcmp(attr, "y"))
+	    return PyFloat_FromDouble(event->crossing.y);
+	if (!strcmp(attr, "x_root"))
+	    return PyFloat_FromDouble(event->crossing.x_root);
+	if (!strcmp(attr, "y_root"))
+	    return PyFloat_FromDouble(event->crossing.y_root);
+	if (!strcmp(attr, "mode"))
+	    return PyInt_FromLong(event->crossing.mode);
+	if (!strcmp(attr, "detail"))
+	    return PyInt_FromLong(event->crossing.detail);
+	if (!strcmp(attr, "focus"))
+	    return PyInt_FromLong(event->crossing.focus);
+	if (!strcmp(attr, "state"))
+	    return PyInt_FromLong(event->crossing.state);
+	break;
+    case GDK_FOCUS_CHANGE:      /*GdkEventFocus             focus_change*/
+	if (!strcmp(attr, "in_"))
+	    return PyInt_FromLong(event->focus_change.in);
+	break;
+    case GDK_CONFIGURE:         /*GdkEventConfigure         configure*/
+	if (!strcmp(attr, "x"))
+	    return PyInt_FromLong(event->configure.x);
+	if (!strcmp(attr, "y"))
+	    return PyInt_FromLong(event->configure.y);
+	if (!strcmp(attr, "width"))
+	    return PyInt_FromLong(event->configure.width);
+	if (!strcmp(attr, "height"))
+	    return PyInt_FromLong(event->configure.height);
+	break;
+    case GDK_MAP: break;
+    case GDK_UNMAP: break;
+    case GDK_PROPERTY_NOTIFY:   /*GdkEventProperty          property*/
+	if (!strcmp(attr, "atom"))
+	    return PyGdkAtom_New(event->property.atom);
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->property.time);
+	if (!strcmp(attr, "state"))
+	    return PyInt_FromLong(event->property.state);
+	break;
+    case GDK_SELECTION_CLEAR:   /*GdkEventSelection         selection*/
+    case GDK_SELECTION_REQUEST: /*GdkEventSelection         selection*/
+    case GDK_SELECTION_NOTIFY:  /*GdkEventSelection         selection*/
+	if (!strcmp(attr, "selection"))
+	    return PyGdkAtom_New(event->selection.selection);
+	if (!strcmp(attr, "target"))
+	    return PyGdkAtom_New(event->selection.target);
+	if (!strcmp(attr, "property"))
+	    return PyGdkAtom_New(event->selection.property);
+	if (!strcmp(attr, "requestor"))
+	    return PyInt_FromLong(event->selection.requestor);
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->selection.time);
+	break;
+    case GDK_PROXIMITY_IN:      /*GdkEventProximity         proximity*/
+    case GDK_PROXIMITY_OUT:     /*GdkEventProximity         proximity*/
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->proximity.time);
+	if (!strcmp(attr, "device"))
+	    return PyGdkDevice_New(event->proximity.device);
+	break;
+    case GDK_DRAG_ENTER:        /*GdkEventDND               dnd*/
+    case GDK_DRAG_LEAVE:        /*GdkEventDND               dnd*/
+    case GDK_DRAG_MOTION:       /*GdkEventDND               dnd*/
+    case GDK_DRAG_STATUS:       /*GdkEventDND               dnd*/
+    case GDK_DROP_START:        /*GdkEventDND               dnd*/
+    case GDK_DROP_FINISHED:     /*GdkEventDND               dnd*/
+	if (!strcmp(attr, "context"))
+	    return pygobject_new((GObject *)event->dnd.context);
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->dnd.time);
+	if (!strcmp(attr, "x_root"))
+	    return PyFloat_FromDouble(event->dnd.x_root);
+	if (!strcmp(attr, "y_root"))
+	    return PyFloat_FromDouble(event->dnd.y_root);
+	break;
+    case GDK_CLIENT_EVENT:      /*GdkEventClient            client*/
+	if (!strcmp(attr, "message_type"))
+	    return PyGdkAtom_New(event->client.message_type);
+	if (!strcmp(attr, "data_format"))
+	    return PyInt_FromLong(event->client.data_format);
+	if (!strcmp(attr, "data"))
+	    return PyString_FromStringAndSize(event->client.data.b, 20);
+	break;
+    case GDK_VISIBILITY_NOTIFY: /*GdkEventVisibility        visibility*/
+	if (!strcmp(attr, "state"))
+	    return PyInt_FromLong(event->visibility.state);
+	break;
+    case GDK_NO_EXPOSE:         /*GdkEventNoExpose          no_expose*/
+	break;
+    case GDK_SCROLL:            /*GdkEventScroll            scroll*/
+	if (!strcmp(attr, "time"))
+	    return PyInt_FromLong(event->scroll.time);
+	if (!strcmp(attr, "x"))
+	    return PyFloat_FromDouble(event->scroll.x);
+	if (!strcmp(attr, "y"))
+	    return PyFloat_FromDouble(event->scroll.y);
+	if (!strcmp(attr, "state"))
+	    return PyInt_FromLong(event->scroll.state);
+	if (!strcmp(attr, "direction"))
+	    return PyInt_FromLong(event->scroll.direction);
+	if (!strcmp(attr, "device"))
+	    return PyGdkDevice_New(event->scroll.device);
+	if (!strcmp(attr, "x_root"))
+	    return PyFloat_FromDouble(event->scroll.x_root);
+	if (!strcmp(attr, "y_root"))
+	    return PyFloat_FromDouble(event->scroll.y_root);
+	break;
+    case GDK_WINDOW_STATE:      /*GdkEventWindowState       window_state*/
+	if (!strcmp(attr, "changed_mask"))
+	    return PyInt_FromLong(event->window_state.changed_mask);
+	if (!strcmp(attr, "new_window_state"))
+	    return PyInt_FromLong(event->window_state.new_window_state);
+	break;
+    case GDK_SETTING:           /*GdkEventSetting           setting*/
+	if (!strcmp(attr, "action"))
+	    return PyInt_FromLong(event->setting.action);
+	if (!strcmp(attr, "name"))
+	    return PyString_FromString(event->setting.name);
+	break;
+    default:
+	break;
+    }
+    PyErr_SetString(PyExc_AttributeError, attr);
+    return NULL;
+}
+%%
 ignore gtk_selection_data_copy gtk_selection_data_free
 %%
 override_attr GtkSelectionData.data
@@ -4015,13 +4254,17 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkDragContext *context;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOiO!:GtkWidget.drag_begin", kwlist,
+				     "OOiO:GtkWidget.drag_begin", kwlist,
 				     &py_targets, &py_actions, &button,
-				     &PyGdkEvent_Type, &event))
+				     &event))
 	return NULL;
     if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
 			     py_actions, (gint *)&actions))
 	return NULL;
+    if (!pyg_boxed_check(event, GDK_TYPE_EVENT)) {
+	PyErr_SetString(PyExc_TypeError, "event must be a GdkEvent");
+	return NULL;
+    }
     if (!PySequence_Check(py_targets)) {
 	PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
 	return NULL;
@@ -4043,7 +4286,7 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
     targets = gtk_target_list_new(tents, n_targets);
     g_free(tents);
     context = gtk_drag_begin(GTK_WIDGET(self->obj), targets, actions, button,
-			     PyGdkEvent_Get(event));
+			     pyg_boxed_get(event, GdkEvent));
     gtk_target_list_unref(targets);
     return pygobject_new((GObject *)context);
 }

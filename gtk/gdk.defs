@@ -93,6 +93,13 @@
 
 ;; Boxed types ...
 
+(boxed Event
+  (in-module Gdk)
+  (c-name GdkEvent)
+  (copy-func gdk_event_copy)
+  (release-func gdk_event_free)
+)
+
 (boxed Font
   (in-module Gdk)
   (c-name GdkFont)
@@ -1729,12 +1736,12 @@
   (parameter (type-and-name const-char** data))
 )
 
-(function pixbuf_new_from_inline
-  (c-name gdk_pixbuf_new_from_inline)
+(function pixbuf_new_from_stream
+  (c-name gdk_pixbuf_new_from_stream)
   (return-type GdkPixbuf*)
-  (parameter (type-and-name const-guchar* inline_pixbuf))
+  (parameter (type-and-name gint stream_length))
+  (parameter (type-and-name const-guchar* stream))
   (parameter (type-and-name gboolean copy_pixels))
-  (parameter (type-and-name int length))
   (parameter (type-and-name GError** error))
 )
 
