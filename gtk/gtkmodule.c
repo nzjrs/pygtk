@@ -3,6 +3,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 /* include this first, before NO_IMPORT_PYGOBJECT is defined */
 #include <pygobject.h>
 #include "pygtk-private.h"
@@ -18,12 +19,6 @@ extern PyMethodDef pygdk_functions[];
 
 static struct _PyGtk_FunctionStruct functions = {
     VERSION,
-    FALSE,
-
-    pygtk_block_threads,
-    pygtk_unblock_threads,
-
-    pygtk_destroy_notify,
 
     &PyGdkAtom_Type,  PyGdkAtom_New,
 };

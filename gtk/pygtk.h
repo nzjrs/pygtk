@@ -9,12 +9,6 @@
 
 struct _PyGtk_FunctionStruct {
     char *pygtkVersion;
-    gboolean fatalExceptions;
-
-    void (* block_threads)(void);
-    void (* unblock_threads)(void);
-
-    GtkDestroyNotify destroy_notify;
 
     PyTypeObject *gdkAtom_type;
     PyObject *(* gdkAtom_new)(GdkAtom atom);
@@ -51,11 +45,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 
 /* type objects */
 #define PyGdkAtom_New          (_PyGtk_API->gdkAtom_new)
-
-/* miscelaneous other functions */
-#define pygtk_block_threads (_PyGtk_API->block_threads)
-#define pygtk_unblock_threads (_PyGtk_API->unblock_threads)
-#define pygtk_destroy_notify (_PyGtk_API->destroy_notify)
 
 /* some variables */
 #define PYGTK_VERSION (_PyGtk_API->pygtkVersion)

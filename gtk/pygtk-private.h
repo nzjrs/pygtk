@@ -22,12 +22,6 @@ extern PyTypeObject PyGdkAtom_Type;
 /* constructors for PyObject wrappers ... */
 PyObject *PyGdkAtom_New(GdkAtom atom);
 
-/* miscelaneous functions */
-void pygtk_block_threads(void);
-void pygtk_unblock_threads(void);
-
-void pygtk_destroy_notify(gpointer data);
-
 void pygtk_handler_marshal(gpointer a, PyObject *func, int nargs,GtkArg *args);
 void pygtk_input_marshal(gpointer a, PyObject *func, int nargs, GtkArg *args);
 
@@ -43,14 +37,4 @@ typedef struct {
 
 void pygtk_custom_destroy_notify(gpointer user_data);
 
-gboolean pygtk_tree_selection_marshal(GtkTreeSelection  *selection,
-				      GtkTreeModel *model,
-				      GtkTreePath *path,
-				      gboolean path_currenly_selected,
-				      gpointer data);
-void pygtk_tree_foreach_marshal(GtkTreeModel *model,
-				GtkTreePath *path,
-				GtkTreeIter *iter,
-				gpointer data);
- 
 #endif

@@ -675,7 +675,7 @@ _wrap_gtk_clist_set_row_data(PyGObject *self, PyObject *args,
 	return NULL;
     Py_INCREF(data);
     gtk_clist_set_row_data_full(GTK_CLIST(self->obj), row, data,
-				(GtkDestroyNotify)pygtk_destroy_notify);
+				(GtkDestroyNotify)pyg_destroy_notify);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -1518,6 +1518,26 @@ _wrap_gtk_tree_selection_get_selected(PyGObject *self)
 }
 %%
 override gtk_tree_selection_selected_foreach
+static void
+pygtk_tree_foreach_marshal(GtkTreeModel *model,
+			   GtkTreePath *path,
+			   GtkTreeIter *iter,
+			   gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *pypath, *retobj;
+
+    g_assert(cunote->func);
+    
+    pypath = pygtk_tree_path_to_pyobject(path);
+    if (cunote->data)
+	retobj = PyEval_CallFunction(cunote->func, "(OO)", pypath,
+				     cunote->data);
+    else
+	retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+    Py_DECREF(pypath);
+    Py_XDECREF(retobj);
+}
 static PyObject *
 _wrap_gtk_tree_selection_selected_foreach(PyGObject *self, PyObject *args)
 {
@@ -1530,16 +1550,53 @@ _wrap_gtk_tree_selection_selected_foreach(PyGObject *self, PyObject *args)
     
     cunote.func = pyfunc;
     cunote.data = pyarg;
-    pygtk_unblock_threads();
     gtk_tree_selection_selected_foreach(GTK_TREE_SELECTION(self->obj),
 					pygtk_tree_foreach_marshal, &cunote);
-    pygtk_block_threads();
     
     Py_INCREF(Py_None);
     return Py_None;
 }
 %%
 override gtk_tree_selection_set_select_function
+
+static gboolean
+pygtk_tree_selection_marshal(GtkTreeSelection *selection,
+			     GtkTreeModel *model,
+			     GtkTreePath *path,
+			     gboolean path_currently_selected,
+			     gpointer data)
+{
+    gboolean retval = FALSE;
+    PyGtkCustomNotify *cunote = data;
+    PyObject *pypath, *retobj;
+    
+    pyg_block_threads();
+
+    g_assert(cunote->func);
+    
+    pypath = pygtk_tree_path_to_pyobject(path);
+    if (cunote->data)
+	retobj = PyEval_CallFunction(cunote->func, "(OO)", pypath,
+				     cunote->data);
+    else
+	retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+    Py_DECREF(pypath);
+    if (retobj) {
+	if(retobj == Py_None);
+	else if(PyInt_Check(retobj))
+	    retval = PyInt_AsLong(retobj) && TRUE;
+	else if(PyLong_Check(retobj))
+	    retval = PyLong_AsLongLong(retobj) && TRUE;
+	else if(PyString_Check(retobj))
+	    retval = PyString_GET_SIZE(retobj) && TRUE;
+	
+	Py_DECREF(retobj);
+    }
+    
+    pyg_unblock_threads();
+    
+    return retval;
+}
 static PyObject *
 _wrap_gtk_tree_selection_set_select_function(PyGObject *self, PyObject *args)
 {
@@ -1551,8 +1608,10 @@ _wrap_gtk_tree_selection_set_select_function(PyGObject *self, PyObject *args)
 	return NULL;
     
     cunote = g_new0(PyGtkCustomNotify, 1);
-    Py_XINCREF(cunote->func = pyfunc);
-    Py_XINCREF(cunote->data = pyarg);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
     gtk_tree_selection_set_select_function(GTK_TREE_SELECTION(self->obj),
 					   pygtk_tree_selection_marshal,
 					   cunote,
@@ -1850,9 +1909,9 @@ override gtk_main noargs
 static PyObject *
 _wrap_gtk_main(PyObject *self)
 {
-    pygtk_unblock_threads();
+    pyg_unblock_threads();
     gtk_main();
-    pygtk_block_threads();
+    pyg_block_threads();
     if (PyErr_Occurred())
 	return NULL;
     Py_INCREF(Py_None);
@@ -1869,9 +1928,9 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration", kwlist,
 				    &block)) 
         return NULL;
-    pygtk_unblock_threads();
+    pyg_unblock_threads();
     ret = gtk_main_iteration_do(block);
-    pygtk_block_threads();
+    pyg_block_threads();
     return PyInt_FromLong(ret);
 }
 %%
@@ -1907,8 +1966,8 @@ _wrap_gtk_timeout_add(PyObject *self, PyObject *args)
     if (data == NULL)
       return NULL;
     return PyInt_FromLong(gtk_timeout_add_full(interval, NULL,
-        (GtkCallbackMarshal)pygtk_handler_marshal,
-        data, (GtkDestroyNotify)pygtk_destroy_notify));
+				(GtkCallbackMarshal)pygtk_handler_marshal,
+				data, (GtkDestroyNotify)pyg_destroy_notify));
 }
 %%
 override gtk_idle_add
@@ -1943,7 +2002,7 @@ _wrap_gtk_idle_add(PyObject *self, PyObject *args)
       return NULL;
     return PyInt_FromLong(gtk_idle_add_full(GTK_PRIORITY_DEFAULT, NULL,
         (GtkCallbackMarshal)pygtk_handler_marshal,
-        data, (GtkDestroyNotify)pygtk_destroy_notify));
+        data, (GtkDestroyNotify)pyg_destroy_notify));
 }
 %%
 override gtk_quit_add
@@ -1979,7 +2038,7 @@ _wrap_gtk_quit_add(PyObject *self, PyObject *args)
       return NULL;
     return PyInt_FromLong(gtk_quit_add_full(main_level, NULL,
         (GtkCallbackMarshal)pygtk_handler_marshal,
-        data, (GtkDestroyNotify)pygtk_destroy_notify));
+        data, (GtkDestroyNotify)pyg_destroy_notify));
 }
 %%
 override gtk_input_add_full kwargs
@@ -2007,7 +2066,7 @@ _wrap_gtk_input_add_full(PyObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(callback);
     return PyInt_FromLong(gtk_input_add_full(source, condition, NULL,
 			(GtkCallbackMarshal)pygtk_input_marshal, callback,
-			(GtkDestroyNotify)pygtk_destroy_notify));
+			(GtkDestroyNotify)pyg_destroy_notify));
 }
 %%
 override gtk_editable_insert_text kwargs
@@ -2033,7 +2092,7 @@ pygtk_item_factory_cb(PyObject *callback, guint action, GtkWidget *widget)
 {
     PyObject *ret;
 
-    pygtk_block_threads();
+    pyg_block_threads();
     ret = PyObject_CallFunction(callback, "iO", action,
 				pygobject_new((GObject *)widget));
     if (ret == NULL) {
@@ -2041,7 +2100,7 @@ pygtk_item_factory_cb(PyObject *callback, guint action, GtkWidget *widget)
 	PyErr_Clear();
     } else
 	Py_DECREF(ret);
-    pygtk_unblock_threads();
+    pyg_unblock_threads();
 }
 static PyObject *
 _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
@@ -2109,7 +2168,7 @@ pygtk_menu_position(GtkMenu *menu, int *x, int *y, PyObject *func)
 {
     PyObject *ret;
 
-    pygtk_block_threads();
+    pyg_block_threads();
     ret = PyObject_CallFunction(func, "Oii", pygobject_new((GObject *)menu),
                                 *x, *y);
     if (ret == NULL || !PyArg_ParseTuple(ret, "ii", x, y)) {
@@ -2121,7 +2180,7 @@ pygtk_menu_position(GtkMenu *menu, int *x, int *y, PyObject *func)
     } else {
         Py_DECREF(ret);
     }
-    pygtk_unblock_threads();
+    pyg_unblock_threads();
 }
 static PyObject *
 _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -2885,7 +2944,7 @@ _wrap_gtk_ctree_node_set_row_data(PyGObject *self, PyObject *args,
     Py_INCREF(data);
     gtk_ctree_node_set_row_data_full(GTK_CTREE(self->obj),
 				     pyg_boxed_get(node, GtkCTreeNode), data,
-				     (GtkDestroyNotify)pygtk_destroy_notify);
+				     (GtkDestroyNotify)pyg_destroy_notify);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -4134,6 +4193,19 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
     gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
+}
+%%
+override gtk_dialog_run noargs
+static PyObject *
+_wrap_gtk_dialog_run(PyGObject *self)
+{
+    gint retval;
+
+    pyg_unblock_threads();
+    retval = gtk_dialog_run(GTK_DIALOG(self->obj));
+    pyg_block_threads();
+
+    return PyInt_FromLong(retval);
 }
 %%
 override gtk_message_dialog_new kwargs

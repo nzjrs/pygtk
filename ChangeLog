@@ -1,5 +1,57 @@
 2002-01-07  James Henstridge  <james@daa.com.au>
 
+	* gtk/gdk.override (_wrap_gdk_threads_enter): add overriden
+	implementation that allows threads while waiting, so some other
+	thread has a chance to give up the gdk lock.
+
+	* gtk/gtkmodule.c (functions): remove stuff.
+
+	* gtk/pygtk-private.h: remove definitions here as well.
+
+	* gtk/pygtk.h (_PyGtk_FunctionStruct): remove destroy notify and
+	thread block stuff.
+
+	* gtk/gtkobject-support.c: remove pygtk_destroy_notify.
+
+	* gtk/gtk.override (pygtk_tree_foreach_marshal): move this
+	function here from gtkobject-support.c, and don't bother blocking
+	threads.
+	(_wrap_gtk_tree_selection_selected_foreach): same here -- don't
+	need to unblock threads.
+	(pygtk_tree_selection_marshal): move this function here from
+	gtkobject-support.c.  Convert to use pyg_block_threads.
+	(_wrap_gtk_dialog_run): add overriden implementation that unblocks
+	threads.
+	(_wrap_gtk_main): use pyg_block_threads
+	(_wrap_gtk_main_iteration): same.
+	(_wrap_gtk_item_factory_create_items): same here.
+	(_wrap_gtk_menu_popup): same here.
+	(_wrap_gtk_clist_set_row_data): use pyg_destroy_notify
+	(_wrap_gtk_timeout_add): same here.
+	(_wrap_gtk_idle_add): same here.
+	(_wrap_gtk_quit_add): same here.
+	(_wrap_gtk_input_add_full): same here.
+	(_wrap_gtk_ctree_node_set_row_data): same here.
+
+	* gtk/gtkobject-support.c: remove PyGTK_BLOCK_THREADS and
+	PyGTK_UNBLOCK_THREADS macros.
+	(pygtk_destroy_notify): use pyg_block_threads.
+	(pygtk_custom_destroy_notify): same.
+	(pygtk_handler_marshal): same.
+	(pygtk_input_marshal): same.
+
+	* gtk/gdk.override (_wrap_gdk_threads_init): register gdk lock
+	based recursive threads block/unblock functions.  If threading was
+	disabled at compile time, then this function will error out.
+
+	* gtk/gdk.defs (threads_enter, threads_leave, threads_leave): add
+	functions.
+
+	* gobjectmodule.c (functions): add destroy_notify here as well.
+
+	* pygobject.h: add destroy_notify to the PyGObject_Functions
+	vtable.
+
 	* gobjectmodule.c (pyg_set_thread_block_funcs): handler for
 	registering thread block/unblock funcs.
 	(pygobject_destroy_notify): block threads during DECREF call.
