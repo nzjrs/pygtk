@@ -201,7 +201,7 @@ class ApplicationMainWindowDemo(gtk.Window):
           ( "About", None,                             # name, stock id
             "_About", "<control>A",                    # label, accelerator
             "About",                                   # tooltip
-            self.activate_action ),
+            self.activate_about ),
           ( "Logo", "demo-gtk-logo",                   # name, stock id
              None, None,                              # label, accelerator
             "GTK+",                                    # tooltip
@@ -252,6 +252,14 @@ class ApplicationMainWindowDemo(gtk.Window):
 
         return action_group
 
+    def activate_about(self, action):
+        dialog = gtk.AboutDialog()
+        dialog.set_name("PyGTK Demo")
+        dialog.set_copyright("\302\251 Copyright 200x the PyGTK Team")
+        dialog.set_website("http://www.pygtk.org./")
+        ## Close dialog on user response
+        dialog.connect ("response", lambda d, r: d.destroy())
+        dialog.show()
 
     def activate_action(self, action):
         dialog = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
