@@ -451,6 +451,24 @@ class GEnumParam(IntParam):
 
 argtypes.matcher.register_reverse("GEnum", GEnumParam)
 
+class GFlagsReturn(IntReturn):
+    def write_conversion(self):
+        self.wrapper.write_code(
+            failure_expression=("pyg_flags_get_value(%s, py_retval, (gint *)&retval)" %
+                                self.props['typecode']))
+
+argtypes.matcher.register_reverse_ret("GFlags", GFlagsReturn)
+
+class GFlagsParam(IntParam):
+    def convert_c2py(self):
+        self.wrapper.add_declaration("PyObject *py_%s;" % self.name)
+        self.wrapper.write_code(code=("py_%s = pyg_flags_from_gtype(%s, %s);" %
+                                      (self.name, self.props['typecode'], self.name)),
+                                cleanup=("Py_DECREF(py_%s);" % self.name),
+                                failure_expression=("!py_%s" % self.name))
+        self.wrapper.add_pyargv_item("py_%s" % self.name)
+
+argtypes.matcher.register_reverse("GFlags", GFlagsParam)
 
 class BooleanReturn(ReturnType):
     def get_c_type(self):
