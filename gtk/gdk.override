@@ -2252,10 +2252,19 @@ have_numpy(void)
     return 1;
 }
 #endif
-
 static PyObject *
 _wrap_gdk_pixbuf__get_pixel_array(PyGObject *self, void *closure)
 {
+    PyErr_Warn(PyExc_DeprecationWarning, "use pixbuf.get_pixels_array() instead of the pixbuf.pixel_array attribute");
+    return _wrap_gdk_pixbuf_get_pixels_array(self);
+}
+%%
+define GdkPixbuf.get_pixels_array noargs
+static PyObject *
+_wrap_gdk_pixbuf_get_pixels_array(PyGObject *self)
+{
+
+
 #ifdef HAVE_NUMPY
     GdkPixbuf *pixbuf = GDK_PIXBUF(self->obj);
     PyArrayObject *array;
