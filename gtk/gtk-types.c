@@ -5,26 +5,6 @@
 
 #if 0
 PyObject *
-PyGtkStyle_New(GtkStyle *obj)
-{
-    PyGtkStyle_Object *self;
-
-    if (!obj) {
-	Py_INCREF(Py_None);
-	return Py_None;
-    }
-  
-    self = (PyGtkStyle_Object *)PyObject_NEW(PyGtkStyle_Object,
-					     &PyGtkStyle_Type);
-    if (self == NULL)
-	return NULL;
-
-    self->obj = obj;
-    gtk_style_ref(self->obj);
-    return (PyObject *)self;
-}
-
-PyObject *
 PyGdkWindow_New(GdkWindow *win)
 {
     PyGdkWindow_Object *self;
@@ -79,17 +59,13 @@ PyGdkAtom_New(GdkAtom atom)
     return (PyObject *)self;
 }
 
-#if 0
-typedef struct {
-    PyObject_HEAD
-    GtkStyle *style; /* parent style */
-    enum {STYLE_COLOUR_ARRAY, STYLE_GC_ARRAY, STYLE_PIXMAP_ARRAY} type;
-    gpointer array;
-} PyGtkStyleHelper_Object;
+
+/* style helper code */
+#define NUM_STATES 5
 staticforward PyTypeObject PyGtkStyleHelper_Type;
 
-static PyObject *
-PyGtkStyleHelper_New(GtkStyle *style, int type, gpointer array)
+PyObject *
+_pygtk_style_helper_new(GtkStyle *style, int type, gpointer array)
 {
     PyGtkStyleHelper_Object *self;
 
@@ -97,29 +73,30 @@ PyGtkStyleHelper_New(GtkStyle *style, int type, gpointer array)
 						   &PyGtkStyleHelper_Type);
     if (self == NULL)
 	return NULL;
-    self->style = gtk_style_ref(style);
+    self->style = g_object_ref(style);
     self->type = type;
     self->array = array;
     return (PyObject *)self;
 }
 
 static void
-PyGtkStyleHelper_Dealloc(PyGtkStyleHelper_Object *self)
+pygtk_style_helper_dealloc(PyGtkStyleHelper_Object *self)
 {
-    gtk_style_unref(self->style);
+    g_object_unref(self->style);
     PyObject_DEL(self);
 }
 
 static int
-PyGtkStyleHelper_Length(PyGtkStyleHelper_Object *self)
+pygtk_style_helper_length(PyGtkStyleHelper_Object *self)
 {
-    return 5;
+    return NUM_STATES;
 }
+
 static PyObject *
-PyGtkStyleHelper_GetItem(PyGtkStyleHelper_Object *self, int pos)
+pygtk_style_helper_getitem(PyGtkStyleHelper_Object *self, int pos)
 {
-    if (pos < 0) pos += 5;
-    if (pos < 0 || pos >= 5) {
+    if (pos < 0) pos += NUM_STATES;
+    if (pos < 0 || pos >= NUM_STATES) {
 	PyErr_SetString(PyExc_IndexError, "index out of range");
 	return NULL;
     }
@@ -127,31 +104,32 @@ PyGtkStyleHelper_GetItem(PyGtkStyleHelper_Object *self, int pos)
     case STYLE_COLOUR_ARRAY:
 	{
 	    GdkColor *array = (GdkColor *)self->array;
-	    return PyGdkColor_New(&array[pos]);
+	    return pyg_boxed_new(GDK_TYPE_COLOR, &array[pos], TRUE, TRUE);
 	}
     case STYLE_GC_ARRAY:
 	{
 	    GdkGC **array = (GdkGC **)self->array;
-	    return PyGdkGC_New(array[pos]);
+	    return pygobject_new((GObject *)array[pos]);
 	}
     case STYLE_PIXMAP_ARRAY:
 	{
-	    GdkWindow **array = (GdkWindow **)self->array;
-	    if (array[pos])
-		return PyGdkWindow_New(array[pos]);
-	    Py_INCREF(Py_None);
-	    return Py_None;
+	    GdkPixmap **array = (GdkPixmap **)self->array;
+	    return pygobject_new((GObject *)array[pos]);
 	}
     }
     g_assert_not_reached();
     return NULL;
 }
+
 static int
-PyGtkStyleHelper_SetItem(PyGtkStyleHelper_Object *self, int pos,
-			 PyObject *value)
+pygtk_style_helper_setitem(PyGtkStyleHelper_Object *self, int pos,
+			   PyObject *value)
 {
-    if (pos < 0) pos += 5;
-    if (pos < 0 || pos >= 5) {
+    extern PyTypeObject PyGdkGC_Type;
+    extern PyTypeObject PyGdkPixmap_Type;
+
+    if (pos < 0) pos += NUM_STATES;
+    if (pos < 0 || pos >= NUM_STATES) {
 	PyErr_SetString(PyExc_IndexError, "index out of range");
 	return -1;
     }
@@ -160,37 +138,37 @@ PyGtkStyleHelper_SetItem(PyGtkStyleHelper_Object *self, int pos,
 	{
 	    GdkColor *array = (GdkColor *)self->array;
 
-	    if (!PyGdkColor_Check(value)) {
+	    if (!pyg_boxed_check(value, GDK_TYPE_COLOR)) {
 		PyErr_SetString(PyExc_TypeError, "can only assign a GdkColor");
 		return -1;
 	    }
-	    array[pos] = *PyGdkColor_Get(value);
+	    array[pos] = *pyg_boxed_get(value, GdkColor);
 	    return 0;
 	}
     case STYLE_GC_ARRAY:
 	{
 	    GdkGC **array = (GdkGC **)self->array;
 
-	    if (!PyGdkGC_Check(value)) {
+	    if (!pygobject_check(value, &PyGdkGC_Type)) {
 		PyErr_SetString(PyExc_TypeError, "can only assign a GdkGC");
 		return -1;
 	    }
-	    if (array[pos]) gdk_gc_unref(array[pos]);
-	    array[pos] = gdk_gc_ref(PyGdkGC_Get(value));
+	    if (array[pos]) g_object_unref(array[pos]);
+	    array[pos] = GDK_GC(g_object_ref(pygobject_get(value)));
 	    return 0;
 	}
     case STYLE_PIXMAP_ARRAY:
 	{
-	    GdkWindow **array = (GdkWindow **)self->array;
+	    GdkPixmap **array = (GdkPixmap **)self->array;
 
-	    if (!PyGdkWindow_Check(value) && value != Py_None) {
+	    if (!pygobject_check(value, &PyGdkPixmap_Type) && value!=Py_None) {
 		PyErr_SetString(PyExc_TypeError,
 				"can only assign a GdkPixmap or None");
 		return -1;
 	    }
-	    if (array[pos]) gdk_pixmap_unref(array[pos]);
+	    if (array[pos]) g_object_unref(array[pos]);
 	    if (value != Py_None)
-		array[pos] = gdk_pixmap_ref(PyGdkWindow_Get(value));
+		array[pos] = GDK_PIXMAP(g_object_ref(pygobject_get(value)));
 	    else
 		array[pos] = NULL;
 	    return 0;
@@ -200,13 +178,13 @@ PyGtkStyleHelper_SetItem(PyGtkStyleHelper_Object *self, int pos,
     return -1;
 }
 
-static PySequenceMethods PyGtkStyleHelper_SeqMethods = {
-    (inquiry)PyGtkStyleHelper_Length,
+static PySequenceMethods pygtk_style_helper_seqmethods = {
+    (inquiry)pygtk_style_helper_length,
     (binaryfunc)0,
     (intargfunc)0,
-    (intargfunc)PyGtkStyleHelper_GetItem,
+    (intargfunc)pygtk_style_helper_getitem,
     (intintargfunc)0,
-    (intobjargproc)PyGtkStyleHelper_SetItem,
+    (intobjargproc)pygtk_style_helper_setitem,
     (intintobjargproc)0
 };
 static PyTypeObject PyGtkStyleHelper_Type = {
@@ -215,14 +193,14 @@ static PyTypeObject PyGtkStyleHelper_Type = {
     "GtkStyleHelper",
     sizeof(PyGtkStyleHelper_Object),
     0,
-    (destructor)PyGtkStyleHelper_Dealloc,
+    (destructor)pygtk_style_helper_dealloc,
     (printfunc)0,
     (getattrfunc)0,
     (setattrfunc)0,
     (cmpfunc)0,
     (reprfunc)0,
     0,
-    &PyGtkStyleHelper_SeqMethods,
+    &pygtk_style_helper_seqmethods,
     0,
     (hashfunc)0,
     (ternaryfunc)0,
@@ -231,189 +209,7 @@ static PyTypeObject PyGtkStyleHelper_Type = {
     NULL
 };
 
-
-static void
-PyGtkStyle_Dealloc(PyGtkStyle_Object *self)
-{
-    gtk_style_unref(self->obj);
-    PyObject_DEL(self);
-}
-
-static int
-PyGtkStyle_Compare(PyGtkStyle_Object *self, PyGtkStyle_Object *v)
-{
-    if (self->obj == v->obj) return 0;
-    if (self->obj > v->obj) return -1;
-    return 1;
-}
-
-static long
-PyGtkStyle_Hash(PyGtkStyle_Object *self)
-{
-    return (long)self->obj;
-}
-
-static PyObject *
-PyGtkStyle_copy(PyGtkStyle_Object *self, PyObject *args)
-{
-    GtkStyle *style;
-    PyObject *ret;
-    if (!PyArg_ParseTuple(args, ":GtkStyle.copy"))
-	return NULL;
-    /* this is so that new style has ref count one and doesn't get destroyed */
-    style = gtk_style_copy(self->obj);
-    ret = PyGtkStyle_New(style);
-    gtk_style_unref(style);
-    return ret;
-}
-
-static PyMethodDef PyGtkStyle_methods[] = {
-    {"copy", (PyCFunction)PyGtkStyle_copy, METH_VARARGS, NULL},
-    {NULL, 0, 0, NULL}
-};
-
-static PyObject *
-PyGtkStyle_GetAttr(PyGtkStyle_Object *self, char *attr)
-{
-    GtkStyle *style = self->obj;
-
-    if (!strcmp(attr, "__members__"))
-
-	return Py_BuildValue("[sssssssssssssssssssss]", "base",
-			     "base_gc", "bg", "bg_gc", "bg_pixmap", "black",
-			     "black_gc", "colormap", "dark", "dark_gc", "fg",
-			     "fg_gc", "font", "light", "light_gc", "mid",
-			     "mid_gc", "text", "text_gc", "white", "white_gc");
-
-    if (!strcmp(attr, "fg"))
-	return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->fg);
-    if (!strcmp(attr, "bg"))
-	return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->bg);
-    if (!strcmp(attr, "light"))
-	return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->light);
-    if (!strcmp(attr, "dark"))
-	return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->dark);
-    if (!strcmp(attr, "mid"))
-	return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->mid);
-    if (!strcmp(attr, "text"))
-	return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->text);
-    if (!strcmp(attr, "base"))
-	return PyGtkStyleHelper_New(style, STYLE_COLOUR_ARRAY, style->base);
-    if (!strcmp(attr, "black"))
-	return PyGdkColor_New(&style->black);
-    if (!strcmp(attr, "white"))
-	return PyGdkColor_New(&style->white);
-    if (!strcmp(attr, "font"))
-	return PyGdkFont_New(style->font);
-    if (!strcmp(attr, "fg_gc"))
-	return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->fg_gc);
-    if (!strcmp(attr, "bg_gc"))
-	return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->bg_gc);
-    if (!strcmp(attr, "light_gc"))
-	return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->light_gc);
-    if (!strcmp(attr, "dark_gc"))
-	return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->dark_gc);
-    if (!strcmp(attr, "mid_gc"))
-	return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->mid_gc);
-    if (!strcmp(attr, "text_gc"))
-	return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->text_gc);
-    if (!strcmp(attr, "base_gc"))
-	return PyGtkStyleHelper_New(style, STYLE_GC_ARRAY, style->base_gc);
-    if (!strcmp(attr, "black_gc"))
-	return PyGdkGC_New(style->black_gc);
-    if (!strcmp(attr, "white_gc"))
-	return PyGdkGC_New(style->white_gc);
-    if (!strcmp(attr, "bg_pixmap"))
-	return PyGtkStyleHelper_New(style,STYLE_PIXMAP_ARRAY,style->bg_pixmap);
-    if (!strcmp(attr, "colormap")) {
-	if (style->colormap)
-	    return PyGdkColormap_New(style->colormap);
-	Py_INCREF(Py_None);
-	return Py_None;
-    }
-
-    return Py_FindMethod(PyGtkStyle_methods, (PyObject *)self, attr);
-}
-
-static int
-PyGtkStyle_SetAttr(PyGtkStyle_Object *self, char *key, PyObject *value)
-{
-    GtkStyle *style = self->obj;
-    if (!strcmp(key, "font")) {
-	if (PyGdkFont_Check(value)) {
-	    if (style->font)
-		gdk_font_unref(style->font);
-	    style->font = gdk_font_ref(PyGdkFont_Get(value));
-	} else {
-	    PyErr_SetString(PyExc_TypeError,
-			    "font attribute must be type GdkFont");
-	    return -1;
-	}
-    } else if (!strcmp(key, "black")) {
-	if (PyGdkColor_Check(value))
-	    style->black = *PyGdkColor_Get(value);
-	else {
-	    PyErr_SetString(PyExc_TypeError,
-			    "black attribute must be a GdkColor");
-	    return -1;
-	}
-    } else if (!strcmp(key, "white")) {
-	if (PyGdkColor_Check(value))
-	    style->white = *PyGdkColor_Get(value);
-	else {
-	    PyErr_SetString(PyExc_TypeError,
-			    "white attribute must be a GdkColor");
-	    return -1;
-	}
-    } else if (!strcmp(key, "black_gc")) {
-	if (PyGdkGC_Check(value)) {
-	    if (style->black_gc)
-		gdk_gc_unref(style->black_gc);
-	    style->black_gc = gdk_gc_ref(PyGdkGC_Get(value));
-	} else {
-	    PyErr_SetString(PyExc_TypeError,
-			    "black_gc attribute must be a GdkColor");
-	    return -1;
-	}
-    } else if (!strcmp(key, "white_gc")) {
-	if (PyGdkGC_Check(value)) {
-	    if (style->white_gc)
-		gdk_gc_unref(style->white_gc);
-	    style->white_gc = gdk_gc_ref(PyGdkGC_Get(value));
-	} else {
-	    PyErr_SetString(PyExc_TypeError,
-			    "white_gc attribute must be a GdkColor");
-	    return -1;
-	}
-    } else {
-	PyErr_SetString(PyExc_AttributeError, key);
-	return -1;
-    }
-    return 0;
-}
-
-PyTypeObject PyGtkStyle_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GtkStyle",
-    sizeof(PyGtkStyle_Object),
-    0,
-    (destructor)PyGtkStyle_Dealloc,
-    (printfunc)0,
-    (getattrfunc)PyGtkStyle_GetAttr,
-    (setattrfunc)PyGtkStyle_SetAttr,
-    (cmpfunc)PyGtkStyle_Compare,
-    (reprfunc)0,
-    0,
-    0,
-    0,
-    (hashfunc)PyGtkStyle_Hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
-
+#if 0
 static void
 PyGdkWindow_Dealloc(PyGdkWindow_Object *self)
 {
@@ -1380,9 +1176,8 @@ _pygtk_register_boxed_types(PyObject *moddict)
     PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type); \
     pyg_register_boxed_custom(tp, Py##x##_from_value, Py##x##_to_value)
 
-#if 0
-    register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
+#if 0
     register_tp(GdkWindow);
     register_tp(GdkGC);
     register_tp(GdkColormap);

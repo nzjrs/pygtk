@@ -37,4 +37,14 @@ typedef struct {
 
 void pygtk_custom_destroy_notify(gpointer user_data);
 
+/* helper object for the style helper */
+typedef struct {
+    PyObject_HEAD
+    GtkStyle *style; /* parent style */
+    enum {STYLE_COLOUR_ARRAY, STYLE_GC_ARRAY, STYLE_PIXMAP_ARRAY} type;
+    gpointer array;
+} PyGtkStyleHelper_Object;
+
+PyObject *_pygtk_style_helper_new(GtkStyle *style, int type, gpointer array);
+
 #endif

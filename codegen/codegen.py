@@ -493,14 +493,16 @@ def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
 
 def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
     getsets_name = string.lower(castmacro) + '_getsets'
-    funcprefix = '_wrap_' + string.lower(castmacro) + '__get_'
+    getterprefix = '_wrap_' + string.lower(castmacro) + '__get_'
+    setterprefix = '_wrap_' + string.lower(castmacro) + '__set_'
 
     # no overrides for the whole function.  If no fields, don't write a func
     if not objobj.fields:
         return '0'
     getsets = []
     for ftype, fname in objobj.fields:
-        funcname = funcprefix + fname
+        funcname = getterprefix + fname
+        settername = setterprefix + fname
         attrname = objobj.c_name + '.' + fname
         if overrides.attr_is_overriden(attrname):
             lineno, filename = overrides.getstartline(attrname)
@@ -508,8 +510,11 @@ def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
             fp.setline(lineno, filename)
             fp.write(code)
             fp.resetline()
-            getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
-                           (fixname(fname), funcname))
+            # if no setter was in the code block ...
+            if string.find(code, setterprefix + fname) < 0:
+                settername = '0'
+            getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
+                           (fixname(fname), funcname, settername))
             continue
         try:
             info = argtypes.WrapperInfo()
@@ -728,23 +733,28 @@ def write_boxed_getsets(parser, boxedobj, overrides, fp=sys.stdout):
     typecode = boxedobj.typecode
     uline = string.replace(typecode, '_TYPE_', '_', 1)
     getsets_name = string.lower(uline) + '_getsets'
-    funcprefix = '_wrap_' + string.lower(uline) + '__get_'
+    getterprefix = '_wrap_' + string.lower(uline) + '__get_'
+    setterprefix = '_wrap_' + string.lower(uline) + '__set_'
 
     if not boxedobj.fields:
         return '0'
 
     getsets = []
     for ftype, fname in boxedobj.fields:
-        funcname = funcprefix + fname
+        funcname = getterprefix + fname
         attrname = boxedobj.c_name + '.' + fname
+        settername = setterprefix + fname
         if overrides.attr_is_overriden(attrname):
             lineno, filename = overrides.getstartline(attrname)
             code = overrides.attr_override(attrname)
             fp.setline(lineno, filename)
             fp.write(code)
             fp.resetline()
-            getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
-                           (fixname(fname), funcname))
+            # if no setter was in the code block ...
+            if string.find(code, setterprefix + fname) < 0:
+                settername = '0'
+            getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
+                           (fixname(fname), funcname, settername))
             continue
         try:
             info =  argtypes.WrapperInfo()

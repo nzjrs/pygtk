@@ -1,3 +1,30 @@
+2002-03-10  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk-types.c: remove commented out GtkStyle code, as the
+	GObject based code now provides all the missing features.
+
+	* gtk/gtk.override: implement getters (and some setters) for
+	GtkStyle properties.
+
+	* gtk/gtk-types.c (_pygtk_style_helper_new): upgrade the style
+	helper code to work with gtk 2.0.
+
+	* gtk/gtk-types.defs (Style): add public fields of the GtkStyle
+	object.
+
+	* codegen/codegen.py (write_getsets): allow adding setters for
+	overriden properties (just do a string search for the setter
+	function prototype).
+	(write_boxed_getsets): same here.
+
+2002-02-19  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk-types.defs (MessageDialog): add some fields for the
+	label and icon.  These are marked private, but they are very
+	useful if you want to change the message in a dialog.
+
+	* ChangeLog: spell Michele's name correctly (sorry!).
+
 2002-03-06  Johan Dahlin  <jdahlin@telia.com>
 
 	* gtk/gtkmodule.c (init_gtk): If sys.argv is NULL, don't call
@@ -169,7 +196,7 @@
 	* examples/pygtk-demo/demos/dialogs.py:
 	* examples/pygtk-demo/demos/panes.py:
 	* examples/pygtk-demo/demos/sizegroup.py: add examples translated
-	by Michelle Campeotto.
+	by Michele Campeotto.
 
 	* gtk/gtk.override (_wrap_gtk_stock_add): add gtk.stock_add()
 	function from Skip (bug 68363).

@@ -25,7 +25,242 @@ import pango.Context as PyPangoContext_Type
 import pango.Font as PyPangoFont_Type
 import pango.Layout as PyPangoLayout_Type
 %%
-ignore gtk_selection_data_copy gtk_selection_data_free
+override-attr GtkStyle.fg
+static PyObject *
+_wrap_gtk_style__get_fg(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->fg);
+}
+%%
+override-attr GtkStyle.bg
+static PyObject *
+_wrap_gtk_style__get_bg(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->bg);
+}
+%%
+override-attr GtkStyle.light
+static PyObject *
+_wrap_gtk_style__get_light(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->light);
+}
+%%
+override-attr GtkStyle.dark
+static PyObject *
+_wrap_gtk_style__get_dark(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->dark);
+}
+%%
+override-attr GtkStyle.mid
+static PyObject *
+_wrap_gtk_style__get_mid(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->mid);
+}
+%%
+override-attr GtkStyle.text
+static PyObject *
+_wrap_gtk_style__get_text(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->text);
+}
+%%
+override-attr GtkStyle.base
+static PyObject *
+_wrap_gtk_style__get_base(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->base);
+}
+%%
+override-attr GtkStyle.text_aa
+static PyObject *
+_wrap_gtk_style__get_text_aa(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_COLOUR_ARRAY, style->text_aa);
+}
+%%
+override-attr GtkStyle.white
+static PyObject *
+_wrap_gtk_style__get_white(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return pyg_boxed_new(GDK_TYPE_COLOR, &style->white, TRUE, TRUE);
+}
+static int
+_wrap_gtk_style__set_white(PyGObject *self, PyObject *value, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    if (!pyg_boxed_check(value, GDK_TYPE_COLOR)) {
+	PyErr_SetString(PyExc_TypeError, "can only assign a GdkColor");
+	return -1;
+    }
+    style->white = *pyg_boxed_get(value, GdkColor);
+    return 0;
+}
+%%
+override-attr GtkStyle.black
+static PyObject *
+_wrap_gtk_style__get_black(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return pyg_boxed_new(GDK_TYPE_COLOR, &style->black, TRUE, TRUE);
+}
+static int
+_wrap_gtk_style__set_black(PyGObject *self, PyObject *value, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    if (!pyg_boxed_check(value, GDK_TYPE_COLOR)) {
+	PyErr_SetString(PyExc_TypeError, "can only assign a GdkColor");
+	return -1;
+    }
+    style->black = *pyg_boxed_get(value, GdkColor);
+    return 0;
+}
+%%
+override-attr GtkStyle.fg_gc
+static PyObject *
+_wrap_gtk_style__get_fg_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->fg_gc);
+}
+%%
+override-attr GtkStyle.bg_gc
+static PyObject *
+_wrap_gtk_style__get_bg_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->bg_gc);
+}
+%%
+override-attr GtkStyle.light_gc
+static PyObject *
+_wrap_gtk_style__get_light_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->light_gc);
+}
+%%
+override-attr GtkStyle.dark_gc
+static PyObject *
+_wrap_gtk_style__get_dark_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->dark_gc);
+}
+%%
+override-attr GtkStyle.mid_gc
+static PyObject *
+_wrap_gtk_style__get_mid_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->mid_gc);
+}
+%%
+override-attr GtkStyle.text_gc
+static PyObject *
+_wrap_gtk_style__get_text_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->text_gc);
+}
+%%
+override-attr GtkStyle.base_gc
+static PyObject *
+_wrap_gtk_style__get_base_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->base_gc);
+}
+%%
+override-attr GtkStyle.text_aa_gc
+static PyObject *
+_wrap_gtk_style__get_text_aa_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_GC_ARRAY, style->text_aa_gc);
+}
+%%
+override-attr GtkStyle.white_gc
+static PyObject *
+_wrap_gtk_style__get_white_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return pygobject_new((GObject *)style->white_gc);
+}
+static int
+_wrap_gtk_style__set_white_gc(PyGObject *self, PyObject *value, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    if (!pygobject_check(value, &PyGdkGC_Type)) {
+	PyErr_SetString(PyExc_TypeError, "can only assign a GdkGC");
+	return -1;
+    }
+    style->white_gc = GDK_GC(pygobject_get(value));
+    return 0;
+}
+%%
+override-attr GtkStyle.black_gc
+static PyObject *
+_wrap_gtk_style__get_black_gc(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return pygobject_new((GObject *)style->black_gc);
+}
+static int
+_wrap_gtk_style__set_black_gc(PyGObject *self, PyObject *value, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    if (!pygobject_check(value, &PyGdkGC_Type)) {
+	PyErr_SetString(PyExc_TypeError, "can only assign a GdkGC");
+	return -1;
+    }
+    style->black_gc = GDK_GC(pygobject_get(value));
+    return 0;
+}
+%%
+override-attr GtkStyle.bg_pixmap
+static PyObject *
+_wrap_gtk_style__get_bg_pixmap(PyGObject *self, void *closure)
+{
+    GtkStyle *style = GTK_STYLE(self->obj);
+
+    return _pygtk_style_helper_new(style, STYLE_PIXMAP_ARRAY, style->bg_pixmap);
+}
 %%
 override-attr GtkSelectionData.data
 static PyObject *
@@ -40,6 +275,8 @@ _wrap_gtk_selection_data__get_data(PyGObject *self, void *closure)
 	return Py_None;
     }
 }
+%%
+ignore gtk_selection_data_copy gtk_selection_data_free
 %%
 override gtk_selection_data_set kwargs
 static PyObject *
