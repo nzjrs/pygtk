@@ -43,6 +43,9 @@
     <methodparam><parameter role="keyword">settings</parameter></methodparam>
     <methodparam><parameter role="keyword">force_load</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--rc-reset-styles">gtk.rc_reset_styles</link></methodname>
+    <methodparam><parameter role="keyword">settings</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--rc-parse">gtk.rc_parse</link></methodname>
     <methodparam><parameter role="keyword">filename</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
@@ -734,6 +737,53 @@ object specified by <parameter>settings</parameter> if any of the files have
 changed and <parameter>force_load</parameter> is <literal>FALSE</literal>
 and . If <parameter>force_load</parameter> is <literal>TRUE</literal> the
 files are always reparsed.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--rc-reset-styles">
+      <title>gtk.rc_reset_styles</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.rc_reset_styles</methodname>
+    <methodparam><parameter role="keyword">settings</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">settings</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+object</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gtkstyle"><classname>gtk.Style</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.rc_reset_styles</function>() function returns
+a <link
+linkend="class-gtkstyle"><classname>gtk.Style</classname></link>. This
+function computes the styles for all widgets that use the <link
+linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+object specified by <parameter>settings</parameter>. (There is one <link
+linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+object per <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>, see
+the <link
+linkend="function-gtk--settings-get-for-screen"><function>gtk.settings_get_for_screen</function>()</link>
+function). It is useful when some global parameter has changed that affects
+the appearance of all widgets, because when a widget gets a new style, it
+will both redraw and recompute any cached information about its
+appearance. As an example, it is used when the default font size set by the
+operating system changes. Note that this function doesn't affect widgets
+that have a style set explicitly on them with the <link
+linkend="method-gtkwidget--set-style"><methodname>gtk.Widget.set_style</methodname>()</link>
+method.</para>
 
     </refsect2>
 
