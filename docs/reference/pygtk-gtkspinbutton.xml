@@ -194,13 +194,6 @@ button</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"snap-to-ticks"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, erroneous values are
-automatically changed to a spin button's nearest step increment</entry>
-	    </row>
-
-	    <row valign="top">
 	      <entry>"numeric"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, non-numeric characters
@@ -208,10 +201,10 @@ should be ignored</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"wrap"</entry>
+	      <entry>"snap-to-ticks"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, a spin button should wrap
-upon reaching its limits</entry>
+	      <entry>If <literal>TRUE</literal>, erroneous values are
+automatically changed to a spin button's nearest step increment</entry>
 	    </row>
 
 	    <row valign="top">
@@ -226,6 +219,13 @@ spin button should update only when the value is legal)</entry>
 	      <entry>"value"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>the current value</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"wrap"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, a spin button should wrap
+upon reaching its limits</entry>
 	    </row>
 
 	  </tbody>
@@ -1096,6 +1096,12 @@ method</simpara></listitem>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
 	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the input value was
+	  retrieved and handled; <literal>FALSE</literal> if not handled and
+	  -1 if an error occurred during processing.</simpara></listitem>
+	</varlistentry>
       </variablelist>
 
       <para>The "input" signal is emitted when the value changes. The
@@ -1132,11 +1138,17 @@ method</simpara></listitem>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
 	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if no further
+	  processing is required.</simpara></listitem>
+	</varlistentry>
       </variablelist>
 
       <para>The "output" signal is emitted when the spinbutton display value
 is changed either by setting a new value or changing the digits and on
-realizing the widget.</para>
+realizing the widget. Returns <literal>TRUE</literal> if the handler
+successfully set the text and no further processing is required.</para>
 
     </refsect2>
 
