@@ -255,6 +255,18 @@
   )
 )
 
+(define-function cursor_new_from_pixbuf
+  (is-constructor-of GdkCursor)
+  (c-name "gdk_cursor_new_from_pixbuf")
+  (return-type "GdkCursor*")
+  (parameters
+    '("GdkDisplay*" "display")
+    '("GdkPixbuf*" "source")
+    '("gint" "x")
+    '("gint" "y")
+  )
+)
+
 (define-method get_display
   (of-object "GdkCursor")
   (c-name "gdk_cursor_get_display")
@@ -311,7 +323,7 @@
   (c-name "gdk_display_pointer_ungrab")
   (return-type "none")
   (parameters
-    '("guint32" "time_")
+    '("guint32" "time_" (default "GDK_CURRENT_TIME"))
   )
 )
 
@@ -320,7 +332,7 @@
   (c-name "gdk_display_keyboard_ungrab")
   (return-type "none")
   (parameters
-    '("guint32" "time_")
+    '("guint32" "time_" (default "GDK_CURRENT_TIME"))
   )
 )
 
