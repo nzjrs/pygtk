@@ -45,12 +45,26 @@ def create_model ():
                    COLUMN_DESCRIPTION, item[3])
     return store
 
+def fixed_toggled (cell, path, model):
+    # get toggled iter
+    iter = model.get_iter (int (path))
+    fixed = model.get_value (iter, COLUMN_FIXED)
+    
+    # do something with the value
+    fixed = not fixed
+    
+    # set new value
+    model.set (iter, COLUMN_FIXED, fixed)
+	
 def add_columns (treeview):
     model = treeview.get_model ()
     
     # column for fixed toggles
     renderer = gtk.CellRendererToggle ()
+    renderer.connect ('toggled', fixed_toggled, model)
+    
     column = gtk.TreeViewColumn ('Fixed?', renderer, active=COLUMN_FIXED)
+    column.set_clickable (gtk.TRUE)
     
     # set this column to a fixed sizing (of 50 pixels)
     column.set_sizing (gtk.TREE_VIEW_COLUMN_FIXED)
