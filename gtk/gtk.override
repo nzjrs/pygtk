@@ -1959,13 +1959,19 @@ static PyObject *
 _wrap_gtk_input_add_full(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "source", "condition", "callback", NULL };
+    PyObject *py_source, *callback;
     int source;
     GdkInputCondition condition;
-    PyObject *callback;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iiO:input_add", kwlist,
-				     &source, &condition, &callback))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OiO:input_add", kwlist,
+				     &py_source, &condition, &callback))
         return NULL;
+    source = PyObject_AsFileDescriptor(py_source);
+    if (PyErr_Occurred()) {
+	PyErr_Clear();
+	PyErr_SetString(PyExc_TypeError, "1st arg not a file descriptor");
+	return NULL;
+    }
     if (!PyCallable_Check(callback)) {
         PyErr_SetString(PyExc_TypeError, "3rd arg not callable.");
         return NULL;
