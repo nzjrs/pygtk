@@ -3038,6 +3038,7 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
       *GTK_RETLOC_POINTER(*ret) = PyCObject_AsVoidPtr(py_ret);
     else
       *GTK_RETLOC_POINTER(*ret) = NULL;
+    break;
   default:
     g_assert_not_reached();
     break;
