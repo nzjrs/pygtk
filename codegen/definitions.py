@@ -265,7 +265,7 @@ class MethodDef(Definition):
         if dump:
             self.write_defs(sys.stderr)
 
-        if self.caller_owns_return is None:
+        if self.caller_owns_return is None and self.ret is not None:
             if self.ret[:6] == 'const-':
                 self.caller_owns_return = 0
             elif self.ret in ('char*', 'gchar*', 'string'):
@@ -358,7 +358,7 @@ class FunctionDef(Definition):
         if dump:
             self.write_defs(sys.stderr)
 
-        if self.caller_owns_return is None:
+        if self.caller_owns_return is None and self.ret is not None:
             if self.ret[:6] == 'const-':
                 self.caller_owns_return = 0
             elif self.is_constructor_of:

@@ -81,12 +81,14 @@ EXTRA_DIST += \
   examples/pygtk-demo/demos/appwindow.py \
   examples/pygtk-demo/demos/buttonbox.py \
   examples/pygtk-demo/demos/colorsel.py \
-  examples/pygtk-demo/demos/draw.py \
+  examples/pygtk-demo/demos/dialogs.py \
   examples/pygtk-demo/demos/dndpixmap.py \
   examples/pygtk-demo/demos/dnd.py \
   examples/pygtk-demo/demos/itemfactory.py \
   examples/pygtk-demo/demos/list_store.py \
   examples/pygtk-demo/demos/menu.py \
+  examples/pygtk-demo/demos/panes.py \
+  examples/pygtk-demo/demos/sizegroup.py \
   examples/pygtk-demo/demos/toolbar.py \
   examples/pygtk-demo/demos/treemodel.py \
   examples/ide/gtkcons.py \
@@ -112,12 +114,6 @@ EXTRA_DIST += \
   examples/simple/dnd.py \
   examples/simple/dndpixmap.py \
   examples/simple/README \
-  examples/pygtk-demo/pygtk-demo.py \
-  examples/pygtk-demo/demos/__init__.py \
-  examples/pygtk-demo/demos/dnd.py \
-  examples/pygtk-demo/demos/dndpixmap.py \
-  examples/pygtk-demo/demos/menu.py \
-  examples/pygtk-demo/demos/treemodel.py \
   examples/neil/TAppli.py \
   examples/neil/TAppli2.py \
   examples/neil/TAppli3.py \
