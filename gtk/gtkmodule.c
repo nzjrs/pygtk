@@ -28,6 +28,13 @@ static struct _PyGtk_FunctionStruct functions = {
     &PyGdkAtom_Type,  PyGdkAtom_New,
 };
 
+static void
+pygtk_main_quit(void)
+{
+    if (gtk_main_level())
+	gtk_main_quit();
+} 
+
 DL_EXPORT(void)
 init_gtk(void)
 {
@@ -35,7 +42,9 @@ init_gtk(void)
     PyObject *av;
     int argc, i;
     char **argv;
-
+    GSList *stock_ids, *cur;
+    char buf[128];
+ 
     /* initialise gobject */
     init_pygobject();
 
@@ -45,6 +54,23 @@ init_gtk(void)
      * safety functions */
     g_thread_init(NULL);
 #endif
+
+    m = PyImport_ImportModule("os");
+    if (m == NULL) {
+	Py_FatalError("couldn't import os");
+	return;
+    }
+    d = PyModule_GetDict(m);
+    Py_DECREF(m);
+    d = PyDict_GetItemString(d, "environ");
+    d = PyMapping_GetItemString(d, "PYGTK_FATAL_EXCEPTIONS");
+    if (d == NULL)
+	PyErr_Clear();
+    else {
+	PyGtk_FatalExceptions = TRUE;
+	pyg_fatal_exceptions_notify_add(pygtk_main_quit);
+	Py_DECREF(d);
+    }
 
     /* set the default python encoding to utf-8 */
     PyUnicode_SetDefaultEncoding("utf-8");
@@ -83,6 +109,34 @@ init_gtk(void)
     PyDict_SetItemString(d, "_PyGtk_API",
 			 PyCObject_FromVoidPtr(&functions, NULL));
 
+    stock_ids = gtk_stock_list_ids();
+    strcpy(buf, "STOCK_");
+    for (cur = stock_ids; cur; cur = stock_ids) {
+	char *ctmp;
+	PyObject *obj;
+	int i;
+	
+	ctmp = cur->data;
+	if(strncmp(ctmp, "gtk-", 4))
+	    continue;
+	ctmp += 4;
+	
+	strcpy(buf + sizeof("STOCK"), ctmp);
+	ctmp = buf + sizeof("STOCK");
+	for (i = 0; ctmp[i]; i++) {
+		if (ctmp[i] == '-')
+		    ctmp[i] = '_';
+		else if (ctmp[i] >= 'a' && ctmp[i] <= 'z')
+		    ctmp[i] -= 'a'-'A';
+	}
+	
+	obj = PyString_FromString(cur->data);
+	PyDict_SetItemString(d, buf, obj);
+	Py_DECREF(obj);
+	g_free(cur->data);
+	stock_ids = cur->next;
+	g_slist_free_1(cur);
+    }
     /* namespace all the gdk stuff in gtk.gdk ... */
     m = Py_InitModule("gtk.gdk", pygdk_functions);
     d = PyModule_GetDict(m);

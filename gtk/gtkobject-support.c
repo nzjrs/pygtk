@@ -79,6 +79,17 @@ pygtk_destroy_notify(gpointer user_data)
     PyGTK_UNBLOCK_THREADS
 }
 
+void
+pygtk_custom_destroy_notify(gpointer user_data)
+{
+    PyGtkCustomNotify *cunote = user_data;
+
+    PyGTK_BLOCK_THREADS
+    Py_XDECREF(cunote->func);
+    Py_XDECREF(cunote->data);
+    PyGTK_UNBLOCK_THREADS
+    g_free(cunote);
+}
 
 /* used for timeout and idle functions */
 void
@@ -135,5 +146,67 @@ pygtk_input_marshal(gpointer a, PyObject *func, int nargs, GtkArg *args)
     PyGTK_UNBLOCK_THREADS
 }
 
+void
+pygtk_tree_foreach_marshal(GtkTreeModel *model,
+			   GtkTreePath *path,
+			   GtkTreeIter *iter,
+			   gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *pypath, *retobj;
 
+    g_assert(cunote->func);
+    
+    PyGTK_BLOCK_THREADS
+    
+    pypath = pygtk_tree_path_to_pyobject(path);
+    if (cunote->data)
+	retobj = PyEval_CallFunction(cunote->func, "(OO)", pypath,
+				     cunote->data);
+    else
+	retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+    Py_DECREF(pypath);
+    Py_XDECREF(retobj);
+
+    PyGTK_UNBLOCK_THREADS
+}
+
+gboolean
+pygtk_tree_selection_marshal(GtkTreeSelection *selection,
+			     GtkTreeModel *model,
+			     GtkTreePath *path,
+			     gboolean path_currently_selected,
+			     gpointer data)
+{
+    gboolean retval = FALSE;
+    PyGtkCustomNotify *cunote = data;
+    PyObject *pypath, *retobj;
+    
+    g_assert(cunote->func);
+    
+    PyGTK_BLOCK_THREADS
+    
+    pypath = pygtk_tree_path_to_pyobject(path);
+    if (cunote->data)
+	retobj = PyEval_CallFunction(cunote->func, "(OO)", pypath,
+				     cunote->data);
+    else
+	retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+    Py_DECREF(pypath);
+    if (retobj) {
+	if(retobj == Py_None);
+	else if(PyInt_Check(retobj))
+	    retval = PyInt_AsLong(retobj) && TRUE;
+	else if(PyLong_Check(retobj))
+	    retval = PyLong_AsLongLong(retobj) && TRUE;
+	else if(PyString_Check(retobj))
+	    retval = PyString_GET_SIZE(retobj) && TRUE;
+	
+	Py_DECREF(retobj);
+    }
+    
+    PyGTK_UNBLOCK_THREADS
+    
+    return retval;
+}
 

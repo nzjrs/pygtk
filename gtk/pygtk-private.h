@@ -39,4 +39,20 @@ GdkAtom pygdk_atom_from_pyobject(PyObject *object);
 
 static gboolean PyGtk_FatalExceptions = FALSE;
 
+typedef struct {
+    PyObject *func, *data;
+} PyGtkCustomNotify;
+
+void pygtk_custom_destroy_notify(gpointer user_data);
+
+gboolean pygtk_tree_selection_marshal(GtkTreeSelection  *selection,
+				      GtkTreeModel *model,
+				      GtkTreePath *path,
+				      gboolean path_currenly_selected,
+				      gpointer data);
+void pygtk_tree_foreach_marshal(GtkTreeModel *model,
+				GtkTreePath *path,
+				GtkTreeIter *iter,
+				gpointer data);
+ 
 #endif

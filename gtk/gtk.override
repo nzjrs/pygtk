@@ -1415,6 +1415,50 @@ _wrap_gtk_tree_selection_get_selected(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
+override gtk_tree_selection_selected_foreach
+static PyObject *
+_wrap_gtk_tree_selection_selected_foreach(PyGObject *self, PyObject *args)
+{
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify cunote;
+    
+    if(!PyArg_ParseTuple(args, "O|O:GtkTreeSelection.selected_foreach",
+			 &pyfunc, &pyarg))
+	return NULL;
+    
+    cunote.func = pyfunc;
+    cunote.data = pyarg;
+    pygtk_unblock_threads();
+    gtk_tree_selection_selected_foreach(GTK_TREE_SELECTION(self->obj),
+					pygtk_tree_foreach_marshal, &cunote);
+    pygtk_block_threads();
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_selection_set_select_function
+static PyObject *
+_wrap_gtk_tree_selection_set_select_function(PyGObject *self, PyObject *args)
+{
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+    
+    if(!PyArg_ParseTuple(args, "O|O:GtkTreeSelection.set_select_function",
+			 &pyfunc, &pyarg))
+	return NULL;
+    
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    Py_XINCREF(cunote->func = pyfunc);
+    Py_XINCREF(cunote->data = pyarg);
+    gtk_tree_selection_set_select_function(GTK_TREE_SELECTION(self->obj),
+					   pygtk_tree_selection_marshal,
+					   cunote,
+					   pygtk_custom_destroy_notify);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_binding_entry_add_signal
 
 static PyObject *

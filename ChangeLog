@@ -1,5 +1,38 @@
 2001-11-15  Matt Wilson  <msw@redhat.com>
 
+	* pygobject.h: added PyGFatalExceptionFunc typedef, API wrapper
+	for pyg_fatal_exceptions_{add,remove}.
+
+	* gobjectmodule.c (pyg_boxed_new): return NULL on assertion
+	failures, #62814
+	(pyg_closure_new): actually assign swap_data to the closure.
+	(pyg_fatal_exceptions_notify, pyg_fatal_exceptions_notify_add,
+	pyg_fatal_exceptions_remove): added mechanism for gobjectmodule using
+	modules to get a function called when a fatal exception happens in
+	closures, etc.
+	(pyg_closure_marshal, pyg_signal_class_closure_marshal): return
+	NULL if a gobjectmodule using module registered a fatal exception
+	function.
+
+	* gtk/pygtk-private.h: added declarations for
+	pygtk_custom_destroy_notify, pygtk_tree_selection_marshal,
+	pygtk_tree_foreach_marshal.  Added typedef for
+	PyGtkCustomNotify. #62814
+
+	* gtk/gtkmodule.c (init_gtk): register stock items, #62814.  Set
+	up fatal exception stuff if PYGTK_FATAL_EXCEPTIONS is set.  This
+	isn't 100% done yet, gtk mainloop specific functions still need
+	work.
+
+	* gtk/gtk.override (_wrap_gtk_tree_selection_set_select_function):
+	added, #62814
+	(_wrap_gtk_tree_selection_selected_foreach): added, #62814
+
+	* gtk/gtkobject-support.c (pygtk_tree_selection_marshal): added,
+	#62814
+	(pygtk_tree_foreach_marshal): added, #62814
+	(pygtk_custom_destroy_notify): added, #62814
+
 	* gtk/gtk.override (_wrap_gtk_widget_path): added, #62393
 	(_wrap_gtk_widget_class_path): added, #62393
 
