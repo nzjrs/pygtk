@@ -3984,7 +3984,8 @@ _wrap_gdk_window_set_user_data(PyGObject *self, PyObject *args, PyObject *kwargs
     if (pygobject_check(user_data, &PyGtkWidget_Type))
 	gdk_window_set_user_data(GDK_WINDOW(self->obj), GTK_WIDGET(user_data->obj));
     else {
-	PyErr_SetString(PyExc_ValueError, "Only GtkWidgets are allowed as user data. Maybe you want to use GObject.set_data()");
+	PyErr_SetString(PyExc_TypeError, "Only GtkWidgets are allowed as user data."
+                        " Maybe you want to use GObject.set_data()");
 	return NULL;
     }
 	
