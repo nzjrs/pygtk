@@ -59,6 +59,18 @@ linkend="method-gtkselectiondata--tree-get-row-drag-data">tree_get_row_drag_data
       </methodsynopsis>
     </classsynopsis>
 
+    <programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--selection-owner-set-for-display">gtk.selection_owner_set_for_display</link></methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+	<methodparam><parameter role="keyword">widget</parameter></methodparam>
+	<methodparam><parameter role="keyword">selection</parameter></methodparam>
+	<methodparam><parameter role="keyword">time</parameter><initializer>0</initializer></methodparam>
+      </methodsynopsis>
+</programlisting>
+
   </refsect1>
 
   <refsect1>
@@ -347,6 +359,68 @@ pointer to the tree model is being passed around. In the "<link
 linkend="signal-gtkwidget--drag-data-received">drag-data-received</link>"
 signal handler, you can assume that selection data of type
 <literal>"GTK_TREE_MODEL_ROW"</literal> is from the current process.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gtk--selection-owner-set-for-display">
+      <title>gtk.selection_owner_set_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.selection_owner_set_for_display</methodname>
+	  <methodparam><parameter
+			 role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">widget</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">selection</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">time</parameter><initializer>0</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara> the <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+	  where the selection is set</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new selection owner (a <link
+	  linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>),
+	  or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">selection</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>
+	  or string representing a selection target</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">time</parameter>&nbsp;:</term>
+	  <listitem><simpara>the timestamp used to claim the
+	  selection</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the operation
+	  succeeded</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.selection_owner_set_for_display</function>()
+function claims ownership of the selection specified by
+<parameter>selection</parameter> for the widget specified by
+<parameter>widget</parameter> on the <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by <parameter>display</parameter>. If
+<parameter>widget</parameter> is <literal>None</literal>, the ownership of
+the selection is released.</para>
 
     </refsect2>
 
