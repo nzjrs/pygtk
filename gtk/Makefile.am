@@ -32,6 +32,7 @@ glademodule_la_SOURCES = \
   libglade.c
 
 pkginclude_HEADERS = pygtk.h
+pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 
 # chmod hack here is because automake guys decided distdir should be
 # read only for the next version :(
