@@ -1,5 +1,37 @@
 2005-01-09  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* gobject/pygobject.h, gobject/pygobject-private.h: Define
+	pyg_threads_enabled as PyEval_ThreadsInitialized() on Python 2.4,
+	so that it is no longer required to call gobject.threads_init on
+	that platform.  Also define pyg_begin|end_allow_threads as
+	Py_BEGIN|END_ALLOW_THREADS, since these functions are rarely
+	invoked, thus represent a minimal overhead.
+
+	* gobject/gobjectmodule.c (pyg_type_register): Return the type
+	being registered, to make gobject.type_register usable as Python
+	2.4 @decorator.
+
+	* codegen/codegen.py (Wrapper.write_constructor): Move writing of
+	pygobject_no_constuctor to the new methods
+	write_default_constructor (when no constructor is declared in the
+	.defs) and write_noconstructor (when a constructor is declared but
+	could not be generated).
+	(GObjectWrapper.write_default_constructor): Override to return
+	'0'.  This makes the constructor for GObjects become
+	GObject.__init__ by default, unless there is a constructor
+	function in the .defs and it could not be generated for some
+	reason.
+
+	* gtk/pygtkcellrenderer.c (pygtk_generic_cell_renderer_new):
+	Deprecate GtkGenericCellRenderer, since all virtual methods of
+	GtkCellRenderer are now supported.
+
+	* gtk/gtk.override (_wrap_GtkCellRenderer__proxy_do_get_size):
+	Override, implementation copied from PyGtkGenericCellRenderer,
+	with minor adjustments/fixes.
+
+2005-01-09  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
 	* gobject/gobjectmodule.c (pyg_type_register): Look for
 	GInterface's among tb_bases and register implementation support
 	for them.

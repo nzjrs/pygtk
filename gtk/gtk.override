@@ -6866,3 +6866,55 @@ _wrap_gtk_about_dialog_set_url_hook(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override GtkCellRenderer__proxy_do_get_size
+static void
+_wrap_GtkCellRenderer__proxy_do_get_size (GtkCellRenderer *cell,
+                                          GtkWidget       *widget,
+                                          GdkRectangle    *cell_area,
+                                          gint            *x_offset,
+                                          gint            *y_offset,
+                                          gint            *width,
+                                          gint            *height)
+{
+    PyGILState_STATE state;
+    PyObject *self, *py_ret, *py_widget, *py_cell_area;
+    gint my_x, my_y, my_width, my_height;
+
+    state = pyg_gil_state_ensure();
+    self = pygobject_new((GObject *)cell);
+    py_widget = pygobject_new((GObject *)widget);
+    py_cell_area = pyg_boxed_new(GDK_TYPE_RECTANGLE, cell_area, TRUE, TRUE);
+
+    py_ret = PyObject_CallMethod(self, "do_get_size", "OO",
+				 py_widget, py_cell_area);
+    if (!py_ret) {
+	PyErr_Print();
+	Py_DECREF(py_widget);
+	Py_DECREF(py_cell_area);
+	pyg_gil_state_release(state);
+	return;
+    }
+    Py_DECREF(py_widget);
+    Py_DECREF(py_cell_area);
+
+    if (!PyArg_ParseTuple(py_ret, "iiii",
+			  &my_x, &my_y, &my_width, &my_height)) {
+	PyErr_Print();
+	Py_DECREF(py_ret);
+	pyg_gil_state_release(state);
+	return;
+    }
+
+    pyg_gil_state_release(state);
+
+    /* success */
+    if (x_offset)
+	*x_offset = my_x;
+    if (y_offset)
+	*y_offset = my_y;
+    if (width)
+	*width = my_width;
+    if (height)
+	*height = my_height;
+}

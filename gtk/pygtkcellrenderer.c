@@ -320,6 +320,9 @@ pygtk_generic_cell_renderer_start_editing (GtkCellRenderer      *cell,
 GtkCellRenderer *
 pygtk_generic_cell_renderer_new(void)
 {
+    if (PyErr_Warn(PyExc_DeprecationWarning,
+                   "subclass gtk.CellRenderer and override do_xxx methods") < 0)
+        return NULL;
     return GTK_CELL_RENDERER(
         g_object_new(PYGTK_TYPE_GENERIC_CELL_RENDERER, NULL));
 }

@@ -356,18 +356,21 @@ class Wrapper:
             except:
                 sys.stderr.write('Could not write constructor for %s: %s\n' 
                                  % (self.objinfo.c_name, exc_info()))
-                # this is a hack ...
-                if not hasattr(self.overrides, 'no_constructor_written'):
-                    self.fp.write(self.noconstructor)
-                    self.overrides.no_constructor_written = 1
-                initfunc = 'pygobject_no_constructor'
+                initfunc = self.write_noconstructor()
         else:
-            # this is a hack ...
-            if not hasattr(self.overrides, 'no_constructor_written'):
-                self.fp.write(self.noconstructor)
-                self.overrides.no_constructor_written = 1
-            initfunc = 'pygobject_no_constructor'
+            initfunc = self.write_default_constructor()
         return initfunc
+
+    def write_noconstructor(self):
+        # this is a hack ...
+        if not hasattr(self.overrides, 'no_constructor_written'):
+            self.fp.write(self.noconstructor)
+            self.overrides.no_constructor_written = 1
+        initfunc = 'pygobject_no_constructor'
+        return initfunc
+
+    def write_default_constructor(self):
+        return self.write_noconstructor()
 
     def get_methflags(self, funcname):
         if self.overrides.wants_kwargs(funcname):
@@ -723,6 +726,9 @@ class GObjectWrapper(Wrapper):
         substdict = Wrapper.get_initial_method_substdict(self, method)
         substdict['cast'] = string.replace(self.objinfo.typecode, '_TYPE_', '_', 1)
         return substdict
+
+    def write_default_constructor(self):
+        return '0'
 
     def write_property_based_constructor(self, constructor):
         out = self.fp
