@@ -2996,3 +2996,14 @@ _wrap_gdk_window_get_frame_extents(PyGObject *self)
 
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &rect, TRUE, TRUE);
 }
+%%
+override gdk_window_get_decorations noargs
+static PyObject *
+_wrap_gdk_window_get_decorations(PyGObject *self)
+{
+    GdkWMDecoration decor = 0; 
+
+    gdk_window_get_decorations(GDK_WINDOW(self->obj), &decor);
+
+    return PyInt_FromLong(decor);
+}
