@@ -6923,7 +6923,10 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "drag-begin" signal is emitted when the user initiates a
-drag operation on <parameter>widget</parameter>.</para>
+drag operation on <parameter>widget</parameter>. A typical reason to connect
+to this signal is to set up a custom drag icon with the <link
+linkend="method-gtkwidget--drag-source-set-icon"><methodname>drag_source_set_icon</methodname>()</link>
+method.</para>
 
     </refsect2>
 
@@ -6964,7 +6967,8 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "drag-data-delete" signal is emitted when the drag completes
-a move operation and requires the source data to be deleted.</para>
+a move operation and requires the source data to be deleted. The signal
+handler is responsible for deleting the data that has been dropped.</para>
 
     </refsect2>
 
@@ -7021,7 +7025,13 @@ any)</simpara></listitem>
 
       <para>The "drag-data-get" signal is emitted when a drag operation
 completes that copies data or when a drag drop occurs using the
-<literal>gtk.gdk.DRAG_PROTO_ROOTWIN</literal> protocol.</para>
+<literal>gtk.gdk.DRAG_PROTO_ROOTWIN</literal> protocol. The drag source
+rev=ceives this signal when the drag destination requests the data using the
+<link
+linkend="method-gtkwidget--drag-get-data"><methodname>drag_get_data</methodname>()</link>
+method. The handler needs to fill <parameter>selection_data</parameter> with
+the data in the format specified by the target associated with
+<parameter>info</parameter>.</para>
 
     </refsect2>
 
@@ -7089,7 +7099,17 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "drag-data-received" signal is emitted when the drag
-destination receives the data from the drag operation.</para>
+destination receives the data from the drag operation. If the data was
+received in order to determine whether the drop will be accepted, the
+handler is expected to call the <link
+linkend="method-gdkdragcontext--drag-status"><methodname>gtk.gdk.DragContext.drag_status</methodname>()</link>
+method and not finish the drag. If the data was received in response to a
+"drag-drop" signal (and this is the last target to be received), the handler
+for this signal is expected to process the received data and then call the
+<link
+linkend="method-gdkdragcontext--finish"><methodname>gtk.gdk.DragContext.finish</methodname>()</link>
+method, setting the <parameter>success</parameter> parameter to
+<literal>TRUE</literal> if the data was processed successfully.</para>
 
     </refsect2>
 
@@ -7150,7 +7170,20 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "drag-drop" signal is emitted when the drag initiates a drop
-operation on a destination widget.</para>
+operation on the destination <parameter>widget</parameter>. The signal
+handler must determine whether the cursor position is in a drop zone or
+not. If it is not in a drop zone, it returns <literal>FALSE</literal> and no
+further processing is necessary. Otherwise, the handler returns
+<literal>TRUE</literal>. In this case, the handler must ensure that the
+<link
+linkend="method-gdkdragcontext--finish"><methodname>gtk.gdk.DragContext.finish</methodname>()</link>
+method is called to let the source know that the drop is done. The call to
+the <link
+linkend="method-gdkdragcontext--finish"><methodname>gtk.gdk.DragContext.finish</methodname>()</link>
+method can be done either directly or in a "drag-data-received" handler that
+gets triggered by calling the <link
+linkend="method-gtkwidget--drop-get-data"><methodname>drop_get_data</methodname>()</link>
+method to receive the data for one or more of the supported targets.</para>
 
     </refsect2>
 
@@ -7191,7 +7224,8 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "drag-end" signal is emitted when the drag operation is
-completed.</para>
+completed. A typical reason to connect to this signal is to undo things done
+in a "drag-begin" handler.</para>
 
     </refsect2>
 
@@ -7237,7 +7271,11 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "drag-leave" signal is emitted when the drag operation moves
-off of a drop target widget.</para>
+off of a drop target widget. A typical reason to connect to this signal is
+to undo things done in a "drag-motion" handler, e.g. undo highlighting with
+the <link
+linkend="method-gtkwidget--drag-unhighlight"><methodname>drag_unhighlight</methodname>()</link>
+method.</para>
 
     </refsect2>
 
@@ -7298,7 +7336,29 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "drag-motion" signal is emitted when the drag operation
-moves over a drop target widget.</para>
+moves over a drop target widget. The signal handler must determine if the
+cursor position is in a drop zone or not. If it is not in a drop zone, it
+should return <literal>FALSE</literal> and no further processing is
+necessary. Otherwise, the handler should return <literal>TRUE</literal>. In
+this case, the handler is responsible for providing the necessary
+information for displaying feedback to the user, by calling the <link
+linkend="method-gdkdragcontext--drag-status"><methodname>gtk.gdk.DragContext.drag_status</methodname>()</link>
+method. If the decision to accept or reject the drop can't be made based
+solely on the cursor position and the type of the data, the handler may
+inspect the dragged data by calling the gtkWidget.drag_get_data() method and
+defer the <link
+linkend="method-gdkdragcontext--drag-status"><methodname>gtk.gdk.DragContext.drag_status</methodname>()</link>
+method call to the "drag-data-received" handler.</para>
+
+      <note>
+        <para>There is no "drag-enter" signal. The drag receiver has to keep
+track of any "drag-motion" signals received since the last "drag-leave"
+signal. The first "drag-motion" signal received after a "drag_leave" signal
+should be treated as an "enter" signal. Upon an "enter", the handler will
+typically highlight the drop site with the <link
+linkend="method-gtkwidget--drag-highlight"><methodname>drag_highlight</methodname>()</link>
+method.</para>
+      </note>
 
     </refsect2>
 
