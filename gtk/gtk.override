@@ -5950,14 +5950,27 @@ _wrap_gtk_text_buffer_create_tag(PyGObject *self, PyObject *args, PyObject *kwar
     static char *kwlist[] = { "tag_name", NULL };
     gchar *tag_name;
     GtkTextTag *tag;
-
+    GtkTextTagTable *table;
+    
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "s:GtkTextBuffer.create_tag", kwlist,
 				     &tag_name))
 	return NULL;
+        
+    table = GTK_TEXT_TAG_TABLE(GTK_TEXT_BUFFER(self->obj)->tag_table);
+    if (tag_name && table && g_hash_table_lookup(table->hash, tag_name)) {
+	gchar buf[512];
+	g_snprintf(buf, sizeof(buf),
+                   "A tag named '%s' is already in the tag table",
+		   tag_name);
+	
+	PyErr_SetString(PyExc_TypeError, buf);
+	return NULL;
+    }
+        
     tag = gtk_text_buffer_create_tag(GTK_TEXT_BUFFER(self->obj),
 				     tag_name, NULL);
-     return pygobject_new((GObject *)tag);
+    return pygobject_new((GObject *)tag);
 }
 %%
 override gtk_text_buffer_get_iter_at_line_offset kwargs
