@@ -3,6 +3,10 @@ pygtk.require('2.0')
 
 import gtk
 
+if gtk.pygtk_version < (2,3,90):
+   print "PyGtk 2.3.90 or later required for this example"
+   raise SystemExit
+
 dialog = gtk.FileChooserDialog("Open..",
                                None,
                                gtk.FILE_CHOOSER_ACTION_OPEN,
