@@ -590,18 +590,27 @@ override gtk_container_children noargs
 static PyObject *
 _wrap_gtk_container_children(PyGObject *self)
 {
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use GtkContainer.get_children"))
+	return NULL;
+    return _wrap_gtk_container_get_children(self);
+}
+%%
+override gtk_container_get_children noargs
+static PyObject *
+_wrap_gtk_container_get_children(PyGObject *self)
+{
     GList *list, *tmp;
     PyObject *py_list;
-    PyObject *gtk_obj;
 
-    list = gtk_container_children(GTK_CONTAINER(self->obj));
+    list = gtk_container_get_children(GTK_CONTAINER(self->obj));
 
     if ((py_list = PyList_New(0)) == NULL) {
 	g_list_free(list);
 	return NULL;
     }
     for (tmp = list; tmp != NULL; tmp = tmp->next) {
-	gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+	PyObject *gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+
 	if (gtk_obj == NULL) {
 	    g_list_free(list);
 	    Py_DECREF(py_list);
@@ -612,6 +621,78 @@ _wrap_gtk_container_children(PyGObject *self)
     }
     g_list_free(list);
     return py_list;
+}
+%%
+override gtk_container_set_focus_chain kwargs
+static PyObject *
+_wrap_gtk_container_set_focus_chain(PyGObject *self, PyObject *args,
+				    PyObject *kwargs)
+{
+    static char *kwlist[] = { "focusable_widgets", NULL };
+    PyObject *py_focusable_widgets;
+    gint len, i;
+    GList *focusable_widgets = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkContainer.set_focus_chain", kwlist,
+				     &py_focusable_widgets))
+	return NULL;
+    if (!PySequence_Check(py_focusable_widgets)) {
+	PyErr_SetString(PyExc_TypeError,
+			"focusable_widgets must be a sequence");
+	return NULL;
+    }
+    len = PySequence_Length(py_focusable_widgets);
+    for (i = 0; i < len; i++) {
+	PyObject *item = PySequence_GetItem(py_focusable_widgets, i);
+
+	if (!pygobject_check(item, &PyGtkWidget_Type)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "focusable_widgets members must be GtkWidgets");
+	    Py_DECREF(item);
+	    return NULL;
+	}
+	focusable_widgets = g_list_prepend(focusable_widgets,
+					   pygobject_get(item));
+	Py_DECREF(item);
+    }
+    focusable_widgets = g_list_reverse(focusable_widgets);
+    gtk_container_set_focus_chain(GTK_CONTAINER(self->obj), focusable_widgets);
+    g_list_free(focusable_widgets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_container_get_focus_chain noargs
+static PyObject *
+_wrap_gtk_container_get_focus_chain(PyGObject *self)
+{
+    GList *list = NULL;
+
+    if (gtk_container_get_focus_chain(GTK_CONTAINER(self->obj), &list)) {
+	PyObject *py_list;
+	GList *tmp;
+
+	if ((py_list = PyList_New(0)) == NULL) {
+	    g_list_free(list);
+	    return NULL;
+	}
+	for (tmp = list; tmp != NULL; tmp = tmp->next) {
+	    PyObject *gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+
+	    if (gtk_obj == NULL) {
+		g_list_free(list);
+		Py_DECREF(py_list);
+		return NULL;
+	    }
+	    PyList_Append(py_list, gtk_obj);
+	    Py_DECREF(gtk_obj);
+	}
+	g_list_free(list);
+	return py_list;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 %%
 override gtk_label_get noargs
@@ -5286,6 +5367,17 @@ _wrap_gtk_misc_get_alignment(PyGObject *self)
 Py_BuildValue("(ff)", xalign, yalign);
 }
 %%
+override gtk_misc_get_padding noargs
+static PyObject *
+_wrap_gtk_misc_get_padding(PyGObject *self)
+{
+    gint xpad, ypad;
+
+    gtk_misc_get_padding(GTK_MISC(self->obj), &xpad, &ypad);
+    return 
+Py_BuildValue("(dd)", xpad, ypad);
+}
+%%
 override gtk_ruler_get_range noargs
 static PyObject *
 _wrap_gtk_ruler_get_range(PyGObject *self)
@@ -5357,4 +5449,3 @@ _wrap_gtk_im_context_get_surrounding(PyGObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
-%%
