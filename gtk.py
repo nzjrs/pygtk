@@ -30,10 +30,7 @@ pygtk_version = _gtk.pygtk_version
 _gtk.gtk_set_locale()
 
 # initialise GTK (only if it can find the display -- this avoids segfaults)
-if '--display' in sys.argv or os.environ.has_key('DISPLAY'):
-	_gtk.gtk_init()
-else:
-	print 'No display information -- gtk_init not called'
+_gtk.gtk_init()
 del sys, os
 
 def GdkColor(red, green, blue, pixel=-1):
