@@ -1,14 +1,17 @@
 %define py_prefix /usr
 # py_ver should only be 3 characters (1.5.1 == 1.5)
 %define py_ver 1.5
-%define ver 0.6.1
+%define ver 0.6.2
+
+# you may want to remove some of the sub packages depending on what you
+# have installed on your system when building this package.
 
 Summary: Python bindings for the GTK+ widget set.
 Name: pygtk
 Version: %ver
 Release: 1
 Copyright: GPL
-Group: X11/Libraries
+Group: Development/Languages
 Source: ftp://ftp.daa.com.au/pub/james/python/pygtk-%{ver}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
@@ -19,9 +22,27 @@ PyGTK is an extension module for python that gives you access to the GTK+
 widget set.  Just about anything you can write in C with GTK+ you can write
 in python with PyGTK (within reason), but with all of python's benefits.
 
+%package glarea
+Summary: A wrapper for the GtkGLArea widget for use with PyGTK
+Group: Development/Languages
+
+%description glarea
+This module contains a wrapper for the GtkGLArea widget, which allows you
+to display OpenGL output inside your pygtk program.  It needs a set of
+Python OpenGL bindings such as PyOpenGL to actually do any OpenGL rendering.
+
+%package libglade
+Summary: A wrapper for the libglade library for use with PyGTK
+Group: Development/Languages
+
+%description libglade
+This module contains a wrapper for the libglade library.  Libglade is a
+library similar to the pyglade module, except that it is written in C (so
+is faster) and is more complete.
+
 %prep
 %setup
-./configure
+./configure --prefix=%{py_prefix}
 
 %build
 make
@@ -42,6 +63,15 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{py_prefix}/lib/python%{py_ver}/site-packages/_gtkmodule.so
 %{py_prefix}/lib/python%{py_ver}/site-packages/_gdkimlibmodule.so
 
+%{py_prefix}/include/pygtk
+
 %doc AUTHORS NEWS README MAPPING ChangeLog description.py
 %doc examples
 
+%files glarea
+%{py_prefix}/lib/python%{py_ver}/site-packages/gtkgl.py*
+%{py_prefix}/lib/python%{py_ver}/site-packages/_gtkglmodule.so
+
+%files libglade
+%{py_prefix}/lib/python%{py_ver}/site-packages/libglade.py*
+%{py_prefix}/lib/python%{py_ver}/site-packages/_libglademodule.so
