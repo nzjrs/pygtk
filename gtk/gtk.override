@@ -131,7 +131,7 @@ ignore
   gtk_draw_layout
   gtk_draw_resize_grip
   gtk_draw_string
-  gtk_entry_new
+  gtk_entry_new_with_max_length
   gtk_entry_select_region
   gtk_exit
   gtk_false
@@ -5379,4 +5379,25 @@ _wrap_gtk_menu_item_toggle_size_request(PyGObject *self)
     gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(self->obj), &requisition);
 
     return PyInt_FromLong(requisition);
+}
+%%
+override gtk_entry_new kwargs
+static int
+_wrap_gtk_entry_new(PyGObject * self, PyObject * args, PyObject * kwargs)
+{
+    static char *kwlist[] = { "max", NULL };
+    int max = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:GtkEntry.__init__",
+                                     kwlist, &max))
+	return -1;
+    self->obj = (GObject *)gtk_entry_new();
+    if (!self->obj) {
+	PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkEntry object");
+	return -1;
+    }
+    gtk_entry_set_max_length(GTK_ENTRY(self->obj), max);
+    pygobject_register_wrapper((PyObject *) self);
+    return 0;
 }
