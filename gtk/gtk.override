@@ -612,7 +612,7 @@ _wrap_gtk_box_query_child_packing(PyGObject *self, PyObject *args,
     gtk_box_query_child_packing(GTK_BOX(self->obj),
                                 child, &expand, &fill,
                                 &padding, &pack_type);
-    return Py_BuildValue("(iiiO)", (int)expand, (int)fill, padding,
+    return Py_BuildValue("(iiiN)", (int)expand, (int)fill, padding,
 			 pyg_enum_from_gtype(GTK_TYPE_PACK_TYPE, pack_type));
 }
 %%
@@ -2118,7 +2118,7 @@ _wrap_gtk_notebook_query_tab_label_packing(PyGObject *self, PyObject *args,
     gtk_notebook_query_tab_label_packing(GTK_NOTEBOOK(self->obj),
                                          GTK_WIDGET(child->obj),
                                          &expand, &fill, &pack_type);
-    return Py_BuildValue("(iiO)", expand, fill,
+    return Py_BuildValue("(iiN)", expand, fill,
 			 pyg_enum_from_gtype(GTK_TYPE_PACK_TYPE, pack_type));
 }
 %%
@@ -3178,7 +3178,7 @@ _wrap_gtk_tooltips__get_active_tips_data(PyGObject *self, void *closure)
         return Py_None;
     }
 
-    return Py_BuildValue("OOss",
+    return Py_BuildValue("NNss",
                          pygobject_new((GObject *)data->tooltips),
                          pygobject_new((GObject *)data->widget),
                          data->tip_text,
@@ -3200,7 +3200,7 @@ _wrap_gtk_tooltips__get_tips_data_list(PyGObject *self, void *closure)
     i = 0;
     for (iter = list; iter; iter = iter->next) {
         GtkTooltipsData *data = (GtkTooltipsData*)iter->data;
-        PyObject *item = Py_BuildValue("OOss",
+        PyObject *item = Py_BuildValue("NNss",
                                pygobject_new((GObject *)data->tooltips),
                                pygobject_new((GObject *)data->widget),
                                data->tip_text,
@@ -3393,7 +3393,7 @@ _wrap_gtk_image_get_pixmap(PyGObject *self)
         return NULL;
     }
     gtk_image_get_pixmap(GTK_IMAGE(self->obj), &pixmap, &mask);
-    return Py_BuildValue("(OO)", pygobject_new((GObject *)pixmap),
+    return Py_BuildValue("(NN)", pygobject_new((GObject *)pixmap),
 			 pygobject_new((GObject *)mask));
 }
 %%
@@ -3411,7 +3411,7 @@ _wrap_gtk_image_get_image(PyGObject *self)
         return NULL;
     }
     gtk_image_get_image(GTK_IMAGE(self->obj), &image, &mask);
-    return Py_BuildValue("(OO)", pygobject_new((GObject *)image),
+    return Py_BuildValue("(NN)", pygobject_new((GObject *)image),
 			 pygobject_new((GObject *)mask));
 }
 %%
@@ -3431,12 +3431,12 @@ _wrap_gtk_image_get_stock(PyGObject *self)
     gtk_image_get_stock(GTK_IMAGE(self->obj), &stock_id, &size);
 
     if (stock_id) {
-	return Py_BuildValue("(OO)",
+	return Py_BuildValue("(NN)",
 			     PyString_FromString(stock_id),
 			     pyg_enum_from_gtype(GTK_TYPE_ICON_SIZE, size));
     } else {
 	Py_INCREF(Py_None);
-	return Py_BuildValue("(OO)",
+	return Py_BuildValue("(ON)",
 			     Py_None,
 			     pyg_enum_from_gtype(GTK_TYPE_ICON_SIZE, size));
     }
@@ -3456,7 +3456,7 @@ _wrap_gtk_image_get_icon_set(PyGObject *self)
         return NULL;
     }
     gtk_image_get_icon_set(GTK_IMAGE(self->obj), &icon_set, &size);
-    return Py_BuildValue("(OO)", pygobject_new((GObject *)icon_set),
+    return Py_BuildValue("(NN)", pygobject_new((GObject *)icon_set),
 			 pyg_enum_from_gtype(GTK_TYPE_ICON_SIZE, size));
 }
 %%
@@ -3583,7 +3583,7 @@ _wrap_gtk_scrolled_window_get_policy(PyGObject *self)
 
     gtk_scrolled_window_get_policy(GTK_SCROLLED_WINDOW(self->obj),
 				   &hscrollbar_policy, &vscrollbar_policy);
-    return Py_BuildValue("(OO)",
+    return Py_BuildValue("(NN)",
 			 pyg_enum_from_gtype(GTK_TYPE_POLICY_TYPE, hscrollbar_policy),
 			 pyg_enum_from_gtype(GTK_TYPE_POLICY_TYPE, vscrollbar_policy));
 }
@@ -3608,7 +3608,7 @@ _wrap_gtk_tooltips_data_get(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return Py_None;
     }
 
-    return Py_BuildValue("OOss",
+    return Py_BuildValue("NNss",
 			 pygobject_new((GObject *)data->tooltips),
 			 pygobject_new((GObject *)data->widget),
 			 data->tip_text,
@@ -3640,7 +3640,7 @@ _wrap_gtk_accelerator_parse(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     gtk_accelerator_parse((const gchar *)accel, &keyval, &modifier);
 
-    return Py_BuildValue("iO", keyval, pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, modifier));
+    return Py_BuildValue("iN", keyval, pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, modifier));
 }
 %%
 override gtk_accel_map_lookup_entry kwargs
@@ -3658,7 +3658,7 @@ _wrap_gtk_accel_map_lookup_entry(PyGObject *self, PyObject *args,
         return NULL;
 
     if (gtk_accel_map_lookup_entry((const gchar *)accel_path, &accel_key))
-	return Py_BuildValue("iO", accel_key.accel_key,
+	return Py_BuildValue("iN", accel_key.accel_key,
 			     pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, accel_key.accel_mods));
 
     Py_INCREF(Py_None);
