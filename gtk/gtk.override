@@ -275,6 +275,13 @@ ignore
   gtk_rc_property_parse_flags
   gtk_rc_property_parse_requisition
   gtk_rc_property_parse_border
+  gtk_target_list_new
+  gtk_target_list_ref
+  gtk_target_list_unref
+  gtk_target_list_add
+  gtk_target_list_add_table
+  gtk_target_list_remove
+  gtk_target_list_find
 %%
 ignore-glob
   _*
@@ -290,7 +297,6 @@ ignore-glob
   gtk_radio_tool_button_new_*
   gtk_quit_add_*
   gtk_signal_*
-  gtk_target_list_*
   gtk_timeout_add*
 %%
 ignore-win32
@@ -6625,6 +6631,234 @@ _wrap_gtk_message_dialog_format_secondary_markup(PyGObject *self, PyObject *args
     else
         gtk_message_dialog_format_secondary_markup(GTK_MESSAGE_DIALOG(self->obj),
                                                    message_format);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_target_list_add_text_targets kwargs
+static PyObject *
+_wrap_gtk_target_list_add_text_targets(PyGObject *self, PyObject *args,
+                                       PyObject *kwargs)
+{
+    static char *kwlist[] = { "list", "info", NULL };
+    PyObject *list = NULL;
+    guint info = 0;
+    GtkTargetList *targets;
+    GList *tmp;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|Oi:gtk.target_list_add_text_targets",
+                                     kwlist, &list, &info)) {
+        return NULL;
+    }
+    if (!list || list == Py_None) {
+        list = NULL;
+    } else if (!PySequence_Check(list)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "list must be a sequence of target entries or None");
+        return NULL;
+    }
+    if (list)
+        list = PySequence_List(list);
+    else
+        list = PyList_New(0);
+    targets = gtk_target_list_new(NULL, 0);
+    gtk_target_list_add_text_targets(targets, info);
+    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
+        GtkTargetPair *pair = tmp->data;
+        PyObject *item;
+ 
+        item = Py_BuildValue("(Nii)",
+                             PyString_FromString(gdk_atom_name(pair->target)),
+                             pair->flags, pair->info);
+        PyList_Append(list, item);
+        Py_DECREF(item);
+    }
+    gtk_target_list_unref(targets);
+    return list;
+}
+%%
+override gtk_target_list_add_image_targets kwargs
+static PyObject *
+_wrap_gtk_target_list_add_image_targets(PyGObject *self, PyObject *args,
+                                       PyObject *kwargs)
+{
+    static char *kwlist[] = { "list", "info", "writable", NULL };
+    PyObject *list = NULL;
+    guint info = 0;
+    gboolean writable = FALSE;
+    GtkTargetList *targets;
+    GList *tmp;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|Oii:gtk.target_list_add_text_targets",
+                                     kwlist, &list, &info, &writable)) {
+        return NULL;
+    }
+    if (!list || list == Py_None) {
+        list = NULL;
+    } else if (!PySequence_Check(list)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "list must be a sequence of target entries or None");
+        return NULL;
+    }
+    if (list)
+        list = PySequence_List(list);
+    else
+        list = PyList_New(0);
+    targets = gtk_target_list_new(NULL, 0);
+    gtk_target_list_add_image_targets(targets, info, writable);
+    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
+        GtkTargetPair *pair = tmp->data;
+        PyObject *item;
+ 
+        item = Py_BuildValue("(Nii)",
+                             PyString_FromString(gdk_atom_name(pair->target)),
+                             pair->flags, pair->info);
+        PyList_Append(list, item);
+        Py_DECREF(item);
+    }
+    gtk_target_list_unref(targets);
+    return list;
+}
+%%
+override gtk_target_list_add_uri_targets kwargs
+static PyObject *
+_wrap_gtk_target_list_add_uri_targets(PyGObject *self, PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "list", "info", NULL };
+    PyObject *list = NULL;
+    guint info = 0;
+    GtkTargetList *targets;
+    GList *tmp;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|Oi:gtk.target_list_add_text_targets",
+                                     kwlist, &list, &info)) {
+        return NULL;
+    }
+    if (!list || list == Py_None) {
+        list = NULL;
+    } else if (!PySequence_Check(list)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "list must be a sequence of target entries or None");
+        return NULL;
+    }
+    if (list)
+        list = PySequence_List(list);
+    else
+        list = PyList_New(0);
+    targets = gtk_target_list_new(NULL, 0);
+    gtk_target_list_add_uri_targets(targets, info);
+    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
+        GtkTargetPair *pair = tmp->data;
+        PyObject *item;
+ 
+        item = Py_BuildValue("(Nii)",
+                             PyString_FromString(gdk_atom_name(pair->target)),
+                             pair->flags, pair->info);
+        PyList_Append(list, item);
+        Py_DECREF(item);
+    }
+    gtk_target_list_unref(targets);
+    return list;
+}
+%%
+override gtk_about_dialog_set_email_hook kwargs
+static void
+pygtk_about_dialog_link_hook_marshal(GtkAboutDialog *about,
+                                         const gchar *link,
+                                         gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_about, *retobj;
+ 
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+ 
+    py_about = pygobject_new((GObject *)about);
+
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NsO)", py_about,
+                                     link, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(Ns)", py_about, link);
+    }
+
+    if (!retobj)
+	PyErr_Print();
+ 
+    Py_XDECREF(retobj);
+    pyg_gil_state_release(state);
+}
+static PyObject *
+_wrap_gtk_about_dialog_set_email_hook(PyGObject *self, PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL };
+    PyObject *pyfunc = NULL, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|OO:GtkAboutDialog.set_email_hook",
+                                     kwlist, &pyfunc, &pyarg))
+        return NULL;
+
+    if (pyfunc == NULL || pyfunc == Py_None) {
+        gtk_about_dialog_set_email_hook(NULL, NULL, NULL);
+    } else if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    } else {
+        cunote = g_new0(PyGtkCustomNotify, 1);
+        cunote->func = pyfunc;
+        cunote->data = pyarg;
+        Py_INCREF(cunote->func);
+        Py_XINCREF(cunote->data);
+
+        gtk_about_dialog_set_email_hook(
+            pygtk_about_dialog_link_hook_marshal,
+            cunote,
+            pygtk_custom_destroy_notify);
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_about_dialog_set_url_hook kwargs
+static PyObject *
+_wrap_gtk_about_dialog_set_url_hook(PyGObject *self, PyObject *args,
+                                    PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL};
+    PyObject *pyfunc = NULL, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|OO:GtkAboutDialog.set_url_hook",
+                                     kwlist, &pyfunc, &pyarg))
+        return NULL;
+
+    if (pyfunc == NULL || pyfunc == Py_None) {
+        gtk_about_dialog_set_url_hook(NULL, NULL, NULL);
+    } else if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    } else {
+        cunote = g_new0(PyGtkCustomNotify, 1);
+        cunote->func = pyfunc;
+        cunote->data = pyarg;
+        Py_INCREF(cunote->func);
+        Py_XINCREF(cunote->data);
+
+        gtk_about_dialog_set_url_hook(
+            pygtk_about_dialog_link_hook_marshal,
+            cunote,
+            pygtk_custom_destroy_notify);
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }
