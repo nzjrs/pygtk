@@ -177,6 +177,7 @@ libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
 data_files = []
 ext_modules = []
 py_modules = []
+py_modules.append('dsextras')
 
 if not have_pkgconfig():
     print "Error, could not find pkg-config"
