@@ -404,7 +404,7 @@ class ObjectArg(ArgType):
 		info.codebefore.append(self.dflt % {'name':pname,
                                                     'cast':self.cast}) 
 		info.arglist.append(pname)
-                info.add_parselist('O', ['&Py%s_Type' % self.objname,
+                info.add_parselist('O!', ['&Py%s_Type' % self.objname,
                                          '&py_' + pname], [pname])
 	    else:
 		info.varlist.add('PyGObject', '*' + pname)
@@ -555,14 +555,24 @@ class PointerArg(ArgType):
                                   '    return pyg_pointer_new(' + self.typecode + ', &ret);')
 
 class AtomArg(IntArg):
+    dflt = '    if (py_%(name)s) {\n' \
+           '        %(name)s = pygdk_atom_from_pyobject(py_%(name)s);\n' \
+           '        if (PyErr_Occurred())\n' \
+           '            return NULL;\n' \
+           '    }\n'
     atom = ('    %(name)s = pygdk_atom_from_pyobject(py_%(name)s);\n'
             '    if (PyErr_Occurred())\n'
             '        return NULL;\n')
     def write_param(self, ptype, pname, pdflt, pnull, info):
-        info.varlist.add('GdkAtom', pname)
-	info.varlist.add('PyObject', '*py_' + pname + ' = NULL')
-	info.codebefore.append(self.atom % {'name': pname})
-	info.arglist.append(pname)
+        if pdflt:
+            info.varlist.add('GdkAtom', pname + ' = ' + pdflt)
+            info.varlist.add('PyObject', '*py_' + pname + ' = NULL')
+            info.codebefore.append(self.dflt % {'name': pname})
+        else:
+            info.varlist.add('GdkAtom', pname)
+            info.varlist.add('PyObject', '*py_' + pname + ' = NULL')
+            info.codebefore.append(self.atom % {'name': pname})
+        info.arglist.append(pname)
         info.add_parselist('O', ['&py_' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('GdkAtom', 'ret')
