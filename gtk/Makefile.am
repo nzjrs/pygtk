@@ -84,7 +84,7 @@ pygtkexec_LTLIBRARIES += $(glade_la)
 glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
 glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
 glade_la_LIBADD = $(LIBGLADE_LIBS)
-glade_la_SOURCES = libglademodule.c libglade.c
+glade_la_SOURCES = libglademodule.c
 nodist_glade_la_SOURCES = libglade.c
 libglade.c: $(COMMONDEFS) libglade.override
 CLEANFILES += libglade.c
