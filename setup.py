@@ -4,7 +4,6 @@
 #
 # TODO:
 # pygtk.spec(.in)
-# Use codegen directly instead of os.system
 # Numeric support
 # win32 testing
 # install *.pyc for codegen
@@ -24,6 +23,10 @@ from distutils.command.build_ext import build_ext
 from distutils.command.install_lib import install_lib
 from distutils.core import setup
 from distutils.extension import Extension
+
+from codegen.override import Overrides
+from codegen.defsparser import DefsParser
+from codegen.codegen import register_types, write_source, FileOutput
 
 MAJOR_VERSION = 1
 MINOR_VERSION = 99
@@ -52,6 +55,12 @@ DEFS_DIR = 'share/pygtk/%s/defs' % PYGTK_SUFFIX
 CODEGEN_DIR = 'share/pygtk/%s/codegen' % PYGTK_SUFFIX
 INCLUDE_DIR = 'include/pygtk-%s' % PYGTK_SUFFIX
 
+str_version = sys.version[:3]
+version = map(int, str_version.split('.'))
+if version < [2, 2]:
+    raise SystemExit, \
+          "Python 2.2 or higher is required, %s found" % str_version
+    
 class PyGtkInstallLib(install_lib):
     local_outputs = []
     local_inputs = []
@@ -214,16 +223,22 @@ class Template:
     def generate(self):
         if self.check_dates():
             return
-        
-        s = 'python codegen/codegen.py'
+
         for item in self.register:
-            s += '  --register %s' % item
-        s += '  --override %s' % self.override
-        s += '  --prefix %s %s' % (self.prefix, self.defs)
-        s += '  > %s ' % self.output
+            dp = DefsParser(item)
+            dp.startParsing()
+            register_types(dp)
+
+        dp = DefsParser(self.defs)
+        dp.startParsing()
+        register_types(dp)
         
-        print '** Generating %s' % self.output
-        os.system(s)
+        fd = open(self.output, 'w')
+        write_source(dp,
+                     Overrides(self.override),
+                     self.prefix,
+                     FileOutput(fd, self.output))
+        fd.close()
         
 class TemplateExtension(PkgConfigExtension):
     def __init__(self, **kwargs):
