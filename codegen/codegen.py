@@ -212,8 +212,7 @@ boxedgetattrtmpl = 'static PyObject *\n' + \
                    '    if (!strcmp(attr, "__members__"))\n' + \
                    '        return Py_BuildValue(%(members)s);\n' + \
                    '%(attrchecks)s' + \
-                   '    PyErr_SetString(PyExc_AttributeError, attr);\n' + \
-                   '    return NULL;\n' + \
+                   '    return Py_FindMethod(%(methods)s, self, attr);\n' + \
                    '}\n\n'
 attrchecktmpl = '    if (!strcmp(attr, "%(attr)s")) {\n' + \
                 '%(varlist)s' + \
@@ -671,9 +670,11 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
     members = '"[%s]"' % ('s' * len(attrs))
     for fname in attrs:
         members = '%s, "%s"' % (members, fname)
+    methods = '_Py%s_methods' % (boxedobj.c_name,)
     fp.write(boxedgetattrtmpl % {'getattr':    funcname,
                                  'members':    members,
-                                 'attrchecks': attrchecks })
+                                 'attrchecks': attrchecks,
+                                 'methods':    methods})
     return funcname
 
 def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):

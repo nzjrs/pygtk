@@ -1,5 +1,16 @@
 2001-10-23  Matt Wilson  <msw@redhat.com>
 
+	* codegen/codegen.py (boxedgetattrtmpl, write_boxed_getattr): at
+	the end of the getattr function, we must use Py_FindMethod.  This
+	fixes GtkSelectionData's methods, and DnD works again.
+
+	* codegen/h2def.py (clean_func): deal with const return types when
+	cleaning up function prototype
+	(proto_pat): add '-' to the ret group so that const- will work in
+	the return type
+
+2001-10-23  Matt Wilson  <msw@redhat.com>
+
 	* gtk/gtk.override (_wrap_gtk_text_iter_forward_search): use new
 	forward search API with flags enum in CVS.
 	(_wrap_gtk_text_iter_backward_search): likewise.
