@@ -15,7 +15,8 @@ ExtensionClass_la_SOURCES = \
 
 gobjectmodule_la_LDFLAGS = -module -avoid-version
 gobjectmodule_la_SOURCES = \
-	gobjectmodule.c
+	gobjectmodule.c \
+	pygobject.h
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 
 noinst_PYTHON = ltihooks.py
