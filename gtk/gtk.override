@@ -6355,3 +6355,35 @@ _wrap_gtk_file_chooser_button_new(PyGObject *self, PyObject *args,
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+%%
+override gtk_icon_theme_get_icon_sizes kwargs
+static PyObject *
+_wrap_gtk_icon_theme_get_icon_sizes(PyGObject *self, PyObject *args,
+                                    PyObject *kwargs)
+{
+    static char *kwlist[] = { "icon_name", NULL };
+    const gchar *icon_name;
+    gint *sizes;
+    int i;
+    PyObject *py_sizes;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s:GtkIconTheme.get_icon_sizes",
+				     kwlist, &icon_name))
+        return NULL;
+
+    sizes = gtk_icon_theme_get_icon_sizes(GTK_ICON_THEME(self->obj),
+                                          icon_name);
+
+    for (i = 0; sizes[i] != 0; i++) ;
+
+    if ((py_sizes = PyTuple_New(i)) == NULL) {
+        g_free(sizes);
+        return NULL;
+    }
+    for (i = 0; sizes[i] != 0; i++)
+        PyTuple_SET_ITEM(py_sizes, i, PyInt_FromLong(sizes[i]));
+
+    g_free(sizes);
+    return py_sizes;
+}
