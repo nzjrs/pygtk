@@ -166,7 +166,6 @@ ignore
   gtk_font_button_new_with_font
   gtk_gc_get
   gtk_gc_release
-  gtk_get_current_event
   gtk_get_event_widget
   gtk_icon_theme_error_quark
   gtk_idle_add
@@ -997,6 +996,20 @@ _wrap_gtk_quit_add(PyObject *self, PyObject *args)
       return NULL;
     return PyInt_FromLong(gtk_quit_add_full(main_level, quit_handler_marshal,
                                             NULL, data, pyg_destroy_notify));
+}
+%%
+override gtk_get_current_event_state noargs
+static PyObject *
+_wrap_gtk_get_current_event_state (PyGObject *self)
+{
+    GdkModifierType state = 0;
+
+    if (gtk_get_current_event_state (&state)) {
+	return pyg_flags_from_gtype (GDK_TYPE_MODIFIER_TYPE, state);
+    } else {
+	Py_INCREF (Py_None);
+	return Py_None;
+    }
 }
 %%
 override gtk_editable_insert_text kwargs
