@@ -168,6 +168,23 @@ linkend="method-gtkwindow--set-geometry-hints">set_geometry_hints</link></method
 	  <initializer>-1.0</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--set-screen">set_screen</link></methodname>
+	<methodparam><parameter
+		       role="keyword">screen</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--get-screen">get_screen</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--is-active">is_active</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--has-toplevel-focus">has_toplevel_focus</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkwindow--set-has-frame">set_has_frame</link></methodname>
 	<methodparam><parameter
@@ -265,7 +282,18 @@ linkend="method-gtkwindow--set-mnemonic-modifier">set_mnemonic_modifier</link></
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkwindow--get-mnemonic-modifier">get_mnemonic_modifier</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--activate-key">activate_key</link></methodname>
+	<methodparam><parameter
+		       role="keyword">event</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--propagate-key-event">propagate_key_event</link></methodname>
+	<methodparam><parameter
+		       role="keyword">event</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkwindow--present">present</link></methodname>
@@ -294,6 +322,20 @@ linkend="method-gtkwindow--maximize">maximize</link></methodname>
 	<methodname><link
 linkend="method-gtkwindow--unmaximize">unmaximize</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--fullscreen">fullscreen</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--unfullscreen">unfullscreen</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--set-keep-above">set_keep_above</link></methodname>
+	<methodparam><parameter>setting</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkwindow--set-keep-below">set_keep_below</link></methodname>
+	<methodparam><parameter>setting</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkwindow--begin-resize-drag">begin_resize_drag</link></methodname>
@@ -380,6 +422,12 @@ linkend="method-gtkwindow--tooltips-get-info-from-tip-window">tooltips_get_info_
 
 <methodsynopsis language="python">
 	<methodname><link
+linkend="function-gtk--window-set-default-icon">gtk.window_set_default_icon</link></methodname>
+	<methodparam><parameter role="keyword">icon</parameter></methodparam> </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gtk--window-set-default-icon-from-file">gtk.window_set_default_icon_from_file</link></methodname>
+	<methodparam><parameter role="keyword">filename</parameter></methodparam> </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
 linkend="function-gtk--window-set-default-icon-list">gtk.window_set_default_icon_list</link></methodname>
 	<methodparam><parameter>...</parameter></methodparam> </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
@@ -417,15 +465,17 @@ linkend="function-gtk--window-get-default-icon-list">gtk.window_get_default_icon
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"type"</entry>
+	      <entry>"accept-focus"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The type of the window</entry>
+	      <entry>If <literal>TRUE</literal>, the window should receive
+the input focus. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"title"</entry>
+	      <entry>"allow-grow"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The title of the window</entry>
+	      <entry>If <literal>TRUE</literal>, the user can expand the
+window beyond its minimum size.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -437,43 +487,23 @@ idea 99% of the time.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"allow-grow"</entry>
+	      <entry>"decorated"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the user can expand the
-window beyond its minimum size.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"resizable"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the user can resize the
-window.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"modal"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the window is modal (other
-windows are not usable while this one is up).</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"window-position"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The initial position of the window.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"default-width"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The default width of the window, used when initially
-showing the window.</entry>
+	      <entry>If <literal>TRUE</literal>, the window should be
+decorated by the window manager. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"default-height"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The default height of the window, used when initially
+showing the window.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"default-width"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The default width of the window, used when initially
 showing the window.</entry>
 	    </row>
 
@@ -485,30 +515,101 @@ destroyed when its parent is destroyed</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"icon"</entry>
+	      <entry>"gravity"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The icon for this window</entry>
-	    </row>
 
-	    <row valign="top">
-	      <entry>"screen"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The screen where this window will be displayed. (not
-supported)</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"is-active"</entry>
-	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal>, the toplevel is the current
-active window (not supported)</entry>
+	      <entry>The window gravity of the window. See the <link
+linkend="method-gtkwindow--move"><methodname>move</methodname>()</link>
+method and <link
+linkend="class-gdkgravity"><classname>gtk.gdk.Gravity</classname></link> for
+more details about window gravity. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"has-toplevel-focus"</entry>
 	      <entry>Read</entry>
 	      <entry>If <literal>TRUE</literal>, the input focus is within
-the window (not supported)</entry>
+the window. Available in GTK+ 2.2 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"icon"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The icon for this window</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"is-active"</entry>
+	      <entry>Read</entry>
+	      <entry>If <literal>TRUE</literal>, the toplevel is the current
+active window. Available in GTK+ 2.2 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"modal"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the window is modal (other
+windows are not usable while this one is up).</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"resizable"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the user can resize the
+window.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"role"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Unique identifier for the window to be used when
+restoring a session. Available in GTK+ 2.4</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"screen"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The screen where this window will be displayed.
+Available in GTK+ 2.2</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"skip-pager-hint"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the window should not be
+in the pager. Available in GTK+ 2.2 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"skip-taskbar-hint"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the window should not be
+in the task bar. Available in GTK+ 2.2 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"title"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The title of the window</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"type"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The type of the window</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"type-hint"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Hint to help the desktop environment understand what
+kind of window this is and how to treat it. Available in GTK+ 2.2 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"window-position"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The initial position of the window.</entry>
 	    </row>
 
 	  </tbody>
@@ -531,39 +632,40 @@ the window (not supported)</entry>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"title"</entry>
+	      <entry>"allow_grow"</entry>
 	      <entry>Read</entry>
-	      <entry>The title of the window.</entry>
+	      <entry>If <literal>TRUE</literal>, users can expand the window
+beyond its minimum size.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"wmclass_name"</entry>
+	      <entry>"allow_shrink"</entry>
 	      <entry>Read</entry>
-	      <entry>The window system name hint. See the <link
-linkend="method-gtkwindow--set-wmclass"><methodname>set_wmclass</methodname>()</link> 
+	      <entry>If <literal>TRUE</literal>, the window has no mimimum
+size.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"configure_notify_received"</entry>
+	      <entry>Read</entry>
+	      <entry>If <literal>TRUE</literal> a window resize
+configuration event has been recevied.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"configure_request_count"</entry>
+	      <entry>Read</entry>
+	      <entry>The number of outstanding configuration
+requests.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"decorated"</entry>
+	      <entry>Read</entry>
+	      <entry>If <literal>TRUE</literal> the window will have
+decorations like a titlebar, resize controls, etc. See the <link
+linkend="method-gtkwindow--set-decorated"><methodname>set_decorated</methodname>()</link> 
 method.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"wmclass_class"</entry>
-	      <entry>Read</entry>
-	      <entry>The window system class hint. See the <link
-linkend="method-gtkwindow--set-wmclass"><methodname>set_wmclass</methodname>()</link> 
-method.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"wm_role"</entry>
-	      <entry>Read</entry>
-	      <entry>The unique identifier for the window. See the <link
-linkend="method-gtkwindow--set-role"><methodname>set_role</methodname>()</link> 
-method.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"focus_widget"</entry>
-	      <entry>Read</entry>
-	      <entry>The child widget that has the focus.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -576,11 +678,16 @@ method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"transient_parent"</entry>
+	      <entry>"destroy_with_parent"</entry>
 	      <entry>Read</entry>
-	      <entry>The transient parent window. See the <link
-linkend="method-gtkwindow--set-transient-for"><methodname>set_transient_for</methodname>()</link> 
-method.</entry>
+	      <entry>If <literal>TRUE</literal> the window is detroyed when
+its transient parent is destroyed.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"focus_widget"</entry>
+	      <entry>Read</entry>
+	      <entry>The child widget that has the focus.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -596,6 +703,56 @@ methods.</entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"frame_bottom"</entry>
+	      <entry>Read</entry>
+	      <entry>The height of the bottom frame border. See the <link
+linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
+and <link
+linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
+methods.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"frame_left"</entry>
+	      <entry>Read</entry>
+	      <entry>The width of the left frame border. See the <link
+linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
+and <link
+linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
+methods.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"frame_right"</entry>
+	      <entry>Read</entry>
+	      <entry>The width of the right frame border. See the <link
+linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
+and <link
+linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
+methods.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"frame_top"</entry>
+	      <entry>Read</entry>
+	      <entry>The height of the top frame border. See the <link
+linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
+and <link
+linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
+methods.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"gravity"</entry>
+	      <entry>Read</entry>
+	      <entry>The window's gravity. See the <link
+linkend="method-gtkwindow--move"><methodname>move</methodname>()</link> and
+<link
+linkend="method-gtkwindow--set-gravity"><methodname>set_gravity</methodname>()</link> 
+methods.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"group"</entry>
 	      <entry>Read</entry>
 	      <entry>The <link
@@ -604,31 +761,68 @@ linkend="class-gtkwindowgroup"><classname>gtk.WindowGroup</classname></link>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"configure_request_count"</entry>
+	      <entry>"has_focus"</entry>
 	      <entry>Read</entry>
-	      <entry>The number of outstanding configuration
-requests.</entry>
+	      <entry>If <literal>TRUE</literal> the window has the
+focus.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"allow_shrink"</entry>
+	      <entry>"has_frame"</entry>
 	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal>, the window has no mimimum
-size.</entry>
+	      <entry>If <literal>TRUE</literal> the window has a frame
+window. See the <link
+linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
+method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"allow_grow"</entry>
+	      <entry>"has_user_ref_count"</entry>
 	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal>, users can expand the window
-beyond its minimum size.</entry>
+	      <entry>If <literal>TRUE</literal> the window has not been
+destroyed.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"configure_notify_received"</entry>
+	      <entry>"iconify_initially"</entry>
 	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> a window resize
-configuration event has been recevied.</entry>
+	      <entry>If <literal>TRUE</literal> the window has been
+iconified by a call to the <link
+linkend="method-gtkwindow--iconify"><methodname>iconify</methodname>()</link> 
+method.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"keys_changed_handler"</entry>
+	      <entry>Read</entry>
+	      <entry>The idle handler ID for handling accelerator group
+changes.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"maximize_initially"</entry>
+	      <entry>Read</entry>
+	      <entry>If <literal>TRUE</literal> the window has been
+maximumized by a call to the <link
+linkend="method-gtkwindow--maximize"><methodname>maximize</methodname>()</link> 
+method.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"mnemonic_modifier"</entry>
+	      <entry>Read</entry>
+	      <entry>The mnemonic modifier used with a key to activate an
+accelerator. See the <link
+linkend="method-gtkwindow--set-mnemonic-modifier"><methodname>set_mnemonic_modifier</methodname>()</link> 
+method </entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"modal"</entry>
+	      <entry>Read</entry>
+	      <entry>If TRUE the window is modal. See the <link
+linkend="method-gtkwindow--set-modal"><methodname>set_modal</methodname>()</link> 
+method.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -654,59 +848,6 @@ method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"type"</entry>
-	      <entry>Read</entry>
-	      <entry>The type of the window: gtk.WINDOW_TOPLEVEL or gtk.WINDOW_POPUP.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"has_user_ref_count"</entry>
-	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> the window has not been
-destroyed.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"has_focus"</entry>
-	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> the window has the
-focus.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"modal"</entry>
-	      <entry>Read</entry>
-	      <entry>If TRUE the window is modal. See the <link
-linkend="method-gtkwindow--set-modal"><methodname>set_modal</methodname>()</link> 
-method.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"destroy_with_parent"</entry>
-	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> the window is detroyed when
-its transient parent is destroyed.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"has_frame"</entry>
-	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> the window has a frame
-window. See the <link
-linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
-method.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"iconify_initially"</entry>
-	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> the window has been
-iconified by a call to the <link
-linkend="method-gtkwindow--iconify"><methodname>iconify</methodname>()</link> 
-method.</entry>
-	    </row>
-
-	    <row valign="top">
 	      <entry>"stick_initially"</entry>
 	      <entry>Read</entry>
 	      <entry>If <literal>TRUE</literal> the window has been made
@@ -716,21 +857,23 @@ method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"maximize_initially"</entry>
+	      <entry>"title"</entry>
 	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> the window has been
-maximumized by a call to the <link
-linkend="method-gtkwindow--maximize"><methodname>maximize</methodname>()</link> 
+	      <entry>The title of the window.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"transient_parent"</entry>
+	      <entry>Read</entry>
+	      <entry>The transient parent window. See the <link
+linkend="method-gtkwindow--set-transient-for"><methodname>set_transient_for</methodname>()</link> 
 method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"decorated"</entry>
+	      <entry>"type"</entry>
 	      <entry>Read</entry>
-	      <entry>If <literal>TRUE</literal> the window will have
-decorations like a titlebar, resize controls, etc. See the <link
-linkend="method-gtkwindow--set-decorated"><methodname>set_decorated</methodname>()</link> 
-method.</entry>
+	      <entry>The type of the window: gtk.WINDOW_TOPLEVEL or gtk.WINDOW_POPUP.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -742,69 +885,27 @@ method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"gravity"</entry>
+	      <entry>"wmclass_class"</entry>
 	      <entry>Read</entry>
-	      <entry>The window's gravity. See the <link
-linkend="method-gtkwindow--move"><methodname>move</methodname>()</link> and
-<link
-linkend="method-gtkwindow--set-gravity"><methodname>set_gravity</methodname>()</link> 
-methods.</entry>
+	      <entry>The window system class hint. See the <link
+linkend="method-gtkwindow--set-wmclass"><methodname>set_wmclass</methodname>()</link> 
+method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"frame_left"</entry>
+	      <entry>"wmclass_name"</entry>
 	      <entry>Read</entry>
-	      <entry>The width of the left frame border. See the <link
-linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
-and <link
-linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
-methods.</entry>
+	      <entry>The window system name hint. See the <link
+linkend="method-gtkwindow--set-wmclass"><methodname>set_wmclass</methodname>()</link> 
+method.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"frame_top"</entry>
+	      <entry>"wm_role"</entry>
 	      <entry>Read</entry>
-	      <entry>The height of the top frame border. See the <link
-linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
-and <link
-linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
-methods.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"frame_right"</entry>
-	      <entry>Read</entry>
-	      <entry>The width of the right frame border. See the <link
-linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
-and <link
-linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
-methods.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"frame_bottom"</entry>
-	      <entry>Read</entry>
-	      <entry>The height of the bottom frame border. See the <link
-linkend="method-gtkwindow--set-frame-dimensions"><methodname>set_frame_dimensions</methodname>()</link> 
-and <link
-linkend="method-gtkwindow--set-has-frame"><methodname>set_has_frame</methodname>()</link> 
-methods.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"keys_changed_handler"</entry>
-	      <entry>Read</entry>
-	      <entry>The idle handler ID for handling accelerator group
-changes.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"mnemonic_modifier"</entry>
-	      <entry>Read</entry>
-	      <entry>The mnemonic modifier used with a key to activate an
-accelerator. See the <link
-linkend="method-gtkwindow--set-mnemonic-modifier"><methodname>set_mnemonic_modifier</methodname>()</link> 
-method </entry>
+	      <entry>The unique identifier for the window. See the <link
+linkend="method-gtkwindow--set-role"><methodname>set_role</methodname>()</link> 
+method.</entry>
 	    </row>
 
 	</tbody>
@@ -1751,6 +1852,120 @@ on.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkwindow--set-screen">
+      <title>gtk.Window.set_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_screen</methodname>
+	  <methodparam><parameter role="keyword">screen</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>set_screen</methodname>() method sets the
+"screen" property to the <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+specified by <parameter>screen</parameter>. The "screen" property contains
+the screen that the window is displayed on. If the window is already mapped,
+it will be unmapped, and then remapped on the new screen.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--get-screen">
+      <title>gtk.Window.get_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_screen</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_screen</methodname>() method returns the
+<link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+that the window is displayed on.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--is-active">
+      <title>gtk.Window.is_active</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>is_active</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the window is part
+	  of the current active window.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>is_active</methodname>() method returns
+<literal>TRUE</literal> if the window is part of the current active
+toplevel, i.e., the toplevel window receiving keystrokes.  The return value
+is <literal>TRUE</literal> if the window is active the toplevel itself, or
+if it is, for eample, a <link
+linkend="class-gtkplug"><classname>gtk.Plug</classname></link> embedded in
+the active toplevel. You might use this method if you wanted to draw a
+widget differently in an active window from a widget in an inactive window.
+See the <link
+linkend="method-gtkwindow--has-toplevel-focus"><methodname>has_toplevel_focus()</methodname></link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--has-toplevel-focus">
+      <title>gtk.Window.has_toplevel_focus</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>has_toplevel_focus</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the the input focus
+	  is within the window</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>has_toplevel_focus</methodname>() method returns
+<literal>TRUE</literal> if the input focus is within the window.  For real
+toplevel windows, this is identical to <link
+linkend="method-gtkwindow--is-active"><methodname>is_active()</methodname></link>,
+but for embedded windows, like a <link
+linkend="class-gtkplug"><classname>gtk.Plug</classname></link>, the results
+will differ.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkwindow--set-has-frame">
       <title>gtk.Window.set_has_frame</title>
 
@@ -2304,6 +2519,79 @@ method for more detail.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkwindow--activate-key">
+      <title>gtk.Window.activate_key</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>activate_key</methodname>
+	  <methodparam><parameter role="keyword">event</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">event</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if a mnemonic or
+	  accelerator was found and activated.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>activate_key</methodname>() method activates
+mnemonics and accelerators for the window. This is normally called by the
+default <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
+linkend="signal-gtkwidget--key-press-event">key-press-event</link>" signal
+handler for toplevel windows, however in some cases it may be useful to call
+this directly when overriding the standard key handling for a toplevel
+window.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--propagate-key-event">
+      <title>gtk.Window.propagate_key_event</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>propagate_key_event</methodname>
+	  <methodparam><parameter role="keyword">event</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">event</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if a widget in the
+	  focus chain handled the event.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>propagate_key_event</methodname>() method
+propagates a key press or release event to the focus widget and up the focus
+container chain until a widget handles the key event specified by
+<parameter>event</parameter>. This is normally called by the default <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
+linkend="signal-gtkwidget--key-press-event">key-press-event</link>" and
+"<link
+linkend="signal-gtkwidget--key-release-event">key-release-event</link>"
+signal handlers for toplevel windows, however in some cases it may be useful
+to call this directly when overriding the standard key handling for a
+toplevel window.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkwindow--present">
       <title>gtk.Window.present</title>
 
@@ -2341,10 +2629,10 @@ there may not be a window manager in which case iconification isn't
 possible, etc. But normally the window will end up iconified. Just don't
 write code that crashes if not. This method can be called before showing a
 window, in which case the window will be iconified before it ever appears
-onscreen. You can track iconification via the "<link
+onscreen. You can track iconification via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
 linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
-signal on the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</para>
+signal.</para>
 
     </refsect2>
 
@@ -2360,10 +2648,10 @@ manager to deiconify (i.e. unminimize) the specified the window. Note that
 you shouldn't assume the window is definitely deiconified afterward, because
 other entities (e.g. the user or window manager) could iconify it again
 before your code which assumes deiconification gets to run. You can track
-iconification via the "<link
+iconification via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
 linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
-signal on the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</para>
+signal.</para>
 
     </refsect2>
 
@@ -2381,10 +2669,10 @@ afterward, because other entities (e.g. the user or window manager) could
 unstick it again, and some window managers do not support sticking windows.
 But normally the window will end up stuck. Just don't write code that
 crashes if not. This method can be called before showing a window. You can
-track stickiness via the "<link
+track stickiness via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
 linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
-signal on the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</para>
+signal.</para>
 
     </refsect2>
 
@@ -2400,10 +2688,10 @@ window, which means that it will appear on only one of the user's desktops.
 Note that you shouldn't assume the window is definitely unstuck afterward,
 because other entities (e.g. the user or window manager) could stick it
 again. But normally the window will end up stuck. Just don't write code that
-crashes if not. You can track stickiness via the "<link
-linkend="signal-gtkwidget--window-state-event">window-state-event</link>" signal
-on the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</para>
+crashes if not. You can track stickiness via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
+linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
+signal.</para>
 
     </refsect2>
 
@@ -2421,10 +2709,10 @@ other entities (e.g. the user or window manager) could unmaximize it again,
 and not all window managers support maximization. But normally the window
 will end up maximized. This method can be called before showing a window, in
 which case the window will be maximized when it appears onscreen initially.
-You can track maximization via the "<link
+You can track maximization via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
 linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
-signal on the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</para>
+signal.</para>
 
     </refsect2>
 
@@ -2440,10 +2728,149 @@ manager to unmaximize the window. Note that you shouldn't assume the window
 is definitely unmaximized afterward, because other entities (e.g. the user
 or window manager) could maximize it again, and not all window managers
 honor requests to unmaximize. But normally the window will end up
-unmaximized. You can track maximization via the "<link
+unmaximized. You can track maximization via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
 linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
-signal on the <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</para>
+signal.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--fullscreen">
+      <title>gtk.Window.fullscreen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>fullscreen</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>fullscreen</methodname>() method requests the
+window manager to place the window in the fullscreen state. Note you
+shouldn't assume the window is definitely full screen afterward, because
+other entities (e.g. the user or window manager) could unfullscreen it
+again, and not all window managers honor requests to fullscreen windows. But
+normally the window will end up fullscreen. Just don't write code that
+crashes if not.</para>
+
+      <para>You can track the fullscreen state via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
+linkend="signal-gtkwidget--window-state-event">window-state-event</link>"
+signal.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--unfullscreen">
+      <title>gtk.Window.unfullscreen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>unfullscreen</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>unfullscreen</methodname>() method requests teh
+window manager to toggle off the fullscreen state for the window. Note that
+you shouldn't assume the window is definitely not full screen afterward,
+because other entities (e.g. the user or window manager) could fullscreen it
+again, and not all window managers honor requests to unfullscreen
+windows. But normally the window will end up restored to its normal
+state. Just don't write code that crashes if not.</para>
+
+      <para>You can track the fullscreen state via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
+linkend="signal-gtkwidget--window_state_event">window_state_event</link>"
+signal.</para> </refsect2>
+
+    <refsect2 id="method-gtkwindow--set-keep-above">
+      <title>gtk.Window.set_keep_above</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_keep_above</methodname>
+	  <methodparam><parameter role="keyword">setting</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">setting</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> keep the window
+	  above other windows</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_keep_above</methodname>() method requests
+the window manager to keep the window on top if
+<parameter>setting</parameter> is <literal>TRUE</literal>. Note that you
+shouldn't assume the window is definitely above afterward, because other
+entities (e.g. the user or window manager) could not keep it above, and not
+all window managers support keeping windows above. But normally the window
+will end kept above. Just don't write code that crashes if not.</para>
+
+      <para>It's permitted to call this method before showing a window, so
+the window will be kept above when it appears onscreen initially.</para>
+
+      <para>You can track the above state via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
+linkend="signal-gtkwidget--window_state_event">window_state_event</link>"
+signal.</para>
+
+      <para>Note that, according to the <ulink
+url="http://www.freedesktop.org/standards/wm-spec">Extended Window Manager
+Hints</ulink> specification, the above state is mainly meant for user
+preferences and should not be used by applications e.g. for drawing
+attention to their dialogs.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--set-keep-below">
+      <title>gtk.Window.set_keep_below</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_keep_below</methodname>
+	  <methodparam><parameter>setting</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>setting</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> keep the window
+	  below other windows</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_keep_below</methodname>() method requests
+the window manager to keep the window on the bottom (i.e. below all other
+windows). Note that you shouldn't assume the window is definitely below
+afterward, because other entities (e.g. the user or window manager) could
+not keep it below, and not all window managers support putting windows
+below. But normally the window will be kept below. Just don't write code
+that crashes if not.</para>
+
+      <para>It's permitted to call this function before showing a window, in
+which case the window will be kept below when it appears onscreen
+initially.</para>
+
+      <para>You can track the below state via the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "<link
+linkend="signal-gtkwidget--window_state_event">window_state_event</link>"
+signal.</para>
+
+      <para>Note that, according to the <ulink
+url="http://www.freedesktop.org/standards/wm-spec">Extended Window Manager
+Hints</ulink> specification, the above state is mainly meant for user
+preferences and should not be used by applications e.g. for drawing
+attention to their dialogs.</para>
 
     </refsect2>
 
@@ -3019,6 +3446,66 @@ method documentation for more details.</para>
 
     </refsect2>
 
+    <refsect2 id="function-gtk--window-set-default-icon">
+      <title>gtk.window_set_default_icon</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.window_set_default_icon</methodname>
+          <methodparam><parameter role="keyword">icon</parameter>
+          </methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">icon</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.window_set_default_icon</function>() function
+sets an icon specified by <parameter>icon</parameter> to be used as the
+fallback for windows that haven't had the <link
+linkend="method-gtkwindow--set-icon"><methodname>set_icon</methodname>()</link>
+method called on them to set up a window-specific icon. This function allows
+you to set up the icon for all windows in your app at once.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--window-set-default-icon-from-file">
+      <title>gtk.window_set_default_icon_from_file</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.window_set_default_icon_from_file</methodname>
+          <methodparam><parameter role="keyword">filename</parameter>
+          </methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+          <listitem><simpara>an icon file name</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.window_set_default_icon_from_file</function>()
+function sets an icon contained in the file specified by
+<parameter>filename</parameter> to be used as the fallback for windows that
+haven't had the <link
+linkend="method-gtkwindow--set-icon"><methodname>set_icon</methodname>()</link>
+method called on them to set up a window-specific icon. This function allows
+you to set up the icon for all windows in your app at once.</para>
+
+    </refsect2>
+
     <refsect2 id="function-gtk--window-get-default-icon-list">
       <title>gtk.window_get_default_icon_list</title>
 
@@ -3177,6 +3664,12 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> to stop other handlers
+	  from being invoked for the event. <literal>FALSE</literal> to
+	  propagate the event further.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
