@@ -1135,3 +1135,112 @@ _wrap_gtk_text_tag_table_foreach(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_text_iter_forward_find_char kwargs
+gboolean
+pygtk_find_char_pred(gunichar ch, gpointer user_data)
+{
+    PyObject *pred, *args, *pyret = Py_False;
+    gboolean ret;
+
+    pyg_block_threads();
+#if !defined(Py_UNICODE_SIZE) || Py_UNICODE_SIZE == 2
+    if (ch > 0xffff) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"character can not be represented in 16-bit unicode");
+	PyErr_Print();
+        return FALSE;
+    }
+#endif
+    pred = PyTuple_GetItem((PyObject *)user_data, 0);
+    args = Py_BuildValue("(NO)", PyUnicode_FromUnicode((Py_UNICODE *)&ch, 1),
+			 PyTuple_GetItem((PyObject *)user_data, 1));
+
+    pyret = PyObject_CallObject(pred, args);
+    if (!pyret)
+	PyErr_Print();
+    ret = (pyret == Py_True) ? TRUE : FALSE;
+
+    Py_XDECREF(pyret);
+    pyg_unblock_threads();
+
+    return ret;
+}
+static PyObject *
+_wrap_gtk_text_iter_forward_find_char(PyGObject *self, PyObject *args,
+				      PyObject *kwargs)
+{
+    static char *kwlist[] = { "pred", "user_data", "limit", NULL };
+    GtkTextIter *iter, *limit = NULL;
+    gboolean ret;
+    PyObject *pylimit = Py_None, *pred, *data, *pyret, *pydata = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|OO:gtk.TextIter.forward_find_char",
+				     kwlist, &pred, &pydata, &pylimit))
+	return NULL;
+
+    if (pylimit != Py_None) {
+	if (pyg_boxed_check(pylimit, GTK_TYPE_TEXT_ITER)) {
+	    limit = pyg_boxed_get(pylimit, GtkTextIter);
+	} else {
+	    PyErr_SetString(PyExc_TypeError,
+			    "limit should be a gtk.TextIter or None");
+	    return NULL;
+	}
+    }
+    if (!PyCallable_Check(pred)) {
+	PyErr_SetString(PyExc_TypeError, "pred must be callable");
+	return NULL;
+    }
+
+    data = Py_BuildValue("(OO)", pred, pydata);
+    iter = pyg_boxed_get(self, GtkTextIter);
+
+    ret = gtk_text_iter_forward_find_char(iter, pygtk_find_char_pred,
+					  (gpointer)data, limit);
+
+    pyret = ret ? Py_True : Py_False;
+    Py_INCREF(pyret);
+    return pyret;
+}
+%%
+override gtk_text_iter_backward_find_char kwargs
+static PyObject *
+_wrap_gtk_text_iter_backward_find_char(PyGObject *self, PyObject *args,
+				       PyObject *kwargs)
+{
+    static char *kwlist[] = { "pred", "user_data", "limit", NULL };
+    GtkTextIter *iter, *limit = NULL;
+    gboolean ret;
+    PyObject *pylimit = Py_None, *pred, *data, *pyret, *pydata = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|OO:gtk.TextIter.backward_find_char",
+				     kwlist, &pred, &pydata, &pylimit))
+	return NULL;
+
+    if (pylimit != Py_None) {
+	if (pyg_boxed_check(pylimit, GTK_TYPE_TEXT_ITER)) {
+	    limit = pyg_boxed_get(pylimit, GtkTextIter);
+	} else {
+	    PyErr_SetString(PyExc_TypeError,
+			    "limit should be a gtk.TextIter or None");
+	    return NULL;
+	}
+    }
+    if (!PyCallable_Check(pred)) {
+	PyErr_SetString(PyExc_TypeError, "pred must be callable");
+	return NULL;
+    }
+
+    data = Py_BuildValue("(OO)", pred, pydata);
+    iter = pyg_boxed_get(self, GtkTextIter);
+
+    ret = gtk_text_iter_backward_find_char(iter, pygtk_find_char_pred,
+					   (gpointer)data, limit);
+
+    pyret = ret ? Py_True : Py_False;
+    Py_INCREF(pyret);
+    return pyret;
+}
