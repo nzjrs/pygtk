@@ -1086,10 +1086,12 @@ _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
     PyGObject *py_pms, *py_pmi;
     GtkWidget *pms = NULL, *pmi = NULL;
     PyObject *func;
-    int button, time;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,  "OOOii:GtkMenu.popup",
+    int button;
+    guint32 time;
+    PyObject *pytime;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,  "OOOiO:GtkMenu.popup",
                                      kwlist, &py_pms, &py_pmi, &func,
-                                     &button, &time))
+                                     &button, &pytime))
         return NULL;
     if (pygobject_check(py_pms, &PyGtkWidget_Type))
         pms = GTK_WIDGET(py_pms->obj);
@@ -1107,6 +1109,17 @@ _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
     if (!PyCallable_Check(func) && func != Py_None) {
         PyErr_SetString(PyExc_TypeError, "third argument not callable");
+        return NULL;
+    }
+    if (PyLong_Check(pytime)) {
+	time = PyLong_AsUnsignedLong(pytime);
+	if (PyErr_Occurred())
+	    return NULL;
+    } else if (PyInt_Check(pytime)) {
+	time = PyInt_AsLong(pytime);
+    } else {
+        PyErr_SetString(PyExc_TypeError,
+                        "last argument must be int or long");
         return NULL;
     }
     if (func != Py_None) {
