@@ -1015,7 +1015,9 @@ pygtk_container_foreach_marshal(GtkWidget *widget,
     PyObject *py_widget, *retobj;
 
     g_assert(cunote->func);
-
+    
+    pyg_block_threads();
+    
     py_widget = pygobject_new((GObject*)widget);
     if (cunote->data)
 	retobj = PyEval_CallFunction(cunote->func, "(NO)",
@@ -1030,6 +1032,8 @@ pygtk_container_foreach_marshal(GtkWidget *widget,
     }
     
     Py_XDECREF(retobj);
+    
+    pyg_unblock_threads();    
 }
 static PyObject *
 _wrap_gtk_container_foreach(PyGObject *self, PyObject *args)
@@ -1881,6 +1885,8 @@ pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
 
     g_assert(cunote->func);
 
+    pyg_block_threads();
+
     py_model = pygobject_new((GObject *)model);
     py_iter1 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter1, TRUE, TRUE);
     py_iter2 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter2, TRUE, TRUE);
@@ -1901,6 +1907,8 @@ pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
 	ret = 0;
     }
     Py_XDECREF(retobj);
+
+    pyg_unblock_threads();    
     return ret;
 }
 static PyObject *
@@ -2594,6 +2602,8 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
 
     g_assert(cunote->func);
     
+    pyg_block_threads();
+
     py_model = pygobject_new((GObject *)model);
     py_path = pygtk_tree_path_to_pyobject(path);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
@@ -2611,6 +2621,8 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
     } else {
 	ret = TRUE;
     }
+
+    pyg_unblock_threads();    
     return ret;
 }
 static PyObject *
@@ -2725,6 +2737,8 @@ pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
     
     g_assert (cunote->func);
 
+    pyg_block_threads();
+
     pytreecolumn = pygobject_new((GObject *)tree_column);
     pycell = pygobject_new((GObject *)cell);
     pytreemodel = pygobject_new((GObject *)tree_model);
@@ -2744,6 +2758,8 @@ pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
 	PyErr_Clear();
     } else
 	Py_DECREF(retobj);
+
+    pyg_unblock_threads();    
 }
 
 static PyObject *
@@ -3028,13 +3044,27 @@ _wrap_gtk_tree_view_get_cursor(PyGObject *self, PyObject *args)
     } else {
 	column = NULL;
     }
-
+    
+    if (path == NULL && column == NULL) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "need at least one argument that's not None");
+	    return NULL;	
+    }
+    
     gtk_tree_view_get_cursor(GTK_TREE_VIEW(self->obj),
 			     path ? &path : NULL,
 			     column ? &column : NULL);
 
+    if (path == NULL && column == NULL) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+    
     if (path != NULL) {
 	py_path = pygtk_tree_path_to_pyobject(path);
+	if (column == NULL) {
+	    return py_path;
+	}
     } else {
 	Py_INCREF(Py_None);
 	py_path = Py_None;
@@ -3042,7 +3072,9 @@ _wrap_gtk_tree_view_get_cursor(PyGObject *self, PyObject *args)
     
     if (column != NULL) {
 	py_column = pygobject_new((GObject*)column);
-			 
+	if (path == NULL) {
+	    return py_path;
+	}
     } else {
 	Py_INCREF(Py_None);
 	py_column = Py_None;
@@ -3107,6 +3139,8 @@ pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
 
     g_assert(cunote->func);
     
+    pyg_block_threads();
+
     py_model = pygobject_new((GObject *)model);
     py_path = pygtk_tree_path_to_pyobject(path);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
@@ -3124,6 +3158,8 @@ pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
     }
     
     Py_XDECREF(retobj);
+
+    pyg_unblock_threads();    
 }
 static PyObject *
 _wrap_gtk_tree_selection_selected_foreach(PyGObject *self, PyObject *args)
@@ -3158,10 +3194,10 @@ pygtk_tree_selection_marshal(GtkTreeSelection *selection,
     PyGtkCustomNotify *cunote = data;
     PyObject *pypath, *retobj;
     
-    pyg_block_threads();
-
     g_assert(cunote->func);
     
+    pyg_block_threads();
+
     pypath = pygtk_tree_path_to_pyobject(path);
     if (cunote->data)
 	retobj = PyEval_CallFunction(cunote->func, "(OO)", pypath,
@@ -3721,10 +3757,13 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
 		return NULL;
 	    }
 	}
-	if (cunote != NULL)
+	if (cunote != NULL) {
+	    pyg_block_threads();
 	    g_object_weak_ref(G_OBJECT(ifact),
 			      (GWeakNotify) pygtk_custom_destroy_notify,
 			      cunote);
+	    pyg_unblock_threads();	    
+	}
 			     
 	gtk_item_factory_create_item(ifact, &ent, cunote, 1);
     }
@@ -5972,7 +6011,7 @@ _wrap_gtk_text_buffer_create_tag(PyGObject *self, PyObject *args, PyObject *kwar
 	return NULL;
     tag = gtk_text_buffer_create_tag(GTK_TEXT_BUFFER(self->obj),
 				     tag_name, NULL);
-    return pygobject_new((GObject *)tag);
+     return pygobject_new((GObject *)tag);
 }
 %%
 override gtk_text_buffer_get_iter_at_line_offset kwargs
@@ -6246,7 +6285,9 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
 	gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
 			      PyInt_AsLong(id));
     }
+    pyg_block_threads();
     g_object_ref(self->obj); /* we don't own the first reference of windows */
+    pyg_unblock_threads();    
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -6299,7 +6340,9 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkMessageDialog object");
         return -1;
     }
+    pyg_block_threads();
     g_object_ref(self->obj); /* we don't own the first reference of windows */
+    pyg_unblock_threads();
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
