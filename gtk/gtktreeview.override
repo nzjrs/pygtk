@@ -48,7 +48,6 @@ ignore-glob
 %%
 ignore
   gtk_tree_view_new
-  gtk_tree_model_get
   gtk_tree_model_get_valist
   gtk_tree_row_reference_new_proxy
   gtk_tree_row_reference_inserted
@@ -2637,4 +2636,55 @@ _wrap_gtk_tree_store_reorder(PyGObject *self, PyObject *args, PyObject *kwargs)
     
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_tree_model_get args
+static PyObject *
+_wrap_gtk_tree_model_get(PyGObject *self, PyObject *args)
+{
+    PyObject *py_iter, *ret;
+    gint len, i, n_columns;
+    GtkTreeIter *iter;
+
+    len = PyTuple_Size(args) - 1;
+
+    if (len < 1) {
+	PyErr_SetString(PyExc_TypeError,
+			"gtk.TreeModel.get requires at least two arguments");
+	return NULL;
+    }
+
+    py_iter = PyTuple_GetItem(args, 0);
+ 
+    if (!pyg_boxed_check(py_iter, GTK_TYPE_TREE_ITER)) {
+        PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+        return NULL;
+    }
+    iter = pyg_boxed_get(py_iter, GtkTreeIter);
+
+    ret = PyTuple_New(len);
+
+    n_columns = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj));
+    for (i = 0; i < len; i++) {
+	GValue value = { 0, };
+	gint column;
+	PyObject *py_column = PyTuple_GetItem(args, i+1);
+
+	if (!PyInt_Check(py_column)) {
+	    PyErr_SetString(PyExc_TypeError, "column numbers must be ints");
+	    Py_DECREF(ret);
+	    return NULL;
+	}
+	column = PyInt_AsLong(py_column);
+	if (column < 0 || column >= n_columns) {
+	    PyErr_SetString(PyExc_ValueError, "column number is out of range");
+	    Py_DECREF(ret);
+	    return NULL;
+	}
+	gtk_tree_model_get_value(GTK_TREE_MODEL(self->obj), iter,
+				 column, &value);
+	PyTuple_SetItem(ret, i, pyg_value_as_pyobject(&value, TRUE));
+	g_value_unset(&value);
+    }
+    return ret;
 }
