@@ -360,25 +360,20 @@ linkend="method-gtktextiter--forward-to-tag-toggle">forward_to_tag_toggle</link>
 linkend="method-gtktextiter--backward-to-tag-toggle">backward_to_tag_toggle</link></methodname>
 	<methodparam><parameter role="keyword">tag</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktextiter- -forward-find-char">forward_find_char</link></methodname>
-    <methodparam><parameter role="keyword">pred</parameter></methodparam>
-    <methodparam><parameter role="keyword">user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">limit</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktextiter- -backward-find-char">backward_find_char</link></methodname>
-    <methodparam><parameter role="keyword">pred</parameter></methodparam>
-    <methodparam><parameter role="keyword">user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">limit</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
       <methodsynopsis language="python">
-	<methodname><link
-linkend="method-gtktextiter--forward-search">forward_search</link></methodname>
+	<methodname><link linkend="method-gtktextiter--forward-find-char">forward_find_char</link></methodname>
+	<methodparam><parameter role="keyword">pred</parameter></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter></methodparam>
+	<methodparam><parameter role="keyword">limit</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextiter--backward-find-char">backward_find_char</link></methodname>
+	<methodparam><parameter role="keyword">pred</parameter></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter></methodparam>
+	<methodparam><parameter role="keyword">limit</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextiter--forward-search">forward_search</link></methodname>
 	<methodparam><parameter role="keyword">str</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">flags</parameter></methodparam>
@@ -2402,73 +2397,111 @@ location.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-    <refsect2 id="method-gtktextiter- -forward-find-char">
+    <refsect2 id="method-gtktextiter--forward-find-char">
     <title>gtk.TextIter.forward_find_char</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>forward_find_char</methodname>
-    <methodparam><parameter role="keyword">pred</parameter></methodparam>
-    <methodparam><parameter role="keyword">user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">limit</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">pred</parameter>&nbsp;:</term>
-      <listitem><simpara>a function to be called on each character</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
-      <listitem><simpara>user data for <parameter>pred</parameter></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">limit</parameter>&nbsp;:</term>
-      <listitem><simpara>search limit, or <literal>None</literal> for none</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>whether a match was found</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Advances the textiter location, calling <parameter>pred</parameter> on each character. If
-<parameter>pred</parameter> returns <literal>TRUE</literal>, returns <literal>TRUE</literal> and stops scanning.
-If <parameter>pred</parameter> never returns <literal>TRUE</literal>, the textiter location is set to <parameter>limit</parameter> if
-<parameter>limit</parameter> is non-<literal>None</literal>, otherwise to the end textiter.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+	  <methodname>forward_find_char</methodname>
+	  <methodparam><parameter role="keyword">pred</parameter></methodparam>
+	  <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+	  <methodparam><parameter role="keyword">limit</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">pred</parameter>&nbsp;:</term>
+	  <listitem><simpara>a function to be called on each
+	  character</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>user data for
+	  <parameter>pred</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">limit</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktextiter"><classname>gtk.TextIter</classname></link>
+	  pointing at a position to end the search, or
+	  <literal>None</literal> for the end of the
+	  buffer.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if a match was
+	  found</simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
 
-  <refsect2 id="method-gtktextiter- -backward-find-char">
+      <para>The <methodname>forward_find_char</methodname>() method advances
+the textiter, calling the function specified by <parameter>pred</parameter>
+on each character. If <parameter>pred</parameter> returns
+<literal>TRUE</literal>, <methodname>forward_find_char</methodname> stops
+scanning and returns <literal>TRUE</literal>. If <parameter>pred</parameter>
+never returns <literal>TRUE</literal>, the textiter location is set to
+<parameter>limit</parameter> or the end textiter, if
+<parameter>limit</parameter> is <literal>None</literal>.</para>
+
+      <warning>
+	<para> This method is likely to be very slow since the Python
+function <parameter>pred</parameter> is called for every character.</para>
+      </warning>
+
+    </refsect2>
+
+  <refsect2 id="method-gtktextiter--backward-find-char">
     <title>gtk.TextIter.backward_find_char</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>backward_find_char</methodname>
-    <methodparam><parameter role="keyword">pred</parameter></methodparam>
-    <methodparam><parameter role="keyword">user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">limit</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">pred</parameter>&nbsp;:</term>
-      <listitem><simpara>function to be called on each character</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
-      <listitem><simpara>user data for <parameter>pred</parameter></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">limit</parameter>&nbsp;:</term>
-      <listitem><simpara>search limit, or <literal>None</literal> for none</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>whether a match was found</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Same as <link linkend="method-gtktextiter- -forward-find-char"><function>gtk.TextIter.forward_find_char()</function></link>, but goes backward from the textiter location.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <programlisting><methodsynopsis language="python">
+	  <methodname>backward_find_char</methodname>
+	  <methodparam><parameter role="keyword">pred</parameter></methodparam>
+	  <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+	  <methodparam><parameter role="keyword">limit</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">pred</parameter>&nbsp;:</term>
+	  <listitem><simpara>a function to be called on each
+	  character</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>user data for <parameter>pred</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">limit</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktextiter"><classname>gtk.TextIter</classname></link>
+	  pointing at a position to end the search, or
+	  <literal>None</literal> for the beginning of the
+	  buffer.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if a match was
+	  found</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>backward_find_char</methodname>() method is
+similar to the <link
+linkend="method-gtktextiter--forward-find-char"><methodname>forward_find_char()</methodname></link>
+method, but goes backward from the textiter location.</para>
+
+      <warning>
+	<para> This method is likely to be very slow since the Python
+function <parameter>pred</parameter> is called for every character.</para>
+      </warning>
+
+    </refsect2>
 
     <refsect2 id="method-gtktextiter--forward-search">
       <title>gtk.TextIter.forward_search</title>
