@@ -47,7 +47,7 @@
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcombobox--set-model">set_model</link></methodname>
-	<methodparam><parameter role="keyword">model</parameter></methodparam>
+	<methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcombobox--get-model">get_model</link></methodname>
@@ -490,7 +490,7 @@ linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>.
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>set_model</methodname>
-	  <methodparam><parameter role="keyword">model</parameter></methodparam>
+	  <methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -507,7 +507,12 @@ linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>.
 used by the combo box to the value specified by
 <parameter>model</parameter>. The "model" property will also be set to the
 value of <parameter>model</parameter>. A previously set model will be
-unset.</para>
+unset. If <parameter>model</parameter> is <literal>None</literal> or not
+specified, the old model will be unset.</para>
+
+      <note>
+        <para>In PyGTK 2.4.0 the model could not be <literal>None</literal>
+and did not default to <literal>None</literal>.</para>
 
     </refsect2>
 

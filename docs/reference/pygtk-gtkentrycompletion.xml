@@ -28,7 +28,7 @@
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkentrycompletion--set-model">set_model</link></methodname>
-	<methodparam><parameter role="keyword">model</parameter></methodparam>
+	<methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkentrycompletion--get-model">get_model</link></methodname>
@@ -290,7 +290,7 @@ the entry completion is attached to.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>set_model</methodname>
-	  <methodparam><parameter role="keyword">model</parameter></methodparam>
+	  <methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -309,7 +309,12 @@ the entry completion is attached to.</para>
 linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
 specified by <parameter>model</parameter> to be used with the entry
 completion. A previously set model will be removed before the new model
-is set.</para>
+is set. If <parameter>model</parameter> is <literal>None</literal> or not
+specified, the old model will be unset.</para>
+
+      <note>
+        <para>In PyGTK 2.4.0 the model could not be <literal>None</literal>
+and did not default to <literal>None</literal>.</para>
 
     </refsect2>
 
