@@ -6,7 +6,7 @@
     <refname>gtk.UIManager</refname>
 
     <refpurpose>construct menus and toolbars from an XML
-    description</refpurpose>
+    description (new in PyGTK 2.4)</refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -364,8 +364,9 @@ obvious:</para>
       </variablelist>
 
       <para>The "position" attribute determines where a constructed widget
-is positioned wrt. to its siblings in the partially constructed tree. If it
-is "top", the widget is prepended, otherwise it is appended.</para>
+is positioned with respect to its siblings in the partially constructed
+tree. If it is "top", the widget is prepended, otherwise it is
+appended.</para>
 
     </refsect2>
 
@@ -379,7 +380,7 @@ demerge them later.</para>
 
       <para>Merging is done based on the name of the XML elements. Each
 element is identified by a path which consists of the names of its
-anchestors, separated by slashes. For example, the menuitem named "Left" in
+ancestors, separated by slashes. For example, the menuitem named "Left" in
 the example above has the path
 <filename>/ui/menubar/JustifyMenu/Left</filename> and the toolitem with the
 same name has path
@@ -415,9 +416,11 @@ an unfortunate position.</para>
     <refsect2>
       <title>Empty Menus</title>
 
-      <para>Submenus pose similar problems to separators inconnection with
+      <para>Submenus pose similar problems to separators in connection with
 merging. It is impossible to know in advance whether they will end up empty
-after merging. GtkUIManager offers two ways to treat empty submenus:</para>
+after merging. <link
+linkend="class-gtkuimanager"><classname>gtk.UIManager</classname></link>
+offers two ways to treat empty submenus:</para>
 
     <itemizedlist>
       <listitem>
@@ -429,7 +432,7 @@ after merging. GtkUIManager offers two ways to treat empty submenus:</para>
       </listitem>
    </itemizedlist>
 
-      <para>The behaviour is chosen based on the "is_important" property of
+      <para>The behavior is chosen based on the "is_important" property of
 the action to which the submenu is associated.</para>
 
     </refsect2>
@@ -581,7 +584,7 @@ same name in later groups.</para>
 removes the <link
 linkend="class-gtkactiongroup"><classname>gtk.ActionGroup</classname></link>
 specified by <parameter>action_group</parameter> from the list of
-associatedaction groups.</para>
+associated action groups.</para>
 
     </refsect2>
 
@@ -1101,7 +1104,8 @@ any)</simpara></listitem>
       </note>
 
       <para>The "connect-proxy" signal is emitted after connecting the proxy
-widget specified by <parameter>widget</parameter> to the gtkAction specified
+widget specified by <parameter>widget</parameter> to the <link
+linkend="class-gtkaction"><classname>gtk.Action</classname></link> specified
 by <parameter>action</parameter> in the group. This is intended for simple
 customizations for which a custom action class would be too clumsy,
 e.g. showing tooltips for menuitems in the statusbar.</para>
