@@ -193,7 +193,7 @@ linkend="method-gdkwindow--clear-area-e">clear_area_e</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gdkwindow--raise">raise</link></methodname>
+linkend="method-gdkwindow--raise_">raise_</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -1592,20 +1592,26 @@ but also generates an expose event for the cleared area.</para>
 
     </refsect2>
 
-    <refsect2 id="method-gdkwindow--raise">
-      <title>gtk.gdk.Window.raise</title>
+    <refsect2 id="method-gdkwindow--raise_">
+      <title>gtk.gdk.Window.raise_</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>raise</methodname>
+	  <methodname>raise_</methodname>
 	  <methodparam></methodparam>  </methodsynopsis></programlisting>
 
-      <para>The <methodname>raise</methodname>() method raises the window to
+      <para>The <methodname>raise_</methodname>() method raises the window to
 the top of the Z-order (stacking order), so that other windows with the same
 parent window appear below the window. If the window is a toplevel, the
 window manager may choose to deny the request to move the window in the
 Z-order. Therefore, the <link
-linkend="method-gdkwindow--raise"><methodname>raise</methodname>()</link>
+linkend="method-gdkwindow--raise_"><methodname>raise_</methodname>()</link>
 method only requests the restack, it does not guarantee it.</para>
+
+	<note><para>
+		This method is called <methodname>raise</methodname>() in
+		the C API, but was renamed <methodname>raise_</methodname>()
+		since <literal>raise</literal> is a reserved Python keyword.
+	</para></note>
     </refsect2>
 
     <refsect2 id="method-gdkwindow--lower">
