@@ -60,6 +60,10 @@ ignore
   gtk_tree_row_reference_deleted
   gtk_tree_row_reference_reordered
   gtk_tree_view_column_set_cell_data_func
+  gtk_tree_view_column_pack_start
+  gtk_tree_view_column_pack_end
+  gtk_tree_view_column_clear
+  gtk_tree_view_column_set_attributes
 %%
 override gtk_tree_view_get_visible_rect noargs
 static PyObject *
@@ -276,41 +280,6 @@ _wrap_gtk_tree_view_insert_column_with_data_func (PyGObject *self,
         cunote,
         pygtk_custom_destroy_notify);
     return PyInt_FromLong(retval);
-}
-%%
-override gtk_tree_view_column_set_attributes kwargs
-static PyObject *
-_wrap_gtk_tree_view_column_set_attributes(PyGObject *self, PyObject *args,
-                                          PyObject *kwargs)
-{
-    PyObject *py_cell, *key, *item;
-    GtkCellRenderer *cell;
-    gint i = 0;
-
-    if (!PyArg_ParseTuple(args, "O!:GtkTreeViewColumn.set_attributes",
-                          &PyGtkCellRenderer_Type, &py_cell))
-        return NULL;
-    cell = GTK_CELL_RENDERER(pygobject_get(py_cell));
-    gtk_tree_view_column_clear_attributes(GTK_TREE_VIEW_COLUMN(self->obj),
-                                          cell);
-    if (kwargs) {
-        while (PyDict_Next(kwargs, &i, &key, &item)) {
-            gchar *attr = PyString_AsString(key);
-
-            if (!PyInt_Check(item)) {
-                gchar err[128];
-                g_snprintf(err, sizeof(err),
-                           "%s must be an integer column number", attr);
-                PyErr_SetString(PyExc_TypeError, err);
-                return NULL;
-            }
-            gtk_tree_view_column_add_attribute(GTK_TREE_VIEW_COLUMN(self->obj),
-                                               cell, attr,
-                                               PyInt_AsLong(item));
-        }
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
 }
 %%
 override gtk_tree_view_get_path_at_pos kwargs
