@@ -75,28 +75,32 @@ static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
  * Python/C function; thus, the initial lock count will always be one.
  */
 #  define INITIAL_LOCK_COUNT 1
-#  define PyGTK_BLOCK_THREADS                                              \
-   {                                                                       \
-     gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));   \
-     if (counter == -INITIAL_LOCK_COUNT) {                                 \
-       PyThreadState *_save;                                               \
-       _save = g_static_private_get(&pythreadstate_key);                   \
-       Py_BLOCK_THREADS;                                                   \
-     }                                                                     \
-     counter++;                                                            \
-     g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);   \
+#  define PyGTK_BLOCK_THREADS                                                \
+   {                                                                         \
+     if ( !getenv("PYGTK_NO_THREADS") ) {                                    \
+         gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key)); \
+         if (counter == -INITIAL_LOCK_COUNT) {                               \
+           PyThreadState *_save;                                             \
+           _save = g_static_private_get(&pythreadstate_key);                 \
+           Py_BLOCK_THREADS;                                                 \
+         }                                                                   \
+         counter++;                                                          \
+         g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL); \
+      }                                                                      \
    }
 
-#  define PyGTK_UNBLOCK_THREADS                                            \
-   {                                                                       \
-     gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));   \
-     counter--;                                                            \
-     if (counter == -INITIAL_LOCK_COUNT) {                                 \
-       PyThreadState *_save;                                               \
-       Py_UNBLOCK_THREADS;                                                 \
-       g_static_private_set(&pythreadstate_key, _save, NULL);              \
-     }                                                                     \
-     g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);   \
+#  define PyGTK_UNBLOCK_THREADS                                              \
+   {                                                                         \
+      if ( !getenv("PYGTK_NO_THREADS") ) {                                   \
+         gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key)); \
+         counter--;                                                          \
+         if (counter == -INITIAL_LOCK_COUNT) {                               \
+           PyThreadState *_save;                                             \
+           Py_UNBLOCK_THREADS;                                               \
+           g_static_private_set(&pythreadstate_key, _save, NULL);            \
+         }                                                                   \
+         g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL); \
+      }                                                                      \
    }
 
 
@@ -7162,7 +7166,7 @@ void init_gtk() {
 #ifdef WITH_THREAD
      /* it is required that this function be called to enable the thread
       * safety functions */
-     if (!g_threads_got_initialized)
+     if ( !g_threads_got_initialized && !getenv("PYGTK_NO_THREADS") )
          g_thread_init(NULL);
 #endif
 
