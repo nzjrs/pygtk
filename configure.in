@@ -86,19 +86,25 @@ export_dynamic=`(./libtool --config; echo eval echo \\$export_dynamic_flag_spec)
 
 dnl glib
 AM_PATH_GLIB_2_0(glib_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],gobject $extra_mods)
-GLIB_LIBS=`echo $GLIB_LIBS | sed -e "s/$export_dynamic//"`
+if test -n "$export_dynamic"; then
+  GLIB_LIBS=`echo $GLIB_LIBS | sed -e "s/$export_dynamic//"`
+fi
 
 dnl atk
 PKG_CHECK_MODULES(ATK, atk >= atk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
 AC_SUBST(ATK_CFLAGS)
 AC_SUBST(ATK_LIBS)
-ATK_LIBS=`echo $ATK_LIBS | sed -e "s/$export_dynamic//"`
+if test -n "$export_dynamic"; then
+  ATK_LIBS=`echo $ATK_LIBS | sed -e "s/$export_dynamic//"`
+fi
 
 dnl pango
 PKG_CHECK_MODULES(PANGO, pango >= pango_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
-PANGO_LIBS=`echo $PANGO_LIBS | sed -e "s/$export_dynamic//"`
+if test -n "$export_dynamic"; then
+  PANGO_LIBS=`echo $PANGO_LIBS | sed -e "s/$export_dynamic//"`
+fi
 
 dnl gtk+
 AM_PATH_GTK_2_0(gtk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],$extra_mods)
@@ -112,7 +118,9 @@ PKG_CHECK_MODULES(LIBGLADE, libglade-2.0 >= libglade_required_version,
 AC_SUBST(LIBGLADE_CFLAGS)
 AC_SUBST(LIBGLADE_LIBS)
 AM_CONDITIONAL(BUILD_LIBGLADE, $build_libglade)
-LIBGLADE_LIBS=`echo $LIBGLADE_LIBS | sed -e "s/$export_dynamic//"`
+if test -n "$export_dynamic"; then
+  LIBGLADE_LIBS=`echo $LIBGLADE_LIBS | sed -e "s/$export_dynamic//"`
+fi
 
 dnl gtkgl
 build_gtkgl=false
@@ -122,7 +130,9 @@ PKG_CHECK_MODULES(GTKGL, gtkgl-2.0 >= gtkgl_required_version,
 AC_SUBST(GTKGL_CFLAGS)
 AC_SUBST(GTKGL_LIBS)
 AM_CONDITIONAL(BUILD_GTKGL, $build_gtkgl)
-GTKGL_LIBS=`echo $GTKGL_LIBS | sed -e "s/$export_dynamic//"`
+if test -n "$export_dynamic"; then
+  GTKGL_LIBS=`echo $GTKGL_LIBS | sed -e "s/$export_dynamic//"`
+fi
 
 
 AC_ARG_ENABLE(numpy,
@@ -133,15 +143,8 @@ dnl checks to see if Numeric Python is installed.
 if test "x$enable_numpy" != xno; then
   save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
-  AC_CHECK_HEADER(arrayobject.h,
-    [AC_DEFINE(HAVE_NUMPY)
-     AC_DEFINE(HAVE_ARRAYOBJECT_H)],
-    [AC_CHECK_HEADER(Extensions/arrayobject.h,
-      [AC_DEFINE(HAVE_NUMPY)
-       AC_DEFINE(HAVE_EXTENSIONS_ARRAYOBJECT_H)],
-      [AC_CHECK_HEADER(Numeric/arrayobject.h,
-        [AC_DEFINE(HAVE_NUMPY)
-         AC_DEFINE(HAVE_NUMERIC_ARRAYOBJECT_H)])])])
+  AC_CHECK_HEADER(Numeric/arrayobject.h,
+    [AC_DEFINE(HAVE_NUMPY,,[whether to include numeric python support])])
   CPPFLAGS="$save_CPPFLAGS"
 fi
 

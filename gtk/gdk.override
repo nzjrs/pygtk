@@ -11,6 +11,10 @@ headers
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
 
+#ifdef HAVE_NUMPY
+#  include <Numeric/arrayobject.h>
+#endif
+
 extern PyTypeObject PyGtkWidget_Type;
 
 %%
@@ -20,6 +24,9 @@ import gobject.GObject as PyGObject_Type
 import pango.Context as PyPangoContext_Type
 import pango.Font as PyPangoFont_Type
 import pango.Layout as PyPangoLayout_Type
+%%
+init
+    import_array();
 %%
 ignore-glob
   *_get_type
@@ -1852,6 +1859,35 @@ _wrap_gdk_pixbuf_render_pixmap_and_mask(PyGObject *self, PyObject *args,
     
     ret = Py_BuildValue("(NN)", pypixmap, pymask);
     return ret;
+}
+%%
+override-attr GdkPixbuf.pixel_array
+static PyObject *
+_wrap_gdk_pixbuf__get_pixel_array(PyGObject *self, void *closure)
+{
+#ifdef HAVE_NUMPY
+    GdkPixbuf *pixbuf = GDK_PIXBUF(self->obj);
+    PyArrayObject *array;
+    int dims[3] = { 0, 0, 3 };
+
+    dims[0] = gdk_pixbuf_get_width(pixbuf);
+    dims[1] = gdk_pixbuf_get_height(pixbuf);
+    if (gdk_pixbuf_get_has_alpha(pixbuf))
+	dims[2] = 4;
+    array = (PyArrayObject *)PyArray_FromDimsAndData(3, dims, PyArray_UBYTE,
+					(char *)gdk_pixbuf_get_pixels(pixbuf));
+    if (array == NULL)
+	return NULL;
+
+    array->strides[0] = gdk_pixbuf_get_rowstride(pixbuf);
+    /* the array holds a ref to the pixbuf pixels through this wrapper*/
+    Py_INCREF(self);
+    array->base = (PyObject *)self;
+    return PyArray_Return(array);
+#else
+    PyErr_SetString(PyExc_RuntimeError, "pygtk was not compiled with Numeric Python support");
+    return NULL;
+#endif
 }
 %%
 override gdk_pixbuf_get_pixels noargs
