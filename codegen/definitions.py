@@ -308,9 +308,12 @@ class MethodDef(Definition):
                 raise RuntimeError, "definition missing required %s" % (item,)
             
     def merge(self, old, parmerge):
+        self.caller_owns_return = old.caller_owns_return
+        self.varargs = old.varargs
 	# here we merge extra parameter flags accross to the new object.
         if not parmerge:
             self.params = deepcopy(old.params)
+            return
 	for i in range(len(self.params)):
 	    ptype, pname, pdflt, pnull = self.params[i]
 	    for p2 in old.params:
@@ -325,6 +328,8 @@ class MethodDef(Definition):
 	    fp.write('  (c-name "' + self.c_name + '")\n')
 	if self.typecode:
 	    fp.write('  (gtype-id "' + self.typecode + '")\n')
+        if self.caller_owns_return:
+	    fp.write('  (caller-owns-return #t)\n')
 	if self.ret:
 	    fp.write('  (return-type "' + self.ret + '")\n')
 	if self.deprecated:
@@ -414,8 +419,11 @@ class FunctionDef(Definition):
     _method_write_defs = MethodDef.__dict__['write_defs']
 
     def merge(self, old, parmerge):
+        self.caller_owns_return = old.caller_owns_return
+        self.varargs = old.varargs
         if not parmerge:
             self.params = deepcopy(old.params)
+            return
 	# here we merge extra parameter flags accross to the new object.
         def merge_param(param):
 	    for old_param in old.params:
@@ -458,6 +466,8 @@ class FunctionDef(Definition):
 	    fp.write('  (c-name "' + self.c_name + '")\n')
 	if self.typecode:
 	    fp.write('  (gtype-id "' + self.typecode + '")\n')
+        if self.caller_owns_return:
+	    fp.write('  (caller-owns-return #t)\n')
 	if self.ret:
 	    fp.write('  (return-type "' + self.ret + '")\n')
 	if self.deprecated:
@@ -482,4 +492,5 @@ class FunctionDef(Definition):
                 assert False, "strange parameter list %r" % self.params[0]
 	if self.varargs:
 	    fp.write('  (varargs #t)\n')
+
 	fp.write(')\n\n')

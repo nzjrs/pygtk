@@ -53,7 +53,7 @@ def strip_comments(buf):
 
 obj_name_pat = "[A-Z][a-z]*[A-Z][A-Za-z0-9]*"
 
-split_prefix_pat = re.compile('([A-Z][a-z]*)([A-Za-z0-9]+)')
+split_prefix_pat = re.compile('([A-Z]+[a-z]*)([A-Za-z0-9]+)')
 
 def find_obj_defs(buf, objdefs=[]):
     """
@@ -177,7 +177,6 @@ def write_obj_defs(objdefs, output):
         if m:
             cmodule = m.group(1)
             cname = m.group(2)
-
         fp.write('(define-object ' + cname + '\n')
         if cmodule:
             fp.write('  (in-module "' + cmodule + '")\n')

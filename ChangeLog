@@ -1,3 +1,16 @@
+2004-11-14  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* codegen/definitions.py (FunctionDef.write_defs): Write
+	caller-owns-return.
+	(MethodDef.write_defs): idem.
+	(MethodDef.merge): Merge flags 'caller_owns_return' and
+	'vargargs'; if parameter parmerge is false, return right after
+	copying old parameter list, to effectively avoid merging.
+	(FunctionDef.merge): idem.
+
+	* codegen/h2def.py (split_prefix_pat): Allow prefix to begin with
+	more than one capital letter.  Fixes splitting of GConfXxx names.
+
 2004-11-14  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gtk.override (_wrap_gtk_image_get_icon_name): Implement.
