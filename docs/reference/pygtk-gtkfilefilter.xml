@@ -260,7 +260,7 @@ method.</para>
 allowing the mime type specified by <parameter>mime_type</parameter> to be
 matched. Sets the needs value to
 <literal>gtk.FILE_FILTER_MIME_TYPE</literal> (see the <link
-linkend="method-gtkfilefilter--get-needs"><methodname>get_needs</methodname>()</link>
+linkend="method-gtkfilefilter--get-needed"><methodname>get_needed</methodname>()</link>
 method for more information).</para>
 
     </refsect2>
@@ -287,7 +287,7 @@ method for more information).</para>
 allowing the shell style glob pattern specified by
 <parameter>pattern</parameter> to filter file names. Sets the needs value to
 <literal>gtk.FILE_FILTER_DISPLAY_NAME</literal> (see the <link
-linkend="method-gtkfilefilter--get-needs"><methodname>get_needs</methodname>()</link>
+linkend="method-gtkfilefilter--get-needed"><methodname>get_needed</methodname>()</link>
 method for more information).</para>
 
     <para>The pattern rule uses file globbing to match the file display
@@ -386,14 +386,14 @@ chooser.</simpara>
       <para>The signature of <parameter>func</parameter> is:</para>
 
       <programlisting>
-  def filefilterfunction(filefilter, data):
+  def filefilterfunction(filter_info, data):
 </programlisting>
 
-      <para>where <parameter>filefilter</parameter> is the <link
-linkend="class-gtkfilefilter"><classname>gtk.FileFilter</classname></link>
-that contains the custom filter function rule and
-<parameter>data</parameter> is the value passed in as the
-<parameter>data</parameter> parameter in the
+      <para>where <parameter>filter_info</parameter> is a 4-tuple where each
+item is either a string or <literal>None</literal>. The strings correspond
+to: the full pathname of the file, the URI of the file, the display name of
+the file and the MIME type of the file. <parameter>data</parameter> is the
+value passed in as the <parameter>data</parameter> parameter in the
 <methodname>add_custom</methodname>() method. Using a custom filter function
 is the only way to filter files based on file URIs or full file
 pathnames.</para>
