@@ -108,10 +108,18 @@ PyGtkBuild.user_options.append(('enable-threading', None,
 # GObject
 gobject = PkgConfigExtension(name='gobject', pkc_name='gobject-2.0',
                              pkc_version=GOBJECT_REQUIRED,
-                             sources=['pygboxed.c',
-                                      'pygobject.c',
-                                      'pygtype.c',
-                                      'gobjectmodule.c'])
+                             sources=['gobject/gobjectmodule.c',
+                                      'gobject/pygboxed.c',
+                                      'gobject/pygenum.c',
+                                      'gobject/pygflags.c',
+                                      'gobject/pygobject.c',
+                                      'gobject/pygmaincontext.c',
+                                      'gobject/pygmainloop.c',
+                                      'gobject/pygparamspec.c',
+                                      'gobject/pygointer.c',
+                                      'gobject/pygtype.c',
+                                      ])
+
 # Atk
 atk = TemplateExtension(name='atk', pkc_name='atk',
                         pkc_version=ATK_REQUIRED,
@@ -174,7 +182,7 @@ if not have_pkgconfig():
 
 if gobject.can_build():
     ext_modules.append(gobject)
-    data_files.append((INCLUDE_DIR, ('pygobject.h',)))
+    data_files.append((INCLUDE_DIR, ('gobject/pygobject.h',)))
     data_files.append((CODEGEN_DIR, list_files(os.path.join('codegen', '*.py'))))
 else:
     print
