@@ -112,6 +112,18 @@ if test -n "$export_dynamic"; then
   GTK_LIBS=`echo $GTK_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
+dnl Check for newer gtk+ versions, for conditional compiling of new features
+PYGTK_CODEGEN_DEFINES=""
+AC_SUBST(PYGTK_CODEGEN_DEFINES)
+
+AC_MSG_CHECKING([for GTK+ 2.4])
+if version=$(pkg-config --modversion "gtk+-2.0 >= 2.3.4" 2> /dev/null); then
+	PYGTK_CODEGEN_DEFINES="-DHAVE_GTK24";
+	AC_MSG_RESULT([found (version $version)])
+else
+	AC_MSG_RESULT([not found])
+fi
+
 dnl libglade
 build_libglade=false
 PKG_CHECK_MODULES(LIBGLADE, libglade-2.0 >= libglade_required_version,

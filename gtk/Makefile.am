@@ -93,6 +93,7 @@ EXTRA_DIST += libglade.override
 .defs.c:
 	(cd $(srcdir) \
 	 && $(PYTHON) ../codegen/codegen.py \
+	   $(PYGTK_CODEGEN_DEFINES) \
 	    --register ../pango-types.defs \
 	    --register ../atk-types.defs \
 	    --register gdk-types.defs \
