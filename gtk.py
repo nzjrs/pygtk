@@ -327,7 +327,10 @@ class GtkWidget(GtkObject):
 		_gtk.gtk_drag_set_default_icon(colormap, pixmap, mask,
 					       hot_x, hot_y)
 	def drag_get_source_widget(self, context):
-		return _obj2inst(_gtk.gtk_drag_get_source_widget(context))
+		widget = _gtk.gtk_drag_get_source_widget(context)
+		if widget:
+			return _obj2inst(widget)
+		return None
 	def drag_status(self, context, action, time):
 		_gtk.gdk_drag_status(context, action, time)
 	def draw(self, rect):

@@ -294,6 +294,18 @@ WATCH = 150
 XTERM = 152
 CURSOR_IS_PIXMAP = -1
 
+# GdkWindowClass's
+INPUT_OUTPUT = 0
+INPUT_ONLY = 1
+
+# GdkWindowType's
+WINDOW_ROOT = 0
+WINDOW_TOPLEVEL = 1
+WINDOW_CHILD = 2
+WINDOW_DIALOG = 3
+WINDOW_TEMP = 4
+WINDOW_PIXMAP = 5
+WINDOW_FOREIGN = 6
 
 # these are the Key Symbols for GDK
 # they were created with sed -n 's/#define GDK)\([^ ]*\)/\1 =/p' <gdkkeysyms.h

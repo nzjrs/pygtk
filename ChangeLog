@@ -1,4 +1,26 @@
+2001-02-13  James Henstridge  <james@daa.com.au>
+
+	Apply patch from Stephan R.A. Deibel <sdeibel@archaeopteryx.com>
+
+	* GDK.py: add new constants.
+
+	* gtkmodule.c (PyGdkColor_Alloc): implement
+	(PyGdkWindow_Raise): rename GdkWindow._raise -> raise_.  Old name
+	still works.  This is more consistent with other python modules to
+	get rid of keyword conflicts.
+	(PyGdkWindow_Show): added method.
+	(PyGdkWindow_Hide): added method.
+	(PyGdkWindow_Destroy): added method.
+	(PyGdkWindow_GetAttr): add origin, deskrelative_origin and
+	root_origin attributes, each of which is a tuple of integers.
+	(_wrap_gdk_window_new): new function.
+
 2001-02-11  James Henstridge  <james@daa.com.au>
+
+	* gtk.py (GtkWidget.drag_get_source_widget): fix up wrapper.
+
+	* gtkmodule.c (_wrap_gtk_drag_get_source_widget): guard against
+	NULL return.
 
 	* generate/gtkcontainers.defs (GtkSocket): fix parent type.
 

@@ -1640,7 +1640,7 @@ static PyObject *PyGdkWindow_PropertyDelete(PyGdkWindow_Object *self,
 
 static PyObject *PyGdkWindow_Raise(PyGdkWindow_Object *self,
 				   PyObject *args) {
-  if (!PyArg_ParseTuple(args, ":GdkWindow._raise"))
+  if (!PyArg_ParseTuple(args, ":GdkWindow.raise_"))
     return NULL;
   gdk_window_raise(self->obj);
   Py_INCREF(Py_None);
@@ -1730,12 +1730,40 @@ static PyObject *PyGdkWindow_KeyboardUngrab(PyGdkWindow_Object *self,
   return Py_None;
 }
 
+static PyObject *PyGdkWindow_Show(PyGdkWindow_Object *self,
+				  PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":GdkWindow._show"))
+    return NULL;
+  gdk_window_show(self->obj);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject *PyGdkWindow_Hide(PyGdkWindow_Object *self,
+				  PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":GdkWindow._hide"))
+    return NULL;
+  gdk_window_hide(self->obj);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject *PyGdkWindow_Destroy(PyGdkWindow_Object *self,
+				     PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":GdkWindow._destroy"))
+    return NULL;
+  gdk_window_destroy(self->obj);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyMethodDef PyGdkWindow_methods[] = {
   {"new_gc", (PyCFunction)PyGdkWindow_NewGC, METH_VARARGS|METH_KEYWORDS, NULL},
   {"set_cursor", (PyCFunction)PyGdkWindow_SetCursor, METH_VARARGS, NULL},
   {"property_get", (PyCFunction)PyGdkWindow_PropertyGet, METH_VARARGS, NULL},
   {"property_change", (PyCFunction)PyGdkWindow_PropertyChange, METH_VARARGS, NULL},
   {"property_delete", (PyCFunction)PyGdkWindow_PropertyDelete, METH_VARARGS, NULL},
+  {"raise_", (PyCFunction)PyGdkWindow_Raise, METH_VARARGS, NULL},
   {"_raise", (PyCFunction)PyGdkWindow_Raise, METH_VARARGS, NULL},
   {"lower", (PyCFunction)PyGdkWindow_Lower, METH_VARARGS, NULL},
   {"input_get_pointer", (PyCFunction)PyGdkWindow_InputGetPointer, METH_VARARGS, NULL},
@@ -1743,6 +1771,9 @@ static PyMethodDef PyGdkWindow_methods[] = {
   {"pointer_ungrab", (PyCFunction)PyGdkWindow_PointerUngrab, METH_VARARGS, NULL},
   {"keyboard_grab", (PyCFunction)PyGdkWindow_KeyboardGrab, METH_VARARGS, NULL},
   {"keyboard_ungrab", (PyCFunction)PyGdkWindow_KeyboardUngrab, METH_VARARGS, NULL},
+  {"_show", (PyCFunction)PyGdkWindow_Show, METH_VARARGS, NULL},
+  {"_hide", (PyCFunction)PyGdkWindow_Hide, METH_VARARGS, NULL},
+  {"_destroy", (PyCFunction)PyGdkWindow_Destroy, METH_VARARGS, NULL},
   {NULL, 0, 0, NULL}
 };
 
@@ -1753,8 +1784,9 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
   GdkModifierType p_mask;
 
   if (!strcmp(key, "__members__"))
-    return Py_BuildValue("[sssssssssssss]", "children", "colormap", "depth",
-			 "height", "parent", "pointer", "pointer_state",
+    return Py_BuildValue("[ssssssssssssssss]", "children", "colormap",
+			 "depth", "deskrelative_origin", "height", "origin",
+			 "parent", "pointer", "pointer_state", "root_origin",
 			 "toplevel", "type", "width", "x", "xid", "y");
   if (!strcmp(key, "width")) {
     gdk_window_get_size(win, &x, NULL);
@@ -1814,6 +1846,21 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
   if (!strcmp(key, "depth")) {
     gdk_window_get_geometry(win, NULL, NULL, NULL, NULL, &x);
     return PyInt_FromLong(x);
+  }
+  if (!strcmp(key, "origin")) {
+    gint x, y;
+    gdk_window_get_origin(win, &x, &y);
+    return Py_BuildValue("(ii)", x, y);
+  }
+  if (!strcmp(key, "deskrelative_origin")) {
+    gint x, y;
+    gdk_window_get_deskrelative_origin(win, &x, &y);
+    return Py_BuildValue("(ii)", x, y);
+  }
+  if (!strcmp(key, "origin")) {
+    gint x, y;
+    gdk_window_get_root_origin(win, &x, &y);
+    return Py_BuildValue("(ii)", x, y);
   }
 #ifdef WITH_XSTUFF
   if (!strcmp(key, "xid"))
@@ -2043,10 +2090,11 @@ PyGdkColormap_Dealloc(PyGdkColormap_Object *self) {
 
 static PyObject *
 PyGdkColor_Alloc(PyGdkColormap_Object *self, PyObject *args) {
+  gint red = 0, green = 0, blue = 0;
   GdkColor color = {0, 0, 0, 0};
   gchar *color_name;
-  if (!PyArg_ParseTuple(args, "hhh:GdkColormap.alloc",
-			&(color.red), &(color.green), &(color.blue))) {
+  if (!PyArg_ParseTuple(args, "iii:GdkColormap.alloc",
+			&red, &green, &blue)) {
     PyErr_Clear();
     if (!PyArg_ParseTuple(args, "s:GdkColormap.alloc", &color_name))
       return NULL;
@@ -2054,6 +2102,10 @@ PyGdkColor_Alloc(PyGdkColormap_Object *self, PyObject *args) {
       PyErr_SetString(PyExc_TypeError, "unable to parse color specification");
       return NULL;
     }
+  } else {
+    color.red = red;
+    color.green = green;
+    color.blue = blue;
   }
   if (!gdk_color_alloc(self->obj, &color)) {
     PyErr_SetString(PyExc_RuntimeError, "couldn't allocate color");
@@ -5224,7 +5276,20 @@ static PyObject *_wrap_gtk_drag_source_set(PyObject *self, PyObject *args) {
   return Py_None;
 }
 
-PyObject *_wrap_gtk_drag_begin(PyObject *self, PyObject *args) {
+static PyObject *_wrap_gtk_drag_get_source_widget(PyObject *self, PyObject *args) {
+    PyObject *context;
+    GtkWidget *ret;
+
+    if (!PyArg_ParseTuple(args, "O!:gtk_drag_get_source_widget", &PyGdkDragContext_Type, &context))
+        return NULL;
+    ret = gtk_drag_get_source_widget(PyGdkDragContext_Get(context));
+    if (ret)
+      return PyGtk_New((GtkObject *)ret);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gtk_drag_begin(PyObject *self, PyObject *args) {
   PyObject *widget, *py_list, *py_actions, *event;
   GdkDragAction actions;
   gint button, n_targets, i;
@@ -5664,7 +5729,7 @@ static PyObject *_wrap_gdk_draw_lines(PyObject *self, PyObject *args) {
     Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "hh", &(points[i].x), &(points[i].y))) {
       PyErr_Clear();
-      PyErr_SetString(PyExc_TypeError, "sequence member not a 2-tuple");
+      PyErr_SetString(PyExc_TypeError, "sequence member not a 2-tuple, or coordinates out of range");
       g_free(points);
       return NULL;
     }
@@ -6475,6 +6540,145 @@ static PyObject *_wrap_gdk_draw_array(PyObject *self, PyObject *args) {
 }
 #endif
 
+static PyObject *_wrap_gdk_window_new(PyObject *self, PyObject *args) {
+    PyObject *parent;
+    PyObject *attr_map;
+    GdkWindow* gdk_parent;
+    GdkWindow* gdk_win;
+    PyObject* pygdk_win;
+    GdkWindowAttr attr;
+    guint attr_mask = 0;
+    PyObject *tmp;
+     
+    // Parse args
+    if (!PyArg_ParseTuple(args, "OO!:gdk_window_new", &parent, &PyDict_Type,
+			  &attr_map))
+	return NULL;
+ 
+    if (parent == Py_None) 
+	gdk_parent = NULL;
+    else if (PyGdkWindow_Check(parent))
+	gdk_parent = ((PyGdkWindow_Object *) parent)->obj;
+    else {
+	PyErr_SetString(PyExc_TypeError, "window must be a PyGdkWindow or None");
+	return NULL;
+    }
+
+    // Fill in attribs
+    tmp = PyDict_GetItemString(attr_map, "window_type");
+    if (tmp == NULL) {
+	PyErr_SetString(PyExc_ValueError, "window_type value must be specified");
+	return NULL;
+    }
+    else {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "window_type value must be an int");
+	    return NULL;
+	}
+	attr.window_type = PyInt_AsLong(tmp);
+    }
+    tmp = PyDict_GetItemString(attr_map, "event_mask");
+    if (tmp == NULL) {
+	PyErr_SetString(PyExc_ValueError, "event_mask value must be specified");
+	return NULL;
+    }
+    else {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "event_mask value must be an int");
+	    return NULL;
+	}
+	attr.event_mask = PyInt_AsLong(tmp);
+    }
+    tmp = PyDict_GetItemString(attr_map, "width");
+    if (tmp == NULL) {
+	PyErr_SetString(PyExc_ValueError, "width value must be specified");
+	return NULL;
+    }
+    else {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "width value must be an int");
+	    return NULL;
+	}
+	attr.width = PyInt_AsLong(tmp);
+    }
+    tmp = PyDict_GetItemString(attr_map, "height");
+    if (tmp == NULL) {
+	PyErr_SetString(PyExc_ValueError, "height value must be specified");
+	return NULL;
+    }
+    else {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "height value must be an int");
+	    return NULL;
+	}
+	attr.height = PyInt_AsLong(tmp);
+    }
+    tmp = PyDict_GetItemString(attr_map, "wclass");
+    if (tmp != NULL) {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "wmclass value must be an int");
+	    return NULL;
+	}
+	attr.wclass = PyInt_AsLong(tmp);
+	attr_mask |= GDK_WA_WMCLASS;
+    }
+    /*
+      tmp = PyDict_GetItemString(attr_map, "visual");
+      if (tmp != NULL) {
+      if (!PyGtkVisual_Check(tmp)) {
+      PyErr_SetString(PyExc_TypeError, "visual value must be a PyGtkVisual");
+      return NULL;
+      }
+      attr.visual = ((PyGtkVisual*)tmp)->obj;
+      attr_mask |= GDK_WA_VISUAL;
+      }
+    */
+    tmp = PyDict_GetItemString(attr_map, "colormap");
+    if (tmp != NULL) {
+	if (!PyGdkColormap_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "colormap value must be a PyGdkColormap");
+	    return NULL;
+	}
+	attr.colormap = ((PyGdkColormap_Object*)tmp)->obj;
+	attr_mask |= GDK_WA_COLORMAP;
+    }
+    tmp = PyDict_GetItemString(attr_map, "override_redirect");
+    if (tmp != NULL) {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "override_redirect value must be an int");
+	    return NULL;
+	}
+	attr.override_redirect = PyInt_AsLong(tmp);
+	attr_mask |= GDK_WA_NOREDIR;
+    }
+    tmp = PyDict_GetItemString(attr_map, "x");
+    if (tmp != NULL) {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "x value must be an int");
+	    return NULL;
+	}
+	attr.x = PyInt_AsLong(tmp);
+	attr_mask |= GDK_WA_X;
+    }
+    tmp = PyDict_GetItemString(attr_map, "y");
+    if (tmp != NULL) {
+	if (!PyInt_Check(tmp)) {
+	    PyErr_SetString(PyExc_TypeError, "y value must be an int");
+	    return NULL;
+	}
+	attr.y = PyInt_AsLong(tmp);
+	attr_mask |= GDK_WA_Y;
+    }
+ 
+    gdk_win = gdk_window_new(gdk_parent, &attr, attr_mask);
+    pygdk_win = PyGdkWindow_New(gdk_win);
+    if (pygdk_win == NULL) {
+	gdk_window_destroy(gdk_win);
+	return NULL;
+    }
+    return pygdk_win;
+}
+
 static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_signal_connect", _wrap_gtk_signal_connect, 1 },
     { "gtk_signal_connect_after", _wrap_gtk_signal_connect_after, 1 },
@@ -6569,6 +6773,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_notebook_query_tab_label_packing", _wrap_gtk_notebook_query_tab_label_packing, 1 },
     { "gtk_drag_dest_set", _wrap_gtk_drag_dest_set, 1 },
     { "gtk_drag_source_set", _wrap_gtk_drag_source_set, 1 },
+    { "gtk_drag_get_source_widget", _wrap_gtk_drag_get_source_widget, 1 },
     { "gtk_drag_begin", _wrap_gtk_drag_begin, 1 },
     { "gtk_ctree_new_with_titles", _wrap_gtk_ctree_new_with_titles, 1 },
     { "gtk_ctree_get_selection", _wrap_gtk_ctree_get_selection, 1 },
@@ -6616,6 +6821,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
 #ifdef HAVE_NUMPY
     { "gdk_draw_array", _wrap_gdk_draw_array, 1 },
 #endif
+    { "gdk_window_new", _wrap_gdk_window_new, 1 },
     { NULL, NULL }
 };
 
