@@ -12,7 +12,7 @@ write).
 
 If you have any enhancements or bug reports, please file them in
 bugzilla at:
-  http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-python&component=pygtk
+  http://bugzilla.gnome.org/enter_bug.cgi?product=pygtk
 
 If you have a patch, file the bug first and then use the "create new
 attachment" link on the bug's info page.  My preferred format for
@@ -40,45 +40,36 @@ the web interface:
 Copyright Information
 =====================
 
-This software is covered by the GNU Library General Public Licence
-(version 2, or if you choose, a later version).  Basically just don't
+This software is covered by the GNU Lesser General Public Licence
+(version 2.1, or if you choose, a later version).  Basically just don't
 say you wrote bits you didn't.
 
 
 Compilation
 ===========
 
-This archive contains a single C module called gtkmodule.  It contains
-an almost direct mapping of the functions in GTK including GTK signal
-handling, and the gtk_object_new/gtk_object_set commands.  This
-version REQUIRES gtk+-1.2.6 or later, as it includes support for
-features not found in previous versions, and there are
-incompatibilities between versions.  Also if you want the GdkImlib
-extension, you must have Imlib version 1.8 or greater.  I recommend
-getting the latest stable versions of these libraries before compiling
-pygtk, as it will make your system more stable.
+PyGTK uses the standard autotools for the build infrastructure.  To
+build, it should be as simple as running:
 
-Parts of this module are automatically generated from the .defs file
-in the generate directory, by the two python scripts in that
-directory.
+    $ ./configure --prefix=<prefix where python is installed>
+    $ make
+    $ make install
 
-To compile gtkmodule, first run "./configure" from the base directory
-of the distribution.  It requires that you have python in the path,
-and python has been installed properly.  If python is not in the path,
-you could try running "PYTHON=/subdir/python ./configure".  This
-should generate the Makefile from the file Makefile.in.
+If your Python interpreter isn't in the path, or is not called
+"python", you can set the PYTHON environment variable to the full path
+of the interpreter:
 
-Now you should be able to run "make" to compile the module.  Now you
-should install the files.  I have provided an install target to the
-makefile, so you should be able to just type "make install".  It
-installs to the site-packages directory (using prefix and exec_prefix
-where appropriate).  It also compiles .pyc and .pyo files from the
-python code.
+    $ PYTHON=/prefix/bin/python
+    $ export PYTHON
 
-If you have trouble with building or installing any of the code, please
-tell me -- it is the only way I can fix the problem.  If you do mail me,
-please put something sensible in the subject line so I can tell what it
-is about.
+If configure can't find GTK, you may need to set the PKG_CONFIG_PATH
+environment variable to help it find the libraries.
+
+The "make install" target will generate normal and optimised bytecode
+for all the .py files.
+
+As an alternative, pygtk also ships with a distutils setup.py script,
+that may make compilation easier on some platforms.
 
 
 Upgrading
@@ -104,11 +95,11 @@ There are a number of example programs available in the examples/
 subdirectory.
 
 
-Contacting the Author
-=====================
+Getting Help
+============
 
-You can contact me at the email address <james@daa.com.au>.  I try to
-answer my email quickly, but occasionally there will be a bit of a
-delay.  If you have an idea for a way to extend GTK, have found a
-problem with the code, or would like to contribute some code, please
-feel free to contact me.
+If you have questions about programming with PyGTK, you might want to
+send a message to the mailing list (information on subscribing is
+above).  Alternatively, your question may be answered in the FAQ:
+
+    http://www.async.com.br/faq/pygtk/?req=index

@@ -25,9 +25,9 @@ from dsextras import getoutput, have_pkgconfig, list_files, \
      GLOBAL_INC, GLOBAL_MACROS, InstallLib, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
 
-MAJOR_VERSION = 1
-MINOR_VERSION = 99
-MICRO_VERSION = 18
+MAJOR_VERSION = 2
+MINOR_VERSION = 0
+MICRO_VERSION = 0
 
 VERSION = "%d.%d.%d" % (MAJOR_VERSION,
                         MINOR_VERSION,
