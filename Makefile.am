@@ -80,6 +80,8 @@ EXTRA_DIST += \
   examples/pygtk-demo/demos/__init__.py \
   examples/pygtk-demo/demos/appwindow.py \
   examples/pygtk-demo/demos/buttonbox.py \
+  examples/pygtk-demo/demos/colorsel.py \
+  examples/pygtk-demo/demos/draw.py \
   examples/pygtk-demo/demos/dndpixmap.py \
   examples/pygtk-demo/demos/dnd.py \
   examples/pygtk-demo/demos/itemfactory.py \
