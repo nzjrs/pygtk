@@ -12,6 +12,9 @@ FILE=gtk
 
 DIE=0
 
+test -z "$AUTOMAKE" && AUTOMAKE=automake
+test -z "$ACLOCAL" && ACLOCAL=aclocal
+
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
 	echo
 	echo "You must have autoconf installed to compile $PROJECT."
@@ -28,7 +31,7 @@ DIE=0
         DIE=1
 }
 
-(automake --version) < /dev/null > /dev/null 2>&1 || {
+($AUTOMAKE --version) < /dev/null > /dev/null 2>&1 || {
 	echo
 	echo "You must have automake installed to compile $PROJECT."
 	echo "Get ftp://ftp.cygnus.com/pub/home/tromey/automake-1.2d.tar.gz"
@@ -56,7 +59,7 @@ esac
 
 if test -z "$ACLOCAL_FLAGS"; then
 
-	acdir=`aclocal --print-ac-dir`
+	acdir=`$ACLOCAL --print-ac-dir`
         m4list="glib-2.0.m4 gtk-2.0.m4 gettext.m4"
 
 	for file in $m4list
@@ -79,7 +82,7 @@ fi
 # while making dist.
 #echo "no" | gettextize --copy --force
 
-aclocal $ACLOCAL_FLAGS
+$ACLOCAL $ACLOCAL_FLAGS
 
 # optionally feature autoheader
 (autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
@@ -87,7 +90,7 @@ aclocal $ACLOCAL_FLAGS
 # run libtoolize ...
 libtoolize --force
 
-automake -a $am_opt
+$AUTOMAKE -a $am_opt
 autoheader
 autoconf
 cd $ORIGDIR
