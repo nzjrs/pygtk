@@ -220,6 +220,9 @@ isn't the expected type, for loading image formats that can't be reliably
 identified by looking at the data, or if the user manually forces a specific
 type.</para>
 
+    <para>This constructor raises the GError exception if an error occurs
+trying to load the module for <parameter>image_type</parameter>.</para>
+
   </refsect1>
 
   <refsect1>
@@ -250,8 +253,7 @@ bytes.</simpara></listitem>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem><simpara><literal>TRUE</literal> if the write was
-successful, or <literal>FALSE</literal> if the loader could not parse the
-buffer.</simpara></listitem>
+successful.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -261,8 +263,9 @@ loader to parse the bytes of an image contained in the string specified by
 is in the range (0, len(buf)) only <parameter>count</parameter> bytes of
 <parameter>buf</parameter> are used. This method returns
 <literal>TRUE</literal> if the image data was loaded successfully. If an
-error occurred <literal>FALSE</literal> is returned and the pixbuf loader
-will be closed, and will not accept further writes.</para>
+error occurred this method raises the GError exception and will not accept
+further writes. The loader may or may not be closed depending on the
+error.</para>
 
     </refsect2>
 
@@ -342,11 +345,11 @@ signal</simpara></listitem>
 
       <para>The <methodname>close</methodname>() method informs the pixbuf
 loader that no further writes using the <link
-linkend="method-gdkpixbufloader--write"><methodname>write</methodname>()</link> 
+linkend="method-gdkpixbufloader--write"><methodname>write</methodname>()</link>
 will occur, so that it can free its internal loading structures. Also, the
 pixbuf loader tries to parse any data that hasn't yet been parsed and if the
-remaining data is partial or corrupt, <literal>FALSE</literal> will be
-returned.</para>
+remaining data is partial or corrupt, the GError exception will be
+raised.</para>
 
     </refsect2>
 
@@ -460,6 +463,9 @@ automatically. Useful if you want an error if the image isn't the expected
 mime type, for loading image formats that can't be reliably identified by
 looking at the data, or if the user manually forces a specific mime
 type.</para>
+
+      <para>This function raises the GError exception if an error occurs
+during the loading of the mime type image module.</para>
 
     </refsect2>
 
