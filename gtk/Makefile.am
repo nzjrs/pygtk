@@ -15,7 +15,7 @@ pygtk_PYTHON = __init__.py GTK.py GDK.py
 pygtkexecdir = $(pyexecdir)/gtk
 pygtkexec_LTLIBRARIES = _gtkmodule.la #$(libglademodule) $(glmodule)
 
-_gtkmodule_la_LDFLAGS = -module -avoid-version
+_gtkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtk
 _gtkmodule_la_LIBADD = $(GTK_LIBS)
 _gtkmodule_la_SOURCES = \
 	pygtk.h \

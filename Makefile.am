@@ -7,12 +7,14 @@ INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS)
 
 pyexec_LTLIBRARIES = ExtensionClass.la gobjectmodule.la
 
-ExtensionClass_la_LDFLAGS = -module -avoid-version
+ExtensionClass_la_LDFLAGS = -module -avoid-version \
+ -export-symbols-regex initExtensionClass
 ExtensionClass_la_SOURCES = \
 	ExtensionClass.h \
 	ExtensionClass.c
 
-gobjectmodule_la_LDFLAGS = -module -avoid-version
+gobjectmodule_la_LDFLAGS = -module -avoid-version \
+ -export-symbols-regex initgobject
 gobjectmodule_la_SOURCES = \
 	gobjectmodule.c \
 	pygobject.h
