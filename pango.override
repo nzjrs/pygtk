@@ -1722,3 +1722,87 @@ _wrap_pango_language_matches1(PyGObject *self, PyObject *args,
 
     return PyBool_FromLong(pango_language_matches(language, range_list));
 }
+%%
+override pango_layout_iter_get_char_extents noargs
+static PyObject *
+_wrap_pango_layout_iter_get_char_extents(PyGObject *self)
+{
+    PangoRectangle logical_rect;
+
+    pango_layout_iter_get_char_extents(pyg_boxed_get(self, PangoLayoutIter),
+                                       &logical_rect);
+    return Py_BuildValue("(iiii)",
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_iter_get_cluster_extents noargs
+static PyObject *
+_wrap_pango_layout_iter_get_cluster_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_iter_get_cluster_extents(pyg_boxed_get(self, PangoLayoutIter),
+                                          &ink_rect, &logical_rect);
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_iter_get_line_extents noargs
+static PyObject *
+_wrap_pango_layout_iter_get_line_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_iter_get_line_extents(pyg_boxed_get(self, PangoLayoutIter),
+                                       &ink_rect, &logical_rect);
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_iter_get_run_extents noargs
+static PyObject *
+_wrap_pango_layout_iter_get_run_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_iter_get_run_extents(pyg_boxed_get(self, PangoLayoutIter),
+                                      &ink_rect, &logical_rect);
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_iter_get_layout_extents noargs
+static PyObject *
+_wrap_pango_layout_iter_get_layout_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_iter_get_layout_extents(pyg_boxed_get(self, PangoLayoutIter),
+                                         &ink_rect, &logical_rect);
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_iter_get_line_yrange noargs
+static PyObject *
+_wrap_pango_layout_iter_get_line_yrange(PyGObject *self)
+{
+    int start, end;
+
+    pango_layout_iter_get_line_yrange(pyg_boxed_get(self, PangoLayoutIter),
+                                      &start, &end);
+    return Py_BuildValue("(ii)", start, end);
+}
