@@ -4,7 +4,6 @@
 #
 # TODO:
 # pygtk.spec(.in)
-# win32 testing
 # install *.pyc for codegen
 #
 """Python Bindings for the GTK Widget Set.
@@ -203,18 +202,6 @@ if gtk.can_build():
 if libglade.can_build():
     ext_modules.append(libglade)
     data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
-
-    if sys.platform == 'win32':
-        # We suppose the libglade and xml DLLs are somewhere in the PATH
-        dlls = []
-        for path in os.environ['PATH'].split(";"):
-            dlls += glob.glob(os.path.normpath(
-                              os.path.join(path,"libglade*.dll")))
-            dlls += glob.glob(os.path.normpath(
-                              os.path.join(path,"libxml2*.dll")))
-        # We want to install those DLLs in (guess what ?) the DLLs python
-        # directory
-        data_files.append(("DLLs", dlls))
 
 if '--enable-threading' in sys.argv:
     try:
