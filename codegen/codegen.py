@@ -393,8 +393,9 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     for obj in parser.objects:
         if obj.parent != (None, None):
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
-                     '", &Py' + obj.c_name + '_Type, &Py' + obj.parent[1] +
-                     obj.parent[0] + '_Type);\n')
+                     '", &Py' + obj.c_name +
+                     '_Type, Py_BuildValue("(O)", (PyObject *)&Py' +
+                     obj.parent[1] + obj.parent[0] + '_Type));\n')
         else:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
                      '", &Py' + obj.c_name + '_Type, NULL);\n')
