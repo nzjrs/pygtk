@@ -737,16 +737,18 @@ def main():
     prefix = 'pygtk'
     outfilename = None
     errorfilename = None
-    opts, args = getopt.getopt(sys.argv[1:], "o:p:r:t:",
+    opts, args = getopt.getopt(sys.argv[1:], "o:p:r:t:D:",
                         ["override=", "prefix=", "register=", "outfilename=",
                          "load-types=", "errorfilename="])
+    defines = {} # -Dkey[=val] options
     for opt, arg in opts:
         if opt in ('-o', '--override'):
             o = override.Overrides(arg)
         elif opt in ('-p', '--prefix'):
             prefix = arg
         elif opt in ('-r', '--register'):
-            p = defsparser.DefsParser(arg)
+	    # Warning: user has to make sure all -D options appear before -r
+            p = defsparser.DefsParser(arg, defines)
             p.startParsing()
             register_types(p)
             del p
@@ -757,13 +759,19 @@ def main():
         elif opt in ('-t', '--load-types'):
             globals = {}
             execfile(arg, globals)
+	elif opt == '-D':
+	    nameval = arg.split('=')
+	    try:
+		defines[nameval[0]] = nameval[1]
+	    except IndexError:
+		defines[nameval[0]] = None
     if len(args) < 1:
         sys.stderr.write(
             'usage: codegen.py [-o overridesfile] [-p prefix] defsfile\n')
         sys.exit(1)
     if errorfilename:
         sys.stderr = open(errorfilename, "w")
-    p = defsparser.DefsParser(args[0])
+    p = defsparser.DefsParser(args[0], defines)
     if not outfilename:
         outfilename = os.path.splitext(args[0])[0] + '.c'
     p.startParsing()

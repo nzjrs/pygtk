@@ -19,7 +19,7 @@ class IncludeParser(scmexpr.Parser):
 	self.startParsing(scmexpr.parse(fp))
 
 class DefsParser(IncludeParser):
-    def __init__(self, arg):
+    def __init__(self, arg, defines):
 	IncludeParser.__init__(self, arg)
 	self.objects = []
         self.interfaces = []
@@ -29,6 +29,7 @@ class DefsParser(IncludeParser):
 	self.functions = []  # functions and methods
 	self.c_name = {}     # hash of c names of functions
 	self.methods = {}    # hash of methods of particular objects
+	self.defines = defines	    # -Dfoo=bar options, as dictionary
 
     def define_object(self, *args):
 	odef = apply(ObjectDef, args)
@@ -111,3 +112,9 @@ class DefsParser(IncludeParser):
     def find_functions(self):
         return filter(lambda func: isinstance(func, FunctionDef) and
                       not func.is_constructor_of, self.functions)
+
+    def ifdef(self, *args):
+	if args[0] in self.defines:
+	    for arg in args[1:]:
+		self.handle(arg)
+
