@@ -21,15 +21,18 @@ noinst_PYTHON = mkgtk.py description.py
 # stuff to automatically generate gtkmodule_*.c
 
 GENERATE = generate/scmexpr.py generate/generate.py
-GTKMODULE_DEFS = generate/gtk.defs generate/gtkbase.defs \
- generate/gtkcontainers.defs generate/gtkdata.defs generate/gtkedit.defs \
- generate/gtkenums.defs generate/gtklists.defs generate/gtkmenus.defs \
- generate/gtkmisc.defs generate/gtkranges.defs generate/gtkdnd.defs
 
-gtkmodule_defs.c gtkmodule_impl.c: mkgtk.py $(GENERATE) $(GTKMODULE_DEFS)
+GTKMODULE_DEFS = generate/gtk.defs \
+  generate/gtkbase.defs   generate/gtkcontainers.defs \
+  generate/gtkdata.defs   generate/gtkedit.defs \
+  generate/gtkenums.defs  generate/gtklists.defs \
+  generate/gtkmenus.defs  generate/gtkmisc.defs \
+  generate/gtkranges.defs generate/gtkdnd.defs
+
+$(srcdir)/gtkmodule_defs.c $(srcdir)/gtkmodule_impl.c: $(srcdir)/mkgtk.py $(GENERATE) $(GTKMODULE_DEFS)
 	cd $(srcdir) && $(PYTHON) mkgtk.py
 
-gtkmodule.o: gtkmodule_defs.c gtkmodule_impl.c
+gtkmodule.o: gtkmodule.c gtkmodule_defs.c gtkmodule_impl.c
 
 EXTRA_DIST = \
 	pygtk.spec \

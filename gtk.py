@@ -301,7 +301,7 @@ class GtkWidget(GtkObject):
 	def ensure_style(self):
 		_gtk.gtk_widget_ensure_style(self._o)
 	def event(self, event):
-		_gtk.gtk_widget_event
+		_gtk.gtk_widget_event(self._o, event)
 	def lock_accelerators(self):
 		_gtk.gtk_widget_lock_accelerators(self._o)
 	def get_ancestor(self, type):

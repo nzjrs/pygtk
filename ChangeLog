@@ -1,3 +1,21 @@
+1999-03-12  James Henstridge  <james@daa.com.au>
+
+	* configure.in, pygtk.spec: increased version number to 0.5.12.
+	
+	* gtkmodule.c: added optional support for not catching exceptions in
+	callbacks.  This way it should be a lot easier to debug a pygtk
+	program with pdb.
+	
+	* gtkmodule.c, gtk.py: a few fixes for problems sent in by
+	Chi-Deok Hwang.  This includes a fix to GtkWidget.event(),
+	assignments to GtkStyle attributes throwing exceptions,
+	font loading getting reference counting correct and throwing
+	exceptions for bad font names and allowing None to be passed
+	as a colour to GnomeCanvasItem.set() (the fix is in pygtk).
+
+	* generate/gtklists.defs (gtk_ctree_new): I had missed this
+	function in previous releases.
+
 1999-02-24  James Henstridge  <james@daa.com.au>
 
 	* gtk.py: made changes to match those in the defs files and _gtk.

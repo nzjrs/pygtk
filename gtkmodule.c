@@ -21,6 +21,8 @@
 #include <sysmodule.h>
 #include <gtk/gtk.h>
 
+static gboolean PyGtk_FatalExceptions = FALSE;
+
 typedef struct {
   PyObject_HEAD
   GtkObject *obj;
@@ -722,10 +724,11 @@ static int PyGtkStyle_SetAttr(PyGtkStyle_Object *self, char *key,
       PyErr_SetString(PyExc_TypeError,"white_gc attribute must be a GdkColor");
       return -1;
     }
+  } else {
+    PyErr_SetString(PyExc_AttributeError, key);
+    return -1;
   }
-      
-  PyErr_SetString(PyExc_AttributeError, key);
-  return -1;
+  return 0;
 }
 
 static PyTypeObject PyGtkStyle_Type = {
@@ -2331,16 +2334,22 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
     } else if (arg->type == GTK_TYPE_GDK_COLOR) {
       if (PyGdkColor_Check(obj))
 	GTK_VALUE_BOXED(*arg) = PyGdkColor_Get(obj);
+      else if (obj == Py_None)
+	GTK_VALUE_BOXED(*arg) = NULL;
       else
 	return -1;
     } else if (arg->type == GTK_TYPE_GDK_WINDOW) {
       if (PyGdkWindow_Check(obj))
 	GTK_VALUE_BOXED(*arg) = PyGdkWindow_Get(obj);
+      else if (obj == Py_None)
+	GTK_VALUE_BOXED(*arg) = NULL;
       else
 	return -1;
     } else if (arg->type == GTK_TYPE_GDK_COLORMAP) {
       if (PyGdkColormap_Check(obj))
 	GTK_VALUE_BOXED(*arg) = PyGdkColormap_Get(obj);
+      else if (obj == Py_None)
+	GTK_VALUE_BOXED(*arg) = NULL;
       else
 	return -1;
     } else if (arg->type == GTK_TYPE_GDK_DRAG_CONTEXT) {
@@ -2827,8 +2836,12 @@ static void PyGtk_CallbackMarshal(GtkObject *o, gpointer data, guint nargs,
   ret = PyObject_CallObject(func, params);
   Py_DECREF(params);
   if (ret == NULL) {
-    PyErr_Print();
-    PyErr_Clear();
+    if (PyGtk_FatalExceptions)
+      gtk_main_quit();
+    else {
+      PyErr_Print();
+      PyErr_Clear();
+    }
     return;
   }
   GtkRet_FromPyObject(&args[nargs], ret);
@@ -2862,8 +2875,12 @@ void PyGtk_SignalMarshal(GtkObject *object, /*gpointer*/ PyObject *func,
     Py_DECREF(params);
 
     if (ret == NULL) {
-        PyErr_Print();
-	PyErr_Clear();
+        if (PyGtk_FatalExceptions)
+	    gtk_main_quit();
+	else {
+	    PyErr_Print();
+	    PyErr_Clear();
+	}
 	return;
     }
     GtkRet_FromPyObject(&args[nparams], ret);
@@ -2883,8 +2900,12 @@ static void PyGtk_HandlerMarshal(gpointer a, PyObject *func, int nargs,
 
   ret = PyObject_CallObject(func, NULL);
   if (ret == NULL) {
-    PyErr_Print();
-    PyErr_Clear();
+    if (PyGtk_FatalExceptions)
+      gtk_main_quit();
+    else {
+      PyErr_Print();
+      PyErr_Clear();
+    }
     *GTK_RETLOC_BOOL(args[0]) = FALSE;
     return;
   }
@@ -2905,8 +2926,12 @@ static void PyGtk_InputMarshal(gpointer a, PyObject *func, int nargs,
   ret = PyObject_CallObject(func, tuple);
   Py_DECREF(tuple);
   if (ret == NULL) {
-    PyErr_Print();
-    PyErr_Clear();
+    if (PyGtk_FatalExceptions)
+      gtk_main_quit();
+    else {
+      PyErr_Print();
+      PyErr_Clear();
+    }
   } else
     Py_DECREF(ret);
 }
@@ -3192,6 +3217,17 @@ static PyObject * _wrap_gtk_init(PyObject *self, PyObject *args) {
     }
     gtk_signal_set_funcs((GtkSignalMarshal)PyGtk_SignalMarshal,
                          (GtkSignalDestroy)PyGtk_SignalDestroy);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gtk_main(PyObject *self, PyObject *args) {
+    if (!PyArg_ParseTuple(args, ":gtk_main"))
+        return NULL;
+    gtk_main();
+
+    if (PyErr_Occurred())
+        return NULL;
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -4089,8 +4125,12 @@ static void PyGtk_item_factory_cb(PyObject *callback, guint action,
   ret = PyObject_CallFunction(callback, "iO", action,
 			      PyGtk_New((GtkObject *)widget));
   if (ret == NULL) {
-    PyErr_Print();
-    PyErr_Clear();
+    if (PyGtk_FatalExceptions)
+      gtk_main_quit();
+    else {
+      PyErr_Print();
+      PyErr_Clear();
+    }
   } else
     Py_DECREF(ret);
 }
@@ -4158,8 +4198,12 @@ static void PyGtk_MenuPosition(GtkMenu *menu, int *x, int *y, PyObject *func) {
     ret = PyObject_CallFunction(func, "Oii", PyGtk_New(GTK_OBJECT(menu)),
 				*x, *y);
     if (ret == NULL || !PyArg_ParseTuple(ret, "ii", x, y)) {
-        PyErr_Print();
-        PyErr_Clear();
+        if (PyGtk_FatalExceptions)
+	    gtk_main_quit();
+        else {
+	    PyErr_Print();
+	    PyErr_Clear();
+	}
         if (ret) Py_DECREF(ret);
     } else
         Py_DECREF(ret);
@@ -4690,6 +4734,42 @@ static PyObject *_wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyO
   gdk_pixmap_unref(pix);
   gdk_bitmap_unref(mask);
   return ret;
+}
+
+static PyObject *_wrap_gdk_font_load(PyObject *self, PyObject *args) {
+  gchar *name;
+  GdkFont *font;
+  PyObject *ret;
+
+  if (!PyArg_ParseTuple(args, "s:gdk_font_load", &name))
+    return NULL;
+  font = gdk_font_load(name);
+  if (font) {
+    ret = PyGdkFont_New(font);
+    gdk_font_unref(font);
+    return ret;
+  } else {
+    PyErr_SetString(PyExc_RuntimeError, "couldn't load the font");
+    return NULL;
+  }
+}
+
+static PyObject *_wrap_gdk_fontset_load(PyObject *self, PyObject *args) {
+  gchar *name;
+  GdkFont *font;
+  PyObject *ret;
+
+  if (!PyArg_ParseTuple(args, "s:gdk_fontset_load", &name))
+    return NULL;
+  font = gdk_fontset_load(name);
+  if (font) {
+    ret = PyGdkFont_New(font);
+    gdk_font_unref(font);
+    return ret;
+  } else {
+    PyErr_SetString(PyExc_RuntimeError, "couldn't load the font");
+    return NULL;
+  }
 }
 
 static PyObject *_wrap_gdk_draw_polygon(PyObject *self, PyObject *args) {
@@ -5384,6 +5464,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_signal_handler_unblock_by_data", _wrap_gtk_signal_handler_unblock_by_data, 1 },
     { "gtk_signal_emitv_by_name", _wrap_gtk_signal_emitv_by_name, 1 },
     { "gtk_init", _wrap_gtk_init, 1 },
+    { "gtk_main", _wrap_gtk_main, 1 },
     { "gtk_main_iteration", _wrap_gtk_main_iteration, 1 },
     { "gtk_timeout_add", _wrap_gtk_timeout_add, 1 },
     { "gtk_idle_add", _wrap_gtk_idle_add, 1 },
@@ -5482,6 +5563,8 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gdk_pixmap_create_from_xpm_d", _wrap_gdk_pixmap_create_from_xpm_d, 1 },
     { "gdk_pixmap_colormap_create_from_xpm", _wrap_gdk_pixmap_colormap_create_from_xpm, 1 },
     { "gdk_pixmap_colormap_create_from_xpm_d", _wrap_gdk_pixmap_colormap_create_from_xpm_d, 1 },
+    { "gdk_font_load", _wrap_gdk_font_load, 1 },
+    { "gdk_fontset_load", _wrap_gdk_fontset_load, 1 },
     { "gdk_draw_polygon", _wrap_gdk_draw_polygon, 1 },
     { "gdk_draw_text", _wrap_gdk_draw_text, 1 },
     { "gdk_draw_points", _wrap_gdk_draw_points, 1 },
@@ -5599,6 +5682,20 @@ void init_gtk() {
      PyDict_SetItemString(private, "PyGtk_RegisterBoxed",
                           d=PyCObject_FromVoidPtr(PyGtk_RegisterBoxed, NULL));
      Py_DECREF(d);
+
+     m = PyImport_ImportModule("os");
+     if (m == NULL) {
+         Py_FatalError("couldn't import os");
+	 return;
+     }
+     d = PyModule_GetDict(m);
+     Py_DECREF(m);
+     d = PyDict_GetItemString(d, "environ");
+     d = PyMapping_GetItemString(d, "PYGTK_FATAL_EXCEPTIONS");
+     if (d == NULL)
+         PyErr_Clear();
+     else
+         PyGtk_FatalExceptions = PyObject_IsTrue(d);
 
      if (PyErr_Occurred())
          Py_FatalError("can't initialise module _gtk");

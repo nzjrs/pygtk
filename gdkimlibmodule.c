@@ -814,6 +814,10 @@ void init_gdkimlib() {
 
     /* get types and exported functions out of _gtkmodule */
     m = PyImport_ImportModule("_gtk");
+    if (m == NULL) {
+        Py_FatalError("couldn't import _gtk");
+	return;
+    }
     d = PyModule_GetDict(m);
     Py_DECREF(m);
 
