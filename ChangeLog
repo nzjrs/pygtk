@@ -1,3 +1,26 @@
+2005-01-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/pygflags.c (pyg_flags_new): Check that __gtype__ is
+	PyGTypeWrapper_Type, not PyGEnum_Type.
+	(pyg_flags_add): Set a custom __gtype__ for the new flags class.
+	(pyg_flags_new): Remove "value out of range" check, it makes no
+	sense in flags.
+	(pyg_flags_new): Check for NULL return from PyDict_GetItem and set
+	exception.
+
+	* gobject/pygenum.c (pyg_enum_add): Set a custom __gtype__ for the
+	new enum class.
+	(pyg_enum_new): Check that __gtype__ is PyGTypeWrapper_Type, not
+	PyGEnum_Type.
+
+	* gobject/pygflags.c (pyg_flags_add): Idem.
+
+	* gobject/pygenum.c (pyg_enum_add): Unset the flag
+	Py_TPFLAGS_BASETYPE in newly created enum type.  Set tp_new, which
+	somehow was not being inherited.
+
+	Fixes #154372.
+
 2005-01-22  Mark McLoughlin  <mark@skynet.ie>
 
 	* gobject/gobjectmodule.c (pyg_type_register): Fix reference leak
