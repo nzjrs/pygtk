@@ -3851,7 +3851,7 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
     PyGObject *py_window = NULL;
     PyObject *py_buttons = Py_None;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-    GtkWindow *window = NULL;
+    GtkWindow *parent = NULL;
     gchar *backend = NULL;
     int len, i;
 
@@ -3895,7 +3895,7 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
     }
 
   if (parent)
-    gtk_window_set_transient_for (GTK_WINDOW (result), parent);
+    gtk_window_set_transient_for (GTK_WINDOW (self->obj), parent);
 
   for (i = 0; i < len; i += 2) {
         PyObject *text = PyTuple_GetItem(py_buttons, i);
