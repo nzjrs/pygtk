@@ -25,6 +25,7 @@ headers
 #include "pygobject.h"
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk-pixbuf/gdk-pixdata.h>
 #include "pygtk-private.h"
 
 #define PYGTK_CONTAINER_FOREACH 0
@@ -1025,7 +1026,19 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
             if (PyString_Check(extra_data)) {
                 ent.extra_data = PyString_AsString(extra_data);
             } else if (pygobject_check(extra_data, &PyGdkPixbuf_Type)) {
-                ent.extra_data = GDK_PIXBUF(pygobject_get(extra_data));
+		/* create_items actually expects inline image data 
+		 * so let's create it for the user from the pixbuf
+		 * it's not optimal but it's convenient
+		 */  
+		GdkPixdata pixdata; 
+		GdkPixbuf * pixbuf;
+		guint8 * serialstr;
+		guint len;
+		
+		pixbuf = GDK_PIXBUF(pygobject_get(extra_data));
+		gdk_pixdata_from_pixbuf(&pixdata, pixbuf, FALSE);
+		serialstr = gdk_pixdata_serialize(&pixdata, &len);
+                ent.extra_data = serialstr;
             } else {
                 PyErr_SetString(PyExc_TypeError,
                                 "last argument must be a GdkPixBuf or a string");
