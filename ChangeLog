@@ -1,3 +1,26 @@
+2001-10-08  James Henstridge  <james@daa.com.au>
+
+	* pango.defs (pango_font_metrics_new): comment out, as it is only
+	for use by engines.
+
+	* gtk/libglade.override: same here.
+
+	* gtk/gdk.override: same here.
+
+	* gtk/gtk.override: use import section here.
+
+	* pango.override: use the new import stuff to get the reference to
+	the GObject type.
+
+	* codegen/codegen.py (write_source): write out code based on the
+	import statements in the overrides file.  Most modules have some
+	code like this, and this helps reduce the boilerplate code that
+	needs to be entered in.
+
+	* codegen/override.py (Overrides.get_imports): add handlers for
+	"import" sections of the overrides file, which are used to get
+	references to the types in other modules.
+
 2001-10-06  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.override (_wrap_gtk_list__get_selection): remove unused

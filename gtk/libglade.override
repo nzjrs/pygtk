@@ -1,37 +1,13 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
+#define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
 #include <glade/glade.h>
 
-static PyTypeObject *_PyGObject_Type;
-#define PyGObject_Type (*_PyGObject_Type)
-static PyTypeObject *_PyGtkWidget_Type;
-#define PyGtkWidget_Type (*_PyGtkWidget_Type)
 %%
-init
-{
-    PyObject *module;
-
-    if ((module = PyImport_ImportModule("gobject")) != NULL) {
-        PyObject *module_dict = PyModule_GetDict(module);
-
-        _PyGObject_Type = (PyTypeObject *)
-	    PyDict_GetItemString(module_dict, "GObject");
-    } else {
-        Py_FatalError("could not import gobject");
-        return;
-    }
-    if ((module = PyImport_ImportModule("gtk._gtk")) != NULL) {
-        PyObject *module_dict = PyModule_GetDict(module);
-
-        _PyGtkWidget_Type = (PyTypeObject *)
-	    PyDict_GetItemString(module_dict, "Widget");
-    } else {
-        Py_FatalError("could not import gtk._gtk");
-        return;
-    }
-}
+import gobject.GObject as PyGObject_Type
+import gtk._gtk.Widget as PyGtkWidget_Type
 %%
 ignore_glob *_get_type
 %%

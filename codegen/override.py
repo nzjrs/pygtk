@@ -5,6 +5,9 @@
 # do its job correctly.
 
 import sys, string, fnmatch
+import re
+
+import_pat = re.compile(r'\s*import\s+(\S+)\.([^\s.]+)\s+as\s+(\S+)')
 
 class Overrides:
     def __init__(self, filename=None):
@@ -16,10 +19,10 @@ class Overrides:
         self.override_attrs = {}
         self.headers = ''
         self.init = ''
+        self.imports = []
 	if filename: self.__handle_file(filename)
 
     def __handle_file(self, filename):
-        self.filename = filename
         fp = open(filename, 'r')
 	# read all the components of the file ...
         bufs = []
@@ -42,9 +45,9 @@ class Overrides:
 	if not bufs: return
 
 	for buf, startline in bufs:
-	    self.__parse_override(buf, startline)
+	    self.__parse_override(buf, startline, filename)
 
-    def __parse_override(self, buffer, startline):
+    def __parse_override(self, buffer, startline, filename):
 	pos = string.find(buffer, '\n')
 	if pos >= 0:
 	    line = buffer[:pos]
@@ -64,17 +67,22 @@ class Overrides:
 	    if 'kwargs' in words[1:]:
 		self.kwargs[func] = 1
 	    self.overrides[func] = rest
-            self.startlines[func] = startline + 1
+            self.startlines[func] = (startline + 1, filename)
         elif words[0] == 'override-attr':
             attr = words[1]
             self.override_attrs[attr] = rest
-            self.startlines[attr] = startline + 1
+            self.startlines[attr] = (startline + 1, filename)
         elif words[0] == 'headers':
             self.headers = '%s\n#line %d "%s"\n%s' % \
-                           (self.headers, startline + 1, self.filename, rest)
+                           (self.headers, startline + 1, filename, rest)
         elif words[0] == 'init':
             self.init = '%s\n#line %d "%s"\n%s' % \
-                        (self.init, startline + 1, self.filename, rest)
+                        (self.init, startline + 1, filename, rest)
+        elif words[0] == 'import':
+            for line in string.split(buffer, '\n'):
+                match = import_pat.match(line)
+                if match:
+                    self.imports.append(match.groups())
 
     def is_ignored(self, name):
 	if self.ignores.has_key(name):
@@ -88,7 +96,7 @@ class Overrides:
     def override(self, name):
 	return self.overrides[name]
     def getstartline(self, name):
-        return (self.startlines[name], self.filename)
+        return self.startlines[name]
     def wants_kwargs(self, name):
 	return self.kwargs.has_key(name)
     def attr_is_overriden(self, attr):
@@ -99,3 +107,5 @@ class Overrides:
         return self.headers
     def get_init(self):
         return self.init
+    def get_imports(self):
+        return self.imports

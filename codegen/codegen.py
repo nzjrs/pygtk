@@ -785,6 +785,11 @@ def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
     fp.write(overrides.get_headers())
     fp.resetline()
     fp.write('\n\n')
+    fp.write('/* ---------- types from other modules ---------- */\n')
+    for module, pyname, cname in overrides.get_imports():
+        fp.write('static PyTypeObject *_%s;\n' % cname)
+        fp.write('#define %s (*_%s)\n' % (cname, cname))
+    fp.write('\n\n')
     fp.write('/* ---------- forward type declarations ---------- */\n')
     for obj in parser.boxes:
         fp.write('PyTypeObject Py' + obj.c_name + '_Type;\n')
@@ -809,6 +814,22 @@ def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
 
     fp.write('/* intialise stuff extension classes */\n')
     fp.write('void\n' + prefix + '_register_classes(PyObject *d)\n{\n')
+    imports = overrides.get_imports()[:]
+    if imports:
+        bymod = {}
+        for module, pyname, cname in imports:
+            bymod.setdefault(module, []).append((pyname, cname))
+        fp.write('    PyObject *module;\n\n')
+        for module in bymod:
+            fp.write('    if ((module = PyImport_ImportModule("%s")) != NULL) {\n' % module)
+            fp.write('        PyObject *moddict = PyModule_GetDict(module);\n\n')
+            for pyname, cname in bymod[module]:
+                fp.write('        _%s = (PyTypeObject *)PyDict_GetItemString(moddict, "%s");\n' % (cname, pyname))
+            fp.write('    } else {\n')
+            fp.write('        Py_FatalError("could not import %s");\n' %module)
+            fp.write('        return;\n')
+            fp.write('    }\n')
+        fp.write('\n')
     fp.write(overrides.get_init() + '\n')
     fp.resetline()
 

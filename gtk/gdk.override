@@ -7,52 +7,13 @@ headers
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
 
-/* small fix */
-#undef gdk_window_get_type
-#define gdk_window_get_type gdk_window_object_get_type
-
-static PyTypeObject *_PyGObject_Type;
-#define PyGObject_Type (*_PyGObject_Type)
-
-static PyTypeObject *_PyPangoContext_Type;
-#define PyPangoContext_Type (*_PyPangoContext_Type)
-static PyTypeObject *_PyPangoFont_Type;
-#define PyPangoFont_Type (*_PyPangoFont_Type)
-static PyTypeObject *_PyPangoLayout_Type;
-#define PyPangoLayout_Type (*_PyPangoLayout_Type)
-
 extern PyTypeObject PyGtkWidget_Type;
 
 %%
-init
-{
-    PyObject *pygobject = PyImport_ImportModule("gobject");
-    PyObject *pypango;
-
-    if (pygobject != NULL) {
-	PyObject *module_dict = PyModule_GetDict(pygobject);
-
-	_PyGObject_Type = (PyTypeObject *)PyDict_GetItemString(module_dict,
-							       "GObject");
-    } else {
-	Py_FatalError("could not import gobject");
-	return;
-    }
-    pypango = PyImport_ImportModule("pango");
-    if (pypango != NULL) {
-	PyObject *module_dict = PyModule_GetDict(pypango);
-
-	_PyPangoContext_Type =
-	    (PyTypeObject *)PyDict_GetItemString(module_dict, "Context");
-	_PyPangoFont_Type =
-	    (PyTypeObject *)PyDict_GetItemString(module_dict, "Font");
-	_PyPangoLayout_Type =
-	    (PyTypeObject *)PyDict_GetItemString(module_dict, "Layout");
-    } else {
-	Py_FatalError("could not import pango");
-	return;
-    }
-}
+import gobject.GObject as PyGObject_Type
+import pango.Context as PyPangoContext_Type
+import pango.Font as PyPangoFont_Type
+import pango.Layout as PyPangoLayout_Type
 %%
 ignore-glob
   *_get_type
