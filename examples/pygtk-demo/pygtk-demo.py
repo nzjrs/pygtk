@@ -96,7 +96,7 @@ def create_list():
     column = gtk.GtkTreeViewColumn("Widget", cell, text=TITLE_COLUMN)
     tree_view.append_column(column)
 
-    selection.connect('selection_changed', selection_cb)
+    selection.connect('changed', selection_cb)
     return tree_view
 
 def main():
