@@ -23,6 +23,14 @@
 headers
 #include "pygtktreemodel.h"
 #include "pygtkcellrenderer.h"
+
+static void
+pygtk_cell_data_func_marshal (GtkTreeViewColumn *tree_column,
+                              GtkCellRenderer   *cell,
+                              GtkTreeModel      *tree_model,
+                              GtkTreeIter       *iter,
+			      gpointer           data);
+
 %%
 init
     PyGtkListStore_Type.tp_as_number  = PyGtkTreeModel_Type.tp_as_number;
