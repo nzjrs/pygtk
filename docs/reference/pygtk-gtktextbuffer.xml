@@ -226,6 +226,14 @@ linkend="method-gtktextbuffer--place-cursor">place_cursor</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtktextbuffer--place-cursor">select_range</link></methodname>
+	<methodparam><parameter
+		       role="keyword">ins</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">bound</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtktextbuffer--apply-tag">apply_tag</link></methodname>
 	<methodparam><parameter role="keyword">tag</parameter></methodparam>
 	<methodparam><parameter
@@ -268,7 +276,7 @@ linkend="method-gtktextbuffer--remove-all-tags">remove_all_tags</link></methodna
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextbuffer--create-tag">create_tag</link></methodname>
-	<methodparam><parameter role="keyword">tag_name</parameter>
+	<methodparam><parameter>tag_name</parameter>
 	  <initializer>None</initializer></methodparam>
 	<methodparam><parameter>...</parameter></methodparam>
       </methodsynopsis>
@@ -337,33 +345,29 @@ linkend="method-gtktextbuffer--set-modified">set_modified</link></methodname>
 	<methodparam><parameter
 		       role="keyword">setting</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktextbuffer- -add-selection-clipboard">add_selection_clipboard</link></methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktextbuffer- -remove-selection-clipboard">remove_selection_clipboard</link></methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktextbuffer- -cut-clipboard">cut_clipboard</link></methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-    <methodparam><parameter role="keyword">default_editable</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktextbuffer- -copy-clipboard">copy_clipboard</link></methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktextbuffer- -paste-clipboard">paste_clipboard</link></methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-    <methodparam><parameter role="keyword">override_location</parameter></methodparam>
-    <methodparam><parameter role="keyword">default_editable</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextbuffer--add-selection-clipboard">add_selection_clipboard</link></methodname>
+	<methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextbuffer--remove-selection-clipboard">remove_selection_clipboard</link></methodname>
+	<methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextbuffer--cut-clipboard">cut_clipboard</link></methodname>
+	<methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+	<methodparam><parameter role="keyword">default_editable</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextbuffer--copy-clipboard">copy_clipboard</link></methodname>
+	<methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextbuffer--paste-clipboard">paste_clipboard</link></methodname>
+	<methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+	<methodparam><parameter role="keyword">override_location</parameter></methodparam>
+	<methodparam><parameter role="keyword">default_editable</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextbuffer--get-selection-bounds">get_selection_bounds</link></methodname>
@@ -1622,6 +1626,43 @@ be optimized.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtktextbuffer--select-range">
+      <title>gtk.TextBuffer.select_range</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>select_range</methodname>
+	<methodparam><parameter
+		       role="keyword">ins</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">bound</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">ins</parameter>&nbsp;:</term>
+	  <listitem><simpara>where to put the "insert" mark</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">bound</parameter>&nbsp;:</term>
+	  <listitem><simpara>where to put the "selection_bound" mark</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>select_range</methodname>() method moves the
+"insert" and "selection_bound" marks simultaneously to the locations
+specified by <parameter>ins</parameter> and <parameter>bound</parameter>
+respectively.  If you move them to the same place in two steps with the
+<link
+linkend="method-gtktextbuffer--move-mark"><methodname>move_mark</methodname>()</link>
+method, you will temporarily select a region in between their old and new
+locations, which is inefficient. This method moves them as a unit, which can
+be optimized.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtktextbuffer--apply-tag">
       <title>gtk.TextBuffer.apply_tag</title>
 
@@ -2157,117 +2198,182 @@ is modified, it will automatically set the modification flag to
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gtktextbuffer- -add-selection-clipboard">
-    <title>gtk.TextBuffer.add_selection_clipboard</title>
+    <refsect2 id="method-gtktextbuffer--add-selection-clipboard">
+      <title>gtk.TextBuffer.add_selection_clipboard</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>add_selection_clipboard</methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">clipboard</parameter>&nbsp;:</term>
-      <listitem><simpara>a <literal>GtkClipboard</literal></simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Adds <parameter>clipboard</parameter> to the list of clipboards in which the selection contents
-of <parameter>buffer</parameter> are available. In most cases, <parameter>clipboard</parameter> will be the <literal>GtkClipboard</literal>
-of type <literal>GDK_SELECTION_PRIMARY</literal> for a view of <parameter>buffer</parameter>.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+	  <methodname>add_selection_clipboard</methodname>
+	  <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">clipboard</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
 
-  <refsect2 id="method-gtktextbuffer- -remove-selection-clipboard">
-    <title>gtk.TextBuffer.remove_selection_clipboard</title>
+      <para>The <methodname>add_selection_clipboard</methodname>() method
+adds the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+specified by <parameter>clipboard</parameter> to the list of clipboards in
+which the selection contents of the buffer are available. In most cases,
+<parameter>clipboard</parameter> will be the
+<literal>gtk.gdk.SELECTION_PRIMARY</literal> clipboard</para>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>remove_selection_clipboard</methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">clipboard</parameter>&nbsp;:</term>
-      <listitem><simpara>a <literal>GtkClipboard</literal> added to <parameter>buffer</parameter> by <link linkend="method-gtktextbuffer- -add-selection-clipboard"><function>gtk.TextBuffer.add_selection_clipboard()</function></link>.</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Removes a <literal>GtkClipboard</literal> added with <link linkend="method-gtktextbuffer- -add-selection-clipboard"><function>gtk.TextBuffer.add_selection_clipboard()</function></link>
-</para>  </refsect2>
+    </refsect2>
 
+    <refsect2 id="method-gtktextbuffer--remove-selection-clipboard">
+      <title>gtk.TextBuffer.remove_selection_clipboard</title>
 
-  <refsect2 id="method-gtktextbuffer- -cut-clipboard">
-    <title>gtk.TextBuffer.cut_clipboard</title>
+      <programlisting><methodsynopsis language="python">
+	  <methodname>remove_selection_clipboard</methodname>
+	  <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">clipboard</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+	  added to the buffer by the <link
+	  linkend="method-gtktextbuffer--add-selection-clipboard"><methodname>add_selection_clipboard()</methodname></link>
+	  method.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>cut_clipboard</methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-    <methodparam><parameter role="keyword">default_editable</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">clipboard</parameter>&nbsp;:</term>
-      <listitem><simpara>the <literal>GtkClipboard</literal> object to cut to.</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">default_editable</parameter>&nbsp;:</term>
-      <listitem><simpara>default editability of the buffer</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Copies the currently-selected text to a clipboard, then deletes
-said text if it's editable.
-</para>  </refsect2>
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
 
+      <para>The <methodname>remove_selection_clipboard</methodname>() method
+removes the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+added with the <link
+linkend="method-gtktextbuffer--add-selection-clipboard"><methodname>add_selection_clipboard</methodname>()</link>
+method.</para>
 
-  <refsect2 id="method-gtktextbuffer- -copy-clipboard">
-    <title>gtk.TextBuffer.copy_clipboard</title>
+    </refsect2>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>copy_clipboard</methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">clipboard</parameter>&nbsp;:</term>
-      <listitem><simpara>the <literal>GtkClipboard</literal> object to copy to.</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Copies the currently-selected text to a clipboard.
-</para>  </refsect2>
+    <refsect2 id="method-gtktextbuffer--cut-clipboard">
+      <title>gtk.TextBuffer.cut_clipboard</title>
 
+      <programlisting><methodsynopsis language="python">
+	  <methodname>cut_clipboard</methodname>
+	  <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+	  <methodparam><parameter role="keyword">default_editable</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">clipboard</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+	  object to cut to.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">default_editable</parameter>&nbsp;:</term>
+	  <listitem><simpara>the default editability of the
+	  buffer</simpara></listitem>
+	</varlistentry>
+      </variablelist>
 
-  <refsect2 id="method-gtktextbuffer- -paste-clipboard">
-    <title>gtk.TextBuffer.paste_clipboard</title>
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>paste_clipboard</methodname>
-    <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
-    <methodparam><parameter role="keyword">override_location</parameter></methodparam>
-    <methodparam><parameter role="keyword">default_editable</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">clipboard</parameter>&nbsp;:</term>
-      <listitem><simpara>the <literal>GtkClipboard</literal> to paste from</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">override_location</parameter>&nbsp;:</term>
-      <listitem><simpara>location to insert pasted text, or <literal>None</literal> for at the cursor</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">default_editable</parameter>&nbsp;:</term>
-      <listitem><simpara>whether the buffer is editable by default</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Pastes the contents of a clipboard at the insertion point, or at <parameter>override_location</parameter>.
-(Note: pasting is asynchronous, that is, we'll ask for the paste data and
-return, and at some point later after the main loop runs, the paste
-data will be inserted.)
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <para>The <methodname>cut_clipboard</methodname>() method copies the
+currently-selected text to the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+specified by <parameter>clipboard</parameter>, then deletes said text if
+it's editable as specified by
+<parameter>default_editable</parameter>. Typically the result of the <link
+linkend="method-gtktextview--get-editable"><methodname>gtk.TextView.get_editable</methodname>()</link>
+method is appropriate here.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--copy-clipboard">
+      <title>gtk.TextBuffer.copy_clipboard</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>copy_clipboard</methodname>
+	  <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">clipboard</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+	  object to copy to.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>copy_clipboard</methodname>() method copies the
+currently-selected text to the <link
+linkend="class-gtkclipboard"><classname>gtk.ClipBoard</classname></link>
+specified by <parameter>clipboard</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--paste-clipboard">
+      <title>gtk.TextBuffer.paste_clipboard</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>paste_clipboard</methodname>
+	  <methodparam><parameter role="keyword">clipboard</parameter></methodparam>
+	  <methodparam><parameter role="keyword">override_location</parameter></methodparam>
+	  <methodparam><parameter role="keyword">default_editable</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">clipboard</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+	  to paste from</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">override_location</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gtktextiter"><classname>gtk.TextIter</classname></link>
+	  specifying the location to insert pasted text, or
+	  <literal>None</literal> for at the cursor</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">default_editable</parameter>&nbsp;:</term>
+	  <listitem><simpara>the default editability of the
+	  buffer</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>paste_clipboard</methodname>() method pastes the
+contents of the <link
+linkend="class-gtkclipboard"><classname>gtk.ClipBoard</classname></link>
+specified by <parameter>clipboard</parameter> at the insertion point, or at
+the location specified by <parameter>override_location</parameter> (if not
+<literal>None</literal>).  (Note: pasting is asynchronous, that is, we'll
+ask for the paste data and return, and at some point later after the main
+loop runs, the paste data will be inserted.)</para>
+
+    </refsect2>
 
     <refsect2 id="method-gtktextbuffer--get-selection-bounds">
       <title>gtk.TextBuffer.get_selection_bounds</title>
