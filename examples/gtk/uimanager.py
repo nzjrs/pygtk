@@ -17,6 +17,7 @@ window_actions = [
     ('FileMenu', None, '_File'),
     ('New',      gtk.STOCK_NEW, '_New', '<control>N', 'Create a new file', 'file_new_cb'),
     ('Open',     gtk.STOCK_OPEN, '_Open', '<control>O', 'Open a file', 'file_open_cb'),
+    ('Close',    gtk.STOCK_CLOSE, '_Close', '<control>W', 'Close the current window', 'file_close_cb'),
     ('Quit',     gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Quit application', 'file_quit_cb'),
     ('HelpMenu', None, '_Help'),
     ('About',    None, '_About', None, 'About application', 'help_about_cb'),
@@ -28,6 +29,7 @@ ui_string = """<ui>
       <menuitem action='New'/>
       <menuitem action='Open'/>
       <separator/>
+      <menuitem action='Close'/>
       <menuitem action='Quit'/>
     </menu>
     <menu action='HelpMenu'>
@@ -60,6 +62,7 @@ class Window(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
         self.set_position(gtk.WIN_POS_CENTER)
+        self.set_title('GtkUIManager test app')
         self.connect('delete-event', self.delete_event_cb)
         self.set_size_request(400, 200)
         vbox = gtk.VBox()
@@ -91,7 +94,9 @@ class Window(gtk.Window):
         self.add_accel_group(self.ui.get_accel_group())
 
     def file_new_cb(self, action):
-        self.buffer.set_text("")
+        w = Window()
+        w.show_all()
+        gtk.main()
         
     def file_open_cb(self, action):
         dialog = gtk.FileChooserDialog("Open..", self,
@@ -113,8 +118,12 @@ class Window(gtk.Window):
 
         dialog.destroy()
         
+    def file_close_cb(self, action):
+        self.hide()
+        gtk.main_quit()
+
     def file_quit_cb(self, action):
-        self.close()
+        raise SystemExit
 
     def help_about_cb(self, action):
         dialog = gtk.MessageDialog(self,
@@ -125,9 +134,6 @@ class Window(gtk.Window):
         dialog.destroy()
 
     def delete_event_cb(self, window, event):
-        self.close()
-
-    def close(self):
         gtk.main_quit()
 
 if __name__ == '__main__':
