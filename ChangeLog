@@ -1,5 +1,8 @@
 2001-11-15  Matt Wilson  <msw@redhat.com>
 
+	* gtk/pygtk.h (init_pygtk): cast void* to _PyGtk_FunctionStruct*
+	when retrieving the API struct, #62872
+
 	* pygobject.h: added PyGFatalExceptionFunc typedef, API wrapper
 	for pyg_fatal_exceptions_{add,remove}.
 
@@ -24,16 +27,15 @@
 	isn't 100% done yet, gtk mainloop specific functions still need
 	work.
 
-	* gtk/gtk.override (_wrap_gtk_tree_selection_set_select_function):
-	added, #62814
-	(_wrap_gtk_tree_selection_selected_foreach): added, #62814
-
 	* gtk/gtkobject-support.c (pygtk_tree_selection_marshal): added,
 	#62814
 	(pygtk_tree_foreach_marshal): added, #62814
 	(pygtk_custom_destroy_notify): added, #62814
 
-	* gtk/gtk.override (_wrap_gtk_widget_path): added, #62393
+	* gtk/gtk.override (_wrap_gtk_tree_selection_set_select_function):
+	added, #62814
+	(_wrap_gtk_tree_selection_selected_foreach): added, #62814
+	(_wrap_gtk_widget_path): added, #62393
 	(_wrap_gtk_widget_class_path): added, #62393
 
 	* gtk/gtk.defs (GtkWidget.set_size_request): added, #62474
