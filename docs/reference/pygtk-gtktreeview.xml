@@ -374,23 +374,23 @@ linkend="method-gtktreeview--set-search-column">set_search_column</link></method
 	<methodparam><parameter
 		       role="keyword">column</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-search-equal-func">get_search_equal_func</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-search-equal-func">set_search_equal_func</link></methodname>
+        <methodparam><parameter role="keyword">func</parameter><initializer>None</initializer></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
 
 <!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktreeview- -get-search-equal-func">get_search_equal_func</link></methodname>
-    <methodparam></methodparam>  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktreeview- -set-search-equal-func">set_search_equal_func</link></methodname>
-    <methodparam><parameter role="keyword">search_equal_func</parameter></methodparam>
-    <methodparam><parameter role="keyword">search_user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">search_destroy</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktreeview- -set-destroy-count-func">set_destroy_count_func</link></methodname>
-    <methodparam><parameter role="keyword">func</parameter></methodparam>
-    <methodparam><parameter role="keyword">data</parameter></methodparam>
-    <methodparam><parameter role="keyword">destroy</parameter></methodparam>
-  </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview- -set-destroy-count-func">set_destroy_count_func</link></methodname>
+        <methodparam><parameter role="keyword">func</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter></methodparam>
+        <methodparam><parameter role="keyword">destroy</parameter></methodparam>
+      </methodsynopsis>
 END NOT IMPLEMENTED -->
 
     </classsynopsis>
@@ -761,7 +761,7 @@ number.</entry>
     <para>A <link
 linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
 widget is used to display the contents of any model implementing the <link
-linkend="class-gtktreemodel"><classname>gtk.Treemodel</classname></link>
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
 interface. The tree models provided standard with <literal>GTK+</literal>
 and <literal>PyGTK</literal> are:</para>
 
@@ -1544,7 +1544,7 @@ determine where a drop can take place. The signature of
 <parameter>func</parameter> is:</para>
 
       <programlisting>
-  def func(<parameter>tree_view</parameter>, <parameter>column</parameter>, <parameter>prev_colunn</parameter>, <parameter>next_column</parameter>, <parameter>data</parameter>)
+  def func(<parameter>tree_view</parameter>, <parameter>column</parameter>, <parameter>prev_column</parameter>, <parameter>next_column</parameter>, <parameter>data</parameter>)
 </programlisting>
 
       <para>where <parameter>tree_view</parameter> is the <link
@@ -2240,7 +2240,7 @@ and the tree expander area.</para>
       <para>The <methodname>get_visible_rect</methodname>() method returns
 the bounding <link
 linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link> 
-for the currently visible region of the treewview widget, in tree
+for the currently visible region of the treeview widget, in tree
 coordinates. Convert to widget coordinates with the <link
 linkend="method-gtktreeview--tree-to-widget-coords"><methodname>tree_to_widget_coords</methodname>()</link>. 
 Tree coordinates start at 0,0 for row 0 of the tree, and cover the entire
@@ -2357,7 +2357,7 @@ combination of:</para>
 	  <term><literal>gtk.gdk.LOCK_MASK</literal></term>
 	  <listitem>
 	    <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be CapsLock or ShiftLock).</simpara>
+server this may either be Caps Lock or Shift Lock).</simpara>
 	  </listitem>
 	</varlistentry>
 	<varlistentry>
@@ -2818,52 +2818,89 @@ method).</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtktreeview--get-search-equal-func">
+      <title>gtk.TreeView.get_search_equal_func</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>get_search_equal_func</methodname>
+          <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the currently used compare function for the
+          search code.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_search_equal_func</methodname>() method
+returns the compare function currently in use. This method returns None if
+the default <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
+search equal function is being used. See the <link
+linkend="method-gtktreeview--set-search-equal-func"><methodname>set_search_equal_func</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-search-equal-func">
+      <title>gtk.TreeView.set_search_equal_func</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>set_search_equal_func</methodname>
+          <methodparam><parameter role="keyword">func</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">func</parameter>&nbsp;:</term>
+          <listitem><simpara>the compare function to use during the search or <literal>None</literal></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+          <listitem><simpara>user data to pass to <parameter>func</parameter>, or <literal>None</literal></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_search_equal_func</methodname>() method sets
+the compare function for the interactive search capabilities to the function
+specified by <parameter>func</parameter>. if
+<parameter>user_data</parameter> is specified and not
+<literal>None</literal>, it is passed to <parameter>func</parameter>. If
+<parameter>func</parameter> is <literal>None</literal>, the default <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
+search equal function will be used. The signature of
+<parameter>func</parameter> is:</para>
+
+      <programlisting>
+  def func(<parameter>model</parameter>, <parameter>column</parameter>, <parameter>key</parameter>, <parameter>iter</parameter>, <parameter>data</parameter>)
+</programlisting>
+
+      <para>where <parameter>model</parameter> is the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> of
+the <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>,
+<parameter>column</parameter> is the number of the column being searched
+(see the <link
+linkend="method-gtktreeview--set-search-column"><methodname>set_search_column</methodname>()</link>
+method for more information), <parameter>key</parameter> is the string being
+searched for, <parameter>iter</parameter> is a <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+pointing to the current candidate row and <parameter>data</parameter> is the
+context data <parameter>user_data</parameter>.</para>
+
+    </refsect2>
+
+
 <!-- NOT IMPLEMENTED
-    <refsect2 id="method-gtktreeview- -get-search-equal-func">
-    <title>gtk.TreeView.get_search_equal_func</title>
-
-<programlisting><methodsynopsis language="python">
-    <methodname>get_search_equal_func</methodname>
-    <methodparam></methodparam>  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>the currently used compare function for the search code.</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Returns the compare function currently in use.
-</para>  </refsect2>
-
-
-  <refsect2 id="method-gtktreeview- -set-search-equal-func">
-    <title>gtk.TreeView.set_search_equal_func</title>
-
-<programlisting><methodsynopsis language="python">
-    <methodname>set_search_equal_func</methodname>
-    <methodparam><parameter role="keyword">search_equal_func</parameter></methodparam>
-    <methodparam><parameter role="keyword">search_user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">search_destroy</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">search_equal_func</parameter>&nbsp;:</term>
-      <listitem><simpara>the compare function to use during the search</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">search_user_data</parameter>&nbsp;:</term>
-      <listitem><simpara>user data to pass to <parameter>search_equal_func</parameter>, or <literal>None</literal></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">search_destroy</parameter>&nbsp;:</term>
-      <listitem><simpara>Destroy notifier for <parameter>search_user_data</parameter>, or <literal>None</literal></simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Sets the compare function for the interactive search capabilities.
-</para>  </refsect2>
-
-
   <refsect2 id="method-gtktreeview- -set-destroy-count-func">
     <title>gtk.TreeView.set_destroy_count_func</title>
 
@@ -3201,8 +3238,9 @@ signal</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter>iter</parameter>&nbsp;:</term>
-	  <listitem><simpara>a gtkTreeIter pointing to the row that
-expanded</simpara></listitem>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  pointing to the row that expanded</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter>path</parameter>&nbsp;:</term>
