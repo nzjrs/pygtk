@@ -77,4 +77,4 @@ defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA = gtk.defs gtk-extrafuncs.defs gdk.defs libglade.defs
 
 EXTRA_DIST = gtk.defs gtk-extrafuncs.defs gdk.defs gtk.override \
-  libglade.defs libglade.override
+  gdk.override libglade.defs libglade.override
