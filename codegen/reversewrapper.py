@@ -339,6 +339,10 @@ class StringReturn(ReturnType):
         self.wrapper.write_code("return NULL;")
 
     def write_conversion(self):
+        self.wrapper.write_code(
+            code=None,
+            failure_expression="!PyString_Check(py_retval)",
+            failure_cleanup='PyErr_SetString(PyExc_TypeError, "retval should be a string");')
         self.wrapper.write_code("retval = g_strdup(PyString_AsString(py_retval));")
 
 for ctype in ('char*', 'gchar*'):
@@ -358,7 +362,10 @@ class VoidReturn(ReturnType):
         self.wrapper.write_code("return;")
 
     def write_conversion(self):
-        pass
+        self.wrapper.write_code(
+            code=None,
+            failure_expression="py_retval != Py_None",
+            failure_cleanup='PyErr_SetString(PyExc_TypeError, "retval should be None");')
 
 argtypes.matcher.register_reverse_ret('void', VoidReturn)
 argtypes.matcher.register_reverse_ret('none', VoidReturn)
@@ -411,8 +418,7 @@ class IntParam(Parameter):
         self.wrapper.add_declaration("PyObject *py_%s;" % self.name)
         self.wrapper.write_code(code=("py_%s = PyInt_FromLong(%s);" %
                                       (self.name, self.name)),
-                                cleanup=("Py_DECREF(py_%s);" % self.name),
-                                failure_expression=("!py_%s" % self.name))
+                                cleanup=("Py_DECREF(py_%s);" % self.name))
         self.wrapper.add_pyargv_item("py_%s" % self.name)
 
 class IntReturn(ReturnType):
@@ -423,6 +429,10 @@ class IntReturn(ReturnType):
     def write_error_return(self):
         self.wrapper.write_code("return -G_MAXINT;")
     def write_conversion(self):
+        self.wrapper.write_code(
+            code=None,
+            failure_expression="!PyInt_Check(py_retval)",
+            failure_cleanup='PyErr_SetString(PyExc_TypeError, "retval should be an int");')
         self.wrapper.write_code("retval = PyInt_AsLong(py_retval);")
 
 for argtype in ('int', 'gint', 'guint', 'short', 'gshort', 'gushort', 'long',
@@ -434,7 +444,8 @@ for argtype in ('int', 'gint', 'guint', 'short', 'gshort', 'gushort', 'long',
 
 class GEnumReturn(IntReturn):
     def write_conversion(self):
-        self.wrapper.write_code(code=None,
+        self.wrapper.write_code(
+            code=None,
             failure_expression=("pyg_enum_get_value(%s, py_retval, (gint *)&retval)" %
                                 self.props['typecode']))
 
@@ -514,8 +525,7 @@ class DoubleParam(Parameter):
         self.wrapper.add_declaration("PyObject *py_%s;" % self.name)
         self.wrapper.write_code(code=("py_%s = PyFloat_FromDouble(%s);" %
                                       (self.name, self.name)),
-                                cleanup=("Py_DECREF(py_%s);" % self.name),
-                                failure_expression=("!py_%s" % self.name))
+                                cleanup=("Py_DECREF(py_%s);" % self.name))
         self.wrapper.add_pyargv_item("py_%s" % self.name)
 
 class DoubleReturn(ReturnType):
@@ -526,6 +536,10 @@ class DoubleReturn(ReturnType):
     def write_error_return(self):
         self.wrapper.write_code("return -G_MAXFLOAT;")
     def write_conversion(self):
+        self.wrapper.write_code(
+            code=None,
+            failure_expression="!PyFloat_AsDouble(py_retval)",
+            failure_cleanup='PyErr_SetString(PyExc_TypeError, "retval should be a float");')
         self.wrapper.write_code("retval = PyFloat_AsDouble(py_retval);")
 
 for argtype in ('float', 'double', 'gfloat', 'gdouble'):

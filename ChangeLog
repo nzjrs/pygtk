@@ -1,5 +1,14 @@
 2005-01-18  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* codegen/reversewrapper.py (IntParam.convert_c2py): Don't bother
+	checking if PyInt_FromLong fails.
+	(DoubleParam.convert_c2py): Don't bother checking if
+	PyFloat_FromDouble fails.
+	(DoubleReturn.write_conversion): Check return value type.
+	(IntReturn.write_conversion): idem.
+	(StringReturn.write_conversion): idem.
+	(VoidReturn.write_conversion): idem.
+
 	* gtk/gtkmodule.c (init_gtk): On Python >= 2.4, don't call
 	setlocale(LC_NUMERIC, "C"), as it breaks the locale module.  Fixes
 	#164451.
