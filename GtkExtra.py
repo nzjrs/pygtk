@@ -55,7 +55,7 @@ class MenuFactory:
 			item.add_accelerator("activate", self.accelerator,
 					     key, mods, 'visible')
 		if callback:
-			item.connect("activate", callback)
+			item.connect("activate", callback, args)
 		# right justify the help menu automatically
 		if string.lower(label) == 'help' and parentmenu == self.__w:
 			item.right_justify()

@@ -1361,7 +1361,7 @@ def create_timeout_test(_button):
 		func = [None, 0]
 		def timeout_test(label=label, count=[0]):
 			count[0] = count[0] + 1
-			label.set("count: " + str(count[0]))
+			label.set_text("count: " + str(count[0]))
 			return TRUE
 
 		func = [timeout_test, 0]
@@ -1405,7 +1405,7 @@ def create_idle_test(_button):
 
 		def idle_test(label=label, count=[0]):
 			count[0] = count[0] + 1
-			label.set("count: " + str(count[0]))
+			label.set_text("count: " + str(count[0]))
 			return TRUE
 
 		win.func = [idle_test, 0]

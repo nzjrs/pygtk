@@ -271,7 +271,7 @@ class Console(GtkVBox):
 		l = string.rstrip(l)
 		if not bracketsBalanced(self.cmd2) or l[-1] == ':' or \
 				l[-1] == '\\' or l[0] in ' \11':
-			self.prompt.set(sys.ps2)
+			self.prompt.set_text(sys.ps2)
 			self.prompt.queue_draw()
 			return
 		self.run(self.cmd)
@@ -294,7 +294,7 @@ class Console(GtkVBox):
 				self.quit()
 			else:
 				traceback.print_exc()
-		self.prompt.set(sys.ps1)
+		self.prompt.set_text(sys.ps1)
 		self.prompt.queue_draw()
 		adj = self.text.get_vadjustment()
 		adj.set_value(adj.upper - adj.page_size)

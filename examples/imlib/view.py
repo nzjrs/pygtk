@@ -40,11 +40,11 @@ fs.connect('destroy', mainquit)
 fs.connect('delete_event', mainquit)
 
 label = fs.ok_button.children()[0]
-label.set('View')
+label.set_text('View')
 fs.ok_button.connect('clicked', open_img)
 
 label = fs.cancel_button.children()[0]
-label.set('Quit')
+label.set_text('Quit')
 fs.cancel_button.connect('clicked', mainquit)
 
 fs.show()

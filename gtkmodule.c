@@ -4548,7 +4548,7 @@ static PyObject *_wrap_gtk_ctree_insert_node(PyObject *self, PyObject *args) {
   /* just about all the arguments can be substituted with None */
   if (!PyArg_ParseTuple(args, "O!OOOiOOOOii:gtk_ctree_insert_node",
 			&PyGtk_Type, &ctree, &py_parent, &py_sibling, &py_text,
-			spacing, &py_pixmap_closed, &py_mask_closed,
+			&spacing, &py_pixmap_closed, &py_mask_closed,
 			&py_pixmap_opened, &py_mask_opened, &is_leaf,
 			&expanded))
     return NULL;
@@ -4687,7 +4687,7 @@ static PyObject *_wrap_gtk_ctree_node_get_text(PyObject *self, PyObject *args) {
   char *text;
 
   if (!PyArg_ParseTuple(args, "O!O!i:gtk_ctree_node_get_text", &PyGtk_Type,
-			&ctree, &PyGtkCTreeNode_Type, *node, &col))
+			&ctree, &PyGtkCTreeNode_Type, &node, &col))
     return NULL;
   if (!gtk_ctree_node_get_text(GTK_CTREE(PyGtk_Get(ctree)),
 			       PyGtkCTreeNode_Get(node), col, &text)) {
@@ -4704,7 +4704,7 @@ static PyObject *_wrap_gtk_ctree_node_get_pixmap(PyObject *self, PyObject *args)
   GdkBitmap *m;
 
   if (!PyArg_ParseTuple(args, "O!O!i:gtk_ctree_node_get_pixmap", &PyGtk_Type,
-			&ctree, &PyGtkCTreeNode_Type, *node, &col))
+			&ctree, &PyGtkCTreeNode_Type, &node, &col))
     return NULL;
   if (!gtk_ctree_node_get_pixmap(GTK_CTREE(PyGtk_Get(ctree)), 
 				 PyGtkCTreeNode_Get(node), col, &p, &m)) {
@@ -4729,7 +4729,7 @@ static PyObject *_wrap_gtk_ctree_node_get_pixtext(PyObject *self, PyObject *args
   GdkBitmap *m;
 
   if (!PyArg_ParseTuple(args, "O!O!i:gtk_ctree_node_get_pixtext", &PyGtk_Type,
-			&ctree, &PyGtkCTreeNode_Type, *node, &col))
+			&ctree, &PyGtkCTreeNode_Type, &node, &col))
     return NULL;
   if (!gtk_ctree_node_get_pixtext(GTK_CTREE(PyGtk_Get(ctree)),
 				  PyGtkCTreeNode_Get(node), col,

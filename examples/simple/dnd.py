@@ -32,7 +32,7 @@ def format_data(str):
 	return ret
 
 def dnd_drop(b, event):
-	data_type.set(event.data_type)
+	data_type.set_text(event.data_type)
 	data.delete_text(0, data.get_length())
 	data.insert(font, black, white, format_data(event.data))
 	pass

@@ -135,7 +135,7 @@ class GtkDb(GtkWindow, bdb.Bdb):
 		self.blockupdate = 0
 
 	def set_status(self, str):
-		self.status.set(str)
+		self.status.set_text(str)
 
 	def update_selection(self, clist, r, c, event):
 		if self.blockupdate: return

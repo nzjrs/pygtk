@@ -180,14 +180,6 @@
   ((GtkWindow window)
    (bool modal)))
 
-;; DrawWindow
-
-(define-object GtkDrawWindow (GtkWindow))
-
-(define-func gtk_draw_window_new
-  GtkWidget
-  ((GtkWindowType type)))
-
 ;; Dialog
 
 (define-object GtkDialog (GtkWindow)
@@ -520,6 +512,20 @@
   none
   ((GtkPaned paned)
    (GtkWidget child)))
+
+(define-func gtk_paned_pack1
+  none
+  ((GtkPaned paned)
+   (GtkWidget child)
+   (bool resize)
+   (bool shrink)))
+
+(define-func gtk_paned_pack2
+  none
+  ((GtkPaned paned)
+   (GtkWidget child)
+   (bool resize)
+   (bool shrink)))
 
 (define-func gtk_paned_set_handle_size
   none

@@ -330,6 +330,8 @@ class GtkWidget(GtkObject):
 		_gtk.gtk_widget_set_events(self._o, events)
 	def add_events(self, events):
 		_gtk.gtk_widget_add_events(self._o, events)
+	def set_app_paintable(self, app_paintable):
+		_gtk.gtk_widget_set_app_paintable(self._o, app_paintable)
 	def set_composite_name(self, name):
 		_gtk.gtk_widget_set_composite_name(self._o, name)
 	def set_extension_events(self, exevents):
@@ -794,12 +796,6 @@ class GtkDialog(GtkWindow):
 			return _obj2inst(attrs[attr](self._o))
 		raise AttributeError, attr
 
-class GtkDrawWindow(GtkWindow):
-	get_type = _gtk.gtk_draw_window_get_type
-	def __init__(self, type=WINDOW_TOPLEVEL, _obj=None):
-		if _obj: self._o = _obj; return
-		self._o = _gtk.gtk_draw_window_new(type)
-
 class GtkFileSelection(GtkWindow):
 	get_type = _gtk.gtk_file_selection_get_type
 	def __init__(self, title='', _obj=None):
@@ -1156,6 +1152,13 @@ class GtkCList(GtkContainer):
 	def get_vadjustment(self):
 		return GtkAdjusment(_obj=
 				    _gtk.gtk_clist_get_vadjustment(self._o))
+	def set_reorderable(self, reorderable):
+		_gtk.gtk_clist_set_reorderable(self._o, reorderable)
+	def set_use_drag_icons(self, use_icons):
+		_gtk.gtk_clist_set_use_drag_icons(self._o, use_icons)
+	def set_button_actions(self, button, button_actions):
+		_gtk.gtk_clist_set_button_actions(self._o, button,
+						  button_actions)
 	def set_row_data(self, row, data):
 		_gtk.gtk_clist_set_row_data(self._o, row, data)
 	def set_row_height(self, height):
@@ -1322,10 +1325,6 @@ class GtkCTree(GtkCList):
 		_gtk.gtk_ctree_set_spacing(self._o, spacing)
 	def set_show_stub(self, show_stub):
 		_gtk.gtk_ctree_set_show_stub(self._o, show_stub)
-	def set_reorderable(self, reorderable):
-		_gtk.gtk_ctree_set_reorderable(self._o, reorderable)
-	def set_use_drag_icons(self, use_icons):
-		_gtk.gtk_ctree_set_use_drag_icons(self._o, use_icons)
 	def set_line_style(self, style):
 		_gtk.gtk_ctree_set_line_style(self._o, style)
 	def set_expander_style(self, style):
@@ -1645,6 +1644,10 @@ class GtkPaned(GtkContainer):
 		_gtk.gtk_paned_add1(self._o, child._o)
 	def add2(self, child):
 		_gtk.gtk_paned_add2(self._o, child._o)
+	def pack1(self, child, resize=TRUE, shrink=TRUE):
+		_gtk.gtk_paned_pack1(self._o, child._o, resize, shrink)
+	def pack2(self, child, resize=TRUE, shrink=TRUE):
+		_gtk.gtk_paned_pack2(self._o, child._o, resize, shrink)
 	def handle_size(self, size):
 		print "handle_size deprecated -- use set_handle_size"
 		self.set_handle_size(size)
@@ -2049,9 +2052,14 @@ class GtkLabel(GtkMisc):
 		if _obj: self._o = _obj; return
 		self._o = _gtk.gtk_label_new(label)
 	def set(self, str):
-		_gtk.gtk_label_set(self._o, str)
+		print "GtkLabel.set deprecated -- use set_text"
+		self.set_text(str)
+	def set_text(self, str):
+		_gtk.gtk_label_set_text(self._o, str)
 	def set_justify(self, jtype):
 		_gtk.gtk_label_set_justify(self._o, jtype)
+	def set_line_wrap(self, wrap):
+		_gtk.gtk_label_set_line_wrap(self._o, wrap)
 	def set_pattern(self, pattern):
 		_gtk.gtk_label_set_pattern(self._o, pattern)
 	def get(self):
