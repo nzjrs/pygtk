@@ -11,6 +11,20 @@
   (gtype-id "GTK_TYPE_ACCEL_GROUP")
 )
 
+(define-boxed CTreeNode
+  (in-module "Gtk")
+  (c-name "GtkCTreeNode")
+  (gtype-id "GTK_TYPE_CTREE_NODE")
+  (fields
+    '("GtkCTreeNode*" "parent")
+    '("GtkCTreeNode*" "children")
+    '("GtkCTreeNode*" "sibling")
+    '("guint16" "level")
+    '("guint" "is_leaf")
+    '("guint" "expanded")
+  )
+)
+
 (define-object IconFactory
   (in-module "Gtk")
   (parent "GObject")
@@ -4262,18 +4276,6 @@
   (varargs #t)
 )
 
-(define-method queue_resize
-  (of-object "GtkContainer")
-  (c-name "gtk_container_queue_resize")
-  (return-type "none")
-)
-
-(define-method clear_resize_widgets
-  (of-object "GtkContainer")
-  (c-name "gtk_container_clear_resize_widgets")
-  (return-type "none")
-)
-
 (define-method arg_set
   (of-object "GtkContainer")
   (c-name "gtk_container_arg_set")
@@ -4327,16 +4329,6 @@
     '("gpointer" "callback_data")
   )
 )
-
-(define-method child_composite_name
-  (of-object "GtkContainer")
-  (c-name "gtk_container_child_composite_name")
-  (return-type "gchar*")
-  (parameters
-    '("GtkWidget*" "child")
-  )
-)
-
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkctree.h
@@ -10802,6 +10794,19 @@
   )
 )
 
+(define-method get_has_resize_grip
+  (of-object "GtkStatusbar")
+  (c-name "gtk_statusbar_get_has_resize_grip")
+  (return-type "gboolean")
+)
+
+(define-method set_has_resize_grip
+  (of-object "GtkStatusbar")
+  (c-name "gtk_statusbar_set_has_resize_grip")
+  (parameters
+    '("gboolean" "setting")
+  )
+)
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkstock.h
@@ -15076,6 +15081,8 @@
   (return-type "none")
   (parameters
     '("GtkTreePath*" "path")
+    '("GtkTreeViewColumn*" "focus_column")
+    '("gboolean" "start_editing")
   )
 )
 
@@ -15252,15 +15259,6 @@
     '("GtkCellRenderer*" "cell")
   )
   (varargs #t)
-)
-
-(define-method set_cell_renderer
-  (of-object "GtkTreeViewColumn")
-  (c-name "gtk_tree_view_column_set_cell_renderer")
-  (return-type "none")
-  (parameters
-    '("GtkCellRenderer*" "cell")
-  )
 )
 
 (define-method pack_start

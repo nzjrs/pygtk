@@ -82,20 +82,6 @@ PyGdkAtom_New(GdkAtom atom)
     return (PyObject *)self;
 }
 
-PyObject *
-PyGtkCTreeNode_New(GtkCTreeNode *node)
-{
-    PyGtkCTreeNode_Object *self;
-
-    self = (PyGtkCTreeNode_Object *)PyObject_NEW(PyGtkCTreeNode_Object,
-						 &PyGtkCTreeNode_Type);
-    if (self == NULL)
-	return NULL;
-    self->node = node;
-    return (PyObject *)self;
-}
-
-#if 0
 typedef struct {
     PyObject_HEAD
     GtkStyle *style; /* parent style */
@@ -1390,92 +1376,6 @@ PyTypeObject PyGdkAtom_Type = {
     NULL
 };
 
-static void
-pygtk_ctree_node_dealloc(PyGtkCTreeNode_Object *self)
-{
-    PyMem_DEL(self);
-}
-
-static int
-pygtk_ctree_node_compare(PyGtkCTreeNode_Object *self, PyGtkCTreeNode_Object *v)
-{
-    if (self->node == v->node) return 0;
-    if (self->node > v->node) return -1;
-    return 1;
-}
-
-static long
-pygtk_ctree_node_hash(PyGtkCTreeNode_Object *self)
-{
-    return (long)self->node;
-}
-
-static PyObject *
-pygtk_ctree_node_getattr(PyGtkCTreeNode_Object *self, char *key)
-{
-    if (!strcmp(key, "__members__"))
-	return Py_BuildValue("[ssssss]", "children", "expanded", "is_leaf",
-			     "level", "parent", "sibling");
-    if (!strcmp(key, "parent")) {
-	GtkCTreeNode *node = GTK_CTREE_ROW(self->node)->parent;
-	if (node)
-	    return PyGtkCTreeNode_New(node);
-	Py_INCREF(Py_None);
-	return Py_None;
-    } else if (!strcmp(key, "sibling")) {
-	GtkCTreeNode *node = GTK_CTREE_ROW(self->node)->sibling;
-	if (node)
-	    return PyGtkCTreeNode_New(node);
-	Py_INCREF(Py_None);
-	return Py_None;
-    } else if (!strcmp(key, "children")) {
-	GtkCTreeNode *node = GTK_CTREE_ROW(self->node)->children;
-	PyObject *ret = PyList_New(0);
-	if (ret == NULL)
-	    return NULL;
-	while (node) {
-	    PyObject *py_node = PyGtkCTreeNode_New(node);
-	    if (py_node == NULL) {
-		Py_DECREF(ret);
-		return NULL;
-	    }
-	    PyList_Append(ret, py_node);
-	    Py_DECREF(py_node);
-	    node = GTK_CTREE_ROW(node)->sibling;
-	}
-	return ret;
-    } else if (!strcmp(key, "level"))
-	return PyInt_FromLong(GTK_CTREE_ROW(self->node)->level);
-    else if (!strcmp(key, "is_leaf"))
-	return PyInt_FromLong(GTK_CTREE_ROW(self->node)->is_leaf);
-    else if (!strcmp(key, "expanded"))
-	return PyInt_FromLong(GTK_CTREE_ROW(self->node)->expanded);
-    PyErr_SetString(PyExc_AttributeError, key);
-    return NULL;
-}
-
-PyTypeObject PyGtkCTreeNode_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GtkCTreeNode",
-    sizeof(PyGtkCTreeNode_Object),
-    0,
-    (destructor)pygtk_ctree_node_dealloc,
-    (printfunc)0,
-    (getattrfunc)pygtk_ctree_node_getattr,
-    (setattrfunc)0,
-    (cmpfunc)pygtk_ctree_node_compare,
-    (reprfunc)0,
-    0,
-    0,
-    0,
-    (hashfunc)pygtk_ctree_node_hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
-
 PyObject *
 pygtk_tree_path_to_pyobject(GtkTreePath *path)
 {
@@ -1559,7 +1459,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GdkColormap);
 #endif
     register_tp(GdkAtom);
-    register_tp(GtkCTreeNode);
     pyg_register_boxed_custom(GTK_TYPE_TREE_PATH,
 			      PyGtkTreePath_from_value,
 			      PyGtkTreePath_to_value);

@@ -26,7 +26,6 @@ static struct _PyGtk_FunctionStruct functions = {
     pygtk_destroy_notify,
 
     &PyGdkAtom_Type,  PyGdkAtom_New,
-    &PyGtkCTreeNode_Type,  PyGtkCTreeNode_New,
 };
 
 DL_EXPORT(void)

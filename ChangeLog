@@ -1,3 +1,46 @@
+2001-09-27  Matt Wilson  <msw@redhat.com>
+
+	* gtk/gtk.defs (GtkTreeView.set_cursor): added new parameters.
+
+	* gtk/pygtk-private.h: removed old PyGtkCTreeNode code, move to
+	generic generated code.
+
+	* gtk/gtkmodule.c (_PyGtk_FunctionStruct): likewise
+	
+	* gtk/pygtk.h: likewise.
+
+	* gtk/gtk-types.c: likewise.
+	
+	* gtk/gtk.override (_wrap_gtk_tree_store_get_root_iter): moved to
+	gtk_tree_model_get_iter_root.
+	(_wrap_gtk_ctree_node_from_cobject): removed
+	(_wrap_gtk_ctree_node_getattr): moved gtk-types.c getattr code to
+	generic boxed interface and placed here.
+	(_wrap_gtk_ctree_*): migrated to generic PyGBoxed for GtkCTreeNodes
+
+2001-09-26  Matt Wilson  <msw@redhat.com>
+
+	* gtk/gtkmodule.c (_PyGtk_FunctionStruct): removed PyGtkCTreeNode
+	functions
+
+	* codegen/argtypes.py: remove GtkCTreeNode custom registration
+
+	* gtk/gtk.defs (GtkContainer.queue_resize): remove, use
+	gtk_widget_queue_resize instead of gtk_container_queue_resize
+	(GtkContainer.child_composite_name): remove, this is private
+	(GtkContainer.clear_resize_widgets): likewise
+	(GtkTreeViewColumn.set_cell_renderer): remove, use
+	GtkTreeViewColumn.pack_start instead
+	(CTreeNode): added CTreeNode boxed definition
+
+	* gtk/gtk.override (_wrap_gtk_tree_view_column_new): changed from
+	gtk_tree_view_column_set_renderer to gtk_tree_view_column_pack_start.
+
+2001-09-25  Matt Wilson  <msw@redhat.com>
+
+	* gtk/gtk.defs (get_has_resize_grip): bound
+	(set_has_resize_grip): bound
+
 2001-09-24  Matt Wilson  <msw@redhat.com>
 
 	* gtk/gdk.override (_wrap_gdk_pixbuf_render_pixmap_and_mask):
