@@ -49,12 +49,20 @@ Difference among chinese characters in GB, JIS, KSC, BIG5:\u200E
  BIG5\t--\t\u5143\u6C23\t\u958B\u767C
 
 '''
-w = gtk.Window()
-w.set_border_width(10)
+win = gtk.Window()
+win.connect('destroy', gtk.mainquit)
+win.set_default_size(600, 400)
+
+swin = gtk.ScrolledWindow()
+swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+win.add(swin)
+swin.show()
+
 l = gtk.Label(hellos)
-w.add(l)
+swin.add_with_viewport(l)
 l.show()
-w.show()
+
+win.show()
 
 gtk.main()
 
