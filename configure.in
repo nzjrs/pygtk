@@ -116,6 +116,21 @@ if test "x$enable_numpy" != xno; then
   CPPFLAGS="$save_CPPFLAGS"
 fi
 
+dnl add debugging options ...
+changequote(,)dnl
+if test "x$GCC" = xyes; then
+  case " $CFLAGS " in
+  *[\	\ ]-Wall[\	\ ]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
+
+  case " $CFLAGS " in
+  *[\	\ ]-ansi[\	\ ]*) ;;
+  *) CFLAGS="$CFLAGS -ansi" ;;
+  esac
+fi
+changequote([,])dnl
+
 AC_CONFIG_FILES(
   Makefile
   pygtk-2.0.pc
