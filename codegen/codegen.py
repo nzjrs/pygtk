@@ -617,7 +617,12 @@ class GObjectWrapper(Wrapper):
               '    if (!self->obj) {\n' \
               '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' \
               '        return -1;\n' \
-              '    }\n' \
+              '    }\n'
+
+        if not constructor.caller_owns_return:
+            print >> out, "    g_object_ref(self->obj);\n"
+
+        print >> out, \
               '    pygobject_register_wrapper((PyObject *)self);\n' \
               '    return 0;\n' \
               '}\n\n' % { 'typename': classname }
