@@ -719,56 +719,6 @@ _wrap_gtk_box_query_child_packing(PyGObject *self, PyObject *args,
     return Py_BuildValue("(iiii)", (int)expand, (int)fill, padding, pack_type);
 }
 %%
-ignore gtk_button_box_child_requisition
-%%
-override gtk_button_box_get_child_size_default
-static PyObject *
-_wrap_gtk_button_box_get_child_size_default(PyObject *self, PyObject *args)
-{
-    int mw, mh;
-
-    if (!PyArg_ParseTuple(args, ":button_box_get_child_size_default"))
-        return NULL;
-    gtk_button_box_get_child_size_default(&mw, &mh);
-    return Py_BuildValue("(ii)", mw, mh);
-}
-%%
-override gtk_button_box_get_child_ipadding_default
-static PyObject *
-_wrap_gtk_button_box_get_child_ipadding_default(PyObject *self, PyObject *args)
-{
-    int ipx, ipy;
-
-    if (!PyArg_ParseTuple(args, ":button_box_get_child_ipadding_default"))
-        return NULL;
-    gtk_button_box_get_child_ipadding_default(&ipx, &ipy);
-    return Py_BuildValue("(ii)", ipx, ipy);
-}
-%%
-override gtk_button_box_get_child_size
-static PyObject *
-_wrap_gtk_button_box_get_child_size(PyGObject *self, PyObject *args)
-{
-    int mw, mh;
-
-    if (!PyArg_ParseTuple(args, ":GtkButtonBox.get_child_size"))
-        return NULL;
-    gtk_button_box_get_child_size(GTK_BUTTON_BOX(self->obj), &mw, &mh);
-    return Py_BuildValue("(ii)", mw, mh);
-}
-%%
-override gtk_button_box_get_child_ipadding
-static PyObject *
-_wrap_gtk_button_box_get_child_ipadding(PyGObject *self, PyObject *args)
-{
-    int ipx, ipy;
-
-    if (!PyArg_ParseTuple(args, ":GtkButtonBox.get_child_ipadding"))
-        return NULL;
-    gtk_button_box_get_child_ipadding(GTK_BUTTON_BOX(self->obj), &ipx, &ipy);
-    return Py_BuildValue("(ii)", ipx, ipy);
-}
-%%
 ignore gtk_clist_new
 %%
 override gtk_clist_new_with_titles kwargs
@@ -2114,6 +2064,7 @@ _wrap_gtk_tree_view_get_path_at_pos(PyGObject *self, PyObject *args,
     gint x, y;
     GtkTreePath *path;
     GtkTreeViewColumn *column;
+    gint cell_x, cell_y;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "Oii:GtkTreeView.get_path_at_pos",
@@ -2125,8 +2076,8 @@ _wrap_gtk_tree_view_get_path_at_pos(PyGObject *self, PyObject *args,
     }
     if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(self->obj),
 				      GDK_WINDOW(window->obj), x, y,
-				      &path, &column)) {
-	PyObject *ret = PyTuple_New(2);
+				      &path, &column, &cell_x, &cell_y)) {
+	PyObject *ret = PyTuple_New(4);
 
 	if (path) {
 	    PyTuple_SetItem(ret, 0, pygtk_tree_path_to_pyobject(path));
@@ -2136,6 +2087,8 @@ _wrap_gtk_tree_view_get_path_at_pos(PyGObject *self, PyObject *args,
 	    PyTuple_SetItem(ret, 0, Py_None);
 	}
 	PyTuple_SetItem(ret, 1, pygobject_new((GObject *)column));
+	PyTuple_SetItem(ret, 2, PyInt_FromLong(cell_x));
+	PyTuple_SetItem(ret, 3, PyInt_FromLong(cell_y));
 	return ret;
     } else {
 	Py_INCREF(Py_None);
@@ -2618,22 +2571,16 @@ override gtk_button_new kwargs
 static PyObject *
 _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "label", "accel_group", NULL };
-    gchar *text = NULL;
-    PyObject *pyaccel = Py_None;
-    GtkAccelGroup *accel = NULL;
+    static char *kwlist[] = { "label", "stock", NULL };
+    gchar *text = NULL, *stock = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|zO:GtkButton.__init__",
-				     kwlist, &text))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|zz:GtkButton.__init__",
+				     kwlist, &text, &stock))
 	return NULL;
-    if (PyGtkAccelGroup_Check(pyaccel))
-	accel = PyGtkAccelGroup_Get(pyaccel);
-    else if (pyaccel != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "accel_group must be a GtkAccelGroup or None");
-	return NULL;
-    }
-    if (text)
-	self->obj = (GObject *)gtk_button_new_stock(text, accel);
+    if (stock)
+	self->obj = (GObject *)gtk_button_new_from_stock(stock);
+    else if (text)
+	self->obj = (GObject *)gtk_button_new_with_mnemonic(text);
     else
 	self->obj = (GObject *)gtk_button_new();
     if (!self->obj) {

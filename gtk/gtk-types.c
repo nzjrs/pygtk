@@ -3181,11 +3181,11 @@ pygtk_text_iter_get_chars_in_line(PyGtkTextIter_Object *self, PyObject *args)
 /* XXXX - gtk_text_iter_get_attributes */
 
 static PyObject *
-pygtk_text_iter_is_last(PyGtkTextIter_Object *self, PyObject *args)
+pygtk_text_iter_is_end(PyGtkTextIter_Object *self, PyObject *args)
 {
-    if (!PyArg_ParseTuple(args, ":GtkTextIter.is_last"))
+    if (!PyArg_ParseTuple(args, ":GtkTextIter.is_end"))
 	return NULL;
-    return PyInt_FromLong(gtk_text_iter_is_last(&self->iter));
+    return PyInt_FromLong(gtk_text_iter_is_end(&self->iter));
 }
 
 static PyObject *
@@ -3486,7 +3486,7 @@ static PyMethodDef pygtk_text_iter_methods[] = {
     { "starts_line", (PyCFunction)pygtk_text_iter_starts_line, METH_VARARGS },
     { "ends_line", (PyCFunction)pygtk_text_iter_ends_line, METH_VARARGS },
     { "get_chars_in_line", (PyCFunction)pygtk_text_iter_get_chars_in_line, METH_VARARGS },
-    { "is_last", (PyCFunction)pygtk_text_iter_is_last, METH_VARARGS },
+    { "is_end", (PyCFunction)pygtk_text_iter_is_end, METH_VARARGS },
     { "is_first", (PyCFunction)pygtk_text_iter_is_first, METH_VARARGS },
     { "forward_char", (PyCFunction)pygtk_text_iter_forward_char, METH_VARARGS },
     { "backward_char", (PyCFunction)pygtk_text_iter_backward_char, METH_VARARGS },

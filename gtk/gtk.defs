@@ -1960,67 +1960,10 @@
   (return-type GtkType)
 )
 
-(function gtk_button_box_get_child_size_default
-  (c-name gtk_button_box_get_child_size_default)
-  (return-type none)
-  (parameter (type-and-name gint* min_width))
-  (parameter (type-and-name gint* min_height))
-)
-
-(function gtk_button_box_get_child_ipadding_default
-  (c-name gtk_button_box_get_child_ipadding_default)
-  (return-type none)
-  (parameter (type-and-name gint* ipad_x))
-  (parameter (type-and-name gint* ipad_y))
-)
-
-(function gtk_button_box_set_child_size_default
-  (c-name gtk_button_box_set_child_size_default)
-  (return-type none)
-  (parameter (type-and-name gint min_width))
-  (parameter (type-and-name gint min_height))
-)
-
-(function gtk_button_box_set_child_ipadding_default
-  (c-name gtk_button_box_set_child_ipadding_default)
-  (return-type none)
-  (parameter (type-and-name gint ipad_x))
-  (parameter (type-and-name gint ipad_y))
-)
-
-(method get_spacing
-  (of-object ButtonBox (Gtk))
-  (c-name gtk_button_box_get_spacing)
-  (return-type gint)
-)
-
 (method get_layout
   (of-object ButtonBox (Gtk))
   (c-name gtk_button_box_get_layout)
   (return-type GtkButtonBoxStyle)
-)
-
-(method get_child_size
-  (of-object ButtonBox (Gtk))
-  (c-name gtk_button_box_get_child_size)
-  (return-type none)
-  (parameter (type-and-name gint* min_width))
-  (parameter (type-and-name gint* min_height))
-)
-
-(method get_child_ipadding
-  (of-object ButtonBox (Gtk))
-  (c-name gtk_button_box_get_child_ipadding)
-  (return-type none)
-  (parameter (type-and-name gint* ipad_x))
-  (parameter (type-and-name gint* ipad_y))
-)
-
-(method set_spacing
-  (of-object ButtonBox (Gtk))
-  (c-name gtk_button_box_set_spacing)
-  (return-type none)
-  (parameter (type-and-name gint spacing))
 )
 
 (method set_layout
@@ -2029,32 +1972,6 @@
   (return-type none)
   (parameter (type-and-name GtkButtonBoxStyle layout_style))
 )
-
-(method set_child_size
-  (of-object ButtonBox (Gtk))
-  (c-name gtk_button_box_set_child_size)
-  (return-type none)
-  (parameter (type-and-name gint min_width))
-  (parameter (type-and-name gint min_height))
-)
-
-(method set_child_ipadding
-  (of-object ButtonBox (Gtk))
-  (c-name gtk_button_box_set_child_ipadding)
-  (return-type none)
-  (parameter (type-and-name gint ipad_x))
-  (parameter (type-and-name gint ipad_y))
-)
-
-(function gtk_button_box_child_requisition
-  (c-name gtk_button_box_child_requisition)
-  (return-type none)
-  (parameter (type-and-name GtkWidget* widget))
-  (parameter (type-and-name int* nvis_children))
-  (parameter (type-and-name int* width))
-  (parameter (type-and-name int* height))
-)
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkbin.h
@@ -5277,7 +5194,7 @@
   (c-name gtk_icon_size_register_alias)
   (return-type none)
   (parameter (type-and-name const-gchar* alias))
-  (parameter (type-and-name const-gchar* target))
+  (parameter (type-and-name GtkIconSize target))
 )
 
 (function icon_set_new
@@ -5424,7 +5341,7 @@
   (c-name gtk_image_set_from_stock)
   (return-type none)
   (parameter (type-and-name const-gchar* stock_id))
-  (parameter (type-and-name const-gchar* size))
+  (parameter (type-and-name GtkIconSize size))
 )
 
 (method set_from_icon_set
@@ -6644,18 +6561,6 @@
 (method get_accel_group
   (of-object Menu (Gtk))
   (c-name gtk_menu_get_accel_group)
-  (return-type GtkAccelGroup*)
-)
-
-(method get_uline_accel_group
-  (of-object Menu (Gtk))
-  (c-name gtk_menu_get_uline_accel_group)
-  (return-type GtkAccelGroup*)
-)
-
-(method ensure_uline_accel_group
-  (of-object Menu (Gtk))
-  (c-name gtk_menu_ensure_uline_accel_group)
   (return-type GtkAccelGroup*)
 )
 
@@ -8147,103 +8052,6 @@
   (parameter (type-and-name GtkAdjustment* adjustment))
 )
 
-(method draw_background
-  (of-object Range (Gtk))
-  (c-name gtk_range_draw_background)
-  (return-type none)
-)
-
-(method clear_background
-  (of-object Range (Gtk))
-  (c-name gtk_range_clear_background)
-  (return-type none)
-)
-
-(method draw_trough
-  (of-object Range (Gtk))
-  (c-name gtk_range_draw_trough)
-  (return-type none)
-)
-
-(method draw_slider
-  (of-object Range (Gtk))
-  (c-name gtk_range_draw_slider)
-  (return-type none)
-)
-
-(method draw_step_forw
-  (of-object Range (Gtk))
-  (c-name gtk_range_draw_step_forw)
-  (return-type none)
-)
-
-(method draw_step_back
-  (of-object Range (Gtk))
-  (c-name gtk_range_draw_step_back)
-  (return-type none)
-)
-
-(method slider_update
-  (of-object Range (Gtk))
-  (c-name gtk_range_slider_update)
-  (return-type none)
-)
-
-(method trough_click
-  (of-object Range (Gtk))
-  (c-name gtk_range_trough_click)
-  (return-type gint)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gfloat* jump_perc))
-)
-
-(method default_hslider_update
-  (of-object Range (Gtk))
-  (c-name gtk_range_default_hslider_update)
-  (return-type none)
-)
-
-(method default_vslider_update
-  (of-object Range (Gtk))
-  (c-name gtk_range_default_vslider_update)
-  (return-type none)
-)
-
-(method default_htrough_click
-  (of-object Range (Gtk))
-  (c-name gtk_range_default_htrough_click)
-  (return-type gint)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gfloat* jump_perc))
-)
-
-(method default_vtrough_click
-  (of-object Range (Gtk))
-  (c-name gtk_range_default_vtrough_click)
-  (return-type gint)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gfloat* jump_perc))
-)
-
-(method default_hmotion
-  (of-object Range (Gtk))
-  (c-name gtk_range_default_hmotion)
-  (return-type none)
-  (parameter (type-and-name gint xdelta))
-  (parameter (type-and-name gint ydelta))
-)
-
-(method default_vmotion
-  (of-object Range (Gtk))
-  (c-name gtk_range_default_vmotion)
-  (return-type none)
-  (parameter (type-and-name gint xdelta))
-  (parameter (type-and-name gint ydelta))
-)
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkrc.h
@@ -9157,13 +8965,6 @@
   (c-name gtk_spin_button_set_wrap)
   (return-type none)
   (parameter (type-and-name gboolean wrap))
-)
-
-(method set_shadow_type
-  (of-object SpinButton (Gtk))
-  (c-name gtk_spin_button_set_shadow_type)
-  (return-type none)
-  (parameter (type-and-name GtkShadowType shadow_type))
 )
 
 (method set_snap_to_ticks
@@ -10361,6 +10162,8 @@
   (c-name gtk_text_buffer_create_tag)
   (return-type GtkTextTag*)
   (parameter (type-and-name const-gchar* tag_name))
+  (parameter (type-and-name const-gchar* first_property_name))
+  (varargs t)
 )
 
 (method get_iter_at_line_offset
@@ -10397,9 +10200,9 @@
   (parameter (type-and-name gint line_number))
 )
 
-(method get_last_iter
+(method get_end_iter
   (of-object TextBuffer (Gtk))
-  (c-name gtk_text_buffer_get_last_iter)
+  (c-name gtk_text_buffer_get_end_iter)
   (return-type none)
   (parameter (type-and-name GtkTextIter* iter))
 )
@@ -10435,9 +10238,9 @@
   (parameter (type-and-name const-GtkTextIter* iter))
 )
 
-(method modified
+(method get_modified
   (of-object TextBuffer (Gtk))
-  (c-name gtk_text_buffer_modified)
+  (c-name gtk_text_buffer_get_modified)
   (return-type gboolean)
 )
 
@@ -11084,9 +10887,12 @@
 (method scroll_to_mark
   (of-object TextView (Gtk))
   (c-name gtk_text_view_scroll_to_mark)
-  (return-type gboolean)
+  (return-type none)
   (parameter (type-and-name GtkTextMark* mark))
-  (parameter (type-and-name gint mark_within_margin))
+  (parameter (type-and-name gdouble within_margin))
+  (parameter (type-and-name gboolean use_align) (default "FALSE"))
+  (parameter (type-and-name gdouble xalign) (default "0.5"))
+  (parameter (type-and-name gdouble yalign) (default "0.5"))
 )
 
 (method move_mark_onscreen
@@ -12812,18 +12618,6 @@
   (parameter (type-and-name GdkRectangle* area))
 )
 
-(method draw_focus
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_draw_focus)
-  (return-type none)
-)
-
-(method draw_default
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_draw_default)
-  (return-type none)
-)
-
 (method size_request
   (of-object Widget (Gtk))
   (c-name gtk_widget_size_request)
@@ -12966,7 +12760,7 @@
 (method get_name
   (of-object Widget (Gtk))
   (c-name gtk_widget_get_name)
-  (return-type gchar*)
+  (return-type const-gchar*)
 )
 
 (method set_state
@@ -13226,7 +13020,7 @@
   (c-name gtk_widget_render_icon)
   (return-type GdkPixbuf*)
   (parameter (type-and-name const-gchar* stock_id))
-  (parameter (type-and-name const-gchar* size))
+  (parameter (type-and-name GtkIconSize size))
   (parameter (type-and-name const-gchar* detail))
 )
 
@@ -13479,12 +13273,6 @@
 (function window_list_toplevels
   (c-name gtk_window_list_toplevels)
   (return-type GList*)
-)
-
-(method get_default_accel_group
-  (of-object Window (Gtk))
-  (c-name gtk_window_get_default_accel_group)
-  (return-type GtkAccelGroup*)
 )
 
 (method set_focus
