@@ -13,14 +13,14 @@ TRUE  = 1
 FALSE = 0
 
 funcDefTmpl = '    { "%s", _wrap_%s, 1 },\n'
-funcLeadTmpl = 'static PyObject *_wrap_%s(PyObject *self, PyObject *args) {\n'
+funcLeadTmpl = 'static PyObject *\n_wrap_%s(PyObject *self, PyObject *args)\n{\n'
 enumCodeTmpl = '''    if (PyGtkEnum_get_value(%s, %s, (gint *)&%s))
         return NULL;\n'''
 flagCodeTmpl = '''    if (PyGtkFlag_get_value(%s, %s, (gint *)&%s))
         return NULL;\n'''
 setVarTmpl = '''  if (py_%s)
         %s = %s;\n'''
-getTypeTmpl = '''static PyObject *_wrap_%s(PyObject *self, PyObject *args) {
+getTypeTmpl = '''static PyObject *\n_wrap_%s(PyObject *self, PyObject *args)\n{
     if (!PyArg_ParseTuple(args, ":%s"))
         return NULL;
     return PyInt_FromLong(%s());
@@ -203,6 +203,18 @@ class FunctionDefsParser(TypesParser):
 		impl = StringIO()
 		funcName = string.lower(objects[name]) + '_get_' + attrname
 		impl.write(funcLeadTmpl % (funcName,))
+		if retType == 'string':
+			# this is needed so we can free result string
+			impl.write('    gchar *ret;\n')
+			impl.write('    PyObject *py_ret;\n')
+		elif retType == 'static_string':
+			impl.write('    gchar *ret;\n')
+		elif retType in objects.keys():
+			impl.write('    GtkObject *ret;\n')
+		elif retType == 'GdkAtom':
+			impl.write('    GdkAtom ret;\n')
+		elif retType in boxed.keys():
+			impl.write('    %s *ret;\n' % retType)
 		impl.write('    PyObject *obj;\n\n')
 		impl.write('    if (!PyArg_ParseTuple(args, "O!:')
 		impl.write(funcName)
@@ -231,15 +243,21 @@ class FunctionDefsParser(TypesParser):
 			retType = retType[0]
 		if retType == 'string':
 			# this is needed so we can free result string
-			varDefs.add('char', '*ret')
+			varDefs.add('gchar', '*ret')
 			varDefs.add('PyObject', '*py_ret')
+		if retType == 'static_string':
+			varDefs.add('gchar', '*ret')
+		if retType in objects.keys():
+			varDefs.add('GtkObject', '*ret')
+		if retType in boxed.keys():
+			varDefs.add(retType, '*ret')
 		for arg in args:
 			argType = arg[0]
 			argName = arg[1]
 			# munge special names ...
 			if argName in ('default', 'if', 'then', 'else',
 				       'while', 'for', 'do', 'case', 'select'):
-				argName = '_' + argName
+				argName = argName + '_'
 			default = ''
 			nullok = FALSE
 			if len(arg) > 2:
@@ -407,25 +425,23 @@ class FunctionDefsParser(TypesParser):
 			impl.write(funcCall)
 			impl.write(';\n    Py_INCREF(Py_None);\n    return Py_None;\n')
 		elif retType == 'static_string':
-			impl.write('    return PyString_FromString(')
-			impl.write(funcCall)
-			impl.write(');\n')
+			impl.write('    ret = %s;\n' % funcCall)
+			impl.write('    if (ret) {\n'
+				   '        return PyString_FromString(ret);\n'
+				   '    } else {\n'
+				   '        Py_INCREF(Py_None);\n'
+				   '        return Py_None;\n'
+				   '    }\n')
 		elif retType == 'string':
-			if nullok:
-				impl.write('    ret = %s;\n' % funcCall)
-				impl.write('    if (ret) {\n')
-				impl.write('        py_ret = PyString_FromString(ret);\n'
-					   '        g_free(ret);\n'
-					   '        return py_ret;\n'
-					   '    } else {\n' 
-					   '        Py_INCREF(Py_None);\n'
-					   '        return Py_None;\n'
-					   '    }\n')
-			else:
-				impl.write('    ret = %s;\n' % funcCall)
-				impl.write('    py_ret = PyString_FromString(ret);\n'
-					   '    g_free(ret);\n'
-					   '    return py_ret;\n')
+			impl.write('    ret = %s;\n' % funcCall)
+			impl.write('    if (ret) {\n'
+				   '        py_ret = PyString_FromString(ret);\n'
+				   '        g_free(ret);\n'
+				   '        return py_ret;\n'
+				   '    } else {\n' 
+				   '        Py_INCREF(Py_None);\n'
+				   '        return Py_None;\n'
+				   '    }\n')
 		elif retType in ('char', 'uchar'):
 			impl.write('    return PyString_fromStringAndSize(*(')
 			impl.write(funcCall)
@@ -440,33 +456,17 @@ class FunctionDefsParser(TypesParser):
 			impl.write(funcCall)
 			impl.write(');\n')
 		elif retType in boxed.keys():
-			if nullok:
-				impl.write('    {\n'
-					   '        %s *p = %s;\n' % (retType, funcCall))
-				impl.write('        if (p)\n')
-				impl.write('            return %s(p);\n' % boxed[retType][2])
-				impl.write('        Py_INCREF(Py_None);\n'
-					   '        return Py_None;\n'
-					   '    }\n')
-			else:
-				impl.write('    return ')
-				impl.write(boxed[retType][2])
-				impl.write('(')
-				impl.write(funcCall)
-				impl.write(');\n')
+			impl.write('    ret = %s;\n' % funcCall)
+			impl.write('    if (ret)\n')
+			impl.write('        return %s(ret);\n' % boxed[retType][2])
+			impl.write('    Py_INCREF(Py_None);\n'
+				   '    return Py_None;\n')
 		elif retType in objects.keys():
-			if nullok:
-				impl.write('    {\n'
-					   '        GtkObject *p = (GtkObject *) %s;' % funcCall)
-				impl.write('        if (p)\n'
-					   '            return PyGtk_New((GtkObject *) p);\n')
-				impl.write('        Py_INCREF(Py_None);\n'
-					   '        return Py_None;\n'
-					   '    }\n')
-			else:
-				impl.write('    return PyGtk_New((GtkObject *)')
-				impl.write(funcCall)
-				impl.write(');\n')
+			impl.write('    ret = (GtkObject *) %s;\n' % funcCall)
+			impl.write('    if (ret)\n'
+				   '        return PyGtk_New(ret);\n'
+				   '    Py_INCREF(Py_None);\n'
+				   '    return Py_None;\n')
 		else:
 			print "unknown return type '%s'" % (retType,)
 			return 1
