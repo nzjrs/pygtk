@@ -9,11 +9,11 @@
 #
 """Python Bindings for the GTK Widget Set.
 
-+PyGTK is a set of bindings for the GTK widget set. It provides an object 
-+oriented interface that is slightly higher level than the C one. It 
-+automatically does all the type casting and reference counting that you 
-+would have to do normally with the C API. You can find out more on the 
-+official homepage, http://www.daa.com.au/~james/pygtk/"""
+PyGTK is a set of bindings for the GTK widget set. It provides an object 
+oriented interface that is slightly higher level than the C one. It 
+automatically does all the type casting and reference counting that you 
+would have to do normally with the C API. You can find out more on the 
+official homepage, http://www.daa.com.au/~james/pygtk/"""
 
 from distutils.command.build import build
 from distutils.core import setup
