@@ -1,5 +1,17 @@
 2004-07-19  Johan Dahlin  <johan@gnome.org>
 
+	* tests/enum.py (EnumTest.testWindowGetState): Fix, a window is
+	really WITHDRAWN if it's not SHOWN and not ICONIFIED...
+
+	* tests/common.py: Add .. and ../gobject when distcheck isn't ran
+
+	* gobject/pygenum.c: Use a dict instead of a tuple for
+	__enum_values__, so we can handle negative enum values (eg: GDK_NOTHING)
+
+	* gobject/pyflags.c: Ditto for __flag_values__
+
+	* gobject/pygparamspec.c (pyg_param_spec_getattr): reference count fixing
+
 	* gobject/Makefile.am: 
 	* setup.py:
 	* makefile.msc: Update, why do I even bother to update 3 different
