@@ -20,6 +20,8 @@ linkend="class-gtkbutton">gtk.Button</link></classname></ooclass>
 linkend="constructor-gtktogglebutton">gtk.ToggleButton</link></methodname>
 	<methodparam><parameter role="keyword">label</parameter>
 	  <initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">use_underline</parameter>
+	  <initializer>TRUE</initializer></methodparam>
       </constructorsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -186,8 +188,23 @@ method.</para>
 	<methodname>gtk.ToggleButton</methodname>
 	<methodparam><parameter role="keyword">label</parameter>
 	  <initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">use_underline</parameter>
+	  <initializer>TRUE</initializer></methodparam>
       </constructorsynopsis></programlisting>
     <variablelist>
+      <varlistentry>
+	<term><parameter role="keyword">label</parameter>&nbsp;:</term>
+	<listitem><simpara>the text to be displayed by the button label
+including an underscore to indicate the mnemonic character if desired or
+<literal>None</literal> if no label is required.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter role="keyword">use_underline</parameter>&nbsp;:</term>
+	<listitem><simpara>if <literal>TRUE</literal>, an underscore in the
+label text indicates the next character should be underlined and used for the
+mnemonic accelerator key if it is the first character so
+marked. Available in PyGTK 2.4 and above.</simpara></listitem>
+      </varlistentry>
       <varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
 	<listitem><simpara>a new <link
@@ -202,6 +219,11 @@ widget with the text label specified by <parameter>label</parameter>.
 <parameter>label</parameter> will be parsed for underscore characters that
 indicate mnemonic accelerators. If <parameter>label</parameter> is
 <literal>None</literal> or not specified, no label will be created.</para>
+
+    <para>In PyGTK 2.4 and above the <parameter>use_underline</parameter>
+parameter is available and defaults to <literal>TRUE</literal>. If
+<parameter>use_underline</parameter> is set to <literal>FALSE</literal> the
+label text will not be parsed for mnemonic characters.</para>
 
   </refsect1>
 

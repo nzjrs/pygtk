@@ -22,6 +22,8 @@ linkend="class-gtkbin">gtk.Bin</link></classname></ooclass>
 		       role="keyword">label</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter
 		       role="keyword">stock</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">use_underline</parameter><initializer>TRUE</initializer></methodparam>
       </constructorsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -418,6 +420,8 @@ linkend="method-gtkbutton--set-relief"><methodname>set_relief</methodname>()</li
 		       role="keyword">label</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter
 		       role="keyword">stock</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">use_underline</parameter><initializer>TRUE</initializer></methodparam>
       </constructorsynopsis></programlisting>
 
     <variablelist>
@@ -434,19 +438,28 @@ to be used in the button or <literal>None</literal> if no stock id is to be
 used.</simpara></listitem>
       </varlistentry>
       <varlistentry>
+	<term><parameter role="keyword">use_underline</parameter>&nbsp;:</term>
+	<listitem><simpara>if <literal>TRUE</literal>, an underscore in the
+text indicates the next character should be underlined and used for the
+mnemonic accelerator key if it is the first character so
+marked. Available in PyGTK 2.4 and above.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
 	<listitem><simpara>a new button object</simpara></listitem>
       </varlistentry>
     </variablelist>
 
     <para>Creates a new button widget with the content depending on the
-parameters: <parameter>label</parameter> and <parameter>stock</parameter>.
-The default values for <parameter>stock</parameter> and
-<parameter>label</parameter> are <literal>None</literal>. If both
-<parameter>label</parameter> and <parameter>stock</parameter> are specified
-<parameter>stock</parameter> takes precedence. If neither is specified the
-button is created with no child widget. A child widget can be added later
-with the <link
+parameters: <parameter>label</parameter>, <parameter>stock</parameter> and
+<parameter>use_underline</parameter>.  The default values for
+<parameter>stock</parameter> and <parameter>label</parameter> are
+<literal>None</literal> and, in PyGTK 2.4 and above,
+<parameter>use_underline</parameter> is available and defaults to
+<literal>TRUE</literal>. If both <parameter>label</parameter> and
+<parameter>stock</parameter> are specified <parameter>stock</parameter>
+takes precedence. If neither is specified the button is created with no
+child widget. A child widget can be added later with the <link
 linkend="method-gtkcontainer--add"><methodname>add</methodname>()</link>
 method.</para>
 
@@ -459,7 +472,9 @@ set to <literal>TRUE</literal> and any characters that are preceded by an
 underscore are underlined (use two underscores to insert an underscore in a
 label). The first underscored character will become the mnemonic character
 used as the keyboard accelerator for the button when pressed simultaneously
-with the <keycap>Alt</keycap> key.</para>
+with the <keycap>Alt</keycap> key. In PyGTK 2.4 and above the
+"use-underline" property can be set by using the optional
+<parameter>use_underline</parameter> parameter.</para>
 
   </refsect1>
 
