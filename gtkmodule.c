@@ -4204,6 +4204,8 @@ static PyObject *_wrap_gtk_editable_insert_text(PyObject *self, PyObject *args) 
 static void PyGtk_item_factory_cb(PyObject *callback, guint action,
 				  GtkWidget *widget) {
   PyObject *ret;
+
+  PyGTK_BLOCK_THREADS
   ret = PyObject_CallFunction(callback, "iO", action,
 			      PyGtk_New((GtkObject *)widget));
   if (ret == NULL) {
@@ -4215,7 +4217,9 @@ static void PyGtk_item_factory_cb(PyObject *callback, guint action,
     }
   } else
     Py_DECREF(ret);
+  PyGTK_UNBLOCK_THREADS
 }
+
 static PyObject *_wrap_gtk_item_factory_create_items(PyObject *self,PyObject *args){
   PyObject *obj, *list, *item, *cb;
   GtkItemFactoryEntry ent;
@@ -4277,6 +4281,8 @@ static PyObject *_wrap_gtk_item_factory_get_widget_by_action(PyObject *self, PyO
 
 static void PyGtk_MenuPosition(GtkMenu *menu, int *x, int *y, PyObject *func) {
     PyObject *ret;
+
+    PyGTK_BLOCK_THREADS
     ret = PyObject_CallFunction(func, "Oii", PyGtk_New(GTK_OBJECT(menu)),
 				*x, *y);
     if (ret == NULL || !PyArg_ParseTuple(ret, "ii", x, y)) {
@@ -4289,6 +4295,7 @@ static void PyGtk_MenuPosition(GtkMenu *menu, int *x, int *y, PyObject *func) {
         if (ret) Py_DECREF(ret);
     } else
         Py_DECREF(ret);
+    PyGTK_UNBLOCK_THREADS
 }
 static PyObject *_wrap_gtk_menu_popup(PyObject *self, PyObject *args) {
     PyObject *m, *py_pms, *py_pmi;
