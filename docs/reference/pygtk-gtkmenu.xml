@@ -111,6 +111,29 @@ linkend="method-gtkmenu--reorder-child">reorder_child</link></methodname>
 	<methodparam><parameter
 		       role="keyword">position</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmenu--set-screen">set_screen</link></methodname>
+	<methodparam><parameter
+		       role="keyword">screen</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmenu--attach">attach</link></methodname>
+	<methodparam><parameter
+		       role="keyword">child</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">left_attach</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">right_attach</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">top_attach</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">bottom_attach</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmenu--set-monitor">set_monitor</link></methodname>
+	<methodparam><parameter
+		       role="keyword">monitor_num</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -614,6 +637,132 @@ numbered starting from 0</simpara></listitem>
       <para>The <methodname>reorder_child</methodname>() method moves the
 menuitem specified by <parameter>child</parameter> to a new position within
 the menu specified by <parameter>position</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenu--set-screen">
+      <title>gtk.Menu.set_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_screen</methodname>
+	  <methodparam><parameter role="keyword">screen</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>,
+	  or <literal>None</literal> if the screen should be determined by
+	  the widget the menu is attached to.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>set_screen</methodname>() method sets the <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+specified by <parameter>screen</parameter> on which the menu will be
+displayed. If <parameter>screen</parameter> is <literal>None</literal> the
+screen is determined by the widget that the menu is attached to.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenu--attach">
+      <title>gtk.Menu.attach</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>attach</methodname>
+	  <methodparam><parameter role="keyword">child</parameter></methodparam>
+	  <methodparam><parameter role="keyword">left_attach</parameter></methodparam>
+	  <methodparam><parameter role="keyword">right_attach</parameter></methodparam>
+	  <methodparam><parameter role="keyword">top_attach</parameter></methodparam>
+	  <methodparam><parameter role="keyword">bottom_attach</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">child</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkmenuitem"><classname>gtk.MenuItem</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">left_attach</parameter>&nbsp;:</term>
+	  <listitem><simpara>The column number to attach the left side of
+	  the item to.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">right_attach</parameter>&nbsp;:</term>
+	  <listitem><simpara>The column number to attach the right side of
+	  the item to.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">top_attach</parameter>&nbsp;:</term>
+	  <listitem><simpara>The row number to attach the top of the item
+	  to.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">bottom_attach</parameter>&nbsp;:</term>
+	  <listitem><simpara>The row number to attach the bottom of the item
+	  to.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>attach</methodname>() method adds a new <link
+linkend="class-gtkmenuitem"><classname>gtk.MenuItem</classname></link>
+specified by <parameter>child</parameter> to a (table) menu. The number of
+'cells' that an item will occupy is specified by
+<parameter>left_attach</parameter>, <parameter>right_attach</parameter>,
+<parameter>top_attach</parameter> and
+<parameter>bottom_attach</parameter>. These each represent the leftmost,
+rightmost, uppermost and lower column and row numbers of the table.
+(Columns and rows are indexed from zero).</para>
+
+      <para>Note that this function is not related to the <link
+linkend="method-gtkmenu--detach"><methodname>detach()</methodname></link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenu--set-monitor">
+      <title>gtk.Menu.set_monitor</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_monitor</methodname>
+	  <methodparam><parameter role="keyword">monitor_num</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">monitor_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>the number of the monitor on which the menu
+	  should be popped up</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_monitor</methodname>() method informs
+<literal>GTK</literal>+ on which monitor a menu should be popped up.  See
+the <link
+linkend="method-gdkscreen--get-monitor-geometry"><methodname>gtk.gdk.Screen.get_monitor_geometry()</methodname></link>
+method for more information.</para>
+
+      <para>This method should be called from a menu positioning function if
+the menu should not appear on the same monitor as the pointer. This
+information can't be reliably inferred from the coordinates returned by a
+menu positioning function, since, for very long menus, these coordinates may
+extend beyond the monitor boundaries or even the screen boundaries.</para>
 
     </refsect2>
 
