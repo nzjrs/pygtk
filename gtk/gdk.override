@@ -2985,3 +2985,14 @@ _wrap_gdk_rectangle_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     
     return 0;
 }
+%%
+override gdk_window_get_frame_extents noargs
+static PyObject *
+_wrap_gdk_window_get_frame_extents(PyGObject *self)
+{
+    GdkRectangle rect = {0, 0, 0, 0};
+
+    gdk_window_get_frame_extents(GDK_WINDOW(self->obj), &rect);
+
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &rect, TRUE, TRUE);
+}
