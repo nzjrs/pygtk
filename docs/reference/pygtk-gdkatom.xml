@@ -37,7 +37,7 @@ methods. A copy of the interned string can be retrieved by using the Python
 linkend="constructor-gdkatom-intern">gtk.gdk.atom_intern</link>() will
 return a <link
 linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>
-referencing an existing interned string but can intern a string if it isn't
+referencing an existing interned string but will intern a string if it isn't
 already interned.</para>
 
     <para><link
@@ -155,9 +155,7 @@ are:</para>
       <varlistentry>
 	<term><parameter
 	role="keyword">only_if_exists</parameter>&nbsp;:</term>
-	<listitem><simpara>if <literal>TRUE</literal>, do not create a new
-	atom, but just return the atom if it already exists. Default is
-	<literal>FALSE</literal></simpara></listitem>
+	<listitem><simpara>this value is ignored</simpara></listitem>
       </varlistentry>
       <varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -173,10 +171,8 @@ referencing the interned string specified by <parameter>name</parameter>. An
 interned string is a string that has a <literal>GTK</literal>+ mapping to an
 unsigned integer value. This constructor will intern the string and create a
 <link linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> if
-it does not already exist and if <parameter>only_if_exists</parameter> is
-<literal>FALSE</literal>. If <parameter>only_if_exists</parameter> is
-<literal>TRUE</literal> and the string is not interned, this constructor
-returns <literal>None</literal>.</para>
+it does not already exist. <parameter>only_if_exists</parameter> is
+ignored and essentially is always <literal>FALSE</literal>.</para>
 
   </refsect1>
 
