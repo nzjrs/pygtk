@@ -29,6 +29,114 @@ headers
 #endif
 #include <libintl.h>
 
+#include <glib-object.h>
+
+typedef struct {
+    GladeXML parent;
+    PyObject *typedict;
+} PyGladeXML;
+
+typedef struct {
+    GladeXMLClass parent_class;
+} PyGladeXMLClass;
+
+static void  pyglade_xml_init (PyGladeXML *self);
+static void  pyglade_xml_class_init (PyGladeXMLClass *class);
+GType        pyglade_xml_get_type            (void);
+static GType pyglade_xml_lookup_type (GladeXML*self, const char *gtypename);
+
+#define PYGLADE_TYPE_XML            (pyglade_xml_get_type())
+#define PYGLADE_XML(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), PYGLADE_TYPE_XML, PyGladeXML))
+#define PYGLADE_XML_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), PYGLADE_TYPE_XML, PyGladeXMLClass))
+#define PYGLADE_IS_XML(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PYGLADE_TYPE_XML))
+#define PYGLADE_IS_XML_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), PYGLADE_TYPE_XML))
+#define PYGLADE_XML_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), PYGLADE_TYPE_XML, PygladeXMLClass))
+
+GType
+pyglade_xml_get_type (void)
+{
+    static GType xml_type = 0;
+
+    if (!xml_type) {
+	static const GTypeInfo xml_info = {
+	    sizeof(PyGladeXMLClass),
+	    (GBaseInitFunc) NULL,
+	    (GBaseFinalizeFunc) NULL,
+	    (GClassInitFunc) pyglade_xml_class_init,
+	    (GClassFinalizeFunc) NULL,
+	    NULL,
+
+	    sizeof (PyGladeXML),
+	    0, /* n_preallocs */
+	    (GInstanceInitFunc) pyglade_xml_init,
+	};
+
+	xml_type = g_type_register_static(GLADE_TYPE_XML, "PyGladeXML",
+					  &xml_info, 0);
+    }
+    return xml_type;
+
+}
+
+static void
+pyglade_xml_init (PyGladeXML *self)
+{
+    self->typedict = PyDict_New();
+}
+
+static void
+pyglade_xml_class_init (PyGladeXMLClass *class)
+{
+    GladeXMLClass *xml_class = (GladeXMLClass*)class;
+    xml_class->lookup_type = pyglade_xml_lookup_type;
+}
+
+static GType
+pyglade_xml_lookup_type(GladeXML *glade, const char *gtypename)
+{
+    PyGladeXML *self;
+    PyObject *item;
+
+    g_return_val_if_fail (PYGLADE_IS_XML (glade), G_TYPE_INVALID);
+
+    self = PYGLADE_XML(glade);
+    if (self->typedict)
+        item = PyMapping_GetItemString(self->typedict, (char *) gtypename);
+    else
+        item = NULL;
+
+    if (item != NULL) {
+	GType type;
+
+	if ((type = pyg_type_from_object(item)) == 0)
+            type = G_TYPE_INVALID;
+
+        Py_DECREF(item);
+	return type;
+    }
+    
+    return g_type_from_name(gtypename);
+}
+
+PyGladeXML *
+pyglade_xml_new (char * fname, char * root, char *domain, PyObject *dict)
+{
+    PyGladeXML *self = g_object_new(PYGLADE_TYPE_XML, NULL);
+
+    /* This must be done before, since it's used inside of
+     * glade_xml_construct
+     */
+    self->typedict = dict;
+    if (!glade_xml_construct(GLADE_XML(self), fname, root, domain)) {
+	g_object_unref(G_OBJECT(self));
+	return NULL;
+    }
+      /* the reference is borrowed, and we don't need anymore */
+    self->typedict = NULL;
+    
+    return self;
+}
+
 %%
 modulename gtk.glade
 %%
@@ -443,4 +551,34 @@ _wrap_glade_set_custom_widget_callbacks(PyObject *self, PyObject *args,
 
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override glade_xml_new kwargs
+static int
+_wrap_glade_xml_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "fname", "root", "domain", "typedict", NULL };
+    char *fname, *root = NULL, *domain = NULL;
+    PyObject *pydict = NULL;
+	
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s|zzO:GladeXML.__init__",
+				     kwlist, &fname, &root, &domain,
+				     &pydict))
+        return -1;
+
+    if (!PyMapping_Check(pydict)) {
+        PyErr_SetString(PyExc_TypeError,
+			"typedict must be a mapping");
+	return -1;
+    }
+
+    self->obj = (GObject *) pyglade_xml_new(fname, root, domain, pydict);
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GladeXML object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
