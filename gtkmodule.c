@@ -3522,6 +3522,18 @@ static PyObject *_wrap_gtk_widget_get_window(PyObject *self, PyObject *args) {
         return PyGdkWindow_New(win);
 }
 
+static PyObject *_wrap_gtk_widget_get_allocation(PyObject *self, PyObject *args) {
+  GtkAllocation allocation;
+  PyObject *obj;
+
+  if (!PyArg_ParseTuple(args, "O!:gtk_widget_get_allocation", &PyGtk_Type,
+			&obj))
+    return NULL;
+  allocation = GTK_WIDGET(PyGtk_Get(obj))->allocation;
+  return Py_BuildValue("(iiii)", (int)allocation.x, (int)allocation.y,
+		       (int)allocation.width, (int)allocation.height);
+}
+
 static PyObject *_wrap_gtk_widget_draw(PyObject *self, PyObject *args) {
     GdkRectangle rect;
     PyObject *obj;
@@ -5587,6 +5599,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_object_get_data", _wrap_gtk_object_get_data, 1 },
     { "gtk_object_remove_data", _wrap_gtk_object_remove_data, 1 },
     { "gtk_widget_get_window", _wrap_gtk_widget_get_window, 1 },
+    { "gtk_widget_get_allocation", _wrap_gtk_widget_get_allocation, 1 },
     { "gtk_widget_draw", _wrap_gtk_widget_draw, 1 },
     { "gtk_widget_size_request", _wrap_gtk_widget_size_request, 1 },
     { "gtk_widget_size_allocate", _wrap_gtk_widget_size_allocate, 1 },

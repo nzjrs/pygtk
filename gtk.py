@@ -311,6 +311,8 @@ class GtkWidget(GtkObject):
 		_gtk.gtk_widget_event(self._o, event)
 	def lock_accelerators(self):
 		_gtk.gtk_widget_lock_accelerators(self._o)
+	def get_allocation(self):
+		return _gtk.gtk_widget_get_allocation(self._o)
 	def get_ancestor(self, type):
 		return _obj2inst(_gtk.gtk_widget_get_ancestor(self._o, type))
 	def get_child_requisition(self):
