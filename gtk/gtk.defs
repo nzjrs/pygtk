@@ -8799,8 +8799,8 @@
   (return-type GType)
 )
 
-(function gtk_settings_get_global
-  (c-name gtk_settings_get_global)
+(function gtk_settings_get_default
+  (c-name gtk_settings_get_default)
   (return-type GtkSettings*)
 )
 
@@ -13912,12 +13912,6 @@
   (parameter (type-and-name GtkStyle* style))
 )
 
-(method set_rc_style
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_set_rc_style)
-  (return-type none)
-)
-
 (method ensure_style
   (of-object Widget (Gtk))
   (c-name gtk_widget_ensure_style)
@@ -13928,12 +13922,6 @@
   (of-object Widget (Gtk))
   (c-name gtk_widget_get_style)
   (return-type GtkStyle*)
-)
-
-(method restore_default_style
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_restore_default_style)
-  (return-type none)
 )
 
 (method modify_style
@@ -14035,12 +14023,6 @@
   (return-type none)
 )
 
-(function widget_push_style
-  (c-name gtk_widget_push_style)
-  (return-type none)
-  (parameter (type-and-name GtkStyle* style))
-)
-
 (function widget_push_colormap
   (c-name gtk_widget_push_colormap)
   (return-type none)
@@ -14054,11 +14036,6 @@
 
 (function widget_pop_composite_child
   (c-name gtk_widget_pop_composite_child)
-  (return-type none)
-)
-
-(function widget_pop_style
-  (c-name gtk_widget_pop_style)
   (return-type none)
 )
 
@@ -14106,21 +14083,10 @@
   (varargs t)
 )
 
-(function widget_set_default_style
-  (c-name gtk_widget_set_default_style)
-  (return-type none)
-  (parameter (type-and-name GtkStyle* style))
-)
-
 (function widget_set_default_colormap
   (c-name gtk_widget_set_default_colormap)
   (return-type none)
   (parameter (type-and-name GdkColormap* colormap))
-)
-
-(function widget_get_default_style
-  (c-name gtk_widget_get_default_style)
-  (return-type GtkStyle*)
 )
 
 (function widget_get_default_colormap

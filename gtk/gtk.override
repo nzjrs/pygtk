@@ -2133,30 +2133,33 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     return ret;
 }
 %%
+ignore gtk_list_store_newv
+%%
 override gtk_list_store_new
 static PyObject *
 _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
 {
     guint len, i;
-    GtkListStore *ls;
+    GType *column_types;
 
     len = PyTuple_Size(args);
-    ls = gtk_list_store_new(0);
-#if 0
-    gtk_list_store_set_n_columns(ls, len);
+    column_types = g_new(GType, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
-	GType type;
 
-	type = pyg_type_from_object(item);
-	if (type == 0) {
-	    g_object_unref(G_OBJECT(ls));
+	column_types[i] = pyg_type_from_object(item);
+	if (column_types[i] == 0) {
+	    g_free(column_types);
 	    return NULL;
 	}
-	gtk_list_store_set_column_type(ls, i, type);
     }
-#endif
-    self->obj = (GObject *)ls;
+    self->obj = (GObject *)gtk_list_store_new(len, column_types);
+    g_free(column_types);
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkListStore object");
+        return NULL;
+    }
     pygobject_register_wrapper((PyObject *)self);
     Py_INCREF(Py_None);
     return Py_None;
@@ -2281,30 +2284,33 @@ _wrap_gtk_list_store_append(PyGObject *self, PyObject *args)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
+ignore gtk_tree_store_newv
+%%
 override gtk_tree_store_new
 static PyObject *
 _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
 {
     guint len, i;
-    GtkTreeStore *ts;
+    GType *column_types;
 
     len = PyTuple_Size(args);
-    ts = gtk_tree_store_new(0);
-#if 0
-    gtk_tree_store_set_n_columns(ts, len);
+    column_types = g_new(GType, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
-	GType type;
 
-	type = pyg_type_from_object(item);
-	if (type == 0) {
-	    g_object_unref(G_OBJECT(ts));
+	column_types[i] = pyg_type_from_object(item);
+	if (column_types[i] == 0) {
+	    g_free(column_types);
 	    return NULL;
 	}
-	gtk_tree_store_set_column_type(ts, i, type);
     }
-#endif
-    self->obj = (GObject *)ts;
+    self->obj = (GObject *)gtk_tree_store_new(len, column_types);
+    g_free(column_types);
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkTreeStore object");
+        return NULL;
+    }
     pygobject_register_wrapper((PyObject *)self);
     Py_INCREF(Py_None);
     return Py_None;
