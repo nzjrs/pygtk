@@ -4568,25 +4568,6 @@ _wrap_gtk_text_iter_copy(PyGBoxed *self)
 			 TRUE, TRUE);
 }
 %%
-override gtk_text_iter_get_char noargs
-static PyObject *
-_wrap_gtk_text_iter_get_char(PyGBoxed *self)
-{
-    gunichar chr;
-    Py_UNICODE pychr;
-
-    chr = gtk_text_iter_get_char(pyg_boxed_get(self, GtkTextIter));
-#if !defined(Py_UNICODE_SIZE) || Py_UNICODE_SIZE == 2
-    if (chr > 0xffff) {
-	PyErr_SetString(PyExc_RuntimeError, "python's broken unicode handling only supports 16 bit unicode, and you just hit this limit");
-	return NULL;
-    }
-#endif
-    pychr = (Py_UNICODE)chr;
-    return PyUnicode_FromUnicode(&pychr, 1);
-
-}
-%%
 override gtk_text_iter_get_slice kwargs
 static PyObject *
 _wrap_gtk_text_iter_get_slice(PyGBoxed *self, PyObject *args, PyObject *kwargs)
