@@ -1,3 +1,16 @@
+2003-12-20  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* codegen/codegen.py (Wrapper.get_initial_constructor_substdict):
+	now receives the constructor FunctionDef as argument.
+	(Wrapper.write_constructor): Pass the constructor
+	get_initial_constructor_substdict.
+	(GObjectWrapper.get_initial_constructor_substdict): Receive/pass
+	constructor argument. If constructor's caller_owns_return flag is
+	set to #f, add an extra g_object_ref(self->obj).
+	(GBoxedWrapper.get_initial_constructor_sub): Receive/pass extra
+	constructor argument.
+	(GPointerWrapper.get_initial_constructor_substdict): idem.
+
 2003-12-17  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk-types.defs (TextSearchFlags): GtkTextSearchFlags is a

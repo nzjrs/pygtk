@@ -159,7 +159,7 @@ class Wrapper:
 
     def get_initial_class_substdict(self): return {}
 
-    def get_initial_constructor_substdict(self):
+    def get_initial_constructor_substdict(self, constructor):
         return { 'name': '%s.__init__' % self.objinfo.c_name,
                  'errorreturn': '-1' }
     def get_initial_method_substdict(self, method):
@@ -286,7 +286,7 @@ class Wrapper:
                     code = self.write_function_wrapper(constructor,
                         self.constructor_tmpl,
                         handle_return=0, is_method=0, kwargs_needed=1,
-                        substdict=self.get_initial_constructor_substdict())[0]
+                        substdict=self.get_initial_constructor_substdict(constructor))[0]
                     self.fp.write(code)
                 initfunc = '_wrap_' + constructor.c_name
             except:
@@ -483,14 +483,17 @@ class GObjectWrapper(Wrapper):
         castmacro = string.replace(self.objinfo.typecode, '_TYPE_', '_', 1)
         return '%s(pygobject_get(self))->%s' % (castmacro, fieldname)
 
-    def get_initial_constructor_substdict(self):
-        substdict = Wrapper.get_initial_constructor_substdict(self)
+    def get_initial_constructor_substdict(self, constructor):
+        substdict = Wrapper.get_initial_constructor_substdict(self, constructor)
         if argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkWindow'):
             substdict['aftercreate'] = "    g_object_ref(self->obj); /* we don't own the first reference of windows */\n"
         elif argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkInvisible'):
             substdict['aftercreate'] = "    g_object_ref(self->obj); /* we don't own the first reference of invisibles */\n"
-        else:
-            substdict['aftercreate'] = ''
+	else:
+	    if not constructor.caller_owns_return:
+		substdict['aftercreate'] = "    g_object_ref(self->obj);\n"
+	    else:
+		substdict['aftercreate'] = ''
         return substdict
 
     def get_initial_method_substdict(self, method):
@@ -550,8 +553,8 @@ class GBoxedWrapper(Wrapper):
     def get_field_accessor(self, fieldname):
         return 'pyg_boxed_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)
 
-    def get_initial_constructor_substdict(self):
-        substdict = Wrapper.get_initial_constructor_substdict(self)
+    def get_initial_constructor_substdict(self, constructor):
+        substdict = Wrapper.get_initial_constructor_substdict(self, constructor)
         substdict['typecode'] = self.objinfo.typecode
         return substdict
 
@@ -592,8 +595,8 @@ class GPointerWrapper(GBoxedWrapper):
     def get_field_accessor(self, fieldname):
         return 'pyg_pointer_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)
 
-    def get_initial_constructor_substdict(self):
-        substdict = Wrapper.get_initial_constructor_substdict(self)
+    def get_initial_constructor_substdict(self, constructor):
+        substdict = Wrapper.get_initial_constructor_substdict(self, constructor)
         substdict['typecode'] = self.objinfo.typecode
         return substdict
 
