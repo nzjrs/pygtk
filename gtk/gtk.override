@@ -4056,6 +4056,8 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
 	    } else {
 		PyErr_SetString(PyExc_TypeError,
 				"One or more entry is missing a callback type");
+		g_object_unref (action);
+		Py_DECREF (py_action);
 		return NULL;
 	    }
 	}
@@ -4065,7 +4067,7 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
 						entry.accelerator);
 	
 	g_object_unref(action);
-	
+	Py_DECREF (py_action);
     }
 
     pyg_gil_state_release(state);
@@ -4134,7 +4136,7 @@ _wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyOb
 						entry.accelerator);
 	
 	g_object_unref (action);
-	
+	Py_DECREF (py_action);
     }
 
     pyg_gil_state_release(state);
@@ -4219,6 +4221,7 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
 	py_action = pygobject_new((GObject *)first_action);
 	pygobject_watch_closure(py_action, closure);
 	g_object_unref(first_action);
+	Py_DECREF (py_action);
     }
     
     pyg_gil_state_release(state);
