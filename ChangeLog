@@ -1,3 +1,15 @@
+2004-04-09  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* pygtype.c (pyg_value_as_pyobject): Convert GValueArray to python
+	list, not tuple, as per comment in bug 129966.
+
+	* gobjectmodule.c (initgobject, _pyg_strv_from_gvalue)
+	(_pyg_strv_to_gvalue): Register GValue<->PyObject conversion
+	functions for boxed type G_TYPE_STRV.  Code is taken from
+	gnome-python (bonobomodule.c), except that conversion to python
+	object creates python list instead of tuple, as per comment in bug
+	129966.
+
 2004-04-09  Johan Dahlin  <johan@gnome.org>
 
 	* gtk/__init__.py: Add deprecation warnings for all deprecated functions.
