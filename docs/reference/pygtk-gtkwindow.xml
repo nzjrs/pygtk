@@ -1010,7 +1010,14 @@ linkend="signal-gtkwindow--set-focus">set-focus</link>"</term>
   <refsect1>
     <title>Description</title>
 
-    <para>A <link linkend="class-gtkwindow"><classname>gtk.Window</classname></link> provides a widget that users commonly think of as a window. That is, an area of the display that is managed by the window manager and usually decorated with a title bar, and items to allow the user to close, resize and move the window. <literal>PyGTK</literal> provides two types of windows:</para>
+    <para>A <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link> provides
+a widget that users commonly think of as a window. That is, an area of the
+display that is managed by the window manager and usually decorated with a
+title bar, and items to allow the user to close, resize and move the
+window. <literal>PyGTK</literal> provides two types of windows (see the
+<link linkend="gtk-window-type-constants">Window Type
+Constants</link> for more information).</para>
 
     <variablelist>
       <varlistentry>
@@ -1063,12 +1070,13 @@ linkend="class-gtkwindow"><classname>gtk.Window</classname></link>.</simpara></l
     <para>Creates a new <link
 linkend="class-gtkwindow"><classname>gtk.Window</classname></link>, which is
 a toplevel window that can contain other widgets. Nearly always, the type of
-the window should be <literal>gtk.WINDOW_TOPLEVEL</literal>.
-<literal>gtk.WINDOW_POPUP</literal> is used to create a pop-up menu or
-pop-up tooltip. On X11, popup windows are not controlled by the window
-manager. If you simply want an undecorated window (no window borders), use
-the <link
-linkend="method-gtkwindow--set-decorated"><methodname>set_decorated</methodname>()</link> 
+the window should be <literal>gtk.WINDOW_TOPLEVEL</literal> (see the <link
+linkend="gtk-window-type-constants">Window Type Constants</link> for more
+details).  <literal>gtk.WINDOW_POPUP</literal> is used to create a pop-up
+menu or pop-up tooltip. On X11, popup windows are not controlled by the
+window manager. If you simply want an undecorated window (no window
+borders), use the <link
+linkend="method-gtkwindow--set-decorated"><methodname>set_decorated</methodname>()</link>
 method with a toplevel window, don't use a popup window.</para>
 
 
@@ -1278,46 +1286,9 @@ method.</para>
 
       <para>The <methodname>set_position</methodname>() method sets the
 "window-position" property to the value of <parameter>position</parameter>.
-The value of <parameter>position</parameter> must be one of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.WIN_POS_NONE</literal></term>
-	  <listitem>
-	    <simpara>No influence is made on placement.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.WIN_POS_CENTER</literal></term>
-	  <listitem>
-	    <simpara>The window should be placed in the center of the
-screen.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.WIN_POS_MOUSE</literal></term>
-	  <listitem>
-	    <simpara>The window should be placed at the current mouse
-position.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.WIN_POS_CENTER_ALWAYS</literal></term>
-	  <listitem>
-	    <simpara>Keep the window centered as it changes size,
-etc.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.WIN_POS_CENTER_ON_PARENT</literal></term>
-	  <listitem>
-	    <simpara>Center the window on its transient parent (see the
-<link
-linkend="method-gtkwindow--set-transient-for"><methodname>set_transient_for</methodname>()</link> 
-method).</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
+The value of <parameter>position</parameter> must be one of the <link
+linkend="gtk-window-position-constants">Window Position
+Constants</link>.</para>
 
       <para>If the old or new window position constraint is
 <literal>gtk.WIN_POS_CENTER_ALWAYS</literal>, this will also cause the
