@@ -148,13 +148,9 @@ _wrap_gdk_draw_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkPoint *points;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OiO:GdkDrawable.draw_polygon",
-				     kwlist, &gc, &filled, &py_points))
+				     "O!iO:GdkDrawable.draw_polygon", kwlist,
+				     &PyGdkGC_Type, &gc, &filled, &py_points))
 	return NULL;
-    if (!pygobject_check(gc, &PyGdkGC_Type)) {
-	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
-	return NULL;
-    }
     if (!PySequence_Check(py_points)) {
 	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
 	return NULL;
@@ -189,16 +185,12 @@ _wrap_gdk_draw_text(PyGObject *self, PyObject *args, PyObject *kwargs)
     int x, y, len;
     char *text;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOiis#:GdkDrawable.draw_text",
-				     kwlist,  &font,
-				     &gc, &x, &y, &text, &len))
+				     "OO!iis#:GdkDrawable.draw_text", kwlist,
+				     &font, &PyGdkGC_Type, &gc,
+				     &x, &y, &text, &len))
 	return NULL;
     if (!pyg_boxed_check(font, GDK_TYPE_FONT)) {
 	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
-	return NULL;
-    }
-    if (!pygobject_check(gc, &PyGdkGC_Type)) {
-	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
 	return NULL;
     }
     gdk_draw_text(GDK_DRAWABLE(self->obj), pyg_boxed_get(font, GdkFont),
@@ -218,13 +210,9 @@ _wrap_gdk_draw_points(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkPoint *points;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OO:GdkDrawable.draw_points",
-				     kwlist, &gc, &py_points))
+				     "O!O:GdkDrawable.draw_points", kwlist,
+				     &PyGdkGC_Type, &gc, &py_points))
 	return NULL;
-    if (!pygobject_check(gc, &PyGdkGC_Type)) {
-	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
-	return NULL;
-    }
     if (!PySequence_Check(py_points)) {
 	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
 	return NULL;
@@ -259,13 +247,9 @@ _wrap_gdk_draw_segments(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkSegment *segs;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OO:GdkDrawable.draw_segments",
-				     kwlist, &gc, &py_segs))
+				     "O!O:GdkDrawable.draw_segments", kwlist,
+				     &PyGdkGC_Type, &gc, &py_segs))
 	return NULL;
-    if (!pygobject_check(gc, &PyGdkGC_Type)) {
-	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
-	return NULL;
-    }
     if (!PySequence_Check(py_segs)) {
 	PyErr_SetString(PyExc_TypeError, "segs must be a sequence");
 	return NULL;
@@ -300,13 +284,10 @@ _wrap_gdk_draw_lines(PyGObject *self, PyObject *args, PyObject *kwargs)
     gint npoints, i;
     GdkPoint *points;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO:GdkDrawable.draw_lines",
-				     kwlist, &gc, &py_points))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!O:GdkDrawable.draw_lines", kwlist,
+				     &PyGdkGC_Type, &gc, &py_points))
 	return NULL;
-    if (!pygobject_check(gc, &PyGdkGC_Type)) {
-	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
-	return NULL;
-    }
     if (!PySequence_Check(py_points)) {
 	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
 	return NULL;
@@ -326,6 +307,125 @@ _wrap_gdk_draw_lines(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
     gdk_draw_lines(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), points, npoints);
     g_free(points);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gdk_draw_rgb_image kwargs
+static PyObject *
+_wrap_gdk_draw_rgb_image(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "x", "y", "width", "height", "dith",
+			      "rgb_buf", "rowstride", "xdith", "ydith", NULL };
+    PyGObject *gc;
+    PyObject *py_dith;
+    gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0, len;
+    GdkRgbDither dith;
+    guchar *rgb_buf;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!iiiiOs#|iii:GdkDrawable.draw_rgb_image",
+				     kwlist, &PyGdkGC_Type, &gc, &x, &y,
+				     &width, &height, &py_dith,
+				     &rgb_buf, &len, &rowstride,
+				     &xdith, &ydith))
+	return NULL;
+
+    if (pyg_enum_get_value(GDK_TYPE_RGB_DITHER, py_dith, (gint *)&dith))
+	return NULL;
+    if (!(width > 0 && height > 0)) {
+	PyErr_SetString(PyExc_ValueError,
+			"height and width must be greater than zero");
+	return NULL;
+    }
+    if (rowstride == -1) rowstride = width * 3;
+    if (len < rowstride * (height - 1) + width*3) {
+	PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
+	return NULL;
+    }
+    gdk_draw_rgb_image_dithalign(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj),
+				 x, y, width, height, dith, rgb_buf,
+				 rowstride, xdith, ydith);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+ignore gdk_draw_rgb_image_dithalign
+%%
+override gdk_draw_rgb_32_image kwargs
+static PyObject *
+_wrap_gdk_draw_rgb_32_image(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "x", "y", "width", "height", "dith",
+			      "rgb_buf", "rowstride", "xdith", "ydith", NULL };
+    PyGObject *gc;
+    PyObject *py_dith;
+    gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0, len;
+    GdkRgbDither dith;
+    guchar *rgb_buf;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				"O!iiiiOs#|iii:GdkDrawable.draw_rgb_32_image",
+				     kwlist, &PyGdkGC_Type, &gc, &x, &y,
+				     &width, &height, &py_dith,
+				     &rgb_buf, &len, &rowstride,
+				     &xdith, &ydith))
+	return NULL;
+
+    if (pyg_enum_get_value(GDK_TYPE_RGB_DITHER, py_dith, (gint *)&dith))
+	return NULL;
+    if (!(width > 0 && height > 0)) {
+	PyErr_SetString(PyExc_ValueError,
+			"height and width must be greater than zero");
+	return NULL;
+    }
+    if (rowstride == -1) rowstride = width * 4;
+    if (len < rowstride * (height - 1) + width*4) {
+	PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
+	return NULL;
+    }
+    gdk_draw_rgb_32_image_dithalign(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj),
+				    x, y, width, height, dith, rgb_buf,
+				    rowstride, xdith, ydith);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+ignore gdk_draw_rgb_32_image_dithalign
+%%
+override gdk_draw_gray_image kwargs
+static PyObject *
+_wrap_gdk_draw_gray_image(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "x", "y", "width", "height", "dith",
+			      "buf", "rowstride", NULL };
+    PyGObject *gc;
+    PyObject *py_dith;
+    gint x, y, width, height, rowstride = -1, len;
+    GdkRgbDither dith;
+    guchar *buf;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!iiiiOs#|i:GdkDrawable.draw_gray_image",
+				     kwlist, &PyGdkGC_Type, &gc, &x, &y,
+				     &width, &height, &py_dith,
+				     &buf, &len, &rowstride))
+	return NULL;
+
+    if (pyg_enum_get_value(GDK_TYPE_RGB_DITHER, py_dith, (gint *)&dith))
+	return NULL;
+    if (!(width > 0 && height > 0)) {
+	PyErr_SetString(PyExc_ValueError,
+			"height and width must be greater than zero");
+	return NULL;
+    }
+    if (rowstride == -1) rowstride = width;
+    if (len < rowstride * (height - 1) + width) {
+	PyErr_SetString(PyExc_IndexError, "buf is not large enough");
+	return NULL;
+    }
+    gdk_draw_gray_image(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), x, y,
+			width, height, dith, buf, rowstride);
     Py_INCREF(Py_None);
     return Py_None;
 }
