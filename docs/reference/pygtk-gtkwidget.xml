@@ -1233,7 +1233,7 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>widget</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
+            <methodparam><parameter>child_property</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -6438,7 +6438,7 @@ activated.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>callback</methodname>
 	  <methodparam><parameter>widget</parameter></methodparam>
-	  <methodparam><parameter>arg1</parameter></methodparam>
+	  <methodparam><parameter>child_property</parameter></methodparam>
 	  <methodparam><parameter>user_param1</parameter></methodparam>
 	  <methodparam><parameter>...</parameter></methodparam>
 	</methodsynopsis></programlisting>
@@ -6450,8 +6450,8 @@ activated.</para>
 signal</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
-	  <term><parameter>arg1</parameter>&nbsp;:</term>
-	  <listitem><simpara>a child property parameter</simpara></listitem>
+	  <term><parameter>child_property</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of a child property</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter>user_param1</parameter>&nbsp;:</term>
@@ -6467,7 +6467,17 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The "child-notify" signal is emitted when </para>
+      <para>The "child-notify" signal is emitted when
+<parameter>child_property</parameter> is changed.</para>
+
+      <para>Child properties are available with objects derived from <link
+linkend="class-gtkcontainer"><classname>gtk.Container</classname></link>. Those
+properties are not specific to either the container or the child widget but
+to their relation. For example, the "pack-type" property of <link
+linkend="class-gtkbox"><classname>gtk.Box</classname></link> or the
+"menu-label" property of <link
+linkend="class-gtknotebook"><classname>gtk.Notebook</classname></link> are
+child properties.</para>
 
     </refsect2>
 
@@ -6513,7 +6523,8 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The "client-event" signal is emitted when </para>
+      <para>The "client-event" signal is emitted when another application
+has sent an event to <parameter>widget</parameter>.</para>
 
     </refsect2>
 
@@ -6648,8 +6659,11 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The "destroy-event" signal is emitted after the X server
-destroys the widget.</para>
+      <para>The "destroy-event" signal is emitted when a <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> is
+destroyed.  You rarely get this signal, because most widgets disconnect
+themselves from their window before they destroy it, so no widget owns the
+window at destroy time.</para>
 
     </refsect2>
 
@@ -7309,7 +7323,8 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The "event-after" signal is emitted after any other event handling has occurred for <parameter>widget</parameter></para>
+      <para>The "event-after" signal is emitted after any other event
+handling has occurred for <parameter>widget</parameter></para>
 
     </refsect2>
 
@@ -8023,7 +8038,8 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The "no-expose-event" signal is emitted when a no expose event occurs.</para>
+      <para>The "no-expose-event" signal is emitted when a no expose event
+occurs.</para>
 
     </refsect2>
 
@@ -8207,7 +8223,9 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The "proximity-in-event" signal is emitted when </para>
+      <para>The "proximity-in-event" (available for devices like touch
+screens or graphics tablets) is emitted when the pen touches the tablet or
+when the user's finger touches the screen.</para>
 
     </refsect2>
 
@@ -8253,7 +8271,9 @@ any)</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The "proximity-out-event" signal is emitted when </para>
+      <para>The "proximity-out-event" (available for devices like touch
+screens or graphics tablets) is emitted when the pen leaves the tablet or
+when the user's finger leaves the screen.</para>
 
     </refsect2>
 
