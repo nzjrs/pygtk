@@ -342,10 +342,10 @@ _wrap_gtk_clist_new_with_titles(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
 {
     static char *kwlist[] = { "count", "titles", NULL };
-    int count, i;
+    int count = 1, i;
     PyObject *py_list = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i|O:GtkCList.__init__",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iO:GtkCList.__init__",
 				     kwlist, &count, &py_list))
 	return NULL;
     if (py_list) {
@@ -2184,10 +2184,10 @@ _wrap_gtk_ctree_new_with_titles(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
 {
     static char *kwlist[] = { "columns", "tree_column", "titles", NULL };
-    int columns, tree_column;
+    int columns = 1, tree_column = 0;
     PyObject *py_titles = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "ii|O:GtkCTree.__init__",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiO:GtkCTree.__init__",
 				     kwlist, &columns, &tree_column,
 				     &py_titles))
 	return NULL;
@@ -2560,6 +2560,23 @@ _wrap_gtk_ctree_node_get_row_data(PyGObject *self, PyObject *args,
     if (!data) data = Py_None;
     Py_INCREF(data);
     return data;
+}
+%%
+override gtk_ctree_node_from_cobject
+static PyObject *
+_wrap_gtk_ctree_node_from_cobject(PyGObject *self, PyObject *args)
+{
+    PyObject *py_node, *cobj;
+
+    if (!PyArg_ParseTuple(args, "O!:gtk.ctree_node_from_cobject",
+			  &PyCObject_Type, &cobj))
+	return NULL;
+
+    if ((py_node = PyGtkCTreeNode_New(PyCObject_AsVoidPtr(cobj))) == NULL) {
+        return NULL;
+    }
+
+    return py_node;
 }
 %%
 ignore gtk_tree_remove_items
