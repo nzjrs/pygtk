@@ -166,25 +166,25 @@ linkend="signal-gtktreeselection--changed">changed</link>"</term>
     <title>Description</title>
 
     <para>The <link
-linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link> 
+linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link>
 object is a helper object to manage the selection for a <link
 linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
 widget. The <link
-linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link> 
+linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link>
 object is automatically created when a new <link
 linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
-widget is created, and cannot exist independent of this widget. The
-primary reason the <link
-linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link> 
+widget is created, and cannot exist independent of this widget. The primary
+reason the <link
+linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link>
 object exists is for cleanliness of code and API. That is, there is no
 conceptual reason all these functions could not be methods on the <link
 linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
 widget instead of a separate function. The <link
-linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link> 
+linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link>
 object is retrieved from a <link
 linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link> by
 calling the <link
-linkend="method-gtktreeview--get-selection"><methodname>get_selection</methodname>()</link> 
+linkend="method-gtktreeview--get-selection"><methodname>gtk.TreeView.get_selection</methodname>()</link>
 method. It can be manipulated to check the selection status of the tree, as
 well as select and deselect individual rows. Selection is done completely on
 the view side. As a result, multiple views of the same model can have
@@ -196,8 +196,11 @@ without expanding its parents first.</para>
 selection of a view is that the "changed" signal is mostly a hint. That is,
 it may only emit one signal when a range of rows is selected. Additionally,
 it may on occasion emit a "changed" signal when nothing has happened (mostly
-as a result of programmers calling select_row on an already selected
-row).</para>
+as a result of programmers calling the <link
+linkend="method-gtktreeselection--select-path"><methodname>select_path</methodname>()</link>
+or <link
+linkend="method-gtktreeselection--select-iter"><methodname>select_iter</methodname>()</link>
+methods on an already selected row).</para>
 
   </refsect1>
 
@@ -220,7 +223,16 @@ row).</para>
       </variablelist>
 
       <para>The <methodname>set_mode</methodname>() method sets the
-selection mode of the treeselection. If the previous type was
+selection mode of the treeselection to the mode specified by
+<parameter>type</parameter>. The value of <parameter>type</parameter> must
+be one of: <literal>gtk.SELECTION_NONE</literal>,
+<literal>gtk.SELECTION_SINGLE</literal>,
+<literal>gtk.SELECTION_BROWSE</literal> or
+<literal>gtk.SELECTION_MULTIPLE</literal>. See the <link
+linkend="gtk-selection-mode-constants">gtk Selection Mode Constants</link>
+description for more detail.</para>
+
+      <para>If the previous type was
 <literal>gtk.SELECTION_MULTIPLE</literal>, then the anchor is kept selected,
 if it was previously selected.</para>
 
@@ -242,8 +254,8 @@ if it was previously selected.</para>
 
       <para>The <methodname>get_mode</methodname>() method returns the
 selection mode for treeselection. See the <link
-linkend="method-gtktreeselection--set-mode"><methodname>set_mode</methodname>()</link> 
-method.</para>
+linkend="method-gtktreeselection--set-mode"><methodname>set_mode</methodname>()</link>
+method for more information.</para>
 
     </refsect2>
 
@@ -278,23 +290,33 @@ callback is:</para>
 
       <programlisting>
 <methodsynopsis language="python">
-	  <methodname>foreachfunction</methodname>
+	  <methodname>selectfunction</methodname>
+	  <methodparam><parameter>selection</parameter></methodparam>
+	  <methodparam><parameter>model</parameter></methodparam>
 	  <methodparam><parameter>path</parameter></methodparam>
+	  <methodparam><parameter>path_currently_selected</parameter></methodparam>
 	  <methodparam><parameter>...</parameter></methodparam>
 	</methodsynopsis>
 <methodsynopsis language="python">
-	  <methodname>foreachmethod</methodname>
+	  <methodname>selectmethod</methodname>
 	  <methodparam><parameter>self</parameter></methodparam>
+	  <methodparam><parameter>selection</parameter></methodparam>
+	  <methodparam><parameter>model</parameter></methodparam>
 	  <methodparam><parameter>path</parameter></methodparam>
+	  <methodparam><parameter>is_selected</parameter></methodparam>
 	  <methodparam><parameter>...</parameter></methodparam>
 	</methodsynopsis>
 </programlisting>
 
-      <para>where <parameter>path</parameter> is the path of the selected
-row, <parameter>iter</parameter> is a <link
-linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
-pointing to a row and <parameter>...</parameter> is the user data if any
-(may not be present if <parameter>data</parameter> was
+      <para>where <parameter>selection</parameter> is the <link
+linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link>,
+<parameter>model</parameter> is the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+used by the gtkTreeView associated with selection,
+<parameter>path</parameter> is the path of the selected row,
+<parameter>is_selected</parameter> is <literal>TRUE</literal> if
+the row is currently selected and <parameter>...</parameter> is the user
+data if any (may not be present if <parameter>data</parameter> was
 <literal>None</literal>). If <parameter>func</parameter> is a method then
 <parameter>self</parameter> is the object that the method is called
 upon.</para>
@@ -349,7 +371,7 @@ tree view associated with the treeselection.</para>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>a tuple containing a reference to the <link
+	  <listitem><simpara>a 2-tuple containing a reference to the <link
 linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> and
 a <link
 linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
@@ -358,7 +380,7 @@ pointing to the currently selected node.</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_selected</methodname>() method returns a
-tuple containing the treemodel and a treeiter pointing to the selected node
+2-tuple containing the treemodel and a treeiter pointing to the selected node
 in the treemodel if the treeselection is set to
 <literal>gtk.SELECTION_SINGLE</literal> or
 <literal>gtk.SELECTION_BROWSE</literal>. The returned <link
@@ -488,6 +510,11 @@ if any (may not be present if <parameter>data</parameter> was
 <literal>None</literal>). If <parameter>func</parameter> is a method then
 <parameter>self</parameter> is the object that the method is called
 upon.</para>
+
+      <note>
+        <para>You cannot modify the tree or selection in the callback
+function.</para>
+      </note>
 
     </refsect2>
 
