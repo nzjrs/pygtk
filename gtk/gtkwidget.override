@@ -150,3 +150,78 @@ _wrap_gtk_widget_class_path(PyGObject *self)
 
     return result;
 }
+%%
+override gtk_widget_class_list_style_properties args
+static PyObject *
+_wrap_gtk_widget_class_list_style_properties (PyObject *self, PyObject *args)
+{
+    GParamSpec **specs;
+    PyObject *py_itype, *list;
+    GType itype;
+    GtkWidgetClass *class;
+    guint nprops;
+    guint i;
+
+    if (!PyArg_ParseTuple(args, "O:gtk.widget_class_list_style_properties",
+			  &py_itype))
+	return NULL;
+    if ((itype = pyg_type_from_object(py_itype)) == 0)
+	return NULL;
+
+    if (!g_type_is_a(itype, GTK_TYPE_WIDGET)) {
+	PyErr_SetString(PyExc_TypeError, "type must be derived from GtkWidget");
+	return NULL;
+    }
+
+    class = g_type_class_ref(itype);
+    if (!class) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not get a reference to type class");
+	return NULL;
+    }
+
+    specs = gtk_widget_class_list_style_properties(class, &nprops);
+    list = PyTuple_New(nprops);
+    if (list == NULL) {
+	g_free(specs);
+	g_type_class_unref(class);
+	return NULL;
+    }
+    for (i = 0; i < nprops; i++) {
+	PyTuple_SetItem(list, i, pyg_param_spec_new(specs[i]));
+    }
+    g_free(specs);
+    g_type_class_unref(class);
+
+    return list;
+}
+%%
+override gtk_widget_style_get_property args
+static PyObject *
+_wrap_gtk_widget_style_get_property(PyGObject *self, PyObject *args)
+{
+    gchar *param_name;
+    GParamSpec *pspec;
+    GValue value = { 0, };
+    PyObject *ret;
+
+    if (!PyArg_ParseTuple(args, "s:GtkWidget.style_get_property", &param_name))
+	return NULL;
+    pspec = gtk_widget_class_find_style_property(GTK_WIDGET_GET_CLASS(self->obj),
+						 param_name);
+    if (!pspec) {
+	PyErr_SetString(PyExc_TypeError,
+			"the widget does not support the given style parameter");
+	return NULL;
+    }
+    if (!(pspec->flags & G_PARAM_READABLE)) {
+	PyErr_Format(PyExc_TypeError, "style property %s is not readable",
+		     param_name);
+	return NULL;
+    }
+    g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+    gtk_widget_style_get_property(GTK_WIDGET(self->obj), (const gchar*)param_name, &value);
+    ret = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+    return ret;
+}
