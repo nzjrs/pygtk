@@ -35,6 +35,7 @@ init_gtk(void)
  
     /* initialise gobject */
     init_pygobject();
+    g_assert(pygobject_register_class != NULL);
 
     /* set the default python encoding to utf-8 */
     PyUnicode_SetDefaultEncoding("utf-8");

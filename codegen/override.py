@@ -59,10 +59,10 @@ class Overrides:
 	else:
 	    line = buffer ; rest = ''
 	words = string.split(line)
-	if words[0] == 'ignore':
+	if words[0] == 'ignore' or words[0] == 'ignore-' + sys.platform :
 	    for func in words[1:]: self.ignores[func] = 1
 	    for func in string.split(rest): self.ignores[func] = 1
-	elif words[0] == 'ignore-glob':
+	elif words[0] == 'ignore-glob' or words[0] == 'ignore-glob-' + sys.platform :
 	    for func in words[1:]: self.glob_ignores.append(func)
 	    for func in string.split(rest):
 		self.glob_ignores.append(func)

@@ -34,13 +34,7 @@ def change_color_cb(w):
 def main():
     global window, color, da
     
-    # How do I get a GdkColor?
-    # GdkColormap.alloc() wants a GtkColor, not strings nor (r, g, b) and
-    # gtk.gdk.Color isn't implemented...
-    #color = gtk.gdk.Color()
-    #color.red = 0
-    #color.blue = 0xFFFF
-    #color.green = 0
+    color = gtk.gdk.color_parse("blue")
     
     window = gtk.Window()
     window.set_title("Color selection")
@@ -60,7 +54,6 @@ def main():
     
     da = gtk.DrawingArea()
     da.set_size_request(200, 200)
-    color = da.get_style().white
     da.modify_bg(gtk.STATE_NORMAL, color)
     frame.add(da)
     

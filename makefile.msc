@@ -1,0 +1,104 @@
+TOP = ..\..
+!INCLUDE $(TOP)\glib\build\win32\make.msc
+
+#DEBUG=1
+
+PYTHON = d:\devel\python22
+!IFNDEF DEBUG
+EXTRALIBS = $(PYTHON)\libs\python22.lib user32.lib
+!ELSE
+EXTRALIBS = $(PYTHON)\Python-2.2\PCbuild\python22_d.lib user32.lib
+# Python in Debug Build requires a modue name postfix
+PYD_POSTFIX = _d
+!ENDIF
+
+EXTRACFLAGS = -I$(PYTHON)\include
+MODULE_EXT = pyd
+
+MODULES = gobject atk pango
+
+sub-all: 
+	for %d in ($(MODULES)) do nmake -nologo -f makefile.msc sub-one THIS=%d
+
+sub-one :
+	nmake -nologo -f makefile.msc MODULE=$(THIS) $(THIS)$(PYD_POSTFIX).$(MODULE_EXT) OBJ_$(THIS)=1
+
+sub-clean :
+	cd gtk
+	nmake -nologo -f makefile.msc clean
+	cd ..
+
+sub-gtk :
+	cd gtk
+	nmake -nologo -f makefile.msc $(TARGET)
+	cd ..
+
+all : \
+	config.h \
+	sub-all \
+	sub-gtk
+
+# nothing much configuarable below this line ...
+#################################################################
+
+.SUFFIXES: .defs .c .exe
+
+atk.c : atk.defs atk.override
+pango.c : pango.defs pango.override
+
+.defs.c :
+	 $(PYTHON)\python codegen/codegen.py \
+	    --register pango-types.defs \
+	    --register atk-types.defs \
+#	    --register gtk/gdk-types.defs \
+#	    --register gtk/gtk-types.defs \
+	    --override $*.override \
+	    --errorfilename gen-$*.err \
+	    --prefix py$* $*.defs > gen-$*.c
+	copy gen-$*.c $*.c
+	del gen-$*.c
+
+# cl -? describes the options
+# CC = cl -GA -G5 -GF $(OPTIMIZE) -W3 -nologo
+
+LDFLAGS = /link /machine:ix86 $(LINKDEBUG)
+
+INCLUDES = \
+	-FImsvc_recommended_pragmas.h \
+	-DHAVE_CONFIG_H $(EXTRACFLAGS) \
+	-I. $(GLIB_CFLAGS) $(PANGO_CFLAGS) $(ATK_CFLAGS)
+
+#	-I$(LIBGLADE) -I$(LIBXML)
+
+!IFDEF OBJ_gobject
+OBJECTS = \
+	gobjectmodule.obj \
+	pygboxed.obj \
+	pygobject.obj \
+	pygtype.obj
+!ENDIF
+
+!IFDEF OBJ_atk
+EXTRALIBS = $(EXTRALIBS) $(ATK_LIBS)
+!ENDIF
+
+!IFDEF OBJ_pango
+EXTRALIBS = $(EXTRALIBS) $(PANGO_LIBS)
+!ENDIF
+
+!IFNDEF OBJECTS
+OBJECTS = \
+	$(MODULE).obj \
+	$(MODULE)module.obj
+!ENDIF
+
+config.h : config.h.win32
+	copy config.h.win32 config.h
+ 
+$(MODULE)$(PYD_POSTFIX).$(MODULE_EXT) : $(OBJECTS)
+	$(CC) $(CFLAGS) -LD -Fe$@ $(OBJECTS) $(LDFLAGS) $(EXTRALIBS) \
+	$(GLIB_LIBS) /export:init$(MODULE)
+
+clean:: sub-clean
+	del *.pyc
+	del *.pyd

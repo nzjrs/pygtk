@@ -1,3 +1,40 @@
+2002-04-21  Hans Breuer  <hans@breuer.org>
+
+	* codegen/codegen.py : added parameter --errorfilename
+	to allow redirection of stderr even with clumsy windoze
+	shell
+
+	* codegen/override.py : extended to allow 'sys.platform'
+	specific ignores
+
+	* examples/pygtk-demo/demos/colorsel.py : use
+		color = gtk.gdk.color_parse("blue")
+	to get the initial color
+
+	* examples/pygtk-demo/demos/draw.py : (new file) 
+	demonstrating some simple drawing operations. It is
+	using the gtk.GC interface additions below.
+
+	* gtk/gdk.override : implement GdkGC.tp_getattr,
+	GdkGC.tp_setattr and gdk_gc_set_dashes (ported from #if 0'ed
+	code in gtk/gtk-types.c (should be removed there ?)
+
+	* gtk/gtk.override : ignore-win32 GTK_TYPE_PLUG 
+	GTK_TYPE_SOCKET gtk_socket_new (the TYPE ignores do not work yet)
+
+	* config.h.win32 makefile.msc pygtk/makefile.msc :
+	new files to build pygtk on windoze using the established
+	glib/build/win32 infrastructure
+
+	* pygtk/gtk/gtk-fake-win32.c : (new file) implementing
+	gtk_plug_get_type() and gtk_socket_get_type(). It could
+	vanish if codegen/codegen.py has learned something like
+	'ignore-class-$(sys.platform) or my GtkPlug/GtkSocket
+	patch gets accepted with Gtk.
+
+	* gtk/gtkmodule.c : added a g_assert() to ensure importing
+	pygobject did work.
+
 2002-04-21  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.override (_wrap_gtk_drag_dest_find_target): implement.
