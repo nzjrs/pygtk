@@ -36,6 +36,7 @@ noinst_PYTHON = ltihooks.py
 
 dist-hook:
 	-rm -f $(distdir)/pango.c
+	-cp pygtk.spec $(distdir)
 
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA = pango.defs
@@ -108,4 +109,3 @@ EXTRA_DIST = \
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
-
