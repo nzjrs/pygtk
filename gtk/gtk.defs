@@ -4032,7 +4032,7 @@
 (define-method get_preview_text
   (of-object "GtkFontSelection")
   (c-name "gtk_font_selection_get_preview_text")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
 )
 
 (define-method set_preview_text
@@ -4083,7 +4083,7 @@
 (define-method get_preview_text
   (of-object "GtkFontSelectionDialog")
   (c-name "gtk_font_selection_dialog_get_preview_text")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
 )
 
 (define-method set_preview_text
@@ -8599,7 +8599,8 @@
   (c-name "gtk_selection_data_set_text")
   (return-type "gboolean")
   (parameters
-    '("const-guchar*" "str")
+    '("const-gchar*" "str")
+    '("gint" "len")
   )
 )
 
@@ -12452,9 +12453,9 @@
   )
 )
 
-(define-method set_tree_row
+(define-method tree_set_row_drag_data
   (of-object "GtkSelectionData")
-  (c-name "gtk_selection_data_set_tree_row")
+  (c-name "gtk_tree_set_row_drag_data")
   (return-type "gboolean")
   (parameters
     '("GtkTreeModel*" "tree_model")
@@ -12462,9 +12463,9 @@
   )
 )
 
-(define-method get_tree_row
+(define-method tree_get_row_drag_data
   (of-object "GtkSelectionData")
-  (c-name "gtk_selection_data_get_tree_row")
+  (c-name "gtk_tree_get_row_drag_data")
   (return-type "gboolean")
   (parameters
     '("GtkTreeModel**" "tree_model")
@@ -13201,7 +13202,11 @@
   )
 )
 
-
+(define-method clear
+  (of-object "GtkTreeStore")
+  (c-name "gtk_tree_store_clear")
+  (return-type "none")
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtktreeview.h
 
