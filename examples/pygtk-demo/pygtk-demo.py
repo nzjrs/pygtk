@@ -85,7 +85,7 @@ def create_list():
     tree_view = gtk.TreeView(model)
     selection = tree_view.get_selection()
     selection.set_mode('single')
-    tree_view.set_usize(200, -1)
+    tree_view.set_size_request(200, -1)
 
     for title, module in demos.demos:
 	iter = model.append()

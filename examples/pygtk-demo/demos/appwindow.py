@@ -16,30 +16,30 @@ def menuitem_cb(window, action, widget):
     dialog.show()
 
 menu_items = (
-    ('/_File', None, None, 0, '<Branch>' ),
-    ('/File/tearoff1', None, menuitem_cb, 0, '<Tearoff>'),
-    ('/File/_New', '<control>N', menuitem_cb, 0, ''),
-    ('/File/_Open', '<control>O', menuitem_cb, 0, ''),
-    ('/File/_Save', '<control>S', menuitem_cb, 0, ''),
-    ('/File/Save _As...', None, menuitem_cb, 0, ''),
-    ('/File/sep1', None, menuitem_cb, 0, '<Separator>'),
-    ('/File/_Quit', '<control>Q', menuitem_cb, 0, ''),
+    ('/_File',            None,         None,        0, '<Branch>' ),
+    ('/File/tearoff1',    None,         menuitem_cb, 0, '<Tearoff>'),
+    ('/File/_New',        '<control>N', menuitem_cb, 0, '<StockItem>', gtk.STOCK_NEW),
+    ('/File/_Open',       '<control>O', menuitem_cb, 0, '<StockItem>', gtk.STOCK_OPEN),
+    ('/File/_Save',       '<control>S', menuitem_cb, 0, '<StockItem>', gtk.STOCK_SAVE),
+    ('/File/Save _As...', None,         menuitem_cb, 0, '<StockItem>', gtk.STOCK_SAVE),
+    ('/File/sep1',        None,         menuitem_cb, 0, '<Separator>'),
+    ('/File/_Quit',       '<control>Q', menuitem_cb, 0, '<StockItem>', gtk.STOCK_QUIT),
     
-    ('/_Preferences', None, None, 0, '<Branch>'),
-    ('/_Preferences/_Color', None, None, 0, '<Branch>'),
-    ('/_Preferences/Color/_Red', None, menuitem_cb, 0, '<RadioItem>'),
-    ('/_Preferences/Color/_Green', None, menuitem_cb, 0, '/Preferences/Color/Red'),
-    ('/_Preferences/Color/_Blue', None, menuitem_cb, 0, '/Preferences/Color/Red'),
-    ('/_Preferences/_Shape', None, None, 0, '<Branch>'),
-    ('/_Preferences/Shape/_Square', None, menuitem_cb, 0, '<RadioItem>'),
+    ('/_Preferences',                  None, None,        0, '<Branch>'),
+    ('/_Preferences/_Color',           None, None,        0, '<Branch>'),
+    ('/_Preferences/Color/_Red',       None, menuitem_cb, 0, '<RadioItem>'),
+    ('/_Preferences/Color/_Green',     None, menuitem_cb, 0, '/Preferences/Color/Red'),
+    ('/_Preferences/Color/_Blue',      None, menuitem_cb, 0, '/Preferences/Color/Red'),
+    ('/_Preferences/_Shape',           None, None,        0, '<Branch>'),
+    ('/_Preferences/Shape/_Square',    None, menuitem_cb, 0, '<RadioItem>'),
     ('/_Preferences/Shape/_Rectangle', None, menuitem_cb, 0, '/Preferences/Shape/Square'),
-    ('/_Preferences/Shape/_Oval', None, menuitem_cb, 0, '/Preferences/Shape/Rectangle'),
+    ('/_Preferences/Shape/_Oval',      None, menuitem_cb, 0, '/Preferences/Shape/Rectangle'),
 
     # If you wanted this to be right justified you would use
     # "<LastBranch>", not "<Branch>".  Right justified help menu items
     # are generally considered a bad idea now days.
 
-    ('/_Help', None, None, 0, '<Branch>'),
+    ('/_Help',       None, None, 0, '<Branch>'),
     ('/Help/_About', None, menuitem_cb, 0, ''),
     )
 
@@ -50,6 +50,28 @@ def toolbar_cb(button, window):
     dialog.connect('response', lambda dialog, response: dialog.destroy())
     dialog.show()
 
+def register_stock_icons ():
+    # TODO: Fix this
+    
+    items = [('demo-gtk-logo', '_GTK!', 0, 0, '')]
+    
+    # Register our stock items
+    gtk.stock_add (items)
+    
+    # Add our custom icon factory to the list of defaults
+    factory = gtk.IconFactory ()
+    factory.add_default ()
+    
+    pixbuf = gtk.gdk.pixbuf_new_from_file ('gtk-logo-rgb.gif')
+    
+    # Register icon to accompany stock item
+    if pixbuf:
+	icon_set = gtk.IconSet (pixbuf)
+	factory.add ('demo-gtk-logo', icon_set)
+	icon_set.unref()
+    else:
+	print 'failed to load GTK logo for toolbar'
+	
 def update_statusbar(buffer, statusbar):
     # clear any previous message, underflow is allowed 
     statusbar.pop(0)
@@ -63,8 +85,10 @@ def update_statusbar(buffer, statusbar):
 mark_set_callback = (lambda buffer, new_location, mark, statusbar:
                      update_statusbar(buffer, statusbar))
     
+		     
 def main():
-
+    #register_stock_icons ()
+    
     # Create the toplevel window
     window = gtk.Window()
     window.set_title('Application Window')
@@ -109,7 +133,12 @@ def main():
     
     toolbar.append_space()
 
-    # XXX add gtk pixmap stock item
+    toolbar.insert_stock('demo-gtk-logo',
+                         "This is a demo button with a 'gtk' icon",
+                         None,
+                         toolbar_cb,
+                         window,
+                         -1)
 
     table.attach(toolbar,
                  # X direction           Y direction
