@@ -2670,7 +2670,7 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 %%
 override gtk_progress_bar_new_with_adjustment kwargs
-static PyObject *
+static int
 _wrap_gtk_progress_bar_new_with_adjustment(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     GtkAdjustment *adjustment = NULL;
@@ -2678,14 +2678,14 @@ _wrap_gtk_progress_bar_new_with_adjustment(PyGObject *self, PyObject *args, PyOb
     PyGObject *py_adjustment = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkProgressBar.__init__", kwlist, &py_adjustment))
-        return NULL;
+        return -1;
     if ((PyObject *)py_adjustment == Py_None)
         adjustment = NULL;
     else if (py_adjustment && pygobject_check(py_adjustment, &PyGtkAdjustment_Type))
         adjustment = GTK_ADJUSTMENT(py_adjustment->obj);
     else if (py_adjustment) {
         PyErr_SetString(PyExc_TypeError, "adjustment should be a GtkAdjustment or None");
-        return NULL;
+	return -1;
     }
 
     if (adjustment)
@@ -2695,11 +2695,10 @@ _wrap_gtk_progress_bar_new_with_adjustment(PyGObject *self, PyObject *args, PyOb
 
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkProgressBar object");
-        return NULL;
+	return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
-    Py_INCREF(Py_None);
-    return Py_None;
+    return 0;
 }
 %%
 override gtk_rc_set_default_files kwargs
