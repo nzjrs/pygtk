@@ -26,7 +26,7 @@ from dsextras import getoutput, have_pkgconfig, list_files, \
 
 MAJOR_VERSION = 2
 MINOR_VERSION = 3
-MICRO_VERSION = 93
+MICRO_VERSION = 94
 
 VERSION = "%d.%d.%d" % (MAJOR_VERSION,
                         MINOR_VERSION,
