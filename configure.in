@@ -4,7 +4,7 @@ AC_PREREQ(2.52)
 dnl the pygtk version number
 m4_define(pygtk_major_version, 1)
 m4_define(pygtk_minor_version, 99)
-m4_define(pygtk_micro_version, 15)
+m4_define(pygtk_micro_version, 16)
 m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
 
 dnl versions of packages we require ...
@@ -145,8 +145,9 @@ dnl checks to see if Numeric Python is installed.
 if test "x$enable_numpy" != xno; then
   save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
-  AC_CHECK_HEADER(Numeric/arrayobject.h,
-    [AC_DEFINE(HAVE_NUMPY,,[whether to include numeric python support])])
+  AC_CHECK_HEADER([Numeric/arrayobject.h],
+    [AC_DEFINE(HAVE_NUMPY,,[whether to include numeric python support])],,
+    [#include <Python.h>])
   CPPFLAGS="$save_CPPFLAGS"
 fi
 
