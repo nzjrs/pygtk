@@ -43,6 +43,10 @@ class MyTreeModel(gtk.PyGtkTreeModel):
 	'''returns the tree path (a tuple of indices at the various
 	levels) for a particular node.'''
 	return node
+    def on_get_iter(self, path):
+        '''returns the node corresponding to the given path.  In our
+        case, the node is the path'''
+        return path
     def on_get_value(self, node, column):
 	'''returns the value stored in a particular column for the node'''
 	assert column == 0
@@ -89,6 +93,10 @@ def main():
         window.connect('destroy', lambda win: gtk.main_quit())
     window.set_title('Menus')
 
+    scrolled_window = gtk.GtkScrolledWindow()
+    scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+    window.add(scrolled_window)
+
     model = MyTreeModel()
     tree_view = gtk.GtkTreeView(model)
     cell = gtk.GtkCellRendererText()
@@ -96,7 +104,7 @@ def main():
     column = gtk.GtkTreeViewColumn("tuples", cell, text=0)
     tree_view.append_column(column)
 
-    window.add(tree_view)
+    scrolled_window.add(tree_view)
     window.show_all()
 
     if __name__ == '__main__': gtk.main()

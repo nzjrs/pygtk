@@ -54,7 +54,7 @@ def main():
     pix, mask = gtk.pixmap_colormap_create_from_xpm_d(None, win.get_colormap(),
 						      None, folder_icon)
 
-    toolbar = gtk.GtkToolbar(gtk.ORIENTATION_HORIZONTAL, gtk.TOOLBAR_BOTH)
+    toolbar = gtk.GtkToolbar()
     win.add(toolbar)
     
     button = toolbar.append_item("Horizontal", "Horizontal toolbar layout",

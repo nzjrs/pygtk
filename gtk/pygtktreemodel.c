@@ -57,6 +57,9 @@ static guint pygtk_tree_model_get_flags(GtkTreeModel *tree_model);
 static gint pygtk_tree_model_get_n_columns(GtkTreeModel *tree_model);
 static GType pygtk_tree_model_get_column_type(GtkTreeModel *tree_model,
 					      gint index);
+static gboolean pygtk_tree_model_get_iter(GtkTreeModel *tree_model,
+					  GtkTreeIter *iter,
+					  GtkTreePath *path);
 static GtkTreePath *pygtk_tree_model_get_path(GtkTreeModel *tree_model,
 					      GtkTreeIter *iter);
 static void pygtk_tree_model_get_value(GtkTreeModel*tree_model,
@@ -85,6 +88,7 @@ pygtk_tree_model_iface_init(GtkTreeModelIface *iface)
   iface->get_flags = pygtk_tree_model_get_flags;
   iface->get_n_columns = pygtk_tree_model_get_n_columns;
   iface->get_column_type = pygtk_tree_model_get_column_type;
+  iface->get_iter = pygtk_tree_model_get_iter;
   iface->get_path = pygtk_tree_model_get_path;
   iface->get_value = pygtk_tree_model_get_value;
   iface->iter_next = pygtk_tree_model_iter_next;
@@ -192,6 +196,44 @@ pygtk_tree_model_get_column_type(GtkTreeModel *tree_model, gint index)
 	PyErr_Print();
 	PyErr_Clear();
 	return G_TYPE_INVALID;
+    }
+}
+
+static gboolean
+pygtk_tree_model_get_iter(GtkTreeModel *tree_model,
+			  GtkTreeIter *iter, GtkTreePath *path)
+{
+    PyObject *self, *py_path, *py_ret;
+
+    g_return_val_if_fail(tree_model != NULL, FALSE);
+    g_return_val_if_fail(PYGTK_IS_TREE_MODEL(tree_model), FALSE);
+    g_return_val_if_fail(iter != NULL, FALSE);
+    g_return_val_if_fail(path != NULL, FALSE);
+    /* this call finds the wrapper for this GObject */
+    self = pygobject_new((GObject *)tree_model);
+
+#ifdef DEBUG_TREE_MODEL
+    g_message("get_tree_iter(%p)", path);
+#endif
+    py_path = pygtk_tree_path_to_pyobject(path);
+    py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_iter",
+				 "(O)", py_path);
+    Py_DECREF(py_path);
+
+    if (py_ret) {
+	if (py_ret != Py_None) {
+	    iter->user_data = py_ret;
+	    return TRUE;
+	} else {
+	    iter->user_data = NULL;
+	    Py_DECREF(py_ret);
+	    return FALSE;
+	}
+    } else {
+	PyErr_Print();
+	PyErr_Clear();
+	iter->user_data = NULL;
+	return FALSE;
     }
 }
 
