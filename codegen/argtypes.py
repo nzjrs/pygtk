@@ -417,7 +417,8 @@ class ObjectArg(ArgType):
         if ownsreturn:
             info.varlist.add('PyObject', '*py_ret')
             info.codeafter.append('    py_ret = pygobject_new((GObject *)ret);\n'
-                                  '    g_object_unref(ret);\n'
+                                  '    if (ret != NULL)\n'
+                                  '        g_object_unref(ret);\n'
                                   '    return py_ret;')
         else:
             info.codeafter.append('    /* pygobject_new handles NULL checking */\n' +
