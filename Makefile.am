@@ -37,7 +37,6 @@ noinst_PYTHON = ltihooks.py
 
 dist-hook:
 	-rm -f $(distdir)/pango.c
-	-cp pygtk.spec $(distdir)
 
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA = pango.defs pango-types.defs
@@ -47,6 +46,7 @@ pkgconfig_DATA = pygtk-2.0.pc
 
 EXTRA_DIST = \
   pygtk.spec \
+  pygtk.spec.in \
   pygtk-2.0.pc.in \
   MAPPING \
   THREADS \
