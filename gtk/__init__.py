@@ -27,12 +27,14 @@ except ImportError:
     pass
 
 # TRUE and FALSE constants ...
-try:
-    FALSE = False
-    TRUE  = True
-except NameError:
-    FALSE = 0
-    TRUE  = 1
+import __builtin__
+if not hasattr(__builtin__, 'True'):
+    __builtin__.True = (1 == 1)
+    __builtin__.False = (1 != 1)
+del __builtin__
+
+FALSE = False
+TRUE  = True
 
 import gobject as _gobject
 
@@ -50,6 +52,7 @@ idle_remove    = _gobject.source_remove
 timeout_add    = _gobject.timeout_add
 timeout_remove = _gobject.source_remove
 input_add      = _gobject.io_add_watch
+input_add_full = _gobject.io_add_watch
 input_remove   = _gobject.source_remove
 
 # old names compatibility ...
