@@ -60,6 +60,8 @@ class GtkObject:
 			return cmp(self._o, other._o)
 		else:
 			return cmp(id(self), id(other))
+	def __hash__(self):
+		return hash(self._o)
 	def __getattr__(self, attr):
 		# this function allows setting attributes on an object so that
 		# they will always be available with the object.  Due to
@@ -2466,6 +2468,13 @@ class GtkAccelGroup:
 	def __init__(self, _obj=None):
 		if _obj: self._ag = _obj; return
 		self._ag = _gtk.gtk_accel_group_new()
+	def __cmp__(self, other):
+	        if hasattr(other, '_ag'):
+			return cmp(self._ag, other._ag)
+		else:
+			return cmp(id(self), id(other))
+	def __hash__(self):
+		return hash(self._ag)
 	def activate(self, key, mods):
 		_gtk.gtk_accel_group_activate(self._ag, key, mods)
 	def attach(self, obj):

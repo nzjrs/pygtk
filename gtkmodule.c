@@ -121,6 +121,11 @@ PyGtk_compare(PyGtk_Object *self, PyGtk_Object *v) {
   return 1;
 }
 
+static long
+PyGtk_hash(PyGtk_Object *self) {
+  return (long)self->obj;
+}
+
 static PyObject *
 PyGtk_repr(PyGtk_Object *self) {
   char buf[100];
@@ -147,7 +152,7 @@ static PyTypeObject PyGtk_Type = {
   0,                              /*tp_as_number*/
   0,                              /*tp_as_sequence*/
   0,                              /*tp_as_mapping*/
-  (hashfunc)0,                    /*tp_hash*/
+  (hashfunc)PyGtk_hash,           /*tp_hash*/
   (ternaryfunc)0,                 /*tp_call*/
   (reprfunc)0,                    /*tp_str*/
   0L,0L,0L,0L,
@@ -387,6 +392,10 @@ PyGtkAccelGroup_Compare(PyGtkAccelGroup_Object *self,
   return 1;
 }
 
+static long PyGtkAccelGroup_Hash(PyGtkAccelGroup_Object *self) {
+  return (long)self->obj;
+}
+
 static PyTypeObject PyGtkAccelGroup_Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,
@@ -402,7 +411,7 @@ static PyTypeObject PyGtkAccelGroup_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGtkAccelGroup_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -563,6 +572,10 @@ PyGtkStyle_Compare(PyGtkStyle_Object *self, PyGtkStyle_Object *v) {
   return 1;
 }
 
+static long PyGtkStyle_Hash(PyGtkStyle_Object *self) {
+  return (long)self->obj;
+}
+
 static PyObject *PyGtkStyle_copy(PyGtkStyle_Object *self, PyObject *args) {
   GtkStyle *style;
   PyObject *ret;
@@ -705,7 +718,7 @@ static PyTypeObject PyGtkStyle_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGtkStyle_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -787,6 +800,10 @@ PyGdkFont_Compare(PyGdkFont_Object *self, PyGdkFont_Object *v) {
   return 1;
 }
 
+static long PyGdkFont_Hash(PyGdkFont_Object *self) {
+  return (long)self->obj;
+}
+
 static PyTypeObject PyGdkFont_Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,
@@ -802,7 +819,7 @@ static PyTypeObject PyGdkFont_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkFont_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -849,6 +866,10 @@ PyGdkColor_Compare(PyGdkColor_Object *self, PyGdkColor_Object *v) {
   return 1;
 }
 
+static long PyGdkColor_Hash(PyGdkColor_Object *self) {
+  return (long)self->obj.pixel;
+}
+
 static PyObject *
 PyGdkColor_Repr(PyGdkColor_Object *self) {
   char buf[80];
@@ -873,7 +894,7 @@ static PyTypeObject PyGdkColor_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkColor_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -1253,6 +1274,10 @@ PyGdkEvent_Compare(PyGdkEvent_Object *self, PyGdkEvent_Object *v) {
   return 1;
 }
 
+static long PyGdkEvent_Hash(PyGdkEvent_Object *self) {
+  return (long)self->obj;
+}
+
 static PyTypeObject PyGdkEvent_Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,
@@ -1268,7 +1293,7 @@ static PyTypeObject PyGdkEvent_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkEvent_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -1289,6 +1314,10 @@ PyGdkWindow_Compare(PyGdkWindow_Object *self, PyGdkWindow_Object *v) {
   if (self->obj == v->obj) return 0;
   if (self->obj > v->obj) return -1;
   return 1;
+}
+
+static long PyGdkWindow_Hash(PyGdkWindow_Object *self) {
+  return (long)self->obj;
 }
 
 static PyObject *
@@ -1730,7 +1759,7 @@ static PyTypeObject PyGdkWindow_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkWindow_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -1901,6 +1930,10 @@ PyGdkGC_Compare(PyGdkGC_Object *self, PyGdkGC_Object *v) {
   return 1;
 }
 
+static long PyGdkGC_Hash(PyGdkGC_Object *self) {
+  return (long)self->obj;
+}
+
 static PyTypeObject PyGdkGC_Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,
@@ -1916,7 +1949,7 @@ static PyTypeObject PyGdkGC_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkGC_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -1965,6 +1998,10 @@ PyGdkColormap_Compare(PyGdkColormap_Object *self, PyGdkColormap_Object *v) {
   if (self->obj == v->obj) return 0;
   if (self->obj > v->obj) return -1;
   return 1;
+}
+
+static long PyGdkColormap_Hash(PyGdkColormap_Object *self) {
+  return (long)self->obj;
 }
 
 static int
@@ -2022,7 +2059,7 @@ static PyTypeObject PyGdkColormap_Type = {
   0,
   &PyGdkColormap_Sequence,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkColormap_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -2041,6 +2078,10 @@ PyGdkDragContext_Compare(PyGdkDragContext_Object *self,
   if (self->obj == v->obj) return 0;
   if (self->obj > v->obj) return -1;
   return 1;
+}
+
+static long PyGdkDragContext_Hash(PyGdkDragContext_Object *self) {
+  return (long)self->obj;
 }
 
 static PyObject *
@@ -2109,7 +2150,7 @@ static PyTypeObject PyGdkDragContext_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkDragContext_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -2127,6 +2168,10 @@ PyGtkSelectionData_Compare(PyGtkSelectionData_Object *self,
   if (self->obj == v->obj) return 0;
   if (self->obj > v->obj) return -1;
   return 1;
+}
+
+static long PyGtkSelectionData_Hash(PyGtkSelectionData_Object *self) {
+  return (long)self->obj;
 }
 
 static PyObject *
@@ -2181,7 +2226,7 @@ static PyTypeObject PyGtkSelectionData_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGtkSelectionData_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -2199,6 +2244,10 @@ PyGdkAtom_Compare(PyGdkAtom_Object *self, PyGdkAtom_Object *v) {
   if (self->atom == v->atom) return 0;
   if (self->atom > v->atom) return -1;
   return 1;
+}
+
+static long PyGdkAtom_Hash(PyGdkAtom_Object *self) {
+  return (long)self->atom;
 }
 
 static PyObject *
@@ -2317,7 +2366,7 @@ static PyTypeObject PyGdkAtom_Type = {
   &PyGdkAtom_Number,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkAtom_Hash,
   (ternaryfunc)0,
   (reprfunc)PyGdkAtom_Str,
   0L,0L,0L,0L,
@@ -2335,6 +2384,10 @@ PyGdkCursor_Compare(PyGdkCursor_Object *self, PyGdkCursor_Object *v) {
   if (self->obj == v->obj) return 0;
   if (self->obj > v->obj) return -1;
   return 1;
+}
+
+static long PyGdkCursor_Hash(PyGdkCursor_Object *self) {
+  return (long)self->obj;
 }
 
 static PyObject *
@@ -2385,7 +2438,7 @@ static PyTypeObject PyGdkCursor_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGdkCursor_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
@@ -2401,6 +2454,10 @@ static int PyGtkCTreeNode_Compare(PyGtkCTreeNode_Object *self,
   if (self->node == v->node) return 0;
   if (self->node > v->node) return -1;
   return 1;
+}
+
+static long PyGtkCTreeNode_Hash(PyGtkCTreeNode_Object *self) {
+  return (long)self->node;
 }
 
 static PyObject *PyGtkCTreeNode_GetAttr(PyGtkCTreeNode_Object *self,
@@ -2461,7 +2518,7 @@ static PyTypeObject PyGtkCTreeNode_Type = {
   0,
   0,
   0,
-  (hashfunc)0,
+  (hashfunc)PyGtkCTreeNode_Hash,
   (ternaryfunc)0,
   (reprfunc)0,
   0L,0L,0L,0L,
