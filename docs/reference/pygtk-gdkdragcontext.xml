@@ -58,6 +58,17 @@ linkend="method-gdkdragcontext--drag-find-window">drag_find_window</link></metho
 		       role="keyword">y_root</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdragcontext--drag-find-window-for-screen">drag_find_window_for_screen</link></methodname>
+	<methodparam><parameter
+		       role="keyword">drag_window</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">screen</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">x_root</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">y_root</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdragcontext--drag-motion">drag_motion</link></methodname>
 	<methodparam><parameter
@@ -175,44 +186,13 @@ linkend="method-gdkdragcontext--set-icon-default">set_icon_default</link></metho
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"protocol"</entry>
+	      <entry>"action"</entry>
 	      <entry>Read</entry>
-	      <entry>the DND protocol which governs this drag - one of:
-<literal>gtk.gdk.DRAG_PROTO_MOTIF</literal>,
-<literal>gtk.gdk.DRAG_PROTO_XDND</literal>,
-<literal>gtk.gdk.DRAG_PROTO_ROOTWIN</literal>,
-<literal>gtk.gdk.DRAG_PROTO_NONE</literal>,
-<literal>gtk.gdk.DRAG_PROTO_WIN32_DROPFILES</literal>,
-<literal>gtk.gdk.DRAG_PROTO_OLE2</literal>,
-<literal>gtk.gdk.DRAG_PROTO_LOCAL</literal></entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"is_source"</entry>
-	      <entry>Read</entry>
-	      <entry>if TRUE the context is used on the source side.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"source_window"</entry>
-	      <entry>Read</entry>
-	      <entry>the source <link
-linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> of
-this drag.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"dest_window"</entry>
-	      <entry>Read</entry>
-	      <entry>the destination <link
-linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> of
-this drag.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"targets"</entry>
-	      <entry>Read</entry>
-	      <entry>a list of targets offered by the source.</entry>
+	      <entry>the action chosen by the destination. One of:
+<literal>gtk.gdk.ACTION_COPY</literal>,
+<literal>gtk.gdk.ACTION_MOVE</literal>,
+<literal>gtk.gdk.ACTION_LINK</literal>,
+<literal>gtk.gdk.ACTION_PRIVATE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -228,6 +208,48 @@ this drag.</entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"dest_window"</entry>
+	      <entry>Read</entry>
+	      <entry>the destination <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> of
+this drag.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"is_source"</entry>
+	      <entry>Read</entry>
+	      <entry>if TRUE the context is used on the source side.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"protocol"</entry>
+	      <entry>Read</entry>
+	      <entry>the DND protocol which governs this drag - one of:
+<literal>gtk.gdk.DRAG_PROTO_MOTIF</literal>,
+<literal>gtk.gdk.DRAG_PROTO_XDND</literal>,
+<literal>gtk.gdk.DRAG_PROTO_ROOTWIN</literal>,
+<literal>gtk.gdk.DRAG_PROTO_NONE</literal>,
+<literal>gtk.gdk.DRAG_PROTO_WIN32_DROPFILES</literal>,
+<literal>gtk.gdk.DRAG_PROTO_OLE2</literal>,
+<literal>gtk.gdk.DRAG_PROTO_LOCAL</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"source_window"</entry>
+	      <entry>Read</entry>
+	      <entry>the source <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> of
+this drag.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"start_time"</entry>
+	      <entry>Read</entry>
+	      <entry>a timestamp recording the start time of this
+drag.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"suggested_action"</entry>
 	      <entry>Read</entry>
 	      <entry>the action suggested by the source. One of:
@@ -240,20 +262,9 @@ this drag.</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"action"</entry>
+	      <entry>"targets"</entry>
 	      <entry>Read</entry>
-	      <entry>the action chosen by the destination. One of:
-<literal>gtk.gdk.ACTION_COPY</literal>,
-<literal>gtk.gdk.ACTION_MOVE</literal>,
-<literal>gtk.gdk.ACTION_LINK</literal>,
-<literal>gtk.gdk.ACTION_PRIVATE</literal></entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"start_time"</entry>
-	      <entry>Read</entry>
-	      <entry>a timestamp recording the start time of this
-drag.</entry>
+	      <entry>a list of targets offered by the source.</entry>
 	    </row>
 
 	  </tbody>
@@ -267,19 +278,19 @@ drag.</entry>
     <title>Description</title>
 
     <para>A <link
-linkend="class-gdkdragcontext"><classname>gtk.gdk.DragContext</classname></link> 
+linkend="class-gdkdragcontext"><classname>gtk.gdk.DragContext</classname></link>
 holds information about a drag in progress. It is used for both source and
 destination. A <link
-linkend="class-gdkdragcontext"><classname>gtk.gdk.DragContext</classname></link> 
+linkend="class-gdkdragcontext"><classname>gtk.gdk.DragContext</classname></link>
 can be created using the <link
 linkend="constructor-gdkdragcontext">gtk.gdk.DragContext</link>()
 constructor but since there is no way to set its attributes the new object
 is not much use. Useful <link
-linkend="class-gdkdragcontext"><classname>gtk.gdk.DragContext</classname></link> 
+linkend="class-gdkdragcontext"><classname>gtk.gdk.DragContext</classname></link>
 objects are created as a result of the <link
-linkend="method-gdkwindow--drag-begin"><methodname>drag_begin</methodname>()</link> 
+linkend="method-gdkwindow--drag-begin"><methodname>gtk.gdk.Window.drag_begin</methodname>()</link>
 or the <link
-linkend="method-gtkwidget--drag-begin"><methodname>gtk.Widget.drag_begin</methodname>()</link> 
+linkend="method-gtkwidget--drag-begin"><methodname>gtk.Widget.drag_begin</methodname>()</link>
 methods.</para>
 
   </refsect1>
@@ -495,14 +506,14 @@ coordinates.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>a tuple containing the drag destination <link
+	  <listitem><simpara>a 2-tuple containing the drag destination <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> and
 the drag protocol</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
       <para>The <methodname>drag_find_window</methodname>() method returns a
-tuple containing the drag destination <link
+2-tuple containing the drag destination <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> and
 the drag protocol being used. The drag protocol is one of:</para>
 
@@ -555,7 +566,114 @@ implemented).</simpara>
 
       <para><parameter>drag_window</parameter> is a <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> and
-<parameter>x_root</parameter> and <parameter>y_root</parameter> specifiy the
+<parameter>x_root</parameter> and <parameter>y_root</parameter> specify the
+location of the mouse pointer in the root window.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkdragcontext--drag-find-window-for-screen">
+      <title>gtk.gdk.DragContext.drag_find_window_for_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>drag_find_window_for_screen</methodname>
+	  <methodparam><parameter
+			 role="keyword">drag_window</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">screen</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">x_root</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">y_root</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">drag_window</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+<listitem><simpara>a <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">x_root</parameter>&nbsp;:</term>
+	  <listitem><simpara>the x position of the pointer in root
+coordinates.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">y_root</parameter>&nbsp;:</term>
+	  <listitem><simpara>the y position of the pointer in root
+coordinates.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing the drag destination <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> and
+the drag protocol</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>drag_find_window_for_screen</methodname>()
+method returns a 2-tuple containing the drag destination <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> and
+the drag protocol being used. The drag protocol is one of:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.gdk.DRAG_PROTO_MOTIF</literal></term>
+	  <listitem>
+	    <simpara>The Motif DND protocol. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.DRAG_PROTO_XDND</literal></term>
+	  <listitem>
+	    <simpara>The Xdnd protocol.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.DRAG_PROTO_ROOTWIN</literal></term>
+	  <listitem>
+	    <simpara>An extension to the Xdnd protocol for unclaimed root
+window drops. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.DRAG_PROTO_NONE</literal></term>
+	  <listitem>
+	    <simpara>no protocol.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.DRAG_PROTO_WIN32_DROPFILES</literal></term>
+	  <listitem>
+	    <simpara>The simple WM_DROPFILES protocol.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.DRAG_PROTO_OLE2</literal></term>
+	  <listitem>
+	    <simpara>The complex OLE2 DND protocol (not
+implemented).</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.DRAG_PROTO_LOCAL</literal></term>
+	  <listitem>
+	    <simpara>Intra-application DND.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para><parameter>drag_window</parameter> is a <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> and
+<parameter>x_root</parameter> and <parameter>y_root</parameter> specify the
 location of the mouse pointer in the root window.</para>
 
     </refsect2>
