@@ -168,6 +168,45 @@ _wrap_gtk_widget_get_pointer(PyGObject *self, PyObject *args)
     return Py_BuildValue("(ii)", x, y);
 }
 %%
+override gtk_widget_path
+static PyObject *
+_wrap_gtk_widget_path(PyGObject *self, PyObject *args)
+{
+    guint length;
+    gchar *path;
+    gchar *path_reversed;
+    PyObject *result;
+
+    if (!PyArg_ParseTuple(args, ":GtkWidget.path"))
+	return NULL;
+    gtk_widget_path(GTK_WIDGET(self->obj), &length, &path, &path_reversed);
+    result = PyString_FromString(path);
+    g_free(path);
+    g_free(path_reversed);
+
+    return result;
+}
+%%
+override gtk_widget_class_path
+static PyObject *
+_wrap_gtk_widget_class_path(PyGObject *self, PyObject *args)
+{
+    guint length;
+    gchar *path;
+    gchar *path_reversed;
+    PyObject *result;
+
+    if (!PyArg_ParseTuple(args, ":GtkWidget.path"))
+	return NULL;
+    gtk_widget_class_path(GTK_WIDGET(self->obj), &length, &path,
+			  &path_reversed);
+    result = PyString_FromString(path);
+    g_free(path);
+    g_free(path_reversed);
+
+    return result;
+}
+%%
 override gtk_container_children
 static PyObject *
 _wrap_gtk_container_children(PyGObject *self, PyObject *args)
