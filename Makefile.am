@@ -30,7 +30,9 @@ pangomodule_la_LIBADD = $(PANGO_LIBS)
 $(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango.override
 	-chmod a+w $(srcdir)
 	cd $(srcdir) \
-	&& $(PYTHON) codegen/codegen.py -o pango.override -p pypango pango.defs > gen-pango.c \
+	&& $(PYTHON) codegen/codegen.py \
+	    --override pango.override \
+	    --prefix pypango pango.defs > gen-pango.c \
 	&& cp gen-pango.c pango.c \
 	&& rm -f gen-pango.c
 
@@ -40,6 +42,9 @@ noinst_PYTHON = ltihooks.py
 
 dist-hook:
 	-rm -f $(distdir)/pango.c
+
+defsdir = $(pkgdatadir)/2.0/defs
+defs_DATA = pango.defs
 
 EXTRA_DIST = \
 	pygtk.spec \

@@ -1,6 +1,5 @@
 
-INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
-	$(GDK_IMLIB_CFLAGS) $(LIBGLADE_CFLAGS) $(GTKGL_CFLAGS) -Wall
+INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) -Wall
 
 pygtkdir = $(pythondir)/gtk
 pygtk_PYTHON = __init__.py GTK.py GDK.py
@@ -28,28 +27,18 @@ $(srcdir)/gtk.c: $(srcdir)/gtk.defs $(srcdir)/gdk.defs \
 		 $(srcdir)/gtk-extrafuncs.defs $(srcdir)/gtk.override
 	-chmod a+w $(srcdir)
 	cd $(srcdir) \
-	&& $(PYTHON) ../codegen/codegen.py -o gtk.override -p pygtk gtk.defs > gen-gtk.c \
+	&& $(PYTHON) ../codegen/codegen.py \
+	    --register ../pango.defs \
+	    --override gtk.override \
+	    --prefix pygtk gtk.defs > gen-gtk.c \
 	&& cp gen-gtk.c gtk.c \
 	&& rm -f gen-gtk.c
 
-$(srcdir)/libglade.c: $(srcdir)/libglade.defs $(srcdir)/libglade.override
-	-chmod a+w $(srcdir)
-	cd $(srcdir) \
-	&& $(PYTHON) ../codegen/codegen.py -r gtk.defs -o libglade.override -p libglade libglade.defs > gen-libglade.c \
-	&& cp gen-libglade.c libglade.c \
-	&& rm -f gen-libglade.c
-
-$(srcdir)/gtkgl.c: $(srcdir)/gtkgl.defs $(srcdir)/gtkgl.override
-	-chmod a+w $(srcdir)
-	cd $(srcdir) \
-	&& $(PYTHON) ../codegen/codegen.py -r gtk.defs -o gtkgl.override -p pygtkgl gtkgl.defs > gen-gtkgl.c \
-	&& cp gen-gtkgl.c gtkgl.c \
-	&& rm -f gen-gtkgl.c
-
-
 # a hack so that gtk.c is not included in the final package.
 dist-hook:
-	-rm -f $(distdir)/gtk.c $(distdir)/libglade.c $(distdir)/gtkgl.c
+	-rm -f $(distdir)/gtk.c
 
-EXTRA_DIST = gtk.defs gtk-extrafuncs.defs gdk.defs gtk.override \
-	libglade.defs libglade.override gtkgl.defs gtkgl.override
+defsdir = $(pkgdatadir)/2.0/defs
+defs_DATA = gtk.defs gtk-extrafuncs.defs gdk.defs
+
+EXTRA_DIST = gtk.defs gtk-extrafuncs.defs gdk.defs gtk.override

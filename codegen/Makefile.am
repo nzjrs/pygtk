@@ -1,4 +1,6 @@
 
+bin_SCRIPTS = pygtk-codegen-2.0
+
 codegendir = $(pkgdatadir)/2.0/codegen
 
 codegen_PYTHON = \
@@ -15,4 +17,4 @@ codegen_PYTHON = \
 	override.py \
 	scmexpr.py
 
-EXTRA_DIST = README.defs
+EXTRA_DIST = README.defs pygtk-codegen-2.0.in

@@ -20,10 +20,19 @@ headers
 static PyExtensionClass *_PyGObject_Type;
 #define PyGObject_Type (*_PyGObject_Type)
 
+static PyExtensionClass *_PyPangoContext_Type;
+#define PyPangoContext_Type (*_PyPangoContext_Type)
+static PyExtensionClass *_PyPangoFont_Type;
+#define PyPangoFont_Type (*_PyPangoFont_Type)
+static PyExtensionClass *_PyPangoLayout_Type;
+#define PyPangoLayout_Type (*_PyPangoLayout_Type)
+
 %%
 init
 {
     PyObject *pygobject = PyImport_ImportModule("gobject");
+    PyObject *pypango;
+
     if (pygobject != NULL) {
 	PyObject *module_dict = PyModule_GetDict(pygobject);
 
@@ -31,6 +40,23 @@ init
 								   "GObject");
     } else {
 	Py_FatalError("could not import gobject");
+	return;
+    }
+    pypango = PyImport_ImportModule("pango");
+    if (pypango != NULL) {
+	PyObject *module_dict = PyModule_GetDict(pypango);
+
+	_PyPangoContext_Type =
+	    (PyExtensionClass *)PyDict_GetItemString(module_dict,
+						     "PangoContext");
+	_PyPangoFont_Type =
+	    (PyExtensionClass *)PyDict_GetItemString(module_dict,
+						     "PangoFont");
+	_PyPangoLayout_Type =
+	    (PyExtensionClass *)PyDict_GetItemString(module_dict,
+						     "PangoLayout");
+    } else {
+	Py_FatalError("could not import pango");
 	return;
     }
 }

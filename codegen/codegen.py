@@ -775,7 +775,7 @@ if __name__ == '__main__':
         elif opt in ('-p', '--prefix'):
             prefix = arg
         elif opt in ('-r', '--register'):
-            p = parser.DefsParser(arg)
+            p = defsparser.DefsParser(arg)
             p.startParsing()
             register_types(p)
             del p
