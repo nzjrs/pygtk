@@ -1671,7 +1671,7 @@ class GtkVPaned(GtkPaned):
 		if _obj: self._o = _obj; return
 		self._o = _gtk.gtk_vpaned_new()
 
-class GtkScrolledWindow(GtkContainer):
+class GtkScrolledWindow(GtkBin):
 	get_type = _gtk.gtk_scrolled_window_get_type
 	def __init__(self, hadj=None, vadj=None, _obj=None):
 		if _obj: self._o = _obj; return
@@ -2152,7 +2152,7 @@ class GtkProgress(GtkWidget):
 	def get_text_from_value(self, value):
 		return _gtk.gtk_progress_get_text_from_value(self._o, value)
 	def get_current_percentage(self):
-		return _gtk.gtk_progress_get_percentage(self._o)
+		return _gtk.gtk_progress_get_current_percentage(self._o)
 	def get_percentage_from_value(self, value):
 		return _gtk.gtk_progress_get_percentage_from_value(self._o,
 								   value)

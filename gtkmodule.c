@@ -1,5 +1,5 @@
 /* PyGTK - python bindings for GTK+
- * Copyright (C) 1997-1998 James Henstridge <james@daa.com.au>
+ * Copyright (C) 1997-1999 James Henstridge <james@daa.com.au>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -773,9 +773,12 @@ PyGdkEvent_New(GdkEvent *obj) {
   self->attrs = PyDict_New();
   PyDict_SetItemString(self->attrs, "type", v=PyInt_FromLong(obj->type));
   Py_DECREF(v);
-  PyDict_SetItemString(self->attrs, "window", v=PyGdkWindow_New(
-						obj->any.window));
-  Py_DECREF(v);
+  if (obj->any.window) {
+    PyDict_SetItemString(self->attrs, "window", v=PyGdkWindow_New(
+						  obj->any.window));
+    Py_DECREF(v);
+  } else
+    PyDict_SetItemString(self->attrs, "window", Py_None);
   PyDict_SetItemString(self->attrs, "send_event", v=PyInt_FromLong(
     obj->any.send_event));
   Py_DECREF(v);
@@ -884,9 +887,12 @@ PyGdkEvent_New(GdkEvent *obj) {
     break;
   case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
   case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
-    PyDict_SetItemString(self->attrs, "subwindow", v=PyGdkWindow_New(
+    if (obj->crossing.subwindow) {
+      PyDict_SetItemString(self->attrs, "subwindow", v=PyGdkWindow_New(
 						obj->crossing.subwindow));
-    Py_DECREF(v);
+      Py_DECREF(v);
+    } else
+      PyDict_SetItemString(self->attrs, "subwindow", Py_None);
     PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
 						obj->crossing.time));
     Py_DECREF(v);
@@ -2053,6 +2059,13 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
   case GTK_TYPE_FLOAT:
     if (tmp = PyNumber_Float(obj))
       GTK_VALUE_FLOAT(*arg) = PyFloat_AsDouble(tmp);
+    else
+      return -1;
+    Py_DECREF(tmp);
+    break;
+  case GTK_TYPE_DOUBLE:
+    if (tmp = PyNumber_Float(obj))
+      GTK_VALUE_DOUBLE(*arg) = PyFloat_AsDouble(tmp);
     else
       return -1;
     Py_DECREF(tmp);
