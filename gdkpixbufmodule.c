@@ -66,7 +66,7 @@ static void
 pygdk_pixbuf_dealloc(PyGdkPixbuf_Object *self)
 {
     gdk_pixbuf_unref(self->pixbuf);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static int
@@ -493,7 +493,7 @@ static void
 pygdk_pixbuf_animation_dealloc(PyGdkPixbufAnimation_Object *self)
 {
     gdk_pixbuf_animation_unref(self->animation);
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static int

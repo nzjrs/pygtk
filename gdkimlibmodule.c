@@ -63,7 +63,7 @@ PyGdkImlibImage_New(GdkImlibImage *obj) {
 static void
 PyGdkImlibImage_Dealloc(PyGdkImlibImage_Object *self) {
     gdk_imlib_destroy_image(self->obj); 
-    PyMem_DEL(self);
+    PyObject_DEL(self);
 }
 
 static int

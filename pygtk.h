@@ -5,6 +5,11 @@
 #include <Python.h>
 #include <gtk/gtk.h>
 
+/* compat define for Python 1.5.2 */
+#ifndef PyObject_DEL
+#  define PyObject_DEL PyMem_DEL
+#endif
+
 struct _PyGtk_FunctionStruct {
     char *pygtkVersion;
     gboolean fatalExceptions;

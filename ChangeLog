@@ -1,3 +1,28 @@
+2002-01-08  James Henstridge  <james@daa.com.au>
+
+	* gdkpixbufmodule.c (pygdk_pixbuf_dealloc): use PyObject_DEL.
+	(pygdk_pixbuf_animation_dealloc): same here.
+
+	* gdkimlibmodule.c (PyGdkImlibImage_Dealloc): use PyObject_DEL.
+
+	* gtkmodule.c (PyGtk_dealloc): use PyObject_DEL
+	(PyGtkAccelGroup_Dealloc): same here.
+	(PyGtkStyleHelper_Dealloc): same here.
+	(PyGtkStyle_Dealloc): same here.
+	(PyGdkFont_Dealloc): same here.
+	(PyGdkColor_Dealloc): same here.
+	(PyGdkEvent_Dealloc): same here.
+	(PyGdkWindow_Dealloc): same here.
+	(PyGdkGC_Dealloc): same here.
+	(PyGdkColormap_Dealloc): same here.
+	(PyGdkDragContext_Dealloc): same here.
+	(PyGtkSelectionData_Dealloc): same here.
+	(PyGdkAtom_Dealloc): same here.
+	(PyGdkCursor_Dealloc): same here.
+	(PyGtkCTreeNode_Dealloc): same here.
+
+	* pygtk.h: if PyObject_DEL isn't defined, define it as PyMem_DEL.
+
 2002-01-03  James Henstridge  <james@daa.com.au>
 
 	* libglademodule.c: fix up copyright year.

@@ -129,7 +129,7 @@ PyGtk_New(GtkObject *go) {
 static void 
 PyGtk_dealloc(PyGtk_Object *self) {
   gtk_object_unref(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -399,7 +399,7 @@ PyGtkCTreeNode_New(GtkCTreeNode *node) {
 static void
 PyGtkAccelGroup_Dealloc(PyGtkAccelGroup_Object *self) {
   gtk_accel_group_unref(self->obj); 
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -460,7 +460,7 @@ static PyObject *PyGtkStyleHelper_New(GtkStyle *style, int type,
 
 static void PyGtkStyleHelper_Dealloc(PyGtkStyleHelper_Object *self) {
   gtk_style_unref(self->style);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int PyGtkStyleHelper_Length(PyGtkStyleHelper_Object *self) {
@@ -584,7 +584,7 @@ static PyTypeObject PyGtkStyleHelper_Type = {
 static void
 PyGtkStyle_Dealloc(PyGtkStyle_Object *self) {
   gtk_style_unref(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -758,7 +758,7 @@ static PyTypeObject PyGtkStyle_Type = {
 static void
 PyGdkFont_Dealloc(PyGdkFont_Object *self) {
   gdk_font_unref(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static PyObject *
@@ -858,7 +858,7 @@ static PyTypeObject PyGdkFont_Type = {
 
 static void
 PyGdkColor_Dealloc(PyGdkColor_Object *self) {
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static PyObject *
@@ -1282,7 +1282,7 @@ PyGdkEvent_New(GdkEvent *obj) {
 static void
 PyGdkEvent_Dealloc(PyGdkEvent_Object *self) {
   Py_XDECREF(self->attrs);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static PyObject *
@@ -1342,7 +1342,7 @@ PyGdkWindow_Dealloc(PyGdkWindow_Object *self) {
     gdk_pixmap_unref(self->obj);
   else
     gdk_window_unref(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -1943,7 +1943,7 @@ static PyTypeObject PyGdkWindow_Type = {
 static void
 PyGdkGC_Dealloc(PyGdkGC_Object *self) {
   gdk_gc_unref(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static PyObject *PyGdkGC_set_dashes(PyGdkGC_Object *self, PyObject *args) {
@@ -2153,7 +2153,7 @@ static PyTypeObject PyGdkGC_Type = {
 static void
 PyGdkColormap_Dealloc(PyGdkColormap_Object *self) {
   gdk_colormap_unref(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static PyObject *
@@ -2268,7 +2268,7 @@ static PyTypeObject PyGdkColormap_Type = {
 static void
 PyGdkDragContext_Dealloc(PyGdkDragContext_Object *self) {
   gdk_drag_context_unref(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -2358,7 +2358,7 @@ static PyTypeObject PyGdkDragContext_Type = {
 
 static void
 PyGtkSelectionData_Dealloc(PyGtkSelectionData_Object *self) {
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -2446,7 +2446,7 @@ static PyTypeObject PyGtkSelectionData_Type = {
 static void
 PyGdkAtom_Dealloc(PyGdkAtom_Object *self) {
   if (self->name) g_free(self->name);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -2586,7 +2586,7 @@ static PyTypeObject PyGdkAtom_Type = {
 static void
 PyGdkCursor_Dealloc(PyGdkCursor_Object *self) {
   gdk_cursor_destroy(self->obj);
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int
@@ -2656,7 +2656,7 @@ static PyTypeObject PyGdkCursor_Type = {
 };
 
 static void PyGtkCTreeNode_Dealloc(PyGtkCTreeNode_Object *self) {
-  PyMem_DEL(self);
+  PyObject_DEL(self);
 }
 
 static int PyGtkCTreeNode_Compare(PyGtkCTreeNode_Object *self,
