@@ -3,6 +3,8 @@
 #
 # This litte script outputs the C doc comments to an XML format.
 # So far it's only used by gtkmm (The C++ bindings). Murray Cumming.
+# Usage example:
+# # ./docextract_to_xml.py -s /gnome/head/cvs/gtk+/gtk/ -s /gnome/head/cvs/gtk+/docs/reference/gtk/tmpl/ > gtk_docs.xml
 
 import sys, os, string, re, getopt
 
@@ -41,6 +43,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     docs = docextract.extract(source_dirs);
+    docextract.extract_templ(source_dirs, docs); #Try the tmpl sgml files too.
 
     # print d.docs
     
