@@ -4,7 +4,7 @@
 <refentry id="class-gtkicontheme">
   <refnamediv>
     <refname>gtk.IconTheme</refname>
-    <refpurpose>look up icons by name and size</refpurpose>
+    <refpurpose>look up icons by name and size (new in PyGTK 2.4)</refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -246,7 +246,7 @@ functions rather than creating a new icon theme object from scratch.</para>
       </note>
 
       <para>The <methodname>set_screen</methodname>() method sets the <link
-linkend="class-gdkscreen"><classname>gtk.gdkScreen</classname></link> for
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link> for
 an icon theme to <parameter>screen</parameter>. The screen is used to track
 the user's currently configured icon theme, which might be different for
 different screens.</para>
@@ -474,12 +474,12 @@ icon specified by <parameter>icon_name</parameter>,
 <link linkend="class-gtkiconinfo"><classname>gtk.IconInfo</classname></link>
 object containing information such as the filename of the icon. The icon can
 then be rendered into a pixbuf using the <link
-linkend="method-gtkiconinfo--load-icon"><methodname>GtkIconInfo.load_icon()</methodname></link>
+linkend="method-gtkiconinfo--load-icon"><methodname>gtk.IconInfo.load_icon()</methodname></link>
 method. (the <link
 linkend="method-gtkicontheme--load-icon"><methodname>load_icon()</methodname></link>
 method combines these two steps if all you need is the pixbuf.)</para>
 
-      <para>The value of flags msut be a combination of:</para>
+      <para>The value of flags must be a combination of:</para>
 
       <variablelist>
 	<varlistentry>
@@ -536,7 +536,7 @@ method combines these two steps if all you need is the pixbuf.)</para>
 	  <term><parameter role="keyword">size</parameter>&nbsp;:</term>
 	  <listitem><simpara>the desired icon size. The resulting icon may
 	  not be exactly this size; see the <link
-	  linkend="method-gtkiconinfo--load-icon"><methodname>GtkIconInfo.load_icon()</methodname></link>
+	  linkend="method-gtkiconinfo--load-icon"><methodname>gtk.IconInfo.load_icon()</methodname></link>
 	  method.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
@@ -726,7 +726,7 @@ function.</para>
 
       <para>The <function>gtk.icon_theme_get_for_screen</function>()
 function returns the icon theme object associated with the <link
-linkend="class-gdkscreen"><classname>gtk.gdkScreen</classname></link>
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
 specified by <parameter>screen</parameter>. If this function has not
 previously been called for the given screen, a new icon theme object will be
 created and associated with the screen. Icon theme objects are fairly
