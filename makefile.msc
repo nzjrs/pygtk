@@ -3,7 +3,11 @@ TOP = ..\..
 
 #DEBUG=1
 
+#program placement should be handled im make.msc
+!IFNDEF PYTHONDIR
 PYTHONDIR = c:\python23
+!ENDIF
+
 !IFNDEF DEBUG
 EXTRALIBS = $(PYTHONDIR)\libs\python23.lib user32.lib
 !ELSE
@@ -116,3 +120,17 @@ $(MODULE)$(PYD_POSTFIX).$(MODULE_EXT) : $(OBJECTS)
 clean:: sub-clean
 	del *.pyc
 	del *.pyd
+
+extra-clean: clean
+	del atk.c
+	del pango.c
+	del config.h
+
+# the first one asks to give you a chance to break it
+install:
+	@echo Installing to $(PYTHONDIR)
+	@xcopy pygtk.py $(PYTHONDIR)\Lib
+	@xcopy /y *.pyd $(PYTHONDIR)\Lib\gtk-2.0\*
+	@xcopy /y gtk\*.pyd $(PYTHONDIR)\Lib\gtk-2.0\gtk\*
+	@xcopy /y gtk\*.py $(PYTHONDIR)\Lib\gtk-2.0\gtk\*
+	@xcopy /y gobject\*.pyd $(PYTHONDIR)\Lib\gtk-2.0\*

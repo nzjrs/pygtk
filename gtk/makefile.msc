@@ -3,15 +3,19 @@ TOP = ..\..\..
 
 #DEBUG=1
 
-PYTHON = c:\python23
+#program placement should be handled im make.msc
+!IFNDEF PYTHONDIR
+PYTHONDIR = c:l\python23
+!ENDIF
+
 !IFNDEF DEBUG
-EXTRALIBS = $(PYTHON)\libs\python23.lib user32.lib
+EXTRALIBS = $(PYTHONDIR)\libs\python23.lib user32.lib
 !ELSE
-EXTRALIBS = $(PYTHON)\libs\python23_d.lib user32.lib
+EXTRALIBS = $(PYTHONDIR)\libs\python23_d.lib user32.lib
 PYD_POSTFIX = _d
 !ENDIF
 
-EXTRACFLAGS = -I$(PYTHON)\include
+EXTRACFLAGS = -I$(PYTHONDIR)\include
 MODULE_EXT = pyd
 
 MODULES = _gtk # libglade
@@ -34,8 +38,12 @@ gtk.c : gtk.defs gtk.override
 gdk.c : gdk.defs gdk.override
 libglade.c : libglade.defs libglade.override
 
+#same hack as in Makefile.am
+gtk-types.c:
+	@:
+
 .defs.c :
-	 $(PYTHON)\python ../codegen/codegen.py \
+	 $(PYTHONDIR)\python ../codegen/codegen.py \
 	   $(PYGTK_CODEGEN_DEFINES) \
 	    --register ../pango-types.defs \
 	    --register ../atk-types.defs \
@@ -55,8 +63,7 @@ INCLUDES = \
 	-FImsvc_recommended_pragmas.h \
 	-DHAVE_CONFIG_H -I.. -I..\gobject -I. $(EXTRACFLAGS) \
 	$(GLIB_CFLAGS) $(GTK2_CFLAGS) $(PANGO_CFLAGS) \
-	-DGTK_ENABLE_BROKEN \
-	-DVERSION=\"1.99.8\"
+	-DGTK_ENABLE_BROKEN
 
 #	-I$(LIBGLADE) -I$(LIBXML)
 
@@ -67,7 +74,6 @@ OBJECTS = \
 	gtkobject-support.obj \
 	gtk-types.obj \
 	gdk.obj \
-	pygtktreemodel.obj \
 	pygtkcellrenderer.obj \
 	pygtktreemodel.obj \
 	gtk-fake-win32.obj
