@@ -127,6 +127,9 @@ def create_image_from_data(data, alpha, width, height):
 	return Image(_obj=_gdkimlib.gdk_imlib_create_image_from_data(
 		data, alpha, width, height))
 
+def create_image_from_xpm(data):
+	return Image(_obj=_gdkimlib.gdk_imlib_create_image_from_xpm(data))
+
 if hasattr(_gdkimlib, 'gdk_imlib_create_image_from_array'):
 	def create_image_from_array(data, alpha=None):
 		if alpha:

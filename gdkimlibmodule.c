@@ -582,6 +582,29 @@ static PyObject *_wrap_gdk_imlib_create_image_from_data(PyObject *self, PyObject
 					data, alpha, w, h));
 }
 
+static PyObject *_wrap_gdk_imlib_create_image_from_xpm(PyObject *self, PyObject *args) {
+    PyObject *lines;
+    int len, i;
+    char **data;
+
+    if (!PyArg_ParseTuple(args, "O!:gdk_imlib_create_image_from_data",
+			  &PyList_Type, &lines))
+	return NULL;
+
+    len = PyList_Size(lines);
+    data = g_new(char *, len);
+    for (i = 0; i < len; i++) {
+	PyObject *item = PyList_GetItem(lines, i);
+	if (!PyString_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError, "list items must be strings");
+	    g_free(data);
+	    return NULL;
+	}
+	data[i] = PyString_AsString(item);
+    }
+    return PyGdkImlibImage_New(gdk_imlib_create_image_from_xpm_data(data));
+}
+
 static PyObject *_wrap_gdk_imlib_clone_image(PyObject *self, PyObject *args) {
     PyObject *image;
 
@@ -800,6 +823,7 @@ static PyMethodDef _gdkimlibMethods[] = {
     { "gdk_imlib_clone_scaled_image", _wrap_gdk_imlib_clone_scaled_image, 1 },
     { "gdk_imlib_clone_image", _wrap_gdk_imlib_clone_image, 1 },
     { "gdk_imlib_create_image_from_data", _wrap_gdk_imlib_create_image_from_data, 1 },
+    { "gdk_imlib_create_image_from_xpm", _wrap_gdk_imlib_create_image_from_xpm, 1 },
     { "gdk_imlib_rotate_image", _wrap_gdk_imlib_rotate_image, 1 },
     { "gdk_imlib_flip_image_vertical", _wrap_gdk_imlib_flip_image_vertical, 1 },
     { "gdk_imlib_flip_image_horizontal", _wrap_gdk_imlib_flip_image_horizontal, 1 },
