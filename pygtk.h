@@ -7,7 +7,7 @@
 
 /* compat define for Python 1.5.2 */
 #ifndef PyObject_DEL
-#  define PyObject_DEL PyMem_DEL
+#  define PyObject_DEL(op) PyMem_DEL(op)
 #endif
 
 struct _PyGtk_FunctionStruct {
