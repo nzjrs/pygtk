@@ -24,7 +24,13 @@ linkend="method-pangofontfamily--list-faces">list_faces</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-pangofontfamily--get-name">get_name</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-pangofontfamily--is-monospace">is_monospace</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -91,7 +97,8 @@ design, but differ in slant, weight, width and other aspects.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>get_name</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -104,6 +111,34 @@ containing the name of the font family. The name is unique among all fonts
 for the font backend and can be used in a <link
 linkend="class-pangofontdescription"><classname>pango.FontDescription</classname></link> 
 to specify that a face from this family is desired.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-pangofontfamily--is-monospace">
+      <title>pango.FontFamily.is_monospace</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>is_monospace</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the name of the family.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>is_monospace</methodname>() method returns
+<literal>TRUE</literal> if the font family describes a monospace font. A
+monospace font is a font designed for text display where the the characters
+form a regular grid. For Western languages this would mean that the advance
+width of all characters are the same, but this categorization also includes
+Asian fonts which include double-width characters: characters that occupy
+two grid cells. The best way to find out the grid-cell size is to call the
+<link
+linkend="method-pangofontmetrics--get-approximate-digit-width"><methodname>get_approximate_digit_width</methodname>()</link>
+method, since the results of the <link
+linkend="method-pangofontmetrics--get-approximate-char-width"><methodname>get_approximate_char_width</methodname>()</link></para>
 
     </refsect2>
 
