@@ -1,3 +1,31 @@
+2004-06-04  Johan Dahlin  <johan@gnome.org>
+
+	* gtk/gtkwidget.override (_wrap_gtk_widget__set_allocation): Impl.
+	(_wrap_gtk_widget__set_window): Impl.
+
+	* gtk/gtkclist.override (_wrap_gtk_clist_new_with_titles): put
+	all clist overrides here.
+
+	* gtk/gtk.override (_wrap_gtk_paint_polygon): Move gtk_widgets_*
+	ignore definitions to gtkwidget.override and clist_* to
+	gtkclist.override
+	(_wrap_gtk_action_group_add_actions): guard ref call
+	(_wrap_gtk_action_group_add_toggle_actions): ditto
+	(_wrap_gtk_action_group_add_radio_actions): ditto
+
+	* gtk/gtk-types.c (_pygtk_style_helper_new): guard ref call.
+
+	* gtk/gdk.override (_wrap_gdk_event_tp_setattr): Impl. 
+	(I'll have nightmares about this code)
+	(_wrap_gdk_window_new): Clean up a little bit: Proper use of enums
+	and set a boolean to b instead of i. Block unref calls for thread
+	safety issues.
+	(_wrap_gdk_window_set_user_data): Impl. This is also a hairy
+	implementation: If it's a GtkWidget, get the GObject, otherwise
+	put the real pyobject in there. Maybe we should just always put
+	the widget in there.
+	(_wrap_gdk_window_add_filter): Thread safety.
+
 2004-05-30  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gtktreeview.override (_wrap_gtk_tree_store_reorder) Fix

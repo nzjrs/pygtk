@@ -66,7 +66,9 @@ _pygtk_style_helper_new(GtkStyle *style, int type, gpointer array)
 						   &PyGtkStyleHelper_Type);
     if (self == NULL)
 	return NULL;
+    pyg_unblock_threads();
     self->style = g_object_ref(style);
+    pyg_block_threads();
     self->type = type;
     self->array = array;
     return (PyObject *)self;
@@ -148,12 +150,12 @@ pygtk_style_helper_setitem(PyGtkStyleHelper_Object *self, int pos,
 		PyErr_SetString(PyExc_TypeError, "can only assign a GdkGC");
 		return -1;
 	    }
+	    pyg_unblock_threads();
 	    if (array[pos]) {
-		pyg_unblock_threads();
 		g_object_unref(array[pos]);
-		pyg_block_threads();
 	    }
 	    array[pos] = GDK_GC(g_object_ref(pygobject_get(value)));
+	    pyg_block_threads();
 	    return 0;
 	}
     case STYLE_PIXMAP_ARRAY:
@@ -165,15 +167,15 @@ pygtk_style_helper_setitem(PyGtkStyleHelper_Object *self, int pos,
 				"can only assign a GdkPixmap or None");
 		return -1;
 	    }
+	    pyg_unblock_threads();
 	    if (array[pos]) {
-		pyg_unblock_threads();
 		g_object_unref(array[pos]);
-		pyg_block_threads();
 	    }
 	    if (value != Py_None)
 		array[pos] = GDK_PIXMAP(g_object_ref(pygobject_get(value)));
 	    else
 		array[pos] = NULL;
+	    pyg_block_threads();
 	    return 0;
 	}
     }

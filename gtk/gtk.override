@@ -49,6 +49,7 @@ extern PyTypeObject PyGdkDragContext_Type;
 extern PyTypeObject PyGdkDrawable_Type;
 extern PyTypeObject PyGdkDisplay_Type;
 extern PyTypeObject PyGdkScreen_Type;
+extern PyTypeObject PyGdkRectangle_Type;
 %%
 include 
   gtkclist.override
@@ -100,13 +101,9 @@ ignore
   gtk_check_menu_item_new_with_label
   gtk_check_menu_item_new_with_mnemonic
   gtk_clipboard_set_with_owner
-  gtk_clist_set_compare_func
   gtk_color_button_new_with_color
   gtk_color_selection_set_color
   gtk_color_selection_get_color
-  gtk_container_class_find_child_property
-  gtk_container_class_list_child_properties
-  gtk_ctree_set_drag_compare_func
   gtk_dialog_new
   gtk_drag_dest_handle_event
   gtk_drag_source_handle_event
@@ -242,16 +239,6 @@ ignore
   gtk_type_check_object_cast
   gtk_type_register_enum
   gtk_type_register_flags
-  gtk_widget_destroyed
-  gtk_widget_get
-  gtk_widget_getv
-  gtk_widget_new 
-  gtk_widget_newv
-  gtk_widget_ref
-  gtk_widget_set
-  gtk_widget_setv
-  gtk_widget_style_get_valist
-  gtk_widget_unref
   gtk_rc_find_pixmap_in_path
   gtk_rc_scanner_new
   gtk_rc_parse_color
@@ -3828,9 +3815,9 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
         gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
                               PyInt_AsLong(id));
     }
-    pyg_block_threads();
-    g_object_ref(self->obj); /* we don't own the first reference of windows */
     pyg_unblock_threads();
+    g_object_ref(self->obj); /* we don't own the first reference of windows */
+    pyg_block_threads();
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3909,6 +3896,7 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
         return NULL;
     }
 
+    pyg_unblock_threads();
     len = PySequence_Size(entries);
     for (i = 0; i < len; i++) {
 	item = PySequence_GetItem(entries, i);
@@ -3942,9 +3930,10 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
 						GTK_ACTION(action),
 						entry.accelerator);
 	
-	g_object_unref (action);
+	g_object_unref(action);
 	
     }
+    pyg_block_threads();
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -3970,6 +3959,7 @@ _wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyOb
         PyErr_SetString(PyExc_TypeError, "entries must be a sequence");
         return NULL;
     }
+    pyg_unblock_threads();
 
     len = PySequence_Size(entries);
     for (i = 0; i < len; i++) {
@@ -4008,6 +3998,9 @@ _wrap_gtk_action_group_add_toggle_actions (PyGObject *self, PyObject *args, PyOb
 	g_object_unref (action);
 	
     }
+
+    pyg_block_threads();
+    
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -4038,6 +4031,8 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
         return NULL;
     }
 
+    pyg_unblock_threads();
+    
     len = PySequence_Size(entries);
     for (i = 0; i < len; i++) {
 	item = PySequence_GetItem(entries, i);
@@ -4087,6 +4082,8 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
 	pygobject_watch_closure(py_action, closure);
 	g_object_unref(first_action);
     }
+    
+    pyg_block_threads();
 	
     Py_INCREF(Py_None);
     return Py_None;

@@ -20,6 +20,16 @@
  * USA
  */
 %%
+ignore
+  gtk_widget_destroyed
+  gtk_widget_get
+  gtk_widget_getv
+  gtk_widget_new 
+  gtk_widget_newv
+  gtk_widget_set
+  gtk_widget_setv
+  gtk_widget_style_get_valist
+%%
 override gtk_widget_translate_coordinates kwargs
 static PyObject *
 _wrap_gtk_widget_translate_coordinates(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -256,4 +266,34 @@ _wrap_gtk_widget_list_mnemonic_labels(PyGObject *self)
     g_list_free(labels);
 
     return py_labels;
+}
+%%
+override-attr GtkWidget.window
+static int
+_wrap_gtk_widget__set_window(PyGObject *self, PyGObject *value, void *closure)
+{
+    if (!pygobject_check(value, &PyGdkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "must be a GdkWindow object");
+	return -1;
+    }
+    
+    pyg_unblock_threads();
+    GTK_WIDGET(self->obj)->window = g_object_ref(GDK_WINDOW(value->obj));
+    pyg_block_threads();
+
+    return 0;
+}
+%%
+override-attr GtkWidget.allocation
+static int
+_wrap_gtk_widget__set_allocation(PyGObject *self, PyObject *value, void *closure)
+{
+    if (!pygobject_check(value, &PyGdkRectangle_Type)) {
+	PyErr_SetString(PyExc_TypeError, "must be a GdkRectangle object");
+	return -1;
+    }
+
+    pygdk_rectangle_from_pyobject(value, &GTK_WIDGET(self->obj)->allocation);
+    
+    return 0;
 }
