@@ -7,6 +7,20 @@
 import sys, os, string, re, getopt
 
 import docextract
+import string
+
+def escape_text(unescaped_text):
+    escaped_text = unescaped_text
+    escaped_text = string.replace(escaped_text, '<', '&lt;')
+    escaped_text = string.replace(escaped_text, '<', '&gt;')
+    escaped_text = string.replace(escaped_text, '&', '&amp;')
+    escaped_text = string.replace(escaped_text, '\'', '&apos;')
+    escaped_text = string.replace(escaped_text, '\"', '&quot;')
+
+    #Apparently this is an undefined symbol:
+    escaped_text = string.replace(escaped_text, '&mdash;', ' mdash ')
+    
+    return escaped_text
 
 if __name__ == '__main__':
     try:
@@ -31,26 +45,31 @@ if __name__ == '__main__':
     # print d.docs
     
     if docs:
+
+        print "<root>"
+        
         for name, value in docs.items():
-            print "<function name=\"" + name + "\">"
+            print "<function name=\"" + escape_text(name) + "\">"
 
             print "<description>"
             #The value is a docextract.FunctionDoc
-            print value.description
+            print escape_text(value.description)
             print "</description>"
 
              # Loop through the parameters:
             print "<parameters>"
             for name, description in value.params:
-                print "<parameter name=\"" + name + "\">"
-                print "<parameter_description>" + description + "</parameter_description>"
+                print "<parameter name=\"" + escape_text(name) + "\">"
+                print "<parameter_description>" + escape_text(description) + "</parameter_description>"
                 print "</parameter>"
             
             print "</parameters>"
 
             # Show the return-type:
-            print "<return>" + value.ret + "</return>"
+            print "<return>" + escape_text(value.ret) + "</return>"
             
             print "</function>\n"
+
+        print "</root>"
     
 
