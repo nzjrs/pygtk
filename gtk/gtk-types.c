@@ -82,6 +82,7 @@ PyGdkAtom_New(GdkAtom atom)
     return (PyObject *)self;
 }
 
+#if 0
 typedef struct {
     PyObject_HEAD
     GtkStyle *style; /* parent style */
