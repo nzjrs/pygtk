@@ -1,5 +1,15 @@
 2004-08-06  Johan Dahlin  <johan@gnome.org>
 
+	* gobject/pygflags.c (pyg_flags_from_gtype): Don't comment out the
+	fallback, it break the test. (Wow, the testsuite caught another bug!)
+
+	* tests/enum.py: Additional tests.
+
+	* gobject/pygenum.c (pyg_enum_repr): Don't use g_enum_get_value,
+	use enum_class->values[n].value_name instead. Also check if the
+	value is NULL or not. This makes gtk.icon_size_register work a
+	little bit better.
+
 	* codegen/codegen.py (Wrapper.write_methods): Use methflags
 	argument for defines instead of discarding it
 
