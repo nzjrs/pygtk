@@ -2647,3 +2647,6 @@ def threads_enter():
 	_gtk.gdk_threads_enter()
 def threads_leave():
 	_gtk.gdk_threads_leave()
+
+def gdk_flush():
+	_gtk.gdk_flush()

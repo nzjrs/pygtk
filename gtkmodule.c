@@ -4563,6 +4563,18 @@ PyObject *_wrap_gtk_drag_begin(PyObject *self, PyObject *args) {
 
 #include "gtkmodule_impl.c"
 
+static PyObject *_wrap_gdk_flush(PyObject *self, PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":gdk_flush"))
+    return NULL;
+
+  Py_BEGIN_ALLOW_THREADS
+  gdk_flush ();
+  Py_END_ALLOW_THREADS
+
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject *_wrap_gdk_pixmap_new(PyObject *self, PyObject *args) {
   GdkPixmap *pix;
   GdkWindow *win = NULL;
@@ -5616,6 +5628,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_ctree_node_get_row_data", _wrap_gtk_ctree_node_get_row_data, 1 },
     { "gtk_ctree_base_nodes", _wrap_gtk_ctree_base_nodes, 1 },
 #include "gtkmodule_defs.c"
+    { "gdk_flush", _wrap_gdk_flush, 1 },
     { "gdk_pixmap_new", _wrap_gdk_pixmap_new, 1 },
     { "gdk_pixmap_create_from_xpm", _wrap_gdk_pixmap_create_from_xpm, 1 },
     { "gdk_pixmap_create_from_xpm_d", _wrap_gdk_pixmap_create_from_xpm_d, 1 },
