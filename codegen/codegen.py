@@ -41,7 +41,7 @@ consttmpl = 'static PyObject *\n' + \
 	    '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n' + \
 	    '        return NULL;\n' + \
 	    '    }\n' + \
-	    '    pygtk_register_wrapper((PyObject *)self);\n' + \
+	    '    pygobject_register_wrapper((PyObject *)self);\n' + \
 	    '    Py_INCREF(Py_None);\n' + \
 	    '    return Py_None;\n' + \
 	    '}\n\n'
@@ -59,7 +59,8 @@ getattrtmpl = 'static PyObject *\n' + \
               '%(getattr)s(PyGObject *self, char *attr)\n' + \
               '{\n' + \
               '%(attrchecks)s' + \
-              '    return pygtk_getattr(self, attr);\n' + \
+              '    PyErr_SetString(PyExc_AttributeError, attr);\n' + \
+              '    return NULL;\n' + \
               '}\n\n'
 attrchecktmpl = '    if (!strcmp(attr, "%(attr)s")) {\n' + \
                 '%(varlist)s' + \

@@ -1,7 +1,14 @@
 2000-07-03  James Henstridge  <james@daa.com.au>
 
+	* pygobject.h (pygobject_check): call the correct ExtensionClass
+	check macro.
+
 	* codegen/codegen.py (noconstructor): handle the null constructor
 	better.
+	(consttmpl): use pygobject_register_wrapper.
+	(getattrtmpl): make the getattr function raise an exception on
+	unhandled attributes.  I will use a tp_getattro function to bind
+	all the getattr functions of base classes together.
 
 	* gtk/gtk-types.c (_pygtk_register_boxed_types): commented out the
 	object implementations for types that have been converted to
@@ -26,6 +33,9 @@
 
 	* codegen/codegen.py: updated to use PyGObject rather than
 	PyGtk_Object.
+
+	* gtk/gtk.defs: removed most of the stuff here so I can test out
+	the gdk stuff.
 
 	* gtk/gdk.defs: updated to gdk-1.3.  A lot of stuff in here.
 
