@@ -1579,7 +1579,7 @@ static PyObject *PyGdkWindow_PropertyChange(PyGdkWindow_Object *self,
 	    }
 	    nelements = PySequence_Length(pdata);
 	    data32 = g_new(guint32, nelements);
-	    data = (guchar *)data16;
+	    data = (guchar *)data32;
 	    for (i = 0; i < nelements; i++) {
 		PyObject *item = PySequence_GetItem(pdata, i);
 		Py_DECREF(item);

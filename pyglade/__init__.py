@@ -7,8 +7,7 @@ def construct(filename):
 	tree.destroy()
 	return wtree
 
-# for ni ...
-try:
-	__.__dict__['construct'] = construct
-except NameError:
-	pass
+import sys
+sys.stderr.write(
+	'*** You should really think about switching over to libglade\n')
+del sys

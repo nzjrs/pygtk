@@ -1,15 +1,13 @@
-AC_INIT
+AC_INIT(gtkmodule.c)
 
-dnl for gnome-python:
-
-AM_INIT_AUTOMAKE(pygtk, 0.6.4)
+AM_INIT_AUTOMAKE(pygtk, 0.6.5)
 
 AM_PATH_PYTHON
 AM_INIT_PYEXEC_MOD
 
 AM_CHECK_PYMOD(thread,,extra_mods=gthread,extra_mods=)
 
-AM_PATH_GTK(1.2.1,,,$extra_mods)
+AM_PATH_GTK(1.2.6,,,$extra_mods)
 AM_PATH_GDK_IMLIB(1.8, build_imlib=true, build_imlib=false)
 AM_CONDITIONAL(BUILD_IMLIB, $build_imlib)
 

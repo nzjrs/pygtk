@@ -1,7 +1,7 @@
 %define py_prefix /usr
 # py_ver should only be 3 characters (1.5.1 == 1.5)
 %define py_ver 1.5
-%define ver 0.6.4
+%define ver 0.6.5
 
 # you may want to remove some of the sub packages depending on what you
 # have installed on your system when building this package.
@@ -12,10 +12,11 @@ Version: %ver
 Release: 1
 Copyright: GPL
 Group: Development/Languages
-Source: ftp://ftp.daa.com.au/pub/james/python/pygtk-%{ver}.tar.gz
+Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{ver}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
-Requires: gtk+ imlib
+Requires: gtk+ >= 1.2.6
+Requires: imlib
 Requires: python >= 1.5.2
 
 %description
@@ -26,6 +27,7 @@ in python with PyGTK (within reason), but with all of python's benefits.
 %package glarea
 Summary: A wrapper for the GtkGLArea widget for use with PyGTK
 Group: Development/Languages
+Requires: pygtk = %{ver}
 
 %description glarea
 This module contains a wrapper for the GtkGLArea widget, which allows you
@@ -35,6 +37,7 @@ Python OpenGL bindings such as PyOpenGL to actually do any OpenGL rendering.
 %package libglade
 Summary: A wrapper for the libglade library for use with PyGTK
 Group: Development/Languages
+Requires: pygtk = %{ver}
 
 %description libglade
 This module contains a wrapper for the libglade library.  Libglade is a

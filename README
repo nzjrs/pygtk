@@ -22,8 +22,8 @@ New Versions
 ============
 
 New versions of this package can be found at:
-  ftp://ftp.daa.com.au/pub/james/python/
   ftp://ftp.gtk.org/pub/gtk/python/
+  ftp://ftp.daa.com.au/pub/james/python/
   ftp://ftp.python.org/pub/contrib/Graphics/
 
 
@@ -49,7 +49,7 @@ Compilation
 This archive contains a single C module called gtkmodule.  It contains
 an almost direct mapping of the functions in GTK including GTK signal
 handling, and the gtk_object_new/gtk_object_set commands.  This
-version REQUIRES gtk+-1.2.1 or later, as it includes support for
+version REQUIRES gtk+-1.2.6 or later, as it includes support for
 features not found in previous versions, and there are
 incompatibilities between versions.  Also if you want the GdkImlib
 extension, you must have Imlib version 1.8 or greater.  I recommend
@@ -68,12 +68,10 @@ should generate the Makefile from the file Makefile.in.
 
 Now you should be able to run "make" to compile the module.  Now you
 should install the files.  I have provided an install target to the
-makefile, so you should be able to just type "make install".  On
-systems with Python 1.5 and later, it installs to the site-packages
-directory (using prefix and exec_prefix where appropriate).  For
-Python 1.4, it installs the python code to $(prefix)/lib/python$(version),
-and the libraries to $(excec_prefix)/lib/python$(version)/sharedmodules.
-It also compiles .pyc files from the python code.
+makefile, so you should be able to just type "make install".  It
+installs to the site-packages directory (using prefix and exec_prefix
+where appropriate).  It also compiles .pyc and .pyo files from the
+python code.
 
 If you had a copy of gdk_imlib installed on your system (and configure
 could find it) when you built pygtk, a wrapper for it will have been
@@ -89,7 +87,7 @@ is about.
 Upgrading
 =========
 
-Note that from version 0.5.0 up, pygtk uses GTK >= 1.1.  Since there
+Note that from version 0.5.0 up, pygtk uses GTK >= 1.2.  Since there
 were some changes to the API, pygtk has changed accordingly.  The main
 one that will cause problems is the GtkAcceleratorTable.  In this
 version, it has been removed and replaced with the GtkAccelGroup.
@@ -126,8 +124,13 @@ enough, after building gtkmodule)
 _gtkmodule and GTK.py
 ====================
 
+Using the non object oriented interfaces of pygtk is not really
+supported and the interfaces will disapear with the 0.7.x series, as I
+am switching over to using ExtensionClass, so the C wrappers will be
+object oriented without the python class wrappers.
+
 This module contains an almost complete translation of the functions
-in the gtk library.  To start up, put in the command "from gtk import
+in the gtk library.  To start up, put in the command "from _gtk import
 *".  If you want to use any of the constants, type "from GTK import
 *".  The constants all have the "GTK_" removed from the start.  Before
 creating any GtkObjects, you should execute the command "gtk_init()".
@@ -201,11 +204,8 @@ python, read the file MAPPING that is distributed with this package.
 Should I Use _gtkmodule or gtk.py?
 ===================================
 
-The gtk.py module allows faster prototyping of interfaces, and is easy
-to convert to C.  It also uses object oriented ideas familiar to most
-Python users.  On the other hand, if you want something as close to C
-as possible, go with _gtkmodule.
-
+For any new programs, use the interfaces in gtk.py.  The function
+based interface will be disapearing in a later release.
 
 Contacting the Author
 =====================
@@ -213,6 +213,6 @@ Contacting the Author
 You can contact me at the email address <james@daa.com.au>.  I try to
 answer my email quickly, but occasionally there will be a bit of a
 delay.  If you have an idea for a way to extend GTK, have found a
-problem with the code (I don't think there are many bugs anymore), or
-would like to contribute some code, please feel free to contact me.
+problem with the code, or would like to contribute some code, please
+feel free to contact me.
 
