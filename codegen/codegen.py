@@ -266,14 +266,9 @@ def fixname(name):
     return name
 
 def write_function(funcobj, fp=sys.stdout):
-    varlist = argtypes.VarList()
-    parsestr = ''
-    parselist = ['']
-    extracode = []
-    arglist = []
+    info = argtypes.WrapperInfo()
     checkerror = '0'
     handleerror = ''
-    kwlist = []
 
     if funcobj.varargs:
         raise ValueError, "varargs functions not supported"
@@ -281,52 +276,38 @@ def write_function(funcobj, fp=sys.stdout):
     dict = {
 	'name':    fixname(funcobj.name),
 	'cname':   funcobj.c_name,
-	'varlist': varlist,
     }
 
-    # handle return type ...
-    parselist.append('kwlist')
-
     for ptype, pname, pdflt, pnull in funcobj.params:
-	if pdflt and '|' not in parsestr:
-	    parsestr = parsestr + '|'
+	if pdflt and '|' not in info.parsestr:
+            info.add_parselist('|', [], [])
 	handler = argtypes.matcher.get(ptype)
         if not checkerror:
             checkerror = handler.checkerror
         if not handleerror:
             handleerror = handler.handleerror
 
-        spec = handler.write_param(ptype, pname, pdflt, pnull, varlist,
-                                   parselist, extracode, arglist)
-        if spec:
-            kwlist.append('"%s"' % (fixname(pname)))
-	parsestr = parsestr + spec
+        handler.write_param(ptype, pname, pdflt, pnull, info)
 
-    kwlist.append('NULL')
-    kwlist = string.join(kwlist, ', ')
-    varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
-    
-    dict['typecodes'] = parsestr
-    dict['parselist'] = string.join(parselist, ', ')
-    dict['extracode'] = string.join(extracode, '')
-    dict['arglist']   = string.join(arglist, ', ')
+    dict['typecodes'] = info.parsestr
+    dict['parselist'] = info.get_parselist()
+    dict['extracode'] = info.get_codebefore()
+    dict['arglist']   = info.get_arglist()
 
     call = funccalltmpl % dict
     handler = argtypes.matcher.get(funcobj.ret)
-    dict['handleret'] = handler.write_return(funcobj.ret, varlist) % {'func': call,
-                                                                      'checkerror': checkerror,
-                                                                      'handleerror': handleerror}
+    dict['handleret'] = handler.write_return(funcobj.ret, info) % \
+                        {'func': call,
+                         'checkerror': checkerror,
+                         'handleerror': handleerror}
+    dict['varlist']   = info.get_varlist()
     fp.write(functmpl % dict)
 
 def write_method(objname, castmacro, methobj, fp=sys.stdout):
-    varlist = argtypes.VarList()
-    parsestr = ''
-    parselist = ['']
-    extracode = []
-    arglist = ['']
+    info = argtypes.WrapperInfo()
+    info.arglist.append('')
     checkerror = '0'
     handleerror = ''
-    kwlist = []
 
     if methobj.varargs:
         raise ValueError, "varargs methods not supported"
@@ -334,60 +315,44 @@ def write_method(objname, castmacro, methobj, fp=sys.stdout):
     dict = {
 	'name':    fixname(methobj.name),
 	'cname':   methobj.c_name,
-	'varlist': varlist,
 	'class':   objname,
 	'cast':    castmacro
     }
     
-    parselist.append('kwlist')
-    
-    # handle return type ...
     for ptype, pname, pdflt, pnull in methobj.params:
-	if pdflt and '|' not in parsestr:
-	    parsestr = parsestr + '|'
+	if pdflt and '|' not in info.parsestr:
+            info.add_parselist('|', [], [])
 	handler = argtypes.matcher.get(ptype)
         if not checkerror:
             checkerror = handler.checkerror
         if not handleerror:
             handleerror = handler.handleerror
             
-        spec = handler.write_param(ptype, pname, pdflt, pnull, varlist,
-                                   parselist, extracode, arglist)
-        if spec:
-            kwlist.append('"%s"' % (fixname(pname)))
-	parsestr = parsestr + spec
+        handler.write_param(ptype, pname, pdflt, pnull, info)
 
-    kwlist.append('NULL')
-    kwlist = string.join(kwlist, ', ')
-    varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
-
-    dict['typecodes'] = parsestr
-    dict['parselist'] = string.join(parselist, ', ')
-    dict['extracode'] = string.join(extracode, '')
-    dict['arglist']   = string.join(arglist, ', ')
+    dict['typecodes'] = info.parsestr
+    dict['parselist'] = info.get_parselist()
+    dict['extracode'] = info.get_codebefore()
+    dict['arglist']   = info.get_arglist()
 
     call = methcalltmpl % dict
     handler = argtypes.matcher.get(methobj.ret)
-    dict['handleret'] = handler.write_return(methobj.ret, varlist) % {'func': call,
-                                                                      'checkerror': checkerror,
-                                                                      'handleerror': handleerror}
+    dict['handleret'] = handler.write_return(methobj.ret, info) % \
+                        {'func': call,
+                         'checkerror': checkerror,
+                         'handleerror': handleerror}
+    dict['varlist']   = info.get_varlist()
 
     fp.write(methtmpl % dict)
 
 def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
-    varlist = argtypes.VarList()
-    parsestr = ''
-    parselist = ['']
-    extracode = []
-    arglist = []
+    info = argtypes.WrapperInfo()
     checkerror = '0'
     handleerror = ''
-    kwlist = []
 
     dict = {
 	'name':    funcobj.name,
 	'cname':   funcobj.c_name,
-	'varlist': varlist,
 	'class':   objname,
 	'cast':    castmacro,
 	'gtkobjectsink': ''
@@ -398,32 +363,22 @@ def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
 			'    gtk_object_ref(GTK_OBJECT(self->obj));\n' + \
 			'    gtk_object_sink(GTK_OBJECT(self->obj));\n'
 
-    parselist.append('kwlist')
-
-    # handle return type ...
     for ptype, pname, pdflt, pnull in funcobj.params:
-	if pdflt and '|' not in parsestr:
-	    parsestr = parsestr + '|'
+	if pdflt and '|' not in info.parsestr:
+            info.add_parselist('|', [], [])
 	handler = argtypes.matcher.get(ptype)
         if not checkerror:
             checkerror = handler.checkerror
         if not handleerror:
             handleerror = handler.handleerror
-        spec = handler.write_param(ptype, pname, pdflt, pnull, varlist,
-                                   parselist, extracode, arglist)
-        if spec:
-            kwlist.append('"%s"' % (fixname(pname)))
-	parsestr = parsestr + spec
+        handler.write_param(ptype, pname, pdflt, pnull, info)
 
-    kwlist.append('NULL')
-    kwlist = string.join(kwlist, ', ')
-    varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
-
-    dict['typecodes'] = parsestr
-    dict['parselist'] = string.join(parselist, ', ')
-    dict['extracode'] = string.replace(string.join(extracode, ''),
+    dict['varlist']   = info.get_varlist()
+    dict['typecodes'] = info.parsestr
+    dict['parselist'] = info.get_parselist()
+    dict['extracode'] = string.replace(info.get_codebefore(),
                                        'return NULL;', 'return -1;')
-    dict['arglist']   = string.join(arglist, ', ')
+    dict['arglist']   = info.get_arglist()
     fp.write(consttmpl % dict)
 
 def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
@@ -447,15 +402,15 @@ def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
                            (fixname(fname), funcname))
             continue
         try:
-            varlist = argtypes.VarList()
+            info = argtypes.WrapperInfo()
             handler = argtypes.matcher.get(ftype)
-            code = handler.write_return(ftype, varlist) % \
+            code = handler.write_return(ftype, info) % \
                    {'func': castmacro + '(self->obj)->' + fname,
                     'checkerror': handler.checkerror,
                     'handleerror': handler.handleerror}
             fp.write(gettertmpl % { 'funcname': funcname,
                                     'attr': fname,
-                                    'varlist': varlist,
+                                    'varlist': info.varlist,
                                     'code': code })
             getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
                            (fixname(fname), funcname))
@@ -587,14 +542,10 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
 
 ## boxed types ...
 def write_boxed_method(objname, methobj, fp=sys.stdout):
-    varlist = argtypes.VarList()
-    parsestr = ''
-    parselist = ['']
-    extracode = []
-    arglist = ['']
+    info = argtypes.WrapperInfo()
+    info.arglist.append('')
     checkerror = '0'
     handleerror = ''
-    kwlist = []
 
     if methobj.varargs:
         raise ValueError, "varargs methods not supported"
@@ -602,89 +553,63 @@ def write_boxed_method(objname, methobj, fp=sys.stdout):
     dict = {
 	'name':     fixname(methobj.name),
 	'cname':    methobj.c_name,
-	'varlist':  varlist,
 	'typename': objname,
     }
     
-    parselist.append('kwlist')
-
-    # handle return type ...
     for ptype, pname, pdflt, pnull in methobj.params:
-	if pdflt and '|' not in parsestr:
-	    parsestr = parsestr + '|'
+	if pdflt and '|' not in info.parsestr:
+            info.add_parselist('|', [], [])
 	handler = argtypes.matcher.get(ptype)
         if not checkerror:
             checkerror = handler.checkerror
         if not handleerror:
             handleerror = handler.handleerror
         
-        spec = handler.write_param(ptype, pname, pdflt, pnull, varlist,
-                                   parselist, extracode, arglist)
-        if spec:
-            kwlist.append('"%s"' % (fixname(pname)))
-	parsestr = parsestr + spec
+        handler.write_param(ptype, pname, pdflt, pnull, info)
 
-    kwlist.append('NULL')
-    kwlist = string.join(kwlist, ', ')
-    varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
-
-    dict['typecodes'] = parsestr
-    dict['parselist'] = string.join(parselist, ', ')
-    dict['extracode'] = string.join(extracode, '')
-    dict['arglist']   = string.join(arglist, ', ')
+    dict['typecodes'] = info.parsestr
+    dict['parselist'] = info.get_parselist()
+    dict['extracode'] = info.get_codebefore()
+    dict['arglist']   = info.get_arglist()
 
     call = boxedmethcalltmpl % dict
     handler = argtypes.matcher.get(methobj.ret)
-    dict['handleret'] = handler.write_return(methobj.ret, varlist) % {'func': call,
-                                                                      'checkerror': checkerror,
-                                                                      'handleerror': handleerror}
+    dict['handleret'] = handler.write_return(methobj.ret, info) % \
+                        {'func': call,
+                         'checkerror': checkerror,
+                         'handleerror': handleerror}
+    dict['varlist']   = info.get_varlist()
 
     fp.write(boxedmethtmpl % dict)
 
 def write_boxed_constructor(objname, typecode, funcobj, fp=sys.stdout):
-    varlist = argtypes.VarList()
-    parsestr = ''
-    parselist = ['']
-    extracode = []
-    arglist = []
+    info = argtypes.WrapperInfo()
     checkerror = '0'
     handleerror = ''
-    kwlist = []
 
     dict = {
 	'name':    funcobj.name,
 	'cname':   funcobj.c_name,
-	'varlist': varlist,
 	'typename': objname,
         'typecode': typecode,
     }
 
-    parselist.append('kwlist')
-    
-    # handle return type ...
     for ptype, pname, pdflt, pnull in funcobj.params:
-	if pdflt and '|' not in parsestr:
-	    parsestr = parsestr + '|'
+	if pdflt and '|' not in info.parsestr:
+	    info.add_parselist('|', [], [])
 	handler = argtypes.matcher.get(ptype)
         if not checkerror:
             checkerror = handler.checkerror
         if not handleerror:
             handleerror = handler.handleerror 
-        spec = handler.write_param(ptype, pname, pdflt, pnull, varlist,
-                                   parselist, extracode, arglist)
-        if spec:
-            kwlist.append('"%s"' % (fixname(pname)))
-        parsestr = parsestr + spec
+        spec = handler.write_param(ptype, pname, pdflt, pnull, info)
 
-    kwlist = string.join(kwlist, ', ')
-    varlist.add('static char', '*kwlist[] = { ' + kwlist + ' }')
-    parselist.append('kwlist')
-
-    dict['typecodes'] = parsestr
-    dict['parselist'] = string.join(parselist, ', ')
-    dict['extracode'] = string.replace(string.join(extracode, ''),
+    dict['varlist']   = info.get_varlist()
+    dict['typecodes'] = info.parsestr
+    dict['parselist'] = info.get_parselist()
+    dict['extracode'] = string.replace(info.get_codebefore(),
                                        'return NULL;', 'return -1;')
-    dict['arglist']   = string.join(arglist, ', ')
+    dict['arglist']   = info.get_arglist()
     fp.write(boxedconsttmpl % dict)
 
 def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
@@ -713,9 +638,9 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
             attrs.append(fname)
             continue
         try:
-            varlist = argtypes.VarList()
+            info =  argtypes.WrapperInfo()
             handler = argtypes.matcher.get(ftype)
-            code = handler.write_return(ftype, varlist) % \
+            code = handler.write_return(ftype, info) % \
                    {'func': 'pyg_boxed_get(self, ' + boxedobj.c_name + ')->' + fname,
                     'handleerror': handler.handleerror,
                     'checkerror': handler.checkerror}
@@ -723,13 +648,13 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
                 # indent code ...
                 code = '    ' + string.replace(code, '\n', '\n    ')
             attrchecks = attrchecks + attrchecktmpl % { 'attr': fixname(fname),
-                                                        'varlist': varlist,
+                                                        'varlist': info.varlist,
                                                         'code': code }
             attrs.append(fname)            
         except:
             sys.stderr.write("couldn't write check for " + boxedobj.c_name +
                              '.' + fname + '\n')
-	    #traceback.print_exc()
+	    traceback.print_exc()
     funcname = '_wrap_' + string.lower(uline) + '_getattr'
     members = '"[%s]"' % ('s' * len(attrs))
     for fname in attrs:
