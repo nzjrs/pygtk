@@ -1470,21 +1470,16 @@ static PyObject *
 _wrap_gtk_tree_view_get_path_at_pos(PyGObject *self, PyObject *args,
 				    PyObject *kwargs)
 {
-    static char *kwlist[] = { "window", "x", "y", NULL };
-    PyGObject *window;
+    static char *kwlist[] = { "x", "y", NULL };
     gint x, y;
     GtkTreePath *path;
     GtkTreeViewColumn *column;
     gint cell_x, cell_y;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "Oii:GtkTreeView.get_path_at_pos",
-				     kwlist, &window, &x, &y))
+				     "ii:GtkTreeView.get_path_at_pos",
+				     kwlist, &x, &y))
 	return NULL;
-    if (!pygobject_check(window, &PyGdkWindow_Type)) {
-	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
-	return NULL;
-    }
     if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(self->obj), x, y,
 				      &path, &column, &cell_x, &cell_y)) {
 	PyObject *ret = PyTuple_New(4);
