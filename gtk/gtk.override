@@ -7123,6 +7123,28 @@ _wrap_gtk_text_view_get_iter_at_location(PyGObject *self, PyObject *args,
     return pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE);
 }
 %%
+override gtk_file_selection_get_selections noargs
+static PyObject *
+_wrap_gtk_file_selection_get_selections(PyGObject *self)
+{
+    gchar **filenames = NULL;
+    int size;
+    int i;
+    PyObject *ret;
+
+    filenames = gtk_file_selection_get_selections(
+	GTK_FILE_SELECTION(self->obj));
+
+    for (i = 0; filenames[i]; i++);
+    size = i;
+
+    ret = PyTuple_New(size);
+    for (i = 0; i < size; i++)
+	PyTuple_SetItem(ret, i, PyString_FromString(filenames[i]));
+
+    return ret;
+}
+%%
 ignore-win32 
 	GTK_TYPE_PLUG
 	GTK_TYPE_SOCKET
