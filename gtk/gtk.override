@@ -5218,3 +5218,14 @@ _wrap_gtk_radio_tool_button_get_group(PyGObject *self) {
     }
     return py_list;
 }
+%%
+override gtk_scale_get_layout_offsets noargs
+static PyObject *
+_wrap_gtk_scale_get_layout_offsets(PyGObject *self)
+{
+    gint x = 0, y = 0;
+
+    gtk_scale_get_layout_offsets(GTK_SCALE(self->obj), &x, &y);
+
+    return Py_BuildValue("(ii)", x, y);
+}
