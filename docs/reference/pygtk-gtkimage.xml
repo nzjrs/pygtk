@@ -113,7 +113,32 @@ linkend="method-gtkimage--get-icon-set">get_icon_set</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkimage--get-animation">get_animation</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkimage--get-icon-name">get_icon_name</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkimage--set-from-icon-name">set_from_icon_name</link></methodname>
+	<methodparam><parameter
+		       role="keyword">icon_name</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">size</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkimage--set-pixel-size">set_pixel_size</link></methodname>
+	<methodparam><parameter
+		       role="keyword">pixel_size</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkimage--get-pixel-size">get_pixel_size</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
 <programlisting>
@@ -130,6 +155,10 @@ linkend="method-gtkimage--get-animation">get_animation</link></methodname>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--image-new-from-animation">gtk.image_new_from_animation</link></methodname>
     <methodparam><parameter role="keyword">animation</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--image-new-from-animation">gtk.image_new_from_icon_name</link></methodname>
+    <methodparam><parameter role="keyword">icon_name</parameter></methodparam>
+    <methodparam><parameter role="keyword">size</parameter></methodparam>
   </methodsynopsis></programlisting>
 
   </refsect1>
@@ -158,19 +187,36 @@ linkend="method-gtkimage--get-animation">get_animation</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"pixbuf"</entry>
+	      <entry>"file"</entry>
+	      <entry>Write</entry>
+
+	      <entry>A filename containing the image data. Default value:
+<literal>None</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"icon-name"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>a <link
-linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link> to
+
+	      <entry>The name of the icon in the icon theme. If the icon
+theme is changed, the image will be updated automatically. Default value:
+<literal>None</literal>. Available in GTK 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"icon-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>the <link
+linkend="class-gtkiconset"><classname>gtk.IconSet</classname></link> to
 display</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"pixmap"</entry>
+	      <entry>"icon-size"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>a <link
-linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> to
-display</entry>
+
+	      <entry>the size to use for a stock icon, named icon or icon
+set. Allowed values: >= 0. Default value: 4</entry>
 	    </row>
 
 	    <row valign="top">
@@ -193,29 +239,11 @@ linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link></entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"file"</entry>
-	      <entry>Write</entry>
-	      <entry>a filename containing the image data</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"stock"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>the stock ID for a stock image to display.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"icon-set"</entry>
+	      <entry>"pixbuf"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>the <link
-linkend="class-gtkiconset"><classname>gtk.IconSet</classname></link> to
-display</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"icon-size"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>the size to use for a stock icon or icon set.</entry>
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link> 
+to display</entry>
 	    </row>
 
 	    <row valign="top">
@@ -227,9 +255,35 @@ to display</entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"pixel-size"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>a fixed size overriding the "icon-size" property for
+images of type <literal>gtk.IMAGE_ICON_NAME</literal>. Allowed values: >=
+-1. Default value: -1. Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"pixmap"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>a <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> to
+display</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"stock"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>the stock ID for a stock image to display. Default
+value: <literal>None</literal></entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"storage-type"</entry>
 	      <entry>Read</entry>
-	      <entry>the type of the image data; one of
+
+	      <entry>the type of the image data; one of the <link
+linkend="gtk-image-type-constants">Image Type Constants</link>:
 <literal>gtk.IMAGE_EMPTY</literal>, <literal>gtk.IMAGE_PIXMAP</literal>,
 <literal>gtk.IMAGE_IMAGE</literal>, <literal>gtk.IMAGE_PIXBUF</literal>,
 <literal>gtk.IMAGE_STOCK</literal>, <literal>gtk.IMAGE_ICON_SET</literal> or
@@ -285,6 +339,38 @@ its own), so by default does not receive events. If you want to receive
 events on the image, such as button clicks, place the image inside a <link
 linkend="class-gtkeventbox"><classname>gtk.EventBox</classname></link>, then
 connect to the event signals on the event box.</para>
+
+    <para>When handling events on the event box, keep in mind that
+coordinates in the image may be different from event box coordinates due to
+the alignment and padding settings on the image (see <link
+linkend="class-gtkmisc"><classname>gtk.Misc</classname></link>). The
+simplest way to solve this is to set the alignment to 0.0 (left/top), and
+set the padding to zero. Then the origin of the image will be the same as
+the origin of the event box.</para>
+
+    <para>Sometimes an application will want to avoid depending on external
+data files, such as image files. GTK+ comes with a program to avoid this,
+called <command>gdk-pixbuf-csource</command>. This program allows you to
+convert an image into a C variable declaration, which can then be loaded
+into a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link> using
+the <link
+linkend="function-gdk--pixbuf-new-from-inline"><function>gtk.gdk.pixbuf_new_from_inline</function>()</link>
+function. This can also be used in <literal>PyGTK</literal> by modifying the
+output using an editor or the <command>sed</command> command as
+follows:</para>
+
+    <programlisting>
+  gdk-pixbuf-csource imagefile | \
+          sed -n -e 's/{/[/' -e 's/};/]/' -e '/".*"/p' >outfile
+</programlisting>
+
+    <para>You can edit <filename>outfile</filename> into a Python file where
+it will be evaluated to a list containing a string. The string can be used
+directly with the <link
+linkend="function-gdk--pixbuf-new-from-inline"><function>gtk.gdk.pixbuf_new_from_inline</function>()</link>
+function to create a pixbuf that can be used in a <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link>.</para>
 
   </refsect1>
 
@@ -485,432 +571,8 @@ and <link
 linkend="method-gtkiconfactory--add"><methodname>gtk.IconFactory.add</methodname>()</link> 
 methods.</para>
 
-      <para>The stock icons are:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_DIALOG_INFO</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_dialog_info_48.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_DIALOG_WARNING</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_dialog_warning_48.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_DIALOG_ERROR</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_dialog_error_48.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_DIALOG_QUESTION</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_dialog_question_48.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_DND</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_dnd_32.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_DND_MULTIPLE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_dnd_multiple_32.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_ADD</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_add_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_APPLY</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_apply_20.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_BOLD</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_text_bold_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_CANCEL</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_cancel_20.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_CDROM</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_cdrom_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_CLEAR</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_clear_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_CLOSE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_close_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_CONVERT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_convert_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_COPY</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_copy_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_CUT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_cut_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_DELETE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_trash_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_EXECUTE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_exec_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_FIND</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_search_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_FIND_AND_REPLACE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_search_replace_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_FLOPPY</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_save_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GOTO_BOTTOM</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_bottom_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GOTO_FIRST</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_first_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GOTO_LAST</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_last_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GOTO_TOP</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_top_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GO_BACK</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_left_arrow_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GO_DOWN</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_down_arrow_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GO_FORWARD</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_right_arrow_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_GO_UP</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_up_arrow_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_HELP</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_help_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_HOME</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_home_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_INDEX</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_index_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_ITALIC</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_text_italic_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_JUMP_TO</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_jump_to_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_JUSTIFY_CENTER</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_align_center_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_JUSTIFY_FILL</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_align_justify_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_JUSTIFY_LEFT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_align_left_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_JUSTIFY_RIGHT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_align_right_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_MISSING_IMAGE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_broken_image_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_NEW</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_new_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_NO</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_no_20.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_OK</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_ok_20.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_OPEN</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_open_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_PASTE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_paste_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_PREFERENCES</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_preferences_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_PRINT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_print_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_PRINT_PREVIEW</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_print_preview_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_PROPERTIES</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_properties_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_QUIT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_exit_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_REDO</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_redo_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_REFRESH</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_refresh_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_REMOVE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_remove_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_REVERT_TO_SAVED</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_revert_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_SAVE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_save_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_SAVE_AS</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_save_as_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_SELECT_COLOR</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_colorselector_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_SELECT_FONT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_font_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_SORT_ASCENDING</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_sort_ascending_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_SORT_DESCENDING</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_sort_descending_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_SPELL_CHECK</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_spellcheck_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_STOP</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_stop_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_STRIKETHROUGH</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_text_strikethrough_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_UNDELETE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_undelete_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_UNDERLINE</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_text_underline_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_UNDO</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_undo_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_YES</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_yes_20.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_ZOOM_100</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_zoom_1_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_ZOOM_FIT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_zoom_fit_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_ZOOM_IN</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_zoom_in_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.STOCK_ZOOM_OUT</literal></term>
-	  <listitem>
-	    <simpara><imagedata fileref="icons/stock_zoom_out_24.png" format="png"/></simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+      <para>The stock icons are described in the <link
+linkend="gtk-stock-items">Stock Items</link> reference.</para>
 
     </refsect2>
 
@@ -1167,6 +829,125 @@ raised.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkimage--get-icon-name">
+      <title>gtk.Image.get_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_icon_name</methodname>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing the name and size of the
+displayed icon.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_icon_name</methodname>() method returns a
+2-tuple containing the values of the "icon-name" and "icon-size" properties
+respectively if the "icon-name" property is not <literal>None</literal>. If
+the "icon-name" property is <literal>None</literal> the 2-tuple returned
+will be:</para>
+
+      <programlisting>
+  (None, &lt;enum GTK_ICON_SIZE_INVALID of type GtkIconSize&gt;)
+</programlisting>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimage--set-from-icon-name">
+      <title>gtk.Image.set_from_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_from_icon_name</methodname>
+          <methodparam><parameter
+                         role="keyword">icon_name</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">size</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>an icon name</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">size</parameter>&nbsp;:</term>
+	  <listitem><simpara>a stock icon size</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_from_icon_name</methodname>() method sets
+the "icon-name" and "icon-size" properties to the values of
+<parameter>icon_name</parameter> and <parameter>size</parameter>
+respectively. <parameter>icon_name</parameter> should be the name of an icon
+in the current icon theme. If <parameter>icon_name</parameter> isn't known,
+a "broken image" icon will be displayed instead. If the current icon theme
+is changed, the icon will be updated appropriately.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimage--set-pixel-size">
+      <title>gtk.Image.set_pixel_size</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_pixel_size</methodname>
+          <methodparam><parameter
+                         role="keyword">pixel_size</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">pixel_size</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new pixel size to be used for named
+icons</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_pixel_size</methodname>() method sets the
+"pixel-size" property to the value specified by
+<parameter>pixel_size</parameter>. If the pixel size is set to a value != -1
+the "pixel-size" property is used instead of the icon size set by the <link
+linkend="method-gtkimage--set-from-icon-name"><methodname>set_from_icon_name</methodname>()</link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimage--get-pixel-size">
+      <title>gtk.Image.get_pixel_size</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_pixel_size</methodname>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the pixel size used for named
+icons.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_pixel_size</methodname>() method returns the
+value of the "pixel-size" property which specifies the pixel size to be used
+for named icons.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -1303,6 +1084,49 @@ linkend="class-gtkimage"><classname>gtk.Image</classname></link> object
 containing the <link
 linkend="class-gdkpixbufanimation"><classname>gtk.gdk.PixbufAnimation</classname></link> 
 specified by <parameter>animation</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--image-new-from-icon_name">
+      <title>gtk.image_new_from_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.image_new_from_icon_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">icon_name</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">size</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>an icon name</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">size</parameter>&nbsp;:</term>
+	  <listitem><simpara>a stock icon size</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+widget.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.image_new_from_icon_name</function>() function
+returns a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> object
+displaying the named theme icon specified by
+<parameter>icon_name</parameter> with the icon size specified by
+<parameter>size</parameter>. If the icon name isn't known, a "broken image"
+icon will be displayed instead. If the current icon theme is changed, the
+icon will be updated appropriately. The "icon-name" and "icon-size"
+properties are also set by this function.</para>
 
     </refsect2>
 
