@@ -108,7 +108,9 @@ fi
 
 dnl gtk+
 AM_PATH_GTK_2_0(gtk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],$extra_mods)
-GTK_LIBS=`echo $GTK_LIBS | sed -e "s/$export_dynamic//"`
+if test -n "$export_dynamic"; then
+  GTK_LIBS=`echo $GTK_LIBS | sed -e "s/$export_dynamic//"`
+fi
 
 dnl libglade
 build_libglade=false
