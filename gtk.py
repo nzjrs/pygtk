@@ -58,19 +58,34 @@ class GtkObject:
 		# they will always be available with the object.  Due to
 		# reference counting problems, we can't always pass the
 		# same GtkObject instance to a callback.
-		if attr[0] == '_': raise AttributeError, attr
+		if attr[0] == '_' or not self.__dict__.has_key('_o'):
+			raise AttributeError, attr
 		dict = self.get_data('Python-Attributes')
 		if dict and dict.has_key(attr):
 			return dict[attr]
 		raise AttributeError, attr
 	def __setattr__(self, attr, value):
-		if attr[0] == '_':
+		if attr[0] == '_' or self.__dict__.has_key(attr) or \
+		   not self.__dict__.has_key('_o'):
 			self.__dict__[attr] = value
 		dict = self.get_data('Python-Attributes')
 		if not dict:
 			dict = {}
 			self.set_data('Python-Attributes', dict)
 		dict[attr] = value
+	def __delattr__(self, attr):
+		if self.__dict__.has_key(attr):
+			del self.__dict__[attr]
+			return
+		if not self.__dict__.has_key('_o'):
+			raise AttributeError, \
+			      'delete non-existing instance attribute'
+		dict = self.get_data('Python-Attributes')
+		if dict and dict.has_key(attr):
+			del dict[attr]
+		else:
+			raise AttributeError, \
+			      'delete non-existing instance attribute'
 			
 	def flags(self, mask=None):
 		if mask:
@@ -173,7 +188,7 @@ class GtkTooltips(GtkData):
 		_gtk.gtk_tooltips_disable(self._o)
 	def set_delay(self, delay):
 		_gtk.gtk_tooltips_set_delay(self._o, delay)
-	def set_tip(self, w, tip, tip_private):
+	def set_tip(self, w, tip, tip_private=None):
 		_gtk.gtk_tooltips_set_tip(self._o, w._o, tip, tip_private)
 	def set_tips(self, w, tip):
 		print "GtkTooltip.set_tips deprecated -- use set_tip instead"
@@ -473,7 +488,8 @@ class GtkContainer(GtkWidget):
 	def resize_children(self):
 		_gtk.gtk_container_resize_children(self._o)
 	def set_focus_child(self, child):
-		_gtk.gtk_container_set_focus_child(self._o, child._o)
+		if child: child = child._o
+		_gtk.gtk_container_set_focus_child(self._o, child)
 	def set_focus_vadjustment(self, adj):
 		_gtk.gtk_container_set_focus_vadjustment(self._o, adj._o)
 	def set_focus_hadjustment(self, adj):

@@ -982,6 +982,7 @@ PyGdkEvent_New(GdkEvent *obj) {
   case GDK_BUTTON_PRESS:      /*GdkEventButton            button*/
   case GDK_2BUTTON_PRESS:     /*GdkEventButton            button*/
   case GDK_3BUTTON_PRESS:     /*GdkEventButton            button*/
+  case GDK_BUTTON_RELEASE:    /*GdkEventButton            button*/
     PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
         obj->button.time));
     Py_DECREF(v);
@@ -4090,12 +4091,12 @@ static PyObject *_wrap_gtk_item_factory_get_widget_by_action(PyObject *self, PyO
 
 static void PyGtk_MenuPosition(GtkMenu *menu, int *x, int *y, PyObject *func) {
     PyObject *ret;
-    ret = PyObject_CallFunction(func, "(O)", PyGtk_New(GTK_OBJECT(menu)));
+    ret = PyObject_CallFunction(func, "Oii", PyGtk_New(GTK_OBJECT(menu)),
+				*x, *y);
     if (ret == NULL || !PyArg_ParseTuple(ret, "ii", x, y)) {
         PyErr_Print();
         PyErr_Clear();
-        *x = 0;
-        *y = 0;
+        if (ret) Py_DECREF(ret);
     } else
         Py_DECREF(ret);
 }
@@ -4125,7 +4126,7 @@ static PyObject *_wrap_gtk_menu_popup(PyObject *self, PyObject *args) {
         PyErr_SetString(PyExc_TypeError, "forth argument not callable");
         return NULL;
     }
-    if (func) {
+    if (func != Py_None) {
       Py_INCREF(func);
       gtk_menu_popup(GTK_MENU(PyGtk_Get(m)), pms, pmi,
 		     (GtkMenuPositionFunc)PyGtk_MenuPosition,

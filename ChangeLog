@@ -1,3 +1,16 @@
+1999-02-20  James Henstridge  <james@daa.com.au>
+
+	* gtk.py (GtkTooltips.set_tip): made tip_private argument optional.
+	(GtkObject.__[gs]etattr__, GtkObject.__delattr__): added some more
+	fixes to this code so that it shouldn't throw exceptions as much
+	when it shouldn't.
+
+	* gtkmodule.c: PyGdkEvent_New wasn't interpreting GDK_BUTTON_RELEASE
+	events correctly.  Also some fix ups for gtk_menu_popup.
+
+	* generate/gtkcontainers.defs (gtk_container_set_focus_child): allow
+	null child argument.
+
 1999-02-19  James Henstridge  <james@daa.com.au>
 
 	* gtk.py: added __getattr__ and __setattr__ methods to GtkObject so
