@@ -2482,7 +2482,7 @@ _wrap_gdk_drawable__get_handle(PyGObject *self, void *closure)
 {
 #if defined(GDK_WINDOWING_WIN32)
     GdkDrawable *drawable = GDK_DRAWABLE(self->obj);
-    return PyLong_FromVoidPtr(GDK_DRAWABLE_HANDLE(drawable));
+    return PyLong_FromVoidPtr(GDK_WINDOW_HWND(drawable));
 #else
     PyErr_SetString(PyExc_AttributeError, "handle attribute not supported");
     return NULL;
