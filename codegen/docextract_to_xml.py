@@ -43,7 +43,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     docs = docextract.extract(source_dirs);
-    docextract.extract_templ(source_dirs, docs); #Try the tmpl sgml files too.
+    docextract.extract_tmpl(source_dirs, docs); #Try the tmpl sgml files too.
 
     # print d.docs
     
