@@ -111,13 +111,103 @@ pypango_attr_set_index(PyPangoAttribute *self, PyObject *value, void *closure)
     return 0;
 }
 
+static PyObject *
+pypango_attr_get_type(PyPangoAttribute *self, void *closure)
+{
+    return PyInt_FromLong(self->attr->klass->type);
+}
+
 static PyGetSetDef pypango_attr_getsets[] = {
     { "start_index", (getter)pypango_attr_get_index,
       (setter)pypango_attr_set_index, NULL, GINT_TO_POINTER(0) },
     { "end_index", (getter)pypango_attr_get_index,
       (setter)pypango_attr_set_index, NULL, GINT_TO_POINTER(1) },
+    { "type", (getter)pypango_attr_get_type, (setter)0, NULL, NULL },
     { NULL, (getter)0, (setter)0, NULL, NULL }
 };
+
+static PyObject *
+pypango_attr_tp_getattr(PyPangoAttribute *self, char *attr)
+{
+    PangoAttribute *attribute = self->attr;
+    PyObject *name, *ret;
+
+    switch (attribute->klass->type) {
+    case PANGO_ATTR_LANGUAGE:
+	if (!strcmp(attr, "__members__"))
+	    return Py_BuildValue("[s]", "value");
+	if (!strcmp(attr, "value"))
+	    return pyg_boxed_new(PANGO_TYPE_LANGUAGE,
+				 ((PangoAttrLanguage *)attribute)->value,
+				 TRUE, TRUE);
+	break;
+    case PANGO_ATTR_FAMILY:
+	if (!strcmp(attr, "__members__"))
+	    return Py_BuildValue("[s]", "value");
+	if (!strcmp(attr, "value"))
+	    return PyString_FromString(((PangoAttrString *)attribute)->value);
+	break;
+    case PANGO_ATTR_STYLE:
+    case PANGO_ATTR_WEIGHT:
+    case PANGO_ATTR_VARIANT:
+    case PANGO_ATTR_STRETCH:
+    case PANGO_ATTR_SIZE:
+    case PANGO_ATTR_UNDERLINE:
+    case PANGO_ATTR_STRIKETHROUGH:
+    case PANGO_ATTR_RISE:
+	if (!strcmp(attr, "__members__"))
+	    return Py_BuildValue("[s]", "value");
+	if (!strcmp(attr, "value"))
+	    return PyInt_FromLong(((PangoAttrInt *)attribute)->value);
+	break;
+    case PANGO_ATTR_FONT_DESC:
+	if (!strcmp(attr, "__members__"))
+	    return Py_BuildValue("[s]", "desc");
+	if (!strcmp(attr, "desc"))
+	    return pyg_boxed_new(PANGO_TYPE_FONT_DESCRIPTION,
+				 ((PangoAttrFontDesc *)attribute)->desc,
+				 TRUE, TRUE);
+	break;
+    case PANGO_ATTR_FOREGROUND:
+    case PANGO_ATTR_BACKGROUND:
+	if (!strcmp(attr, "__members__"))
+	    return Py_BuildValue("[s]", "color");
+	if (!strcmp(attr, "color"))
+	    return pyg_boxed_new(PANGO_TYPE_COLOR,
+				 &((PangoAttrColor *)attribute)->color,
+				 TRUE, TRUE);
+	break;
+    case PANGO_ATTR_SHAPE:
+	if (!strcmp(attr, "__members__"))
+	    return Py_BuildValue("[ss]", "ink_rect", "logical_rect");
+	if (!strcmp(attr, "ink_rect")) {
+	    PangoRectangle rect = ((PangoAttrShape *)attribute)->ink_rect;
+
+	    return Py_BuildValue("iiii", rect.x, rect.y,
+				 rect.width, rect.height);
+	}
+	if (!strcmp(attr, "logical_rect")) {
+	    PangoRectangle rect = ((PangoAttrShape *)attribute)->logical_rect;
+
+	    return Py_BuildValue("iiii", rect.x, rect.y,
+				 rect.width, rect.height);
+	}
+	break;
+    case PANGO_ATTR_SCALE:
+	if (!strcmp(attr, "__members__"))
+	    return Py_BuildValue("[s]", "value");
+	if (!strcmp(attr, "value"))
+	    return PyFloat_FromDouble(((PangoAttrFloat *)attribute)->value);
+	break;
+    default:
+	break;
+    }
+
+    name = PyString_FromString(attr);
+    ret = PyObject_GenericGetAttr((PyObject *)self, name);
+    Py_DECREF(name);
+    return ret;
+}
 
 static PyTypeObject PyPangoAttribute_Type = {
     PyObject_HEAD_INIT(NULL)
@@ -128,7 +218,7 @@ static PyTypeObject PyPangoAttribute_Type = {
     /* methods */
     (destructor)pypango_attr_dealloc,	/* tp_dealloc */
     (printfunc)0,			/* tp_print */
-    (getattrfunc)0,			/* tp_getattr */
+    (getattrfunc)pypango_attr_tp_getattr,	/* tp_getattr */
     (setattrfunc)0,			/* tp_setattr */
     (cmpfunc)pypango_attr_compare,	/* tp_compare */
     (reprfunc)0,			/* tp_repr */
