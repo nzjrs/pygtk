@@ -124,6 +124,24 @@ class UCharArg(ArgType):
             info.add_parselist('s#', ['&' + pname, '&' + pname + '_len'],
                                [pname])
 
+    def write_return(self, ptype, info):
+        if ptype.startswith('const-'):
+	    info.varlist.add('const guchar', '*ret')
+            info.codeafter.append('    if (ret)\n' +
+                                  '        return PyUnicode_DeviceUTF8(ret, strlen(ret), "strict");\n'+
+                                  '    Py_INCREF(Py_None);\n' +
+                                  '    return Py_None;')
+	else:
+	    # have to free result ...
+	    info.varlist.add('guchar', '*ret')
+            info.codeafter.append('    if (ret) {\n' +
+                                  '        PyObject *py_ret = PyUnicode_DecodeUTF8(ret, strlen(ret), "strict");\n' +
+                                  '        g_free(ret);\n' +
+                                  '        return py_ret;\n' +
+                                  '    }\n' +
+                                  '    Py_INCREF(Py_None);\n' +
+                                  '    return Py_None;')
+
 class CharArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
 	if pdflt:

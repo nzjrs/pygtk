@@ -3,8 +3,21 @@
 import sys, os, string
 import getopt
 import defsparser, argtypes, override
+import traceback, keyword, exceptions
 
-import traceback, keyword
+def exc_info():
+    #traceback.print_exc()
+    etype, value, tb = sys.exc_info()
+    ret = ""
+    try:
+        sval = str(value)
+        if etype == exceptions.KeyError:
+            ret = "No ArgType for %s" % (sval,)
+        else:
+            ret = sval
+    finally:
+        del etype, value, tb
+    return ret
 
 class FileOutput:
     '''Simple wrapper for file object, that makes writing #line
@@ -409,9 +422,8 @@ def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
             getsets.append('    { "%s", (getter)%s, (setter)0 },\n' %
                            (fixname(fname), funcname))
         except:
-            sys.stderr.write("couldn't write check for " + objobj.c_name +
-                             '.' + fname + '\n')
-	    #traceback.print_exc()
+            sys.stderr.write("Could not write check for %s.%s: %s\n"
+                             % (objobj.c_name, fname, exc_info()))
     if not getsets:
         return '0'
     fp.write('static PyGetSetDef %s[] = {\n' % getsets_name)
@@ -440,9 +452,8 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
                 write_constructor(objobj.c_name, castmacro, constructor, fp)
             initfunc = '_wrap_' + constructor.c_name
 	except:
-	    sys.stderr.write('Could not write constructor for ' +
-			     objobj.c_name + '\n')
-	    #traceback.print_exc()
+	    sys.stderr.write('Could not write constructor for %s: %s\n' 
+			     % (objobj.c_name, exc_info()))
             # this is a hack ...
             if not hasattr(overrides, 'no_constructor_written'):
                 fp.write(noconstructor)
@@ -474,9 +485,8 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
 					   'cname': '_wrap_' + meth.c_name,
 					   'flags': methtype})
 	except:
-	    sys.stderr.write('Could not write method ' + objobj.c_name +
-			     '.' + meth.name + '\n')
-            #traceback.print_exc()
+	    sys.stderr.write('Could not write method %s.%s: %s\n'
+                             % (objobj.c_name, meth.name, exc_info()))
 
     # write the PyMethodDef structure
     methods.append('    { NULL, NULL, 0 }\n')
@@ -518,9 +528,8 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
 					   'cname': '_wrap_' + meth.c_name,
 					   'flags': methtype})
 	except:
-	    sys.stderr.write('Could not write method ' + interface.c_name +
-			     '.' + meth.name + '\n')
-            #traceback.print_exc()
+	    sys.stderr.write('Could not write method %s.%s: %s\n'
+                             % (interface.c_name, meth.name, exc_info()))
 
     # write the PyMethodDef structure
     methods.append('    { NULL, NULL, 0 }\n')
@@ -639,9 +648,8 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
             attrchecks = attrchecks + attrcheck
             attrs.append(fname)            
         except:
-            sys.stderr.write("couldn't write check for " + boxedobj.c_name +
-                             '.' + fname + '\n')
-	    #traceback.print_exc()
+            sys.stderr.write("Could not write check for %s.%s: %s\n"
+                             % (boxedobj.c_name, fname, exc_info()))
     funcname = '_wrap_' + string.lower(uline) + '_getattr'
     members = '"[%s]"' % ('s' * len(attrs))
     for fname in attrs:
@@ -671,9 +679,8 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
                                         constructor, fp)
             initfunc = '_wrap_' + constructor.c_name
 	except:
-	    sys.stderr.write('Could not write constructor for ' +
-			     boxedobj.c_name + '\n')
-	    #traceback.print_exc()
+	    sys.stderr.write('Could not write constructor for %s: %s\n'
+                             % (boxedobj.c_name, exc_info()))
     for meth in parser.find_methods(boxedobj):
         if overrides.is_ignored(meth.c_name):
             continue
@@ -694,9 +701,8 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
 					   'cname': '_wrap_' + meth.c_name,
 					   'flags': methtype})
 	except:
-	    sys.stderr.write('Could not write method ' + boxedobj.c_name +
-			     '.' + meth.name + '\n')
-            #traceback.print_exc()
+	    sys.stderr.write('Could not write method %s.%s: %s\n'
+                             % (boxedobj.c_name, meth.name, exc_info()))
 
     # write the PyMethodDef structure
     methods.append('    { NULL, NULL, 0 }\n')
@@ -734,8 +740,8 @@ def write_functions(parser, overrides, prefix, fp=sys.stdout):
                                              'cname': '_wrap_' + func.c_name,
                                              'flags': methtype})
 	except:
-	    sys.stderr.write('Could not write function ' + func.name + '\n')
-	    #traceback.print_exc()
+	    sys.stderr.write('Could not write function %s: %s\n'
+                             %(func.name, exc_info()))
     # write the PyMethodDef structure
     functions.append('    { NULL, NULL, 0 }\n')
     fp.write('PyMethodDef ' + prefix + '_functions[] = {\n')
