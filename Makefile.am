@@ -3,15 +3,20 @@ AUTOMAKE_OPTIONS = 1.4a
 
 SUBDIRS = codegen gtk
 
-INCLUDES = $(PYTHON_INCLUDES)
+INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS)
 
 pyexecdir = $(PYTHON_SITE_EXEC)
-pyexec_LTLIBRARIES = ExtensionClass.la
+pyexec_LTLIBRARIES = ExtensionClass.la gobjectmodule.la
 
 ExtensionClass_la_LDFLAGS = -module -avoid-version
 ExtensionClass_la_SOURCES = \
 	ExtensionClass.h \
 	ExtensionClass.c
+
+gobjectmodule_la_LDFLAGS = -module -avoid-version
+gobjectmodule_la_SOURCES = \
+	gobjectmodule.c
+gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 
 noinst_PYTHON = ltihooks.py
 

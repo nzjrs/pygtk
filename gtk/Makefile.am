@@ -2,49 +2,49 @@
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) $(LIBGLADE_CFLAGS) $(GTKGL_CFLAGS)
 
-if BUILD_IMLIB
-imlibmodule = imlibmodule.la
-endif
-if BUILD_LIBGLADE
-libglademodule = libglademodule.la
-endif
-if BUILD_GTKGL
-glmodule = glmodule.la
-endif
+#if BUILD_IMLIB
+#imlibmodule = imlibmodule.la
+#endif
+#if BUILD_LIBGLADE
+#libglademodule = libglademodule.la
+#endif
+#if BUILD_GTKGL
+#glmodule = glmodule.la
+#endif
 
 pysitedir = $(PYTHON_SITE)
 pysite_PYTHON = __init__.py GTK.py GDK.py
 
-pyexecdir = $(PYTHON_SITE_EXEC)
-pyexec_LTLIBRARIES = _gtkmodule.la $(imlibmodule) $(libglademodule) $(glmodule)
+#pyexecdir = $(PYTHON_SITE_EXEC)
+#pyexec_LTLIBRARIES = _gtkmodule.la $(imlibmodule) $(libglademodule) $(glmodule)
 
-_gtkmodule_la_LDFLAGS = -module -avoid-version
-_gtkmodule_la_LIBADD = $(GTK_LIBS)
-_gtkmodule_la_SOURCES = \
-	pygtk.h \
-	pygtk-private.h \
-	gtkmodule.c \
-	gtkobject-support.c \
-	gtk-types.c \
-	gtk.c
+#_gtkmodule_la_LDFLAGS = -module -avoid-version
+#_gtkmodule_la_LIBADD = $(GTK_LIBS)
+#_gtkmodule_la_SOURCES = \
+#	pygtk.h \
+#	pygtk-private.h \
+#	gtkmodule.c \
+#	gtkobject-support.c \
+#	gtk-types.c \
+#	gtk.c
 
-imlibmodule_la_LDFLAGS = -module -avoid-version
-imlibmodule_la_LIBADD = $(GDK_IMLIB_LIBS)
-imlibmodule_la_SOURCES = \
-	pygdkimlib.h \
-	imlibmodule.c
+#imlibmodule_la_LDFLAGS = -module -avoid-version
+#imlibmodule_la_LIBADD = $(GDK_IMLIB_LIBS)
+#imlibmodule_la_SOURCES = \
+#	pygdkimlib.h \
+#	imlibmodule.c
 
-libglademodule_la_LDFLAGS = -module -avoid-version
-libglademodule_la_LIBADD = $(LIBGLADE_LIBS)
-libglademodule_la_SOURCES = \
-	libglademodule.c \
-	libglade.c
+#libglademodule_la_LDFLAGS = -module -avoid-version
+#libglademodule_la_LIBADD = $(LIBGLADE_LIBS)
+#libglademodule_la_SOURCES = \
+#	libglademodule.c \
+#	libglade.c
 
-glmodule_la_LDFLAGS = -module -avoid-version
-glmodule_la_LIBADD = $(GTKGL_LIBS) $(GTK_LIBS)
-glmodule_la_SOURCES = \
-	gtkglmodule.c \
-	gtkgl.c
+#glmodule_la_LDFLAGS = -module -avoid-version
+#glmodule_la_LIBADD = $(GTKGL_LIBS) $(GTK_LIBS)
+#glmodule_la_SOURCES = \
+#	gtkglmodule.c \
+#	gtkgl.c
 
 # chmod hack here is because automake guys decided distdir should be
 # read only for the next version :(
