@@ -2728,6 +2728,9 @@ def gdk_char_width(font, char):
 def gdk_flush():
 	_gtk.gdk_flush()
 
+def gdk_beep():
+	_gtk.gdk_beep()
+
 # these actually push/pop a visual/colormap pair.
 def push_rgb_visual():
 	_gtk.gtk_rgb_push_visual()

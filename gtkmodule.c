@@ -5112,6 +5112,18 @@ static PyObject *_wrap_gdk_flush(PyObject *self, PyObject *args) {
   return Py_None;
 }
 
+static PyObject *_wrap_gdk_beep(PyObject *self, PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":gdk_beep"))
+    return NULL;
+
+  Py_BEGIN_ALLOW_THREADS
+  gdk_beep ();
+  Py_END_ALLOW_THREADS
+
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject *_wrap_gdk_pixmap_new(PyObject *self, PyObject *args) {
   GdkPixmap *pix;
   GdkWindow *win = NULL;
@@ -6387,6 +6399,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
 #include "gtkmodule_defs.c"
     { "gdk_char_width", _wrap_gdk_char_width, 1 },
     { "gdk_flush", _wrap_gdk_flush, 1 },
+    { "gdk_beep", _wrap_gdk_beep, 1 },
     { "gdk_pixmap_new", _wrap_gdk_pixmap_new, 1 },
     { "gdk_pixmap_create_from_xpm", _wrap_gdk_pixmap_create_from_xpm, 1 },
     { "gdk_pixmap_create_from_xpm_d", _wrap_gdk_pixmap_create_from_xpm_d, 1 },
