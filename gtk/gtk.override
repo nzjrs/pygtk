@@ -226,6 +226,7 @@ ignore
   gtk_timeout_remove
   gtk_toggle_button_new_with_label
   gtk_toggle_button_new_with_mnemonic
+  gtk_toggle_tool_button_new_from_stock
   gtk_trace_referencing
   gtk_tree_remove_items
   gtk_true 
@@ -5249,4 +5250,31 @@ _wrap_gtk_scale_get_layout_offsets(PyGObject *self)
     gtk_scale_get_layout_offsets(GTK_SCALE(self->obj), &x, &y);
 
     return Py_BuildValue("(ii)", x, y);
+}
+%%
+override gtk_toggle_tool_button_new kwargs
+static int
+_wrap_gtk_toggle_tool_button_new(PyGObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "stock_id", NULL };
+    char *stock_id = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|z:GtkToggleToolButton.__init__",
+				     kwlist, &stock_id))
+        return -1;
+
+    if (stock_id)
+	self->obj = (GObject *)gtk_toggle_tool_button_new_from_stock(stock_id);
+    else
+	self->obj = (GObject *)gtk_toggle_tool_button_new();
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkToggleToolButton object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
