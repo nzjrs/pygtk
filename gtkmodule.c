@@ -3403,6 +3403,25 @@ static PyObject *_wrap_gtk_object_remove_data(PyObject *self, PyObject *args) {
     return Py_None;
 }
 
+static PyObject *_wrap_gtk_adjustment_set_all(PyObject *self, PyObject *args) {
+    PyObject *obj;
+    double value, lower, upper, step_increment, page_increment, page_size;
+    GtkAdjustment *adj;
+    if (!PyArg_ParseTuple(args, "O!:gtk_adjustment_set_all", &PyGtk_Type,
+			  &obj, &value, &lower, &upper, &step_increment,
+			  &page_increment, &page_size))
+	return NULL;
+    adj = GTK_ADJUSTMENT(PyGtk_Get(obj));
+    adj->value = value;
+    adj->lower = lower;
+    adj->upper = upper;
+    adj->step_increment = step_increment;
+    adj->page_increment = page_increment;
+    adj->page_size = page_size;
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyObject *_wrap_gtk_widget_get_window(PyObject *self, PyObject *args) {
     GdkWindow *win;
     PyObject *obj;
@@ -4008,6 +4027,18 @@ static PyObject *_wrap_gtk_clist_get_selection_info(PyObject *s, PyObject *args)
     return Py_None;
   }
 }   
+
+static PyObject *_wrap_gtk_clist_get_column_width(PyObject *self, PyObject *args) {
+    PyObject *obj;
+    gint col;
+    if (!PyArg_ParseTuple(args, "O!i:gtk_clist_get_column_width", &PyGtk_Type,
+			  &obj, &col))
+	return NULL;
+    if (col >= 0 && col < GTK_CLIST(PyGtk_Get(obj))->columns)
+	return PyInt_FromLong(GTK_CLIST(PyGtk_Get(obj))->column[col].width);
+    else
+	return PyInt_FromLong(-1);
+}
 
 static PyObject *
 _wrap_gtk_combo_set_popdown_strings(PyObject *self, PyObject *args) {
@@ -5503,6 +5534,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_object_set_data", _wrap_gtk_object_set_data, 1 },
     { "gtk_object_get_data", _wrap_gtk_object_get_data, 1 },
     { "gtk_object_remove_data", _wrap_gtk_object_remove_data, 1 },
+    { "gtk_adjustment_set_all", _wrap_gtk_adjustment_set_all, 1 },
     { "gtk_widget_get_window", _wrap_gtk_widget_get_window, 1 },
     { "gtk_widget_get_allocation", _wrap_gtk_widget_get_allocation, 1 },
     { "gtk_widget_draw", _wrap_gtk_widget_draw, 1 },
@@ -5535,6 +5567,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_clist_get_row_data", _wrap_gtk_clist_get_row_data, 1 },
     { "gtk_clist_find_row_from_data", _wrap_gtk_clist_find_row_from_data, 1 },
     { "gtk_clist_get_selection_info", _wrap_gtk_clist_get_selection_info, 1 },
+    { "gtk_clist_get_column_width", _wrap_gtk_clist_get_column_width, 1 },
     { "gtk_combo_set_popdown_strings", _wrap_gtk_combo_set_popdown_strings,1 },
     { "gtk_curve_get_vector", _wrap_gtk_curve_get_vector, 1 },
     { "gtk_curve_set_vector", _wrap_gtk_curve_set_vector, 1 },

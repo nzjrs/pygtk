@@ -179,6 +179,11 @@ class GtkAdjustment(GtkData):
 		return GtkData.__getattr__(self, attr)
 	def set_value(self, value):
 		_gtk.gtk_adjustment_set_value(self._o, value)
+	def set_all(self, value, lower, upper, step_increment, page_increment,
+		    page_size):
+		_gtk.gtk_adjustment_set_all(self._o, value, lower, upper,
+					    step_increment, page_increment,
+					    page_size)
 	def clamp_page(self, lower, upper):
 		_gtk.gtk_adjustment_clamp_page(self._o, lower, upper)
 	def changed(self, obj=None):
@@ -1168,6 +1173,8 @@ class GtkCList(GtkContainer):
 		return _gtk.gtk_clist_get_column_title(self._o, col)
 	def get_column_widget(self, col):
 		return _obj2inst(_gtk.gtk_clist_get_column_widget(self._o,col))
+	def get_column_width(self, col):
+		return _gtk.gtk_clist_get_column_width(self._o, col)
 	def get_row_data(self, row):
 		return _gtk.gtk_clist_get_row_data(self._o, row)
 	def get_row_style(self, row):
@@ -1375,6 +1382,8 @@ class GtkCTree(GtkCList):
 					     is_leaf, expanded)
 	def node_set_shift(self, node, col, vert, horiz):
 		_gtk.gtk_ctree_node_set_shift(self._o, node, col, vert, horiz)
+	def node_get_selectable(self, node):
+		return _gtk.gtk_ctree_node_get_selectable(self._o, node)
 	def node_set_selectable(self, node, selectable):
 		_gtk.gtk_ctree_node_set_selectable(self._o, node, selectable)
 	def node_get_cell_type(self, node, col):
@@ -2449,6 +2458,10 @@ def _filtprops(props):
 		v = props[k]
 		if hasattr(v, '_o') and type(v._o) == _gtk.GtkObjectType:
 			props[k] = v._o
+		elif hasattr(v, '_ag') and type(v._ag)==_gtk.GtkAccelGroupType:
+			props[k] = v._ag
+		elif hasattr(v, '_im'):
+			props[k] = v._im
 
 def new(tp, **props):
 	if type(tp) == type(GtkObject):

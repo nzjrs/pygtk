@@ -1,4 +1,25 @@
+1999-07-19  James Henstridge  <james@daa.com.au>
+
+	* gtk.py (GtkAdjustment.set_all): a wrapper for the new function.
+
+	* gtkmodule.c (_wrap_gtk_adjustment_set_all): simple wrapper for
+	setting values on an adjustment.
+
+	* gtk.py (GtkCList.get_column_width): a wrapper for this new function.
+
+	* gtkmodule.c (_wrap_gtk_clist_get_column_width): a function to get
+	the column width for a column in a clist.
+
+	* gtk.py (_filtprops): convert GtkAccelGroup and GdkImlibImage types
+	back to the C equivalents.  This makes adding GnomeCanvasImage items
+	to the GnomeCanvas easier.
+	(GtkCTree.node_get_selectable): added wrapper function.
+
 1999-07-18  James Henstridge  <james@daa.com.au>
+
+	* gtkmodule.c (_wrap_gdk_threads_enter): don't use PyGTK_BLOCK_THREADS,
+	since it should only be called outside the gtk main loop.  Instead
+	use Py_BEGIN_ALLOW_THREADS.
 
 	* examples/gl/*: new examples of use of gtkgl.
 	
