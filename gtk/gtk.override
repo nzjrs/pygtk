@@ -634,7 +634,31 @@ _wrap_gtk_clist_get_selection_info(PyGObject *self, PyObject *args,
 	Py_INCREF(Py_None);
 	return Py_None;
     }
-}   
+}
+%%
+override-attr GtkCList.selection
+guint row;
+GList *selection;
+PyObject *py_int, *ret = PyList_New(0);
+
+if (ret == NULL)
+    return NULL;
+
+for (selection = GTK_CLIST(self->obj)->selection; selection != NULL;
+     selection = selection->next) {
+    row = GPOINTER_TO_UINT(selection->data);
+
+    py_int = PyInt_FromLong(row);
+
+    if (!py_int) {
+      Py_DECREF(ret);
+      return NULL;
+    }
+
+    PyList_Append(ret, py_int);
+    Py_DECREF(py_int);
+}
+return ret;
 %%
 override gtk_combo_set_popdown_strings kwargs
 static PyObject *
