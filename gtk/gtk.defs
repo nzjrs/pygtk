@@ -96,20 +96,20 @@
 
 (object TextBuffer
   (in-module Gtk)
-  (parent Object (Gtk))
+  (parent Object (G))
   (c-name GtkTextBuffer)
   (field (type-and-name GtkTextTagTable* tag_table))
 )
 
 (object TextTag
   (in-module Gtk)
-  (parent Object (Gtk))
+  (parent Object (G))
   (c-name GtkTextTag)
 )
 
 (object TextTagTable
   (in-module Gtk)
-  (parent Object (Gtk))
+  (parent Object (G))
   (c-name GtkTextTagTable)
 )
 
@@ -132,14 +132,14 @@
 
 (object ListStore
   (in-module Gtk)
-  (parent Object (Gtk))
+  (parent Object (G))
   (c-name GtkListStore)
   (implements GtkTreeModel)
 )
 
 (object TreeStore
   (in-module Gtk)
-  (parent Object (Gtk))
+  (parent Object (G))
   (c-name GtkTreeStore)
   (implements GtkTreeModel)
 )
@@ -739,12 +739,13 @@
   (value (name week-start-monday) (c-name GTK_CALENDAR_WEEK_START_MONDAY))
 )
 
-(flags CellRendererType
+(flags CellRendererState
   (in-module Gtk)
-  (c-name GtkCellRendererType)
+  (c-name GtkCellRendererState)
   (value (name selected) (c-name GTK_CELL_RENDERER_SELECTED))
   (value (name prelit) (c-name GTK_CELL_RENDERER_PRELIT))
   (value (name insensitive) (c-name GTK_CELL_RENDERER_INSENSITIVE))
+  (value (name sorted) (c-name GTK_CELL_RENDERER_SORTED))
 )
 
 (enum CellType
@@ -815,12 +816,12 @@
 (flags DebugFlag
   (in-module Gtk)
   (c-name GtkDebugFlag)
-  (value (name objects) (c-name GTK_DEBUG_OBJECTS))
   (value (name misc) (c-name GTK_DEBUG_MISC))
-  (value (name signals) (c-name GTK_DEBUG_SIGNALS))
   (value (name dnd) (c-name GTK_DEBUG_DND))
   (value (name plugsocket) (c-name GTK_DEBUG_PLUGSOCKET))
   (value (name text) (c-name GTK_DEBUG_TEXT))
+  (value (name tree) (c-name GTK_DEBUG_TREE))
+  (value (name updates) (c-name GTK_DEBUG_UPDATES))
 )
 
 (enum DialogFlags
@@ -828,6 +829,7 @@
   (c-name GtkDialogFlags)
   (value (name modal) (c-name GTK_DIALOG_MODAL))
   (value (name destroy-with-parent) (c-name GTK_DIALOG_DESTROY_WITH_PARENT))
+  (value (name no-separator) (c-name GTK_DIALOG_NO_SEPARATOR))
 )
 
 (enum ResponseType
@@ -836,6 +838,14 @@
   (value (name none) (c-name GTK_RESPONSE_NONE))
   (value (name reject) (c-name GTK_RESPONSE_REJECT))
   (value (name accept) (c-name GTK_RESPONSE_ACCEPT))
+  (value (name delete-event) (c-name GTK_RESPONSE_DELETE_EVENT))
+  (value (name ok) (c-name GTK_RESPONSE_OK))
+  (value (name cancel) (c-name GTK_RESPONSE_CANCEL))
+  (value (name close) (c-name GTK_RESPONSE_CLOSE))
+  (value (name yes) (c-name GTK_RESPONSE_YES))
+  (value (name no) (c-name GTK_RESPONSE_NO))
+  (value (name apply) (c-name GTK_RESPONSE_APPLY))
+  (value (name help) (c-name GTK_RESPONSE_HELP))
 )
 
 (flags DestDefaults
@@ -913,6 +923,17 @@
   (value (name right) (c-name GTK_DIR_RIGHT))
 )
 
+(enum IconSize
+  (in-module Gtk)
+  (c-name GtkIconSize)
+  (value (name invalid) (c-name GTK_ICON_SIZE_INVALID))
+  (value (name menu) (c-name GTK_ICON_SIZE_MENU))
+  (value (name small-toolbar) (c-name GTK_ICON_SIZE_SMALL_TOOLBAR))
+  (value (name large-toolbar) (c-name GTK_ICON_SIZE_LARGE_TOOLBAR))
+  (value (name button) (c-name GTK_ICON_SIZE_BUTTON))
+  (value (name dialog) (c-name GTK_ICON_SIZE_DIALOG))
+)
+
 (enum TextDirection
   (in-module Gtk)
   (c-name GtkTextDirection)
@@ -969,8 +990,8 @@
 (enum MovementStep
   (in-module Gtk)
   (c-name GtkMovementStep)
-  (value (name chars) (c-name GTK_MOVEMENT_CHARS))
-  (value (name positions) (c-name GTK_MOVEMENT_POSITIONS))
+  (value (name logical-positions) (c-name GTK_MOVEMENT_LOGICAL_POSITIONS))
+  (value (name visual-positions) (c-name GTK_MOVEMENT_VISUAL_POSITIONS))
   (value (name words) (c-name GTK_MOVEMENT_WORDS))
   (value (name display-lines) (c-name GTK_MOVEMENT_DISPLAY_LINES))
   (value (name display-line-ends) (c-name GTK_MOVEMENT_DISPLAY_LINE_ENDS))
@@ -1062,7 +1083,7 @@
   (value (name immediate) (c-name GTK_RESIZE_IMMEDIATE))
 )
 
-(flags SignalRunType
+(enum SignalRunType
   (in-module Gtk)
   (c-name GtkSignalRunType)
   (value (name first) (c-name GTK_RUN_FIRST))
@@ -1082,6 +1103,14 @@
   (value (name page-backward) (c-name GTK_SCROLL_PAGE_BACKWARD))
   (value (name page-forward) (c-name GTK_SCROLL_PAGE_FORWARD))
   (value (name jump) (c-name GTK_SCROLL_JUMP))
+  (value (name step-up) (c-name GTK_SCROLL_STEP_UP))
+  (value (name step-down) (c-name GTK_SCROLL_STEP_DOWN))
+  (value (name page-up) (c-name GTK_SCROLL_PAGE_UP))
+  (value (name page-down) (c-name GTK_SCROLL_PAGE_DOWN))
+  (value (name step-left) (c-name GTK_SCROLL_STEP_LEFT))
+  (value (name step-right) (c-name GTK_SCROLL_STEP_RIGHT))
+  (value (name page-left) (c-name GTK_SCROLL_PAGE_LEFT))
+  (value (name page-right) (c-name GTK_SCROLL_PAGE_RIGHT))
 )
 
 (enum SelectionMode
@@ -1175,7 +1204,6 @@
   (in-module Gtk)
   (c-name GtkWindowType)
   (value (name toplevel) (c-name GTK_WINDOW_TOPLEVEL))
-  (value (name dialog) (c-name GTK_WINDOW_DIALOG))
   (value (name popup) (c-name GTK_WINDOW_POPUP))
 )
 
@@ -1222,8 +1250,8 @@
   (c-name GtkObjectFlags)
   (value (name destroyed) (c-name GTK_DESTROYED))
   (value (name floating) (c-name GTK_FLOATING))
-  (value (name connected) (c-name GTK_CONNECTED))
-  (value (name constructed) (c-name GTK_CONSTRUCTED))
+  (value (name reserved-1) (c-name GTK_RESERVED_1))
+  (value (name reserved-2) (c-name GTK_RESERVED_2))
 )
 
 (flags ArgFlags
@@ -1234,8 +1262,6 @@
   (value (name construct) (c-name GTK_ARG_CONSTRUCT))
   (value (name construct-only) (c-name GTK_ARG_CONSTRUCT_ONLY))
   (value (name child-arg) (c-name GTK_ARG_CHILD_ARG))
-  (value (name mask) (c-name GTK_ARG_MASK))
-  (value (name readwrite) (c-name GTK_ARG_READWRITE))
 )
 
 (flags PackerOptions
@@ -1288,6 +1314,7 @@
   (value (name in-reparent) (c-name PRIVATE_GTK_IN_REPARENT))
   (value (name direction-set) (c-name PRIVATE_GTK_DIRECTION_SET))
   (value (name direction-ltr) (c-name PRIVATE_GTK_DIRECTION_LTR))
+  (value (name anchored) (c-name PRIVATE_GTK_ANCHORED))
 )
 
 (enum ProgressBarStyle
@@ -1349,6 +1376,8 @@
   (value (name highest) (c-name GTK_RC_TOKEN_HIGHEST))
   (value (name engine) (c-name GTK_RC_TOKEN_ENGINE))
   (value (name module-path) (c-name GTK_RC_TOKEN_MODULE_PATH))
+  (value (name im-module-path) (c-name GTK_RC_TOKEN_IM_MODULE_PATH))
+  (value (name im-module-file) (c-name GTK_RC_TOKEN_IM_MODULE_FILE))
   (value (name stock) (c-name GTK_RC_TOKEN_STOCK))
   (value (name ltr) (c-name GTK_RC_TOKEN_LTR))
   (value (name rtl) (c-name GTK_RC_TOKEN_RTL))
@@ -1377,14 +1406,15 @@
 (enum WrapMode
   (in-module Gtk)
   (c-name GtkWrapMode)
-  (value (name none) (c-name GTK_WRAPMODE_NONE))
-  (value (name char) (c-name GTK_WRAPMODE_CHAR))
-  (value (name word) (c-name GTK_WRAPMODE_WORD))
+  (value (name none) (c-name GTK_WRAP_NONE))
+  (value (name char) (c-name GTK_WRAP_CHAR))
+  (value (name word) (c-name GTK_WRAP_WORD))
 )
 
 (enum TextWindowType
   (in-module Gtk)
   (c-name GtkTextWindowType)
+  (value (name private) (c-name GTK_TEXT_WINDOW_PRIVATE))
   (value (name widget) (c-name GTK_TEXT_WINDOW_WIDGET))
   (value (name text) (c-name GTK_TEXT_WINDOW_TEXT))
   (value (name left) (c-name GTK_TEXT_WINDOW_LEFT))
@@ -1417,11 +1447,33 @@
   (value (name item) (c-name GTK_TREE_VIEW_ITEM))
 )
 
+(flags TreeModelFlags
+  (in-module Gtk)
+  (c-name GtkTreeModelFlags)
+  (value (name t) (c-name GTK_TREE_MODEL_ITERS_PERSIST))
+)
+
 (enum TreeSelectionMode
   (in-module Gtk)
   (c-name GtkTreeSelectionMode)
   (value (name single) (c-name GTK_TREE_SELECTION_SINGLE))
   (value (name multi) (c-name GTK_TREE_SELECTION_MULTI))
+)
+
+(enum TreeSortOrder
+  (in-module Gtk)
+  (c-name GtkTreeSortOrder)
+  (value (name ascending) (c-name GTK_TREE_SORT_ASCENDING))
+  (value (name descending) (c-name GTK_TREE_SORT_DESCENDING))
+)
+
+(enum TreeViewDropPosition
+  (in-module Gtk)
+  (c-name GtkTreeViewDropPosition)
+  (value (name before) (c-name GTK_TREE_VIEW_DROP_BEFORE))
+  (value (name after) (c-name GTK_TREE_VIEW_DROP_AFTER))
+  (value (name into-or-before) (c-name GTK_TREE_VIEW_DROP_INTO_OR_BEFORE))
+  (value (name into-or-after) (c-name GTK_TREE_VIEW_DROP_INTO_OR_AFTER))
 )
 
 (enum TreeViewColumnSizing
@@ -1451,7 +1503,6 @@
   (value (name string) (c-name GTK_TYPE_STRING))
   (value (name boxed) (c-name GTK_TYPE_BOXED))
   (value (name pointer) (c-name GTK_TYPE_POINTER))
-  (value (name signal) (c-name GTK_TYPE_SIGNAL))
 )
 
 (flags WidgetFlags
@@ -1476,7 +1527,6 @@
   (value (name receives-default) (c-name GTK_RECEIVES_DEFAULT))
   (value (name double-buffered) (c-name GTK_DOUBLE_BUFFERED))
 )
-
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtk.h
 

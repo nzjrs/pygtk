@@ -2,9 +2,6 @@
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) $(LIBGLADE_CFLAGS) $(GTKGL_CFLAGS) -Wall
 
-#if BUILD_IMLIB
-#imlibmodule = imlibmodule.la
-#endif
 #if BUILD_LIBGLADE
 #libglademodule = libglademodule.la
 #endif
@@ -12,11 +9,11 @@ INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
 #glmodule = glmodule.la
 #endif
 
-pysitedir = $(PYTHON_SITE)/gtk
-pysite_PYTHON = __init__.py GTK.py GDK.py
+pygtkdir = $(pythondir)/gtk
+pygtk_PYTHON = __init__.py GTK.py GDK.py
 
-pyexecdir = $(PYTHON_SITE_EXEC)/gtk
-pyexec_LTLIBRARIES = _gtkmodule.la #$(imlibmodule) $(libglademodule) $(glmodule)
+pygtkexecdir = $(pyexecdir)/gtk
+pygtkexec_LTLIBRARIES = _gtkmodule.la #$(libglademodule) $(glmodule)
 
 _gtkmodule_la_LDFLAGS = -module -avoid-version
 _gtkmodule_la_LIBADD = $(GTK_LIBS)
@@ -29,12 +26,6 @@ _gtkmodule_la_SOURCES = \
 	pygtktreemodel.h \
 	pygtktreemodel.c \
 	gtk.c
-
-#imlibmodule_la_LDFLAGS = -module -avoid-version
-#imlibmodule_la_LIBADD = $(GDK_IMLIB_LIBS)
-#imlibmodule_la_SOURCES = \
-#	pygdkimlib.h \
-#	imlibmodule.c
 
 #libglademodule_la_LDFLAGS = -module -avoid-version
 #libglademodule_la_LIBADD = $(LIBGLADE_LIBS)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import string
+import gobject
 import gtk
 
 import demos
@@ -77,16 +78,16 @@ def create_text(is_source=gtk.FALSE):
 def create_list():
     global model
 
-    model = gtk.GtkListStore('gstring', 'gstring')
+    model = gtk.GtkListStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
     tree_view = gtk.GtkTreeView(model)
     selection = tree_view.get_selection()
-    selection.set_type('single')
+    selection.set_mode('single')
     tree_view.set_usize(200, -1)
 
     for title, module in demos.demos:
 	iter = model.append()
-	model.set_cell(iter, TITLE_COLUMN, title)
-	model.set_cell(iter, MODULE_COLUMN, module)
+	model.set_value(iter, TITLE_COLUMN, title)
+	model.set_value(iter, MODULE_COLUMN, module)
     cell = gtk.GtkCellRendererText()
     # this column 
     column = gtk.GtkTreeViewColumn("Widget", cell, text=TITLE_COLUMN)
@@ -118,11 +119,11 @@ def main():
     notebook.append_page(scrolled_window, gtk.GtkLabel('Source'))
 
     tag = info_buffer.create_tag('title')
-    #tag.set_param('font', 'Sans 18')
+    tag.set_property('font', 'Sans 18')
     tag = source_buffer.create_tag('source')
-    #tag.set_param('font', 'Courier 10')
-    #tag.set_param('pixels_above_lines', 0)
-    #tag.set_param('pixels_below_lines', 0)
+    tag.set_property('font', 'Courier 10')
+    tag.set_property('pixels_above_lines', 0)
+    tag.set_property('pixels_below_lines', 0)
 
     button = gtk.GtkButton('Launch')
     button.set_border_width(5)

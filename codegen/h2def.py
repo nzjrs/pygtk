@@ -322,10 +322,16 @@ def make_gdk_defs():
 verbose=0
 if __name__ == '__main__':
     import getopt
+
+    onlyenums = 0
     
-    opts, args = getopt.getopt(sys.argv[1:], 'v')
+    opts, args = getopt.getopt(sys.argv[1:], 'v',
+                               ['onlyenums'])
     for o, v in opts:
-        if o=='-v': verbose=1
+        if o == '-v':
+            verbose = 1
+        if o == '--onlyenums':
+            onlyenums = 1
             
     if not args[0:1]:
         print 'Must specify at least one input file name'
@@ -339,8 +345,11 @@ if __name__ == '__main__':
         find_obj_defs(buf, objdefs)
         find_enum_defs(buf, enums)
     objdefs = sort_obj_defs(objdefs)
-    write_obj_defs(objdefs,None)
-    write_enum_defs(enums,None)
+    if onlyenums:
+        write_enum_defs(enums,None)
+    else:
+        write_obj_defs(objdefs,None)
+        write_enum_defs(enums,None)
 
-    for filename in args:
-        write_def(filename,None)
+        for filename in args:
+            write_def(filename,None)

@@ -25,7 +25,12 @@ EXTRA_DIST = \
 	MAPPING \
 	ExtensionClass.stx \
 	examples/gobject/signal.py \
-	examples/imlib/view.py \
+	examples/pygtk-demo/pygtk-demo.py \
+	examples/pygtk-demo/demos/__init__.py \
+	examples/pygtk-demo/demos/dnd.py \
+	examples/pygtk-demo/demos/dndpixmap.py \
+	examples/pygtk-demo/demos/menu.py \
+	examples/pygtk-demo/demos/treemodel.py \
 	examples/ide/gtkcons.py \
 	examples/ide/gtkdb.py \
 	examples/ide/edit.py \
@@ -49,10 +54,12 @@ EXTRA_DIST = \
 	examples/simple/dnd.py \
 	examples/simple/dndpixmap.py \
 	examples/simple/README \
-	examples/testgtk/testgtk.py \
-	examples/testgtk/test.xpm \
-	examples/testgtk/testgtkrc \
-	examples/testgtk/README \
+	examples/pygtk-demo/pygtk-demo.py \
+	examples/pygtk-demo/demos/__init__.py \
+	examples/pygtk-demo/demos/dnd.py \
+	examples/pygtk-demo/demos/dndpixmap.py \
+	examples/pygtk-demo/demos/menu.py \
+	examples/pygtk-demo/demos/treemodel.py \
 	examples/neil/TAppli.py \
 	examples/neil/TAppli2.py \
 	examples/neil/TAppli3.py \

@@ -151,6 +151,7 @@
   (value (name visibility-notify) (c-name GDK_VISIBILITY_NOTIFY))
   (value (name no-expose) (c-name GDK_NO_EXPOSE))
   (value (name scroll) (c-name GDK_SCROLL))
+  (value (name window-state) (c-name GDK_WINDOW_STATE))
 )
 
 (flags EventMask
@@ -221,6 +222,15 @@
   (c-name GdkPropertyState)
   (value (name new-value) (c-name GDK_PROPERTY_NEW_VALUE))
   (value (name delete) (c-name GDK_PROPERTY_DELETE))
+)
+
+(flags WindowState
+  (in-module Gdk)
+  (c-name GdkWindowState)
+  (value (name withdrawn) (c-name GDK_WINDOW_STATE_WITHDRAWN))
+  (value (name iconified) (c-name GDK_WINDOW_STATE_ICONIFIED))
+  (value (name maximized) (c-name GDK_WINDOW_STATE_MAXIMIZED))
+  (value (name sticky) (c-name GDK_WINDOW_STATE_STICKY))
 )
 
 (enum FontType
@@ -410,7 +420,7 @@
 (flags ColorInfoFlags
   (in-module Gdk)
   (c-name GdkColorInfoFlags)
-  (value (name writable) (c-name GDK_COLOR_WRITABLE))
+  (value (name e) (c-name GDK_COLOR_WRITEABLE))
 )
 
 (enum PropMode
@@ -583,6 +593,15 @@
   (value (name win-gravity) (c-name GDK_HINT_WIN_GRAVITY))
 )
 
+(enum WindowTypeHint
+  (in-module Gdk)
+  (c-name GdkWindowTypeHint)
+  (value (name normal) (c-name GDK_WINDOW_TYPE_HINT_NORMAL))
+  (value (name dialog) (c-name GDK_WINDOW_TYPE_HINT_DIALOG))
+  (value (name menu) (c-name GDK_WINDOW_TYPE_HINT_MENU))
+  (value (name toolbar) (c-name GDK_WINDOW_TYPE_HINT_TOOLBAR))
+)
+
 (flags WMDecoration
   (in-module Gdk)
   (c-name GdkWMDecoration)
@@ -631,7 +650,7 @@
 (enum Colorspace
   (in-module Gdk)
   (c-name GdkColorspace)
-  (value (name rgb) (c-name GDK_COLORSPACE_RGB))
+  (value (name b) (c-name GDK_COLORSPACE_RGB))
 )
 
 (enum PixbufError
@@ -661,7 +680,6 @@
   (value (name dispose) (c-name GDK_PIXBUF_FRAME_DISPOSE))
   (value (name revert) (c-name GDK_PIXBUF_FRAME_REVERT))
 )
-
 
 ;; From /opt/pango/include/gtk-2.0/gdk/gdkcolor.h
 
