@@ -44,6 +44,9 @@ def load_module(module):
     filename = mod.__file__
     if filename[-4:] == '.pyc': filename = filename[:-1]
     source_buffer.insert(iter, open(filename, 'r').read())
+    source_buffer.apply_tag_by_name('source',
+                                    source_buffer.get_iter_at_offset(0),
+                                    iter)
 
 def selection_cb(selection):
     sel = selection.get_selected()
@@ -114,9 +117,9 @@ def main():
     notebook = gtk.GtkNotebook()
     vbox.pack_start(notebook, expand=gtk.TRUE)
     scrolled_window, info_buffer = create_text(gtk.FALSE)
-    notebook.append_page(scrolled_window, gtk.GtkLabel('Info'))
+    notebook.append_page(scrolled_window, gtk.GtkLabel('_Info'))
     scrolled_window, source_buffer = create_text(gtk.TRUE)
-    notebook.append_page(scrolled_window, gtk.GtkLabel('Source'))
+    notebook.append_page(scrolled_window, gtk.GtkLabel('_Source'))
 
     tag = info_buffer.create_tag('title')
     tag.set_property('font', 'Sans 18')
@@ -125,7 +128,7 @@ def main():
     tag.set_property('pixels_above_lines', 0)
     tag.set_property('pixels_below_lines', 0)
 
-    button = gtk.GtkButton('Launch')
+    button = gtk.GtkButton('_Launch')
     button.set_border_width(5)
     button.set_flags(gtk.CAN_DEFAULT)
     vbox.pack_start(button, expand=gtk.FALSE)

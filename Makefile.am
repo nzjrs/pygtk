@@ -27,9 +27,11 @@ EXTRA_DIST = \
 	examples/gobject/signal.py \
 	examples/pygtk-demo/pygtk-demo.py \
 	examples/pygtk-demo/demos/__init__.py \
+	examples/pygtk-demo/demos/buttonbox.py \
 	examples/pygtk-demo/demos/dnd.py \
 	examples/pygtk-demo/demos/dndpixmap.py \
 	examples/pygtk-demo/demos/menu.py \
+	examples/pygtk-demo/demos/toolbar.py \
 	examples/pygtk-demo/demos/treemodel.py \
 	examples/ide/gtkcons.py \
 	examples/ide/gtkdb.py \

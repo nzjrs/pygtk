@@ -3244,7 +3244,7 @@ _wrap_gtk_toolbar_append_item(PyGObject *self, PyObject *args,
 				     &tooltip_private_text, &py_icon,
 				     &callback, &param))
 	return NULL;
-    if (!pygobject_check(py_icon, &PyGtkWidget_Type))
+    if (pygobject_check(py_icon, &PyGtkWidget_Type))
 	icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
@@ -3280,7 +3280,7 @@ _wrap_gtk_toolbar_prepend_item(PyGObject *self, PyObject *args,
 				     &tooltip_private_text, &py_icon,
 				     &callback, &param))
 	return NULL;
-    if (!pygobject_check(py_icon, &PyGtkWidget_Type))
+    if (pygobject_check(py_icon, &PyGtkWidget_Type))
 	icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
@@ -3318,7 +3318,7 @@ _wrap_gtk_toolbar_insert_item(PyGObject *self, PyObject *args,
 				     &tooltip_private_text, &py_icon,
 				     &callback, &param, &position))
 	return NULL;
-    if (!pygobject_check(py_icon, &PyGtkWidget_Type))
+    if (pygobject_check(py_icon, &PyGtkWidget_Type))
 	icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
