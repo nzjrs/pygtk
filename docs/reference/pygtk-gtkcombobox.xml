@@ -94,13 +94,18 @@
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcombobox--get-popup-accessible">get_popup_accessible</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+
+<!-- NOT IMPLEMENTED
       <methodsynopsis language="python">
-	<methodname><link linkend="method-gtkcombobox--get-row-separator-func">get_row_separator_func</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodname><link linkend="method-gtkcombobox- -get-row-separator-func">get_row_separator_func</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+END NOT IMPLEMENTED -->
+
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcombobox--set-row-separator-func">set_row_separator_func</link></methodname>
-	<methodparam><parameter role="keyword">func</parameter></methodparam>
-	<methodparam><parameter role="keyword">data</parameter></methodparam>
+	<methodparam><parameter role="keyword">func</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcombobox--get-add-tearoffs">get_add_tearoffs</link></methodname>
@@ -898,7 +903,8 @@ little use for it.</para>
 
     </refsect2>
 
-    <refsect2 id="method-gtkcombobox--get-row-separator-func">
+<!-- NOT IMPLEMENTED
+    <refsect2 id="method-gtkcombobox- -get-row-separator-func">
       <title>gtk.ComboBox.get_row_separator_func</title>
 
       <programlisting><methodsynopsis language="python">
@@ -919,23 +925,25 @@ function.</simpara></listitem>
 
       <para>The <methodname>get_row_separator_func</methodname>() method
 returns the current row separator function as set by the <link
-linkend="method-gtkcombobo--set-row-separator-func"><methodname>set_row_separator_func</methodname>()</link>
+linkend="method-gtkcombobo- -set-row-separator-func"><methodname>set_row_separator_func</methodname>()</link>
 method.</para>
 
     </refsect2>
+END NOT IMPLEMENTED -->
 
     <refsect2 id="method-gtkcombobox--set-row-separator-func">
       <title>gtk.ComboBox.set_row_separator_func</title>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>set_row_separator_func</methodname>
-	  <methodparam><parameter role="keyword">func</parameter></methodparam>
-	  <methodparam><parameter role="keyword">data</parameter></methodparam>
+	  <methodparam><parameter role="keyword">func</parameter><initializer>None</initializer></methodparam>
+	  <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
         </methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">func</parameter>&nbsp;:</term>
-	  <listitem><simpara>a function</simpara></listitem>
+	  <listitem><simpara>a function or
+<literal>None</literal></simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">data</parameter>&nbsp;:</term>
@@ -948,11 +956,29 @@ method.</para>
 	<para>This method is available in PyGTK 2.6 and above.</para>
       </note>
 
-      <para>The <methodname>set_row_separator_func</methodname>() method sets
-the row separator function, which is used to determine if a row should be
-drawn as a separator. If the row separator function is
+      <para>The <methodname>set_row_separator_func</methodname>() method
+sets the row separator function to <parameter>func</parameter>, which is
+used to determine if a row should be drawn as a separator. If func is
 <literal>None</literal>, no separators are drawn. This is the default
 value.</para>
+
+      <para>The signature of <parameter>func</parameter> is:</para>
+
+      <programlisting>
+  def func(model, iter, user_data):
+</programlisting>
+
+      <para>where <parameter>model</parameter> is the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+used by the combo box, <parameter>iter</parameter> is a <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+pointing at a row in <parameter>model</parameter> and
+<parameter>user_data</parameter> is
+<parameter>data</parameter>. <parameter>func</parameter> returns
+<literal>TRUE</literal> if the row is a separator. A common way to implement
+<parameter>func</parameter> is to have a boolean column in
+<parameter>model</parameter>, that indicates if the row is a
+separator.</para>
 
     </refsect2>
 
