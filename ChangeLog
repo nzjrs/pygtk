@@ -1,3 +1,17 @@
+2001-05-06  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pygobject__init__): make the __init__ function
+	choose what GType to pass to g_object_new based on the __gtype__
+	attribute.
+	(pygobject_methods): make __gobject_init__ an alias for
+	GObject.__init__.
+	(pyg_type_register): new function for registering new GTypes.
+	(pyg_type_register): register the type as "module+class" rather
+	than "module.class", as the second form is considered bad (would
+	like to use the second form though.
+
+	* configure.in: require 1.3.5 versions of glib and gtk+. 
+
 2001-05-05  James Henstridge  <james@daa.com.au>
 
 	* codegen/docgen.py (DocbookDocWriter.output_toc): Produce kind of
