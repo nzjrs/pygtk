@@ -5926,14 +5926,14 @@ _wrap_gtk_text_child_anchor_get_widgets(PyGObject *self)
     return ret;
 }
 %%
-override gtk_text_view_buffer_to_window_coords
+override gtk_text_view_buffer_to_window_coords kwargs
 static PyObject *
 _wrap_gtk_text_view_buffer_to_window_coords(PyGObject *self, PyObject *args,
 					    PyObject *kwargs)
 {
-    static char *kwlist[] = { "win", "buffer_x", "buffer_y" };
+    static char *kwlist[] = { "win", "buffer_x", "buffer_y", NULL };
     GtkTextWindowType win;
-    gint buffer_x, buffer_y, window_x, window_y;
+    gint buffer_x, buffer_y, window_x = 0, window_y = 0;
     PyObject *py_win;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -5948,14 +5948,14 @@ _wrap_gtk_text_view_buffer_to_window_coords(PyGObject *self, PyObject *args,
     return Py_BuildValue("(ii)", window_x, window_y);
 }
 %%
-override gtk_text_view_window_to_buffer_coords
+override gtk_text_view_window_to_buffer_coords kwargs
 static PyObject *
 _wrap_gtk_text_view_window_to_buffer_coords(PyGObject *self, PyObject *args,
 					    PyObject *kwargs)
 {
-    static char *kwlist[] = { "win", "window_x", "window_y" };
+    static char *kwlist[] = { "win", "window_x", "window_y", NULL };
     GtkTextWindowType win;
-    gint window_x, window_y, buffer_x, buffer_y;
+    gint window_x, window_y, buffer_x = 0, buffer_y = 0;
     PyObject *py_win;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
