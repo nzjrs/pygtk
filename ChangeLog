@@ -1,3 +1,21 @@
+2002-05-09  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtkgl.defs: get rid of gtk_gl and gdk_gl prefix on some
+	functions.
+
+	* codegen/codegen.py (Wrapper.write_function_wrapper): pass
+	caller_owns_return as argument to write_return.
+	(Wrapper.write_getsets): add extra arg to write_return() call.
+
+	* codegen/argtypes.py (*.write_return): add an extra "ownsreturn"
+	argument to all write_return functions.
+
+	* codegen/definitions.py (MethodDef.__init__): read a
+	caller_owns_return variable.  It defaults to false if ommitted,
+	unless we have a string return.
+	(FunctionDef.__init__): same here, but also make
+	caller_owns_return true for constructors.
+
 2002-05-08  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.override (_wrap_gtk_tree_model_get_value): fix typo.  I

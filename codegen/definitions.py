@@ -222,6 +222,7 @@ class MethodDef(Definition):
         dump = 0
 	self.name = name
 	self.ret = None
+        self.caller_owns_return = None
 	self.c_name = None
         self.typecode = None
 	self.of_object = None
@@ -239,6 +240,8 @@ class MethodDef(Definition):
 		self.typecode = arg[1]
 	    elif arg[0] == 'return-type':
 		self.ret = arg[1]
+            elif arg[0] == 'caller-owns-return':
+                self.caller_owns_return = arg[1] in ('t', '#t')
 	    elif arg[0] == 'parameters':
                 for parg in arg[1:]:
                     ptype = parg[0]
@@ -261,6 +264,14 @@ class MethodDef(Definition):
                 dump = 1
         if dump:
             self.write_defs(sys.stderr)
+
+        if self.caller_owns_return is None:
+            if self.ret[:6] == 'const-':
+                self.caller_owns_return = 0
+            elif self.ret in ('char*', 'gchar*', 'string'):
+                self.caller_owns_return = 1
+            else:
+                self.caller_owns_return = 0
         for item in ('c_name', 'of_object'):
             if self.__dict__[item] == None:
                 self.write_defs(sys.stderr)
@@ -303,6 +314,7 @@ class FunctionDef(Definition):
 	self.in_module = None
 	self.is_constructor_of = None
 	self.ret = None
+        self.caller_owns_return = None
 	self.c_name = None
         self.typecode = None
 	self.params = [] # of form (type, name, default, nullok)
@@ -321,6 +333,8 @@ class FunctionDef(Definition):
 		self.typecode = arg[1]
 	    elif arg[0] == 'return-type':
 		self.ret = arg[1]
+            elif arg[0] == 'caller-owns-return':
+                self.caller_owns_return = arg[1] in ('t', '#t')
 	    elif arg[0] == 'parameters':
                 for parg in arg[1:]:
                     ptype = parg[0]
@@ -343,6 +357,16 @@ class FunctionDef(Definition):
                 dump = 1
         if dump:
             self.write_defs(sys.stderr)
+
+        if self.caller_owns_return is None:
+            if self.ret[:6] == 'const-':
+                self.caller_owns_return = 0
+            elif self.is_constructor_of:
+                self.caller_owns_return = 1
+            elif self.ret in ('char*', 'gchar*', 'string'):
+                self.caller_owns_return = 1
+            else:
+                self.caller_owns_return = 0
         for item in ('c_name',):
             if self.__dict__[item] == None:
                 self.write_defs(sys.stderr)

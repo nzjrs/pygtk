@@ -229,7 +229,8 @@ class Wrapper:
             if function_obj.ret not in ('none', None):
                 substdict['setreturn'] = 'ret = '
             handler = argtypes.matcher.get(function_obj.ret)
-            handler.write_return(function_obj.ret, info)
+            handler.write_return(function_obj.ret,
+                                 function_obj.caller_owns_return, info)
 
         if function_obj.deprecated != None:
             deprecated = self.deprecated_tmpl % {
@@ -376,7 +377,8 @@ class Wrapper:
                     funcname = getterprefix + fname
                     info = argtypes.WrapperInfo()
                     handler = argtypes.matcher.get(ftype)
-                    handler.write_return(ftype, info)
+                    # for attributes, we don't own the "return value"
+                    handler.write_return(ftype, 0, info)
                     self.fp.write(self.getter_tmpl %
                                   { 'funcname': funcname,
                                     'varlist': info.varlist,
