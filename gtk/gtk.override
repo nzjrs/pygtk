@@ -1051,55 +1051,6 @@ _wrap_gtk_container_foreach(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
-/*****************************************************************************/
-#if 0
-override gtk_container_foreach
-static PyObject *
-_wrap_gtk_container_foreach(PyGObject *self, PyObject *args)
-{
-    PyObject *first, *callback, *cbargs = NULL, *data;
-    gint len;
-
-    len = PyTuple_Size(args);
-    if (len < 1) {
-	PyErr_SetString(PyExc_TypeError,
-			"foreach requires at least 1 argument");
-	return NULL;
-    }
-    first = PySequence_GetSlice(args, 0, 1);
-    if (!PyArg_ParseTuple(first, "O:GtkContainer.foreach", &callback)) {
-	Py_DECREF(first);
-        return NULL;
-    }
-    Py_DECREF(first);
-    
-    if (!PyCallable_Check(callback)) {
-        PyErr_SetString(PyExc_TypeError, "first argument not callable");
-        return NULL;
-    }
-    
-    cbargs = PySequence_GetSlice(args, 1, len);
-    if (cbargs == NULL) {
-	return NULL;
-    }
-    
-    data = Py_BuildValue("(ON)", callback, cbargs);
-    if (data == NULL) {
-	return NULL;
-    }
-    
-    gtk_container_foreach_full(GTK_CONTAINER(self->obj),
-			       NULL,
-			       (GtkCallbackMarshal)pygtk_handler_marshal,
-			       data,
-			       (GtkDestroyNotify)pyg_destroy_notify);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-#endif
-
-%%
 override gtk_label_get noargs
 static PyObject *
 _wrap_gtk_label_get(PyGObject *self)
