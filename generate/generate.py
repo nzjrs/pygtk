@@ -224,7 +224,7 @@ class FunctionDefsParser(TypesParser):
 		parseList = []  # args to PyArg_ParseTuple
 		argList = []    # args to actual function
 		extraCode = []  # any extra code (for enums, flags)
-		if retType == 'string':
+		if retType == 'string' or retType == 'string_or_null':
 			# this is needed so we can free result string
 			varDefs.add('char', '*ret')
 			varDefs.add('PyObject', '*py_ret')
@@ -400,7 +400,11 @@ class FunctionDefsParser(TypesParser):
 		elif retType == 'string':
 			impl.write('    ret = ')
 			impl.write(funcCall)
-			impl.write(';\n    py_ret = PyString_FromString(ret);\n  g_free(ret);\n  return py_ret;\n')
+			impl.write(';\n    py_ret = PyString_FromString(ret);\n    g_free(ret);\n    return py_ret;\n')
+		elif retType == 'string_or_null':
+			impl.write('    ret = ')
+			impl.write(funcCall)
+			impl.write(';\n    if (ret) {\n        py_ret = PyString_FromString(ret);\n        g_free(ret);\n        return py_ret;\n    } else {\n        Py_INCREF(Py_None);\n        return Py_None;\n    }\n')
 		elif retType in ('char', 'uchar'):
 			impl.write('    return PyString_fromStringAndSize(*(')
 			impl.write(funcCall)
