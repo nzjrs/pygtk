@@ -29,15 +29,25 @@ linkend="method-gdkdrawable--set-colormap">set_colormap</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdrawable--get-colormap">get_colormap</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdrawable--get-visual">get_visual</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdrawable--get-depth">get_depth</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdrawable--get-screen">get_screen</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdrawable--get-display">get_display</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdrawable--draw-point">draw_point</link></methodname>
@@ -150,6 +160,31 @@ linkend="method-gdkdrawable--draw-lines">draw_lines</link></methodname>
 	<methodparam><parameter role="keyword">gc</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">points</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdrawable--draw-pixbuf">draw_pixbuf</link></methodname>
+	<methodparam><parameter
+		       role="keyword">gc</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">pixbuf</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">src_x</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">src_y</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">dest_x</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">dest_y</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">width</parameter><initializer>-1</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">height</parameter><initializer>-1</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">dither</parameter><initializer>gtk.gdk.RGB_DITHER_NORMAL</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">x_dither</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">y_dither</parameter><initializer>0</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -345,6 +380,33 @@ linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> and
 <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>.</para>
 
+    <para>These methods provide support for drawing points, lines, arcs and
+text onto what are called 'drawables'. Drawables, as the name suggests, are
+things which support drawing onto them, and are either <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> or
+<link linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>
+objects.</para>
+
+    <para>Many of the drawing operations take a <link
+linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link> argument,
+which represents a graphics context. This <link
+linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link> contains a
+number of drawing attributes such as foreground color, background color and
+line width, and is used to reduce the number of arguments needed for each
+drawing operation. See the <link linkend="class-gdkgc"><classname>Graphics
+Contexts</classname></link> section for more information.</para>
+
+    <para>Some of the drawing operations take Pango objects like <link
+linkend="class-pangocontext"><classname>pango.Context</classname></link>,
+<link linkend="class-pangolayout"><classname>pango.Layout</classname></link>
+or <link
+linkend="class-pangolayoutline"><classname>pango.LayoutLine</classname></link>
+as arguments. Use the <link
+linkend="method-gtkwidget--create-pango-context"><methodname>gtk.Widget.create_pango_context</methodname>()</link>
+or <link
+linkend="method-gtkwidget--create-pango-layout"><methodname>gtk.Widget.create_pango_layout</methodname>()</link>
+methods to obtain these objects.</para>
+
   </refsect1>
 
   <refsect1>
@@ -412,7 +474,8 @@ match.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>get_colormap</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -453,7 +516,8 @@ describing the pixel format of the drawable.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>get_depth</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -466,6 +530,60 @@ pixel</simpara></listitem>
 depth of the drawable, that is, the number of bits that make up a pixel in
 the drawable's visual. Examples are 8 bits per pixel, 24 bits per pixel,
 etc.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkdrawable--get-screen">
+      <title>gtk.gdk.Drawable.get_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_screen</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+	  associated with the drawable</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_screen</methodname>() method returns the
+<link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+associated with the drawable.</para>
+
+    </refsect2>
+
+
+    <refsect2 id="method-gdkdrawable--get-display">
+      <title>gtk.gdk.Drawable.get_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_display</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+	  associated with the drawable</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_display</methodname>() method returns the
+<link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+associated with the drawable.</para>
 
     </refsect2>
 
@@ -1019,6 +1137,135 @@ linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link>. This can be
 set with the <link
 linkend="method-gdkgc--set-line-attributes"><methodname>gtk.gdk.GC.set_line_attributes</methodname>()</link> 
 method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkdrawable--draw-pixbuf">
+      <title>gtk.gdk.Drawable.draw_pixbuf</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>draw_pixbuf</methodname>
+	  <methodparam><parameter role="keyword">gc</parameter></methodparam>
+	  <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+	  <methodparam><parameter role="keyword">src_x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">src_y</parameter></methodparam>
+	  <methodparam><parameter role="keyword">dest_x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">dest_y</parameter></methodparam>
+	  <methodparam><parameter role="keyword">width</parameter><initializer>-1</initializer></methodparam>
+	  <methodparam><parameter role="keyword">height</parameter><initializer>-1</initializer></methodparam>
+	  <methodparam><parameter role="keyword">dither</parameter><initializer>gtk.gdk.RGB_DITHER_NORMAL</initializer></methodparam>
+	  <methodparam><parameter role="keyword">x_dither</parameter><initializer>0</initializer></methodparam>
+	  <methodparam><parameter role="keyword">y_dither</parameter><initializer>0</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">gc</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link>,
+	  used for clipping, or <literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pixbuf</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">src_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>Source X coordinate within
+	  pixbuf.</simpara></listitem> </varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">src_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>Source Y coordinate within
+	  pixbuf.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">dest_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>Destination X coordinate within
+	  drawable.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">dest_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>Destination Y coordinate within
+	  drawable.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">width</parameter>&nbsp;:</term>
+	  <listitem><simpara>Width of region to render, in pixels, or -1 to
+	  use pixbuf width. Must be specified in PyGTK
+	  2.2.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">height</parameter>&nbsp;:</term>
+	  <listitem><simpara>Height of region to render, in pixels, or -1 to
+	  use pixbuf height. Must be specified in PyGTK
+	  2.2</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">dither</parameter>&nbsp;:</term>
+	  <listitem><simpara>Dithering mode for
+	  <literal>GdkRGB</literal>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">x_dither</parameter>&nbsp;:</term>
+	  <listitem><simpara>X offset for dither.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">y_dither</parameter>&nbsp;:</term>
+	  <listitem><simpara>Y offset for dither.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>draw_pixbuf</methodname>() method renders a
+rectangular portion of a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+specified by <parameter>pixbuf</parameter> to the drawable using the <link
+linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link> specified by
+<parameter>gc</parameter>. The portion of <parameter>pixbuf</parameter> that
+is rendered is specified by the origin point (<parameter>src_x</parameter>
+<parameter>src_y</parameter>) and the <parameter>width</parameter> and
+<parameter>height</parameter> arguments. <parameter>pixbuf</parameter> is
+rendered to the location in the drawable specified by
+(<parameter>dest_x</parameter>
+<parameter>dest_y</parameter>). <parameter>dither</parameter> specifies the
+dithering mode as one of:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.gdk.RGB_DITHER_NONE</literal></term>
+	  <listitem>
+	    <simpara>Never use dithering.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.RGB_DITHER_NORMAL</literal></term>
+	  <listitem>
+	    <simpara>Use dithering in 8 bits per pixel (and below)
+	    only.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.RGB_DITHER_MAX</literal></term>
+	  <listitem>
+	    <simpara>Use dithering in 16 bits per pixel and below.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The destination drawable must have a colormap. All windows have a
+colormap, however, pixmaps only have colormap by default if they were
+created with a non-<literal>None</literal> window argument. Otherwise a
+colormap must be set on them with the <link
+linkend="method-gdkdrawable--set-colormap"><methodname>gtk.gdk.Drawable.set_colormap()</methodname></link>
+method.</para>
+
+      <para>On older X servers, rendering pixbufs with an alpha channel
+involves round trips to the X server, and may be somewhat slow. The clip
+mask of <parameter>gc</parameter> is ignored, but clip rectangles and clip
+regions work fine.</para>
 
     </refsect2>
 
