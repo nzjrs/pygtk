@@ -317,7 +317,7 @@ proto_pat=re.compile(r"""
 #"""
 arg_split_pat = re.compile("\s*,\s*")
 
-def define_func(buf,fp):
+def define_func(buf,fp, prefix):
     buf=clean_func(buf)
     buf=string.split(buf,'\n')
     for p in buf:
@@ -328,6 +328,8 @@ def define_func(buf,fp):
                 sys.stderr.write('No match:|%s|\n'%p)
             continue
         func = m.group('func')
+        if func[0] == '_':
+            continue
         ret = m.group('ret')
         args=m.group('args')
         args=arg_split_pat.split(args)
@@ -335,14 +337,14 @@ def define_func(buf,fp):
             spaces = string.count(args[i], ' ')
             if spaces > 1:
                 args[i] = string.replace(args[i], ' ', '-', spaces - 1)
-            
-        write_func(fp, func, ret, args)
+                
+        write_func(fp, func, ret, args, prefix)
 
 get_type_pat = re.compile(r'(const-)?([A-Za-z0-9]+)\*?\s+')
 pointer_pat = re.compile('.*\*$')
 func_new_pat = re.compile('(\w+)_new$')
 
-def write_func(fp, name, ret, args):
+def write_func(fp, name, ret, args, prefix):
     if len(args) >= 1:
         # methods must have at least one argument
         munged_name = string.replace(name, '_', '')
@@ -352,6 +354,10 @@ def write_func(fp, name, ret, args):
             if munged_name[:len(obj)] == string.lower(obj):
                 regex = string.join(map(lambda x: x+'_?',string.lower(obj)),'')
                 mname = re.sub(regex, '', name)
+                if prefix:
+                    l = len(prefix) + 1
+                    if mname[:l] == prefix and mname[l+1] == '_':
+                        mname = mname[l+1:]
                 fp.write('(define-method ' + mname + '\n')
                 fp.write('  (of-object "' + obj + '")\n')
                 fp.write('  (c-name "' + name + '")\n')
@@ -378,8 +384,16 @@ def write_func(fp, name, ret, args):
                     fp.write('  (varargs #t)\n')
                 fp.write(')\n\n')
                 return
+    if prefix:
+        l = len(prefix)
+        if name[:l] == prefix and name[l] == '_':
+            fname = name[l+1:]
+        else:
+            fname = name
+    else:
+        fname = name
     # it is either a constructor or normal function
-    fp.write('(define-function ' + name + '\n')
+    fp.write('(define-function ' + fname + '\n')
     fp.write('  (c-name "' + name + '")\n')
 
     # Hmmm... Let's asume that a constructor function name
@@ -415,7 +429,7 @@ def write_func(fp, name, ret, args):
         fp.write('  (varargs #t)\n')
     fp.write(')\n\n')
 
-def write_def(input,output=None):
+def write_def(input,output=None, prefix=None):
     fp = open(input)
     buf = fp.read()
     fp.close()
@@ -428,20 +442,23 @@ def write_def(input,output=None):
         fp = sys.stdout
 
     fp.write('\n;; From %s\n\n' % input)
-    buf = define_func(buf, fp)
+    buf = define_func(buf, fp, prefix)
     fp.write('\n')
 
 # ------------------ Main function -----------------
 
 verbose=0
-if __name__ == '__main__':
+def main(args):
     import getopt
+    global verbose
 
     onlyenums = 0
     onlyobjdefs = 0
-
-    opts, args = getopt.getopt(sys.argv[1:], 'v',
-                               ['onlyenums', 'onlyobjdefs'])
+    separate = 0
+    modulename = None
+    opts, args = getopt.getopt(args[1:], 'vs:m:',
+                               ['onlyenums', 'onlyobjdefs',
+                                'modulename=', 'separate='])
     for o, v in opts:
         if o == '-v':
             verbose = 1
@@ -449,10 +466,14 @@ if __name__ == '__main__':
             onlyenums = 1
         if o == '--onlyobjdefs':
             onlyobjdefs = 1
+        if o in ('-s', '--separate'):
+            separate = v
+        if o in ('-m', '--modulename'):
+            modulename = v
             
     if not args[0:1]:
         print 'Must specify at least one input file name'
-        sys.exit(-1)
+        return -1
 
     # read all the object definitions in
     objdefs = []
@@ -462,13 +483,31 @@ if __name__ == '__main__':
         find_obj_defs(buf, objdefs)
         find_enum_defs(buf, enums)
     objdefs = sort_obj_defs(objdefs)
-    if onlyenums:
-        write_enum_defs(enums,None)
-    elif onlyobjdefs:
-        write_obj_defs(objdefs,None)
-    else:
-        write_obj_defs(objdefs,None)
-        write_enum_defs(enums,None)
 
-	for filename in args:
-            write_def(filename,None)
+    if separate:
+        types = file(separate + '-types.defs', 'w')
+        methods = file(separate + '.defs', 'w')
+        
+        write_obj_defs(objdefs,types)
+        write_enum_defs(enums,types)
+        types.close()
+        print "Wrote %s-types.defs" % separate
+        
+        for filename in args:
+            write_def(filename,methods,prefix=modulename)
+        methods.close()
+        print "Wrote %s.defs" % separate
+    else:
+        if onlyenums:
+            write_enum_defs(enums,None)
+        elif onlyobjdefs:
+            write_obj_defs(objdefs,None)
+        else:
+            write_obj_defs(objdefs,None)
+            write_enum_defs(enums,None)
+
+            for filename in args:
+                write_def(filename,None,prefix=modulename)
+            
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
