@@ -201,6 +201,17 @@ linkend="function-pango--attrscale">pango.AttrScale</link></methodname>
 	<methodparam><parameter
 		       role="keyword">end_index</parameter>
 	  <initializer>1</initializer></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-pango--attrfallback">pango.AttrFallback</link></methodname>
+	<methodparam><parameter
+		       role="keyword">fallback</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">start_index</parameter>
+	  <initializer>0</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">end_index</parameter>
+	  <initializer>1</initializer></methodparam>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -397,6 +408,13 @@ function for more details.</entry>
 	      <entry>The font size scale factor as a float.</entry>
 	    </row>
 
+	    <row valign="top">
+	      <entry>"value"</entry> <entry>Read</entry>
+	      <entry><literal>ATTR_FALLBACK</literal></entry>
+	      <entry><literal>TRUE</literal> if font fallback is
+	      enabled.</entry>
+	    </row>
+
 	  </tbody>
 	</tgroup>
       </informaltable>
@@ -520,6 +538,13 @@ function for more details.</simpara>
 	<term><literal>pango.ATTR_SCALE</literal></term>
 	<listitem>
 	  <simpara>Specifies a font size scale factor.</simpara>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>pango.ATTR_FALLBACK</literal></term>
+	<listitem>
+	  <simpara>if <literal>TRUE</literal>, fallback to other fonts is
+	  enabled (</simpara>
 	</listitem>
       </varlistentry>
     </variablelist>
@@ -1601,6 +1626,61 @@ magnification steps (1.2 * 1.2).</simpara>
       </variablelist>
 
       <para></para>
+
+    </refsect2>
+
+    <refsect2 id="function-pango--attrfallback">
+      <title>pango.AttrFallback</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>pango.AttrFallback</methodname>
+	  <methodparam><parameter
+			 role="keyword">fallback</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">start_index</parameter>
+	    <initializer>0</initializer></methodparam>
+	  <methodparam><parameter
+			 role="keyword">end_index</parameter>
+	    <initializer>1</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">fallback</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, we should fall back
+	  on other fonts for characters the active font is
+	  missing.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">start_index</parameter>&nbsp;:</term>
+	  <listitem><simpara>the index of the start of the attribute
+application in the text.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">end_index</parameter>&nbsp;:</term>
+	  <listitem><simpara>the index of the end of the attribute
+application in the text.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-pangoattribute"><classname>pango.Attribute</classname></link>
+object</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>AttrFallback</function>() function creates a new
+<link
+linkend="class-pangoattribute"><classname>pango.Attribute</classname></link>
+object of the type <literal>pango.ATTR_FALLBACK</literal>. If fallback is
+<literal>TRUE</literal> other fonts on the system can be used to provide
+characters missing from the current font. Otherwise, only characters from
+the closest matching font can be used.</para>
 
     </refsect2>
 
