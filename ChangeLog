@@ -1,3 +1,25 @@
+2001-07-08  James Henstridge  <james@daa.com.au>
+
+	* codegen/defsconvert.py (convert): new program to convert v2 defs
+	to v3 defs.  It will probably only work with files in the style
+	created by the h2def.py program.
+
+2001-07-07  James Henstridge  <james@daa.com.au>
+
+	* codegen/h2def.py (to_upper_str): add function to convert a type
+	name to upper case with underscores using the same algorithm as
+	gtk+ (with an extra rule to catch cases like GObject.
+	(typecode): function to create a typecode like GTK_TYPE_WIDGET
+	from the type name.
+	(write_obj_defs): output v3 defs.
+	(write_enum_defs): output v3 defs.
+	(define_func): replace 'G_CONST_RETURN ' to 'const-' for return
+	value.
+	(write_func): output v3 defs.
+
+	* codegen/scmexpr.py (parse): make the parser ignore single
+	quotes, which are used in the new defs format.
+
 2001-07-03  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.override (_wrap_gtk_list_store_new): fix up function

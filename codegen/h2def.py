@@ -12,9 +12,31 @@
 
 import string, sys, re, types
 
+# ------------------ Create typecodes from typenames ---------
+
+_upperstr_pat1 = re.compile(r'([^A-Z])([A-Z])')
+_upperstr_pat2 = re.compile(r'([A-Z][A-Z])([A-Z][0-9a-z])')
+_upperstr_pat3 = re.compile(r'^([A-Z])([A-Z])')
+
+def to_upper_str(name):
+    """Converts a typename to the equivalent upercase and underscores
+    name.  This is used to form the type conversion macros and enum/flag
+    name variables"""
+    name = _upperstr_pat1.sub(r'\1_\2', name)
+    name = _upperstr_pat2.sub(r'\1_\2', name)
+    name = _upperstr_pat3.sub(r'\1_\2', name, count=1)
+    return string.upper(name)
+
+def typecode(typename):
+    """create a typecode (eg. GTK_TYPE_WIDGET) from a typename"""
+    return string.replace(to_upper_str(typename), '_', '_TYPE_', 1)
+
+
 # ------------------ Find object definitions -----------------
 
 obj_name_pat = "[A-Z][a-z]*[A-Z][A-Za-z0-9]*"
+
+split_prefix_pat = re.compile('([A-Z][a-z]*)([A-Za-z0-9]+)')
 
 def find_obj_defs(buf, objdefs=[]):
     """
@@ -76,30 +98,21 @@ def write_obj_defs(objdefs, output):
     fp.write(';; -*- scheme -*-\n')
     fp.write('; object definitions ...\n')
 
-    pat = re.compile('([A-Z][a-z]+)([A-Za-z0-9]+)')
     for klass, parent in objdefs:
-        m = pat.match(klass)
+        m = split_prefix_pat.match(klass)
         cmodule = None
         cname = klass
         if m:
             cmodule = m.group(1)
             cname = m.group(2)
-        if parent:
-            m = pat.match(parent)
-            pmodule = None
-            pname = parent
-            if m:
-                pmodule = m.group(1)
-                pname = m.group(2)
 
-        fp.write('(object ' + cname + '\n')
+        fp.write('(define-object ' + cname + '\n')
         if cmodule:
-            fp.write('  (in-module ' + cmodule + ')\n')
+            fp.write('  (in-module "' + cmodule + '")\n')
         if parent:
-            fp.write('  (parent ' + pname)
-            if pmodule: fp.write(' (' + pmodule + ')')
-            fp.write(')\n')
-        fp.write('  (c-name ' + klass + ')\n')
+            fp.write('  (parent "' + parent + '")\n')
+        fp.write('  (c-name "' + klass + '")\n')
+        fp.write('  (gtype-id "' + typecode(klass) + '")\n')
         # should do something about accessible fields
         fp.write(')\n\n')
 
@@ -141,32 +154,34 @@ def write_enum_defs(enums, output=None):
         fp=sys.stdout
 
     fp.write(';; Enumerations and flags ...\n\n')
-    pat = re.compile('([A-Z][a-z]+)([A-Za-z0-9]+)')
     trans = string.maketrans(string.uppercase + '_', string.lowercase + '-')
     for cname, isflags, entries in enums:
         name = cname
         module = None
-        m = pat.match(cname)
+        m = split_prefix_pat.match(cname)
         if m:
             module = m.group(1)
             name = m.group(2)
         if isflags:
-            fp.write('(flags ' + name + '\n')
+            fp.write('(define-flags ' + name + '\n')
         else:
-            fp.write('(enum ' + name + '\n')
+            fp.write('(define-enum ' + name + '\n')
         if module:
-            fp.write('  (in-module ' + module + ')\n')
-        fp.write('  (c-name ' + cname + ')\n')
+            fp.write('  (in-module "' + module + '")\n')
+        fp.write('  (c-name "' + cname + '")\n')
+        fp.write('  (gtype-id "' + typecode(cname) + '")\n')
         prefix = entries[0]
         for ent in entries:
             # shorten prefix til we get a match ...
-            # and handle GDK_FONT_FoNT, GDK_FONT_FONTSET case
+            # and handle GDK_FONT_FONT, GDK_FONT_FONTSET case
             while ent[:len(prefix)] != prefix or len(prefix) >= len(ent):
                 prefix = prefix[:-1]
+        prefix_len = len(prefix)
+        fp.write('  (values\n')
         for ent in entries:
-            fp.write('  (value (name ' +
-                         string.translate(ent[len(prefix):], trans) +
-                         ') (c-name ' + ent + '))\n')
+            fp.write('    \'("%s" "%s")\n' %
+                     (string.translate(ent[prefix_len:], trans), ent))
+        fp.write('  )\n')
         fp.write(')\n\n')
 
 # ------------------ Find function definitions -----------------
@@ -229,6 +244,7 @@ def define_func(buf,fp):
             continue
         func = m.group('func')
         ret = m.group('ret')
+        ret = string.replace(ret, 'G_CONST_RETURN ', 'const-')
         ret = string.replace(ret, 'const ', 'const-')
         args=m.group('args')
         args=arg_split_pat.split(args,', ')
@@ -239,7 +255,6 @@ def define_func(buf,fp):
         write_func(fp, func, ret, args)
 
 get_type_pat = re.compile(r'(const-)?([A-Za-z0-9]+)\*?\s+')
-get_mod_pat = re.compile('([A-Z][a-z]+)([A-Za-z0-9]+)')
 
 def write_func(fp, name, ret, args):
     if len(args) >= 1:
@@ -251,41 +266,55 @@ def write_func(fp, name, ret, args):
             if munged_name[:len(obj)] == string.lower(obj):
                 regex = string.join(map(lambda x: x+'_?',string.lower(obj)),'')
                 mname = re.sub(regex, '', name)
-                fp.write('(method ' + mname + '\n')
-                m = get_mod_pat.match(obj)
-                if m:
-                    fp.write('  (of-object ' + m.group(2) +
-                             ' (' + m.group(1) + '))\n')
-                fp.write('  (c-name ' + name + ')\n')
+                fp.write('(define-method ' + mname + '\n')
+                fp.write('  (of-object "' + obj + '")\n')
+                fp.write('  (c-name "' + name + '")\n')
                 if ret != 'void':
-                    fp.write('  (return-type ' + ret + ')\n')
+                    fp.write('  (return-type "' + ret + '")\n')
                 else:
-                    fp.write('  (return-type none)\n')
+                    fp.write('  (return-type "none")\n')
+                is_varargs = 0
+                has_args = len(args) > 1
                 for arg in args[1:]:
                     if arg == '...':
-                        fp.write('  (varargs t)\n')
+                        is_varargs = 1
                     elif arg in ('void', 'void '):
-                        pass
-                    else:
-                        fp.write('  (parameter (type-and-name ' + arg + '))\n')
+                        has_args = 0
+                if has_args:
+                    fp.write('  (parameters\n')
+                    for arg in args[1:]:
+                        if arg != '...':
+                            fp.write('    \'("%s" "%s")\n' %
+                                     tuple(string.split(arg)))
+                    fp.write('  )\n')
+                if is_varargs:
+                    fp.write('  (varargs #t)\n')
                 fp.write(')\n\n')
                 return
     # it is either a constructor or normal function
     # FIXME: put in constructor check
-    fp.write('(function ' + name + '\n')
+    fp.write('(define-function ' + name + '\n')
     # do in-module thingee
-    fp.write('  (c-name ' + name + ')\n')
+    fp.write('  (c-name "' + name + '")\n')
     if ret != 'void':
-        fp.write('  (return-type ' + ret + ')\n')
+        fp.write('  (return-type "' + ret + '")\n')
     else:
-        fp.write('  (return-type none)\n')
+        fp.write('  (return-type "none")\n')
+    is_varargs = 0
+    has_args = len(args) > 0
     for arg in args:
         if arg == '...':
-            fp.write('  (varargs t)\n')
-        elif arg == 'void':
-            pass
-        else:
-            fp.write('  (parameter (type-and-name ' + arg + '))\n')
+            is_varargs = 1
+        elif arg in ('void', 'void '):
+            has_args = 0
+    if has_args:
+        fp.write('  (parameters\n')
+        for arg in args:
+            if arg != '...':
+                fp.write('    \'("%s" "%s")\n' % tuple(string.split(arg)))
+        fp.write('  )\n')
+    if is_varargs:
+        fp.write('  (varargs #t)\n')
     fp.write(')\n\n')
 
 def write_def(input,output=None):
@@ -304,20 +333,7 @@ def write_def(input,output=None):
     buf = define_func(buf, fp)
     fp.write('\n')
 
-# ------------------ Glue code -----------------
-
-def make_gdk_defs():
-    """ This is intended to be run only by the package maintainer!!! """
-    p='/usr/local/src/gtk+-1.2.6/gdk/'
-    gdk= [
-        'gdk.h',
-        'gdkrgb.h',
-        #'gdktypes.h'
-        ]
-    fp=open('_gdk_func.defs','w')
-    for h in gdk:
-        write_def(p+h,fp)
-    fp.close()
+# ------------------ Main function -----------------
 
 verbose=0
 if __name__ == '__main__':

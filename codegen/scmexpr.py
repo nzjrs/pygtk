@@ -44,9 +44,11 @@ def parse(fp):
 		stack[-1] = stack[-1] + (string.atof(str),)
 	    elif line[0] == ';':
 		break
+            elif line[0] == "'":
+		line = line[1:] # consume single quote
 	    else:
 		str = ""
-		while line and line[0] not in " \t();\n":
+		while line and line[0] not in "(); '\t\r\n":
 		    str = str + line[0]
 		    line = line[1:]
 		stack[-1] = stack[-1] + (str,)
