@@ -1,3 +1,37 @@
+2002-03-16  James Henstridge  <james@daa.com.au>
+
+	* atk.override (_wrap_atk_relation_new): remove unused variable.
+
+	* gtk/gtk-types.defs (Window): transient_parent field is a
+	GtkWindow, rather than a GtkWidget.
+
+	* gtk/gtk.override (_wrap_gtk_ctree_node_tp_getattr): same here.
+
+	* gtk/gdk.override (_wrap_gdk_event_tp_getattr): change to
+	"override-slot".
+
+	* codegen/codegen.py (slots_list): a list of slots that we allow
+	overriding of.
+	(typetmpl): add extra substs for some slots.
+	(write_class): add code that sets up the slot substitutions.
+	(interfacetypetmpl): add slot substitutions.
+	(boxedtmpl): add slot substitutions.
+	(write_interface): add code to set slots.
+	(write_interface): add code to set slots, and get rid of the old
+	getattr handling.
+
+	* codegen/override.py (Overrides.__parse_override): add support
+	for an "override-slot" section to overrides file for overriding a
+	slot in the PyTypeObject vtable.
+
+	* gtk/gtk.override (_wrap_gtk_selection_data_get_text): add an
+	override for this -- it was the only one correctly making use of 
+
+	* codegen/argtypes.py (UCharArg.write_param): unimplement.
+	(guchar *) does not mean unicode, and often uchar returns are just
+	date (eg. pixbuf data).  gtk_selection_data_get_text is the
+	exception.
+
 2002-03-15  James Henstridge  <james@daa.com.au>
 
 	* gtk/gdk.override (_wrap_gdk_colormap_alloc_color): new function

@@ -650,9 +650,9 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     return 0;
 }
 %%
-override gdk_event_getattr
+override-slot GdkEvent.tp_getattr
 PyObject *
-_wrap_gdk_event_getattr(PyObject *self, char *attr)
+_wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
 {
     GdkEvent *event = pyg_boxed_get(self, GdkEvent);
     guint i;

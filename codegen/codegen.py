@@ -49,6 +49,12 @@ class FileOutput:
         '''resets line numbering to the original file'''
         self.setline(self.lineno + 1, self.filename)
 
+# list of slots that we will override
+slots_list = ['tp_getattr', 'tp_setattr', 'tp_compare', 'tp_repr',
+              'tp_as_number', 'tp_as_sequence', 'tp_as_mapping', 'tp_hash',
+              'tp_call', 'tp_str', 'tp_richcompare', 'tp_iter',
+              'tp_iternext', 'tp_descr_get', 'tp_descr_set']
+
 # have to do return type processing
 functmpl = ('static PyObject *\n'
             '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n'
@@ -124,16 +130,16 @@ typetmpl = """PyTypeObject Py%(class)s_Type = {
     /* methods */
     (destructor)0,			/* tp_dealloc */
     (printfunc)0,			/* tp_print */
-    (getattrfunc)0,			/* tp_getattr */
-    (setattrfunc)0,			/* tp_setattr */
-    (cmpfunc)0,				/* tp_compare */
-    (reprfunc)0,			/* tp_repr */
-    0,					/* tp_as_number */
-    0,					/* tp_as_sequence */
-    0,					/* tp_as_mapping */
-    (hashfunc)0,			/* tp_hash */
-    (ternaryfunc)0,			/* tp_call */
-    (reprfunc)0,			/* tp_str */
+    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
+    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
+    (cmpfunc)%(tp_compare)s,		/* tp_compare */
+    (reprfunc)%(tp_repr)s,		/* tp_repr */
+    %(tp_as_number)s,			/* tp_as_number */
+    %(tp_as_sequence)s,			/* tp_as_sequence */
+    %(tp_as_mapping)s,			/* tp_as_mapping */
+    (hashfunc)%(tp_hash)s,		/* tp_hash */
+    (ternaryfunc)%(tp_call)s,		/* tp_call */
+    (reprfunc)%(tp_str)s,		/* tp_str */
     (getattrofunc)0,			/* tp_getattro */
     (setattrofunc)0,			/* tp_setattro */
     0,					/* tp_as_buffer */
@@ -141,17 +147,17 @@ typetmpl = """PyTypeObject Py%(class)s_Type = {
     NULL, 				/* Documentation string */
     (traverseproc)0,			/* tp_traverse */
     (inquiry)0,				/* tp_clear */
-    (richcmpfunc)0,			/* tp_richcompare */
+    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
     offsetof(PyGObject, weakreflist),	/* tp_weaklistoffset */
-    (getiterfunc)0,			/* tp_iter */
-    (iternextfunc)0,			/* tp_iternext */
+    (getiterfunc)%(tp_iter)s,		/* tp_iter */
+    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
     %(methods)s,			/* tp_methods */
     0,					/* tp_members */
     %(getsets)s,		       	/* tp_getset */
     NULL,				/* tp_base */
     NULL,				/* tp_dict */
-    (descrgetfunc)0,			/* tp_descr_get */
-    (descrsetfunc)0,			/* tp_descr_set */
+    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
+    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
     offsetof(PyGObject, inst_dict),	/* tp_dictoffset */
     (initproc)%(initfunc)s,		/* tp_init */
 };\n\n"""
@@ -165,16 +171,16 @@ interfacetypetmpl = """PyTypeObject Py%(class)s_Type = {
     /* methods */
     (destructor)0,			/* tp_dealloc */
     (printfunc)0,			/* tp_print */
-    (getattrfunc)0,			/* tp_getattr */
-    (setattrfunc)0,			/* tp_setattr */
-    (cmpfunc)0,				/* tp_compare */
-    (reprfunc)0,			/* tp_repr */
-    0,					/* tp_as_number */
-    0,					/* tp_as_sequence */
-    0,					/* tp_as_mapping */
-    (hashfunc)0,			/* tp_hash */
-    (ternaryfunc)0,			/* tp_call */
-    (reprfunc)0,			/* tp_str */
+    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
+    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
+    (cmpfunc)%(tp_compare)s,		/* tp_compare */
+    (reprfunc)%(tp_repr)s,		/* tp_repr */
+    %(tp_as_number)s,			/* tp_as_number */
+    %(tp_as_sequence)s,			/* tp_as_sequence */
+    %(tp_as_mapping)s,			/* tp_as_mapping */
+    (hashfunc)%(tp_hash)s,		/* tp_hash */
+    (ternaryfunc)%(tp_call)s,		/* tp_call */
+    (reprfunc)%(tp_str)s,		/* tp_str */
     (getattrofunc)0,			/* tp_getattro */
     (setattrofunc)0,			/* tp_setattro */
     0,					/* tp_as_buffer */
@@ -182,17 +188,17 @@ interfacetypetmpl = """PyTypeObject Py%(class)s_Type = {
     NULL, 				/* Documentation string */
     (traverseproc)0,			/* tp_traverse */
     (inquiry)0,				/* tp_clear */
-    (richcmpfunc)0,			/* tp_richcompare */
+    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
     0,					/* tp_weaklistoffset */
-    (getiterfunc)0,			/* tp_iter */
-    (iternextfunc)0,			/* tp_iternext */
+    (getiterfunc)%(tp_iter)s,		/* tp_iter */
+    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
     %(methods)s,			/* tp_methods */
     0,					/* tp_members */
     0,					/* tp_getset */
     NULL,				/* tp_base */
     NULL,				/* tp_dict */
-    (descrgetfunc)0,			/* tp_descr_get */
-    (descrsetfunc)0,			/* tp_descr_set */
+    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
+    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
     0,					/* tp_dictoffset */
     (initproc)0,			/* tp_init */
 };\n\n"""
@@ -246,16 +252,16 @@ boxedtmpl = """PyTypeObject Py%(typename)s_Type = {
     /* methods */
     (destructor)0,			/* tp_dealloc */
     (printfunc)0,			/* tp_print */
-    (getattrfunc)%(getattr)s,		/* tp_getattr */
-    (setattrfunc)0,			/* tp_setattr */
-    (cmpfunc)0,				/* tp_compare */
-    (reprfunc)0,			/* tp_repr */
-    0,					/* tp_as_number */
-    0,					/* tp_as_sequence */
-    0,					/* tp_as_mapping */
-    (hashfunc)0,			/* tp_hash */
-    (ternaryfunc)0,			/* tp_call */
-    (reprfunc)0,			/* tp_str */
+    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
+    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
+    (cmpfunc)%(tp_compare)s,		/* tp_compare */
+    (reprfunc)%(tp_repr)s,		/* tp_repr */
+    %(tp_as_number)s,			/* tp_as_number */
+    %(tp_as_sequence)s,			/* tp_as_sequence */
+    %(tp_as_mapping)s,			/* tp_as_mapping */
+    (hashfunc)%(tp_hash)s,		/* tp_hash */
+    (ternaryfunc)%(tp_call)s,		/* tp_call */
+    (reprfunc)%(tp_str)s,		/* tp_str */
     (getattrofunc)0,			/* tp_getattro */
     (setattrofunc)0,			/* tp_setattro */
     0,					/* tp_as_buffer */
@@ -263,17 +269,17 @@ boxedtmpl = """PyTypeObject Py%(typename)s_Type = {
     NULL,				/* Documentation string */
     (traverseproc)0,			/* tp_traverse */
     (inquiry)0,				/* tp_clear */
-    (richcmpfunc)0,			/* tp_richcompare */
+    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
     0,					/* tp_weaklistoffset */
-    (getiterfunc)0,			/* tp_iter */
-    (iternextfunc)0,			/* tp_iternext */
+    (getiterfunc)%(tp_iter)s,		/* tp_iter */
+    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
     %(methods)s,			/* tp_methods */
     0,					/* tp_members */
     %(getsets)s,			/* tp_getset */
     NULL,				/* tp_base */
     NULL,				/* tp_dict */
-    (descrgetfunc)0,			/* tp_descr_get */
-    (descrsetfunc)0,			/* tp_descr_set */
+    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
+    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
     0,					/* tp_dictoffset */
     (initproc)%(initfunc)s,		/* tp_init */
 };\n\n"""
@@ -306,16 +312,16 @@ pointertmpl = """PyTypeObject Py%(typename)s_Type = {
     /* methods */
     (destructor)0,			/* tp_dealloc */
     (printfunc)0,			/* tp_print */
-    (getattrfunc)%(getattr)s,		/* tp_getattr */
-    (setattrfunc)0,			/* tp_setattr */
-    (cmpfunc)0,				/* tp_compare */
-    (reprfunc)0,			/* tp_repr */
-    0,					/* tp_as_number */
-    0,					/* tp_as_sequence */
-    0,					/* tp_as_mapping */
-    (hashfunc)0,			/* tp_hash */
-    (ternaryfunc)0,			/* tp_call */
-    (reprfunc)0,			/* tp_str */
+    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
+    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
+    (cmpfunc)%(tp_compare)s,		/* tp_compare */
+    (reprfunc)%(tp_repr)s,		/* tp_repr */
+    %(tp_as_number)s,			/* tp_as_number */
+    %(tp_as_sequence)s,			/* tp_as_sequence */
+    %(tp_as_mapping)s,			/* tp_as_mapping */
+    (hashfunc)%(tp_hash)s,		/* tp_hash */
+    (ternaryfunc)%(tp_call)s,		/* tp_call */
+    (reprfunc)%(tp_str)s,		/* tp_str */
     (getattrofunc)0,			/* tp_getattro */
     (setattrofunc)0,			/* tp_setattro */
     0,					/* tp_as_buffer */
@@ -323,17 +329,17 @@ pointertmpl = """PyTypeObject Py%(typename)s_Type = {
     NULL,				/* Documentation string */
     (traverseproc)0,			/* tp_traverse */
     (inquiry)0,				/* tp_clear */
-    (richcmpfunc)0,			/* tp_richcompare */
+    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
     0,					/* tp_weaklistoffset */
-    (getiterfunc)0,			/* tp_iter */
-    (iternextfunc)0,			/* tp_iternext */
+    (getiterfunc)%(tp_iter)s,		/* tp_iter */
+    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
     %(methods)s,			/* tp_methods */
     0,					/* tp_members */
     %(getsets)s,			/* tp_getset */
     NULL,				/* tp_base */
     NULL,				/* tp_dict */
-    (descrgetfunc)0,			/* tp_descr_get */
-    (descrsetfunc)0,			/* tp_descr_set */
+    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
+    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
     0,					/* tp_dictoffset */
     (initproc)%(initfunc)s,		/* tp_init */
 };\n\n"""
@@ -608,6 +614,21 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
     }
     dict['getsets'] = write_getsets(parser, objobj, castmacro, overrides, fp)
     dict['methods'] = '_Py' + dict['class'] + '_methods'
+
+    # handle slots ...
+    for slot in slots_list:
+        slotname = '%s.%s' % (objobj.c_name, slot)
+        slotfunc = '_wrap_%s_%s' % (string.lower(castmacro), slot)
+        if overrides.slot_is_overriden(slotname):
+            lineno, filename = overrides.getstartline(slotname)
+            fp.setline(lineno, filename)
+            fp.write(overrides.slot_override(slotname))
+            fp.resetline()
+            fp.write('\n\n')
+            dict[slot] = slotfunc
+        else:
+            dict[slot] = '0'
+    
     fp.write(typetmpl % dict)
 
 def write_interface(parser, interface, overrides, fp=sys.stdout):
@@ -645,9 +666,23 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
     fp.write('};\n\n')
 
     # write the type template
-    dict = { 'class': interface.c_name, 'classname': interface.name,
-             'getattr': '0' }
+    dict = { 'class': interface.c_name, 'classname': interface.name }
     dict['methods'] = '_Py' + dict['class'] + '_methods'
+
+    # handle slots ...
+    for slot in slots_list:
+        slotname = '%s.%s' % (interface.c_name, slot)
+        slotfunc = '_wrap_%s_%s' % (string.lower(castmacro), slot)
+        if overrides.slot_is_overriden(slotname):
+            lineno, filename = overrides.getstartline(slotname)
+            fp.setline(lineno, filename)
+            fp.write(overrides.slot_override(slotname))
+            fp.resetline()
+            fp.write('\n\n')
+            dict[slot] = slotfunc
+        else:
+            dict[slot] = '0'
+
     fp.write(interfacetypetmpl % dict)
 
 ## boxed types ...
@@ -834,19 +869,25 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
     # write the type template
     dict = { 'typename': boxedobj.c_name, 'initfunc': initfunc }
 
-    # handle getattr function
-    funcname = string.lower(string.replace(boxedobj.typecode,
-                                           '_TYPE_', '_', 1)) + \
-               '_getattr'
-    if overrides.is_overriden(funcname):
-        fp.write(overrides.override(funcname))
-        fp.write('\n\n')
-        funcname = '_wrap_' + funcname
-    else:
-        funcname = '0'
-    dict['getattr'] = funcname
     dict['getsets'] = write_boxed_getsets(parser, boxedobj, overrides, fp)
     dict['methods'] = '_Py' + dict['typename'] + '_methods'
+
+    # handle slots ...
+    for slot in slots_list:
+        slotname = '%s.%s' % (boxedobj.c_name, slot)
+        slotfunc = '_wrap_%s_%s' % \
+                   (string.lower(string.replace(boxedobj.typecode,
+                                                '_TYPE_', '_', 1)), slot)
+        if overrides.slot_is_overriden(slotname):
+            lineno, filename = overrides.getstartline(slotname)
+            fp.setline(lineno, filename)
+            fp.write(overrides.slot_override(slotname))
+            fp.resetline()
+            fp.write('\n\n')
+            dict[slot] = slotfunc
+        else:
+            dict[slot] = '0'
+
     fp.write(boxedtmpl % dict)
 
 ## pointer types ...
@@ -1028,19 +1069,25 @@ def write_pointer(parser, pointerobj, overrides, fp=sys.stdout):
     # write the type template
     dict = { 'typename': pointerobj.c_name, 'initfunc': initfunc }
 
-    # handle getattr function
-    funcname = string.lower(string.replace(pointerobj.typecode,
-                                           '_TYPE_', '_', 1)) + \
-               '_getattr'
-    if overrides.is_overriden(funcname):
-        fp.write(overrides.override(funcname))
-        fp.write('\n\n')
-        funcname = '_wrap_' + funcname
-    else:
-        funcname = '0'
-    dict['getattr'] = funcname
     dict['getsets'] = write_pointer_getsets(parser, pointerobj, overrides, fp)
     dict['methods'] = '_Py' + dict['typename'] + '_methods'
+
+    # handle slots ...
+    for slot in slots_list:
+        slotname = '%s.%s' % (pointerobj.c_name, slot)
+        slotfunc = '_wrap_%s_%s' % \
+                   (string.lower(string.replace(pointerobj.typecode,
+                                                '_TYPE_', '_', 1)), slot)
+        if overrides.slot_is_overriden(slotname):
+            lineno, filename = overrides.getstartline(slotname)
+            fp.setline(lineno, filename)
+            fp.write(overrides.slot_override(slotname))
+            fp.resetline()
+            fp.write('\n\n')
+            dict[slot] = slotfunc
+        else:
+            dict[slot] = '0'
+
     fp.write(pointertmpl % dict)
 
 

@@ -18,6 +18,7 @@ class Overrides:
         self.noargs = {}
         self.startlines = {}
         self.override_attrs = {}
+        self.override_slots = {}
         self.headers = ''
         self.init = ''
         self.imports = []
@@ -75,6 +76,10 @@ class Overrides:
             attr = words[1]
             self.override_attrs[attr] = rest
             self.startlines[attr] = (startline + 1, filename)
+        elif words[0] == 'override-slot':
+            slot = words[1]
+            self.override_slots[slot] = rest
+            self.startlines[slot] = (startline + 1, filename)
         elif words[0] == 'headers':
             self.headers = '%s\n#line %d "%s"\n%s' % \
                            (self.headers, startline + 1, filename, rest)
@@ -108,6 +113,10 @@ class Overrides:
         return self.override_attrs.has_key(attr)
     def attr_override(self, attr):
         return self.override_attrs[attr]
+    def slot_is_overriden(self, slot):
+        return self.override_slots.has_key(slot)
+    def slot_override(self, slot):
+        return self.override_slots[slot]
     def get_headers(self):
         return self.headers
     def get_init(self):

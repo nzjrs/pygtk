@@ -302,6 +302,22 @@ _wrap_gtk_selection_data_set(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
+override gtk_selection_data_get_text noargs
+static PyObject *
+_wrap_gtk_selection_data_get_text(PyObject *self)
+{
+    guchar *ret;
+
+    ret = gtk_selection_data_get_text(pyg_boxed_get(self, GtkSelectionData));
+    if (ret) {
+	PyObject *py_ret = PyUnicode_DecodeUTF8(ret, strlen(ret), "strict");
+	g_free(ret);
+	return py_ret;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_widget_draw kwargs
 static PyObject *
 _wrap_gtk_widget_draw(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -3328,9 +3344,9 @@ _wrap_gtk_ctree_node_get_row_data(PyGObject *self, PyObject *args,
     return data;
 }
 %%
-override gtk_ctree_node_getattr
+override-slot GtkCTreeNode.tp_getattr
 static PyObject *
-_wrap_gtk_ctree_node_getattr(PyGBoxed *self, char *attr)
+_wrap_gtk_ctree_node_tp_getattr(PyGPointer *self, char *attr)
 {
     if (!strcmp(attr, "__members__"))
 	return Py_BuildValue("[ssssss]", "children", "expanded", "is_leaf",
