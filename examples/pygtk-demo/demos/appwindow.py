@@ -61,7 +61,7 @@ def register_stock_icons ():
     factory.add_default ()
     
     pixbuf = gtk.gdk.pixbuf_new_from_file ('gtk-logo-rgb.gif')
-    pixbuf.add_alpha(True, 0xff, 0xff, 0xff)
+    pixbuf = pixbuf.add_alpha(True, chr(0xff), chr(0xff), chr(0xff))
 
     # Register icon to accompany stock item
     if pixbuf:
