@@ -100,29 +100,25 @@ connect_many(const gchar *handler_name, GObject *obj,
     if (PyTuple_Check(tuple)) {
 	PyObject *callback = PyTuple_GetItem(tuple, 0);
 	PyObject *extra = PySequence_GetSlice(tuple, 1, PyTuple_Size(tuple));
+	PyObject *other = NULL;
 
-	if (connect_object) {
-	    PyObject *other = pygobject_new((GObject *)connect_object);
+	if (connect_object)
+	    other = pygobject_new((GObject *)connect_object);
 
-	    closure = pyg_closure_new(callback, extra, other);
-	} else {
-	    closure = pyg_closure_new(callback, extra, NULL);
-	}	    
+	closure = pyg_closure_new(callback, extra, other);
 	Py_DECREF(extra);
     } else if (PyCallable_Check(tuple)) {
-	if (connect_object) {
-	    PyObject *other = pygobject_new((GObject *)connect_object);
+	PyObject *other = NULL;
 
-	    closure = pyg_closure_new(tuple, NULL, other);
-	} else {
-	    closure = pyg_closure_new(tuple, NULL, NULL);
-	}
+	if (connect_object)
+	    other = pygobject_new((GObject *)connect_object);
+
+	closure = pyg_closure_new(tuple, NULL, other);
     } else {
 	g_warning("handler for `%s' not callable or a tuple", handler_name);
 	Py_DECREF(tuple);
 	return;
     }
-    Py_DECREF(tuple);
 
     g_signal_connect_closure(obj, signal_name, closure, after);
 }
