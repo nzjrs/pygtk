@@ -403,6 +403,44 @@ class GErrorArg(ArgType):
         arglist.append('NULL')
         return ''
 
+class GtkTreePathArg(ArgType):
+    # haven't done support for default args.  Is it needed?
+    null = '    if (PyTuple_Check(py_%(name)s))\n' + \
+	   '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n' + \
+	   '    else if (py_%(name)s != Py_None) {\n' + \
+	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a GtkTreePath or None");\n' + \
+	   '        return NULL;\n' + \
+	   '    }\n'
+    def __init__(self):
+        pass
+    def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
+		    extracode, arglist):
+	if pnull:
+            varlist.add('GtkTreePath', '*' + pname + ' = NULL')
+	    varlist.add('PyObject', '*py_' + pname + ' = Py_None')
+	    parselist.append('&py_' + pname)
+	    extracode.append(self.null % {'name':  pname,
+                                          'type':  ptype[:-1]})
+	    arglist.append(pname)
+	    return 'O'
+	else:
+	    varlist.add('PyObject', '*' + pname)
+	    parselist.append('&PyTuple_Type')
+	    parselist.append('&' + pname)
+	    arglist.append('pygtk_tree_path_from_pyobject(' + pname + ')')
+	    return 'O!'
+    def write_return(self, ptype, varlist):
+        varlist.add('GtkTreePath', '*ret')
+        varlist.add('PyObject', '*py_ret')
+	return '    ret = %(func)s;\n' + \
+	       '    if (ret) {\n' + \
+               '        py_ret = pygtk_tree_path_to_pyobject(ret);\n' + \
+               '        gtk_tree_path_free(ret);\n' + \
+	       '        return py_ret;\n' + \
+               '    }\n' + \
+	       '    Py_INCREF(Py_None);\n' + \
+	       '    return Py_None;'
+
 class ArgMatcher:
     def __init__(self):
 	self.argtypes = {}
@@ -514,6 +552,7 @@ matcher.register('const-GtkTreeIter*', matcher.get('GtkTreeIter*'))
 
 matcher.register('GdkAtom', AtomArg())
 matcher.register('GError**', GErrorArg())
+matcher.register('GtkTreePath*', GtkTreePathArg())
 
 matcher.register_object('GObject', None)
 

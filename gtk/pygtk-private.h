@@ -82,6 +82,10 @@ void pygtk_register_boxed(GtkType boxed_type,
 			  PyObject *(*fromarg)(gpointer boxed),
 			  int (*toarg)(gpointer *boxed, PyObject *obj));
 
+/* private */
+PyObject    *pygtk_tree_path_to_pyobject(GtkTreePath *path);
+GtkTreePath *pygtk_tree_path_from_pyobject(PyObject *object);
+
 static gboolean PyGtk_FatalExceptions = FALSE;
 
 #endif

@@ -909,10 +909,15 @@ PyGdkEvent_New(GdkEvent *obj)
 	    return NULL;
 	PyDict_SetItemString(self->attrs,"y", v);
 	Py_DECREF(v);
-	v = PyTuple_New(obj->motion.device->num_axes);
-	if (!v) return NULL;
-	for (i = 0; i < obj->motion.device->num_axes; i++)
-	    PyTuple_SetItem(v, i, PyFloat_FromDouble(obj->motion.axes[i]));
+	if (obj->motion.axes) {
+	    v = PyTuple_New(obj->motion.device->num_axes);
+	    if (!v) return NULL;
+	    for (i = 0; i < obj->motion.device->num_axes; i++)
+		PyTuple_SetItem(v, i, PyFloat_FromDouble(obj->motion.axes[i]));
+	} else {
+	    Py_INCREF(Py_None);
+	    v = Py_None;
+	}
 	PyDict_SetItemString(self->attrs,"axes", v);
 	Py_DECREF(v);
 	if ((v = PyInt_FromLong(obj->motion.state)) == NULL)
@@ -952,10 +957,15 @@ PyGdkEvent_New(GdkEvent *obj)
 	    return NULL;
 	PyDict_SetItemString(self->attrs,"y", v);
 	Py_DECREF(v);
-	v = PyTuple_New(obj->motion.device->num_axes);
-	if (!v) return NULL;
-	for (i = 0; i < obj->motion.device->num_axes; i++)
-	    PyTuple_SetItem(v, i, PyFloat_FromDouble(obj->motion.axes[i]));
+	if (obj->button.axes) {
+	    v = PyTuple_New(obj->button.device->num_axes);
+	    if (!v) return NULL;
+	    for (i = 0; i < obj->button.device->num_axes; i++)
+		PyTuple_SetItem(v, i, PyFloat_FromDouble(obj->button.axes[i]));
+	} else {
+	    Py_INCREF(Py_None);
+	    v = Py_None;
+	}
 	PyDict_SetItemString(self->attrs,"axes", v);
 	Py_DECREF(v);
 	if ((v = PyInt_FromLong(obj->button.state)) == NULL)
@@ -3572,6 +3582,46 @@ PyTypeObject PyGtkTreeIter_Type = {
     NULL
 };
 
+PyObject *
+pygtk_tree_path_to_pyobject(GtkTreePath *path)
+{
+    gint len, i, *indices;
+    PyObject *ret;
+
+    len = gtk_tree_path_get_depth(path);
+    indices = gtk_tree_path_get_indices(path);
+    ret = PyTuple_New(len);
+    for (i = 0; i < len; i++)
+	PyTuple_SetItem(ret, i, PyInt_FromLong(indices[i]));
+    return ret;
+}
+
+GtkTreePath *
+pygtk_tree_path_from_pyobject(PyObject *object)
+{
+    if (PyTuple_Check(object)) {
+	GtkTreePath *path;
+	guint len, i;
+
+	len = PyTuple_Size(object);
+	if (len < 1)
+	    return NULL;
+	path = gtk_tree_path_new();
+	for (i = 0; i < len; i++) {
+	    PyObject *item = PyTuple_GetItem(object, i);
+	    gint index = PyInt_AsLong(item);
+	    if (PyErr_Occurred()) {
+		gtk_tree_path_free(path);
+		PyErr_Clear();
+		return NULL;
+	    }
+	    gtk_tree_path_append_index(path, index);
+	}
+	return path;
+    }
+    return NULL;
+}
+
 /* marshalers for the boxed types.  Uses uppercase notation so that
  * the macro below can automatically install them. */
 static PyObject *
@@ -3672,6 +3722,39 @@ PyGtkTextIter_to_value(GValue *value, PyObject *object)
     }
     return -1;
 }
+static PyObject *
+PyGtkTreeIter_from_value(const GValue *value)
+{
+    return PyGtkTreeIter_New(g_value_get_boxed(value));
+}
+static int
+PyGtkTreeIter_to_value(GValue *value, PyObject *object)
+{
+    if (PyGtkTreeIter_Check(object)) {
+	g_value_set_boxed(value, PyGtkTreeIter_Get(object));
+	return 0;
+    }
+    return -1;
+}
+static PyObject *
+PyGtkTreePath_from_value(const GValue *value)
+{
+    GtkTreePath *path = (GtkTreePath *)g_value_get_boxed(value);
+
+    return pygtk_tree_path_to_pyobject(path);
+}
+static int
+PyGtkTreePath_to_value(GValue *value, PyObject *object)
+{
+    GtkTreePath *path = pygtk_tree_path_from_pyobject(object);
+
+    if (path) {
+	g_value_set_boxed(value, path);
+	gtk_tree_path_free(path);
+	return 0;
+    }
+    return -1;
+}
 
 /* We have to set ob_type here because stupid win32 does not allow you
  * to use variables from another dll in a global variable initialisation.
@@ -3709,5 +3792,8 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GtkCTreeNode);
     register_tp(GdkDevice);
     register_tp2(GtkTextIter, GTK_TYPE_TEXT_ITER);
-    register_tp(GtkTreeIter);
+    register_tp2(GtkTreeIter, GTK_TYPE_TREE_ITER);
+    pyg_boxed_register(GTK_TYPE_TREE_PATH,
+		       PyGtkTreePath_from_value,
+		       PyGtkTreePath_to_value);
 }

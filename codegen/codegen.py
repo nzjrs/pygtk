@@ -37,11 +37,11 @@ consttmpl = 'static PyObject *\n' + \
 	    '        return NULL;\n' + \
 	    '%(extracode)s\n' + \
 	    '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n' + \
-            '%(gtkobjectsink)s' + \
 	    '    if (!self->obj) {\n' + \
 	    '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n' + \
 	    '        return NULL;\n' + \
 	    '    }\n' + \
+            '%(gtkobjectsink)s' + \
 	    '    pygobject_register_wrapper((PyObject *)self);\n' + \
 	    '    Py_INCREF(Py_None);\n' + \
 	    '    return Py_None;\n' + \

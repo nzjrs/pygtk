@@ -1,3 +1,24 @@
+2000-11-11  James Henstridge  <james@daa.com.au>
+
+	* examples/testgtk/testgtk.py: start of a revamped testgtk
+	example, similar to the new one in gtk.
+
+	* gtk/gtk-types.c (PyGdkEvent_New): guard against a NULL axes
+	member in the GdkEvent structure.
+
+	* gtk/gtk.override (_wrap_gtk_tree_view_get_path_at_pos):
+	implementation of this function.
+
+	* codegen/argtypes.py (GtkTreePathArg): add an arg matcher for
+	GtkTreePath objects, that represents them as tuples of integers.
+
+	* gtk/gtk-types.c (_pygtk_register_boxed_types): add marshalers
+	for GtkTreeIter and GtkTreePath so they can be used from signal
+	handlers now.
+
+	* gtk/gtk.override, gtk/gtk.defs: make name change for
+	GtkTreeStore constructor.
+
 2000-11-10  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.override: ignore the gtk_tree_view_new function, so

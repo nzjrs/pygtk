@@ -4445,6 +4445,15 @@
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkdnd.h
 
+(method drag_get_data
+  (of-object Widget (Gtk))
+  (c-name gtk_drag_get_data)
+  (return-type none)
+  (parameter (type-and-name GdkDragContext* context))
+  (parameter (type-and-name GdkAtom target))
+  (parameter (type-and-name guint32 time) (default "GDK_CURRENT_TIME"))
+)
+
 (method finish
   (of-object DragContext (Gdk))
   (c-name gtk_drag_finish)
@@ -5792,7 +5801,7 @@
   (parameter (type-and-name guint x))
   (parameter (type-and-name guint y))
   (parameter (type-and-name guint mouse_button))
-  (parameter (type-and-name guint32 time))
+  (parameter (type-and-name guint32 time) (default "GDK_CURRENT_TIME"))
 )
 
 (method popup_with_data
@@ -5804,7 +5813,7 @@
   (parameter (type-and-name guint x))
   (parameter (type-and-name guint y))
   (parameter (type-and-name guint mouse_button))
-  (parameter (type-and-name guint32 time))
+  (parameter (type-and-name guint32 time) (default "GDK_CURRENT_TIME"))
 )
 
 (method popup_data
@@ -6942,37 +6951,37 @@
   (return-type GtkModelSimple*)
 )
 
-(method node_changed
-  (of-object ModelSimple (Gtk))
-  (c-name gtk_model_simple_node_changed)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* path))
-  (parameter (type-and-name GtkTreeIter* iter))
-)
+; (method node_changed
+;   (of-object ModelSimple (Gtk))
+;   (c-name gtk_model_simple_node_changed)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* path))
+;   (parameter (type-and-name GtkTreeIter* iter))
+; )
 
-(method node_inserted
-  (of-object ModelSimple (Gtk))
-  (c-name gtk_model_simple_node_inserted)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* path))
-  (parameter (type-and-name GtkTreeIter* iter))
-)
+; (method node_inserted
+;   (of-object ModelSimple (Gtk))
+;   (c-name gtk_model_simple_node_inserted)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* path))
+;   (parameter (type-and-name GtkTreeIter* iter))
+; )
 
-(method node_child_toggled
-  (of-object ModelSimple (Gtk))
-  (c-name gtk_model_simple_node_child_toggled)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* path))
-  (parameter (type-and-name GtkTreeIter* iter))
-)
+; (method node_child_toggled
+;   (of-object ModelSimple (Gtk))
+;   (c-name gtk_model_simple_node_child_toggled)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* path))
+;   (parameter (type-and-name GtkTreeIter* iter))
+; )
 
-(method node_deleted
-  (of-object ModelSimple (Gtk))
-  (c-name gtk_model_simple_node_deleted)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* path))
-  (parameter (type-and-name GtkTreeIter* iter))
-)
+; (method node_deleted
+;   (of-object ModelSimple (Gtk))
+;   (c-name gtk_model_simple_node_deleted)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* path))
+;   (parameter (type-and-name GtkTreeIter* iter))
+; )
 
 
 
@@ -8694,7 +8703,7 @@
   (c-name gtk_selection_owner_set)
   (return-type gboolean)
   (parameter (type-and-name GdkAtom selection))
-  (parameter (type-and-name guint32 time))
+  (parameter (type-and-name guint32 time) (default "GDK_CURRENT_TIME"))
 )
 
 (method selection_add_target
@@ -8728,7 +8737,7 @@
   (return-type gint)
   (parameter (type-and-name GdkAtom selection))
   (parameter (type-and-name GdkAtom target))
-  (parameter (type-and-name guint32 time))
+  (parameter (type-and-name guint32 time) (default "GDK_CURRENT_TIME"))
 )
 
 (method set
@@ -10286,7 +10295,7 @@
   (return-type none)
   (parameter (type-and-name GtkTextIter* iter))
   (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint len))
+  (parameter (type-and-name gint len) (default "-1"))
 )
 
 (method insert_at_cursor
@@ -12295,8 +12304,8 @@
   (return-type GtkTreeStore*)
 )
 
-(function gtk_tree_store_new_with_values
-  (c-name gtk_tree_store_new_with_values)
+(function gtk_tree_store_new_with_types
+  (c-name gtk_tree_store_new_with_types)
   (is-constructor-of GtkTreeStore)
   (return-type GtkTreeStore*)
   (parameter (type-and-name gint n_columns))
