@@ -3856,14 +3856,17 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
     int len, i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "|sOiO!s:GtkDialog.__init__", kwlist,
+                                     "|sOiO!s:GtkFileChooserDialog.__init__", kwlist,
                                      &title, &py_window, &action,
                                      &PyTuple_Type, &py_buttons,
 				     &backend))
         return -1;
 
-    if (py_window != NULL && py_window != (PyGObject *) Py_None
-        && !pygobject_check(py_window, &PyGtkWindow_Type)) {
+    if (py_window == NULL || (PyObject*)py_window == Py_None)
+	parent = NULL;
+    else if (pygobject_check(py_window, &PyGtkWindow_Type))
+	parent = GTK_WINDOW(py_window->obj);
+    else {
         PyErr_SetString(PyExc_TypeError, "parent must be a GtkWindow or None");
         return -1;
     }
@@ -3879,12 +3882,10 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
         return -1;
     }
 
-    if (py_window && py_window != (PyGObject*)Py_None)
-	window = GTK_WINDOW(py_window->obj);
-
     self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                             "title", title, "parent", window,
-                             "action", action, "file-system-backend", backend,
+                             "title", title, 
+                             "action", action,
+			     "file-system-backend", backend,
                              NULL);
 
     if (!self->obj) {
@@ -3893,7 +3894,10 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
         return -1;
     }
 
-    for (i = 0; i < len; i += 2) {
+  if (parent)
+    gtk_window_set_transient_for (GTK_WINDOW (result), parent);
+
+  for (i = 0; i < len; i += 2) {
         PyObject *text = PyTuple_GetItem(py_buttons, i);
         PyObject *id = PyTuple_GetItem(py_buttons, i + 1);
         if (!PyString_Check(text)) {
