@@ -2961,6 +2961,73 @@ _wrap_gtk_tree_view_tree_to_widget_coords(PyGObject *self, PyObject *args)
     return Py_BuildValue("(ii)", wx, wy);
 }
 %%
+override gtk_tree_view_get_cursor args
+static PyObject *
+_wrap_gtk_tree_view_get_cursor(PyGObject *self, PyObject *args)
+{
+    int arg_len;
+    PyObject *py_path = PyTuple_GetItem(args, 0);
+    PyObject *py_column;
+    GtkTreePath *path;
+    GtkTreeViewColumn *column;
+    
+    arg_len = PyTuple_Size(args);
+
+    if (!arg_len) {
+	PyErr_SetString(PyExc_TypeError,
+			"GtkTreeView.get_cursor requires at least one argument");
+	return NULL;
+    } else if (arg_len > 2) {
+	PyErr_SetString(PyExc_TypeError,
+			"GtkTreeView.get_cursor requires at maximum two arguments");
+	return NULL;
+    }
+
+    path = pygtk_tree_path_from_pyobject(py_path);
+    if (!path && py_path != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"first argument must be a tree path or None");
+	return NULL;
+    } else if (py_path == Py_None) {
+	path = NULL;
+    }
+    
+    if (arg_len == 2) {
+	py_column = PyTuple_GetItem(args, 1);
+	if (!pygobject_check(py_column, &PyGtkTreeViewColumn_Type) &&
+	    py_column != Py_None) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "second argument must be a GtkTreeViewColumn or None");
+	    return NULL;
+	} else if (py_column == Py_None) {
+	    column = NULL;
+	}
+    } else {
+	column = NULL;
+    }
+
+    gtk_tree_view_get_cursor(GTK_TREE_VIEW(self->obj),
+			     path ? &path : NULL,
+			     column ? &column : NULL);
+
+    if (path != NULL) {
+	py_path = pygtk_tree_path_to_pyobject(path);
+    } else {
+	Py_INCREF(Py_None);
+	py_path = Py_None;
+    }
+    
+    if (column != NULL) {
+	py_column = pygobject_new((GObject*)column);
+			 
+    } else {
+	Py_INCREF(Py_None);
+	py_column = Py_None;
+    }
+    
+    return Py_BuildValue("(OO)", py_path, py_column);
+}
+%%
 override gtk_tree_selection_get_selected noargs
 static PyObject *
 _wrap_gtk_tree_selection_get_selected(PyGObject *self)
