@@ -22,6 +22,20 @@ linkend="constructor-gdkcursor1">gtk.gdk.Cursor</link></methodname>
       <constructorsynopsis language="python">
 	<methodname><link
 linkend="constructor-gdkcursor2">gtk.gdk.Cursor</link></methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+	<methodparam><parameter role="keyword">cursor_type</parameter></methodparam>
+      </constructorsynopsis>
+      <constructorsynopsis language="python">
+	<methodname><link
+linkend="constructor-gdkcursor3">gtk.gdk.Cursor</link></methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+	<methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+	<methodparam><parameter role="keyword">x</parameter></methodparam>
+	<methodparam><parameter role="keyword">y</parameter></methodparam>
+      </constructorsynopsis>
+      <constructorsynopsis language="python">
+	<methodname><link
+linkend="constructor-gdkcursor4">gtk.gdk.Cursor</link></methodname>
 	<methodparam><parameter role="keyword">source</parameter></methodparam>
 	<methodparam><parameter role="keyword">mask</parameter></methodparam>
 	<methodparam><parameter role="keyword">fg</parameter></methodparam>
@@ -29,6 +43,10 @@ linkend="constructor-gdkcursor2">gtk.gdk.Cursor</link></methodname>
 	<methodparam><parameter role="keyword">x</parameter></methodparam>
 	<methodparam><parameter role="keyword">y</parameter></methodparam>
       </constructorsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkcursor--get-display">get_display</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -549,6 +567,98 @@ with no pixels in it.</para>
 
       <programlisting><constructorsynopsis language="python">
 	  <methodname>gtk.gdk.Cursor</methodname>
+	  <methodparam><parameter role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter role="keyword">cursor_type</parameter></methodparam>
+  </constructorsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+	  to create the cursor for</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">cursor_type</parameter>&nbsp;:</term>
+	  <listitem><simpara>the standard cursor to
+create</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This constructor is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>Creates the new <link
+linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link> for
+the <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by <parameter>display</parameter> from a builtin cursor specified
+by <parameter>cursor_type</parameter>. To make the cursor invisible, use
+<link linkend="constructor-gdkcursor4">gtk.gdk.Cursor</link>() to create a
+cursor with no pixels in it.</para>
+
+    </refsect2>
+
+    <refsect2 id="constructor-gdkcursor3">
+
+      <programlisting><constructorsynopsis language="python">
+	  <methodname>gtk.gdk.Cursor</methodname>
+	  <methodparam><parameter role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+	  <methodparam><parameter role="keyword">x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">y</parameter></methodparam>
+  </constructorsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+	  to create the cursor for</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pixbuf</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+holding the cursor image</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the "hot spot" x offset</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the "hot spot" y offset</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This constructor is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>Creates a new <link
+linkend="class-gdkcursor"><classname>gtk.gdk.Cursor</classname></link> for
+the gdkDisplay specified by display using the <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+specified by <parameter>source</parameter> as the icon image. The "hotspot"
+of the cursor will be located as the position specified by
+<parameter>x</parameter> and <parameter>y</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="constructor-gdkcursor4">
+
+      <programlisting><constructorsynopsis language="python">
+	  <methodname>gtk.gdk.Cursor</methodname>
 	  <methodparam><parameter role="keyword">source</parameter></methodparam>
 	  <methodparam><parameter role="keyword">mask</parameter></methodparam>
 	  <methodparam><parameter role="keyword">fg</parameter></methodparam>
@@ -627,12 +737,41 @@ cursor</simpara>
 by <parameter>x</parameter></simpara>
 	</listitem>
 	<listitem>
-	  <simpara>>the veritcal offset of the cursor "hot spot" specified
+	  <simpara>the vertical offset of the cursor "hot spot" specified
 by <parameter>y</parameter></simpara>
 	</listitem>
       </itemizedlist>
 
       <para></para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Methods</title>
+
+    <refsect2 id="method-gdkcursor--get-display">
+      <title>gtk.gdk.Cursor.get_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <term><parameter
+	  role="keyword"></parameter>&nbsp;:</term> <listitem><simpara>the
+	  associated <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_display</methodname>() method returns the
+display on which the cursor is defined.</para>
 
     </refsect2>
 
