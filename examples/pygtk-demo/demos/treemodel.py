@@ -8,8 +8,8 @@ description = 'Tree Model'
 import gtk
 
 # to create a new GtkTreeModel from python, you must derive from
-# PyGtkTreeModel.
-class MyTreeModel(gtk.PyGtkTreeModel):
+# TreeModel.
+class MyTreeModel(gtk.TreeModel):
     '''This class represents the model of a tree.  The iterators used
     to represent positions are converted to python objects when passed
     to the on_* methods.  This means you can use any python object to
@@ -25,10 +25,10 @@ class MyTreeModel(gtk.PyGtkTreeModel):
     TREE_SIBLINGS = 5
     def __init__(self):
 	'''constructor for the model.  Make sure you call
-	PyGtkTreeModel.__init__'''
-	gtk.PyGtkTreeModel.__init__(self)
+	PyTreeModel.__init__'''
+	gtk.TreeModel.__init__(self)
 
-    # the implementations for GtkTreeModel methods are prefixed with on_
+    # the implementations for TreeModel methods are prefixed with on_
     def on_get_flags(self):
 	'''returns the GtkTreeModelFlags for this particular type of model'''
 	return 0
@@ -88,20 +88,20 @@ class MyTreeModel(gtk.PyGtkTreeModel):
 	    return node[:-1]
 
 def main():
-    window = gtk.GtkWindow()
+    window = gtk.Window()
     if __name__ == '__main__':
         window.connect('destroy', lambda win: gtk.main_quit())
     window.set_title('Menus')
 
-    scrolled_window = gtk.GtkScrolledWindow()
+    scrolled_window = gtk.ScrolledWindow()
     scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
     window.add(scrolled_window)
 
     model = MyTreeModel()
-    tree_view = gtk.GtkTreeView(model)
-    cell = gtk.GtkCellRendererText()
+    tree_view = gtk.TreeView(model)
+    cell = gtk.CellRendererText()
     # the text in the column comes from column 0
-    column = gtk.GtkTreeViewColumn("tuples", cell, text=0)
+    column = gtk.TreeViewColumn("tuples", cell, text=0)
     tree_view.append_column(column)
 
     scrolled_window.add(tree_view)
