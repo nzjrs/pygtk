@@ -4483,6 +4483,7 @@
 (define-function icon_set_new
   (c-name "gtk_icon_set_new")
   (return-type "GtkIconSet*")
+  (is-constructor-of GtkIconSet)
 )
 
 (define-function icon_set_new_from_pixbuf
@@ -4545,6 +4546,7 @@
 )
 
 (define-function icon_source_new
+  (is-constructor-of GtkIconSource)
   (c-name "gtk_icon_source_new")
   (return-type "GtkIconSource*")
 )
@@ -4733,30 +4735,27 @@
   )
 )
 
-(define-function gtk_image_new_from_stock
+(define-function image_new_from_stock
   (c-name "gtk_image_new_from_stock")
-  (is-constructor-of GtkImage)
-  (return-type "GtkWidget*")
+  (return-type "GtkImage*")
   (parameters
     '("const-gchar*" "stock_id")
-    '("const-gchar*" "size")
+    '("GtkIconSize" "size")
   )
 )
 
-(define-function gtk_image_new_from_icon_set
+(define-function image_new_from_icon_set
   (c-name "gtk_image_new_from_icon_set")
-  (is-constructor-of GtkImage)
-  (return-type "GtkWidget*")
+  (return-type "GtkImage*")
   (parameters
     '("GtkIconSet*" "icon_set")
     '("GtkIconSize" "size")
   )
 )
 
-(define-function gtk_image_new_from_animation
+(define-function image_new_from_animation
   (c-name "gtk_image_new_from_animation")
-  (is-constructor-of GtkImage)
-  (return-type "GtkWidget*")
+  (return-type "GtkImage*")
   (parameters
     '("GdkPixbufAnimation*" "animation")
   )
@@ -9272,7 +9271,7 @@
     '("const-GtkIconSource*" "source")
     '("GtkTextDirection" "direction")
     '("GtkStateType" "state")
-    '("const-gchar*" "size")
+    '("GtkIconSize" "size")
     '("GtkWidget*" "widget")
     '("const-gchar*" "detail")
   )
