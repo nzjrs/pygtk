@@ -2061,8 +2061,9 @@ _wrap_gtk_input_add_full(PyObject *self, PyObject *args, PyObject *kwargs)
     int source;
     GdkInputCondition condition;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OiO:input_add", kwlist,
-				     &py_source, &condition, &callback))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OiO:input_add_full",
+				     kwlist, &py_source, &condition,
+				     &callback))
         return NULL;
     source = PyObject_AsFileDescriptor(py_source);
     if (PyErr_Occurred()) {
@@ -4451,4 +4452,52 @@ _wrap_gtk_cell_renderer_get_fixed_size(PyGObject *self)
 				     &width, &height);
 
     return Py_BuildValue("(ii)", width, height);
+}
+%%
+override gtk_stock_add kwargs
+static PyObject *
+_wrap_gtk_stock_add(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "items", NULL };
+    PyObject *py_items;
+    PyObject *py_item;
+    GtkStockItem *items = NULL;
+    int i, len;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:stock_add", kwlist,
+				     &py_items))
+        return NULL;
+
+    if (!PySequence_Check(py_items)) {
+	PyErr_SetString(PyExc_TypeError,
+			"items must be a sequence of five-element tuples");
+	return NULL;
+    }
+
+    len = PySequence_Length(py_items);
+    items = g_new(GtkStockItem, len);
+    if (items) {
+	for (i = 0; i < len; i++) {
+	    py_item = PySequence_GetItem(py_items, i);
+	    if (!py_item) goto error;
+	    if (!PyArg_ParseTuple(py_item, "zziiz",
+				  &items[i].stock_id, &items[i].label,
+				  &items[i].modifier, &items[i].keyval,
+				  &items[i].translation_domain)) {
+		PyErr_Clear();
+		PyErr_SetString(PyExc_TypeError, "items sequence members "
+				"must be of form (stock_id, label, modifiers, "
+				"keyval, domain)");
+		goto error;
+	    }
+	}
+	gtk_stock_add(items, PySequence_Length(py_items));
+	g_free(items);
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+ error:
+    g_free(items);
+    return NULL;
 }

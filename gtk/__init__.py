@@ -34,3 +34,5 @@ create_pixmap_from_xpm_d = gdk.pixmap_create_from_xpm_d
 threads_init = gdk.threads_init
 threads_enter = gdk.threads_leave
 threads_leave = gdk.threads_leave
+
+input_add = input_add_full
