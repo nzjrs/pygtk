@@ -57,6 +57,16 @@ linkend="method-gtkmenushell--activate-item">activate_item</link></methodname>
 	<methodparam><parameter
 		       role="keyword">force_deactivate</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkmenushell--select-first">select_first</link></methodname>
+	<methodparam><parameter
+		       role="keyword">search_sensitive</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkmenushell--cancel">cancel</link></methodname>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -363,6 +373,54 @@ menushell is forcibly deactivated after<parameter> menu_item</parameter> is
 activated.</para>
 
   </refsect2>
+
+    <refsect2 id="method-gtkmenushell--select-first">
+      <title>gtk.MenuShell.select_first</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>select_first</methodname>
+	  <methodparam><parameter role="keyword">search_sensitive</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">search_sensitive</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, search for the
+	  first selectable menu item, otherwise select nothing if the first
+	  item isn't sensitive.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>select_first</methodname>() method selects the
+first visible or selectable child of the menu shell if
+<parameter>search_sensitive</parameter> is <literal>TRUE</literal>. Don't
+select tearoff items unless the only item is a tearoff item. If
+<parameter>search_sensitive</parameter> is <literal>FALSE</literal> select
+nothing if the first item isn't sensitive.
+<parameter>search_sensitive</parameter> should be <literal>FALSE</literal>
+if the menu is being popped up initially.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenushell--cancel">
+      <title>gtk.MenuShell.cancel</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>cancel</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>cancel</methodname>() method cancels the
+selection within the menu shell.</para>
+
+    </refsect2>
 
   </refsect1>
 
