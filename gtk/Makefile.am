@@ -5,11 +5,11 @@ pygtkdir = $(pythondir)/gtk
 pygtk_PYTHON = __init__.py GDK.py
 
 if BUILD_LIBGLADE
-libglademodule_la = libglademodule.la
+glademodule_la = glademodule.la
 endif
 
 pygtkexecdir = $(pyexecdir)/gtk
-pygtkexec_LTLIBRARIES = _gtkmodule.la $(libglademodule_la)
+pygtkexec_LTLIBRARIES = _gtkmodule.la $(glademodule_la)
 
 _gtkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtk
 _gtkmodule_la_LIBADD = $(GTK_LIBS)
@@ -24,10 +24,10 @@ _gtkmodule_la_SOURCES = \
   gtk.c \
   gdk.c
 
-libglademodule_la_LDFLAGS = -module -avoid-version \
+glademodule_la_LDFLAGS = -module -avoid-version \
   -export-symbols-regex initlibglade
-libglademodule_la_LIBADD = $(LIBGLADE_LIBS)
-libglademodule_la_SOURCES = \
+glademodule_la_LIBADD = $(LIBGLADE_LIBS)
+glademodule_la_SOURCES = \
   libglademodule.c \
   libglade.c
 

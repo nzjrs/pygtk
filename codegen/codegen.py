@@ -680,6 +680,8 @@ def write_functions(parser, overrides, prefix, fp=sys.stdout):
     fp.write('};\n\n')
 
 def write_enums(parser, prefix, fp=sys.stdout):
+    if not parser.enums:
+        return
     fp.write('\n/* ----------- enums and flags ----------- */\n\n')
     fp.write('void\n' + prefix + '_add_constants(PyObject *module, const gchar *strip_prefix)\n{\n')
     for enum in parser.enums:

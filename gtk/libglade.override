@@ -112,7 +112,7 @@ connect_many(const gchar *handler_name, GtkObject *obj,
     PyObject *tuple;
     GClosure *closure = NULL;
 
-    tuple = PyDict_GetItemString(handler_dict, handler_name);
+    tuple = PyDict_GetItemString(handler_dict, (gchar *)handler_name);
     if (!tuple) {
 	PyErr_Clear();
 	g_warning("could not find handler `%s'", handler_name);
@@ -126,9 +126,9 @@ connect_many(const gchar *handler_name, GtkObject *obj,
 	if (connect_object) {
 	    PyObject *other = pygobject_new((GObject *)connect_object);
 
-	    closure = pyg_closure_new(tuple, extra, other);
+	    closure = pyg_closure_new(callback, extra, other);
 	} else {
-	    closure = pyg_closure_new(tuple, extra, NULL);
+	    closure = pyg_closure_new(callback, extra, NULL);
 	}	    
 	Py_DECREF(extra);
     } else if (PyCallable_Check(tuple)) {

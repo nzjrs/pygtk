@@ -11,7 +11,6 @@ Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{version}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
 Requires: gtk+ >= 1.3.7
-Requires: imlib
 Requires: python >= 2.0
 
 %description

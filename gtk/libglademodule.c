@@ -11,11 +11,11 @@ extern PyMethodDef pylibglade_functions[];
 extern PyExtensionClass PyGladeXML_Type;
 
 DL_EXPORT(void)
-initlibglade(void)
+initglade(void)
 {
     PyObject *m, *d;
 
-    m = Py_InitModule("gtk.libglade", pylibglade_functions);
+    m = Py_InitModule("gtk.glade", pylibglade_functions);
     d = PyModule_GetDict(m);
 
     init_pygobject();
