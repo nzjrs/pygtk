@@ -6931,3 +6931,84 @@ _wrap_GtkCellRenderer__proxy_do_get_size (GtkCellRenderer *cell,
     if (height)
 	*height = my_height;
 }
+
+%%
+override GtkCellLayout__proxy_do_set_cell_data_func
+
+typedef struct {
+    GtkCellLayoutDataFunc  func;
+    gpointer               func_data;
+    GDestroyNotify         destroy;
+} PyGtkCellLayoutDataFuncData;
+
+static void
+_wrap_GtkCellLayoutDataFunc_destroy(void *arg)
+{
+    PyGtkCellLayoutDataFuncData *data = arg;
+    data->destroy(data->func_data);
+    g_free(data);
+}
+
+static PyObject *
+_wrap_GtkCellLayoutDataFunc(PyObject *self, PyObject *args)
+{
+    PyObject *py_cell_layout;
+    PyObject *py_cell;
+    PyObject *py_tree_model;
+    PyObject *py_iter;
+    PyObject *py_data;
+    PyGtkCellLayoutDataFuncData *data;
+
+    if (!PyArg_ParseTuple(args, "O!O!O!OO!",
+                          &PyGtkCellLayout_Type, &py_cell_layout,
+                          &PyGtkCellRenderer_Type, &py_cell,
+                          &PyGtkTreeModel_Type, &py_tree_model,
+                          &py_iter,
+                          &PyCObject_Type, &py_data))
+        return NULL;
+    if (!pyg_boxed_check(py_iter, GTK_TYPE_TREE_ITER)) {
+        PyErr_SetString(PyExc_TypeError, "4th argument must be a gtk.TreeIter");
+        return NULL;
+    }
+
+    data = PyCObject_AsVoidPtr(py_data);
+    data->func(GTK_CELL_LAYOUT(pygobject_get(py_cell_layout)),
+               GTK_CELL_RENDERER(pygobject_get(py_cell)),
+               GTK_TREE_MODEL(pygobject_get(py_tree_model)),
+               pyg_boxed_get(py_iter, GtkTreeIter),
+               data->func_data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static void
+_wrap_GtkCellLayout__proxy_do_set_cell_data_func (
+    GtkCellLayout         *cell_layout,
+    GtkCellRenderer       *cell,
+    GtkCellLayoutDataFunc  func,
+    gpointer               func_data,
+    GDestroyNotify         destroy)
+{
+    PyGILState_STATE state;
+    PyObject *self, *py_ret, *py_cell, *py_func, *py_func_data;
+    PyMethodDef pyfunc_def = { NULL, (PyCFunction)_wrap_GtkCellLayoutDataFunc,
+                               METH_VARARGS|METH_KEYWORDS };
+    PyGtkCellLayoutDataFuncData *data;
+
+    state = pyg_gil_state_ensure();
+    self = pygobject_new((GObject *)cell);
+    py_cell = pygobject_new((GObject *)cell);
+    py_func = PyCFunction_NewEx(&pyfunc_def, NULL, NULL);
+    data = g_new(PyGtkCellLayoutDataFuncData, 1);
+    data->func = func;
+    data->func_data = func_data;
+    data->destroy = destroy;
+    py_func_data = PyCObject_FromVoidPtr(data, _wrap_GtkCellLayoutDataFunc_destroy);
+
+    py_ret = PyObject_CallMethod(self, "do_set_cell_data_func", "NNNN",
+                                 self, py_cell, py_func, py_func_data);
+    if (!py_ret)
+	PyErr_Print();
+    pyg_gil_state_release(state);
+}
+
