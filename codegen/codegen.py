@@ -541,15 +541,18 @@ class Wrapper:
             cast_macro = self.objinfo.typecode.replace('_TYPE_', '_', 1)
             funcname = "__%s_class_init" % klass
             self.objinfo.class_init_func = funcname
-            have_implemented_virtuals = not not [True for name, cname in virtuals if cname is not None]
+            have_implemented_virtuals = not not [True for name, cname in virtuals
+                                                          if cname is not None]
             self.fp.write(('\nstatic int\n'
                            '%(funcname)s(gpointer gclass, PyTypeObject *pyclass)\n'
-                           '{\n'
-                           '    PyObject *o;\n') % vars())
+                           '{\n') % vars())
+
             if have_implemented_virtuals:
+                self.fp.write('    PyObject *o;\n')
                 self.fp.write(
                     '    %(klass)sClass *klass = %(class_cast_macro)s(gclass);\n'
                     % vars())
+                
             for name, cname in virtuals:
                 do_name = 'do_' + name
                 if cname is None:
