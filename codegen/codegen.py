@@ -808,13 +808,13 @@ def register_types(parser):
 	    argtypes.matcher.register_enum(enum.c_name, enum.typecode)
 
 if __name__ == '__main__':
-    o = override.Overrides(None)
+    o = override.Overrides()
     prefix = 'pygtk'
     opts, args = getopt.getopt(sys.argv[1:], "o:p:r:",
                                ["override=", "prefix=", "register="])
     for opt, arg in opts:
         if opt in ('-o', '--override'):
-            o = override.Overrides(open(arg))
+            o = override.Overrides(arg)
         elif opt in ('-p', '--prefix'):
             prefix = arg
         elif opt in ('-r', '--register'):

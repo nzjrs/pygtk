@@ -1,3 +1,18 @@
+2001-10-06  James Henstridge  <james@daa.com.au>
+
+	* codegen/codegen.py (main): pass the filename to overrides.
+
+	* codegen/override.py (Overrides.__init__): rewrite the code that
+	reads in the overrides file, so it only splits on lines with only
+	'%%' in them.  Also keep track of line numbers, so we know where
+	each section starts.
+	(Overrides.__parse_override): save the start line for 'override'
+	sections and 'override-attr' sections.
+	(Overrides.getstartline): new function to retrieve the start line
+	for a .overrides section.
+	(Overrides.__init__): take the filename rather than file handle as
+	argument.
+
 2001-10-05  Matt Wilson  <msw@redhat.com>
 
 	* gtk/gtk.override (_wrap_gtk_list__get_selection): implemented

@@ -7,21 +7,43 @@
 import sys, string, fnmatch
 
 class Overrides:
-    def __init__(self, fp=sys.stdin):
+    def __init__(self, filename=None):
 	self.ignores = {}
 	self.glob_ignores = []
 	self.overrides = {}
 	self.kwargs = {}
+        self.startlines = {}
         self.override_attrs = {}
         self.headers = ''
         self.init = ''
-	if fp == None: return
+	if filename: self.__handle_file(filename)
+
+    def __handle_file(self, filename):
+        fp = open(filename, 'r')
 	# read all the components of the file ...
-	bufs = map(string.strip, string.split(fp.read(), '%%'))
-	if bufs == ['']: return
-	for buf in bufs:
-	    self.__parse_override(buf)
-    def __parse_override(self, buffer):
+        bufs = []
+        startline = 1
+        lines = []
+        line = fp.readline()
+        linenum = 1
+        while line:
+            if line == '%%\n' or line == '%%':
+                if lines:
+                    bufs.append((string.join(lines, ''), startline))
+                startline = linenum + 1
+                lines = []
+            else:
+                lines.append(line)
+            line = fp.readline()
+            linenum = linenum + 1
+        if lines:
+            bufs.append((string.join(lines, ''), startline))
+	if not bufs: return
+
+	for buf, startline in bufs:
+	    self.__parse_override(buf, startline)
+
+    def __parse_override(self, buffer, startline):
 	pos = string.find(buffer, '\n')
 	if pos >= 0:
 	    line = buffer[:pos]
@@ -41,9 +63,11 @@ class Overrides:
 	    if 'kwargs' in words[1:]:
 		self.kwargs[func] = 1
 	    self.overrides[func] = rest
+            self.startlines[func] = startline + 1
         elif words[0] == 'override-attr':
             attr = words[1]
             self.override_attrs[attr] = rest
+            self.startlines[attr] = startline + 1
         elif words[0] == 'headers':
             self.headers = self.headers + '\n' + rest
         elif words[0] == 'init':
@@ -60,6 +84,8 @@ class Overrides:
 	return self.overrides.has_key(name)
     def override(self, name):
 	return self.overrides[name]
+    def getstartline(self, name):
+        return self.startlines[name]
     def wants_kwargs(self, name):
 	return self.kwargs.has_key(name)
     def attr_is_overriden(self, attr):
