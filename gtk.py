@@ -394,11 +394,11 @@ class GtkWidget(GtkObject):
 	def queue_draw(self, obj=None):
 		_gtk.gtk_widget_queue_draw(self._o)
 	def queue_draw_area(self, x, y, width, height):
-		_gtk.gtk_widget_queue_draw(self._o, x, y, width, height)
+		_gtk.gtk_widget_queue_draw_area(self._o, x, y, width, height)
 	def queue_clear(self, obj=None):
-		_gtk.gtk_widget_queue_draw(self._o)
+		_gtk.gtk_widget_queue_clear(self._o)
 	def queue_clear_area(self, x, y, width, height):
-		_gtk.gtk_widget_queue_draw(self._o, x, y, width, height)
+		_gtk.gtk_widget_queue_clear_area(self._o, x, y, width, height)
 	def queue_resize(self, obj=None):
 		_gtk.gtk_widget_queue_resize(self._o)
 	def realize(self, obj=None):
