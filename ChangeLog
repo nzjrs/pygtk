@@ -1,3 +1,18 @@
+2001-10-25  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (PyGObject_Type): include the module name in the
+	typename.
+	(PyGInterface_Type): same here.
+	(PyGBoxed_Type): same here.
+	(pygobject_register_class): when working out what name to put into
+	the module dictionary, strip off everything before the last dot,
+	so the type name can include the module.
+
+	* configure.in (minver): require python 2.2b1
+
+	* gobjectmodule.c (initgobject): remove statements using
+	tp_defined (they are no longer needed).
+
 2001-10-23  Matt Wilson  <msw@redhat.com>
 
 	* codegen/codegen.py (boxedgetattrtmpl, write_boxed_getattr): at
