@@ -71,6 +71,15 @@
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--wait-for-targets">wait_for_targets</link></methodname>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkclipboard--wait-is-target-available">wait_is_target_available</link></methodname>
+	<methodparam><parameter role="keyword">target</parameter></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkclipboard--set-can-store">set_can_store</link></methodname>
+	<methodparam><parameter role="keyword">targets</parameter></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkclipboard--store">store</link></methodname>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -244,7 +253,7 @@ argument is optional and defaults to the default display returned from the
 linkend="function-gdk--display-get-default"><function>gtk.gdk.display_get_default</function>()</link>
 function.</para>
 
-    <para>In Pygtk 2.4 and above, the <parameter>selection</parameter>
+    <para>In PyGTK 2.4 and above, the <parameter>selection</parameter>
 argument is optional and defaults to "CLIPBOARD".</para>
 
   </refsect1>
@@ -400,7 +409,8 @@ argument.</para>
       </note>
 
       <para>The <methodname>get_owner</methodname>() method returns the
-owner set by the gtkclipboard.set_with_owner() method if neither the <link
+owner set by the <methodname>set_with_owner</methodname>() method if neither
+the <link
 linkend="method-gtkclipboard--set-with-data"><methodname>set_with_data()</methodname></link>
 method nor the <link
 linkend="method-gtkclipboard--clear"><methodname>clear()</methodname></link>
@@ -731,6 +741,118 @@ that are present on the clipboard, or <literal>None</literal> if there
 aren't any targets available. This function waits for the data to be
 received using the main loop, so events, timeouts, etc, may be dispatched
 during the wait.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--wait-is-target-available">
+      <title>gtk.Clipboard.wait_is_target_available</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>wait_is_target_available</methodname>
+	  <methodparam><parameter role="keyword">target</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">target</parameter>&nbsp;:</term>
+	  <listitem><simpara>an atom or string representing the target of
+interest.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the target is
+available.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>wait_is_target_available</methodname>() method
+tests to see if the target specified by <parameter>target</parameter> is
+available to be copied from the clipboard. This method can be used to
+determine if a <guimenuitem>Paste</guimenuitem> menu item should be
+insensitive or not.</para>
+
+      <para>If you want to see if there's text available on the clipboard,
+use the <link
+linkend="method-gtkclipboard--wait-is-text-available"><methodname>wait_is_text_available</methodname>()</link>
+method instead.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--set-can-store">
+      <title>gtk.Clipboard.set_can_store</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_can_store</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of 3-tuples containing information about
+the available forms that should be stored or <literal>None</literal> to
+indicate that all forms should be stored.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_can_store</methodname>() method sets a hint
+that the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link> can
+store the list of targets specified by <parameter>targets</parameter> can be
+stored somewhere when the application exits or when the <link
+linkend="method-gtkclipboard--store"><methodname>store</methodname>()</link>
+method is called. This value is reset when the clipboard owner
+changes. Where the clipboard data is stored is platform dependent, see the
+<link
+linkend="method-gdkdisplay--store-clipboard"><methodname>gtk.gdk.Display.store_clipboard</methodname>()</link>
+method for more information. If <parameter>targets</parameter> is
+<literal>None</literal> all target forms currently available on the
+clipboard should be stored.</para>
+
+      <para>The 3-tuples listed in <parameter>targets</parameter> contain
+the following items:</para>
+
+    <itemizedlist>
+      <listitem>
+	<simpara>a string representing a target supported by the
+clipboard</simpara>
+      </listitem>
+      <listitem>
+	  <simpara>a flags value used for drag and drop - a combination of:
+<literal>gtk.TARGET_SAME_APP</literal> and
+<literal>gtk.TARGET_SAME_WIDGET</literal></simpara>
+      </listitem>
+      <listitem>
+	<simpara>an application assigned integer that is passed as a signal
+parameter to help identify the target type</simpara>
+      </listitem>
+   </itemizedlist>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--store">
+      <title>gtk.Clipboard.store</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>store</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>store</methodname>() method stores the current
+clipboard data (as specified by the <link
+linkend="method-gtkclipboard--set-can-store"><methodname>set_can_store</methodname>()</link>
+method) somewhere so that it will stay around after the application has
+quit.</para>
 
     </refsect2>
 
