@@ -188,6 +188,33 @@ class IntArg(ArgType):
         info.varlist.add('int', 'ret')
         info.codeafter.append('    return PyInt_FromLong(ret);')
 
+class ULongArg(ArgType):
+    dflt = ('    if (py_%(name)s && PyLong_Check(py_%(name)s))\n'
+            '        %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
+            '    else if (py_%(name)s) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s must be an int");\n'
+            '        return NULL;\n'
+            '    }\n')
+    before = ('    if (py_%(name)s && PyLong_Check(py_%(name)s))\n'
+            '        %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
+            '    else {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s must be an int");\n'
+            '        return NULL;\n'
+            '    }\n')
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+        if pdflt:
+            info.varlist.add('unsigned int', pname + ' = ' + pdflt)
+            info.codebefore.append(self.dflt % {'name':pname})            
+        else:
+            info.varlist.add('unsigned int', pname)
+            info.codebefore.append(self.before % {'name':pname})            
+        info.varlist.add('PyObject', "*py_" + pname + ' = NULL')
+        info.arglist.append(pname)
+        info.add_parselist('O', ['&py_' + pname], [pname])
+    def write_return(self, ptype, info):
+        info.varlist.add('unsigned int', 'ret')
+        info.codeafter.append('    return PyLong_FromUnsignedLong(ret);')
+
 class DoubleArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
 	if pdflt:
@@ -657,16 +684,30 @@ matcher.register('gshort', arg)
 matcher.register('gushort', arg)
 matcher.register('long', arg)
 matcher.register('glong', arg)
-matcher.register('gulong', arg)
 matcher.register('gboolean', arg)
 
 matcher.register('guint8', arg)
 matcher.register('gint8', arg)
 matcher.register('guint16', arg)
 matcher.register('gint16', arg)
-matcher.register('guint32', arg)
 matcher.register('gint32', arg)
 matcher.register('GtkType', arg)
+
+# If the system maxint is smaller than unsigned int, we need to use
+# Long objects with PyLong_AsUnsignedLong
+if sys.maxint >= (1L << 32):
+    intHoldsUnsigned32BitValue = 1
+else:
+    intHoldsUnsigned32BitValue = 0
+
+if intHoldsUnsigned32BitValue:
+    matcher.register('guint32', arg)
+else:
+    arg = ULongArg()
+    matcher.register('guint32', arg)
+
+arg = ULongArg()
+matcher.register('gulong', arg)
 
 arg = DoubleArg()
 matcher.register('double', arg)
