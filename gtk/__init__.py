@@ -58,9 +58,19 @@ gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
 gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
-del _gobject
+# _gobject deprecation
+from types import ModuleType as _module
+class _GObjectWrapper(_module):
+    from warnings import warn
+    warn = staticmethod(warn)
+    _gobject = _gobject
+    def __getattr__(self, attr):
+        self.warn('gtk._gobject is deprecated, use gobject directly instead')
+        return getattr(self._gobject, attr)
+_gobject = _GObjectWrapper('gtk._gobject')
+del _GObjectWrapper, _module
 
-# Warnings
+# other deprecated symbols
 class _Deprecated:
     from warnings import warn
     warn = staticmethod(warn)
@@ -84,6 +94,7 @@ class _Deprecated:
         # as the one found in exceptions.
         self.warn(message, DeprecationWarning)
         return self.func(*args, **kwargs)
+
 
 # old names compatibility ...
 mainloop = _Deprecated(main, 'mainloop')
