@@ -1,3 +1,24 @@
+2001-11-17  Matt Wilson  <msw@redhat.com>
+
+	* codegen/codegen.py (write_*): pass in any error checking and
+	handling code snippets into the return function writer.  Only add
+	keywords for arguments that are going to be parsed, Python 2.2 now
+	checks to make sure the kwlist length equals the paramspec.
+
+	* codegen/argtypes.py: remove GtkCTreeNode custom registration,
+	it's a generic boxed type.  Added a GErrorType requested in bug
+	#63980.  This requires inserting possible error checking in each
+	type's write_return method.
+
+	* gtk/gtk.defs (gtk_image_new_from_icon_set): changed size
+	argument from char* to GtkIconSize
+	(GtkIconSet.render_icon): likewise
+
+	* gtk/gtk-types.defs (IconSet): added GtkIconSet boxed type
+
+	* gtk/gtk.override (_wrap_gtk_tree_model_get_value): value is not
+	parsed, remove it from the kwlist.
+
 2001-11-16  Matt Wilson  <msw@redhat.com>
 
 	* gtk/gtk.override (_wrap_gtk_tree_view_get_path_at_pos): remove

@@ -26,6 +26,8 @@ class VarList:
 	return ''
 
 class ArgType:
+    checkerror = '0'
+    handleerror = ''
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
 	"""Returns the letter code for PyArg_ParseTuple.
@@ -60,6 +62,7 @@ class StringArg(ArgType):
 	if ptype in ('const-gchar*', 'const-char*', 'static_string'):
 	    varlist.add('const gchar', '*ret')
 	    return '    ret = %(func)s;\n' + \
+                   '%(handleerror)s\n' + \
 		   '    if (ret)\n' + \
 		   '        return PyString_FromString(ret);\n' + \
 		   '    Py_INCREF(Py_None);\n' + \
@@ -68,6 +71,9 @@ class StringArg(ArgType):
 	    # have to free result ...
 	    varlist.add('gchar', '*ret')
 	    return '    ret = %(func)s;\n' + \
+                   '    if (%(checkerror)s)\n' + \
+                   '        g_free(ret);\n' + \
+                   '%(handleerror)s\n' + \
 		   '    if (ret) {\n' + \
 		   '        PyObject *py_ret = PyString_FromString(ret);\n' + \
 		   '        g_free(ret);\n' + \
@@ -106,6 +112,7 @@ class CharArg(ArgType):
     def write_return(self, ptype, varlist):
 	varlist.add('gchar', 'ret[2]')
 	return '    ret[0] = %(func)s;\n' + \
+               '%(handleerror)s\n' + \
 	       "    ret[1] = '\0';\n" + \
 	       '    return PyString_FromString(ret);'
 
@@ -120,7 +127,11 @@ class IntArg(ArgType):
 	arglist.append(pname)
 	return 'i'
     def write_return(self, ptype, varlist):
-	return '    return PyInt_FromLong(%(func)s);'
+        varlist.add('int', 'ret')
+        
+	return '    ret = %(func)s;\n' + \
+               '%(handleerror)s\n' + \
+               '    return PyInt_FromLong(ret);'
 
 class DoubleArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
@@ -133,7 +144,10 @@ class DoubleArg(ArgType):
 	arglist.append(pname)
 	return 'd'
     def write_return(self, ptype, varlist):
-	return '    return PyFloat_FromDouble(%(func)s);'
+        varlist.add('double', 'ret')
+	return '    ret = %(func)s;\n' + \
+               '%(handleerror)s\n' + \
+               '    return PyFloat_FromDouble(%(func)s);'
 
 class FileArg(ArgType):
     nulldflt = '    if (py_%(name)s == Py_None)\n' + \
@@ -184,6 +198,7 @@ class FileArg(ArgType):
     def write_return(self, ptype, varlist):
 	varlist.add('FILE', '*ret')
 	return '    ret = %(func)s;\n' + \
+               '%(handleerror)s\n' + \
 	       '    if (ret)\n' + \
 	       '        return PyFile_FromFile(ret, "", "", fclose);\n' + \
 	       '    Py_INCREF(Py_None);\n' + \
@@ -207,7 +222,10 @@ class EnumArg(ArgType):
 	arglist.append(pname)
 	return 'O'
     def write_return(self, ptype, varlist):
-	return '    return PyInt_FromLong(%(func)s);'
+        varlist.add('int', 'ret')
+	return '    ret = (int) %(func)s;\n' + \
+               '%(handleerror)s\n' + \
+               '    return PyInt_FromLong(ret);'
 
 class FlagsArg(ArgType):
     flag = '    if (%(default)spyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
@@ -301,8 +319,11 @@ class ObjectArg(ArgType):
 		arglist.append('%s(%s->obj)' % (self.cast, pname))
 	    return 'O'
     def write_return(self, ptype, varlist):
-	return '    /* pygobject_new handles NULL checking */\n' + \
-	       '    return pygobject_new((GObject *)%(func)s);'
+        varlist.add('GObject *', 'ret')
+	return '    ret = (GObject *)%(func)s;\n' + \
+               '%(handleerror)s\n' + \
+               '    /* pygobject_new handles NULL checking */\n' + \
+	       '    return pygobject_new(ret);'
 
 class BoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -419,11 +440,17 @@ class GTypeArg(ArgType):
 	return '    return pyg_type_wrapper_new(%(func)s);'
 
 # simple GError handler.
-# XXXX - must get codegen to handle real GError stuff
 class GErrorArg(ArgType):
+    checkerror = '_error != NULL'
+    handleerror = '    if (_error != NULL) {\n' + \
+                  '        PyErr_SetString(PyExc_RuntimeError, _error->message);\n' + \
+                  '        g_error_free(_error);\n' + \
+                  '        return NULL;\n' + \
+                  '    }\n'
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
-        arglist.append('NULL')
+        varlist.add('GError', '*_error = NULL')
+        arglist.append('&_error')
         return ''
 
 class GtkTreePathArg(ArgType):
@@ -456,6 +483,9 @@ class GtkTreePathArg(ArgType):
         varlist.add('GtkTreePath', '*ret')
         varlist.add('PyObject', '*py_ret')
 	return '    ret = %(func)s;\n' + \
+               '    if (%(checkerror)s)\n' + \
+               '        gtk_tree_path_free(ret);\n' + \
+               '    %(handleerror)s\n' + \
 	       '    if (ret) {\n' + \
                '        py_ret = pygtk_tree_path_to_pyobject(ret);\n' + \
                '        gtk_tree_path_free(ret);\n' + \
@@ -554,9 +584,6 @@ arg = FileArg()
 matcher.register('FILE*', arg)
 
 # enums, flags, objects
-
-matcher.register_custom_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
-                              'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
 
 matcher.register('GdkAtom', AtomArg())
 
