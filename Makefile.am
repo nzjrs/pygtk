@@ -36,6 +36,9 @@ install-exec-local:
 uninstall-local:
 	rm -f $(DESTDIR)$(pythondir)/pygtk.pth $(DESTDIR)$(pyexecdir)/pygtk.pth
 
+
+pkgpython_PYTHON = dsextras.py
+
 pkgpyexec_LTLIBRARIES = \
   gobject.la \
   pango.la \
