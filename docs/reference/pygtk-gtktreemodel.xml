@@ -1361,7 +1361,8 @@ any)</simpara></listitem>
 
       <para>The "row-changed" signal is emitted when the row specified by
 <parameter>path</parameter> and pointed to by <parameter>iter</parameter>
-has changed in the <parameter>treemodel</parameter>.</para>
+has changed in the <parameter>treemodel</parameter>. Usually, this means
+that one or more column values have changed.</para>
 
     </refsect2>
 
@@ -1499,7 +1500,11 @@ any)</simpara></listitem>
 
       <para>The "row-inserted" signal is emitted when the row specified by
 <parameter>path</parameter> and pointed to by <parameter>iter</parameter> is
-inserted into <parameter>treemodel</parameter>.</para>
+inserted into <parameter>treemodel</parameter>. The row referenced by
+<parameter>iter</parameter> will be empty so using the <link
+linkend="method-gtktreemodel--get-value"><methodname>get_value</methodname>()</link>
+method will always return <literal>None</literal>. Connect to the
+"row-changed" signal if you want to track value changes.</para>
 
     </refsect2>
 
