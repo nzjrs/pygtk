@@ -188,6 +188,14 @@ class IntArg(ArgType):
         info.varlist.add('int', 'ret')
         info.codeafter.append('    return PyInt_FromLong(ret);')
 
+class BoolArg(IntArg):
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add('int', 'ret')
+        info.varlist.add('PyObject', '*py_ret')
+        info.codeafter.append('    py_ret = ret ? Py_True : Py_False;\n'
+                              '    Py_INCREF(py_ret);\n'
+                              '    return py_ret;')
+
 class TimeTArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
 	if pdflt:
@@ -742,7 +750,6 @@ matcher.register('gshort', arg)
 matcher.register('gushort', arg)
 matcher.register('long', arg)
 matcher.register('glong', arg)
-matcher.register('gboolean', arg)
 matcher.register('gsize', arg)
 matcher.register('gssize', arg)
 matcher.register('guint8', arg)
@@ -750,6 +757,9 @@ matcher.register('gint8', arg)
 matcher.register('guint16', arg)
 matcher.register('gint16', arg)
 matcher.register('gint32', arg)
+
+arg = BoolArg()
+matcher.register('gboolean', arg)
 
 arg = TimeTArg()
 matcher.register('time_t', arg)

@@ -360,7 +360,7 @@ class DocbookDocWriter(DocWriter):
             return stem + '.sgml'
     def create_toc_filename(self, output_prefix):
         if self.use_xml:
-            return self.create_filename('docs', output_prefix)
+            return self.create_filename('classes', output_prefix)
         else:
             return self.create_filename('docs', output_prefix)
 
@@ -471,6 +471,10 @@ class DocbookDocWriter(DocWriter):
                                  cmp(self.pyname(a.name), self.pyname(b.name)))
             for child in node.subclasses:
                 handle_node(child, fp, indent)
+        if self.use_xml:
+            fp.write('<?xml version="1.0" standalone="no"?>\n')
+            fp.write('<!DOCTYPE synopsis PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
+            fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">\n')
         fp.write('<synopsis>')
         handle_node(hierarchy, fp)
         fp.write('</synopsis>\n')
@@ -534,10 +538,10 @@ class DocbookDocWriter(DocWriter):
         return string.join(sgml, '')
     
     def write_class_header(self, obj_name, fp):
-        #if self.use_xml:
-        #    fp.write('<?xml version="1.0" standalone="no"?>\n')
-        #    fp.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
-        #    fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">\n')
+        if self.use_xml:
+            fp.write('<?xml version="1.0" standalone="no"?>\n')
+            fp.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
+            fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">\n')
         fp.write('<refentry id="' + self.make_class_ref(obj_name) + '">\n')
         fp.write('  <refmeta>\n')
         fp.write('    <refentrytitle>%s</refentrytitle>\n'
@@ -661,25 +665,25 @@ class DocbookDocWriter(DocWriter):
         if self.use_xml:
             fp.write('<?xml version="1.0" standalone="no"?>\n')
             fp.write('<!DOCTYPE reference PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
-            fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [\n')
-            for filename, obj_def in files:
-                fp.write('  <!ENTITY ' + string.translate(obj_def.c_name,
-                                                          self.__transtable) +
-                         ' SYSTEM "' + filename + '" >\n')
-            fp.write(']>\n\n')
-
-            fp.write('<reference id="class-reference">\n')
-            fp.write('  <title>Class Documentation</title>\n')
-            for filename, obj_def in files:
-                fp.write('&' + string.translate(obj_def.c_name,
-                                                self.__transtable) + ';\n')
-
-            fp.write('</reference>\n')
-            #fp.write('<reference id="class-reference" xmlns:xi="http://www.w3.org/2001/XInclude">\n')
-            #fp.write('  <title>Class Reference</title>\n')
+            fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">\n')
             #for filename, obj_def in files:
-            #    fp.write('  <xi:include href="%s"/>\n' % filename)
+            #    fp.write('  <!ENTITY ' + string.translate(obj_def.c_name,
+            #                                              self.__transtable) +
+            #             ' SYSTEM "' + filename + '" >\n')
+            #fp.write(']>\n\n')
+
+            #fp.write('<reference id="class-reference">\n')
+            #fp.write('  <title>Class Documentation</title>\n')
+            #for filename, obj_def in files:
+            #    fp.write('&' + string.translate(obj_def.c_name,
+            #                                    self.__transtable) + ';\n')
             #fp.write('</reference>\n')
+            
+            fp.write('<reference id="class-reference" xmlns:xi="http://www.w3.org/2001/XInclude">\n')
+            fp.write('  <title>Class Reference</title>\n')
+            for filename, obj_def in files:
+                fp.write('  <xi:include href="%s"/>\n' % filename)
+            fp.write('</reference>\n')
         else:
             fp.write('<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1.2//EN" [\n')
             for filename, obj_def in files:
