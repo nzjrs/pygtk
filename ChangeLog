@@ -1,3 +1,30 @@
+2005-02-09  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #154779 - Python signal handlers don't
+	get executed while you're sitting in the main loop.
+
+	* gobject/pygmainloop.c:
+	(pyg_save_current_main_loop),
+	(pyg_restore_current_main_loop),
+	(pyg_get_current_main_loop): functions for keeping
+	track of the currently running main loop. A version
+	using TLS and another using a global variable, depending
+	on whether DISABLE_THREADING is defined
+	(pyg_signal_watch_prepare), (pyg_signal_watch_check),
+	(pyg_signal_watch_dispatch), (pyg_signal_watch_new):
+	a GSource which runs the python signal handlers whenever
+	the mainloop is interrupted by signal delivery.
+	(pyg_main_loop_new), (pyg_main_loop_dealloc): add and
+	remove the source.
+	(_wrap_g_main_loop_run): push/pop the currently running
+	main loop.
+	
+	* gobject/pygobject-private.h: add a pointer for the
+	source to PyGMainLoop.
+
+	* gobject/Makefile.am: add -DPLATFORM_WIN32 to cflags
+	if building on Windows.
+	
 2005-01-10  Johan Dahlin  <johan@gnome.org>
 
 	* configure.in: post release version bump
