@@ -1375,8 +1375,7 @@ _wrap_gtk_tree_view_get_path_at_pos(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
 	return NULL;
     }
-    if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(self->obj),
-				      GDK_WINDOW(window->obj), x, y,
+    if (gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(self->obj), x, y,
 				      &path, &column, &cell_x, &cell_y)) {
 	PyObject *ret = PyTuple_New(4);
 
