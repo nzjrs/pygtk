@@ -105,12 +105,6 @@
   (c-name GtkTextBuffer)
 )
 
-(object TextLayout
-  (in-module Gtk)
-  (parent Object (Gtk))
-  (c-name GtkTextLayout)
-)
-
 (object TextTag
   (in-module Gtk)
   (parent Object (Gtk))
@@ -289,12 +283,6 @@
   (in-module Gtk)
   (parent Widget (Gtk))
   (c-name GtkInvisible)
-)
-
-(object HSV
-  (in-module Gtk)
-  (parent Widget (Gtk))
-  (c-name GtkHSV)
 )
 
 (object Editable
@@ -1882,6 +1870,7 @@
 
 (function gtk_arrow_new
   (c-name gtk_arrow_new)
+  (is-constructor-of GtkArrow)
   (return-type GtkWidget*)
   (parameter (type-and-name GtkArrowType arrow_type))
   (parameter (type-and-name GtkShadowType shadow_type))
@@ -1906,12 +1895,13 @@
 
 (function gtk_aspect_frame_new
   (c-name gtk_aspect_frame_new)
+  (is-constructor-of GtkAspectFrame)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* label))
   (parameter (type-and-name gfloat xalign))
   (parameter (type-and-name gfloat yalign))
-  (parameter (type-and-name gfloat ratio))
-  (parameter (type-and-name gboolean obey_child))
+  (parameter (type-and-name gfloat ratio) (default "1"))
+  (parameter (type-and-name gboolean obey_child) (default "TRUE"))
 )
 
 (method set
@@ -5123,82 +5113,6 @@
 (function gtk_hseparator_new
   (c-name gtk_hseparator_new)
   (return-type GtkWidget*)
-)
-
-
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtkhsv.h
-
-(function gtk_hsv_get_type
-  (c-name gtk_hsv_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_hsv_new
-  (c-name gtk_hsv_new)
-  (return-type GtkWidget*)
-)
-
-(method set_color
-  (of-object HSV (Gtk))
-  (c-name gtk_hsv_set_color)
-  (return-type none)
-  (parameter (type-and-name double h))
-  (parameter (type-and-name double s))
-  (parameter (type-and-name double v))
-)
-
-(method get_color
-  (of-object HSV (Gtk))
-  (c-name gtk_hsv_get_color)
-  (return-type none)
-  (parameter (type-and-name gdouble* h))
-  (parameter (type-and-name gdouble* s))
-  (parameter (type-and-name gdouble* v))
-)
-
-(method set_metrics
-  (of-object HSV (Gtk))
-  (c-name gtk_hsv_set_metrics)
-  (return-type none)
-  (parameter (type-and-name gint size))
-  (parameter (type-and-name gint ring_width))
-)
-
-(method get_metrics
-  (of-object HSV (Gtk))
-  (c-name gtk_hsv_get_metrics)
-  (return-type none)
-  (parameter (type-and-name gint* size))
-  (parameter (type-and-name gint* ring_width))
-)
-
-(method is_adjusting
-  (of-object HSV (Gtk))
-  (c-name gtk_hsv_is_adjusting)
-  (return-type gboolean)
-)
-
-(function gtk_hsv_to_rgb
-  (c-name gtk_hsv_to_rgb)
-  (return-type none)
-  (parameter (type-and-name gdouble h))
-  (parameter (type-and-name gdouble s))
-  (parameter (type-and-name gdouble v))
-  (parameter (type-and-name gdouble* r))
-  (parameter (type-and-name gdouble* g))
-  (parameter (type-and-name gdouble* b))
-)
-
-(function gtk_rgb_to_hsv
-  (c-name gtk_rgb_to_hsv)
-  (return-type none)
-  (parameter (type-and-name gdouble r))
-  (parameter (type-and-name gdouble g))
-  (parameter (type-and-name gdouble b))
-  (parameter (type-and-name gdouble* h))
-  (parameter (type-and-name gdouble* s))
-  (parameter (type-and-name gdouble* v))
 )
 
 
@@ -8797,11 +8711,6 @@
   (parameter (type-and-name GtkPathPriorityType* priority))
 )
 
-(function gtk_win32_get_installation_directory
-  (c-name gtk_win32_get_installation_directory)
-  (return-type gchar*)
-)
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkruler.h
@@ -11406,271 +11315,6 @@
 )
 
 
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtktextlayout.h
-
-(function gtk_text_layout_get_type
-  (c-name gtk_text_layout_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_text_layout_new
-  (c-name gtk_text_layout_new)
-  (return-type GtkTextLayout*)
-)
-
-(method set_buffer
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_set_buffer)
-  (return-type none)
-  (parameter (type-and-name GtkTextBuffer* buffer))
-)
-
-(method set_default_style
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_set_default_style)
-  (return-type none)
-  (parameter (type-and-name GtkTextAttributes* values))
-)
-
-(method set_contexts
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_set_contexts)
-  (return-type none)
-  (parameter (type-and-name PangoContext* ltr_context))
-  (parameter (type-and-name PangoContext* rtl_context))
-)
-
-(method default_style_changed
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_default_style_changed)
-  (return-type none)
-)
-
-(method set_screen_width
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_set_screen_width)
-  (return-type none)
-  (parameter (type-and-name gint width))
-)
-
-(method set_cursor_visible
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_set_cursor_visible)
-  (return-type none)
-  (parameter (type-and-name gboolean cursor_visible))
-)
-
-(method get_cursor_visible
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_cursor_visible)
-  (return-type gboolean)
-)
-
-(method get_size
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_size)
-  (return-type none)
-  (parameter (type-and-name gint* width))
-  (parameter (type-and-name gint* height))
-)
-
-(method get_lines
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_lines)
-  (return-type GSList*)
-  (parameter (type-and-name gint top_y))
-  (parameter (type-and-name gint bottom_y))
-  (parameter (type-and-name gint* first_line_y))
-)
-
-(method wrap_loop_start
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_wrap_loop_start)
-  (return-type none)
-)
-
-(method wrap_loop_end
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_wrap_loop_end)
-  (return-type none)
-)
-
-(method get_line_display
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_line_display)
-  (return-type GtkTextLineDisplay*)
-  (parameter (type-and-name GtkTextLine* line))
-  (parameter (type-and-name gboolean size_only))
-)
-
-(method free_line_display
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_free_line_display)
-  (return-type none)
-  (parameter (type-and-name GtkTextLineDisplay* display))
-)
-
-(method get_line_at_y
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_line_at_y)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* target_iter))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint* line_top))
-)
-
-(method get_iter_at_pixel
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_iter_at_pixel)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* iter))
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-)
-
-(method invalidate
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_invalidate)
-  (return-type none)
-  (parameter (type-and-name const-GtkTextIter* start))
-  (parameter (type-and-name const-GtkTextIter* end))
-)
-
-(method free_line_data
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_free_line_data)
-  (return-type none)
-  (parameter (type-and-name GtkTextLine* line))
-  (parameter (type-and-name GtkTextLineData* line_data))
-)
-
-(method is_valid
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_is_valid)
-  (return-type gboolean)
-)
-
-(method validate_yrange
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_validate_yrange)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* anchor_line))
-  (parameter (type-and-name gint y0))
-  (parameter (type-and-name gint y1))
-)
-
-(method validate
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_validate)
-  (return-type none)
-  (parameter (type-and-name gint max_pixels))
-)
-
-(method wrap
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_wrap)
-  (return-type GtkTextLineData*)
-  (parameter (type-and-name GtkTextLine* line))
-  (parameter (type-and-name GtkTextLineData* line_data))
-)
-
-(method get_log_attrs
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_log_attrs)
-  (return-type none)
-  (parameter (type-and-name GtkTextLine* line))
-  (parameter (type-and-name PangoLogAttr** attrs))
-  (parameter (type-and-name gint* n_attrs))
-)
-
-(method changed
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_changed)
-  (return-type none)
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gint old_height))
-  (parameter (type-and-name gint new_height))
-)
-
-(method get_iter_location
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_iter_location)
-  (return-type none)
-  (parameter (type-and-name const-GtkTextIter* iter))
-  (parameter (type-and-name GdkRectangle* rect))
-)
-
-(method get_line_yrange
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_line_yrange)
-  (return-type none)
-  (parameter (type-and-name const-GtkTextIter* iter))
-  (parameter (type-and-name gint* y))
-  (parameter (type-and-name gint* height))
-)
-
-(method get_cursor_locations
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_get_cursor_locations)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* iter))
-  (parameter (type-and-name GdkRectangle* strong_pos))
-  (parameter (type-and-name GdkRectangle* weak_pos))
-)
-
-(method clamp_iter_to_vrange
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_clamp_iter_to_vrange)
-  (return-type gboolean)
-  (parameter (type-and-name GtkTextIter* iter))
-  (parameter (type-and-name gint top))
-  (parameter (type-and-name gint bottom))
-)
-
-(method move_iter_to_line_end
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_move_iter_to_line_end)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* iter))
-  (parameter (type-and-name gint direction))
-)
-
-(method move_iter_to_previous_line
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_move_iter_to_previous_line)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* iter))
-)
-
-(method move_iter_to_next_line
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_move_iter_to_next_line)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* iter))
-)
-
-(method move_iter_to_x
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_move_iter_to_x)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* iter))
-  (parameter (type-and-name gint x))
-)
-
-(method move_iter_visually
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_move_iter_visually)
-  (return-type none)
-  (parameter (type-and-name GtkTextIter* iter))
-  (parameter (type-and-name gint count))
-)
-
-(method spew
-  (of-object TextLayout (Gtk))
-  (c-name gtk_text_layout_spew)
-  (return-type none)
-)
 
 
 

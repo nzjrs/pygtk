@@ -25,6 +25,12 @@
   (c-name GdkWindow)
 )
 
+(object Pixmap
+  (in-module Gdk)
+  (parent Drawable (Gdk))
+  (c-name GdkPixmap)
+)
+
 (object GC
   (in-module Gdk)
   (parent Object (G))
@@ -1627,43 +1633,6 @@
   (return-type none)
   (parameter (type-and-name gint mask))
   (parameter (type-and-name GdkExtensionMode mode))
-)
-
-(function input_set_mode
-  (c-name gdk_input_set_mode)
-  (return-type gboolean)
-  (parameter (type-and-name guint32 deviceid))
-  (parameter (type-and-name GdkInputMode mode))
-)
-
-(function input_set_axes
-  (c-name gdk_input_set_axes)
-  (return-type none)
-  (parameter (type-and-name guint32 deviceid))
-  (parameter (type-and-name GdkAxisUse* axes))
-)
-
-(method input_window_get_pointer
-  (of-object Window (Gdk))
-  (c-name gdk_input_window_get_pointer)
-  (return-type none)
-  (parameter (type-and-name guint32 deviceid))
-  (parameter (type-and-name gdouble* x))
-  (parameter (type-and-name gdouble* y))
-  (parameter (type-and-name gdouble* pressure))
-  (parameter (type-and-name gdouble* xtilt))
-  (parameter (type-and-name gdouble* ytilt))
-  (parameter (type-and-name GdkModifierType* mask))
-)
-
-(method input_motion_events
-  (of-object Window (Gdk))
-  (c-name gdk_input_motion_events)
-  (return-type GdkTimeCoord*)
-  (parameter (type-and-name guint32 deviceid))
-  (parameter (type-and-name guint32 start))
-  (parameter (type-and-name guint32 stop))
-  (parameter (type-and-name gint* nevents_return))
 )
 
 
