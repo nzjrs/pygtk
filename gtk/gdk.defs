@@ -35,6 +35,14 @@
   )
 )
 
+(define-function keyboard_ungrab
+  (c-name "gdk_keyboard_ungrab")
+  (return-type "none")
+  (parameters
+    '("guint32" "time" (null-ok) (default "GDK_CURRENT_TIME"))
+  )
+)
+
 (define-function pointer_is_grabbed
   (c-name "gdk_pointer_is_grabbed")
   (return-type "gboolean")
@@ -1998,7 +2006,13 @@
   )
 )
 
+(define-function rgb_get_colormap
+  (c-name "gdk_rgb_get_colormap")
+  (return-type "GdkColormap*")
+)
+
 (define-function rgb_get_cmap
+  (deprecated "use gtk.gdk.rgb_get_colormap instead")
   (c-name "gdk_rgb_get_cmap")
   (return-type "GdkColormap*")
 )
