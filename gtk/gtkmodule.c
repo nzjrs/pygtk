@@ -38,10 +38,17 @@ sink_gtkobject(GObject *object)
 static gboolean
 python_do_pending_calls(gpointer data)
 {
+    gboolean quit = FALSE;
+
+    pyg_block_threads();
     if (PyErr_CheckSignals() == -1) {
 	PyErr_SetNone(PyExc_KeyboardInterrupt);
-	gtk_main_quit();
+	quit = TRUE;
     }
+    pyg_unblock_threads();
+
+    if (quit)
+	gtk_main_quit();
     
     return TRUE;
 }

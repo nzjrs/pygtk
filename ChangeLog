@@ -1,5 +1,10 @@
 2003-03-04  Jon Trowbridge  <trow@ximian.com>
 
+	* gtk/gtkmodule.c (python_do_pending_calls): Block threads while
+	we make our Py* calls.  This prevents a 'no current thread' error
+	if you try to kill a program by typing ctrl-c in the console it
+	was launched from.
+
 	* pygobject.c (pygobject_dealloc): Unblock threads before
 	invalidating our closures, since this might trigger a destructor
 	that needs to execute python code.
