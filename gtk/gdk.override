@@ -906,17 +906,17 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 }
 %%
 override-slot GdkEvent.tp_setattr
-#define INT_CHECK(name) \
+#define INT_CHECK() \
 	    if (!PyInt_Check(value)) { \
 		PyErr_Format(PyExc_TypeError, "%s must be an int", attr); \
 		return -1; \
 	    } 
-#define FLOAT_CHECK(name) \
+#define FLOAT_CHECK() \
 	    if (!PyFloat_Check(value)) { \
 		PyErr_Format(PyExc_TypeError, "%s must be a float", attr); \
 		return -1; \
 	    } 
-#define STRING_CHECK(name) \
+#define STRING_CHECK() \
 	    if (!PyString_Check(value)) { \
 		PyErr_Format(PyExc_TypeError, "%s must be a string", attr); \
 		return -1; \
@@ -948,7 +948,7 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	pyg_block_threads();
 	return 0;
     } else if (attr[0] == 's' && !strcmp(attr, "send_event")) {
-	INT_CHECK("send_event");
+	INT_CHECK();
 	event->any.send_event = PyInt_AsLong(value);
 	return 0;
     }
@@ -962,7 +962,7 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    if (!pygdk_rectangle_from_pyobject(value, &event->expose.area))
 		return -1;
 	} else if (!strcmp(attr, "count")) {
-	    INT_CHECK("count");
+	    INT_CHECK();
 	    event->expose.count = PyInt_AsLong(value);
             return 0;
 	}

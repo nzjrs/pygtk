@@ -62,7 +62,7 @@ class PyGtkWidget(gtk.Widget):
                                 event.area, self, "label",
                                 (w - fontw) / 2, (h - fonth) / 2,
                                 self.layout)
-            
+        
     def send_configure(self):
         allocation = self.allocation
         
