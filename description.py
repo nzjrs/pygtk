@@ -263,6 +263,9 @@ class GdkGC:
 	line_style = _
 	cap_style = _
 	join_style = _
+	def set_dashes(self, dash_offset, dash_list):
+		"""set the dash pattern for this GC."""
+		pass
 
 class GdkWindow:
 	"""All attributes are read only for GdkWindow's"""

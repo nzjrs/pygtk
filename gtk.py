@@ -306,6 +306,8 @@ class GtkWidget(GtkObject):
 		_gtk.gtk_widget_lock_accelerators(self._o)
 	def get_ancestor(self, type):
 		return _obj2inst(_gtk.gtk_widget_get_ancestor(self._o, type))
+	def get_child_requisition(self):
+		return _gtk.gtk_widget_get_child_requisition(self._o)
 	def get_colormap(self):
 		return _gtk.gtk_widget_get_colormap(self._o)
 	def get_composite_name(self):
@@ -634,6 +636,10 @@ class GtkHandleBox(GtkBin):
 		self._o = _gtk.gtk_handle_box_new()
 	def set_shadow_type(self, type):
 		_gtk.gtk_handle_box_set_shadow_type(self._o, type)
+	def set_handle_position(self, position):
+		_gtk.gtk_handle_box_set_handle_position(self._o, position)
+	def set_snap_edge(self, edge):
+		_gtk.gtk_handle_box_set_snap_edge(self._o, edge)
 
 class GtkItem(GtkBin):
 	get_type = _gtk.gtk_item_get_type
@@ -781,10 +787,6 @@ class GtkWindow(GtkBin):
 		_gtk.gtk_window_activate_default(self._o)
 	def set_title(self, title):
 		_gtk.gtk_window_set_title(self._o, title)
-	def set_focus(self, focus):
-		_gtk.gtk_window_set_focus(self._o, focus._o)
-	def set_default(self, defaultw):
-		_gtk.gtk_window_set_default(self._o, defaultw._o)
 	def set_policy(self, as, ag, autos):
 		_gtk.gtk_window_set_policy(self._o, as, ag, autos)
 	def add_accel_group(self, group):

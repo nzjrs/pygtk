@@ -1462,6 +1462,45 @@ PyGdkGC_Dealloc(PyGdkGC_Object *self) {
   PyMem_DEL(self);
 }
 
+static PyObject *PyGdkGC_set_dashes(PyGdkGC_Object *self, PyObject *args) {
+  gint dash_offset, n, i;
+  PyObject *list;
+  guchar *dash_list;
+
+  if (!PyArg_ParseTuple(args, "iO:GdkGC.set_dashes", &dash_offset, &list))
+    return NULL;
+  if (!PySequence_Check(list)) {
+    PyErr_SetString(PyExc_TypeError, "second argument must be a sequence");
+    return NULL;
+  }
+  n = PySequence_Length(list);
+  dash_list = g_new(char, n);
+  for (i = 0; i < n; i++) {
+    PyObject *item = PySequence_GetItem(list, i);
+
+    if (!PyInt_Check(item)) {
+      PyErr_SetString(PyExc_TypeError, "sequence member must be an int");
+      g_free(dash_list);
+      return NULL;
+    }
+    dash_list[i] = (guchar)PyInt_AsLong(item);
+    if (dash_list[i] == 0) {
+      PyErr_SetString(PyExc_TypeError, "sequence member must not be 0");
+      g_free(dash_list);
+      return NULL;
+    }
+  }
+  gdk_gc_set_dashes(self->obj, dash_offset, dash_list, n);
+  g_free(dash_list);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyMethodDef PyGdkGC_methods[] = {
+  {"set_dashes", (PyCFunction)PyGdkGC_set_dashes, METH_VARARGS, NULL},
+  {NULL, 0, 0, NULL}
+};
+
 static PyObject *
 PyGdkGC_GetAttr(PyGdkGC_Object *self, char *key) {
   GdkGCValues gc;
@@ -1503,8 +1542,8 @@ PyGdkGC_GetAttr(PyGdkGC_Object *self, char *key) {
   if (!strcmp(key, "line_style")) return PyInt_FromLong(gc.line_style);
   if (!strcmp(key, "cap_style")) return PyInt_FromLong(gc.cap_style);
   if (!strcmp(key, "join_style")) return PyInt_FromLong(gc.join_style);
-  PyErr_SetString(PyExc_AttributeError, key);
-  return NULL;
+
+  return Py_FindMethod(PyGdkGC_methods, (PyObject *)self, key);
 }
 
 static int
@@ -3413,6 +3452,16 @@ static PyObject *_wrap_gtk_widget_size_allocate(PyObject *self, PyObject *args) 
     gtk_widget_size_allocate(GTK_WIDGET(PyGtk_Get(obj)), &allocation);
     Py_INCREF(Py_None);
     return Py_None;
+}
+
+static PyObject *_wrap_gtk_widget_get_child_requisition(PyObject *self, PyObject *args) {
+    GtkRequisition requisition;
+    PyObject *obj;
+
+    if(!PyArg_ParseTuple(args,"O!:gtk_widget_get_child_requisition", &PyGtk_Type, &obj))
+        return NULL;
+    gtk_widget_get_child_requisition(GTK_WIDGET(PyGtk_Get(obj)), &requisition);
+    return Py_BuildValue("(ii)", requisition.width, requisition.height);
 }
 
 static PyObject *_wrap_gtk_widget_intersect(PyObject *self, PyObject *args) {
@@ -5353,6 +5402,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_widget_draw", _wrap_gtk_widget_draw, 1 },
     { "gtk_widget_size_request", _wrap_gtk_widget_size_request, 1 },
     { "gtk_widget_size_allocate", _wrap_gtk_widget_size_allocate, 1 },
+    { "gtk_widget_get_child_requisition", _wrap_gtk_widget_get_child_requisition, 1 },
     { "gtk_widget_intersect", _wrap_gtk_widget_intersect, 1 },
     { "gtk_widget_get_pointer", _wrap_gtk_widget_get_pointer, 1 },
     { "gtk_container_add", _wrap_gtk_container_add, 1 },
