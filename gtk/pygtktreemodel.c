@@ -547,7 +547,6 @@ pygtk_generic_tree_model_iter_n_children(GtkTreeModel *tree_model, GtkTreeIter *
 
     g_return_val_if_fail(tree_model != NULL, FALSE);
     g_return_val_if_fail(PYGTK_IS_GENERIC_TREE_MODEL(tree_model), FALSE);
-    g_return_val_if_fail(iter != NULL, FALSE);
 
     pyg_block_threads();
 
@@ -557,9 +556,7 @@ pygtk_generic_tree_model_iter_n_children(GtkTreeModel *tree_model, GtkTreeIter *
 #ifdef DEBUG_TREE_MODEL
     g_message("iter_n_children(%p)", iter);
 #endif
-    py_iter = (PyObject *)iter->user_data;
-    if (py_iter == NULL)
-	py_iter = Py_None;
+    py_iter = iter != NULL ? (PyObject *)iter->user_data : Py_None;
 
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_n_children",
 				 "(O)", py_iter);
