@@ -1025,3 +1025,30 @@ _wrap_pango_layout_set_text(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override pango_color_parse kwargs
+static int
+_wrap_pango_color_parse(PyGBoxed *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "spec", NULL };
+    char *spec;
+    PangoColor color;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:PangoColor.__init__",
+				     kwlist, &spec))
+        return -1;
+
+    self->gtype = PANGO_TYPE_COLOR;
+    self->free_on_dealloc = FALSE;
+
+    if (pango_color_parse(&color, spec) != TRUE
+	|| !(self->boxed = pango_color_copy(&color))) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create PangoColor object");
+        return -1;
+    }
+
+    self->free_on_dealloc = TRUE;
+
+    return 0;
+}
