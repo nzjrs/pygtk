@@ -100,9 +100,13 @@ pyglade_xml_lookup_type(GladeXML *glade, const char *gtypename)
     g_return_val_if_fail (PYGLADE_IS_XML (glade), G_TYPE_INVALID);
 
     self = PYGLADE_XML(glade);
-    if (self->typedict)
+    if (self->typedict) {
         item = PyMapping_GetItemString(self->typedict, (char *) gtypename);
-    else
+	if (!item) {
+	    PyErr_Clear();
+	    item = NULL;
+	}
+    } else
         item = NULL;
 
     if (item != NULL) {
