@@ -1390,6 +1390,98 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     return ret;
 }
 %%
+override gtk_tree_sortable_set_sort_func
+static gint
+pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
+			    GtkTreeIter *iter2, gpointer user_data)
+{
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_model, *py_iter2, *py_iter1, *retobj;
+    gint ret = 0;
+
+    g_assert(cunote->func);
+
+    py_model = pygobject_new((GObject *)model);
+    py_iter1 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter1, TRUE, TRUE);
+    py_iter2 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter2, TRUE, TRUE);
+
+    if (cunote->data) {
+	retobj = PyEval_CallFunction(cunote->func, "(NNNO)", py_model,
+				     py_iter1, py_iter2, cunote->data);
+    } else {
+	retobj = PyEval_CallFunction(cunote->func, "(NNN)", py_model,
+				     py_iter1, py_iter2);
+    }
+
+    if (retobj)
+	ret = PyInt_AsLong(retobj);
+    if (PyErr_Occurred()) {
+	PyErr_Print();
+	PyErr_Clear();
+	ret = 0;
+    }
+    Py_XDECREF(retobj);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_tree_sortable_set_sort_func(PyGObject *self, PyObject *args)
+{
+    gint column;
+    PyObject *callback, *data = NULL;
+    PyGtkCustomNotify *cunote;
+
+    if (!PyArg_ParseTuple(args, "iO|O:GtkTreeSortable.set_sort_func",
+			  &column, &callback, &data))
+	return NULL;
+
+    if (!PyCallable_Check(callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback must be a callable object");
+	return NULL;
+    }
+    cunote = g_new(PyGtkCustomNotify, 1);
+    Py_INCREF(callback);
+    cunote->func = callback;
+    Py_XINCREF(data);
+    cunote->data = data;
+
+    gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(self->obj), column,
+				    pygtk_tree_sortable_sort_cb, cunote,
+				    pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_sortable_set_default_sort_func
+static PyObject *
+_wrap_gtk_tree_sortable_set_default_sort_func(PyGObject *self, PyObject *args)
+{
+    PyObject *callback, *data = NULL;
+    PyGtkCustomNotify *cunote;
+
+    if (!PyArg_ParseTuple(args, "O|O:GtkTreeSortable.set_default_sort_func",
+			  &callback, &data))
+	return NULL;
+
+    if (!PyCallable_Check(callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback must be a callable object");
+	return NULL;
+    }
+    cunote = g_new(PyGtkCustomNotify, 1);
+    Py_INCREF(callback);
+    cunote->func = callback;
+    Py_XINCREF(data);
+    cunote->data = data;
+
+    gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(self->obj),
+					    pygtk_tree_sortable_sort_cb,
+					    cunote,
+					    pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 ignore gtk_list_store_newv
 %%
 override gtk_list_store_new
