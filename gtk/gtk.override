@@ -1703,6 +1703,8 @@ _wrap_gtk_toolbar_append_item(PyGObject *self, PyObject *args,
                                      &tooltip_private_text, &py_icon,
                                      &callback, &param))
         return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning, "") < 0)
+        return NULL;
     if (pygobject_check(py_icon, &PyGtkWidget_Type))
         icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
@@ -1740,6 +1742,8 @@ _wrap_gtk_toolbar_prepend_item(PyGObject *self, PyObject *args,
                                      &text, &tooltip_text,
                                      &tooltip_private_text, &py_icon,
                                      &callback, &param))
+        return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning, "") < 0)
         return NULL;
     if (pygobject_check(py_icon, &PyGtkWidget_Type))
         icon = GTK_WIDGET(py_icon->obj);
@@ -1781,6 +1785,8 @@ _wrap_gtk_toolbar_insert_item(PyGObject *self, PyObject *args,
                                      &tooltip_private_text, &py_icon,
                                      &callback, &param, &position))
         return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning, "") < 0)
+        return NULL;
     if (pygobject_check(py_icon, &PyGtkWidget_Type))
         icon = GTK_WIDGET(py_icon->obj);
     else if ((PyObject *)py_icon != Py_None) {
@@ -1821,6 +1827,8 @@ _wrap_gtk_toolbar_insert_stock(PyGObject *self, PyObject *args,
                                      &tooltip_private_text,
                                      &callback, &param, &position))
         return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning, "") < 0)
+        return NULL;
 
     ret = gtk_toolbar_insert_stock(GTK_TOOLBAR(self->obj), stock_id, tooltip_text,
                                   tooltip_private_text, NULL, NULL,
@@ -1857,6 +1865,8 @@ _wrap_gtk_toolbar_append_element(PyGObject *self, PyObject *args,
                                      &text, &tooltip_text,
                                      &tooltip_private_text, &py_icon,
                                      &callback, &param))
+        return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning, "") < 0)
         return NULL;
     if (pyg_enum_get_value(GTK_TYPE_TOOLBAR_CHILD_TYPE,
                            py_type, (gint *)&type))
@@ -1914,6 +1924,8 @@ _wrap_gtk_toolbar_prepend_element(PyGObject *self, PyObject *args,
                                      &tooltip_private_text, &py_icon,
                                      &callback, &param))
         return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning, "") < 0)
+        return NULL;
     if (pyg_enum_get_value(GTK_TYPE_TOOLBAR_CHILD_TYPE,
                            py_type, (gint *)&type))
         return NULL;
@@ -1970,6 +1982,8 @@ _wrap_gtk_toolbar_insert_element(PyGObject *self, PyObject *args,
                                      &text, &tooltip_text,
                                      &tooltip_private_text, &py_icon,
                                      &callback, &param, &position))
+        return NULL;
+    if (PyErr_Warn(PyExc_DeprecationWarning, "") < 0)
         return NULL;
     if (pyg_enum_get_value(GTK_TYPE_TOOLBAR_CHILD_TYPE,
                            py_type, (gint *)&type))
