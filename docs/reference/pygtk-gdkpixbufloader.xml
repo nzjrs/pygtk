@@ -38,12 +38,32 @@ linkend="method-gdkpixbufloader--get-pixbuf">get_pixbuf</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkpixbufloader--get-animation">get_animation</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkpixbufloader--close">close</link></methodname>
       </methodsynopsis>
-    </classsynopsis>
+ <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkpixbufloader--set-size">set_size</link></methodname>
+	<methodparam><parameter
+		       role="keyword">width</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">height</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkpixbufloader--get-format">get_format</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+   </classsynopsis>
+
+    <programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+	<methodname><link linkend="function-gdk--pixbuf-loader-new-with-mime-type">gtk.gdk.pixbuf_loader_new_with_mime_type</link></methodname>
+	<methodparam><parameter role="keyword">mime_type</parameter></methodparam>
+      </methodsynopsis></programlisting>
 
   </refsect1>
 
@@ -94,6 +114,18 @@ linkend="method-gdkpixbufloader--close">close</link></methodname>
           </methodsynopsis>
         </listitem>
       </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gdkpixbufloader--size-prepared">size-prepared</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>pixbufloader</parameter></methodparam>
+            <methodparam><parameter>width</parameter></methodparam>
+            <methodparam><parameter>height</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
   </refsect1>
@@ -136,16 +168,21 @@ do not know anything about the completeness of an image from the area
 updated. For example, in an interlaced image, you need to make several
 passes before the image is done loading.</para>
 
-    <para>Loading an animation is almost as easy as loading an image. Once
+    <refsect2>
+      <title>Loading an Animation</title>
+
+      <para>Loading an animation is almost as easy as loading an image. Once
 the first "area-prepared" signal has been emitted, you can call the <link
-linkend="method-gdkpixbufloader--get-animation"><methodname>get_animation</methodname>()</link> 
+linkend="method-gdkpixbufloader--get-animation"><methodname>get_animation</methodname>()</link>
 method to get the <link
-linkend="class-gdkpixbufanimation"><classname>gtk.gdk.PixbufAnimation</classname></link> 
+linkend="class-gdkpixbufanimation"><classname>gtk.gdk.PixbufAnimation</classname></link>
 object and the <link
-linkend="method-gdkpixbufanimation--get-iter"><methodname>gtk.gdk.PixbufAnimation.get_iter</methodname>()</link> 
+linkend="method-gdkpixbufanimation--get-iter"><methodname>gtk.gdk.PixbufAnimation.get_iter</methodname>()</link>
 method to get an <link
-linkend="class-gdkpixbufanimationiter"><classname>gtk.gdk.PixbufAnimationIter</classname></link> 
+linkend="class-gdkpixbufanimationiter"><classname>gtk.gdk.PixbufAnimationIter</classname></link>
 for displaying it.</para>
+
+    </refsect2>
 
   </refsect1>
 
@@ -312,6 +349,119 @@ returned.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gdkpixbufloader--set-size">
+      <title>gtk.gdk.PixbufLoader.set_size</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_size</methodname>
+	  <methodparam><parameter
+		       role="keyword">width</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">height</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+		       role="keyword">width</parameter>&nbsp;:</term>
+	  <listitem><simpara>The desired width for the image being
+	  loaded.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+		       role="keyword">height</parameter>&nbsp;:</term>
+	  <listitem><simpara>The desired height for the image being
+	  loaded.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_size</methodname>() method causes the image
+to be scaled to the size specified by <parameter>width</parameter> and
+<parameter>height</parameter> while it is being loaded. The desired image
+size can be determined relative to the original size of the image by calling
+the <link
+linkend="method-gdkpixbufloader--set-size"><methodname>set_size()</methodname></link>
+from a signal handler for the "<link
+linkend="signal-gdkpixbufloader--size-prepared">size-prepared</link>"
+signal.</para>
+
+      <para>Attempts to set the desired image size are ignored after the
+emission of the "<link
+linkend="signal-gdkpixbufloader--size-prepared">size-prepared</link>".</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkpixbufloader--get-format">
+      <title>gtk.gdk.PixbufLoader.get_format</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_format</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a Python dict containing the image format
+	  information or <literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_format</methodname>() method returns the
+available information about the format of the currently loading image
+file. This method returns None if their is no information available
+e.g. before the image has started loading.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gdk--pixbuf-loader-new-with-mime-type">
+      <title>gtk.gdk.pixbuf_loader_new_with_mime_type</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.pixbuf_loader_new_with_mime_type</methodname>
+	  <methodparam><parameter
+			 role="keyword">mime_type</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">mime_type</parameter>&nbsp;:</term>
+	  <listitem><simpara> the mime type to be loaded</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+	  linkend="class-gdkpixbufloader"><classname>gtk.gdk.PixbufLoader</classname></link>
+	  object.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The
+<function>gtk.gdk.pixbuf_loader_new_with_mime_type</function>() function
+creates a new pixbuf loader object that always attempts to parse image data
+as if it were an image of the mime type specified by
+<parameter>mime_type</parameter>, instead of identifying the type
+automatically. Useful if you want an error if the image isn't the expected
+mime type, for loading image formats that can't be reliably identified by
+looking at the data, or if the user manually forces a specific mime
+type.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -416,36 +566,91 @@ displayed.</para>
       <title>The "closed" Signal</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>callback</methodname>
-	  <methodparam><parameter>pixbufloader</parameter></methodparam>
-	  <methodparam><parameter>user_param1</parameter></methodparam>
-	  <methodparam><parameter>...</parameter></methodparam>
-	</methodsynopsis></programlisting>
+          <methodname>callback</methodname>
+          <methodparam><parameter>pixbufloader</parameter></methodparam>
+          <methodparam><parameter>user_param1</parameter></methodparam>
+          <methodparam><parameter>...</parameter></methodparam>
+        </methodsynopsis></programlisting>
 
       <variablelist>
-	<varlistentry>
-	  <term><parameter>pixbufloader</parameter>&nbsp;:</term>
-	  <listitem><simpara>the pixbufloader that received the
+        <varlistentry>
+          <term><parameter>pixbufloader</parameter>&nbsp;:</term>
+          <listitem><simpara>the pixbufloader that received the
 signal</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
           <listitem><simpara>the first user parameter (if any) specified
 with the <link
 linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
 method</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter>...</parameter>&nbsp;:</term>
-	  <listitem><simpara>additional user parameters (if
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
-	</varlistentry>
+        </varlistentry>
       </variablelist>
 
       <para>The "closed" signal is emitted when the
 <parameter>pixbufloader</parameter> is closed by calling the <link
-linkend="method-gdkpixbufloader--close"><methodname>close</methodname>()</link> 
+linkend="method-gdkpixbufloader--close"><methodname>close</methodname>()</link>
 method.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gdkpixbufloader--size-prepared">
+      <title>The "size-prepared" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>callback</methodname>
+          <methodparam><parameter>pixbufloader</parameter></methodparam>
+          <methodparam><parameter>width</parameter></methodparam>
+          <methodparam><parameter>height</parameter></methodparam>
+          <methodparam><parameter>user_param1</parameter></methodparam>
+          <methodparam><parameter>...</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>pixbufloader</parameter>&nbsp;:</term>
+          <listitem><simpara>the pixbufloader that received the
+signal</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>width</parameter>&nbsp;:</term>
+          <listitem><simpara>the original width of the
+          image</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>height</parameter>&nbsp;:</term>
+          <listitem><simpara>he original height of the
+          image</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in GTK+ 2.2 and above.</para>
+      </note>
+
+      <para>The "size-prepared" signal is emitted when the pixbuf loader has
+been fed the initial amount of data that is required to figure out the size
+of the image that it will create. Applications can call the <link
+linkend="method-gdkpixbufloader--set-size"><methodname>set_size</methodname>()</link>
+method in response to this signal to set the desired size of the
+image.</para>
 
     </refsect2>
 
