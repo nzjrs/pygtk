@@ -18,8 +18,11 @@ defs_DATA =
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = \
-	pygobject-$(PLATFORM_VERSION).pc \
-	pygtk-$(PLATFORM_VERSION).pc
+	pygobject-$(PLATFORM_VERSION).pc
+	
+if BUILD_GTK
+pkgconfig_DATA += pygtk-$(PLATFORM_VERSION).pc
+endif
 
 INCLUDES = \
 	$(PYTHON_INCLUDES) \
