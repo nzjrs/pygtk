@@ -1,3 +1,17 @@
+2001-12-17  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pygobject_chain_from_overridden): add chaining
+	function.  This will need to change when Tim makes the changes to
+	the chaining API.  This was just to test that things worked
+	correctly (and they do).  Possibly this should be renamed to just
+	GObject.chain() or GObject._chain().
+
+2001-12-15  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (add_signals): put the class ref/unref in here,
+	so it is only done once.  The ref/unref is really needed for
+	adding signals as well, so that we don't end up with dups.
+
 2001-12-14  Johan Dahlin  <jdahlin@telia.com>
 
 	* gobjectmodule.c (initgobject): Add gobject.glib_version.
