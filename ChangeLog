@@ -1,5 +1,14 @@
 2003-01-01  Johan Dahlin  <jdahlin@async.com.br>
 
+	* gtk/gtk.override (_wrap_gtk_text_buffer_insert_at_cursor) 
+	(_wrap_gtk_text_buffer_insert_at_cursor) 
+	(_wrap_gtk_text_buffer_insert_interactive) 
+	(_wrap_gtk_text_buffer_insert_interactive_at_cursor): Wrap, so you
+	don't have to specify the length of the string. For
+	consistency. (It's not slower since Python does always store the
+	length inside the PyStringObject struct). Patch (mostly) by 
+	John Finlay, fixes #102186.
+
 	* gtk/gtk.defs (GtkTreeView.scroll_to_cell): Add default values.
 
 	* gtk/gtk.override (_wrap_gtk_tree_selection_get_selected): Check

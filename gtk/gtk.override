@@ -6174,6 +6174,107 @@ _wrap_gtk_text_buffer_get_selection_bounds(PyGObject *self, PyObject *args)
                          pyg_boxed_new(GTK_TYPE_TEXT_ITER, &end, TRUE, TRUE));
 }
 %%
+override gtk_text_buffer_insert kwargs
+static PyObject *
+_wrap_gtk_text_buffer_insert(PyGObject *self, PyObject *args,
+			     PyObject *kwargs)
+{
+    static char *kwlist[] = { "iter", "text", NULL };
+    PyObject *py_iter;
+    char *text;
+    int len;
+    GtkTextIter *iter = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Os#:GtkTextBuffer.insert",
+				     kwlist, &py_iter, &text, &len)) {
+        return NULL;
+    }
+    
+    if (pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER)) {
+        iter = pyg_boxed_get(py_iter, GtkTextIter);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTextIter");
+        return NULL;
+    }
+    gtk_text_buffer_insert(GTK_TEXT_BUFFER(self->obj), iter, text, len);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_text_buffer_insert_at_cursor kwargs
+static PyObject *
+_wrap_gtk_text_buffer_insert_at_cursor(PyGObject *self, PyObject *args,
+				       PyObject *kwargs)
+{
+    static char *kwlist[] = { "text", NULL };
+    char *text;
+    int len;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s#:GtkTextBuffer.insert_at_cursor",
+				     kwlist, &text, &len)) {
+        return NULL;
+    }
+    
+    gtk_text_buffer_insert_at_cursor(GTK_TEXT_BUFFER(self->obj), text, len);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_text_buffer_insert_interactive kwargs
+static PyObject *
+_wrap_gtk_text_buffer_insert_interactive(PyGObject *self, PyObject *args,
+					 PyObject *kwargs)
+{
+    static char *kwlist[] = { "iter", "text", "default_editable", NULL };
+    PyObject *py_iter, *py_ret;
+    char *text;
+    int len, default_editable, ret;
+    GtkTextIter *iter = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "Os#i:GtkTextBuffer.insert_interactive",
+				     kwlist, &py_iter, &text, &len,
+				     &default_editable)) {
+        return NULL;
+    }
+    
+    if (pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER)) {
+        iter = pyg_boxed_get(py_iter, GtkTextIter);
+    } else {
+        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTextIter");
+        return NULL;
+    }
+    ret = gtk_text_buffer_insert_interactive(GTK_TEXT_BUFFER(self->obj), iter,
+					     text, len, default_editable);
+    py_ret = ret ? Py_True : Py_False;
+    Py_INCREF(py_ret);
+    return py_ret;
+}
+%%
+override gtk_text_buffer_insert_interactive_at_cursor kwargs
+static PyObject *
+_wrap_gtk_text_buffer_insert_interactive_at_cursor(PyGObject *self, PyObject *args,
+						   PyObject *kwargs)
+{
+    static char *kwlist[] = { "text", "default_editable", NULL };
+    char *text;
+    int len, default_editable, ret;
+    PyObject *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s#i:GtkTextBuffer.insert_interactive_at_cursor",
+				     kwlist, &text, &len, &default_editable)) {
+        return NULL;
+    }
+    
+    ret = gtk_text_buffer_insert_interactive_at_cursor(GTK_TEXT_BUFFER(self->obj),
+						       text, len, default_editable);
+    py_ret = ret ? Py_True : Py_False;
+    Py_INCREF(py_ret);
+    return py_ret;
+}
+%%
 override gtk_text_child_anchor_get_widgets noargs
 static PyObject *
 _wrap_gtk_text_child_anchor_get_widgets(PyGObject *self)
