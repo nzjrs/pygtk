@@ -375,6 +375,36 @@ _wrap_gtk_window_set_geometry_hints(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
+override gtk_window_get_position
+static PyObject *
+_wrap_gtk_window_get_position(PyGObject *self)
+{
+    gint root_x, root_y;
+
+    gtk_window_get_position(GTK_WINDOW(self->obj), &root_x, &root_y);
+    return Py_BuildValue("(ii)", root_x, root_y);
+}
+%%
+override gtk_window_get_size
+static PyObject *
+_wrap_gtk_window_get_size(PyGObject *self)
+{
+    gint width, height;
+
+    gtk_window_get_size(GTK_WINDOW(self->obj), &width, &height);
+    return Py_BuildValue("(ii)", width, height);
+}
+%%
+override gtk_window_get_default_size
+static PyObject *
+_wrap_gtk_window_get_default_size(PyGObject *self)
+{
+    gint width, height;
+
+    gtk_window_get_default_size(GTK_WINDOW(self->obj), &width, &height);
+    return Py_BuildValue("(ii)", width, height);
+}
+%%
 override gtk_box_query_child_packing kwargs
 static PyObject *
 _wrap_gtk_box_query_child_packing(PyGObject *self, PyObject *args,
