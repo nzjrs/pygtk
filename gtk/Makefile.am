@@ -1,6 +1,6 @@
 PLATFORM_VERSION = 2.0
 
-pkgpythondir = $(pythondir)/gtk-2.0
+pkgpythondir = $(pyexecdir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
 
 pygtkdir = $(pkgpythondir)/gtk

@@ -28,16 +28,16 @@ COMMONDEFS = \
 	gtk/gdk-types.defs \
 	gtk/gtk-types.defs
 
-pkgpythondir = $(pythondir)/gtk-2.0
+pkgpythondir = $(pyexecdir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
 
 # this file is common to all pygtk versions.
-python_PYTHON = pygtk.py
+pyexec_PYTHON = pygtk.py
 
 # install pth file.
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(pythondir)
-	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pythondir)/pygtk.pth
+	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pyexecdir)/pygtk.pth
 install-exec-local:
 	$(mkinstalldirs) $(DESTDIR)$(pyexecdir)
 	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pyexecdir)/pygtk.pth
