@@ -64,6 +64,9 @@ _wrap_gtk_ctree_new_with_titles(PyGObject *self, PyObject *args,
     int columns = 1, tree_column = 0;
     PyObject *py_titles = NULL;
 
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use gtk.TreeView") < 0)
+        return -1;
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiO:GtkCTree.__init__",
                                      kwlist, &columns, &tree_column,
                                      &py_titles))

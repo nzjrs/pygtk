@@ -34,6 +34,9 @@ _wrap_gtk_clist_new_with_titles(PyGObject *self, PyObject *args,
     int count = 1, i;
     PyObject *py_list = NULL;
 
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use gtk.TreeView") < 0)
+        return -1;
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iO:GtkCList.__init__",
                                      kwlist, &count, &py_list))
         return -1;
