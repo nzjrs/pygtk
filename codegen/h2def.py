@@ -34,6 +34,23 @@ def typecode(typename):
 
 # ------------------ Find object definitions -----------------
 
+def strip_comments(buf):
+    parts = []
+    lastpos = 0
+    while 1:
+        pos = string.find(buf, '/*', lastpos)
+        if pos >= 0:
+            parts.append(buf[lastpos:pos])
+            pos = string.find(buf, '*/', pos)
+            if pos >= 0:
+                lastpos = pos + 2
+            else:
+                break
+        else:
+            parts.append(buf[lastpos:])
+            break
+    return string.join(parts, '')
+
 obj_name_pat = "[A-Z][a-z]*[A-Z][A-Za-z0-9]*"
 
 split_prefix_pat = re.compile('([A-Z][a-z]*)([A-Za-z0-9]+)')
@@ -44,8 +61,7 @@ def find_obj_defs(buf, objdefs=[]):
     """
 
     # filter out comments from buffer.
-    pat = re.compile(r"""/[*](.|\n)*?[*]/""", re.MULTILINE)
-    buf=pat.sub('',buf)
+    buf = strip_comments(buf)
 
     maybeobjdefs = []  # contains all possible objects from file
 
@@ -147,8 +163,7 @@ def write_obj_defs(objdefs, output):
 def find_enum_defs(buf, enums=[]):
     # strip comments
     # bulk comments
-    pat = re.compile(r"""/[*](.|\n)*?[*]/""", re.MULTILINE)
-    buf=pat.sub('',buf)
+    buf = strip_comments(buf)
 
     buf = re.sub('\n', ' ', buf)
     
@@ -212,8 +227,6 @@ def write_enum_defs(enums, output=None):
 
 # ------------------ Find function definitions -----------------
 
-#comment_pat = re.compile(r"""(/[*](.|\n)*?[*]/)|(^;.*$)""", re.MULTILINE)
-
 def clean_func(buf):
     """
     Ideally would make buf have a single prototype on each line.
@@ -221,8 +234,7 @@ def clean_func(buf):
     where a regex can figure prototypes out.
     """
     # bulk comments
-    pat = re.compile(r"""/[*](.|\n)*?[*]/""", re.MULTILINE)
-    buf=pat.sub('',buf)
+    buf = strip_comments(buf)
 
     # Preprocess directives
     pat = re.compile(r"""^[#].*?$""", re.MULTILINE) 
