@@ -232,3 +232,28 @@ _wrap_gtk_widget_style_get_property(PyGObject *self, PyObject *args,
     g_value_unset(&value);
     return ret;
 }
+%%
+override gtk_widget_list_mnemonic_labels noargs
+static PyObject *
+_wrap_gtk_widget_list_mnemonic_labels(PyGObject *self)
+{
+    GList *labels;
+    PyObject *py_labels;
+    gint i, len;
+
+    labels = gtk_widget_list_mnemonic_labels(GTK_WIDGET(self->obj));
+    len = g_list_length(labels);
+
+    py_labels = PyList_New(len);
+
+    for (i = 0; i < len; i++) {
+	PyObject *obj;
+
+	obj = pygobject_new((GObject *)g_list_nth_data(labels, i));
+	PyList_SetItem(py_labels, i, obj);
+    }
+
+    g_list_free(labels);
+
+    return py_labels;
+}
