@@ -1,3 +1,19 @@
+2001-11-30  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pygobject_register_class): get rid of
+	class_hash, and store the pointer to the python class with
+	g_type_set_qdata().
+	(pygobject_lookup_class): look up python class with
+	g_type_get_qdata.
+	(pyg_object_class_init): a class_init function for types defined
+	in python.  The python class is passed as the "class_data"
+	argument.  Currently empty, but will be used to install
+	eg. get_property and set_property members.
+	(pyg_type_register): store pointer to class like we do for types
+	defined in C.
+	(initgobject): move the quark initialisations above the
+	registration of GObject.
+
 2001-11-29  Matt Wilson  <msw@redhat.com>
 
 	* gtk/libglade.defs (glade_xml_new): fname is actually required.
