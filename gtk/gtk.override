@@ -1737,6 +1737,13 @@ override-slot GtkListStore.tp_as_mapping
 staticforward PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping;
 #define _wrap_gtk_list_store_tp_as_mapping _wrap_gtk_tree_model_tp_as_mapping
 %%
+override-slot GtkListStore.tp_iter
+static PyObject *
+_wrap_gtk_list_store_tp_iter(PyGObject *self)
+{
+    return _pygtk_tree_model_row_iter_new(GTK_TREE_MODEL(self->obj), NULL);
+}
+%%
 ignore gtk_tree_store_newv
 %%
 override gtk_tree_store_new

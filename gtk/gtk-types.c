@@ -178,7 +178,10 @@ static PyTypeObject PyGtkStyleHelper_Type = {
     (hashfunc)0,
     (ternaryfunc)0,
     (reprfunc)0,
-    0L,0L,0L,0L,
+    (getattrofunc)0,
+    (setattrofunc)0,
+    0,
+    Py_TPFLAGS_DEFAULT,
     NULL
 };
 
@@ -677,7 +680,10 @@ PyTypeObject PyGdkWindow_Type = {
     (hashfunc)PyGdkWindow_Hash,
     (ternaryfunc)0,
     (reprfunc)0,
-    0L,0L,0L,0L,
+    (getattrofunc)0,
+    (setattrofunc)0,
+    0,
+    Py_TPFLAGS_DEFAULT,
     NULL
 };
 #endif
@@ -753,7 +759,10 @@ PyTypeObject PyGdkAtom_Type = {
     (hashfunc)pygdk_atom_hash,
     (ternaryfunc)0,
     (reprfunc)pygdk_atom_str,
-    0L,0L,0L,0L,
+    (getattrofunc)0,
+    (setattrofunc)0,
+    0,
+    Py_TPFLAGS_DEFAULT,
     NULL
 };
 
@@ -875,8 +884,98 @@ static PyTypeObject PyGtkTreeModelRow_Type = {
     (hashfunc)0,
     (ternaryfunc)0,
     (reprfunc)0,
-    0L,0L,0L,0L,
+    (getattrofunc)0,
+    (setattrofunc)0,
+    0,
+    Py_TPFLAGS_DEFAULT,
     NULL
+};
+
+typedef struct {
+    PyObject_HEAD
+    GtkTreeModel *model;
+    gboolean has_more;
+    GtkTreeIter iter;
+} PyGtkTreeModelRowIter;
+staticforward PyTypeObject PyGtkTreeModelRowIter_Type;
+
+PyObject *
+_pygtk_tree_model_row_iter_new(GtkTreeModel *model, GtkTreeIter *parent_iter)
+{
+    PyGtkTreeModelRowIter *self;
+
+    self = (PyGtkTreeModelRowIter *) PyObject_NEW(PyGtkTreeModelRowIter,
+						  &PyGtkTreeModelRowIter_Type);
+    if (self == NULL)
+	return NULL;
+    self->model = g_object_ref(model);
+    /* iterate through child nodes */
+    self->has_more = gtk_tree_model_iter_children(self->model, &self->iter,
+						  parent_iter);
+    return (PyObject *)self;
+}
+
+static void
+pygtk_tree_model_row_iter_dealloc(PyGtkTreeModelRowIter *self)
+{
+    g_object_unref(self->model);
+    PyObject_DEL(self);
+}
+
+PyObject *
+pygtk_tree_model_row_iter_getiter(PyGtkTreeModelRowIter *self)
+{
+    Py_INCREF(self);
+    return (PyObject *)self;
+}
+
+PyObject *
+pygtk_tree_model_row_iter_next(PyGtkTreeModelRowIter *self)
+{
+    PyObject *row;
+
+    if (!self->has_more) {
+	PyErr_SetNone(PyExc_StopIteration);
+	return NULL;
+    }
+
+    row = _pygtk_tree_model_row_new(self->model, &self->iter);
+
+    /* move to next iter */
+    self->has_more = gtk_tree_model_iter_next(self->model, &self->iter);
+
+    return row;
+}
+
+static PyTypeObject PyGtkTreeModelRowIter_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "gtk.gtk.TreeModelRowIter",
+    sizeof(PyGtkTreeModelRowIter),
+    0,
+    (destructor)pygtk_tree_model_row_iter_dealloc,
+    (printfunc)0,
+    (getattrfunc)0,
+    (setattrfunc)0,
+    (cmpfunc)0,
+    (reprfunc)0,
+    0,
+    0,
+    0,
+    (hashfunc)0,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    (getattrofunc)0,
+    (setattrofunc)0,
+    0,
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_ITER,
+    NULL,
+    (traverseproc)0,
+    (inquiry)0,
+    (richcmpfunc)0,
+    0,
+    (getiterfunc)pygtk_tree_model_row_iter_getiter,
+    (iternextfunc)pygtk_tree_model_row_iter_next
 };
 
 PyObject *
