@@ -1610,8 +1610,9 @@ class GtkPacker(GtkContainer):
 	def add_defaults(self, child, side, anchor, options):
 		_gtk.gtk_packer_add_defaults(self._o, child._o, side, anchor,
 					     options)
-	def add(self, child, side, anchor, options, border_width, pad_x,
-		pad_y, i_pad_x, i_pad_y):
+	def add(self, child, side=SIDE_TOP, anchor=ANCHOR_CENTER,
+		options=0, border_width=0, pad_x=0, pad_y=0,
+		 i_pad_x=0, i_pad_y=0):
 		_gtk.gtk_packer_add(self._o, child._o, side, anchor, options,
 				    border_width, pad_x, pad_y, i_pad_x,
 				    i_pad_y)

@@ -628,7 +628,7 @@ def create_scrolled_windows(_button):
 		table = GtkTable(20, 20)
 		table.set_row_spacings(10)
 		table.set_col_spacings(10)
-		scrolled_window.add(table)
+		scrolled_window.add_with_viewport(table)
 		table.show()
 
 		for i in range(20):
