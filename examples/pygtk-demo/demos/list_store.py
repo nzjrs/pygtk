@@ -47,7 +47,7 @@ def create_model ():
 
 def fixed_toggled (cell, path, model):
     # get toggled iter
-    iter = model.get_iter (int (path))
+    iter = model.get_iter ((int(path),))
     fixed = model.get_value (iter, COLUMN_FIXED)
     
     # do something with the value
