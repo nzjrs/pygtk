@@ -926,7 +926,7 @@ pygtk_tree_model_row_get_parent(PyGtkTreeModelRow *self, void *closure)
 {
     GtkTreeIter parent;
 
-    if (gtk_tree_model_iter_parent(self->model, &self->iter, &parent))
+    if (gtk_tree_model_iter_parent(self->model, &parent, &self->iter))
 	return _pygtk_tree_model_row_new(self->model, &parent);
     Py_INCREF(Py_None);
     return Py_None;
