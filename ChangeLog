@@ -1,3 +1,59 @@
+2003-07-01  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk.override (_wrap_gtk_button_box_get_child_size)
+	(_wrap_gtk_button_box_get_child_ipadding): Add deprecation warnings.
+	Fixes #110663.
+
+	* gtk/gdk.override (_wrap_gdk_pixbuf_animation_get_iter)
+	(_wrap_gdk_pixbuf_animation_iter_advance): Add methods. Fixes #114616.
+
+	* gtk/gdk.defs (gdk_pixmap_create_from_data): Allow NULL window arg.
+	Fixes #114661.
+
+	* gtk/gdk.defs (gdk_rectangle_new): Add GdkRectangle constructor.
+	Partial fix for #114743.
+
+	* gtk/gdk.override (_wrap_gdk_rectangle_union)
+	(_wrap_gdk_rectangle_intersect): Add keyword args and allow 4-tuple as
+	rectangle spec. Fixes #114743.
+
+	* gtk/gdk.override (_wrap_gdk_window_get_frame_extents): Return a
+	GdkRectangle. Fixes #114817.
+
+	* gtk/gdk.override (gdk_window_get_decorations): Add method.
+	Fixes #114821.
+
+	* gtk/gdk.defs (gdk_window_shape_combine_mask): shape_mask can be NULL.
+	Fixes #114952.
+
+	* gtk/gdk.override (_wrap_gdk_window_get_toplevels)
+	(_wrap_gdk_list_visuals): Add functions. Fixes #115046.
+
+	* gtk/gtktextview.override (_wrap_gtk_text_buffer_set_text)
+	(_wrap_gtk_text_buffer_insert)
+	(_wrap_gtk_text_buffer_insert_at_cursor)
+	(_wrap_gtk_text_buffer_insert_interactive)
+	(_wrap_gtk_text_buffer_insert_interactive_at_cursor):
+	Raise a ValueError exception if specified length greater than text
+	length. Fixes #115154.
+
+	* gtk/gtk.override (_wrap_gtk_accelerator_parse): Add function.
+	Fixes #115191.
+
+	* gtk/gtk.override (_wrap_gtk_accel_map_lookup_entry): Add function.
+	Fixes #115194.
+
+	* gtk/gtk.override (_wrap_gtk_accel_map_load_fd)
+	(_wrap_gtk_accel_map_save_fd): Allow fd arg to be a Python file object.
+	Fixes #115198.
+
+	* gtk/gtk.override (_wrap_gtk_color_selection_palette_from_string)
+	(_wrap_gtk_color_selection_palette_to_string): Add first and fix
+	second. Fixes #115206.
+
+	* gtk/gdk.defs (keyboard_ungrab) (rgb_get_colormap) (rgb_get_cmap): 
+	Add first two defs and add deprecation to last def. Fixes #115502.
+
 2003-06-30  John Finlay  <finlay@moeraki.com>
 
 	* gobjectmodule.c (pyg_error_check) Replace first pyg_unblock_threads
