@@ -1387,7 +1387,7 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     }
     gtk_tree_model_get_value(GTK_TREE_MODEL(self->obj),
 			     pyg_boxed_get(iter, GtkTreeIter), column, &value);
-    ret = pyg_value_as_pyobject(&value);
+    ret = pyg_value_as_pyobject(&value, TRUE);
     g_value_unset(&value);
     return ret;
 }
