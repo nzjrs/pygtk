@@ -6072,3 +6072,93 @@ _wrap_gtk_drag_source_set_target_list(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_cell_view_set_value kwargs
+static PyObject *
+_wrap_gtk_cell_view_set_value(PyGObject *self, PyObject *args,
+                              PyObject *kwargs)
+{
+    static char *kwlist[] = { "renderer", "property", "value", NULL };
+    PyObject *pyrenderer, *pyvalue;
+    GtkCellRenderer *renderer;
+    gchar *property;
+    GParamSpec *pspec;
+    GValue value = { 0 };
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O!sO:GtkCellView.set_value",
+                                     kwlist,
+                                     &PyGtkCellRenderer_Type, &pyrenderer,
+                                     &property, &pyvalue))
+        return NULL;
+ 
+    renderer = GTK_CELL_RENDERER(pygobject_get(pyrenderer));
+    pspec = g_object_class_find_property(G_OBJECT_GET_CLASS(renderer),
+                                         property);
+    if (!pspec) {
+         PyErr_Format(PyExc_TypeError,
+                      "property %s is not defined for the renderer",
+                      property);
+        return NULL;
+    }
+    g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+    if (pyg_value_from_pyobject(&value, pyvalue)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "value is of the wrong type for property %s",
+                         property);
+        return NULL;
+    }
+    gtk_cell_view_set_value(GTK_CELL_VIEW(self->obj), renderer,
+                            property, &value);
+    g_value_unset(&value);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_cell_view_set_values kwargs
+static PyObject *
+_wrap_gtk_cell_view_set_values(PyGObject *self, PyObject *args,
+                               PyObject *kwargs)
+{
+    PyObject *pyrenderer, *key, *item;
+    GtkCellRenderer *renderer;
+    GtkCellView *view;
+    gchar *property;
+    GParamSpec *pspec;
+    GValue value = { 0 };
+    gint i = 0;
+
+    if (!PyArg_ParseTuple(args, "O!:GtkCellView.set_values",
+                          &PyGtkCellRenderer_Type, &pyrenderer))
+        return NULL;
+
+    if (!kwargs) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    view = GTK_CELL_VIEW(self->obj);
+    renderer = GTK_CELL_RENDERER(pygobject_get(pyrenderer));
+    while (PyDict_Next(kwargs, &i, &key, &item)) {
+        property = PyString_AsString(key);
+        pspec = g_object_class_find_property(G_OBJECT_GET_CLASS(renderer),
+                                             property);
+        if (!pspec) {
+            PyErr_Format(PyExc_TypeError,
+                         "property %s is not defined for the renderer",
+                         property);
+            return NULL;
+        }
+        g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+        if (pyg_value_from_pyobject(&value, item)) {
+            PyErr_Format(PyExc_TypeError,
+                         "value is of the wrong type for property %s",
+                         property);
+            return NULL;
+        }
+        gtk_cell_view_set_value(view, renderer, property, &value);
+        g_value_unset(&value);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
