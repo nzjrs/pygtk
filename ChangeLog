@@ -1,3 +1,18 @@
+2004-05-21  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk-types.c (_pygtk_tree_model_remove_row) Add function to
+	help in row removal from sort and filter models using del
+	(_pygtk_tree_model_set_row) Add support for TreeModelSort and
+	TreeModelFilter setting row values.
+
+	* gtk/pygtk-private.h (_pygtk_tree_model_remove_row) Add declaration.
+
+	* gtk/gtktreeview.override (_wrap_gtk_tree_model_tp_setitem) Use
+	_pygtk_tree_model_remove_row() helper function.
+	(_wrap_gtk_tree_model_filter_set_modify_func) Add.
+	Add support to TreeModelSort and TreeModelFilter for Python mapping,
+	number and iter protocols.
+
 2004-05-20  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gtk.defs (gtk_tree_view_column_pack_start)

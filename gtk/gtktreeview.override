@@ -42,6 +42,12 @@ init
     PyPyGtkGenericTreeModel_Type.tp_as_number  = PyGtkTreeModel_Type.tp_as_number;
     PyPyGtkGenericTreeModel_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
     PyPyGtkGenericTreeModel_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
+    PyGtkTreeModelSort_Type.tp_as_number  = PyGtkTreeModel_Type.tp_as_number;
+    PyGtkTreeModelSort_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
+    PyGtkTreeModelSort_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
+    PyGtkTreeModelFilter_Type.tp_as_number  = PyGtkTreeModel_Type.tp_as_number;
+    PyGtkTreeModelFilter_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
+    PyGtkTreeModelFilter_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
 %%
 ignore-glob
   gtk_tree_path_*
@@ -975,20 +981,10 @@ _wrap_gtk_tree_model_tp_setitem(PyGObject *self, PyObject *item,
     }
 
     if (value == NULL) {
-        if (GTK_IS_LIST_STORE(self->obj)) {
-            gtk_list_store_remove(GTK_LIST_STORE(self->obj), iter);
-            return 0;
-        } else if (GTK_IS_TREE_STORE(self->obj)) {
-            gtk_tree_store_remove(GTK_TREE_STORE(self->obj), iter);
-            return 0;
-        } else {
-            PyErr_SetString(PyExc_TypeError,
-                            "don't know how to remove rows "
-                            "from this type of tree model");
-            return -1;
-        }
+        return _pygtk_tree_model_remove_row(GTK_TREE_MODEL(self->obj), iter);
     } else {
-        return _pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), iter,value);
+        return _pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj),
+                                         iter, value);
     }
 }
 
@@ -2731,6 +2727,96 @@ _wrap_gtk_tree_selection_select_range(PyGObject *self, PyObject *args,
 
     gtk_tree_path_free(start_path);
     gtk_tree_path_free(end_path);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_model_filter_set_modify_func kwargs
+static void
+pygtk_filter_modify_func_marshal(GtkTreeModel *model, GtkTreeIter *iter,
+                          GValue *value, gint column, gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *py_value, *py_model, *py_iter;
+
+    g_assert (cunote->func);
+
+    pyg_block_threads();
+
+    py_model = pygobject_new((GObject *)model);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    if (cunote->data)
+        py_value = PyEval_CallFunction(cunote->func, "(NNiO)",
+                                     py_model, py_iter, column, cunote->data);
+    else
+        py_value = PyEval_CallFunction(cunote->func, "(NNi)",
+                                     py_model, py_iter, column);
+
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+    } else if (pyg_value_from_pyobject(value, py_value)) {
+        PyErr_Format(PyExc_TypeError,
+                     "value is of the wrong type for column %i", column);
+        PyErr_Print();
+    }
+
+    Py_XDECREF(py_value);
+
+    pyg_unblock_threads();
+}
+
+static PyObject *
+_wrap_gtk_tree_model_filter_set_modify_func(PyGObject *self, PyObject *args,
+                                            PyObject *kwargs)
+{
+    static char *kwlist[] = { "types", "func", "data", NULL };
+    GType *types;
+    PyObject *py_types, *py_func, *py_arg = NULL;
+    PyGtkCustomNotify *cunote;
+    gint tlen, i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OO|O:GtkTreeModelFilter.set_modify_func",
+				     kwlist, &py_types, &py_func, &py_arg))
+        return NULL;
+
+    if (!PyCallable_Check(py_func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+    if (!PySequence_Check(py_types) || (tlen = PySequence_Size(py_types)) <= 0) {
+        PyErr_SetString(PyExc_TypeError,
+                        "types must be a tuple containing one or more arguments");
+        return NULL;
+    }
+
+    types = g_new0(GType, tlen);
+    for (i = 0; i < tlen; i++) {
+        PyObject *item = PySequence_GetItem(py_types, i);
+
+        types[i] = pyg_type_from_object(item);
+        if (types[i] == 0) {
+            Py_DECREF(item);
+            g_free(types);
+            return NULL;
+        }
+        Py_DECREF(item);
+    }
+
+    cunote = g_new(PyGtkCustomNotify, 1);
+    Py_INCREF(py_func);
+    cunote->func = py_func;
+    Py_XINCREF(py_arg);
+    cunote->data = py_arg;
+
+    gtk_tree_model_filter_set_modify_func(GTK_TREE_MODEL_FILTER(self->obj),
+                                          tlen, types,
+                                          pygtk_filter_modify_func_marshal,
+                                          cunote,
+                                          pygtk_custom_destroy_notify);
+
+    g_free(types);
 
     Py_INCREF(Py_None);
     return Py_None;

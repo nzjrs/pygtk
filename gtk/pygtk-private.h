@@ -54,5 +54,6 @@ PyObject *_pygtk_tree_model_row_iter_new(GtkTreeModel *model,
 					 GtkTreeIter *parent_iter);
 int       _pygtk_tree_model_set_row(GtkTreeModel *model, GtkTreeIter *iter,
 				    PyObject *items);
+int       _pygtk_tree_model_remove_row(GtkTreeModel *model, GtkTreeIter *iter);
 
 #endif

@@ -1093,15 +1093,67 @@ static PyTypeObject PyGtkTreeModelRowIter_Type = {
 };
 
 int
+_pygtk_tree_model_remove_row(GtkTreeModel *model, GtkTreeIter *iter)
+{
+    GtkTreeModel *child;
+    GtkTreeIter citer;
+
+    if (GTK_IS_LIST_STORE(model)) {
+        gtk_list_store_remove(GTK_LIST_STORE(model), iter);
+        return 0;
+    }
+
+    if (GTK_IS_TREE_STORE(model)) {
+        gtk_tree_store_remove(GTK_TREE_STORE(model), iter);
+        return 0;
+    }
+
+    if (GTK_IS_TREE_MODEL_SORT(model)) {
+        child = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+        gtk_tree_model_sort_convert_iter_to_child_iter(
+            GTK_TREE_MODEL_SORT(model), &citer, iter);
+        return _pygtk_tree_model_remove_row(child, &citer);
+    }
+
+    if (GTK_IS_TREE_MODEL_FILTER(model)) {
+        child = gtk_tree_model_filter_get_model(GTK_TREE_MODEL_FILTER(model));
+        gtk_tree_model_filter_convert_iter_to_child_iter(
+            GTK_TREE_MODEL_FILTER(model), &citer, iter);
+        return _pygtk_tree_model_remove_row(child, &citer);
+    }
+
+    PyErr_SetString(PyExc_TypeError,
+                    "cannot remove rows in this tree model");
+    return -1;
+}
+
+int
 _pygtk_tree_model_set_row(GtkTreeModel *model, GtkTreeIter *iter,
 			  PyObject *items)
 {
     gint n_columns, i;
+    GtkTreeModel *child;
+    GtkTreeIter citer;
 
-    if (!GTK_IS_LIST_STORE(model) && !GTK_IS_TREE_STORE(model)) {
+    if (!GTK_IS_LIST_STORE(model) && !GTK_IS_TREE_STORE(model) &&
+        !GTK_IS_TREE_MODEL_SORT(model) && !GTK_IS_TREE_MODEL_FILTER(model)) {
 	PyErr_SetString(PyExc_TypeError,
-			"can not set cells in this tree model");
+			"cannot set cells in this tree model");
 	return -1;
+    }
+
+    if (GTK_IS_TREE_MODEL_SORT(model)) {
+        child = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+        gtk_tree_model_sort_convert_iter_to_child_iter(
+            GTK_TREE_MODEL_SORT(model), &citer, iter);
+        return _pygtk_tree_model_set_row(child, &citer, items);
+    }
+
+    if (GTK_IS_TREE_MODEL_FILTER(model)) {
+        child = gtk_tree_model_filter_get_model(GTK_TREE_MODEL_FILTER(model));
+        gtk_tree_model_filter_convert_iter_to_child_iter(
+            GTK_TREE_MODEL_FILTER(model), &citer, iter);
+        return _pygtk_tree_model_set_row(child, &citer, items);
     }
 
     if (!PySequence_Check(items)) {
