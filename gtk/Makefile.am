@@ -44,6 +44,7 @@ nodist__gtk_la_SOURCES = gtk.c gdk.c
 
 if PLATFORM_WIN32
 _gtk_la_SOURCES += gtk-fake-win32.c
+_gtk_la_CFLAGS  += -DPLATFORM_WIN32
 endif
 
 # prevent the .defs.c rule from trying to generate gtk-types.c because
