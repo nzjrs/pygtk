@@ -32,27 +32,34 @@
   <xsl:template name="user.head.content">
     <style type="text/css">
       <xsl:text>
-        .synopsis, .classsynopsis, .programlisting {
-            background: #e0e0e0;
-            border: solid 1pt #999999;
-            padding: 4px;
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
         }
         .variablelist {
-            background: #ffe9ca;
-            border: solid 1pt #fdb558;
             padding: 4px;
+            margin-left: 3em;
         }
         .navigation {
-            background: #f0d9d9;
-            border: solid 1pt #ce8787;
-            margin-top: 4pt;
-            margin-bottom: 4pt;
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
         }
         .navigation a {
-          color: #770000;
+            color: #770000;
         }
         .navigation a:visited {
-          color: #550000;
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
         }
       </xsl:text>
     </style>
@@ -225,6 +232,19 @@
   </xsl:template>
 
   <!-- nice looking heading -->
+  <xsl:template match="title" mode="book.titlepage.recto.mode">
+    <table class="navigation" width="100%"
+           cellpadding="2" cellspacing="0">
+      <tr>
+        <th valign="middle">
+          <p class="{name(.)}">
+            <xsl:value-of select="."/>
+          </p>
+        </th>
+      </tr>
+    </table>
+  </xsl:template>
+
   <xsl:template name="header.navigation">
     <xsl:param name="prev" select="/foo"/>
     <xsl:param name="next" select="/foo"/>
@@ -234,7 +254,7 @@
     <xsl:if test="$suppress.navigation = '0' and $home != .">
       <table class="navigation" width="100%"
              summary="Navigation header" cellpadding="2" cellspacing="0">
-        <tr valign="center">
+        <tr valign="middle">
           <xsl:if test="count($prev) > 0">
             <td>
               <a accesskey="p">
@@ -323,7 +343,7 @@
     <xsl:if test="$suppress.navigation = '0'">
       <table class="navigation" width="100%"
              summary="Navigation footer" cellpadding="2" cellspacing="0">
-        <tr valign="center">
+        <tr valign="middle">
           <td align="left">
             <xsl:if test="count($prev) > 0">
               <a accesskey="p">

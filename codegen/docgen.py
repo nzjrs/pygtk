@@ -481,7 +481,7 @@ class DocbookDocWriter(DocWriter):
 
     # these need to handle default args ...
     def create_constructor_prototype(self, func_def):
-        sgml = [ '  <constructorsynopsis language="python">\n']
+        sgml = [ '<constructorsynopsis language="python">\n']
         sgml.append('    <methodname>__init__</methodname>\n')
         for type, name, dflt, null in func_def.params:
             sgml.append('    <methodparam><parameter>')
@@ -494,10 +494,10 @@ class DocbookDocWriter(DocWriter):
             sgml.append('</methodparam>\n')
         if not func_def.params:
             sgml.append('    <methodparam></methodparam>')
-        sgml.append('  </constructorsynopsis>\n')
+        sgml.append('  </constructorsynopsis>')
         return string.join(sgml, '')
     def create_function_prototype(self, func_def):
-        sgml = [ '  <funcsynopsis language="python">\n    <funcprototype>\n']
+        sgml = [ '<funcsynopsis language="python">\n    <funcprototype>\n']
         sgml.append('      <funcdef><function>')
         sgml.append(func_def.name)
         sgml.append('</function></funcdef>\n')
@@ -512,10 +512,10 @@ class DocbookDocWriter(DocWriter):
             sgml.append('</paramdef>\n')
         if not func_def.params:
             sgml.append('      <paramdef></paramdef')
-        sgml.append('    </funcprototype>\n  </funcsynopsis>\n')
+        sgml.append('    </funcprototype>\n  </funcsynopsis>')
         return string.join(sgml, '')
     def create_method_prototype(self, meth_def, addlink=0):
-        sgml = [ '  <methodsynopsis language="python">\n']
+        sgml = [ '<methodsynopsis language="python">\n']
         sgml.append('    <methodname>')
         if addlink:
             sgml.append('<link linkend="%s">' % self.make_method_ref(meth_def))
@@ -534,7 +534,7 @@ class DocbookDocWriter(DocWriter):
             sgml.append('</methodparam>\n')
         if not meth_def.params:
             sgml.append('    <methodparam></methodparam>')
-        sgml.append('  </methodsynopsis>\n')
+        sgml.append('  </methodsynopsis>')
         return string.join(sgml, '')
     
     def write_class_header(self, obj_name, fp):
@@ -587,12 +587,12 @@ class DocbookDocWriter(DocWriter):
 
         constructor = self.parser.find_constructor(obj_def, self.overrides)
         if constructor:
-            fp.write(self.create_constructor_prototype(constructor))
+            fp.write('%s\n' % self.create_constructor_prototype(constructor))
         methods = self.parser.find_methods(obj_def)
         methods = filter(lambda meth, self=self:
                          not self.overrides.is_ignored(meth.c_name), methods)
         for meth in methods:
-            fp.write(self.create_method_prototype(meth, addlink=1))
+            fp.write('%s\n' % self.create_method_prototype(meth, addlink=1))
         fp.write('</classsynopsis>\n\n')
 
     def write_hierarchy(self, obj_name, ancestry, fp):
@@ -625,8 +625,8 @@ class DocbookDocWriter(DocWriter):
             else:
                 descr = 'a ' + type
             fp.write('    <varlistentry>\n')
-            fp.write('      <term><parameter>%s</parameter></term>\n' % name)
-            fp.write('      <listitem>%s</listitem>\n' %
+            fp.write('      <term><parameter>%s</parameter>&nbsp;:</term>\n' % name)
+            fp.write('      <listitem><simpara>%s</simpara></listitem>\n' %
                      self.reformat_text(descr, singleline=1))
             fp.write('    </varlistentry>\n')
         if ret and ret != 'none':
@@ -635,15 +635,15 @@ class DocbookDocWriter(DocWriter):
             else:
                 descr = 'a ' + ret
             fp.write('    <varlistentry>\n')
-            fp.write('      <term><emphasis>Returns:</emphasis></term>\n')
-            fp.write('      <listitem>%s</listitem>\n' %
+            fp.write('      <term><emphasis>Returns</emphasis>&nbsp;:</term>\n')
+            fp.write('      <listitem><simpara>%s</simpara></listitem>\n' %
                      self.reformat_text(descr, singleline=1))
             fp.write('    </varlistentry>\n')
         fp.write('  </variablelist>\n')
 
     def write_constructor(self, func_def, func_doc, fp):
         prototype = self.create_constructor_prototype(func_def)
-        fp.write(prototype + '\n')
+        fp.write('<programlisting>%s</programlisting>\n' % prototype)
         self.write_params(func_def.params, func_def.ret, func_doc, fp)
 
         if func_doc and func_doc.description:
@@ -655,7 +655,7 @@ class DocbookDocWriter(DocWriter):
         fp.write('    <title>' + self.pyname(meth_def.of_object) + '.' +
                  meth_def.name + '</title>\n\n')
         prototype = self.create_method_prototype(meth_def)
-        fp.write(prototype + '\n')
+        fp.write('<programlisting>%s</programlisting>\n' % prototype)
         self.write_params(meth_def.params, meth_def.ret, func_doc, fp)
         if func_doc and func_doc.description:
             fp.write(self.reformat_text(func_doc.description))
