@@ -21,9 +21,12 @@ struct _PyGtk_FunctionStruct {
     void (* retFromPyObject)(GtkArg *ret, PyObject *obj);
     PyObject *(* retAsPyObject)(GtkArg *ret);
     GtkArg *(* dictAsGtkArgs)(PyObject *dict, GtkType type, gint *nargs);
-    void (* registerBoxed)(GtkType boxed_type
+    void (* registerBoxed)(GtkType boxed_type,
 			   PyObject *(*from_func)(gpointer boxed),
 			   int (*to_func)(gpointer *boxed, PyObject *obj));
+
+    gint (* enum_get_value)(GtkType enum_type, PyObject *obj, int *val);
+    gint (* flag_get_value)(GtkType enum_type, PyObject *obj, int *val);
 
     PyTypeObject *gtk_type;
     PyObject *(* gtk_new)(GtkObject *obj);
@@ -66,7 +69,7 @@ struct _PyGtk_FunctionStruct {
 
     PyTypeObject *gtkCTreeNode_type;
     PyObject *(* gtkCTreeNode_new)(GtkCTreeNode *node);
-}
+};
 
 /* structure definitions for the various object types in PyGTK */
 typedef struct {
@@ -142,7 +145,7 @@ typedef struct {
 } PyGtkCTreeNode_Object;
 
 /* routines to get the C object value out of the PyObject wrapper */
-#define PyGtk_Get(v) (((PyGtk_Object *)(v))->obj);
+#define PyGtk_Get(v) (((PyGtk_Object *)(v))->obj)
 #define PyGtkAccelGroup_Get(v) (((PyGtkAccelGroup_Object *)(v))->obj)
 #define PyGtkStyle_Get(v) (((PyGtkStyle_Object *)(v))->obj)
 #define PyGdkFont_Get(v) (((PyGdkFont_Object *)(v))->obj)
@@ -203,7 +206,7 @@ static PyObject *PyGdkWindow_New(GdkWindow *window);
 static PyObject *PyGdkGC_New(GdkGC *gc);
 static PyObject *PyGdkColormap_New(GdkColormap *colourmap);
 static PyObject *PyGdkDragContext_New(GdkDragContext *ctx);
-static PyObject *PyGtkSelectionData_Get(GtkSelectionData *data);
+static PyObject *PyGtkSelectionData_New(GtkSelectionData *data);
 static PyObject *PyGdkAtom_New(GdkAtom atom);
 static PyObject *PyGdkCursor_New(GdkCursor *cursor);
 static PyObject *PyGtkCTreeNode_New(GtkCTreeNode *node);
@@ -225,6 +228,8 @@ static GtkArg *PyDict_AsGtkArgs(PyObject *dict, GtkType type, gint *nargs);
 static void PyGtk_RegisterBoxed(GtkType boxed_type,
 				PyObject *(*fromarg)(gpointer boxed),
 				int (*toarg)(gpointer *boxed, PyObject *obj));
+gint PyGtkEnum_get_value(GtkType enum_type, PyObject *obj, int *val);
+gint PyGtkFlag_get_value(GtkType enum_type, PyObject *obj, int *val);
 
 static gboolean PyGtk_FatalExceptions = FALSE;
 
@@ -233,9 +238,9 @@ static gboolean PyGtk_FatalExceptions = FALSE;
 /* for multi file extensions, define one of these in all but the main file
  * of the module */
 #if defined(NO_IMPORT) || defined(NO_IMPORT_PYGTK)
-extern struct _PyGtk_FunctionStruct _PyGtk_API;
+extern struct _PyGtk_FunctionStruct *_PyGtk_API;
 #else
-struct _PyGtk_FunctionStruct _PyGtk_API;
+struct _PyGtk_FunctionStruct *_PyGtk_API;
 #endif
 
 /* type objects */
@@ -299,6 +304,8 @@ struct _PyGtk_FunctionStruct _PyGtk_API;
 #define GtkRet_AsPyObject (_PyGtk_API->retAsPyObject)
 #define PyDict_AsGtkArgs (_PyGtk_API->dictAsGtkArgs)
 #define PyGtk_RegisterBoxed (_PyGtk_API->registerBoxed)
+#define PyGtkEnum_get_value (_PyGtk_API->enum_get_value)
+#define PyGtkFlag_get_value (_PyGtk_API->flag_get_value)
 
 /* some variables */
 #define PyGtk_FatalExceptions (_PyGtk_API->fatalExceptions)

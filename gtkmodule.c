@@ -1,3 +1,4 @@
+/* -*- Mode: C; c-basic-offset: 4 -*- */
 /* PyGTK - python bindings for GTK+
  * Copyright (C) 1997-1999 James Henstridge <james@daa.com.au>
  *
@@ -20,6 +21,9 @@
 #include <Python.h>
 #include <sysmodule.h>
 #include <gtk/gtk.h>
+
+#define _INSIDE_PYGTK_
+#include "pygtk.h"
 
 /* The threading hacks are based on ones supplied by Duncan Grisby
  * of AT&T Labs Cambridge */
@@ -48,18 +52,6 @@ static int _blockcount = 1;
 
 static void PyGtk_BlockThreads(void) { PyGTK_BLOCK_THREADS }
 static void PyGtk_UnblockThreads(void) { PyGTK_UNBLOCK_THREADS }
-
-static gboolean PyGtk_FatalExceptions = FALSE;
-
-typedef struct {
-  PyObject_HEAD
-  GtkObject *obj;
-} PyGtk_Object;
-
-staticforward PyTypeObject PyGtk_Type;
-
-#define PyGtk_Check(v) ((v)->ob_type == &PyGtk_Type)
-#define PyGtk_Get(v) (((PyGtk_Object *)(v))->obj)
 
 static PyObject *
 PyGtk_New(GtkObject *go) {
@@ -180,114 +172,6 @@ gint PyGtkFlag_get_value(GtkType flag_type, PyObject *obj, int *val) {
 		  "flag values must be ints, strings or tuples");
   return 1;
 }
-
-
-typedef struct {
-    PyObject_HEAD
-    GtkAccelGroup *obj;
-} PyGtkAccelGroup_Object;
-staticforward PyTypeObject PyGtkAccelGroup_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GtkStyle *obj;
-} PyGtkStyle_Object;
-staticforward PyTypeObject PyGtkStyle_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkFont *obj;
-} PyGdkFont_Object;
-staticforward PyTypeObject PyGdkFont_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkColor obj;
-} PyGdkColor_Object;
-staticforward PyTypeObject PyGdkColor_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkEvent *obj;
-    PyObject *attrs;
-} PyGdkEvent_Object;
-staticforward PyTypeObject PyGdkEvent_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkWindow *obj;
-} PyGdkWindow_Object;
-staticforward PyTypeObject PyGdkWindow_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkGC *obj;
-} PyGdkGC_Object;
-staticforward PyTypeObject PyGdkGC_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkColormap *obj;
-} PyGdkColormap_Object;
-staticforward PyTypeObject PyGdkColormap_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkDragContext *obj;
-} PyGdkDragContext_Object;
-staticforward PyTypeObject PyGdkDragContext_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GtkSelectionData *obj;
-} PyGtkSelectionData_Object;
-staticforward PyTypeObject PyGtkSelectionData_Type;
-
-typedef struct {
-    PyObject_HEAD
-    gchar *name;
-    GdkAtom atom;
-} PyGdkAtom_Object;
-staticforward PyTypeObject PyGdkAtom_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GdkCursor *obj;
-} PyGdkCursor_Object;
-staticforward PyTypeObject PyGdkCursor_Type;
-
-typedef struct {
-    PyObject_HEAD
-    GtkCTreeNode *node;
-} PyGtkCTreeNode_Object;
-staticforward PyTypeObject PyGtkCTreeNode_Type;
-
-#define PyGtkAccelGroup_Check(v) ((v)->ob_type == &PyGtkAccelGroup_Type)
-#define PyGtkAccelGroup_Get(v) (((PyGtkAccelGroup_Object *)(v))->obj)
-#define PyGtkStyle_Check(v) ((v)->ob_type == &PyGtkStyle_Type)
-#define PyGtkStyle_Get(v) (((PyGtkStyle_Object *)(v))->obj)
-#define PyGdkFont_Check(v) ((v)->ob_type == &PyGdkFont_Type)
-#define PyGdkFont_Get(v) (((PyGdkFont_Object *)(v))->obj)
-#define PyGdkColor_Check(v) ((v)->ob_type == &PyGdkColor_Type)
-#define PyGdkColor_Get(v) (&((PyGdkColor_Object *)(v))->obj)
-#define PyGdkEvent_Check(v) ((v)->ob_type == &PyGdkEvent_Type)
-#define PyGdkEvent_Get(v) (((PyGdkEvent_Object *)(v))->obj)
-#define PyGdkWindow_Check(v) ((v)->ob_type == &PyGdkWindow_Type)
-#define PyGdkWindow_Get(v) (((PyGdkWindow_Object *)(v))->obj)
-#define PyGdkGC_Check(v) ((v)->ob_type == &PyGdkGC_Type)
-#define PyGdkGC_Get(v) (((PyGdkGC_Object *)(v))->obj)
-#define PyGdkColormap_Check(v) ((v)->ob_type == &PyGdkColormap_Type)
-#define PyGdkColormap_Get(v) (((PyGdkColormap_Object *)(v))->obj)
-#define PyGdkDragContext_Check(v) ((v)->ob_type == &PyGdkDragContext_Type)
-#define PyGdkDragContext_Get(v) (((PyGdkDragContext_Object *)(v))->obj)
-#define PyGtkSelectionData_Check(v) ((v)->ob_type == &PyGtkSelectionData_Type)
-#define PyGtkSelectionData_Get(v) (((PyGtkSelectionData_Object *)(v))->obj)
-#define PyGdkAtom_Check(v) ((v)->ob_type == &PyGdkAtom_Type)
-#define PyGdkAtom_Get(v) (((PyGdkAtom_Object *)(v))->atom)
-#define PyGdkCursor_Check(v) ((v)->ob_type == &PyGdkCursor_Type)
-#define PyGdkCursor_Get(v) (((PyGdkCursor_Object *)(v))->obj)
-#define PyGtkCTreeNode_Check(v) ((v)->ob_type == &PyGtkCTreeNode_Type)
-#define PyGtkCTreeNode_Get(v) (((PyGtkCTreeNode_Object *)(v))->node)
 
 static PyObject *
 PyGtkAccelGroup_New(GtkAccelGroup *obj) {
@@ -2213,10 +2097,6 @@ static void PyGtk_DestroyNotify(gpointer data) {
   Py_DECREF((PyObject *)data);
   PyGTK_UNBLOCK_THREADS
 }
-static void PyGtk_CallbackMarshal(GtkObject *o, gpointer d, guint nargs,
-				  GtkArg *args);
-static PyObject *GtkArgs_AsTuple(int nparams, GtkArg *args);
-static int GtkArgs_FromSequence(GtkArg *args, int nparams, PyObject *seq);
 
 /* this hash table is used to let these functions know about new boxed
  * types (eg. maybe some from GNOME). The functions return TRUE on error */
@@ -5722,6 +5602,43 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { NULL, NULL }
 };
 
+static struct _PyGtk_FunctionStruct functions = {
+    VERSION,
+    FALSE,
+
+    PyGtk_BlockThreads,
+    PyGtk_UnblockThreads,
+
+    PyGtk_DestroyNotify,
+    PyGtk_CallbackMarshal,
+    GtkArgs_AsTuple,
+    GtkArgs_FromSequence,
+    GtkArg_FromPyObject,
+    GtkArg_AsPyObject,
+    GtkRet_FromPyObject,
+    GtkRet_AsPyObject,
+    PyDict_AsGtkArgs,
+    PyGtk_RegisterBoxed,
+
+    PyGtkEnum_get_value,
+    PyGtkFlag_get_value,
+
+    &PyGtk_Type,  PyGtk_New,
+    &PyGtkAccelGroup_Type,  PyGtkAccelGroup_New,
+    &PyGtkStyle_Type,  PyGtkStyle_New,
+    &PyGdkFont_Type,  PyGdkFont_New,
+    &PyGdkColor_Type,  PyGdkColor_New,
+    &PyGdkEvent_Type,  PyGdkEvent_New,
+    &PyGdkWindow_Type,  PyGdkWindow_New,
+    &PyGdkGC_Type,  PyGdkGC_New,
+    &PyGdkColormap_Type,  PyGdkColormap_New,
+    &PyGdkDragContext_Type,  PyGdkDragContext_New,
+    &PyGtkSelectionData_Type,  PyGtkSelectionData_New,
+    &PyGdkAtom_Type,  PyGdkAtom_New,
+    &PyGdkCursor_Type,  PyGdkCursor_New,
+    &PyGtkCTreeNode_Type,  PyGtkCTreeNode_New
+};
+
 void init_gtk() {
      PyObject *m, *d, *private;
      m = Py_InitModule("_gtk", _gtkmoduleMethods);
@@ -5748,6 +5665,9 @@ void init_gtk() {
      PyDict_SetItemString(d, "GdkCursorType", (PyObject *)&PyGdkCursor_Type);
      PyDict_SetItemString(d, "GtkCTreeNodeType",
 			  (PyObject *)&PyGtkCTreeNode_Type);
+
+     PyDict_SetItemString(d, "_PyGtk_API",
+			  PyCObject_FromVoidPtr(&functions, NULL));
 
      private = PyDict_New();
      PyDict_SetItemString(d, "_private", private); Py_DECREF(private);
@@ -5849,7 +5769,7 @@ void init_gtk() {
      if (d == NULL)
          PyErr_Clear();
      else
-         PyGtk_FatalExceptions = PyObject_IsTrue(d);
+         functions.fatalExceptions=PyGtk_FatalExceptions = PyObject_IsTrue(d);
 
 #ifdef WITH_THREAD
      /* it is required that this function be called to enable the thread

@@ -1,3 +1,4 @@
+/* -*- Mode: C; c-basic-offset: 4 -*- */
 /* PyGTK imlib module - python bindings for gdk_imlib
  * Copyright (C) 1998 James Henstridge <james@daa.com.au>
  *
@@ -21,86 +22,62 @@
 #include <gtk/gtk.h>
 #include <gdk_imlib.h>
 
+#include "pygtk.h"
 
-typedef struct {
-    PyObject_HEAD
-    GtkObject *go;
-} PyGtk_Object;
-PyTypeObject *PyGtk_Type;
-#define PyGtk_Check(op) ((op)->ob_type == PyGtk_Type)
-
-static PyObject *(*PyGtk_New)(GtkObject *go);
-
-typedef struct {
-    PyObject_HEAD
-    GdkWindow *obj;
-} PyGdkWindow_Object;
-PyTypeObject *PyGdkWindow_Type;
-#define PyGdkWindow_Check(op) ((op)->ob_type == PyGdkWindow_Type)
-#define PyGdkWindow_Get(op) (((PyGdkWindow_Object *)(op))->obj)
-static PyObject *(*PyGdkWindow_New)(GdkWindow *win);
-
-
-typedef struct {
-	PyObject_HEAD
-	GdkImlibImage *obj;
-} PyGdkImlibImage_Object;
-
-staticforward PyTypeObject PyGdkImlibImage_Type;
-#define PyGdkImlibImage_Check(ob) ((ob)->ob_type == &PyGdkImlibImage_Type)
-#define PyGdkImlibImage_Get(ob) (((PyGdkImlibImage_Object *)(ob))->obj)
+#define _INSIDE_PYGDKIMLIB_
+#include "pygdkimlib.h"
 
 static PyObject *
 PyGdkImlibImage_New(GdkImlibImage *obj) {
-  PyGdkImlibImage_Object *self;
+    PyGdkImlibImage_Object *self;
 
-  if (obj == NULL) {
-      PyErr_SetString(PyExc_IOError, "couldn't load image");
-      return NULL;
-  }
+    if (obj == NULL) {
+	PyErr_SetString(PyExc_IOError, "couldn't load image");
+	return NULL;
+    }
 
-  self = (PyGdkImlibImage_Object *)PyObject_NEW(PyGdkImlibImage_Object,
-						&PyGdkImlibImage_Type);
-  if (self == NULL)
-    return NULL;
-  self->obj = obj;
-  return (PyObject *)self;
+    self = (PyGdkImlibImage_Object *)PyObject_NEW(PyGdkImlibImage_Object,
+						  &PyGdkImlibImage_Type);
+    if (self == NULL)
+	return NULL;
+    self->obj = obj;
+    return (PyObject *)self;
 }
 
 static void
 PyGdkImlibImage_Dealloc(PyGdkImlibImage_Object *self) {
-  gdk_imlib_destroy_image(self->obj); 
-  PyMem_DEL(self);
+    gdk_imlib_destroy_image(self->obj); 
+    PyMem_DEL(self);
 }
 
 static int
 PyGdkImlibImage_Compare(PyGdkImlibImage_Object *self,
 			PyGdkImlibImage_Object *v) {
-  if (self->obj == v->obj) return 0;
-  if (self->obj > v->obj) return -1;
-  return 1;
+    if (self->obj == v->obj) return 0;
+    if (self->obj > v->obj) return -1;
+    return 1;
 }
 
 static PyTypeObject PyGdkImlibImage_Type = {
-  PyObject_HEAD_INIT(&PyType_Type)
-  0,
-  "GdkImlibImage",
-  sizeof(PyGdkImlibImage_Object),
-  0,
-  (destructor)PyGdkImlibImage_Dealloc,
-  (printfunc)0,
-  (getattrfunc)0,
-  (setattrfunc)0,
-  (cmpfunc)PyGdkImlibImage_Compare,
-  (reprfunc)0,
-  0,
-  0,
-  0,
-  (hashfunc)0,
-  (ternaryfunc)0,
-  (reprfunc)0,
-  0L,0L,0L,0L,
-  NULL
+    PyObject_HEAD_INIT(&PyType_Type)
+    0,
+    "GdkImlibImage",
+    sizeof(PyGdkImlibImage_Object),
+    0,
+    (destructor)PyGdkImlibImage_Dealloc,
+    (printfunc)0,
+    (getattrfunc)0,
+    (setattrfunc)0,
+    (cmpfunc)PyGdkImlibImage_Compare,
+    (reprfunc)0,
+    0,
+    0,
+    0,
+    (hashfunc)0,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    0L,0L,0L,0L,
+    NULL
 };
 
 
@@ -155,11 +132,11 @@ static PyObject *_wrap_gdk_imlib_load_image(PyObject *self, PyObject *args) {
 }
 
 static PyObject *_wrap_gdk_imlib_best_color_match(PyObject *self, PyObject *args) {
-  int r, g, b;
-  if (!PyArg_ParseTuple(args, "iii:gdk_imlib_best_color_match", &r, &g, &b))
-    return NULL;
-  gdk_imlib_best_color_match(&r, &g, &b);
-  return Py_BuildValue("(iii)", r, g, b);
+    int r, g, b;
+    if (!PyArg_ParseTuple(args, "iii:gdk_imlib_best_color_match", &r, &g, &b))
+	return NULL;
+    gdk_imlib_best_color_match(&r, &g, &b);
+    return Py_BuildValue("(iii)", r, g, b);
 }
 
 static PyObject *_wrap_gdk_imlib_render(PyObject *self, PyObject *args) {
@@ -228,7 +205,7 @@ static PyObject *_wrap_gdk_imlib_free_colors(PyObject *self, PyObject *args) {
 
 static PyObject *_wrap_gdk_imlib_get_image_border(PyObject *self, PyObject *args) {
     GdkImlibBorder border;
-    PyObject *image ;
+    PyObject *image;
 
     if(!PyArg_ParseTuple(args,"O!:gdk_imlib_get_image_border",
 			 &PyGdkImlibImage_Type, &image)) 
@@ -796,6 +773,10 @@ static PyMethodDef _gdkimlibMethods[] = {
     { NULL, NULL }
 };
 
+static struct _PyGdkImlib_FunctionStruct functions = {
+    &PyGdkImlibImage_Type, PyGdkImlibImage_New
+};
+
 void init_gdkimlib() {
     PyObject *m, *d, *private;
 
@@ -805,6 +786,9 @@ void init_gdkimlib() {
     PyDict_SetItemString(d, "GdkImlibImageType",
 			 (PyObject *)&PyGdkImlibImage_Type);
 
+     PyDict_SetItemString(d, "_PyGdkI_API",
+			  PyCObject_FromVoidPtr(&functions, NULL));
+
     private = PyDict_New();
     PyDict_SetItemString(d, "_private", private); Py_DECREF(private);
 
@@ -812,25 +796,8 @@ void init_gdkimlib() {
 			 d=PyCObject_FromVoidPtr(PyGdkImlibImage_New, NULL));
     Py_DECREF(d);
 
-    /* get types and exported functions out of _gtkmodule */
-    m = PyImport_ImportModule("_gtk");
-    if (m == NULL) {
-        Py_FatalError("couldn't import _gtk");
-	return;
-    }
-    d = PyModule_GetDict(m);
-    Py_DECREF(m);
-
-    PyGtk_Type = (PyTypeObject *)PyDict_GetItemString(d, "GtkObjectType");
-    Py_INCREF(PyGtk_Type);
-    PyGdkWindow_Type = (PyTypeObject *)PyDict_GetItemString(d,"GdkWindowType");
-    Py_INCREF(PyGdkWindow_Type);
-
-    d = PyDict_GetItemString(d, "_private");
-    PyGtk_New = PyCObject_AsVoidPtr(PyDict_GetItemString(d, "PyGtk_New"));
-    PyGdkWindow_New = PyCObject_AsVoidPtr(PyDict_GetItemString(d,
-							"PyGdkWindow_New"));
-
+    /* get references to the pygtk types and functions */
+    init_pygtk();
 
     if (PyErr_Occurred())
          Py_FatalError("can't initialise module _gdkimlib");
