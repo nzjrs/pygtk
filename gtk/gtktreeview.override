@@ -1766,8 +1766,10 @@ _wrap_gtk_tree_model_iter_children(PyGObject *self, PyObject *args,
         return NULL;
     if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
         parent = pyg_boxed_get(py_parent, GtkTreeIter);
+    else if (py_parent == Py_None)
+        parent = NULL;
     else {
-        PyErr_SetString(PyExc_TypeError, "parent should be a GtkTreeIter");
+        PyErr_SetString(PyExc_TypeError, "parent should be a GtkTreeIter or None");
         return NULL;
     }
 
