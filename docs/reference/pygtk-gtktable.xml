@@ -56,20 +56,6 @@ linkend="method-gtktable--attach">attach</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gtktable--attach-defaults">attach_defaults</link></methodname>
-	<methodparam><parameter
-		       role="keyword">widget</parameter></methodparam>
-	<methodparam><parameter
-		       role="keyword">left_attach</parameter></methodparam>
-	<methodparam><parameter
-		       role="keyword">right_attach</parameter></methodparam>
-	<methodparam><parameter
-		       role="keyword">top_attach</parameter></methodparam>
-	<methodparam><parameter
-		       role="keyword">bottom_attach</parameter></methodparam>
-      </methodsynopsis>
-      <methodsynopsis language="python">
-	<methodname><link
 linkend="method-gtktable--set-row-spacing">set_row_spacing</link></methodname>
 	<methodparam><parameter role="keyword">row</parameter></methodparam>
 	<methodparam><parameter
@@ -152,9 +138,17 @@ linkend="method-gtktable--get-homogeneous">get_homogeneous</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"n-rows"</entry>
+	      <entry>"column-spacing"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The number of rows in the table</entry>
+	      <entry>The amount of space between two adjacent
+columns</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"homogeneous"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the table cells are all the
+same width or height</entry>
 	    </row>
 
 	    <row valign="top">
@@ -164,23 +158,15 @@ linkend="method-gtktable--get-homogeneous">get_homogeneous</link></methodname>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"column-spacing"</entry>
+	      <entry>"n-rows"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The amount of space between two adjacent
-columns</entry>
+	      <entry>The number of rows in the table</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"row-spacing"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The amount of space between two adjacent rows</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"homogeneous"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the table cells are all the
-same width or height</entry>
 	    </row>
 
 	  </tbody>
@@ -202,6 +188,12 @@ same width or height</entry>
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"bottom-attach"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The lowest row of the child</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"left-attach"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The leftmost column of the child</entry>
@@ -220,12 +212,6 @@ same width or height</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"bottom-attach"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The lowest row of the child</entry>
-	    </row>
-
-	    <row valign="top">
 	      <entry>"x-options"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>the horizontal behaviour of the child - a combination
@@ -234,18 +220,18 @@ of: <literal>gtk.EXPAND</literal>, <literal>gtk.SHRINK</literal> and
 	    </row>
 
 	    <row valign="top">
+	      <entry>"x-padding"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Extra space added between the child widget and its left
+and right neighbors, in pixels</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"y-options"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>the vertical behaviour of the child - a combination of:
 <literal>gtk.EXPAND</literal>, <literal>gtk.SHRINK</literal> and
 <literal>gtk.FILL</literal></entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"x-padding"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>Extra space added between the child widget and its left
-and right neighbors, in pixels</entry>
 	    </row>
 
 	    <row valign="top">
@@ -277,8 +263,6 @@ method.</para>
 
     <para>Widgets can be added to a table using the <link
 linkend="method-gtktable--attach"><methodname>attach</methodname>()</link>
-method or the more convenient (but slightly less flexible) <link
-linkend="method-gtktable--attach-defaults"><methodname>attach_defaults</methodname>()</link> 
 method. To alter the space of the row next to a specific row, use the <link
 linkend="method-gtktable--set-row-spacing"><methodname>set_row_spacing</methodname>()</link> 
 method, and for a column, the <link
@@ -502,94 +486,6 @@ it in the table cell.</simpara>
       </variablelist>
 
       <para>The <parameter>xpadding</parameter> and <parameter>ypadding</parameter> parameters determine the extra padding added around the widget. By default these are 0.</para>
-
-      <para>Since the <parameter>xoptions</parameter>,
-<parameter>yoptions</parameter>, <parameter>xpadding</parameter> and
-<parameter>ypadding</parameter> parameters are optional for the <link
-linkend="method-gtktable--attach"><methodname>attach</methodname>()</link>
-method and default to the same defaults as the
-<methodname>attach_defaults</methodname>() method there is no need to use
-the <methodname>attach_defaults</methodname>() method in PyGTK.</para>
-
-    </refsect2>
-
-    <refsect2 id="method-gtktable--attach-defaults">
-      <title>gtk.Table.attach_defaults</title>
-
-      <programlisting><methodsynopsis language="python">
-	  <methodname>attach_defaults</methodname>
-	  <methodparam><parameter
-			 role="keyword">widget</parameter></methodparam>
-	  <methodparam><parameter
-			 role="keyword">left_attach</parameter></methodparam>
-	  <methodparam><parameter
-			 role="keyword">right_attach</parameter></methodparam>
-	  <methodparam><parameter
-			 role="keyword">top_attach</parameter></methodparam>
-	  <methodparam><parameter
-			 role="keyword">bottom_attach</parameter></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-	<varlistentry>
-	  <term><parameter role="keyword">child</parameter>&nbsp;:</term>
-	  <listitem><simpara>the widget to add.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter
-role="keyword">left_attach</parameter>&nbsp;:</term>
-	  <listitem><simpara>the column number to attach the left side of a
-child widget to.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter
-role="keyword">right_attach</parameter>&nbsp;:</term>
-	  <listitem><simpara>the column number to attach the right side of a
-child widget to.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter
-role="keyword">top_attach</parameter>&nbsp;:</term>
-	  <listitem><simpara>the row number to attach the top side of a
-child widget to.</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter
-role="keyword">bottom_attach</parameter>&nbsp;:</term>
-	  <listitem><simpara>the row number to attach the bottom side of a
-child widget to.</simpara></listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para>The <methodname>attach_defaults</methodname>() method adds the
-widget specified by <parameter>child</parameter> to the table. The number of
-'cells' that a widget will occupy is specified by:</para>
-
-      <itemizedlist>
-	<listitem>
-	  <simpara><parameter>left_attach</parameter> - the column to the
-left of the widget</simpara>
-	</listitem>
-	<listitem>
-	  <simpara><parameter>right_attach</parameter> - the column to the
-right of the widget</simpara>
-	</listitem>
-	<listitem>
-	  <simpara><parameter>top_attach</parameter> - the row above the
-widget and</simpara>
-	</listitem>
-	<listitem>
-	  <simpara><parameter>bottom_attach</parameter> - the row below the
-widget</simpara>
-	</listitem>
-      </itemizedlist>
-
-      <para>Since the <parameter>xoptions</parameter>,
-<parameter>yoptions</parameter>, <parameter>xpadding</parameter> and
-<parameter>ypadding</parameter> parameters are optional for the <link
-linkend="method-gtktable--attach"><methodname>attach</methodname>()</link>
-method and default to the same defaults as the
-<methodname>attach_defaults</methodname>() method there is no need to use
-the <methodname>attach_defaults</methodname>() method in PyGTK.</para>
 
     </refsect2>
 
