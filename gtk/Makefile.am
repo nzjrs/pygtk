@@ -62,6 +62,7 @@ EXTRA_DIST += libglade.override
 	    --register ../pango-types.defs \
 	    --register ../atk-types.defs \
 	    --register gdk-types.defs \
+	    --register gtk-types.defs \
 	    --override $*.override \
 	    --prefix py$* $*.defs) > gen-$*.c \
 	&& cp gen-$*.c $*.c \
