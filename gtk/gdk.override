@@ -56,39 +56,36 @@ override gdk_threads_init noargs
  */
 #ifdef ENABLE_PYGTK_THREADING
 static GStaticPrivate pythreadstate_key = G_STATIC_PRIVATE_INIT;
-static GStaticPrivate lock_count_key = G_STATIC_PRIVATE_INIT;
-static PyInterpreterState *pyinterpstate = NULL;
+static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
+#define INITIAL_LOCK_COUNT 1
 
 static void
 pygdk_block_threads (void)
 {
-    gint lock_count = GPOINTER_TO_INT(g_static_private_get(&lock_count_key));
+    gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));
 
-    if (lock_count == 0) {
-        PyThreadState *_save;
+    if (counter == INITIAL_LOCK_COUNT) {
+	PyThreadState *_save;
 
 	_save = g_static_private_get(&pythreadstate_key);
-        if (_save == NULL) {
-            _save = PyThreadState_New(pyinterpstate);
-	}
 	Py_BLOCK_THREADS;
     }                                                                     
-    lock_count++;
-    g_static_private_set(&lock_count_key, GINT_TO_POINTER(lock_count), NULL);
+    counter--;
+    g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);
 }
 static void
 pygdk_unblock_threads (void)
 {
-    gint lock_count = GPOINTER_TO_INT(g_static_private_get(&lock_count_key));
+    gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));
 
-    lock_count--;
-    if (lock_count == 0) {
-        PyThreadState *_save;
+    counter++;
+    if (counter == INITIAL_LOCK_COUNT) {
+	PyThreadState *_save;
 
 	Py_UNBLOCK_THREADS;
 	g_static_private_set(&pythreadstate_key, _save, NULL);
     }
-    g_static_private_set(&lock_count_key, GINT_TO_POINTER(lock_count), NULL);
+    g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);
 }
 #endif
 
@@ -99,11 +96,7 @@ _wrap_gdk_threads_init(PyObject *self)
     /* register gdk thread block/unblock routines with gobjectmodule */
     pyg_set_thread_block_funcs (pygdk_block_threads, pygdk_unblock_threads);
 
-    PyEval_InitThreads();
     gdk_threads_init();
-    g_static_private_set(&lock_count_key, GINT_TO_POINTER(1), NULL);
-
-    pyinterpstate = PyThreadState_Get()->interp;
 
     Py_INCREF(Py_None);
     return Py_None;
