@@ -3,7 +3,7 @@
 Summary: Python bindings for the GTK+ widget set.
 Name: pygtk2
 Version: @VERSION@
-Release: 1
+Release: 2
 Copyright: LGPL
 Group: Development/Languages
 Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{version}.tar.gz
@@ -38,6 +38,9 @@ This package contains files required to build wrappers for GTK+ addon
 libraries so that they interoperate with pygtk.
 
 %changelog
+* Mon Jan 28 2002 Matt Wilson <msw@redhat.com>
+- added atkmodule.so to file list
+
 * Thu Oct 18 2001 Matt Wilson <msw@redhat.com>
 - fix devel filelist to match new header location
 
@@ -69,6 +72,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{_prefix}/lib/python?.?/site-packages/gtk/keysyms.py*
 
 %defattr(755, root, root, 755)
+%{_prefix}/lib/python?.?/site-packages/atkmodule.so
 %{_prefix}/lib/python?.?/site-packages/gobjectmodule.so
 %{_prefix}/lib/python?.?/site-packages/pangomodule.so
 %{_prefix}/lib/python?.?/site-packages/gtk/_gtkmodule.so
