@@ -961,7 +961,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "__members__"))
             return Py_BuildValue("[sssssss]",
                                  "type", "window", "send_event",
-                                 "time", "state", "keyval", "string");
+                                 "time", "state", "keyval", "string",
+				 "hardware_keycode");
         if (!strcmp(attr, "time"))
             return PyInt_FromLong(event->key.time);
         if (!strcmp(attr, "state"))
@@ -971,6 +972,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "string"))
             return PyString_FromStringAndSize(event->key.string,
                                               event->key.length);
+        if (!strcmp(attr, "hardware_keycode"))
+            return PyInt_FromLong(event->key.hardware_keycode);
         break;
     case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
     case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
