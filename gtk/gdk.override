@@ -2548,3 +2548,262 @@ _wrap_gdk_pixbuf_loader_write(PyGObject *self,
     Py_INCREF(py_ret);
     return py_ret;
 }
+%%
+override gdk_gc_new kwargs
+static int
+_wrap_gdk_gc_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "drawable", "foreground", "background", "font",
+			      "function", "fill", "tile", "stipple",
+			      "clip_mask", "subwindow_mode", "ts_x_origin",
+			      "ts_y_origin", "clip_x_origin", "clip_y_origin",
+			      "graphics_exposures", "line_width", "line_style",
+			      "cap_style", "join_style", NULL };
+    PyGObject *drawable;
+    PyObject *foreground = Py_None, *background = Py_None;
+    PyObject *font = Py_None;
+    PyObject *tile = Py_None, *stipple = Py_None, *clip_mask = Py_None;
+    gint function = -1, fill = -1;
+    gint subwindow_mode = -1, ts_x_origin = -1, ts_y_origin = -1;
+    gint clip_x_origin = -1, clip_y_origin = -1, graphics_exposures = -1;
+    gint line_width = -1, line_style = -1, cap_style = -1, join_style = -1;
+    GdkGCValues values;
+    GdkGCValuesMask mask = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!|OOOiiOOOiiiiiiiiii:GdkGC.__init__",
+				     kwlist, &PyGdkDrawable_Type, &drawable,
+				     &foreground, &background, &font,
+				     &function, &fill, &tile, &stipple,
+				     &clip_mask, &subwindow_mode,
+				     &ts_x_origin, &ts_y_origin,
+				     &clip_x_origin, &clip_y_origin,
+				     &graphics_exposures, &line_width,
+				     &line_style, &cap_style, &join_style))
+	return -1;
+    if (pyg_boxed_check(foreground, GDK_TYPE_COLOR)) {
+	mask |= GDK_GC_FOREGROUND;
+	values.foreground = *pyg_boxed_get(foreground, GdkColor);
+    } else if (foreground != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "foreground must be a GdkColor");
+	return -1;
+    }
+    if (pyg_boxed_check(background, GDK_TYPE_COLOR)) {
+	mask |= GDK_GC_BACKGROUND;
+	values.background = *pyg_boxed_get(background, GdkColor);
+    } else if (background != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
+	return -1;
+    }
+    if (pyg_boxed_check(font, GDK_TYPE_FONT)) {
+	mask |= GDK_GC_FONT;
+	values.font = pyg_boxed_get(font, GdkFont);
+    } else if (font != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
+	return -1;
+    }
+    if (function != -1) {
+	mask |= GDK_GC_FUNCTION;
+	values.function = function;
+    }
+    if (fill != -1) {
+	mask |= GDK_GC_FILL;
+	values.fill = fill;
+    }
+    if (pygobject_check(tile, &PyGdkPixmap_Type)) {
+	mask |= GDK_GC_TILE;
+	values.tile = GDK_PIXMAP(pygobject_get(tile));
+    } else if (tile != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "tile must be a GdkPixmap");
+	return -1;
+    }
+    if (pygobject_check(stipple, &PyGdkPixmap_Type)) {
+	mask |= GDK_GC_STIPPLE;
+	values.stipple = GDK_PIXMAP(pygobject_get(stipple));
+    } else if (stipple != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "stipple must be a GdkPixmap");
+	return -1;
+    }
+    if (pygobject_check(clip_mask, &PyGdkPixmap_Type)) {
+	mask |= GDK_GC_CLIP_MASK;
+	values.clip_mask = GDK_PIXMAP(pygobject_get(clip_mask));
+    } else if (clip_mask != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "clip_mask must be a GdkPixmap");
+	return -1;
+    }
+    if (subwindow_mode != -1) {
+	mask |= GDK_GC_SUBWINDOW;
+	values.subwindow_mode = subwindow_mode;
+    }
+    if (ts_x_origin != -1) {
+	mask |= GDK_GC_TS_X_ORIGIN;
+	values.ts_x_origin = ts_x_origin;
+    }
+    if (ts_y_origin != -1) {
+	mask |= GDK_GC_TS_Y_ORIGIN;
+	values.ts_y_origin = ts_y_origin;
+    }
+    if (clip_x_origin != -1) {
+	mask |= GDK_GC_CLIP_X_ORIGIN;
+	values.clip_x_origin = clip_x_origin;
+    }
+    if (clip_y_origin != -1) {
+	mask |= GDK_GC_CLIP_Y_ORIGIN;
+	values.clip_y_origin = clip_y_origin;
+    }
+    if (graphics_exposures != -1) {
+	mask |= GDK_GC_EXPOSURES;
+	values.graphics_exposures = graphics_exposures;
+    }
+    if (line_width != -1) {
+	mask |= GDK_GC_LINE_WIDTH;
+	values.line_width = line_width;
+    }
+    if (line_style != -1) {
+	mask |= GDK_GC_LINE_STYLE;
+	values.line_style = line_style;
+    }
+    if (cap_style != -1) {
+	mask |= GDK_GC_CAP_STYLE;
+	values.cap_style = cap_style;
+    }
+    if (join_style != -1) {
+	mask |= GDK_GC_JOIN_STYLE;
+	values.join_style = join_style;
+    }
+    self->obj = (GObject *)gdk_gc_new_with_values(GDK_DRAWABLE(drawable->obj),
+						  &values, mask);
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GdkGC object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gdk_gc_set_values kwargs
+static PyObject *
+_wrap_gdk_gc_set_values(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "foreground", "background", "font", "function",
+			      "fill", "tile", "stipple", "clip_mask",
+			      "subwindow_mode", "ts_x_origin", "ts_y_origin",
+			      "clip_x_origin", "clip_y_origin",
+			      "graphics_exposures", "line_width", "line_style",
+			      "cap_style", "join_style", NULL };
+    PyObject *foreground = Py_None, *background = Py_None;
+    PyObject *font = Py_None;
+    gint function = -1, fill = -1;
+    PyObject *tile = Py_None, *stipple = Py_None, *clip_mask = Py_None;
+    gint subwindow_mode = -1, ts_x_origin = -1, ts_y_origin = -1;
+    gint clip_x_origin = -1, clip_y_origin = -1, graphics_exposures = -1;
+    gint line_width = -1, line_style = -1, cap_style = -1, join_style = -1;
+    GdkGCValues values;
+    GdkGCValuesMask mask = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|OOOiiOOOiiiiiiiiii:GdkGC.set_values",
+				     kwlist, &foreground, &background, &font,
+				     &function, &fill, &tile, &stipple,
+				     &clip_mask, &subwindow_mode,
+				     &ts_x_origin, &ts_y_origin,
+				     &clip_x_origin, &clip_y_origin,
+				     &graphics_exposures, &line_width,
+				     &line_style, &cap_style, &join_style))
+	return NULL;
+    if (pyg_boxed_check(foreground, GDK_TYPE_COLOR)) {
+	mask |= GDK_GC_FOREGROUND;
+	values.foreground = *pyg_boxed_get(foreground, GdkColor);
+    } else if (foreground != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "foreground must be a GdkColor");
+	return NULL;
+    }
+    if (pyg_boxed_check(background, GDK_TYPE_COLOR)) {
+	mask |= GDK_GC_BACKGROUND;
+	values.background = *pyg_boxed_get(background, GdkColor);
+    } else if (background != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
+	return NULL;
+    }
+    if (pyg_boxed_check(font, GDK_TYPE_FONT)) {
+	mask |= GDK_GC_FONT;
+	values.font = pyg_boxed_get(font, GdkFont);
+    } else if (font != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
+	return NULL;
+    }
+    if (function != -1) {
+	mask |= GDK_GC_FUNCTION;
+	values.function = function;
+    }
+    if (fill != -1) {
+	mask |= GDK_GC_FILL;
+	values.fill = fill;
+    }
+    if (pygobject_check(tile, &PyGdkPixmap_Type)) {
+	mask |= GDK_GC_TILE;
+	values.tile = GDK_PIXMAP(pygobject_get(tile));
+    } else if (tile != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "tile must be a GdkPixmap");
+	return NULL;
+    }
+    if (pygobject_check(stipple, &PyGdkPixmap_Type)) {
+	mask |= GDK_GC_STIPPLE;
+	values.stipple = GDK_PIXMAP(pygobject_get(stipple));
+    } else if (stipple != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "stipple must be a GdkPixmap");
+	return NULL;
+    }
+    if (pygobject_check(clip_mask, &PyGdkPixmap_Type)) {
+	mask |= GDK_GC_CLIP_MASK;
+	values.clip_mask = GDK_PIXMAP(pygobject_get(clip_mask));
+    } else if (clip_mask != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "clip_mask must be a GdkPixmap");
+	return NULL;
+    }
+    if (subwindow_mode != -1) {
+	mask |= GDK_GC_SUBWINDOW;
+	values.subwindow_mode = subwindow_mode;
+    }
+    if (ts_x_origin != -1) {
+	mask |= GDK_GC_TS_X_ORIGIN;
+	values.ts_x_origin = ts_x_origin;
+    }
+    if (ts_y_origin != -1) {
+	mask |= GDK_GC_TS_Y_ORIGIN;
+	values.ts_y_origin = ts_y_origin;
+    }
+    if (clip_x_origin != -1) {
+	mask |= GDK_GC_CLIP_X_ORIGIN;
+	values.clip_x_origin = clip_x_origin;
+    }
+    if (clip_y_origin != -1) {
+	mask |= GDK_GC_CLIP_Y_ORIGIN;
+	values.clip_y_origin = clip_y_origin;
+    }
+    if (graphics_exposures != -1) {
+	mask |= GDK_GC_EXPOSURES;
+	values.graphics_exposures = graphics_exposures;
+    }
+    if (line_width != -1) {
+	mask |= GDK_GC_LINE_WIDTH;
+	values.line_width = line_width;
+    }
+    if (line_style != -1) {
+	mask |= GDK_GC_LINE_STYLE;
+	values.line_style = line_style;
+    }
+    if (cap_style != -1) {
+	mask |= GDK_GC_CAP_STYLE;
+	values.cap_style = cap_style;
+    }
+    if (join_style != -1) {
+	mask |= GDK_GC_JOIN_STYLE;
+	values.join_style = join_style;
+    }
+    gdk_gc_set_values(GDK_GC(self->obj), &values, mask);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
