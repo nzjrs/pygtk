@@ -1887,26 +1887,6 @@
   )
 )
 
-(define-enum TreeSelectionMode
-  (in-module "Gtk")
-  (c-name "GtkTreeSelectionMode")
-  (gtype-id "GTK_TYPE_TREE_SELECTION_MODE")
-  (values
-    '("single" "GTK_TREE_SELECTION_SINGLE")
-    '("multi" "GTK_TREE_SELECTION_MULTI")
-  )
-)
-
-(define-enum TreeSortOrder
-  (in-module "Gtk")
-  (c-name "GtkTreeSortOrder")
-  (gtype-id "GTK_TYPE_TREE_SORT_ORDER")
-  (values
-    '("ascending" "GTK_TREE_SORT_ASCENDING")
-    '("descending" "GTK_TREE_SORT_DESCENDING")
-  )
-)
-
 (define-enum TreeViewDropPosition
   (in-module "Gtk")
   (c-name "GtkTreeViewDropPosition")
@@ -8386,16 +8366,6 @@
   )
 )
 
-(define-method configure
-  (of-object "GtkMenuItem")
-  (c-name "gtk_menu_item_configure")
-  (return-type "none")
-  (parameters
-    '("gint" "show_toggle_indicator")
-    '("gint" "show_submenu_indicator")
-  )
-)
-
 (define-method select
   (of-object "GtkMenuItem")
   (c-name "gtk_menu_item_select")
@@ -8670,9 +8640,9 @@
   )
 )
 
-(define-method set_page
+(define-method set_current_page
   (of-object "GtkNotebook")
-  (c-name "gtk_notebook_set_page")
+  (c-name "gtk_notebook_set_current_page")
   (return-type "none")
   (parameters
     '("gint" "page_num")
@@ -12314,21 +12284,12 @@
   )
 )
 
-(define-method paste_primary
-  (of-object "GtkTextBuffer")
-  (c-name "gtk_text_buffer_paste_primary")
-  (return-type "none")
-  (parameters
-    '("GtkTextIter*" "override_location")
-    '("gboolean" "default_editable")
-  )
-)
-
 (define-method cut_clipboard
   (of-object "GtkTextBuffer")
   (c-name "gtk_text_buffer_cut_clipboard")
   (return-type "none")
   (parameters
+    '("GtkClipboard*" "clipboard")
     '("gboolean" "default_editable")
   )
 )
@@ -12337,6 +12298,9 @@
   (of-object "GtkTextBuffer")
   (c-name "gtk_text_buffer_copy_clipboard")
   (return-type "none")
+  (parameters
+    '("GtkClipboard*" "clipboard")
+  )
 )
 
 (define-method paste_clipboard
@@ -12344,6 +12308,8 @@
   (c-name "gtk_text_buffer_paste_clipboard")
   (return-type "none")
   (parameters
+    '("GtkClipboard*" "clipboard")
+    '("GtkTextIter*" "override_location")
     '("gboolean" "default_editable")
   )
 )
@@ -13189,9 +13155,9 @@
   )
 )
 
-(define-method size
+(define-method get_size
   (of-object "GtkTextTagTable")
-  (c-name "gtk_text_tag_table_size")
+  (c-name "gtk_text_tag_table_get_size")
   (return-type "guint")
 )
 
@@ -14570,7 +14536,7 @@
   (c-name "gtk_tree_selection_set_mode")
   (return-type "none")
   (parameters
-    '("GtkTreeSelectionMode" "type")
+    '("GtkSelectionMode" "type")
   )
 )
 
@@ -14579,7 +14545,7 @@
   (c-name "gtk_tree_selection_set_select_function")
   (return-type "none")
   (parameters
-    '("GtkTreeSelectionFunc" "func")
+    '("GtkSelectionFunc" "func")
     '("gpointer" "data")
   )
 )
@@ -14689,7 +14655,7 @@
   (return-type "gboolean")
   (parameters
     '("gint*" "sort_column_id")
-    '("GtkTreeSortOrder*" "order")
+    '("GtkSortType*" "order")
   )
 )
 
@@ -14699,7 +14665,7 @@
   (return-type "none")
   (parameters
     '("gint" "sort_column_id")
-    '("GtkTreeSortOrder" "order")
+    '("GtkSortType" "order")
   )
 )
 
@@ -15067,6 +15033,7 @@
   (parameters
     '("GtkTreePath*" "path")
     '("GtkTreeViewColumn*" "column")
+    '("gboolean" "use_align")
     '("gfloat" "row_align")
     '("gfloat" "col_align")
   )
@@ -15325,9 +15292,9 @@
   )
 )
 
-(define-method pack_start_cell_renderer
+(define-method pack_start
   (of-object "GtkTreeViewColumn")
-  (c-name "gtk_tree_view_column_pack_start_cell_renderer")
+  (c-name "gtk_tree_view_column_pack_start")
   (return-type "none")
   (parameters
     '("GtkCellRenderer*" "cell")
@@ -15337,9 +15304,9 @@
   )
 )
 
-(define-method pack_end_cell_renderer
+(define-method pack_end
   (of-object "GtkTreeViewColumn")
-  (c-name "gtk_tree_view_column_pack_end_cell_renderer")
+  (c-name "gtk_tree_view_column_pack_end")
   (return-type "none")
   (parameters
     '("GtkCellRenderer*" "cell")
@@ -15349,9 +15316,9 @@
   )
 )
 
-(define-method clear_cell_renderers
+(define-method clear
   (of-object "GtkTreeViewColumn")
-  (c-name "gtk_tree_view_column_clear_cell_renderers")
+  (c-name "gtk_tree_view_column_clear")
   (return-type "none")
 )
 
@@ -15582,14 +15549,14 @@
   (c-name "gtk_tree_view_column_set_sort_order")
   (return-type "none")
   (parameters
-    '("GtkTreeSortOrder" "order")
+    '("GtkSortType" "order")
   )
 )
 
 (define-method get_sort_order
   (of-object "GtkTreeViewColumn")
   (c-name "gtk_tree_view_column_get_sort_order")
-  (return-type "GtkTreeSortOrder")
+  (return-type "GtkSortType")
 )
 
 

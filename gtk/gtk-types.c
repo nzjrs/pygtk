@@ -1339,8 +1339,7 @@ pygdk_atom_str(PyGdkAtom_Object *self)
     if (!self->name) self->name = gdk_atom_name(self->atom);
     if (self->name)
 	return PyString_FromString(self->name);
-    Py_INCREF(Py_None);
-    return Py_None;
+    return pygdk_atom_repr(self);
 }
 
 static PyNumberMethods pygdk_atom_number = {

@@ -294,6 +294,29 @@ WATCH = 150
 XTERM = 152
 CURSOR_IS_PIXMAP = -1
 
+# GdkWindowState:
+WINDOW_STATE_WITHDRAWN = 1 << 0
+WINDOW_STATE_ICONIFIED = 1 << 1
+WINDOW_STATE_MAXIMIZED = 1 << 2
+WINDOW_STATE_STICKY    = 1 << 3
+
+# GdkSettingAction:
+SETTING_ACTION_NEW     = 0
+SETTING_ACTION_CHANGED = 1
+SETTING_ACTION_DELETED = 2
+
+# GdkScrollDirection:
+SCROLL_UP    = 0
+SCROLL_DOWN  = 1
+SCROLL_LEFT  = 2
+SCROLL_RIGHT = 3
+
+# GtkCornerType:
+CORNER_TOP_LEFT     = 0
+CORNER_BOTTOM_LEFT  = 1
+CORNER_TOP_RIGHT    = 2
+CORNER_BOTTOM_RIGHT = 3
+
 
 # these are the Key Symbols for GDK
 # they were created with sed -n 's/#define GDK)\([^ ]*\)/\1 =/p' <gdkkeysyms.h

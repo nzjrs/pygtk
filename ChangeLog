@@ -1,3 +1,20 @@
+2001-09-06  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk.defs: various updates to make it compile.
+
+	* gtk/gtk-types.c (pygdk_atom_str): fallback to returning the repr
+	of the atom if we can't resolve its name, rather than returning
+	NULL.  Patch from Skip.
+
+	* gobjectmodule.c (pyg_value_from_pyobject): look at the
+	fundamental type in this function so we can use a switch statement
+	that catches the fundamental types easily, reducing the number of
+	type checks.
+	(pyg_value_as_pyobject): similar here.  Also handle boolean types
+	using patch from Skip.
+
+	* gtk/GDK.py: add extra constants from Skip.
+
 2001-08-23  James Henstridge  <james@daa.com.au>
 
 	* configure.in (build_libglade): add forth argument to
