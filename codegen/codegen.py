@@ -372,7 +372,7 @@ class Wrapper:
             try:
                 data = self.overrides.define(klass, method_name)
                 self.write_function(method_name, data) 
-                self.get_methflags(method_name)
+                methflags = self.get_methflags(method_name)
 
                 methods.append(self.methdef_tmpl %
                                { 'name':  method_name,
