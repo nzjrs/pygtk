@@ -237,6 +237,12 @@ linkend="method-gtkwindow--set-icon">set_icon</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtkwindow--set-icon-from-file">set_icon_from_file</link></methodname>
+	<methodparam><parameter
+		       role="keyword">filename</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtkwindow--get-icon">get_icon</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
       <methodsynopsis language="python">
@@ -2287,6 +2293,42 @@ go.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkwindow--set-icon-from-file">
+      <title>gtk.Window.set_icon_from_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_icon_from_file</methodname>
+	  <methodparam><parameter
+			 role="keyword">filename</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of a file containing an icon
+	  image</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the icon was
+	  loaded.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set_icon_from_file</methodname>() method sets
+the "icon" property to the icon loaded from the file specified by
+<parameter>filename</parameter>. The icon is used when the window is
+minimized (also known as iconified). See the <link
+linkend="method-gtkwindow--set-icon"><methodname>set_icon</methodname>()</link>)
+method for more information. This method is equivalent to calling the <link
+linkend="method-gtkwindow--set-icon"><methodname>set_icon</methodname>()</link>
+method with a pixbuf created by loading the image from
+<parameter>filename</parameter>.</para>
+
+      <para>The GError exception is raised if an error occurs while loading
+the pixbuf from <parameter>filename</parameter>.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkwindow--get-icon">
       <title>gtk.Window.get_icon</title>
 
@@ -3507,6 +3549,9 @@ haven't had the <link
 linkend="method-gtkwindow--set-icon"><methodname>set_icon</methodname>()</link>
 method called on them to set up a window-specific icon. This function allows
 you to set up the icon for all windows in your app at once.</para>
+
+      <para>The GError exception is raised if an error occurs while loading
+the icon pixbuf from <parameter>filename</parameter>.</para>
 
     </refsect2>
 
