@@ -392,23 +392,6 @@ class Wrapper:
         substdict['cast'] = string.replace(parent.typecode, '_TYPE_', '_', 1)
         return substdict
 
-#     def _get_all_virtuals(self):
-#         '''Retrieves all virtual methods, including the ones declared in parent classes'''
-#         if self.__class__ is not GObjectWrapper:
-#             return []
-#         methods = []
-#         parent = self.objinfo
-#         while True:
-#             for meth in self.parser.find_virtuals(parent):
-#                 methods.append((meth, parent))
-#             try:
-#                 parent = self.parser.find_object(parent.parent)
-#             except ValueError:
-#                 break
-#             if parent is None:
-#                 break
-#         return methods
-        
     def write_methods(self):
         methods = []
         klass = self.objinfo.c_name
@@ -548,11 +531,15 @@ class Wrapper:
             cast_macro = self.objinfo.typecode.replace('_TYPE_', '_', 1)
             funcname = "__%s_class_init" % klass
             self.objinfo.class_init_func = funcname
+            have_implemented_virtuals = not not [True for name, cname in virtuals if cname is not None]
             self.fp.write(('\nstatic int\n'
                            '%(funcname)s(gpointer gclass, PyTypeObject *pyclass)\n'
                            '{\n'
-                           '    %(klass)sClass *klass = %(class_cast_macro)s(gclass);\n'
                            '    PyObject *o;\n') % vars())
+            if have_implemented_virtuals:
+                self.fp.write(
+                    '    %(klass)sClass *klass = %(class_cast_macro)s(gclass);\n'
+                    % vars())
             for name, cname in virtuals:
                 do_name = 'do_' + name
                 if cname is None:

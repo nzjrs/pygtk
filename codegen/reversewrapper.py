@@ -537,10 +537,19 @@ class GBoxedParam(Parameter):
         return self.props.get('c_type').replace('const-', 'const ')
     def convert_c2py(self):
         self.wrapper.add_declaration("PyObject *py_%s;" % self.name)
-        self.wrapper.write_code(
-            code=('py_%s = pyg_boxed_new(%s, %s, FALSE, FALSE);' %
-                  (self.name, self.props['typecode'], self.name)),
-            cleanup=("Py_DECREF(py_%s);" % self.name))
+        ctype = self.get_c_type()
+        if ctype.startswith('const '):
+            ctype_no_const = ctype[len('const '):]
+            self.wrapper.write_code(
+                code=('py_%s = pyg_boxed_new(%s, (%s) %s, TRUE, TRUE);' %
+                      (self.name, self.props['typecode'],
+                       ctype_no_const, self.name)),
+                cleanup=("Py_DECREF(py_%s);" % self.name))
+        else:
+            self.wrapper.write_code(
+                code=('py_%s = pyg_boxed_new(%s, %s, FALSE, FALSE);' %
+                      (self.name, self.props['typecode'], self.name)),
+                cleanup=("Py_DECREF(py_%s);" % self.name))
         self.wrapper.add_pyargv_item("py_%s" % self.name)
 
 argtypes.matcher.register_reverse("GBoxed", GBoxedParam)
