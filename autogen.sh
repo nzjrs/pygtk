@@ -20,6 +20,14 @@ DIE=0
 	DIE=1
 }
 
+(libtool --version) < /dev/null > /dev/null 2>&1 || {
+        echo
+        echo "You must have libtool installed to compile gnome-xml."
+        echo "Get ftp://ftp.gnu.org/gnu/libtool/libtool-1.4.tar.gz"
+        echo "(or a newer version if it is available)"
+        DIE=1
+}
+
 (automake --version) < /dev/null > /dev/null 2>&1 || {
 	echo
 	echo "You must have automake installed to compile $PROJECT."
@@ -49,7 +57,7 @@ esac
 if test -z "$ACLOCAL_FLAGS"; then
 
 	acdir=`aclocal --print-ac-dir`
-        m4list="glib.m4 gettext.m4 python.m4"
+        m4list="glib-2.0.m4 gtk-2.0.m4 gettext.m4"
 
 	for file in $m4list
 	do
@@ -74,7 +82,7 @@ fi
 aclocal $ACLOCAL_FLAGS
 
 # optionally feature autoheader
-#(autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
+(autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
 
 # run libtoolize ...
 libtoolize --force

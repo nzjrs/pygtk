@@ -3665,26 +3665,6 @@ _wrap_gtk_color_selection_get_previous_color(PyGObject *self, PyObject *args)
     return PyGdkColor_New(&colour);
 }
 %%
-override gtk_color_selection_get_palette_color kwargs
-static PyObject *
-_wrap_gtk_color_selection_get_palette_color(PyGObject *self, PyObject *args,
-					    PyObject *kwargs)
-{
-    static char *kwlist[] = { "index", NULL };
-    gint index;
-    GdkColor colour = { 0, };
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "i:GdkColorSelection.get_palette_color",
-				     kwlist, &index))
-	return NULL;
-    if (gtk_color_selection_get_palette_color(GTK_COLOR_SELECTION(self->obj),
-					      index, &colour))
-	return PyGdkColor_New(&colour);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
 override gtk_calendar_get_date
 static PyObject *
 _wrap_gtk_calendar_get_date(PyGObject *self, PyObject *args)
