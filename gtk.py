@@ -31,6 +31,9 @@ else:
 	print 'No display information -- gtk_init not called'
 del sys, os
 
+def GdkColor(red, green, blue, pixel=-1):
+	return _gtk.gdk_color_new(red, green, blue, pixel)
+
 class GtkObject:
 	get_type = _gtk.gtk_object_get_type
 	def __init__(self, _obj=None):

@@ -827,6 +827,20 @@ PyGdkColor_GetAttr(PyGdkColor_Object *self, char *key) {
   return NULL;
 }
 
+static PyObject *
+PyGdkColor_SetAttr(PyGdkColor_Object *self, char *key, PyObject * val) {
+  if (!strcmp(key, "red"))
+    self->obj.red = PyInt_AsLong(val);
+  if (!strcmp(key, "green"))
+    self->obj.green = PyInt_AsLong(val);
+  if (!strcmp(key, "blue"))
+    self->obj.blue = PyInt_AsLong(val);
+  if (!strcmp(key, "pixel"))
+    self->obj.pixel = PyInt_AsLong(val);
+  PyErr_SetString(PyExc_AttributeError, key);
+  return NULL;
+}
+
 static int
 PyGdkColor_Compare(PyGdkColor_Object *self, PyGdkColor_Object *v) {
   if (self->obj.pixel == v->obj.pixel) return 0;
@@ -852,7 +866,7 @@ static PyTypeObject PyGdkColor_Type = {
   (destructor)PyGdkColor_Dealloc,
   (printfunc)0,
   (getattrfunc)PyGdkColor_GetAttr,
-  (setattrfunc)0,
+  (setattrfunc)PyGdkColor_SetAttr,
   (cmpfunc)PyGdkColor_Compare,
   (reprfunc)PyGdkColor_Repr,
   0,
@@ -5325,6 +5339,17 @@ static PyObject *_wrap_gdk_color_alloc(PyObject *self, PyObject *args) {
     return PyGdkColor_New(&gdk_color);
 }
 
+static PyObject *_wrap_gdk_color_new(PyObject *self, PyObject *args) {
+    GdkColor gdk_color;
+    
+    if (!PyArg_ParseTuple(args, "hhhl:gdk_color_new", 
+			  &(gdk_color.red), &(gdk_color.green),
+			  &(gdk_color.blue), &(gdk_color.pixel)))
+      return NULL;
+
+    return PyGdkColor_New(&gdk_color);
+}
+
 #ifdef WITH_XSTUFF
 static PyObject *_wrap_gdk_window_foreign_new(PyObject *self, PyObject *args) {
     guint32 winid;
@@ -6163,6 +6188,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gdk_draw_segments", _wrap_gdk_draw_segments, 1 },
     { "gdk_draw_lines", _wrap_gdk_draw_lines, 1 },
     { "gdk_color_alloc", _wrap_gdk_color_alloc, 1 },
+    { "gdk_color_new", _wrap_gdk_color_new, 1 },
     { "gdk_threads_enter", _wrap_gdk_threads_enter, 1 },
     { "gdk_threads_leave", _wrap_gdk_threads_leave, 1 },
 #ifdef WITH_XSTUFF
