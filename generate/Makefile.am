@@ -10,23 +10,27 @@ defs_DATA = gtk.defs gtkbase.defs gtkcontainers.defs gtkdata.defs \
 
 EXTRA_DIST = $(defs_DATA) pygtk-codegen-1.2.in
 
-all: gtk.ignore gtkgl.ignore libglade.ignore
+IGNORE_FILES = gtk.ignore gtkgl.ignore libglade.ignore
 
-gtk.ignore: ../gtkmodule.c
-	echo "# ignore list for gtkmodule" > $(srcdir)/gtk.ignore
-	echo "# (automatically generated)" >> $(srcdir)/gtk.ignore
+all: $(IGNORE_FILES)
+
+distclean-local:
+	rm -f $(IGNORE_FILES)
+
+gtk.ignore: $(srcdir)/../gtkmodule.c
+	echo "# ignore list for gtkmodule" > gtk.ignore
+	echo "# (automatically generated)" >> gtk.ignore
 	sed -n 's/^.*_wrap_\([a-zA-Z_]*\),.*$$/\1/p' \
-	  < $(srcdir)/../gtkmodule.c >> $(srcdir)/gtk.ignore
+	  < $(srcdir)/../gtkmodule.c >> gtk.ignore
 
-gtkgl.ignore: ../gtkglmodule.c
-	echo "# ignore list for gtkglmodule" > $(srcdir)/gtkgl.ignore
-	echo "# (automatically generated)" >> $(srcdir)/gtkgl.ignore
+gtkgl.ignore: $(srcdir)/../gtkglmodule.c
+	echo "# ignore list for gtkglmodule" > gtkgl.ignore
+	echo "# (automatically generated)" >> gtkgl.ignore
 	sed -n 's/^.*_wrap_\([a-zA-Z_]*\),.*$$/\1/p' \
-	  < $(srcdir)/../gtkglmodule.c >> $(srcdir)/gtkgl.ignore
+	  < $(srcdir)/../gtkglmodule.c >> gtkgl.ignore
 
-libglade.ignore: ../libglademodule.c
-	echo "# ignore list for libglademodule" > $(srcdir)/libglade.ignore
-	echo "# (automatically generated)" >> $(srcdir)/libglade.ignore
+libglade.ignore: $(srcdir)/../libglademodule.c
+	echo "# ignore list for libglademodule" > libglade.ignore
+	echo "# (automatically generated)" >> libglade.ignore
 	sed -n 's/^.*_wrap_\([a-zA-Z_]*\),.*$$/\1/p' \
-	  < $(srcdir)/../libglademodule.c >> $(srcdir)/libglade.ignore
-
+	  < $(srcdir)/../libglademodule.c >> libglade.ignore
