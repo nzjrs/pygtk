@@ -1,5 +1,15 @@
 2000-11-10  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtk.override: ignore the gtk_tree_view_new function, so
+	gtk_tree_view_new_with_model gets chosen as the constructor.
+	(_wrap_gtk_tree_store_...): fix up the iterator creation methods
+	so that they can take NULL arguments.
+	(_wrap_gtk_tree_view_column_new): new implementation of this
+	constructor.  Map keyword arguments to column attributes.
+
+	* gtk/gtk.defs (gtk_tree_view_new_with_model, GtkTreeView.set_model):
+	Allow NULL to be passed in as the model argument.
+
 	* gtk/gtk.override: add gtk_tree_model_get_{iter,path,value}
 	functions.
 	(_wrap_gtk_list_store_*): add constructor and set_cell

@@ -1949,14 +1949,20 @@ static PyObject *
 _wrap_gtk_tree_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "parent", "position", NULL };
-    GtkTreeIter iter;
-    PyObject *parent;
+    PyObject *py_parent;
+    GtkTreeIter iter, *parent = NULL;
     gint position;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!i:GtkTreeStore.insert",
-				     kwlist, &PyGtkTreeIter_Type, &parent,
-				     &position))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi:GtkTreeStore.insert",
+				     kwlist, &py_parent, &position))
 	return NULL;
+    if (PyGtkTreeIter_Check(py_parent))
+	parent = PyGtkTreeIter_Get(py_parent);
+    else if (py_parent != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"parent must be a GtkTreeIter or None");
+	return NULL;
+    }
     gtk_tree_store_insert(GTK_TREE_STORE(self->obj), &iter,
 			  PyGtkTreeIter_Get(parent), position);
     return PyGtkTreeIter_New(&iter);
@@ -1968,17 +1974,29 @@ _wrap_gtk_tree_store_insert_before(PyGObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
     static char *kwlist[] = { "parent", "sibling", NULL };
-    PyObject *parent, *sibling;
-    GtkTreeIter iter;
+    PyObject *py_parent, *py_sibling;
+    GtkTreeIter iter, *parent = NULL, *sibling = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!O!:GtkTreeStore.insert_before",
-				     kwlist, &PyGtkTreeIter_Type, &parent,
-				     &PyGtkTreeIter_Type, &sibling))
+				     "OO:GtkTreeStore.insert_before",
+				     kwlist, &py_parent, &py_sibling))
 	return NULL;
-    gtk_tree_store_insert_before(GTK_TREE_STORE(self->obj), &iter,
-				 PyGtkTreeIter_Get(parent),
-				 PyGtkTreeIter_Get(sibling));
+    if (PyGtkTreeIter_Check(py_parent))
+	parent = PyGtkTreeIter_Get(py_parent);
+    else if (py_parent != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"parent must be a GtkTreeIter or None");
+	return NULL;
+    }
+    if (PyGtkTreeIter_Check(py_sibling))
+	sibling = PyGtkTreeIter_Get(py_sibling);
+    else if (py_sibling != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"sibling must be a GtkTreeIter or None");
+	return NULL;
+    }
+    gtk_tree_store_insert_before(GTK_TREE_STORE(self->obj), &iter, parent,
+				 sibling);
     return PyGtkTreeIter_New(&iter);
 }
 %%
@@ -1988,17 +2006,29 @@ _wrap_gtk_tree_store_insert_after(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
     static char *kwlist[] = { "parent", "sibling", NULL };
-    PyObject *parent, *sibling;
-    GtkTreeIter iter;
+    PyObject *py_parent, *py_sibling;
+    GtkTreeIter iter, *parent = NULL, *sibling = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!O!:GtkTreeStore.insert_after",
-				     kwlist, &PyGtkTreeIter_Type, &parent,
-				     &PyGtkTreeIter_Type, &sibling))
+				     "OO:GtkTreeStore.insert_after",
+				     kwlist, &py_parent, &py_sibling))
 	return NULL;
-    gtk_tree_store_insert_after(GTK_TREE_STORE(self->obj), &iter,
-				PyGtkTreeIter_Get(parent),
-				PyGtkTreeIter_Get(sibling));
+    if (PyGtkTreeIter_Check(py_parent))
+	parent = PyGtkTreeIter_Get(py_parent);
+    else if (py_parent != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"parent must be a GtkTreeIter or None");
+	return NULL;
+    }
+    if (PyGtkTreeIter_Check(py_sibling))
+	sibling = PyGtkTreeIter_Get(py_sibling);
+    else if (py_sibling != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"sibling must be a GtkTreeIter or None");
+	return NULL;
+    }
+    gtk_tree_store_insert_after(GTK_TREE_STORE(self->obj), &iter, parent,
+				sibling);
     return PyGtkTreeIter_New(&iter);
 }
 %%
@@ -2007,14 +2037,20 @@ static PyObject *
 _wrap_gtk_tree_store_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "parent", NULL };
-    PyObject *parent;
-    GtkTreeIter iter;
+    PyObject *py_parent;
+    GtkTreeIter iter, *parent = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkTreeStore.prepend",
-				     kwlist, &PyGtkTreeIter_Type, &parent))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkTreeStore.prepend",
+				     kwlist, &py_parent))
 	return NULL;
-    gtk_tree_store_prepend(GTK_TREE_STORE(self->obj), &iter,
-			   PyGtkTreeIter_Get(parent));
+    if (PyGtkTreeIter_Check(py_parent))
+	parent = PyGtkTreeIter_Get(py_parent);
+    else if (py_parent != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"parent must be a GtkTreeIter or None");
+	return NULL;
+    }
+    gtk_tree_store_prepend(GTK_TREE_STORE(self->obj), &iter, parent);
     return PyGtkTreeIter_New(&iter);
 }
 %%
@@ -2023,14 +2059,20 @@ static PyObject *
 _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "parent", NULL };
-    PyObject *parent;
-    GtkTreeIter iter;
+    PyObject *py_parent;
+    GtkTreeIter iter, *parent = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkTreeStore.append",
-				     kwlist, &PyGtkTreeIter_Type, &parent))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkTreeStore.append",
+				     kwlist, &py_parent))
 	return NULL;
-    gtk_tree_store_append(GTK_TREE_STORE(self->obj), &iter,
-			  PyGtkTreeIter_Get(parent));
+    if (PyGtkTreeIter_Check(py_parent))
+	parent = PyGtkTreeIter_Get(py_parent);
+    else if (py_parent != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"parent must be a GtkTreeIter or None");
+	return NULL;
+    }
+    gtk_tree_store_append(GTK_TREE_STORE(self->obj), &iter, parent);
     return PyGtkTreeIter_New(&iter);
 }
 %%
@@ -2044,6 +2086,76 @@ _wrap_gtk_tree_store_get_root_iter(PyGObject *self, PyObject *args)
 	return NULL;
     gtk_tree_store_get_root_iter(GTK_TREE_STORE(self->obj), &iter);
     return PyGtkTreeIter_New(&iter);
+}
+%%
+ignore
+  gtk_tree_view_new
+  gtk_tree_view_column_new_with_attributes
+%%
+override gtk_tree_view_column_new kwargs
+static PyObject *
+_wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
+{
+    PyObject *py_cell = NULL, *key, *item;
+    GtkTreeViewColumn *tvc;
+    GtkCellRenderer *cell = NULL;
+    gint i = 0;
+
+    /* go to a lot of trouble to parse the first argument, while
+     * leaving the rest of the arguments as column attributes.
+     * Basically what **kwargs does for a python function. */
+    if (!PyArg_ParseTuple(args, "|O:GtkTreeViewColumn.__init__", &py_cell))
+	return NULL;
+    if (py_cell != NULL) {
+	if (PyDict_GetItemString(kwargs, "cell") != NULL) {
+	    PyErr_SetString(PyExc_TypeError, "keyword parameter redefined");
+	    return NULL;
+	}
+	if (pygobject_check(py_cell, &PyGtkCellRenderer_Type))
+	    cell = GTK_CELL_RENDERER(pygobject_get(py_cell));
+	else if (py_cell != Py_None) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "cell must be a GtkCellRenderer or None");
+	    return NULL;
+	}
+    } else {
+	py_cell = PyDict_GetItemString(kwargs, "cell");
+	if (py_cell != NULL) {
+	    if (pygobject_check(py_cell, &PyGtkCellRenderer_Type))
+		cell = GTK_CELL_RENDERER(pygobject_get(py_cell));
+	    else if (py_cell != Py_None) {
+		PyErr_SetString(PyExc_TypeError,
+				"cell must be a GtkCellRenderer or None");
+		Py_DECREF(py_cell);
+		return NULL;
+	    }
+	    Py_DECREF(py_cell);
+	}
+    }
+    tvc = gtk_tree_view_column_new();
+    if (cell)
+	gtk_tree_view_column_set_cell_renderer(tvc, cell);
+    while (PyDict_Next(kwargs, &i, &key, &item)) {
+	gchar *attr = PyString_AsString(key);
+
+	if (!strcmp(attr, "cell"))
+	    continue;
+	if (!PyInt_Check(item)) {
+	    gchar err[128];
+	    g_snprintf(err, sizeof(err),"%s must be an integer column number",
+		       attr);
+	    PyErr_SetString(PyExc_TypeError, err);
+	    g_object_unref(G_OBJECT(tvc));
+	    return NULL;
+	}
+	gtk_tree_view_column_add_attribute(tvc, attr, PyInt_AsLong(item));
+    }
+    self->obj = (GObject *)tvc;
+    gtk_object_ref(GTK_OBJECT(self->obj));
+    gtk_object_sink(GTK_OBJECT(self->obj));
+    pygobject_register_wrapper((PyObject *)self);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 /* -------------- haven't updated stuff below this line -------------- */
 %%
