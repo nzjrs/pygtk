@@ -414,8 +414,7 @@ _wrap_gtk_widget_get_allocation(PyGObject *self)
     GtkAllocation allocation;
 
     allocation = GTK_WIDGET(self->obj)->allocation;
-    return Py_BuildValue("(iiii)", (int)allocation.x, (int)allocation.y,
-			 (int)allocation.width, (int)allocation.height);
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &allocation, TRUE, TRUE);
 }
 %%
 override gtk_widget_intersect kwargs
@@ -426,13 +425,12 @@ _wrap_gtk_widget_intersect(PyGObject *self, PyObject *args, PyObject*kwargs)
     GdkRectangle area;
     GdkRectangle intersect;
 
-    if(!PyArg_ParseTupleAndKeywords(args, kwargs, "(hhhh):GtkWidget.intersect",
+    if(!PyArg_ParseTupleAndKeywords(args, kwargs, "(iiii):GtkWidget.intersect",
 				    kwlist, &(area.x), &(area.y),
 				    &(area.width), &(area.height))) 
         return NULL;
     if (gtk_widget_intersect(GTK_WIDGET(self->obj), &area, &intersect))
-        return Py_BuildValue("(iiii)", (int)intersect.x, (int)intersect.y,
-                             (int)intersect.width, (int)intersect.height);
+	return pyg_boxed_new(GDK_TYPE_RECTANGLE, &intersect, TRUE, TRUE);
     else {
         Py_INCREF(Py_None);
         return Py_None;

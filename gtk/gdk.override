@@ -1591,3 +1591,118 @@ _wrap_gdk_color_alloc(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return NULL;
     return _wrap_gdk_colormap_alloc_color(self, args, kwargs);
 }
+%%
+override-slot GdkRectangle.tp_as_sequence
+static int
+_wrap_gdk_rectangle_length(PyGBoxed *self)
+{
+    return 4;
+}
+static PyObject *
+_wrap_gdk_rectangle_getitem(PyGBoxed *self, int pos)
+{
+    GdkRectangle *rect;
+
+    if (pos < 0) pos += 4;
+    if (pos < 0 || pos >= 4) {
+	PyErr_SetString(PyExc_IndexError, "index out of range");
+	return NULL;
+    }
+    rect = pyg_boxed_get(self, GdkRectangle);
+    switch (pos) {
+    case 0: return PyInt_FromLong(rect->x);
+    case 1: return PyInt_FromLong(rect->y);
+    case 2: return PyInt_FromLong(rect->width);
+    case 3: return PyInt_FromLong(rect->height);
+    default:
+	g_assert_not_reached();
+	return NULL;
+    }
+}
+static int
+_wrap_gdk_rectangle_setitem(PyGBoxed *self, int pos, PyObject *value)
+{
+    GdkRectangle *rect;
+    gint val;
+
+    if (pos < 0) pos += 4;
+    if (pos < 0 || pos >= 4) {
+	PyErr_SetString(PyExc_IndexError, "index out of range");
+	return -1;
+    }
+    rect = pyg_boxed_get(self, GdkRectangle);
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    switch(pos) {
+    case 0: rect->x      = val; break;
+    case 1: rect->y      = val; break;
+    case 2: rect->width  = val; break;
+    case 3: rect->height = val; break;
+    default:
+	g_assert_not_reached();
+	return -1;
+    }
+    return 0;
+}
+static PySequenceMethods _wrap_gdk_rectangle_tp_as_sequence = {
+    (inquiry)_wrap_gdk_rectangle_length,
+    (binaryfunc)0,
+    (intargfunc)0,
+    (intargfunc)_wrap_gdk_rectangle_getitem,
+    (intintargfunc)0,
+    (intobjargproc)_wrap_gdk_rectangle_setitem,
+    (intintobjargproc)0
+};
+%%
+override-attr GdkRectangle.x
+static int
+_wrap_gdk_rectangle__set_x(PyGBoxed *self, PyObject *value, void *closure)
+{
+    gint val;
+
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    pyg_boxed_get(self, GdkRectangle)->x = val;
+    return 0;
+}
+%%
+override-attr GdkRectangle.y
+static int
+_wrap_gdk_rectangle__set_y(PyGBoxed *self, PyObject *value, void *closure)
+{
+    gint val;
+
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    pyg_boxed_get(self, GdkRectangle)->y = val;
+    return 0;
+}
+%%
+override-attr GdkRectangle.width
+static int
+_wrap_gdk_rectangle__set_width(PyGBoxed *self, PyObject *value, void *closure)
+{
+    gint val;
+
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    pyg_boxed_get(self, GdkRectangle)->width = val;
+    return 0;
+}
+%%
+override-attr GdkRectangle.height
+static int
+_wrap_gdk_rectangle__set_height(PyGBoxed *self, PyObject *value, void *closure)
+{
+    gint val;
+
+    val = PyInt_AsLong(value);
+    if (PyErr_Occurred())
+	return -1;
+    pyg_boxed_get(self, GdkRectangle)->height = val;
+    return 0;
+}

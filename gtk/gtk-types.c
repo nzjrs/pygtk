@@ -30,20 +30,6 @@ PyGdkGC_New(GdkGC *gc)
     gdk_gc_ref(self->obj);
     return (PyObject *)self;
 }
-
-PyObject *
-PyGdkColormap_New(GdkColormap *cmap)
-{
-    PyGdkColormap_Object *self;
-
-    self = (PyGdkColormap_Object *)PyObject_NEW(PyGdkColormap_Object,
-						&PyGdkColormap_Type);
-    if (self == NULL)
-	return NULL;
-    self->obj = cmap;
-    gdk_colormap_ref(self->obj);
-    return (PyObject *)self;
-}
 #endif
 
 PyObject *
@@ -190,7 +176,7 @@ static PySequenceMethods pygtk_style_helper_seqmethods = {
 static PyTypeObject PyGtkStyleHelper_Type = {
     PyObject_HEAD_INIT(NULL)
     0,
-    "GtkStyleHelper",
+    "gtk.GtkStyleHelper",
     sizeof(PyGtkStyleHelper_Object),
     0,
     (destructor)pygtk_style_helper_dealloc,
@@ -905,126 +891,6 @@ PyTypeObject PyGdkGC_Type = {
     0L,0L,0L,0L,
     NULL
 };
-
-static void
-PyGdkColormap_Dealloc(PyGdkColormap_Object *self)
-{
-    gdk_colormap_unref(self->obj);
-    PyObject_DEL(self);
-}
-
-static PyObject *
-PyGdkColor_Alloc(PyGdkColormap_Object *self, PyObject *args)
-{
-    GdkColor color = {0, 0, 0, 0};
-    gchar *color_name;
-    if (!PyArg_ParseTuple(args, "iii:GdkColormap.alloc",
-			  &(color.red), &(color.green), &(color.blue))) {
-	PyErr_Clear();
-	if (!PyArg_ParseTuple(args, "s:GdkColormap.alloc", &color_name))
-	    return NULL;
-	if (!gdk_color_parse(color_name, &color)) {
-	    PyErr_SetString(PyExc_TypeError,
-			    "unable to parse color specification");
-	    return NULL;
-	}
-    }
-    if (!gdk_color_alloc(self->obj, &color)) {
-	PyErr_SetString(PyExc_RuntimeError, "couldn't allocate color");
-	return NULL;
-    }
-    return PyGdkColor_New(&color);
-}
-
-static PyMethodDef PyGdkColormap_methods[] = {
-    {"alloc", (PyCFunction)PyGdkColor_Alloc, METH_VARARGS, NULL},
-    {NULL, 0, 0, NULL}
-};
-
-static PyObject *
-PyGdkColormap_GetAttr(PyObject *self, char *key)
-{
-    return Py_FindMethod(PyGdkColormap_methods, self, key);
-}
-
-static int
-PyGdkColormap_Compare(PyGdkColormap_Object *self, PyGdkColormap_Object *v)
-{
-    if (self->obj == v->obj) return 0;
-    if (self->obj > v->obj) return -1;
-    return 1;
-}
-
-static long
-PyGdkColormap_Hash(PyGdkColormap_Object *self)
-{
-    return (long)self->obj;
-}
-
-static int
-PyGdkColormap_Length(PyGdkColormap_Object *self)
-{
-    return self->obj->size;
-}
-
-static PyObject *
-PyGdkColormap_GetItem(PyGdkColormap_Object *self, int pos)
-{
-    if (pos < 0 || pos >= self->obj->size) {
-	PyErr_SetString(PyExc_IndexError, "index out of range");
-	return NULL;
-    }
-    return PyGdkColor_New(&(self->obj->colors[pos]));
-}
-
-static PyObject *
-PyGdkColormap_GetSlice(PyGdkColormap_Object *self, int lo, int up)
-{
-    PyObject *ret;
-    int i;
-
-    if (lo < 0) lo = 0;
-    if (up > self->obj->size) up = self->obj->size;
-    if (up < lo) up = lo;
-
-    ret = PyTuple_New(up - lo);
-    if (ret == NULL) return NULL;
-    for (i = lo; i < up; i++)
-	PyTuple_SetItem(ret, i - lo, PyGdkColor_New(&(self->obj->colors[i])));
-    return ret;
-}
-
-static PySequenceMethods PyGdkColormap_Sequence = {
-    (inquiry)PyGdkColormap_Length,
-    (binaryfunc)0,
-    (intargfunc)0,
-    (intargfunc)PyGdkColormap_GetItem,
-    (intintargfunc)PyGdkColormap_GetSlice,
-    (intobjargproc)0,
-    (intintobjargproc)0
-};
-
-PyTypeObject PyGdkColormap_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GdkColormap",
-    sizeof(PyGdkColormap_Object),
-    0,
-    (destructor)PyGdkColormap_Dealloc,
-    (printfunc)0,
-    (getattrfunc)PyGdkColormap_GetAttr,
-    (setattrfunc)0,
-    (cmpfunc)PyGdkColormap_Compare,
-    (reprfunc)0,
-    0,
-    &PyGdkColormap_Sequence,
-    0,
-    (hashfunc)PyGdkColormap_Hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
 #endif
 
 GdkAtom
@@ -1083,7 +949,7 @@ pygdk_atom_str(PyGdkAtom_Object *self)
 PyTypeObject PyGdkAtom_Type = {
     PyObject_HEAD_INIT(NULL)
     0,
-    "GdkAtom",
+    "gtk.gdk.GdkAtom",
     sizeof(PyGdkAtom_Object),
     0,
     (destructor)pygdk_atom_dealloc,
@@ -1180,7 +1046,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
 #if 0
     register_tp(GdkWindow);
     register_tp(GdkGC);
-    register_tp(GdkColormap);
 #endif
     register_tp(GdkAtom);
     pyg_register_boxed_custom(GTK_TYPE_TREE_PATH,
