@@ -163,9 +163,8 @@ the current sort column to the value specified by
 <literal>gtk.SORT_ASCENDING</literal> or
 <literal>gtk.SORT_DESCENDING</literal>. The treesortable will resort itself
 to reflect this change, after emitting a "sort_column_changed" signal. If
-<parameter>sort_column_id</parameter> is
-<literal>gtk.TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID</literal>, then the
-default sort function will be used, if it is set.</para>
+<parameter>sort_column_id</parameter> is -1, then the default sort function
+will be used, if it is set.</para>
 
     </refsect2>
 
@@ -259,12 +258,11 @@ method.</para>
       <para>The <methodname>set_default_sort_func</methodname>() method sets
 the default comparison function (or method) to the value of
 <parameter>sort_func</parameter>. If the current sort column id of the
-treesortable is <literal>gtk.TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID</literal>,
-then the model will be sorted.  If <parameter>sort_func</parameter> is
-<literal>None</literal>, then the default sort function is destroyed, and
-there will be no default sort function. In this case, the model is unsorted.
-See the <link
-linkend="method-gtktreesortable--set-sort-func"><methodname>set_sort_func</methodname>()</link> 
+treesortable is -1 (the <link
+linkend="method-gtktreesortable--get-sort-column-id"><methodname>get_sort_column_id</methodname>()</link>
+method returns (None, None)), then the model will be sorted using the
+<parameter>sort_func</parameter> function. See the <link
+linkend="method-gtktreesortable--set-sort-func"><methodname>set_sort_func</methodname>()</link>
 method for more details on the signature of the comparison function.</para>
 
     </refsect2>
