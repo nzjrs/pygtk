@@ -115,3 +115,8 @@ class DefsParser(IncludeParser):
 	    for arg in args[2:]:
 		self.handle(arg)
 
+    def ifndef(self, *args):
+	if args[1] not in self.defines:
+	    for arg in args[2:]:
+		self.handle(arg)
+
