@@ -5519,3 +5519,25 @@ _wrap_gtk_accel_groups_from_object(PyGObject *self, PyObject *args)
     
     return py_list;
 }
+%%
+override gtk_table_new kwargs
+static int
+_wrap_gtk_table_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    GType obj_type = pyg_type_from_object((PyObject *) self);
+    char *arg_names[] = {"rows", "columns", "homogeneous", NULL };
+    int rows = 1, cols = 1;
+    PyObject *homogeneous = Py_False;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiO:gtk.Table.__init__", arg_names,
+                                     &rows, &cols, &homogeneous))
+        return -1;
+    self->obj = g_object_new(obj_type, "n_rows", rows, "n_columns", cols,
+                             "homegenous", PyObject_IsTrue(homogeneous), NULL);
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create gtk.Table object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
