@@ -3479,6 +3479,16 @@ _wrap_gtk_tooltips_data_get(PyGObject *self, PyObject *args, PyObject *kwargs)
 			 data->tip_private);
 }
 %%
+override gtk_tooltips_data_get1 kwargs
+static PyObject *
+_wrap_gtk_tooltips_data_get1(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use tooltips_data_get") < 0)
+        return NULL;
+
+    return _wrap_gtk_tooltips_data_get(self, args, kwargs);
+}
+%%
 override gtk_accelerator_parse kwargs
 static PyObject *
 _wrap_gtk_accelerator_parse(PyGObject *self, PyObject *args, PyObject *kwargs)
