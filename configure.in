@@ -8,18 +8,21 @@ m4_define(pygtk_micro_version, 1)
 m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
 
 dnl versions of packages we require ...
-m4_define(glib_required_version,     2.5.5)
-m4_define(pango_required_version,    1.5.2)
-m4_define(atk_required_version,      1.7.3)
-m4_define(gtk_required_version,      2.5.5)
+m4_define(glib_required_version,     2.6.0)
+m4_define(pango_required_version,    1.8.0)
+m4_define(atk_required_version,      1.8.0)
+m4_define(gtk_required_version,      2.6.0)
 m4_define(libglade_required_version, 2.4.0)
 
 AC_INIT(pygtk, pygtk_version,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=pygtk])
 
 AC_DEFINE(PYGTK_MAJOR_VERSION, pygtk_major_version, [PyGtk major version])
+AC_SUBST(PYGTK_MAJOR_VERSION, pygtk_major_version)
 AC_DEFINE(PYGTK_MINOR_VERSION, pygtk_minor_version, [PyGtk minor version])
+AC_SUBST(PYGTK_MINOR_VERSION, pygtk_minor_version)
 AC_DEFINE(PYGTK_MICRO_VERSION, pygtk_micro_version, [PyGtk macro version])
+AC_SUBST(PYGTK_MICRO_VERSION, pygtk_micro_version)
 
 AC_CONFIG_SRCDIR([gtk/gtkmodule.c])
 AM_CONFIG_HEADER(config.h)
