@@ -4035,10 +4035,16 @@ _wrap_gtk_action_group_add_actions (PyGObject *self, PyObject *args, PyObject *k
 	}
 	    
 	py_action = pygobject_new((GObject *)action);
-	if (callback != Py_None && PyCallable_Check(callback)) {
-	    closure = pyg_closure_new(callback, extra_args, NULL);
-	    g_signal_connect_closure(action, "activate", closure, FALSE);
-	    pygobject_watch_closure(py_action, closure);
+	if (callback != Py_None) {
+	    if (PyCallable_Check(callback)) {
+		closure = pyg_closure_new(callback, extra_args, NULL);
+		g_signal_connect_closure(action, "activate", closure, FALSE);
+		pygobject_watch_closure(py_action, closure);
+	    } else {
+		PyErr_SetString(PyExc_TypeError,
+				"One or more entry is missing a callback type");
+		return NULL;
+	    }
 	}
 	
 	gtk_action_group_add_action_with_accel (GTK_ACTION_GROUP(self->obj),
