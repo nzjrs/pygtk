@@ -74,6 +74,7 @@ EXTRA_DIST += \
 	THREADS \
 	examples/atk/atk-demo.py \
 	examples/gobject/signal.py \
+	examples/gobject/properties.py \
 	examples/pygtk-demo/pygtk-demo.py \
 	examples/pygtk-demo/demos/__init__.py \
 	examples/pygtk-demo/demos/buttonbox.py \
