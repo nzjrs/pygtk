@@ -177,6 +177,11 @@ linkend="method-gtkcontainer--child-get-property">child_get_property</link></met
 <emphasis role="bold">Functions</emphasis>
 
 <methodsynopsis language="python">
+        <methodname><link linkend="function-gtk--container-class-install-child-property">gtk.container_class_install_child_property</link></methodname>
+        <methodparam><parameter role="keyword">klass</parameter></methodparam>
+        <methodparam><parameter role="keyword">property_id</parameter></methodparam>
+        <methodparam><parameter role="keyword">pspec</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
         <methodname><link linkend="function-gtk--container-class-list-child-properties">gtk.container_class_list_child_properties</link></methodname>
         <methodparam><parameter role="keyword">klass</parameter></methodparam>
       </methodsynopsis></programlisting>
@@ -375,6 +380,133 @@ linkend="class-gtkcontainer"><classname>gtk.Container</classname></link>
 class provides common attributes and methods for a large number of widget
 subclasses that manage the layout of other widgets within the area of a
 window.</para>
+
+    <para>A <literal>PyGTK</literal> user interface is constructed by
+nesting widgets inside widgets. Container widgets are the inner nodes in the
+resulting tree of widgets: they contain other widgets. So, for example, you
+might have a <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link>
+containing a <link
+linkend="class-gtkframe"><classname>gtk.Frame</classname></link> containing
+a <link linkend="class-gtklabel"><classname>gtk.Label</classname></link>. If
+you wanted an image instead of a textual label inside the frame, you might
+replace the <link
+linkend="class-gtklabel"><classname>gtk.Label</classname></link> widget with
+a <link linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+widget.</para>
+
+    <para>There are two major kinds of container widgets. Both are
+subclasses of the abstract <link
+linkend="class-gtkcontainer"><classname>gtk.Container</classname></link>
+base class.</para>
+
+    <para>The first type of container widget has a single child widget and
+derives from <link
+linkend="class-gtkbin"><classname>gtk.Bin</classname></link>. These
+containers are decorators, that add some kind of functionality to the
+child. For example, a <link
+linkend="class-gtkbutton"><classname>gtk.Button</classname></link> makes its
+child into a clickable button; a <link
+linkend="class-gtkframe"><classname>gtk.Frame</classname></link> draws a
+frame around its child and a <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link> places
+its child widget inside a top-level window.</para>
+
+    <para>The second type of container can have more than one child; its
+purpose is to manage layout. This means that these containers assign sizes
+and positions to their children. For example, a <link
+linkend="class-gtkhbox"><classname>gtk.HBox</classname></link> arranges its
+children in a horizontal row, and a <link
+linkend="class-gtktable"><classname>gtk.Table</classname></link> arranges
+the widgets it contains in a two-dimensional grid.</para>
+
+    <para>To fulfill its task, a layout container must negotiate the size
+requirements with its parent and its children. This negotiation is carried
+out in two phases, size requisition and size allocation.</para>
+
+    <refsect2 id='sec-ContainerSizeRequisition'>
+      <title>Size Requisition</title>
+
+      <para>The size requisition of a widget is it's desired width and
+height. This is represented by a <link
+linkend="class-gtkrequisition"><classname>gtk.Requisition</classname></link>.</para>
+
+      <para>How a widget determines its desired size depends on the
+widget. A <link
+linkend="class-gtklabel"><classname>gtk.Label</classname></link>, for
+example, requests enough space to display all its text. Container widgets
+generally base their size request on the requisitions of their
+children.</para>
+
+      <para>The size requisition phase of the widget layout process operates
+top-down. It starts at a top-level widget, typically a GtkWindow. The
+top-level widget asks its child for its size requisition by calling
+gtk_widget_size_request(). To determine its requisition, the child asks its
+own children for their requisitions and so on. Finally, the top-level widget
+will get a requisition back from its child.</para>
+
+    </refsect2>
+
+    <refsect2 id="sec-ContainerSizeAllocation">
+      <title>Size Allocation</title>
+
+      <para>When the top-level widget has determined how much space its
+child would like to have, the second phase of the size negotiation, size
+allocation, begins. Depending on its configuration (see the <link
+linkend="method-gtkwindow--set-resizable"><methodname>gtk.Window.set_resizable</methodname>()</link>
+method), the top-level widget may be able to expand in order to satisfy the
+size request or it may have to ignore the size request and keep its fixed
+size. It then tells its child widget how much space it gets by calling the
+<link
+linkend="method-gtkwidget--size-allocate"><methodname>size_allocate</methodname>()</link>
+method. The child widget divides the space among its children and tells each
+child how much space it got, and so on. Under normal circumstances, a <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link> will
+always give its child the amount of space the child requested.</para>
+
+      <para>A child's size allocation is represented by a <link
+linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
+that contains not only a width and height, but also a position (i.e. X and Y
+coordinates), so that containers can tell their children not only how much
+space is available, but also where they are positioned inside the space
+available to the container.</para>
+
+      <para>Widgets are required to honor the size allocation they receive;
+a size request is only a request, and widgets must be able to cope with any
+size.</para>
+
+    </refsect2>
+
+    <refsect2 id="sec-ContainerChildProperties">
+      <title>Child Properties</title>
+
+      <para><link
+linkend="class-gtkcontainer"><classname>gtk.Container</classname></link>
+introduces child properties - these are object properties that are not
+specific to either the container or the contained widget, but rather to
+their relation. Typical examples of child properties are the "position" or
+"pack-type" of a widget which is contained in a <link
+linkend="class-gtkbox"><classname>gtk.Box</classname></link>.</para>
+
+      <para>Use the <link
+linkend="function-gtk--container-class-install-child-property"><function>gtk.container_class_install_child_property</function>()</link>
+function to install child properties for a container class and the <link
+linkend="function-gtk--container-class-list-child-properties"><function>gtk.container_class_list_child_properties</function>()</link>
+function to get information about existing child properties.</para>
+
+      <para>To set the value of a child property, use the <link
+linkend="method-gtkcontainer--child-set-property"><methodname>child_set_property</methodname>()</link>,
+or <link
+linkend="method-gtkcontainer--child-set"><methodname>child_set</methodname>()</link>
+methods. To obtain the value of a child property, use the <link
+linkend="method-gtkcontainer--child-get-property"><methodname>child_get_property</methodname>()</link>,
+or <link
+linkend="method-gtkcontainer--child-get"><methodname>child_get</methodname>()</link>
+methods. To emit notification about child property changes, use the <link
+linkend="method-gtkwidget--child-notify"><methodname>gtk.Widget.child_notify</methodname>()</link>
+method.</para>
+
+    </refsect2>
 
   </refsect1>
 
@@ -1093,6 +1225,64 @@ retrieves the value of the child property specified by
 
   <refsect1>
     <title>Functions</title>
+
+    <refsect2 id="function-gtk--container-class-install-child-property">
+      <title>gtk.container_class_install_child_property</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.container_class_install_child_property</methodname>
+	  <methodparam><parameter
+			 role="keyword">klass</parameter></methodparam>
+        <methodparam><parameter role="keyword">property_id</parameter></methodparam>
+        <methodparam><parameter role="keyword">pspec</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">klass</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkcontainer"><classname>gtk.Container</classname></link>
+	  class or instance.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">property_id</parameter>&nbsp;:</term>
+	  <listitem><simpara>an integer property ID</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pspec</parameter>&nbsp;:</term>
+	  <listitem><simpara>a 4-tuple containing a parameter
+specification</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The
+<function>gtk.container_class_install_child_property</function>() function
+installs a child property for the container class specified by
+<parameter>klass</parameter> using the integer ID specified by
+<parameter>property_id</parameter>. <parameter>pspec</parameter> is a
+4-tuple containing the parameter specification:</para>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>a string specifying the name of the property</simpara>
+        </listitem>
+        <listitem>
+          <simpara>an object specifying the property type</simpara>
+        </listitem>
+        <listitem>
+          <simpara>a string specifying the nickname for the property or
+<literal>None</literal></simpara>
+        </listitem>
+        <listitem>
+          <simpara>a string specifying the short deciription for the property
+or <literal>None</literal></simpara>
+        </listitem>
+      </itemizedlist>
+
+    </refsect2>
 
     <refsect2 id="function-gtk--container-class-list-child-properties">
       <title>gtk.container_class_list_child_properties</title>
