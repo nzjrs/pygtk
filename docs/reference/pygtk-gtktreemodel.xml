@@ -120,8 +120,9 @@ linkend="method-gtktreemodel--unref-node">unref_node</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gtktreemodel--get-value">get</link></methodname>
+linkend="method-gtktreemodel--get">get</link></methodname>
 	<methodparam><parameter>iter</parameter></methodparam>
+	<methodparam><parameter>column</parameter></methodparam>
 	<methodparam><parameter>...</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
@@ -892,6 +893,7 @@ method. Please note that nodes that are deleted are not unreffed.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>get</methodname>
 	  <methodparam><parameter>iter</parameter></methodparam>
+	  <methodparam><parameter>column</parameter></methodparam>
 	  <methodparam><parameter>...</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
@@ -903,8 +905,12 @@ method. Please note that nodes that are deleted are not unreffed.</para>
 	  from</parameter></simpara></listitem>
 	</varlistentry>
 	<varlistentry>
+	  <term><parameter>column</parameter>&nbsp;:</term>
+	  <listitem><simpara>a column number</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
 	  <term><parameter>...</parameter>&nbsp;:</term>
-	  <listitem><simpara>one or more column numbers</simpara></listitem>
+	  <listitem><simpara>zero or more column numbers</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -920,9 +926,10 @@ method. Please note that nodes that are deleted are not unreffed.</para>
       <para>The <methodname>get</methodname>() method returns a tuple
 containing the values of one or more cells in the row referenced by the
 <link linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
-specified by <parameter>iter</parameter>. The additional arguments should
-contain integer column numbers. For example, to get values from columns 0
-and 3, you would write:</para>
+specified by <parameter>iter</parameter>. column specifies the first column
+number to retrieve a value from. The additional arguments should contain
+integer column numbers for addtional column values. For example, to get
+values from columns 0 and 3, you would write:</para>
 
       <programlisting>
   value0, value3 = treemodel_get(iter, 0, 3)
