@@ -931,8 +931,6 @@ _wrap_gtk_clist_new_with_titles(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_RuntimeError,"could not create GtkCList object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -2279,8 +2277,6 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
 	}
     }
     self->obj = (GObject *)tvc;
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3312,8 +3308,6 @@ _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkButton object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3361,8 +3355,6 @@ _wrap_gtk_toggle_button_new(PyGObject *self, PyObject*args, PyObject*kwargs)
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkToggleButton object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3387,8 +3379,6 @@ _wrap_gtk_check_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkCheckButton object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3433,8 +3423,6 @@ _wrap_gtk_radio_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkRadioButton object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3483,8 +3471,6 @@ _wrap_gtk_list_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkListItem object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3509,8 +3495,6 @@ _wrap_gtk_menu_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkMenuItem object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3537,8 +3521,6 @@ _wrap_gtk_check_menu_item_new(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkCheckMenuItem object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3586,8 +3568,6 @@ _wrap_gtk_radio_menu_item_new(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkRadioMenuItem object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3623,8 +3603,6 @@ _wrap_gtk_image_menu_item_new(PyGObject *self, PyObject *args,PyObject *kwargs)
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkImageMenuItem object");
 	return -1;
     }
-    g_object_ref(self->obj);
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -3710,8 +3688,6 @@ _wrap_gtk_ctree_new_with_titles(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_RuntimeError,"could not create GtkCTree object");
 	return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -5643,8 +5619,6 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
 			      PyInt_AsLong(id));
     }
 	
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -5697,8 +5671,6 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkMessageDialog object");
         return -1;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
@@ -5733,8 +5705,6 @@ _wrap_gtk_progress_bar_new_with_adjustment(PyGObject *self, PyObject *args, PyOb
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkProgressBar object");
         return NULL;
     }
-    gtk_object_ref(GTK_OBJECT(self->obj));
-    gtk_object_sink(GTK_OBJECT(self->obj));
     pygobject_register_wrapper((PyObject *)self);
     Py_INCREF(Py_None);
     return Py_None;

@@ -453,7 +453,6 @@ class GObjectWrapper(Wrapper):
         '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' \
         '        return -1;\n' \
         '    }\n' \
-        '%(gtkobjectsink)s' \
         '    pygobject_register_wrapper((PyObject *)self);\n' \
         '    return 0;\n' \
         '}\n\n'
@@ -485,12 +484,6 @@ class GObjectWrapper(Wrapper):
 
     def get_initial_constructor_substdict(self):
         substdict = Wrapper.get_initial_constructor_substdict(self)
-        if argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkObject'):
-            substdict['gtkobjectsink'] = \
-                '    g_object_ref(self->obj);\n' \
-                '    gtk_object_sink(GTK_OBJECT(self->obj));\n'
-        else:
-            substdict['gtkobjectsink'] = ''
         return substdict
 
     def get_initial_method_substdict(self, method):

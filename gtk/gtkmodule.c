@@ -25,6 +25,15 @@ static struct _PyGtk_FunctionStruct functions = {
     &PyGdkAtom_Type,  PyGdkAtom_New,
 };
 
+static void
+sink_gtkobject(GObject *object)
+{
+    if (GTK_OBJECT_FLOATING(object)) {
+	g_object_ref(object);
+	gtk_object_sink(GTK_OBJECT(object));
+    }
+}
+
 DL_EXPORT(void)
 init_gtk(void)
 {
@@ -38,6 +47,8 @@ init_gtk(void)
     /* initialise gobject */
     init_pygobject();
     g_assert(pygobject_register_class != NULL);
+
+    pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
 
     /* set the default python encoding to utf-8 */
     PyUnicode_SetDefaultEncoding("utf-8");

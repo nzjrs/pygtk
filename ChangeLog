@@ -1,3 +1,38 @@
+2002-08-18  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk.override (_wrap_gtk_clist_new_with_titles): don't need
+	to manually sink.
+	(_wrap_gtk_tree_view_column_new): same here.
+	(_wrap_gtk_button_new): same here.
+	(_wrap_gtk_toggle_button_new): same here.
+	(_wrap_gtk_check_button_new): same here.
+	(_wrap_gtk_radio_button_new): same here.
+	(_wrap_gtk_list_item_new): same here.
+	(_wrap_gtk_menu_item_new): same here.
+	(_wrap_gtk_check_menu_item_new): same here.
+	(_wrap_gtk_radio_menu_item_new): same here.
+	(_wrap_gtk_image_menu_item_new): same here.
+	(_wrap_gtk_ctree_new_with_titles): same here.
+	(_wrap_gtk_dialog_new_with_buttons): same here.
+	(_wrap_gtk_message_dialog_new): same here.
+	(_wrap_gtk_progress_bar_new_with_adjustment): same here.
+
+	* gtk/gtkmodule.c (sink_gtkobject): function to sink a GtkObject
+	if it is floating.
+	(init_gtk): register sink_gtkobject for sinking GtkObjects.
+
+	* codegen/codegen.py
+	(GObjectWrapper.get_initial_constructor_substdict): get rid of
+	gtkobjectsink bit of code.
+
+	* pygobject.c (pygobject_register_sinkfunc): new function to
+	register a function to get rid of the floating reference from an
+	object.
+	(sink_object): run a sinkfunc for an object if it has been
+	registered.
+	(pygobject_new): call sink_object
+	(pygobject_register_wrapper): call sink_object.
+
 Sat Aug 17 20:02:43 2002  Jonathan Blandford  <jrb@gnome.org>
 
 	* codegen/argtypes.py (TimeTArg.write_param): Add a time_t
