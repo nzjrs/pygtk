@@ -6571,8 +6571,8 @@ _wrap_gtk_stock_add(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
 
     len = PySequence_Length(py_items);
-    items = g_new(GtkStockItem, len);
-    if (items) {
+    if (len > 0) {
+	items = g_new(GtkStockItem, len);
 	for (i = 0; i < len; i++) {
 	    py_item = PySequence_GetItem(py_items, i);
 	    if (!py_item) goto error;
@@ -6589,9 +6589,9 @@ _wrap_gtk_stock_add(PyGObject *self, PyObject *args, PyObject *kwargs)
 	}
 	gtk_stock_add(items, PySequence_Length(py_items));
 	g_free(items);
-	Py_INCREF(Py_None);
-	return Py_None;
     }
+    Py_INCREF(Py_None);
+    return Py_None;
  error:
     g_free(items);
     return NULL;
