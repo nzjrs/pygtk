@@ -696,11 +696,6 @@ matcher.register('GtkType', arg)
 # If the system maxint is smaller than unsigned int, we need to use
 # Long objects with PyLong_AsUnsignedLong
 if sys.maxint >= (1L << 32):
-    intHoldsUnsigned32BitValue = 1
-else:
-    intHoldsUnsigned32BitValue = 0
-
-if intHoldsUnsigned32BitValue:
     matcher.register('guint32', arg)
 else:
     arg = ULongArg()
