@@ -544,7 +544,7 @@ _wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
     static char *kwlist[] = { "window", "colormap", "transparent_color",
                               "filename", NULL };
     PyObject *py_window, *py_colormap, *py_trans_color, *ret;
-    GdkWindow *window = NULL;
+    GdkDrawable *window = NULL;
     GdkColormap *colormap = NULL;
     GdkColor *trans_color = NULL;
     gchar *filename;
@@ -556,10 +556,10 @@ _wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
                                      kwlist, &py_window, &py_colormap,
                                      &py_trans_color, &filename))
         return NULL;
-    if (pygobject_check(py_window, &PyGdkWindow_Type))
-        window = GDK_WINDOW(pygobject_get(py_window));
+    if (pygobject_check(py_window, &PyGdkDrawable_Type))
+        window = GDK_DRAWABLE(pygobject_get(py_window));
     else if (py_window != Py_None) {
-        PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
+        PyErr_SetString(PyExc_TypeError, "window must be a GdkDrawable or None");
         return NULL;
     }
     if (pygobject_check(py_colormap, &PyGdkColormap_Type))
@@ -606,7 +606,7 @@ _wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O!OO!:pixmap_create_from_xpm_d", kwlist,
-                                     &PyGdkWindow_Type, &window,
+                                     &PyGdkDrawable_Type, &window,
                                      &py_trans_color, &PyList_Type, &py_data))
         return NULL;
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
@@ -627,7 +627,7 @@ _wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
         }
         data[i] = PyString_AsString(item);
     }
-    pixmap = gdk_pixmap_create_from_xpm_d(GDK_WINDOW(window->obj), &mask,
+    pixmap = gdk_pixmap_create_from_xpm_d(GDK_DRAWABLE(window->obj), &mask,
                                           trans_color, data);
     g_free(data);
     if (pixmap == NULL) {
@@ -650,7 +650,7 @@ _wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
     static char *kwlist[] = { "window", "colormap", "transparent_color",
                               "data", NULL };
     PyObject *py_window, *py_colormap, *py_trans_color, *py_data, *ret;
-    GdkWindow *window = NULL;
+    GdkDrawable *window = NULL;
     GdkColormap *colormap = NULL;
     GdkColor *trans_color = NULL;
     gchar **data;
@@ -664,10 +664,10 @@ _wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
                                      &py_trans_color,
                                      &PyList_Type, &py_data))
         return NULL;
-    if (pygobject_check(py_window, &PyGdkWindow_Type))
-        window = GDK_WINDOW(pygobject_get(py_window));
+    if (pygobject_check(py_window, &PyGdkDrawable_Type))
+        window = GDK_DRAWABLE(pygobject_get(py_window));
     else if (py_window != Py_None) {
-        PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
+        PyErr_SetString(PyExc_TypeError, "window must be a GdkDrawable or None");
         return NULL;
     }
     if (pygobject_check(py_colormap, &PyGdkColormap_Type))
