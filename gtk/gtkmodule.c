@@ -31,7 +31,7 @@ static struct _PyGtk_FunctionStruct functions = {
 DL_EXPORT(void)
 init_gtk(void)
 {
-    PyObject *m, *d, *v;
+    PyObject *m, *d, *v, *tuple;
     PyObject *av;
     int argc, i;
     char **argv;
@@ -77,26 +77,22 @@ init_gtk(void)
     m = Py_InitModule("gtk._gtk", pygtk_functions);
     d = PyModule_GetDict(m);
 
-    v = PyInt_FromLong(gtk_major_version);
-    if (v != NULL) {
-	PyDict_SetItemString(d, "major_version", v);
-	Py_DECREF(v);
-    }
-    v = PyInt_FromLong(gtk_minor_version);
-    if (v != NULL) {
-	PyDict_SetItemString(d, "minor_version", v);
-	Py_DECREF(v);
-    }
-    v = PyInt_FromLong(gtk_micro_version);
-    if (v != NULL) {
-	PyDict_SetItemString(d, "micro_version", v);
-	Py_DECREF(v);
-    }
-    
+    /* gtk+ version */
+    tuple = Py_BuildValue ("(iii)", gtk_major_version, gtk_minor_version,
+			   gtk_micro_version);
+    PyDict_SetItemString(d, "gtk_version", tuple);    
+    Py_DECREF(tuple);
+	
+    /* pygtk version */
+    tuple = Py_BuildValue ("(iii)", PYGTK_MAJOR_VERSION, PYGTK_MINOR_VERSION,
+			   PYGTK_MICRO_VERSION);
+    PyDict_SetItemString(d, "pygtk_version", tuple);
+    Py_DECREF(tuple);
+	
     _pygtk_register_boxed_types(d);
     pygtk_register_classes(d);
     pygtk_add_constants(m, "GTK_");
-
+    
     /* for addon libraries ... */
     PyDict_SetItemString(d, "_PyGtk_API",
 			 PyCObject_FromVoidPtr(&functions, NULL));
