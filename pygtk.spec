@@ -3,7 +3,7 @@
 
 Summary: Python bindings for the GTK+ widget set.
 Name: pygtk
-Version: 1.99.1
+Version: 1.99.3
 Release: 1
 Copyright: LGPL
 Group: Development/Languages
