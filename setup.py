@@ -121,7 +121,7 @@ class PyGtkInstallLib(install_lib):
         return install_lib.get_inputs(self) + self.local_inputs
 
 class PyGtkBuild(build):
-    pass
+    enable_threading = 0
 PyGtkBuild.user_options.append(('enable-threading', None,
                                 'enable threading support'))
     
