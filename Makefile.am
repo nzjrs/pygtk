@@ -107,7 +107,7 @@ EXTRA_DIST += \
   examples/ide/quit.xpm \
   examples/simple/hello2.py \
   examples/simple/simple2.py \
-  examples/simple/tooltip2.py \
+  examples/simple/tooltip.py \
   examples/simple/scribble.py \
   examples/simple/dnd.py \
   examples/simple/dndpixmap.py \
