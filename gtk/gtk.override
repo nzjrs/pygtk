@@ -289,8 +289,8 @@ _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
 	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
 	return NULL;
     }
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
+    if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
+	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"transparent_color must be a colour or None");
@@ -343,8 +343,8 @@ _wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
 			"colormap must be a GdkColormap or None");
 	return NULL;
     }
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
+    if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
+	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"transparent_color must be a colour or None");
@@ -387,8 +387,8 @@ _wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
 	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
 	return NULL;
     }
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
+    if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
+	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"transparent_color must be a colour or None");
@@ -455,8 +455,8 @@ _wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
 			"colormap must be a GdkColormap or None");
 	return NULL;
     }
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
+    if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
+	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"transparent_color must be a colour or None");
@@ -1183,16 +1183,16 @@ _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
 				     &graphics_exposures, &line_width,
 				     &line_style, &cap_style, &join_style))
 	return NULL;
-    if (PyGdkColor_Check(foreground)) {
+    if (pyg_boxed_check(foreground, GDK_TYPE_COLOR)) {
 	mask |= GDK_GC_FOREGROUND;
-	values.foreground = *PyGdkColor_Get(foreground);
+	values.foreground = *pyg_boxed_get(foreground, GdkColor);
     } else if (foreground != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "foreground must be a GdkColor");
 	return NULL;
     }
-    if (PyGdkColor_Check(background)) {
+    if (pyg_boxed_check(background, GDK_TYPE_COLOR)) {
 	mask |= GDK_GC_BACKGROUND;
-	values.background = *PyGdkColor_Get(background);
+	values.background = *pyg_boxed_get(background, GdkColor);
     } else if (background != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
 	return NULL;
@@ -1608,7 +1608,7 @@ _wrap_gtk_tree_model_get_iter(PyGObject *self, PyObject *args) {
     }
     if (gtk_tree_model_get_iter(GTK_TREE_MODEL(self->obj), &iter, path)) {
 	gtk_tree_path_free(path);
-	return PyGtkTreeIter_New(&iter);
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
     } else {
 	gtk_tree_path_free(path);
 	PyErr_SetString(PyExc_ValueError, "invalid tree path");
@@ -1625,17 +1625,20 @@ _wrap_gtk_tree_model_get_value(PyGObject *self, PyObject*args, PyObject*kwargs)
     gint column;
     GValue value = { 0, };
 
-    if (!PyArg_ParseTupleAndKeywords(args,kwargs, "O!i:GtkTreeModel.get_value",
-				     kwlist, &PyGtkTreeIter_Type, &iter,
-				     &column))
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs, "Oi:GtkTreeModel.get_value",
+				     kwlist, &iter, &column))
 	return NULL;
     if (column < 0 ||
 	column >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj))) {
 	PyErr_SetString(PyExc_ValueError, "column number is out of range");
 	return NULL;
     }
+    if (!pyg_boxed_check(iter, GTK_TYPE_TREE_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+	return NULL;
+    }
     gtk_tree_model_get_value(GTK_TREE_MODEL(self->obj),
-			     PyGtkTreeIter_Get(iter), column, &value);
+			     pyg_boxed_get(iter, GtkTreeIter), column, &value);
     ret = pyg_value_as_pyobject(&value);
     g_value_unset(&value);
     return ret;
@@ -1681,13 +1684,16 @@ _wrap_gtk_list_store_set_value(PyGObject *self, PyObject *args,
     GValue value = { 0 };
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!iO:GtkListStore.set_value",
-				     kwlist, &PyGtkTreeIter_Type, &iter,
-				     &column, &pyvalue))
+				     "OiO:GtkListStore.set_value",
+				     kwlist, &iter, &column, &pyvalue))
 	return NULL;
     if (column < 0 ||
 	column >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj))) {
 	PyErr_SetString(PyExc_ValueError, "column number is out of range");
+	return NULL;
+    }
+    if (!pyg_boxed_check(iter, GTK_TYPE_TREE_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
 	return NULL;
     }
     g_value_init(&value, GTK_LIST_STORE(self->obj)->column_headers[column]);
@@ -1697,7 +1703,7 @@ _wrap_gtk_list_store_set_value(PyGObject *self, PyObject *args,
 	return NULL;
     }
     gtk_list_store_set_value(GTK_LIST_STORE(self->obj),
-			     PyGtkTreeIter_Get(iter), column, &value);
+			     pyg_boxed_get(iter, GtkTreeIter), column, &value);
     g_value_unset(&value);
     Py_INCREF(Py_None);
     return Py_None;
@@ -1715,7 +1721,7 @@ _wrap_gtk_list_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 				     kwlist, &position))
 	return NULL;
     gtk_list_store_insert(GTK_LIST_STORE(self->obj), &iter, position);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_list_store_insert_before kwargs
@@ -1728,12 +1734,16 @@ _wrap_gtk_list_store_insert_before(PyGObject *self, PyObject *args,
     GtkTreeIter iter;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!:GtkListStore.insert_before",
-				     kwlist, &PyGtkTreeIter_Type, &sibling))
+				     "O:GtkListStore.insert_before",
+				     kwlist, &sibling))
 	return NULL;
+    if (!pyg_boxed_check(sibling, GTK_TYPE_TREE_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+	return NULL;
+    }
     gtk_list_store_insert_before(GTK_LIST_STORE(self->obj), &iter,
-				 PyGtkTreeIter_Get(sibling));
-    return PyGtkTreeIter_New(&iter);
+				 pyg_boxed_get(sibling, GtkTreeIter));
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_list_store_insert_after kwargs
@@ -1746,12 +1756,16 @@ _wrap_gtk_list_store_insert_after(PyGObject *self, PyObject *args,
     GtkTreeIter iter;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!:GtkListStore.insert_after",
-				     kwlist, &PyGtkTreeIter_Type, &sibling))
+				     "O:GtkListStore.insert_after",
+				     kwlist, &sibling))
 	return NULL;
+    if (!pyg_boxed_check(sibling, GTK_TYPE_TREE_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+	return NULL;
+    }
     gtk_list_store_insert_after(GTK_LIST_STORE(self->obj), &iter,
-				PyGtkTreeIter_Get(sibling));
-    return PyGtkTreeIter_New(&iter);
+				pyg_boxed_get(sibling, GtkTreeIter));
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_list_store_prepend
@@ -1763,7 +1777,7 @@ _wrap_gtk_list_store_prepend(PyGObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, ":GtkListStore.prepend"))
 	return NULL;
     gtk_list_store_prepend(GTK_LIST_STORE(self->obj), &iter);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_list_store_append
@@ -1775,7 +1789,7 @@ _wrap_gtk_list_store_append(PyGObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, ":GtkListStore.append"))
 	return NULL;
     gtk_list_store_append(GTK_LIST_STORE(self->obj), &iter);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 ignore gtk_tree_store_new_with_types
@@ -1818,13 +1832,16 @@ _wrap_gtk_tree_store_set_value(PyGObject *self, PyObject *args,
     GValue value = { 0 };
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!iO:GtkTreeStore.set_value",
-				     kwlist, &PyGtkTreeIter_Type, &iter,
-				     &column, &pyvalue))
+				     "OiO:GtkTreeStore.set_value",
+				     kwlist, &iter, &column, &pyvalue))
 	return NULL;
     if (column < 0 ||
 	column >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj))) {
 	PyErr_SetString(PyExc_ValueError, "column number is out of range");
+	return NULL;
+    }
+    if (!pyg_boxed_check(iter, GTK_TYPE_TREE_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
 	return NULL;
     }
     g_value_init(&value, GTK_TREE_STORE(self->obj)->column_headers[column]);
@@ -1834,7 +1851,7 @@ _wrap_gtk_tree_store_set_value(PyGObject *self, PyObject *args,
 	return NULL;
     }
     gtk_tree_store_set_value(GTK_TREE_STORE(self->obj),
-			     PyGtkTreeIter_Get(iter), column, &value);
+			     pyg_boxed_get(iter, GtkTreeIter), column, &value);
     g_value_unset(&value);
     Py_INCREF(Py_None);
     return Py_None;
@@ -1858,16 +1875,15 @@ _wrap_gtk_tree_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi:GtkTreeStore.insert",
 				     kwlist, &py_parent, &position))
 	return NULL;
-    if (PyGtkTreeIter_Check(py_parent))
-	parent = PyGtkTreeIter_Get(py_parent);
+    if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
+	parent = pyg_boxed_get(py_parent, GtkTreeIter);
     else if (py_parent != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"parent must be a GtkTreeIter or None");
 	return NULL;
     }
-    gtk_tree_store_insert(GTK_TREE_STORE(self->obj), &iter,
-			  PyGtkTreeIter_Get(parent), position);
-    return PyGtkTreeIter_New(&iter);
+    gtk_tree_store_insert(GTK_TREE_STORE(self->obj), &iter, parent, position);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_tree_store_insert_before kwargs
@@ -1883,15 +1899,15 @@ _wrap_gtk_tree_store_insert_before(PyGObject *self, PyObject *args,
 				     "OO:GtkTreeStore.insert_before",
 				     kwlist, &py_parent, &py_sibling))
 	return NULL;
-    if (PyGtkTreeIter_Check(py_parent))
-	parent = PyGtkTreeIter_Get(py_parent);
+    if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
+	parent = pyg_boxed_get(py_parent, GtkTreeIter);
     else if (py_parent != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"parent must be a GtkTreeIter or None");
 	return NULL;
     }
-    if (PyGtkTreeIter_Check(py_sibling))
-	sibling = PyGtkTreeIter_Get(py_sibling);
+    if (pyg_boxed_check(py_sibling, GTK_TYPE_TREE_ITER))
+	sibling = pyg_boxed_get(py_sibling, GtkTreeIter);
     else if (py_sibling != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"sibling must be a GtkTreeIter or None");
@@ -1899,7 +1915,7 @@ _wrap_gtk_tree_store_insert_before(PyGObject *self, PyObject *args,
     }
     gtk_tree_store_insert_before(GTK_TREE_STORE(self->obj), &iter, parent,
 				 sibling);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_tree_store_insert_after kwargs
@@ -1915,15 +1931,15 @@ _wrap_gtk_tree_store_insert_after(PyGObject *self, PyObject *args,
 				     "OO:GtkTreeStore.insert_after",
 				     kwlist, &py_parent, &py_sibling))
 	return NULL;
-    if (PyGtkTreeIter_Check(py_parent))
-	parent = PyGtkTreeIter_Get(py_parent);
+    if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
+	parent = pyg_boxed_get(py_parent, GtkTreeIter);
     else if (py_parent != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"parent must be a GtkTreeIter or None");
 	return NULL;
     }
-    if (PyGtkTreeIter_Check(py_sibling))
-	sibling = PyGtkTreeIter_Get(py_sibling);
+    if (pyg_boxed_check(py_sibling, GTK_TYPE_TREE_ITER))
+	sibling = pyg_boxed_get(py_sibling, GtkTreeIter);
     else if (py_sibling != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"sibling must be a GtkTreeIter or None");
@@ -1931,7 +1947,7 @@ _wrap_gtk_tree_store_insert_after(PyGObject *self, PyObject *args,
     }
     gtk_tree_store_insert_after(GTK_TREE_STORE(self->obj), &iter, parent,
 				sibling);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_tree_store_prepend kwargs
@@ -1945,15 +1961,15 @@ _wrap_gtk_tree_store_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkTreeStore.prepend",
 				     kwlist, &py_parent))
 	return NULL;
-    if (PyGtkTreeIter_Check(py_parent))
-	parent = PyGtkTreeIter_Get(py_parent);
+    if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
+	parent = pyg_boxed_get(py_parent, GtkTreeIter);
     else if (py_parent != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"parent must be a GtkTreeIter or None");
 	return NULL;
     }
     gtk_tree_store_prepend(GTK_TREE_STORE(self->obj), &iter, parent);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_tree_store_append kwargs
@@ -1967,15 +1983,15 @@ _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkTreeStore.append",
 				     kwlist, &py_parent))
 	return NULL;
-    if (PyGtkTreeIter_Check(py_parent))
-	parent = PyGtkTreeIter_Get(py_parent);
+    if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
+	parent = pyg_boxed_get(py_parent, GtkTreeIter);
     else if (py_parent != Py_None) {
 	PyErr_SetString(PyExc_TypeError,
 			"parent must be a GtkTreeIter or None");
 	return NULL;
     }
     gtk_tree_store_append(GTK_TREE_STORE(self->obj), &iter, parent);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 override gtk_tree_store_get_root_iter
@@ -1987,7 +2003,7 @@ _wrap_gtk_tree_store_get_root_iter(PyGObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, ":GtkTreeStore.get_root_iter"))
 	return NULL;
     gtk_tree_store_get_root_iter(GTK_TREE_STORE(self->obj), &iter);
-    return PyGtkTreeIter_New(&iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
 ignore
@@ -2098,7 +2114,8 @@ _wrap_gtk_tree_selection_get_selected(PyGObject *self, PyObject *args)
     if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(self->obj),
 					&model, &iter))
 	return Py_BuildValue("(NN)", pygobject_new((GObject *)model),
-			     PyGtkTreeIter_New(&iter));
+			     pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter,
+					   TRUE, TRUE));
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -3750,7 +3767,7 @@ _wrap_gtk_color_selection_get_current_color(PyGObject *self, PyObject *args)
         return NULL;
     gtk_color_selection_get_current_color(GTK_COLOR_SELECTION(self->obj),
 					  &colour);
-    return PyGdkColor_New(&colour);
+    return pyg_boxed_new(GDK_TYPE_COLOR, &colour, TRUE, TRUE);
 }
 %%
 override gtk_color_selection_get_previous_color
@@ -3763,7 +3780,7 @@ _wrap_gtk_color_selection_get_previous_color(PyGObject *self, PyObject *args)
         return NULL;
     gtk_color_selection_get_previous_color(GTK_COLOR_SELECTION(self->obj),
 					   &colour);
-    return PyGdkColor_New(&colour);
+    return pyg_boxed_new(GDK_TYPE_COLOR, &colour, TRUE, TRUE);
 }
 %%
 override gtk_calendar_get_date

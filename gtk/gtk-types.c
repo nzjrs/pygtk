@@ -26,25 +26,7 @@ PyGtkStyle_New(GtkStyle *obj)
     gtk_style_ref(self->obj);
     return (PyObject *)self;
 }
-#endif
 
-PyObject *
-PyGdkColor_New(GdkColor *obj)
-{
-    PyGdkColor_Object *self;
-
-    self = (PyGdkColor_Object *)PyObject_NEW(PyGdkColor_Object,
-					     &PyGdkColor_Type);
-    if (self == NULL)
-	return NULL;
-    self->obj.pixel = obj->pixel;
-    self->obj.red   = obj->red;
-    self->obj.green = obj->green;
-    self->obj.blue  = obj->blue;
-    return (PyObject *)self;
-}
-
-#if 0
 PyObject *
 PyGdkWindow_New(GdkWindow *win)
 {
@@ -71,9 +53,7 @@ PyGdkGC_New(GdkGC *gc)
     gdk_gc_ref(self->obj);
     return (PyObject *)self;
 }
-#endif
 
-#if 0
 PyObject *
 PyGdkColormap_New(GdkColormap *cmap)
 {
@@ -181,22 +161,6 @@ PyGtkTextIter_New(GtkTextIter *iter)
 	self->iter = *iter;
     else
 	memset(&self->iter, 0, sizeof(GtkTextIter));
-    return (PyObject *)self;
-}
-
-PyObject *
-PyGtkTreeIter_New(GtkTreeIter *iter)
-{
-    PyGtkTreeIter_Object *self;
-
-    self = (PyGtkTreeIter_Object *)PyObject_NEW(PyGtkTreeIter_Object,
-						&PyGtkTreeIter_Type);
-    if (self == NULL)
-	return NULL;
-    if (iter)
-	self->iter = *iter;
-    else
-	memset(&self->iter, 0, sizeof(GtkTreeIter));
     return (PyObject *)self;
 }
 
@@ -535,88 +499,6 @@ PyTypeObject PyGtkStyle_Type = {
     NULL
 };
 #endif
-
-static void
-pygdk_color_dealloc(PyGdkColor_Object *self)
-{
-    PyMem_DEL(self);
-}
-
-static PyObject *
-pygdk_color_getattr(PyGdkColor_Object *self, char *key)
-{
-    if (!strcmp(key, "red"))
-	return PyInt_FromLong(self->obj.red);
-    if (!strcmp(key, "green"))
-	return PyInt_FromLong(self->obj.green);
-    if (!strcmp(key, "blue"))
-	return PyInt_FromLong(self->obj.blue);
-    if (!strcmp(key, "pixel"))
-	return PyInt_FromLong(self->obj.pixel);
-    PyErr_SetString(PyExc_AttributeError, key);
-    return NULL;
-}
-
-static PyObject *
-pygdk_color_setattr(PyGdkColor_Object *self, char *key, PyObject * val)
-{
-    if (!strcmp(key, "red"))
-	self->obj.red = PyInt_AsLong(val);
-    if (!strcmp(key, "green"))
-	self->obj.green = PyInt_AsLong(val);
-    if (!strcmp(key, "blue"))
-	self->obj.blue = PyInt_AsLong(val);
-    if (!strcmp(key, "pixel"))
-	self->obj.pixel = PyInt_AsLong(val);
-    PyErr_SetString(PyExc_AttributeError, key);
-    return NULL;
-}
-
-static int
-pygdk_color_compare(PyGdkColor_Object *self, PyGdkColor_Object *v)
-{
-    if (self->obj.pixel == v->obj.pixel) return 0;
-    if (self->obj.pixel > v->obj.pixel) return -1;
-    return 1;
-}
-
-static long
-pygdk_color_hash(PyGdkColor_Object *self)
-{
-    return (long)self->obj.pixel;
-}
-
-static PyObject *
-pygdk_color_repr(PyGdkColor_Object *self)
-{
-    char buf[80];
-
-    g_snprintf(buf, 79, "<GdkColor (%hu, %hu, %hu)>", self->obj.red,
-	       self->obj.green, self->obj.blue);
-    return PyString_FromString(buf);
-}
-
-PyTypeObject PyGdkColor_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GdkColor",
-    sizeof(PyGdkColor_Object),
-    0,
-    (destructor)pygdk_color_dealloc,
-    (printfunc)0,
-    (getattrfunc)pygdk_color_getattr,
-    (setattrfunc)pygdk_color_setattr,
-    (cmpfunc)pygdk_color_compare,
-    (reprfunc)pygdk_color_repr,
-    0,
-    0,
-    0,
-    (hashfunc)pygdk_color_hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
 
 PyObject *
 PyGdkEvent_New(GdkEvent *obj)
@@ -3233,57 +3115,6 @@ PyTypeObject PyGtkTextIter_Type = {
     NULL
 };
 
-static void
-pygtk_tree_iter_dealloc(PyGtkTreeIter_Object *self)
-{
-    PyMem_DEL(self);
-}
-
-static int
-pygtk_tree_iter_compare(PyGtkTreeIter_Object *self, PyGtkTreeIter_Object *v)
-{
-    if (self->iter.stamp == v->iter.stamp &&
-	self->iter.user_data == v->iter.user_data &&
-	self->iter.user_data2 == v->iter.user_data2 &&
-	self->iter.user_data3 == v->iter.user_data3) return 0;
-    if (self->iter.stamp > v->iter.stamp ||
-	(self->iter.stamp == v->iter.stamp &&
-	 (self->iter.user_data > v->iter.user_data ||
-	  (self->iter.user_data == v->iter.user_data &&
-	   (self->iter.user_data2 > v->iter.user_data2 ||
-	    (self->iter.user_data2 == v->iter.user_data2 &&
-	     self->iter.user_data3 > v->iter.user_data3)))))) return -1;
-    return 1;
-}
-
-static long
-pygtk_tree_iter_hash(PyGtkTreeIter_Object *self)
-{
-    return (long)self->iter.user_data;
-}
-
-PyTypeObject PyGtkTreeIter_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GtkTreeIter",
-    sizeof(PyGtkTreeIter_Object),
-    0,
-    (destructor)pygtk_tree_iter_dealloc,
-    (printfunc)0,
-    (getattrfunc)0,
-    (setattrfunc)0,
-    (cmpfunc)pygtk_tree_iter_compare,
-    (reprfunc)0,
-    0,
-    0,
-    0,
-    (hashfunc)pygtk_tree_iter_hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
-
 PyObject *
 pygtk_tree_path_to_pyobject(GtkTreePath *path)
 {
@@ -3327,20 +3158,6 @@ pygtk_tree_path_from_pyobject(PyObject *object)
 /* marshalers for the boxed types.  Uses uppercase notation so that
  * the macro below can automatically install them. */
 static PyObject *
-PyGdkColor_from_value(const GValue *value)
-{
-    return PyGdkColor_New(g_value_get_boxed(value));
-}
-static int
-PyGdkColor_to_value(GValue *value, PyObject *object)
-{
-    if (PyGdkColor_Check(object)) {
-	g_value_set_boxed(value, PyGdkColor_Get(object));
-	return 0;
-    }
-    return -1;
-}
-static PyObject *
 PyGdkEvent_from_value(const GValue *value)
 {
     return PyGdkEvent_New(g_value_get_boxed(value));
@@ -3383,20 +3200,6 @@ PyGtkTextIter_to_value(GValue *value, PyObject *object)
     return -1;
 }
 static PyObject *
-PyGtkTreeIter_from_value(const GValue *value)
-{
-    return PyGtkTreeIter_New(g_value_get_boxed(value));
-}
-static int
-PyGtkTreeIter_to_value(GValue *value, PyObject *object)
-{
-    if (PyGtkTreeIter_Check(object)) {
-	g_value_set_boxed(value, PyGtkTreeIter_Get(object));
-	return 0;
-    }
-    return -1;
-}
-static PyObject *
 PyGtkTreePath_from_value(const GValue *value)
 {
     GtkTreePath *path = (GtkTreePath *)g_value_get_boxed(value);
@@ -3433,7 +3236,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
 #endif
-    register_tp2(GdkColor, GDK_TYPE_COLOR);
     register_tp2(GdkEvent, GDK_TYPE_EVENT);
 #if 0
     register_tp(GdkWindow);
@@ -3447,7 +3249,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GtkCTreeNode);
     register_tp(GdkDevice);
     register_tp2(GtkTextIter, GTK_TYPE_TEXT_ITER);
-    register_tp2(GtkTreeIter, GTK_TYPE_TREE_ITER);
     pyg_boxed_register(GTK_TYPE_TREE_PATH,
 		       PyGtkTreePath_from_value,
 		       PyGtkTreePath_to_value);

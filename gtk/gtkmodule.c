@@ -21,7 +21,6 @@ static struct _PyGtk_FunctionStruct functions = {
 
     pygtk_destroy_notify,
 
-    &PyGdkColor_Type,  PyGdkColor_New,
     &PyGdkEvent_Type,  PyGdkEvent_New,
     &PyGtkSelectionData_Type,  PyGtkSelectionData_New,
     &PyGdkAtom_Type,  PyGdkAtom_New,

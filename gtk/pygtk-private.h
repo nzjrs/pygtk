@@ -14,7 +14,6 @@
 #undef WITH_THREAD
 
 /* type objects */
-extern PyTypeObject PyGdkColor_Type;
 extern PyTypeObject PyGdkEvent_Type;
 extern PyTypeObject PyGtkSelectionData_Type;
 extern PyTypeObject PyGdkAtom_Type;
@@ -22,10 +21,8 @@ extern PyTypeObject PyGdkCursor_Type;
 extern PyTypeObject PyGtkCTreeNode_Type;
 extern PyTypeObject PyGdkDevice_Type;
 extern PyTypeObject PyGtkTextIter_Type;
-extern PyTypeObject PyGtkTreeIter_Type;
 
 /* check the type of a PyObject */
-#define PyGdkColor_Check(v) ((v)->ob_type == &PyGdkColor_Type)
 #define PyGdkEvent_Check(v) ((v)->ob_type == &PyGdkEvent_Type)
 #define PyGtkSelectionData_Check(v) ((v)->ob_type == &PyGtkSelectionData_Type)
 #define PyGdkAtom_Check(v) ((v)->ob_type == &PyGdkAtom_Type)
@@ -33,10 +30,8 @@ extern PyTypeObject PyGtkTreeIter_Type;
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == &PyGtkCTreeNode_Type)
 #define PyGdkDevice_Check(v) ((v)->ob_type == &PyGdkDevice_Type)
 #define PyGtkTextIter_Check(v) ((v)->ob_type == &PyGtkTextIter_Type)
-#define PyGtkTreeIter_Check(v) ((v)->ob_type == &PyGtkTreeIter_Type)
 
 /* constructors for PyObject wrappers ... */
-PyObject *PyGdkColor_New(GdkColor *colour);
 PyObject *PyGdkEvent_New(GdkEvent *event);
 PyObject *PyGtkSelectionData_New(GtkSelectionData *data);
 PyObject *PyGdkAtom_New(GdkAtom atom);
@@ -44,33 +39,15 @@ PyObject *PyGdkCursor_New(GdkCursor *cursor);
 PyObject *PyGtkCTreeNode_New(GtkCTreeNode *node);
 PyObject *PyGdkDevice_New(GdkDevice *device);
 PyObject *PyGtkTextIter_New(GtkTextIter *iter);
-PyObject *PyGtkTreeIter_New(GtkTreeIter *iter);
 
 /* miscelaneous functions */
 void pygtk_block_threads(void);
 void pygtk_unblock_threads(void);
 
 void pygtk_destroy_notify(gpointer data);
-void pygtk_callback_marshal(GtkObject *o, gpointer d, guint nargs,
-			    GtkArg *args);
-void pygtk_signal_marshal(GtkObject *object, gpointer user_data,
-			  int nparams, GtkArg *args, GtkType *arg_types,
-			  GtkType return_type);
+
 void pygtk_handler_marshal(gpointer a, PyObject *func, int nargs,GtkArg *args);
 void pygtk_input_marshal(gpointer a, PyObject *func, int nargs, GtkArg *args);
-
-PyObject *pygtk_args_as_tuple(int nparams, GtkArg *args);
-int pygtk_args_from_sequence(GtkArg *args, int nparams, PyObject *seq);
-int pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj);
-PyObject *pygtk_arg_as_pyobject(GtkArg *arg);
-void pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret);
-PyObject *pygtk_ret_as_pyobject(GtkArg *arg);
-GtkArg *pygtk_dict_as_container_args(PyObject *dict, GtkType type,
-					    gint *nargs);
-
-void pygtk_register_boxed(GtkType boxed_type,
-			  PyObject *(*fromarg)(gpointer boxed),
-			  int (*toarg)(gpointer *boxed, PyObject *obj));
 
 /* private */
 PyObject    *pygtk_tree_path_to_pyobject(GtkTreePath *path);

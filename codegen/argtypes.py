@@ -515,9 +515,13 @@ class ArgMatcher:
             self.register('GdkBitmap', oa)
             self.register('GdkBitmap*', oa)
     def register_boxed(self, ptype):
-	self.register(ptype+'*', BoxedArg(ptype))
+        arg = BoxedArg(ptype)
+	self.register(ptype+'*', arg)
+        self.register('const-'+ptype+'*', arg)
     def register_custom_boxed(self, ptype, pytype, getter, new):
-	self.register(ptype+'*', CustomBoxedArg(ptype, pytype, getter, new))
+        arg = CustomBoxedArg(ptype, pytype, getter, new)
+	self.register(ptype+'*', arg)
+        self.register('const-'+ptype+'*', arg)
 
     def get(self, ptype):
 	return self.argtypes[ptype]
@@ -581,15 +585,13 @@ matcher.register('FILE*', arg)
 
 # enums, flags, objects
 
-matcher.register_custom_boxed('GdkFont', 'PyGdkFont_Type',
-                              'PyGdkFont_Get', 'PyGdkFont_New')
-matcher.register_custom_boxed('GdkColor', 'PyGdkColor_Type',
-                              'PyGdkColor_Get', 'PyGdkColor_New')
 matcher.register_custom_boxed('GdkEvent', 'PyGdkEvent_Type',
                               'PyGdkEvent_Get', 'PyGdkEvent_New')
 matcher.register_custom_boxed('GtkSelectionData', 'PyGtkSelectionData_Type',
                               'PyGtkSelectionData_Get',
                               'PyGtkSelectionData_New')
+matcher.register_custom_boxed('GdkCursor', 'PyGdkCursor_Type',
+                              'PyGdkCursor_Get', 'PyGdkCursor_New')
 matcher.register_custom_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
                               'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
 matcher.register_custom_boxed('GdkDevice', 'PyGdkDevice_Type',
@@ -597,9 +599,6 @@ matcher.register_custom_boxed('GdkDevice', 'PyGdkDevice_Type',
 matcher.register_custom_boxed('GtkTextIter', 'PyGtkTextIter_Type',
                               'PyGtkTextIter_Get', 'PyGtkTextIter_New')
 matcher.register('const-GtkTextIter*', matcher.get('GtkTextIter*'))
-matcher.register_custom_boxed('GtkTreeIter', 'PyGtkTreeIter_Type',
-                              'PyGtkTreeIter_Get', 'PyGtkTreeIter_New')
-matcher.register('const-GtkTreeIter*', matcher.get('GtkTreeIter*'))
 
 matcher.register('GdkAtom', AtomArg())
 
