@@ -1,3 +1,14 @@
+2004-03-08  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* configure.in: Remove leftover definition of gtkgl_required_version.
+
+	* gobjectmodule.c (pyg_enum_add_constants): Delegate to
+	pyg_flags_add_constants if the GType is really a flags type
+	instead of enum.
+	(pyg_flags_add_constants): Delegate to pyg_enum_add_constants if
+	the GType is really a enum type instead of flags.  Based on John
+	Ehresman's patch.  Fixes (better) #136204 (GtkTextSearchFlags warning).
+
 2004-03-07  Hagen Moebius  <hagen.moebius@starschiffchen.de>
  
          * codegen/docextract.py: avoid the non-uniform behavior of gtk-doc
