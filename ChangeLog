@@ -2,6 +2,11 @@
 
 	* gobjectmodule.c (pyg_signal_new): fix argument type for
 	return_type.
+	(initgobject): register a "PyObject" boxed type with glib..
+	(pyg_value_from_pyobject): if the value holds a PY_TYPE_OBJECT,
+	set the value directly.
+	(pyg_value_as_pyobject): special case the PY_TYPE_OBJECT case
+	again.
 
 	* gtk/gdk.defs, gtk/gtk-extrafuncs.defs, gtk/gtk.defs: update to
 	new format.
