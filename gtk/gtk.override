@@ -2241,6 +2241,7 @@ _wrap_gtk_list_store_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkListStore.prepend",
 				     kwlist, &row))
+	return NULL;
 
     gtk_list_store_prepend(GTK_LIST_STORE(self->obj), &iter);
 
@@ -2252,7 +2253,7 @@ _wrap_gtk_list_store_prepend(PyGObject *self, PyObject *args, PyObject *kwargs)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_list_store_append noargs
+override gtk_list_store_append kwargs
 static PyObject *
 _wrap_gtk_list_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
@@ -2262,6 +2263,7 @@ _wrap_gtk_list_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkListStore.append",
 				     kwlist, &row))
+	return NULL;
 
     gtk_list_store_append(GTK_LIST_STORE(self->obj), &iter);
 
