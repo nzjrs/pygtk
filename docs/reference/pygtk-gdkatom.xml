@@ -56,9 +56,12 @@ linkend="class-gtktreedragsource"><classname>gtk.TreeDragSource</classname></lin
 and <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
 for more information). The advantage of the interned string is that it is
 easy to pass between processes and even systems since only an integer value
-is passed. <literal>PyGTK</literal> 2.4 has a number of pre-defined atoms that are of interest
-to GTK+ - the interned strings and the <literal>PyGTK</literal> 2.4 <link
-linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> object
+is passed.</para>
+
+    <para><literal>PyGTK</literal> 2.4 has a number of pre-defined atoms
+that map to builtin <literal>GTK+</literal> interned string atoms. The
+interned strings and the <literal>PyGTK</literal> 2.4 <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> objects
 are:</para>
 
     <variablelist>
@@ -146,18 +149,21 @@ are:</para>
     <variablelist>
       <varlistentry>
 	<term><parameter role="keyword">name</parameter>&nbsp;:</term>
-	<listitem><simpara>the string to be interned or retrieved</simpara></listitem>
+	<listitem><simpara>the string to be interned or
+	retrieved</simpara></listitem>
       </varlistentry>
       <varlistentry>
-	<term><parameter role="keyword">only_if_exists</parameter>&nbsp;:</term>
+	<term><parameter
+	role="keyword">only_if_exists</parameter>&nbsp;:</term>
 	<listitem><simpara>if <literal>TRUE</literal>, do not create a new
-atom, but just return the atom if it already exists. Default is
-<literal>FALSE</literal></simpara></listitem>
+	atom, but just return the atom if it already exists. Default is
+	<literal>FALSE</literal></simpara></listitem>
       </varlistentry>
       <varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
 	<listitem><simpara>a new <link
-linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link></simpara></listitem>
+	linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>
+	or <literal>None</literal></simpara></listitem>
       </varlistentry>
     </variablelist>
 
@@ -166,10 +172,11 @@ linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>
 referencing the interned string specified by <parameter>name</parameter>. An
 interned string is a string that has a <literal>GTK</literal>+ mapping to an
 unsigned integer value. This constructor will intern the string and create a
-GdkAtom if it does not already exist and if
-<parameter>only_if_exists</parameter> is <literal>FALSE</literal>. If
-<parameter>only_if_exists</parameter> is <literal>TRUE</literal> and the
-string is not interned, this constructor returns <literal>None</literal>.</para>
+<link linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> if
+it does not already exist and if <parameter>only_if_exists</parameter> is
+<literal>FALSE</literal>. If <parameter>only_if_exists</parameter> is
+<literal>TRUE</literal> and the string is not interned, this constructor
+returns <literal>None</literal>.</para>
 
   </refsect1>
 
