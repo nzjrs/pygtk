@@ -6377,14 +6377,19 @@ static PyObject *
 _wrap_gtk_text_buffer_set_text(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     char *text;
-    static char *kwlist[] = { "text", NULL };
-    int len;
+    static char *kwlist[] = { "text", "len", NULL };
+    int len, oldlen = -1;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "s#:GtkTextBuffer.set_text", kwlist,
-                                     &text, &len)) {
+                                     "s#|i:GtkTextBuffer.set_text", kwlist,
+                                     &text, &len, &oldlen)) {
         return NULL;
     }
+
+    if (oldlen > 0) {
+	len = oldlen;
+    }
+    
     gtk_text_buffer_set_text(GTK_TEXT_BUFFER(self->obj), text, len);
     Py_INCREF(Py_None);
     return Py_None;
@@ -6411,15 +6416,19 @@ static PyObject *
 _wrap_gtk_text_buffer_insert(PyGObject *self, PyObject *args,
                              PyObject *kwargs)
 {
-    static char *kwlist[] = { "iter", "text", NULL };
+    static char *kwlist[] = { "iter", "text", "len", NULL };
     PyObject *py_iter;
     char *text;
-    int len;
+    int len, oldlen = -1;
     GtkTextIter *iter = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Os#:GtkTextBuffer.insert",
-                                     kwlist, &py_iter, &text, &len)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Os#|i:GtkTextBuffer.insert",
+                                     kwlist, &py_iter, &text, &len, &oldlen)) {
         return NULL;
+    }
+
+    if (oldlen > 0) {
+	len = oldlen;
     }
 
     if (pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER)) {
@@ -6438,16 +6447,20 @@ static PyObject *
 _wrap_gtk_text_buffer_insert_at_cursor(PyGObject *self, PyObject *args,
                                        PyObject *kwargs)
 {
-    static char *kwlist[] = { "text", NULL };
+    static char *kwlist[] = { "text", "len", NULL };
     char *text;
-    int len;
+    int len, oldlen = -1;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "s#:GtkTextBuffer.insert_at_cursor",
-                                     kwlist, &text, &len)) {
+                                     "s#|i:GtkTextBuffer.insert_at_cursor",
+                                     kwlist, &text, &len, &oldlen)) {
         return NULL;
     }
 
+    if (oldlen > 0) {
+	len = oldlen;
+    }
+    
     gtk_text_buffer_insert_at_cursor(GTK_TEXT_BUFFER(self->obj), text, len);
     Py_INCREF(Py_None);
     return Py_None;
@@ -6458,17 +6471,21 @@ static PyObject *
 _wrap_gtk_text_buffer_insert_interactive(PyGObject *self, PyObject *args,
                                          PyObject *kwargs)
 {
-    static char *kwlist[] = { "iter", "text", "default_editable", NULL };
+    static char *kwlist[] = { "iter", "text", "default_editable", "len", NULL };
     PyObject *py_iter, *py_ret;
     char *text;
-    int len, default_editable, ret;
+    int len, default_editable, ret, oldlen = -1;
     GtkTextIter *iter = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "Os#i:GtkTextBuffer.insert_interactive",
+                                     "Os#i|i:GtkTextBuffer.insert_interactive",
                                      kwlist, &py_iter, &text, &len,
-                                     &default_editable)) {
+                                     &default_editable, &oldlen)) {
         return NULL;
+    }
+
+    if (oldlen > 0) {
+	len = oldlen;
     }
 
     if (pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER)) {
@@ -6489,15 +6506,19 @@ static PyObject *
 _wrap_gtk_text_buffer_insert_interactive_at_cursor(PyGObject *self, PyObject *args,
                                                    PyObject *kwargs)
 {
-    static char *kwlist[] = { "text", "default_editable", NULL };
+    static char *kwlist[] = { "text", "default_editable", "len", NULL };
     char *text;
-    int len, default_editable, ret;
+    int len, default_editable, ret, oldlen = -1;
     PyObject *py_ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "s#i:GtkTextBuffer.insert_interactive_at_cursor",
-                                     kwlist, &text, &len, &default_editable)) {
+                                     "s#i|i:GtkTextBuffer.insert_interactive_at_cursor",
+                                     kwlist, &text, &len, &default_editable, &oldlen)) {
         return NULL;
+    }
+
+    if (oldlen > 0) {
+	len = oldlen;
     }
 
     ret = gtk_text_buffer_insert_interactive_at_cursor(GTK_TEXT_BUFFER(self->obj),
