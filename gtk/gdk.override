@@ -391,13 +391,17 @@ _wrap_gdk_color_new(PyGBoxed *self,
                     PyObject *kwargs)
 {
     static char *kwlist[] = {"red", "green", "blue", "pixel", NULL };
-    GdkColor colour = {0, 0, 0, 0};
+    int red = 0, green = 0, blue = 0, pixel = 0;
+    GdkColor colour;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiii:gdk.Color", kwlist,
-                                     &(colour.red), &(colour.green),
-                                     &(colour.blue), &(colour.pixel))) {
+                                     &red, &green, &blue, &pixel)) {
         return -1;
     }
+    colour.red = red;
+    colour.green = green;
+    colour.blue = blue;
+    colour.pixel = pixel;
     
     self->boxed =  g_boxed_copy(GDK_TYPE_COLOR, &colour);
     self->free_on_dealloc = TRUE;
