@@ -3902,3 +3902,14 @@ _wrap_gtk_ui_manager_add_ui_from_string(PyGObject *self, PyObject *args, PyObjec
         return NULL;
     return PyInt_FromLong(ret);
 }
+%%
+override gtk_alignment_get_padding noargs
+static PyObject *
+_wrap_gtk_alignment_get_padding(PyGObject *self)
+{
+    guint top, bottom, left, right;
+
+    gtk_alignment_get_padding(GTK_ALIGNMENT(self->obj), &top, &bottom, &left,
+			      &right);
+    return Py_BuildValue("(iiii)", top, bottom, left, right);
+}
