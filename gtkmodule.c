@@ -1479,12 +1479,18 @@ PyGdkWindow_NewGC(PyGdkWindow_Object *self, PyObject *args, PyObject *kws) {
 
 static PyObject *PyGdkWindow_SetCursor(PyGdkWindow_Object *self,
 				       PyObject *args) {
-  PyObject *cursor;
+  PyObject *py_cursor;
+  GdkCursor *cursor = NULL;
 
-  if (!PyArg_ParseTuple(args, "O!:GdkWindow.set_cursor", &PyGdkCursor_Type,
-			&cursor))
+  if (!PyArg_ParseTuple(args, "O:GdkWindow.set_cursor", &py_cursor))
     return NULL;
-  gdk_window_set_cursor(self->obj, PyGdkCursor_Get(cursor));
+  if (PyGdkCursor_Check(py_cursor))
+      cursor = PyGdkCursor_Get(py_cursor);
+  else if (py_cursor != Py_None) {
+      PyErr_SetString(PyExc_TypeError, "argument must be a GdkCursor or None");
+      return NULL;
+  }
+  gdk_window_set_cursor(self->obj, cursor);
   Py_INCREF(Py_None);
   return Py_None;
 }
