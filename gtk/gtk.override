@@ -424,7 +424,7 @@ _wrap_gtk_selection_data_get_targets(PyObject *self)
 
         ret = PyTuple_New(n_atoms);
         for (i = 0; i < n_atoms; i++)
-            PyTuple_SetItem(ret, i, PyGdkAtom_New(targets[i]));
+            PyTuple_SetItem(ret, i, PyString_FromString(gdk_atom_name(targets[i])));
         g_free(targets);
         return ret;
     }
@@ -2389,7 +2389,7 @@ _wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
     gtk_target_list_unref(target_list);
     Py_DECREF(py_targets);
 
-    return PyGdkAtom_New(atom);
+    return PyString_FromString(gdk_atom_name(atom));
 }
 %%
 override gtk_drag_dest_get_target_list noargs
@@ -2412,7 +2412,7 @@ _wrap_gtk_drag_dest_get_target_list(PyGObject *self)
         GtkTargetPair *pair = tmp->data;
         PyObject *item;
 
-        item = Py_BuildValue("(Nii)", PyGdkAtom_New(pair->target),
+        item = Py_BuildValue("(Nii)", PyString_FromString(gdk_atom_name(pair->target)),
                              pair->flags, pair->info);
         PyList_Append(ret, item);
         Py_DECREF(item);
@@ -4919,7 +4919,7 @@ _wrap_gtk_clipboard_wait_for_targets(PyGObject *self)
 
 	    ret = PyTuple_New(n_targets);
 	    for (i = 0; i < n_targets; i++)
-		PyTuple_SetItem(ret, i, PyGdkAtom_New(targets[i]));
+		PyTuple_SetItem(ret, i, PyString_FromString(gdk_atom_name(targets[i])));
 	    g_free(targets);
 	    gtk_selection_data_free(data);
 	    return ret;
@@ -5049,7 +5049,7 @@ clipboard_request_targets_cb(GtkClipboard *clipboard,
     if (atoms) {
         py_atoms = PyTuple_New(n_atoms);
         for (i = 0; i < n_atoms; i++)
-            PyTuple_SetItem(py_atoms, i, PyGdkAtom_New(atoms[i]));
+            PyTuple_SetItem(py_atoms, i, PyString_FromString(gdk_atom_name(atoms[i])));
     } else
         py_atoms = PyTuple_New(0);
     args = Py_BuildValue("(NNO)",

@@ -559,7 +559,7 @@ class AtomArg(IntArg):
         info.add_parselist('O', ['&py_' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('GdkAtom', 'ret')
-        info.codeafter.append('    return PyGdkAtom_New(ret);')
+        info.codeafter.append('    return PyString_FromString(gdk_atom_name(ret));')
 
 class GTypeArg(ArgType):
     gtype = ('    if ((%(name)s = pyg_type_from_object(py_%(name)s)) == 0)\n'

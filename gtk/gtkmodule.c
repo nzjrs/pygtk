@@ -233,7 +233,7 @@ init_gtk(void)
     pygdk_register_classes(d);
     pygdk_add_constants(m, "GDK_");
       /* Add predefined atoms */
-#define add_atom(name) PyModule_AddObject(m, #name, PyGdkAtom_New(GDK_##name))
+#define add_atom(name) PyModule_AddObject(m, #name, PyString_FromString(gdk_atom_name((GDK_##name))))
 
     add_atom(SELECTION_PRIMARY);
     add_atom(SELECTION_SECONDARY);
