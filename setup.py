@@ -195,12 +195,15 @@ if pango.can_build():
     ext_modules.append(pango)
     data_files.append((DEFS_DIR, ('pango.defs', 'pango-types.defs')))
 if gtk.can_build():
-    try:
-        import Numeric
-        GLOBAL_MACROS.append(('HAVE_NUMPY', 1))
-    except ImportError:
-        print ('* Numeric module could not be found, '
-               'will build without Numeric support.')
+    if '--disable-numeric' in sys.argv:
+        sys.argv.remove('--disable-numeric')
+    else:
+        try:
+            import Numeric
+            GLOBAL_MACROS.append(('HAVE_NUMPY', 1))
+        except ImportError:
+            print ('* Numeric module could not be found, '
+                   'will build without Numeric support.')
     ext_modules.append(gtk)
     data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
     data_files.append((DEFS_DIR, ('gtk/gdk.defs', 'gtk/gdk-types.defs',
