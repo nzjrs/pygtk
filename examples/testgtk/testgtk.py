@@ -67,7 +67,7 @@ def create_buttons(_button):
 		table = GtkTable(3, 3, FALSE)
 		table.set_row_spacings(5)
 		table.set_col_spacings(5)
-		table.border_width(10)
+		table.set_border_width(10)
 		box1.pack_start(table)
 		table.show()
 
@@ -90,7 +90,7 @@ def create_buttons(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -108,13 +108,13 @@ def create_toggle_buttons(_button):
 		wins["toggle_buttons"] = win
 		win.connect("delete_event", delete_event)
 		win.set_title("toggle butttons")
-		win.border_width(0)
+		win.set_border_width(0)
 		box1 = GtkVBox()
 		win.add(box1)
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 		for i in range(1, 4):
@@ -126,7 +126,7 @@ def create_toggle_buttons(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -149,7 +149,7 @@ def create_check_buttons(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -162,7 +162,7 @@ def create_check_buttons(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -185,7 +185,7 @@ def create_radio_buttons(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -201,7 +201,7 @@ def create_radio_buttons(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -224,7 +224,7 @@ def create_button_box(_button):
 		box1.set_usize(550, -1)
 		box1.set_spacing(25)
 		box1.set_layout(BUTTONBOX_EDGE)
-		box1.border_width(10)
+		box1.set_border_width(10)
 		win.vbox.pack_start(box1)
 		box1.show()
 
@@ -360,7 +360,7 @@ def create_handle_box(_button):
 		wins["handle_box"] = win
 		win.set_title("Handle Box Test")
 		win.connect("delete_event", delete_event)
-		win.border_width(20)
+		win.set_border_width(20)
 		win.realize()
 
 		hbox = GtkHandleBox()
@@ -384,7 +384,7 @@ def create_reparent(_button):
 		box1.show()
 
 		box2 = GtkHBox(spacing=5)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -393,7 +393,7 @@ def create_reparent(_button):
 		box2.pack_start(frame)
 		frame.show()
 		box3 = GtkVBox(spacing=5)
-		box3.border_width(5)
+		box3.set_border_width(5)
 		frame.add(box3)
 		box3.show()
 		def reparent_label(button, new_parent=box3, label=label):
@@ -410,7 +410,7 @@ def create_reparent(_button):
 		box2.pack_start(frame)
 		frame.show()
 		box3 = GtkVBox(spacing=5)
-		box3.border_width(5)
+		box3.set_border_width(5)
 		frame.add(box3)
 		box3.show()
 		def reparent_label(button, new_parent=box3, label=label):
@@ -425,7 +425,7 @@ def create_reparent(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -450,7 +450,7 @@ def create_pixmap(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -462,7 +462,7 @@ def create_pixmap(_button):
 				   button.get_style().bg[STATE_NORMAL])
 		label = GtkLabel("Pixmap\ntest")
 		box3 = GtkHBox()
-		box3.border_width(2)
+		box3.set_border_width(2)
 		box3.add(pixmap)
 		box3.add(label)
 		button.add(box3)
@@ -475,7 +475,7 @@ def create_pixmap(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 		button = GtkButton("close")
@@ -500,7 +500,7 @@ def create_tooltips(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -524,7 +524,7 @@ def create_tooltips(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -586,7 +586,7 @@ def create_menus(_button):
 		menuitem.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -600,7 +600,7 @@ def create_menus(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -620,7 +620,7 @@ def create_scrolled_windows(_button):
 		win.set_title("dialog")
 
 		scrolled_window = GtkScrolledWindow()
-		scrolled_window.border_width(10)
+		scrolled_window.set_border_width(10)
 		scrolled_window.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
 		win.vbox.pack_start(scrolled_window)
 		scrolled_window.show()
@@ -657,7 +657,7 @@ def create_entry(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -671,7 +671,7 @@ def create_entry(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -695,7 +695,7 @@ def create_list(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -746,7 +746,7 @@ def create_list(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -770,7 +770,7 @@ def create_clist(_button):
 		box1.show()
 
 		box2 = GtkHBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE, fill=FALSE)
 		box2.show()
 
@@ -824,7 +824,7 @@ def create_clist(_button):
 		button.show()
 
 		box2 = GtkHBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE, fill=FALSE)
 		box2.show()
 
@@ -839,7 +839,7 @@ def create_clist(_button):
 		button.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -857,8 +857,14 @@ def create_clist(_button):
 		for i in range(100):
 			text[0] = "Row "+str(i)
 			clist.append(text)
-		clist.border_width(5)
-		box2.pack_start(clist)
+		clist.set_border_width(5)
+
+		swin = GtkScrolledWindow()
+		swin.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
+		box2.pack_start(swin)
+		swin.show()
+
+		swin.add(clist)
 		clist.show()
 
 		separator = GtkHSeparator()
@@ -866,7 +872,7 @@ def create_clist(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -884,7 +890,7 @@ def create_color_selection(_button):
 		wins["color_selection"] = win
 		win.colorsel.set_opacity(TRUE)
 		win.colorsel.set_update_policy(UPDATE_CONTINUOUS)
-		win.position(WIN_POS_MOUSE)
+		win.set_position(WIN_POS_MOUSE)
 		win.connect("delete_event", delete_event)
 
 		win.cancel_button.connect("clicked", win.hide)
@@ -945,7 +951,7 @@ def create_range_controls(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -969,7 +975,7 @@ def create_range_controls(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -1037,7 +1043,7 @@ def create_text(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -1083,7 +1089,7 @@ def create_text(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -1107,7 +1113,7 @@ def create_notebook(_button):
 		box1.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -1118,7 +1124,7 @@ def create_notebook(_button):
 
 		for i in range(5):
 			frame = GtkFrame("Page " + str(i))
-			frame.border_width(10)
+			frame.set_border_width(10)
 			frame.set_usize(200, 150)
 			frame.show()
 			label = GtkLabel("Page " + str(i))
@@ -1131,7 +1137,7 @@ def create_notebook(_button):
 		separator.show()
 
 		box2 = GtkHBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -1172,7 +1178,7 @@ def create_panes(_button):
 
 		vpaned = GtkVPaned()
 		win.add(vpaned)
-		vpaned.border_width(5)
+		vpaned.set_border_width(5)
 		vpaned.show()
 
 		hpaned = GtkHPaned()
@@ -1193,7 +1199,7 @@ def create_panes(_button):
 		hpaned.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		vpaned.add2(box2)
 		box2.show()
 
@@ -1230,7 +1236,7 @@ def create_dnd(_button):
 		box1.show()
 
 		box2 = GtkHBox(spacing=5)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2)
 		box2.show()
 
@@ -1239,7 +1245,7 @@ def create_dnd(_button):
 		frame.show()
 
 		box3 = GtkVBox(spacing=5)
-		box3.border_width(5)
+		box3.set_border_width(5)
 		frame.add(box3)
 		box3.show()
 
@@ -1255,7 +1261,7 @@ def create_dnd(_button):
 		frame.show()
 
 		box3 = GtkVBox(spacing=5)
-		box3.border_width(5)
+		box3.set_border_width(5)
 		frame.add(box3)
 		box3.show()
 
@@ -1271,7 +1277,7 @@ def create_dnd(_button):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 
@@ -1290,7 +1296,7 @@ def create_progress_bar(_button):
 		win.set_title("dialog")
 
 		vbox = GtkVBox(spacing=5)
-		vbox.border_width(10)
+		vbox.set_border_width(10)
 		win.vbox.pack_start(vbox)
 		vbox.show()
 
@@ -1484,12 +1490,12 @@ def create_main_window():
 	win.add(box1)
 	box1.show()
 	scrolled_window = GtkScrolledWindow()
-	scrolled_window.border_width(10)
+	scrolled_window.set_border_width(10)
 	scrolled_window.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
 	box1.pack_start(scrolled_window)
 	scrolled_window.show()
 	box2 = GtkVBox()
-	box2.border_width(10)
+	box2.set_border_width(10)
 	scrolled_window.add(box2)
 	box2.show()
 	k = buttons.keys()
@@ -1506,7 +1512,7 @@ def create_main_window():
 	box1.pack_start(separator, expand=FALSE)
 	separator.show()
 	box2 = GtkVBox(spacing=10)
-	box2.border_width(10)
+	box2.set_border_width(10)
 	box1.pack_start(box2, expand=FALSE)
 	box2.show()
 	button = GtkButton("close")

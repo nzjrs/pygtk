@@ -18,7 +18,7 @@ gtk_init()
 
 window = gtk_window_new(WINDOW_TOPLEVEL)
 gtk_signal_connect(window, "destroy", destroy)
-gtk_container_border_width(window, 10)
+gtk_container_set_border_width(window, 10)
 
 button = gtk_button_new_with_label("Hello World")
 gtk_signal_connect(button, "clicked", hello)

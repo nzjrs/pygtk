@@ -67,7 +67,7 @@ class BrowseVariables(GtkVBox):
 		self.disp.show()
 
 		self.root_tree = GtkTree()
-		self.sw.add(self.root_tree)
+		self.sw.add_with_viewport(self.root_tree)
 		self.root_tree.show()
 
 		self.browse = BrowseTreeItem(name, dict, self.disp)
@@ -85,7 +85,7 @@ class BrowseWindow(GtkWindow):
 		box.show()
 
 		browse = BrowseVariables(name, dict)
-		browse.border_width(10)
+		browse.set_border_width(10)
 		box.pack_start(browse)
 		browse.show()
 		
@@ -94,7 +94,7 @@ class BrowseWindow(GtkWindow):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box.pack_start(box2, expand=FALSE)
 		box2.show()
 

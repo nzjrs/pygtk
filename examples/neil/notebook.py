@@ -10,7 +10,7 @@ def destroy(args):
 window = GtkWindow()
 window.connect("destroy", destroy)
 window.set_title('Notebook')
-window.border_width(0)
+window.set_border_width(0)
 window.set_usize(400, 400)
 
 box1 = GtkVBox()
@@ -18,7 +18,7 @@ window.add(box1)
 box1.show()
 
 box2 = GtkVBox(spacing=10)
-box2.border_width(10)
+box2.set_border_width(10)
 box1.pack_start(box2)
 box2.show()
 
@@ -32,7 +32,7 @@ names = ['Background', 'Colors', 'System', 'Setup', 'Samba']
 for i in range(len(names)):
 	buffer = names[i]
 	frame = GtkFrame(buffer)
-	frame.border_width(10)
+	frame.set_border_width(10)
 	frame.set_usize(200, 300)
 	frame.set_shadow_type(SHADOW_ETCHED_OUT)
 	frame.show()
@@ -50,7 +50,7 @@ box1.pack_start(separator)
 separator.show()
 
 box3 = GtkVBox(spacing=10)
-box3.border_width(10)
+box3.set_border_width(10)
 box1.pack_start(box3)
 box3.show()
 

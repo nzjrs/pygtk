@@ -15,7 +15,7 @@ def destroy(*args):
 
 window = GtkWindow(WINDOW_TOPLEVEL)
 window.connect("destroy", destroy)
-window.border_width(10)
+window.set_border_width(10)
 
 button = GtkButton("Hello World")
 button.connect("clicked", hello)

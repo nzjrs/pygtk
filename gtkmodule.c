@@ -4422,7 +4422,7 @@ static PyObject *_wrap_gtk_list_get_selection(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "O!:gtk_list_get_selection",&PyGtk_Type,&list))
         return NULL;
     tmp = GTK_LIST(PyGtk_Get(list))->selection;
-    ret - PyList_New(0);
+    ret = PyList_New(0);
     for (; tmp; tmp = tmp->next)
         PyList_Append(ret, PyGtk_New(tmp->data));
     return ret;
@@ -4449,7 +4449,7 @@ static PyObject *_wrap_gtk_tree_get_selection(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "O!:gtk_tree_get_selection",&PyGtk_Type,&tree))
         return NULL;
     tmp = GTK_TREE(PyGtk_Get(tree))->selection;
-    ret - PyList_New(0);
+    ret = PyList_New(0);
     for (; tmp; tmp = tmp->next)
         PyList_Append(ret, PyGtk_New(tmp->data));
     return ret;

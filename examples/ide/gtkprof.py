@@ -28,8 +28,13 @@ class PStatWindow(GtkWindow):
 		box1.pack_start(label, expand=FALSE)
 		label.show()
 
+		swin.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
+		box1.pack_start(swin)
+		swin.show()
+		
 		titles = ['ncalls', 'tottime', 'percall', 'cumtime',
 			  'percall', 'filename:lineno(function)']
+		swin = GtkScrolledWindow()
 		clist = GtkCList(len(titles), titles)
 		clist.set_column_width(0, 40)
 		clist.set_column_width(1, 50)
@@ -37,10 +42,9 @@ class PStatWindow(GtkWindow):
 		clist.set_column_width(3, 50)
 		clist.set_column_width(4, 50)
 		clist.set_usize(500, 200)
-		clist.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
 		self.clist = clist
-		clist.border_width(10)
-		box1.pack_start(clist)
+		clist.set_border_width(10)
+		swin.add(clist)
 		clist.show()
 
 		for i in range(5):
@@ -53,7 +57,7 @@ class PStatWindow(GtkWindow):
 		separator.show()
 
 		box2 = GtkVBox(spacing=10)
-		box2.border_width(10)
+		box2.set_border_width(10)
 		box1.pack_start(box2, expand=FALSE)
 		box2.show()
 

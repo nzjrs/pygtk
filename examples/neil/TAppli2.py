@@ -12,7 +12,7 @@ class Application:
 	def __init__(self, argv):
 		self.w_window=GtkWindow()
 		self.w_window.set_title("Test application")
-		self.w_window.border_width(10)		
+		self.w_window.set_border_width(10)
 		self.w_vbox=GtkVBox()
 
 		self.init_menu()

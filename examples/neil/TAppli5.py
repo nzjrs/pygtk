@@ -32,7 +32,7 @@ class Application:
 								
 		self.w_window=GtkWindow()
 		self.w_window.set_title("Test application")
-		self.w_window.border_width(10)		
+		self.w_window.set_border_width(10)		
 		self.w_vbox=GtkVBox()
 
 		self.init_menu()
@@ -163,10 +163,10 @@ class Application:
 			self.w_text.thaw()
 		else:	
 			# hardcoded key interpretation... XXX need some python keysymdef ?
-			if(event.keyval==65470):
+			if(event.keyval==GDK.F1):
 				# this is F1
 				self.font_type = (self.font_type+1)%2
-			elif(event.keyval==65471):	
+			elif(event.keyval==GDK.F2):	
 				# this is F2
 				self.font_index=(self.font_index+1)%len(self.medium_fonts)
 		

@@ -10,7 +10,7 @@ import GtkExtra
 class Application:		
 	def __init__(self, argv):
 		self.w_window=GtkWindow(title="Test Application")
-		self.w_window.border_width(10)		
+		self.w_window.set_border_width(10)
 		self.w_vbox=GtkVBox()
 
 		self.init_menu()
@@ -18,7 +18,7 @@ class Application:
 		
 		self.w_window.add(self.w_vbox)
 		self.w_vbox.show()
-		self.w_window.show()		
+		self.w_window.show()
 		
 	def mainloop(self):
 		mainloop()

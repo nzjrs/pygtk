@@ -48,7 +48,7 @@ def main():
 	win = GtkWindow()
 	win.set_name("Test Input")
 	win.connect("destroy", mainquit)
-	win.border_width(5)
+	win.set_border_width(5)
 
 	vbox = GtkVBox(spacing=3)
 	win.add(vbox)

@@ -12,7 +12,7 @@ class Application:
 	def __init__(self, argv):
 		self.w_window=GtkWindow()
 		self.w_window.set_title("Test application")
-		self.w_window.border_width(10)		
+		self.w_window.set_border_width(10)
 		self.w_vbox=GtkVBox()
 		
 		self.init_menu()
@@ -70,7 +70,7 @@ class Application:
 		c.set_usize(250,200)
 		self.w_listbox=GtkList()
 		self.w_listbox.set_selection_mode(SELECTION_MULTIPLE)
-		c.add(self.w_listbox)
+		c.add_with_viewport(self.w_listbox)
 		self.w_vbox.pack_start(c)
 		
 		for x in range(0,10):

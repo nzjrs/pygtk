@@ -19,7 +19,7 @@ gtk_init()
 tt = gtk_tooltips_new()
 gtk_tooltips_set_delay(tt, 500)
 
-window = gtk_object_new("GtkWindow", {
+window = gtk_object_new(gtk_window_get_type(), {
 	'type':         WINDOW_TOPLEVEL,
 	'title':        'Hello World',
 	'allow_grow':   0,
@@ -28,7 +28,7 @@ window = gtk_object_new("GtkWindow", {
 })
 gtk_signal_connect(window, "destroy", destroy)
 
-button = gtk_object_new("GtkButton", {
+button = gtk_object_new(gtk_button_get_type(), {
 	'label':   'Hello World',
 	'parent':  window,
 	'visible': 1

@@ -108,7 +108,7 @@ class gtkoutfile:
 class Console(GtkVBox):
 	def __init__(self, namespace={}, copyright='', quit_cb=None):
 		GtkVBox.__init__(self, spacing=2)
-		self.border_width(2)
+		self.set_border_width(2)
 		self.copyright = copyright
 		#self.set_usize(475, 300)
 

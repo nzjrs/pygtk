@@ -130,7 +130,7 @@ class WidgetTree:
 		extension = node.get('extension_events', None)
 		if extension: widget.set_extension_events(extension)
 		border_width = node.get_int('border_width', 0)
-		if border_width: widget.border_width(border_width)
+		if border_width: widget.set_border_width(border_width)
 
 	def __setup_sighandlers(self, widget, node):
 		signals = node.signal
@@ -537,16 +537,16 @@ def aspectframe_new(node):
 def hpaned_new(node):
 	paned = GtkHPaned()
 	handle_size = node.get_int('handle_size', 0)
-	if handle_size: paned.handle_size(handle_size)
+	if handle_size: paned.set_handle_size(handle_size)
 	gutter_size = node.get_int('gutter_size', 0)
-	if gutter_size: paned.gutter_size(gutter_size)
+	if gutter_size: paned.set_gutter_size(gutter_size)
 	return paned
 def vpaned_new(node):
 	paned = GtkVPaned()
 	handle_size = node.get_int('handle_size', 0)
-	if handle_size: paned.handle_size(handle_size)
+	if handle_size: paned.set_handle_size(handle_size)
 	gutter_size = node.get_int('gutter_size', 0)
-	if gutter_size: paned.gutter_size(gutter_size)
+	if gutter_size: paned.set_gutter_size(gutter_size)
 	return paned
 def handlebox_new(node):
 	return GtkHandleBox()
@@ -570,8 +570,6 @@ def eventbox_new(node):
 	return GtkEventBox()
 def scrolledwindow_new(node):
 	win = GtkScrolledWindow()
-	shadow = node.get('shadow_type', SHADOW_IN)
-	win.set_shadow_type(shadow)
 	hpol = node.get('hscrollbar_policy', POLICY_ALWAYS)
 	vpol = node.get('vscrollbar_policy', POLICY_ALWAYS)
 	win.set_policy(hpol, vpol)
@@ -615,7 +613,7 @@ def window_new(node):
 	if x != -1 or y != -1:
 		widget.set_uposition(x, y)
 	pos = node.get('position', None)
-	if pos: widget.position(pos)
+	if pos: widget.set_position(pos)
 	ashrink = node.get_bool('allow_shrink', TRUE)
 	agrow = node.get_bool('allow_grow', TRUE)
 	autoshrink = node.get_bool('auto_shrink', FALSE)
@@ -630,7 +628,7 @@ def dialog_new(node):
 	if x != -1 or y != -1:
 		widget.set_uposition(x, y)
 	pos = node.get('position', None)
-	if pos: widget.position(pos)
+	if pos: widget.set_position(pos)
 	ashrink = node.get_bool('allow_shrink', TRUE)
 	agrow = node.get_bool('allow_grow', TRUE)
 	autoshrink = node.get_bool('auto_shrink', FALSE)
