@@ -1,3 +1,90 @@
+2005-01-08  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gtk.override: Declare PyGdkDevice_Type, now needed for some
+	virtual method.
+
+	* gtk/gtk.defs: Add a bunch of virtual method declarations for all
+	non-deprecated gtk widgets.
+
+	* gobject/pygobject.h: Add pyg_register_class_init to the API
+	vtable and as macro, and PyGClassInitFunc typedef.
+
+	* gobject/gobjectmodule.c (initgobject): Create
+	pygobject_class_init_key, a GQuark that indentifiers the
+	class_init data for a GType class.
+	(pyg_register_class_init): Add, registers a class intialization
+	function of type "int (*PyGClassInitFunc) (gpointer gclass,
+	PyTypeObject *pyclass);"
+	(pyg_run_class_init): Add, runs a stack of class initialization
+	functions for a newly registered GObject class.
+	(pyg_type_register): Call pyg_run_class_init right after the type
+	is registered.
+	Add pyg_register_class_init to pygobject_api_functions.
+
+	* codegen/scanvirtuals.py: An utility script to scan for virtual
+	methods in header files.  At the moment it is not very intelligent
+	and doesn't distinguish between virtual methods and interface
+	definitions.
+
+	* codegen/defsparser.py (DefsParser.__init__): Initialize
+	attribute 'virtuals', to hold list of object's virtual methods.
+	(DefsParser.define_virtual): Adds a new virtual method.
+	(DefsParser.find_virtuals): Returns list of virtual methods of an
+	object.
+
+	* codegen/definitions.py (ObjectDef.__init__): Add a
+	class_init_func member variable.  Rename class MethodDef to
+	MethodDefBase, subclass MethodDefBase as MethodDef, move code that
+	checks for presence of 'c_name' from MethodDefBase into MethodDef.
+	(MethodDefBase.write_defs): Rename to _write_defs, and don't write
+	the initial "(define-method ...".
+	(MethodDef.write_defs): Write the "(define-method ..." here, then
+	call _write_defs to write the remaining.
+	(VirtualDef): New class to information of an object's virtual
+	method.  It inherits from MethodBaseDef.
+
+	* codegen/codegen.py: Add class Coverage, to track and display
+	coverage statistics.  Add globals functions_coverage,
+	methods_coverage, vproxies_coverage, and vaccessors_coverage.
+	(Wrapper.virtual_accessor_tmpl): Add template for virtual method
+	"accessor", which is a classmethod that calls a GObject virtual
+	method for GType corresponding to the class of the method.  This
+	is used in virtual method implementations for chaining to parent
+	classes.
+	(Wrapper.write_class): Call self.write_virtuals() in the end, to
+	write virtual method proxies.
+	(Wrapper.write_function_wrapper): Don't overwrite
+	subsdict['cname'] if it already has a value, since we need to pass
+	a different function name when generating virtual method
+	accessors.
+	(Wrapper.write_methods): Update coverage statistics in
+	methods_coverage.
+	(Wrapper.write_methods): Generate virtual metho accessor
+	functions, as classmethods.
+	(Wrapper.write_virtuals): Generate virtual method proxies using
+	the reverse wrapper generator.  Also generates a class_init
+	function to register the virtual proxies with the object class,
+	but only for those virtuals that appear to be actually implemented
+	in python code to avoid calling into python code for nothing.
+	(Wrapper.write_functions): Update coverage statistics in
+	functions_coverage.
+	(write_registers): Generate code to call pyg_register_class_init
+	if the object has a class init function.
+	(main): Print all coverage statistics at the end of code generation.
+
+	* codegen/argtypes.py (ArgMatcher.register_reverse)
+	(ArgMatcher.register_reverse_ret, ArgMatcher.get_reverse)
+	(ArgMatcher.get_reverse_ret): New APIs to register and lookup
+	reverse wrappers type handlers.
+
+	* codegen/Makefile.am (codegen_PYTHON): Add reversewrapper.py.
+
+	* codegen/reversewrapper.py: New code to generate 'reverse
+	wrappers', i.e. wrappers that are called from C, call into Python,
+	and then return the python return value back to C.
+
+	Fixes #145314: Overriding GTK+ virtual methods.
+
 2004-12-26  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gdk.override (_wrap_gdk_event_tp_setattr): Fix garbled code

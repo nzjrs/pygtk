@@ -7,6 +7,7 @@ codegendir = $(pkgdatadir)/$(PLATFORM_VERSION)/codegen
 codegen_PYTHON = \
 	__init__.py \
 	argtypes.py \
+	reversewrapper.py \
 	codegen.py \
 	definitions.py \
 	defsparser.py \

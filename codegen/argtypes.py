@@ -683,9 +683,16 @@ class PyObjectArg(ArgType):
 class ArgMatcher:
     def __init__(self):
 	self.argtypes = {}
+	self.reverse_argtypes = {}
+	self.reverse_rettypes = {}
 
     def register(self, ptype, handler):
 	self.argtypes[ptype] = handler
+    def register_reverse(self, ptype, handler):
+	self.reverse_argtypes[ptype] = handler
+    def register_reverse_ret(self, ptype, handler):
+	self.reverse_rettypes[ptype] = handler
+        
     def register_enum(self, ptype, typecode):
         if typecode is None:
             typecode = "G_TYPE_NONE"
@@ -725,6 +732,39 @@ class ArgMatcher:
             if ptype[:8] == 'GdkEvent' and ptype[-1] == '*':
                 return self.argtypes['GdkEvent*']
             raise
+    def _get_reverse_common(self, ptype, registry):
+        props = dict(c_type=ptype)
+        try:
+            return registry[ptype], props
+        except KeyError:
+            try:
+                handler = self.argtypes[ptype]
+            except KeyError:
+                if ptype.startswith('GdkEvent') and ptype.endswith('*'):
+                    handler = self.argtypes['GdkEvent*']
+                else:
+                    raise
+            if isinstance(handler, ObjectArg):
+                return registry['GObject*'], props
+            elif isinstance(handler, EnumArg):
+                props['typecode'] = handler.typecode
+                props['enumname'] = handler.enumname
+                return registry['GEnum'], props
+            elif isinstance(handler, FlagsArg):
+                props['typecode'] = handler.typecode
+                props['flagname'] = handler.flagname
+                return registry['GFlags'], props
+            elif isinstance(handler, BoxedArg):
+                props['typecode'] = handler.typecode
+                props['typename'] = handler.typename
+                return registry['GBoxed'], props
+            else:
+                raise
+    def get_reverse(self, ptype):
+        return self._get_reverse_common(ptype, self.reverse_argtypes)
+    def get_reverse_ret(self, ptype):
+        return self._get_reverse_common(ptype, self.reverse_rettypes)
+
     def object_is_a(self, otype, parent):
         if otype == None: return 0
         if otype == parent: return 1

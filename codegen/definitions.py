@@ -68,6 +68,7 @@ class ObjectDef(Definition):
         self.typecode = None
 	self.fields = []
         self.implements = []
+        self.class_init_func = None
 	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
@@ -253,7 +254,7 @@ class PointerDef(Definition):
             fp.write('  )\n')
 	fp.write(')\n\n')
 
-class MethodDef(Definition):
+class MethodDefBase(Definition):
     def __init__(self, name, *args):
         dump = 0
 	self.name = name
@@ -302,10 +303,6 @@ class MethodDef(Definition):
 
         if self.caller_owns_return is None and self.ret is not None:
             self.guess_return_value_ownership()
-        for item in ('c_name', 'of_object'):
-            if self.__dict__[item] == None:
-                self.write_defs(sys.stderr)
-                raise RuntimeError, "definition missing required %s" % (item,)
             
     def merge(self, old, parmerge):
         self.caller_owns_return = old.caller_owns_return
@@ -320,8 +317,7 @@ class MethodDef(Definition):
 		if p2[1] == pname:
 		    self.params[i] = (ptype, pname, p2[2], p2[3])
 		    break
-    def write_defs(self, fp=sys.stdout):
-	fp.write('(define-method ' + self.name + '\n')
+    def _write_defs(self, fp=sys.stdout):
 	if self.of_object != (None, None):
 	    fp.write('  (of-object "' + self.of_object + '")\n')
 	if self.c_name:
@@ -345,6 +341,24 @@ class MethodDef(Definition):
 	if self.varargs:
 	    fp.write('  (varargs #t)\n')
 	fp.write(')\n\n')
+
+
+class MethodDef(MethodDefBase):
+    def __init__(self, name, *args):
+        MethodDefBase.__init__(self, name, *args)
+        for item in ('c_name', 'of_object'):
+            if self.__dict__[item] == None:
+                self.write_defs(sys.stderr)
+                raise RuntimeError, "definition missing required %s" % (item,)
+        
+    def write_defs(self, fp=sys.stdout):
+	fp.write('(define-method ' + self.name + '\n')
+        self._write_defs(fp)
+
+class VirtualDef(MethodDefBase):
+    def write_defs(self, fp=sys.stdout):
+	fp.write('(define-virtual ' + self.name + '\n')
+        self._write_defs(fp)
 
 class FunctionDef(Definition):
     def __init__(self, name, *args):
