@@ -2185,3 +2185,34 @@ _wrap_gtk_tree_view_set_drag_dest_row(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_tree_view_get_dest_row_at_pos kwargs
+static PyObject *
+_wrap_gtk_tree_view_get_dest_row_at_pos(PyGObject *self, PyObject *args,
+					PyObject *kwargs)
+{
+    static char *kwlist[] = { "x", "y", NULL };
+    GtkTreePath *path;
+    GtkTreeViewDropPosition pos;
+
+    gint x,y;
+    gboolean r;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "ii:GtkTreeView.get_drag_dest_row_at_pos",
+                                     kwlist,
+                                     &x, &y))
+        return NULL;
+
+
+    r = gtk_tree_view_get_dest_row_at_pos(GTK_TREE_VIEW(self->obj), x, y, &path, &pos);
+    if (r && path) {
+        PyObject *py_path = pygtk_tree_path_to_pyobject(path);
+        gint py_pos = (gint) pos;
+        gtk_tree_path_free(path);
+        return Py_BuildValue("(Oi)", py_path, py_pos);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
