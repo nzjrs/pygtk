@@ -42,7 +42,7 @@ from _gtk import *
 import gdk # this is created by the _gtk import
 
 threads_init = gdk.threads_init
-threads_enter = gdk.threads_leave
+threads_enter = gdk.threads_enter
 threads_leave = gdk.threads_leave
 
 idle_add       = _gobject.idle_add
