@@ -1,0 +1,32 @@
+Things to do for the gtk 2.0 based release
+
+- fix up threading to work with GObject/GSignal/GClosure.  See the
+  THREADS file for more info on what is required.
+
+- Add GInterface support to the code generator and the rest of pygtk.
+
+  Additions to the .defs format:
+    * a definition for interfaces, something like:
+       (interface TextModel
+         (in-module Gtk)
+         (parent Interface (G)) ;; is this needed? Can you derive interfaces?
+         (c-name GtkTextModel)
+       )
+    * add a flag for the (object ...) sections like:
+       (conforms-to GtkTextModel)
+
+  For the code generator:
+    * Create new ExtensionClasses for the interface (an empty `mixin' class).
+    * Use multiple inheritance to add these methods for classes that implement
+      the interface.
+
+- Implement a new PyGtkTreeModel GObject type that can be the base for
+  new tree models defined in Python.  Need to look at how the
+  GtkTreeIter->tree_node lifetime is handled, as it doesn't look like
+  anything is called to let us know that that data should be unrefed.
+
+- Maybe switch all the boxed types to ExtensionClasses?
+    * Maybe not such a great idea, as it doesn't make sense to subclass
+      most of them.
+
+- Add the rest of the new boxed types.
