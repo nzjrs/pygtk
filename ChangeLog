@@ -1,3 +1,21 @@
+2003-03-06  James Henstridge  <james@daa.com.au>
+
+	* pygobject.c (pygobject_register_wrapper): the GObject should own
+	a ref to the wrapper.
+	(pygobject_new): get rid of the hasref code, and make sure that
+	the GObject owns a ref to the wrapper if we create it.
+	(pygobject_dealloc): get rid of the hasref code.  If we get this
+	far, the wrapper is dead.
+	(pygobject_traverse): if the GObject's refcount == 1, then
+	traverse to self.
+	(pygobject_clear): clear self->obj and self->inst_dict.
+	(pygobject_register_class): set tp_clear() so that things actually
+	work.  Without this, there was no tp_clear method for subclasses
+	of GObject.
+
+	* pygobject.h: remove hasref member, hopefully not needed if
+	relying on cycle GC.
+
 2003-03-07  Johan Dahlin  <jdahlin@async.com.br>
 
 	* gtk/gtk.defs (gtk_label_new_with_mnemonic, gtk_label_new) 
