@@ -1,7 +1,7 @@
 %define py_prefix /usr
 # py_ver should only be 3 characters (1.5.1 == 1.5)
 %define py_ver 1.5
-%define ver 0.6.3
+%define ver 0.6.4
 
 # you may want to remove some of the sub packages depending on what you
 # have installed on your system when building this package.
@@ -15,7 +15,8 @@ Group: Development/Languages
 Source: ftp://ftp.daa.com.au/pub/james/python/pygtk-%{ver}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
-Requires: gtk+ imlib python
+Requires: gtk+ imlib
+Requires: python >= 1.5.2
 
 %description
 PyGTK is an extension module for python that gives you access to the GTK+
