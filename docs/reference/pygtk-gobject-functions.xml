@@ -670,18 +670,12 @@ combination of:</para>
 pipes and sockets).</simpara>
 	  </listitem>
 	</varlistentry>
-	<varlistentry>
-	  <term><literal>gobject.IO_NVAL</literal></term>
-	  <listitem>
-	    <simpara>Invalid request. The file descriptor is not
-open.</simpara>
-	  </listitem>
-	</varlistentry>
       </variablelist>
 
       <para>Additional arguments to pass to <parameter>callback</parameter>
 can be specified after <parameter>callback</parameter>. The idle priority
-may be specified as a keyword-value pair with the keyword "priority". The signature of the callback function is:</para>
+may be specified as a keyword-value pair with the keyword "priority". The
+signature of the callback function is:</para>
 
       <programlisting>
   def callback(source, cb_condition, ...)
@@ -691,7 +685,13 @@ may be specified as a keyword-value pair with the keyword "priority". The signat
 <parameter>fd</parameter>, the file descriptor;
 <parameter>cb_condition</parameter> is the condition that triggered the
 signal; and, <parameter>...</parameter> are the zero or more arguments that
-were passed to the <methodname>io_add_watch</methodname>() method.</para>
+were passed to the <function>gobject.io_add_watch</function>()
+function.</para>
+
+      <para>If the callback function returns <literal>FALSE</literal> it
+will be automatically removed from the list of event sources and will not be
+called again. If it returns <literal>TRUE</literal> it will be called again
+when the condition is matched.</para>
 
     </refsect2>
 
@@ -716,11 +716,11 @@ removed</simpara></listitem>
 
       <para>The <function>gobject.source_remove</function>() function
 removes the event source specified by tag (as returned by the <link
-linkend="function-gobject--idle-add"><methodname>gobject.idle_add</methodname>()</link>, 
+linkend="function-gobject--idle-add"><function>gobject.idle_add</function>()</link>, 
 <link
-linkend="function-gobject--timeout-add"><methodname>gobject.timeout_add</methodname></link>() 
+linkend="function-gobject--timeout-add"><function>gobject.timeout_add</function></link>() 
 and <link
-linkend="function-gobject--io-add-watch"><methodname>gobject.io_add_watch</methodname>()</link> 
+linkend="function-gobject--io-add-watch"><function>gobject.io_add_watch</function>()</link> 
 functions)</para>
 
     </refsect2>
