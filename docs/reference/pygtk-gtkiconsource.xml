@@ -118,6 +118,13 @@ linkend="function-gtk--icon-size-lookup">gtk.icon_size_lookup</link></methodname
 		       role="keyword">icon_size</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
+linkend="function-gtk--icon-size-lookup-for-settings">gtk.icon_size_lookup_for_settings</link></methodname>
+	<methodparam><parameter
+		       role="keyword">settings</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">icon_size</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
 linkend="function-gtk--icon-size-register">gtk.icon_size_register</link></methodname>
 	<methodparam><parameter
 		       role="keyword">name</parameter></methodparam>
@@ -664,6 +671,74 @@ the specified <parameter>icon_size</parameter></simpara></listitem>
       <para>The <function>gtk.icon_size_lookup</function>() function returns
 a 2-tuple containing the width and height of the icon size specified by
 <parameter>icon_size</parameter>. The value of
+<parameter>icon_size</parameter> must be one of:</para>
+
+      <itemizedlist>
+	<listitem>
+	  <simpara><literal>gtk.ICON_SIZE_MENU</literal></simpara>
+	</listitem>
+	<listitem>
+	  <simpara><literal>gtk.ICON_SIZE_SMALL_TOOLBAR</literal></simpara>
+	</listitem>
+	<listitem>
+	  <simpara><literal>gtk.ICON_SIZE_LARGE_TOOLBAR</literal></simpara>
+	</listitem>
+	<listitem>
+	  <simpara><literal>gtk.ICON_SIZE_BUTTON</literal></simpara>
+	</listitem>
+	<listitem>
+	  <simpara><literal>gtk.ICON_SIZE_DND</literal></simpara>
+	</listitem>
+	<listitem>
+	  <simpara><literal>gtk.ICON_SIZE_DIALOG</literal></simpara>
+	</listitem>
+      </itemizedlist>
+
+      <para>or an integer value returned from the <link
+linkend="function-gtk--icon-size-register"><function>gtk.icon_size_register</function>()</link> 
+function.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--icon-size-lookup-for-settings">
+      <title>gtk.icon_size_lookup_for_settings</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.icon_size_lookup_for_settings</methodname>
+	  <methodparam><parameter
+			 role="keyword">settings</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">icon_size</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">settings</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+object used to determine which user preferences to use.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">icon_size</parameter>&nbsp;:</term>
+	  <listitem><simpara> an icon size</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing the width and height of
+the specified <parameter>icon_size</parameter> or <literal>None</literal>
+if <parameter>icon_size</parameter> was invalid.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.icon_size_lookup_for_settings</function>()
+function returns a 2-tuple containing the width and height of the icon size
+specified by <parameter>icon_size</parameter> of <literal>None</literal> if
+<parameter>icon_size</parameter> was not valid. The value of
 <parameter>icon_size</parameter> must be one of:</para>
 
       <itemizedlist>
