@@ -176,10 +176,7 @@ class IntArg(ArgType):
 class BoolArg(IntArg):
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('int', 'ret')
-        info.varlist.add('PyObject', '*py_ret')
-        info.codeafter.append('    py_ret = ret ? Py_True : Py_False;\n'
-                              '    Py_INCREF(py_ret);\n'
-                              '    return py_ret;')
+        info.codeafter.append('    return PyBool_FromLong(ret);\n')
 
 class TimeTArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):

@@ -329,12 +329,7 @@ pypango_attr_iterator_range(PyPangoAttrIterator *self)
 static PyObject *
 pypango_attr_iterator_next(PyPangoAttrIterator *self)
 {
-    PyObject *py_ret;
-
-    py_ret = pango_attr_iterator_next(self->iter) ? Py_True : Py_False;
-
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(pango_attr_iterator_next(self->iter));
 }
 
 static PyObject *
@@ -1705,9 +1700,8 @@ _wrap_pango_language_matches1(PyGObject *self, PyObject *args,
 			       PyObject *kwargs)
 {
     static char *kwlist[] = { "language", "range_list", NULL };
-    PyObject *py_language = Py_None, *py_ret;
+    PyObject *py_language = Py_None;
     char *range_list;
-    int ret;
     PangoLanguage *language = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -1726,8 +1720,5 @@ _wrap_pango_language_matches1(PyGObject *self, PyObject *args,
         return NULL;
     }
 
-    ret = pango_language_matches(language, range_list);
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(pango_language_matches(language, range_list));
 }

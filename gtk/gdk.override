@@ -3351,7 +3351,6 @@ _wrap_gdk_pixbuf_loader_write(PyGObject *self,
 {
     static char *kwlist[] = { "buf", "count", NULL };
     int buf_len, count = -1, ret;
-    PyObject *py_ret;
     guchar *buf;
     GError *error = NULL;
 
@@ -3370,10 +3369,7 @@ _wrap_gdk_pixbuf_loader_write(PyGObject *self,
     if (pyg_error_check(&error))
         return NULL;
     
-    py_ret = ret ? Py_True : Py_False;
-    
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gdk_gc_new kwargs
@@ -3714,7 +3710,6 @@ _wrap_gdk_pixbuf_animation_iter_advance(PyGObject *self, PyObject *args,
     gboolean ret;
     double current_time = 0.0;
     GTimeVal currenttime, *currenttimep;
-    PyObject *py_ret;
 
     if (!PyArg_ParseTupleAndKeywords(
 	    args, kwargs, "|d:GdkPixbufAnimationIter.advance",
@@ -3736,10 +3731,7 @@ _wrap_gdk_pixbuf_animation_iter_advance(PyGObject *self, PyObject *args,
     ret = gdk_pixbuf_animation_iter_advance(GDK_PIXBUF_ANIMATION_ITER(self->obj),
 					    currenttimep);
 
-    py_ret = ret ? Py_True : Py_False;
-    
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gdk_pixbuf_get_formats noargs
@@ -3788,8 +3780,8 @@ pygtk_make_pixbuf_format_dict(GdkPixbufFormat *format)
     Py_DECREF(value);
     g_strfreev(aval);
 
-    value = gdk_pixbuf_format_is_writable(format) ? Py_True : Py_False;
-    PyDict_SetItemString(item, "is_writable", value);
+    PyDict_SetItemString(item, "is_writable",
+			 PyBool_FromLong(gdk_pixbuf_format_is_writable(format)));
 
     return item;
 }

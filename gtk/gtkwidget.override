@@ -358,12 +358,7 @@ override gtk_widget_hide_on_delete
 static PyObject *
 _wrap_gtk_widget_hide_on_delete(PyGObject *self, PyObject *args)
 {
-    int ret;
-    PyObject *py_ret;
     /* args is just ignored, so obj.connect(signal, func) always works */
 
-    ret = gtk_widget_hide_on_delete(GTK_WIDGET(self->obj));
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(gtk_widget_hide_on_delete(GTK_WIDGET(self->obj)));
 }

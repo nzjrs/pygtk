@@ -848,7 +848,7 @@ _wrap_gtk_text_buffer_insert_interactive(PyGObject *self, PyObject *args,
                                          PyObject *kwargs)
 {
     static char *kwlist[] = { "iter", "text", "default_editable", "len", NULL };
-    PyObject *py_iter, *py_ret;
+    PyObject *py_iter;
     char *text;
     int len, default_editable, ret, oldlen = -1;
     GtkTextIter *iter = NULL;
@@ -880,9 +880,7 @@ _wrap_gtk_text_buffer_insert_interactive(PyGObject *self, PyObject *args,
     }
     ret = gtk_text_buffer_insert_interactive(GTK_TEXT_BUFFER(self->obj), iter,
                                              text, len, default_editable);
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gtk_text_buffer_insert_interactive_at_cursor kwargs
@@ -893,7 +891,6 @@ _wrap_gtk_text_buffer_insert_interactive_at_cursor(PyGObject *self, PyObject *ar
     static char *kwlist[] = { "text", "default_editable", "len", NULL };
     char *text;
     int len, default_editable, ret, oldlen = -1;
-    PyObject *py_ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "s#i|i:GtkTextBuffer.insert_interactive_at_cursor",
@@ -907,9 +904,7 @@ _wrap_gtk_text_buffer_insert_interactive_at_cursor(PyGObject *self, PyObject *ar
 
     ret = gtk_text_buffer_insert_interactive_at_cursor(GTK_TEXT_BUFFER(self->obj),
                                                        text, len, default_editable);
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gtk_text_buffer_get_iter_at_child_anchor kwargs
@@ -1079,24 +1074,14 @@ override-attr GtkTextAttributes.strikethrough
 static PyObject *
 _wrap_gtk_text_attributes__get_strikethrough(PyObject *self, void *closure)
 {
-    PyObject *ret;
-
-    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.strikethrough
-        ? Py_True : Py_False;
-    Py_INCREF(ret);
-    return ret;
+    return PyBool_FromLong(pyg_boxed_get(self, GtkTextAttributes)->appearance.strikethrough);
 }
 %%
 override-attr GtkTextAttributes.draw_bg
 static PyObject *
 _wrap_gtk_text_attributes__get_draw_bg(PyObject *self, void *closure)
 {
-    PyObject *ret;
-
-    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.draw_bg
-        ? Py_True : Py_False;
-    Py_INCREF(ret);
-    return ret;
+    return PyBool_FromLong(pyg_boxed_get(self, GtkTextAttributes)->appearance.draw_bg);
 }
 %%
 override gtk_text_tag_table_foreach kwargs
@@ -1182,7 +1167,7 @@ _wrap_gtk_text_iter_forward_find_char(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "pred", "user_data", "limit", NULL };
     GtkTextIter *iter, *limit = NULL;
     gboolean ret;
-    PyObject *pylimit = Py_None, *pred, *data, *pyret, *pydata = Py_None;
+    PyObject *pylimit = Py_None, *pred, *data, *pydata = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "O|OO:gtk.TextIter.forward_find_char",
@@ -1209,9 +1194,7 @@ _wrap_gtk_text_iter_forward_find_char(PyGObject *self, PyObject *args,
     ret = gtk_text_iter_forward_find_char(iter, pygtk_find_char_pred,
 					  (gpointer)data, limit);
 
-    pyret = ret ? Py_True : Py_False;
-    Py_INCREF(pyret);
-    return pyret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gtk_text_iter_backward_find_char kwargs
@@ -1222,7 +1205,7 @@ _wrap_gtk_text_iter_backward_find_char(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "pred", "user_data", "limit", NULL };
     GtkTextIter *iter, *limit = NULL;
     gboolean ret;
-    PyObject *pylimit = Py_None, *pred, *data, *pyret, *pydata = Py_None;
+    PyObject *pylimit = Py_None, *pred, *data, *pydata = Py_None;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "O|OO:gtk.TextIter.backward_find_char",
@@ -1249,7 +1232,5 @@ _wrap_gtk_text_iter_backward_find_char(PyGObject *self, PyObject *args,
     ret = gtk_text_iter_backward_find_char(iter, pygtk_find_char_pred,
 					   (gpointer)data, limit);
 
-    pyret = ret ? Py_True : Py_False;
-    Py_INCREF(pyret);
-    return pyret;
+    return PyBool_FromLong(ret);
 }

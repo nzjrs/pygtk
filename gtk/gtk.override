@@ -479,7 +479,7 @@ _wrap_gtk_clipboard_set_with_data(PyGObject *self, PyObject *args, PyObject *kwa
     GtkTargetEntry *targets;
     gint n_targets, i;
     gboolean ret;
-    PyObject *data, *py_ret;
+    PyObject *data;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "OO|OO:GtkClipboard.set_with_data",kwlist,
@@ -521,9 +521,7 @@ _wrap_gtk_clipboard_set_with_data(PyGObject *self, PyObject *args, PyObject *kwa
 	Py_DECREF(data);
     }
 
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gtk_label_get noargs
@@ -876,7 +874,6 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"block", NULL};
     int block = 1, ret;
-    PyObject *py_ret;
 
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration", kwlist,
                                     &block))
@@ -885,9 +882,7 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
     ret = gtk_main_iteration_do(block);
     Py_END_ALLOW_THREADS;
 
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gtk_main_quit args
@@ -914,7 +909,6 @@ _wrap_gtk_main_iteration_do(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"block", NULL};
     int block = 1, ret;
-    PyObject *py_ret;
 
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration_do",
                                     kwlist, &block))
@@ -923,9 +917,7 @@ _wrap_gtk_main_iteration_do(PyObject *self, PyObject *args, PyObject *kwargs)
     ret = gtk_main_iteration_do(block);
     Py_END_ALLOW_THREADS;
 
-    py_ret = ret ? Py_True : Py_False;
-    Py_INCREF(py_ret);
-    return py_ret;
+    return PyBool_FromLong(ret);
 }
 %%
 override gtk_quit_add
@@ -1124,7 +1116,8 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
             }
         }
         if (cunote != NULL) {
-	    PyGILState_STATE state = PyGILState_Ensure();
+	    PyGILState_STATE state;
+	    state = PyGILState_Ensure();
             g_object_weak_ref(G_OBJECT(ifact),
                               (GWeakNotify) pygtk_custom_destroy_notify,
                               cunote);
@@ -3139,7 +3132,7 @@ _wrap_gtk_im_context_filter_keypress(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "key", NULL };
     PyObject *key;
-    PyObject *ret;
+    int ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O:GtkIMContext.filter_keypress", kwlist,
@@ -3152,10 +3145,8 @@ _wrap_gtk_im_context_filter_keypress(PyGObject *self, PyObject *args,
     }
 
     ret = gtk_im_context_filter_keypress(GTK_IM_CONTEXT(self->obj),
-                                         pyg_boxed_get(key, GdkEventKey))
-        ? Py_True : Py_False;
-    Py_INCREF(ret);
-    return ret;
+                                         pyg_boxed_get(key, GdkEventKey));
+    return PyBool_FromLong(ret);
 }
 %%
 override gtk_im_context_get_surrounding noargs
