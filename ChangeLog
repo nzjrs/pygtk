@@ -1,3 +1,12 @@
+2002-01-22  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (initgobject): don't create boxed_marshal hash
+	table, and remove the type functions moved to pygtype.c.
+
+	* pygtype.c: move GType stuff here from gobjectmodule.c.
+	(pyg_register_boxed_custom): store the custom boxed marshal
+	functions as GType data, rather than in a separate hash table.
+
 2002-01-21  James Henstridge  <james@daa.com.au>
 
 	* Makefile.am (gobjectmodule_la_SOURCES): list extra source files.

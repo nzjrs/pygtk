@@ -28,7 +28,7 @@ gobjectmodule_la_CFLAGS = $(GLIB_CFLAGS)
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 gobjectmodule_la_SOURCES = \
   pygobject.h pygobject-private.h \
-  gobjectmodule.c pygboxed.c
+  gobjectmodule.c pygtype.c pygboxed.c
 
 # pango module
 pyexec_LTLIBRARIES += pangomodule.la
