@@ -1,8 +1,14 @@
-noinst_PYTHON = generate.py scmexpr.py
+bin_SCRIPTS = pygtk-codegen-1.2
 
-EXTRA_DIST = gtk.defs gtkbase.defs gtkcontainers.defs gtkdata.defs \
+codegendir = $(pkgdatadir)/1.2/codegen
+codegen_PYTHON = generate.py scmexpr.py
+
+defsdir = $(pkgdatadir)/1.2/defs
+defs_DATA = gtk.defs gtkbase.defs gtkcontainers.defs gtkdata.defs \
  gtkedit.defs gtkenums.defs gtklists.defs gtkmenus.defs gtkmisc.defs \
  gtkranges.defs gtkdnd.defs gtkgl.defs libglade.defs
+
+EXTRA_DIST = $(defs_DATA) pygtk-codegen-1.2.in
 
 all: gtk.ignore gtkgl.ignore libglade.ignore
 

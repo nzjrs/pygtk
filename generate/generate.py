@@ -1,3 +1,4 @@
+import sys, getopt
 import os
 import string
 import scmexpr
@@ -178,7 +179,7 @@ class TypesParser(scmexpr.Parser):
 		self.startParsing(scmexpr.parse(fp))
 
 class FunctionDefsParser(TypesParser):
-	def __init__(self, input, prefix='gtkmodule', typeprefix=''):
+	def __init__(self, input, prefix='gtkmodule', typeprefix='&'):
 		# typeprefix is set to & if type structs are not pointers
 		TypesParser.__init__(self, input)
 		self.impl = open(prefix + '_impl.c', "w")
@@ -474,7 +475,7 @@ class FunctionDefsParser(TypesParser):
 class FilteringParser(FunctionDefsParser):
 	"""A refinement of FunctionDefsParser with some common filter types
 	built in"""
-	def __init__(self, input, prefix='gtkmodule', typeprefix=''):
+	def __init__(self, input, prefix='gtkmodule', typeprefix='&'):
 		FunctionDefsParser.__init__(self, input, prefix, typeprefix)
 		# hash lookups are pretty fast ...
 		self.excludeList = {}
@@ -504,3 +505,36 @@ class FilteringParser(FunctionDefsParser):
 		if glob not in self.excludeGlob:
 			self.excludeGlob.append(glob)
 		
+if __name__ == '__main__':
+	opts, args = getopt.getopt(sys.argv[1:], 'd:o:h',
+				   ['defs=', 'output-prefix=', 'exclude-file=',
+				    'exclude-glob', 'register=', 'help'])
+	defs = None
+	output_prefix = None
+	exclude_files = []
+	exclude_glob = []
+	for opt, arg in opts:
+		if opt in ('-d', '--defs'):
+			defs = arg
+		elif opt in ('-o', '--output-prefix'):
+			output_prefix=arg
+		elif opt == '--exclude-file':
+			exclude_files.append(arg)
+		elif opt == '--exclude-glob':
+			exclude_globs.append(arg)
+		elif opt == '--register':
+			TypesParser(arg).startParsing()
+		elif opt in (-h, '--help'):
+			sys.stderr.write('usage: generate.py -d defs file -o output-prefix\n')
+			sys.exit(0)
+	if not defs or not output_prefix:
+		sys.stderr.write('usage: generate.py -d defs file -o output-prefix\n')
+		sys.exit(1)
+	parser = FilteringParser(input=defs, prefix=output_prefix,
+				 typeprefix='&')
+	for file in exclude_files:
+		parser.addExcludeFile(file)
+	for glob in exclude_globs:
+		parser.addExcludeGlob(glob)
+
+	parser.startParsing()
