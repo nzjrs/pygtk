@@ -3007,3 +3007,57 @@ _wrap_gdk_window_get_decorations(PyGObject *self)
 
     return PyInt_FromLong(decor);
 }
+%%
+override gdk_window_get_toplevels noargs
+static PyObject *
+_wrap_gdk_window_get_toplevels(PyGObject *self)
+{
+    GList *topl;
+    guint ntopl;
+    int i;
+    PyObject *list;
+
+    topl = gdk_window_get_toplevels();
+    ntopl = g_list_length(topl);
+
+    if ((list = PyList_New(ntopl)) == NULL)
+	return NULL;
+
+    for (i = 0; i < ntopl; i++) {
+	PyObject *item;
+
+	item = pygobject_new((GObject *)g_list_nth_data(topl, i));
+	PyList_SetItem(list, i, item);
+    }
+
+    g_list_free(topl);
+
+    return list;
+}
+%%
+override gdk_list_visuals noargs
+static PyObject *
+_wrap_gdk_list_visuals(PyGObject *self)
+{
+    GList *visl;
+    guint nvisl;
+    int i;
+    PyObject *list;
+
+    visl = gdk_list_visuals();
+    nvisl = g_list_length(visl);
+
+    if ((list = PyList_New(nvisl)) == NULL)
+	return NULL;
+
+    for (i = 0; i < nvisl; i++) {
+	PyObject *item;
+
+	item = pygobject_new((GObject *)g_list_nth_data(visl, i));
+	PyList_SetItem(list, i, item);
+    }
+
+    g_list_free(visl);
+
+    return list;
+}
