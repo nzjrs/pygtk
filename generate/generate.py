@@ -224,7 +224,11 @@ class FunctionDefsParser(TypesParser):
 		parseList = []  # args to PyArg_ParseTuple
 		argList = []    # args to actual function
 		extraCode = []  # any extra code (for enums, flags)
-		if retType == 'string' or retType == 'string_or_null':
+		retArgs = None
+		if type(retType) == type(()):
+			retArgs = retType[1:]
+			retType = retType[0]
+		if retType == 'string':
 			# this is needed so we can free result string
 			varDefs.add('char', '*ret')
 			varDefs.add('PyObject', '*py_ret')
@@ -381,14 +385,22 @@ class FunctionDefsParser(TypesParser):
 		impl.write(string.join(extraCode, ''))
 
 		funcCall = name + '(' + string.join(argList, ', ') + ')'
-		if self.decodeRet(impl, funcCall, retType):
+		if self.decodeRet(impl, funcCall, retType, retArgs):
 			return
 		impl.write('}\n\n')
 		# actually write the info to the output files
 		self.defs.write(funcDefTmpl % (name,name))
 		self.impl.write(impl.getvalue())
 
-	def decodeRet(self, impl, funcCall, retType):
+	def decodeRet(self, impl, funcCall, retType, retArgs=None):
+		nullok = FALSE
+		if retArgs:
+			# XXX fix me
+			if retArgs[0] == 'null-ok':
+				nullok = TRUE
+		        else:
+				print "unknown return attribute '%s'" % (retArgs,)
+				return 1
 		if retType == 'none':
 			impl.write('    ')
 			impl.write(funcCall)
@@ -398,13 +410,21 @@ class FunctionDefsParser(TypesParser):
 			impl.write(funcCall)
 			impl.write(');\n')
 		elif retType == 'string':
-			impl.write('    ret = ')
-			impl.write(funcCall)
-			impl.write(';\n    py_ret = PyString_FromString(ret);\n    g_free(ret);\n    return py_ret;\n')
-		elif retType == 'string_or_null':
-			impl.write('    ret = ')
-			impl.write(funcCall)
-			impl.write(';\n    if (ret) {\n        py_ret = PyString_FromString(ret);\n        g_free(ret);\n        return py_ret;\n    } else {\n        Py_INCREF(Py_None);\n        return Py_None;\n    }\n')
+			if nullok:
+				impl.write('    ret = %s;\n' % funcCall)
+				impl.write('    if (ret) {\n')
+				impl.write('        py_ret = PyString_FromString(ret);\n'
+					   '        g_free(ret);\n'
+					   '        return py_ret;\n'
+					   '    } else {\n' 
+					   '        Py_INCREF(Py_None);\n'
+					   '        return Py_None;\n'
+					   '    }\n')
+			else:
+				impl.write('    ret = %s;\n' % funcCall)
+				impl.write('    py_ret = PyString_FromString(ret);\n'
+					   '    g_free(ret);\n'
+					   '    return py_ret;\n')
 		elif retType in ('char', 'uchar'):
 			impl.write('    return PyString_fromStringAndSize(*(')
 			impl.write(funcCall)
@@ -419,17 +439,35 @@ class FunctionDefsParser(TypesParser):
 			impl.write(funcCall)
 			impl.write(');\n')
 		elif retType in boxed.keys():
-			impl.write('    return ')
-			impl.write(boxed[retType][2])
-			impl.write('(')
-			impl.write(funcCall)
-			impl.write(');\n')
+			if nullok:
+				impl.write('    {\n'
+					   '        %s *p = %s;\n' % (retType, funcCall))
+				impl.write('        if (p)\n')
+				impl.write('            return %s(p);\n' % boxed[retType][2])
+				impl.write('        Py_INCREF(Py_None);\n'
+					   '        return Py_None;\n'
+					   '    }\n')
+			else:
+				impl.write('    return ')
+				impl.write(boxed[retType][2])
+				impl.write('(')
+				impl.write(funcCall)
+				impl.write(');\n')
 		elif retType in objects.keys():
-			impl.write('    return PyGtk_New((GtkObject *)')
-			impl.write(funcCall)
-			impl.write(');\n')
+			if nullok:
+				impl.write('    {\n'
+					   '        GtkObject *p = (GtkObject *) %s;' % funcCall)
+				impl.write('        if (p)\n'
+					   '            return PyGtk_New((GtkObject *) p);\n')
+				impl.write('        Py_INCREF(Py_None);\n'
+					   '        return Py_None;\n'
+					   '    }\n')
+			else:
+				impl.write('    return PyGtk_New((GtkObject *)')
+				impl.write(funcCall)
+				impl.write(');\n')
 		else:
-			print "%s: unknown return type '%s'" % (name, retType)
+			print "unknown return type '%s'" % (retType,)
 			return 1
 		return 0
 
