@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# vim: syntax=python autoindent softtabstop=4:
 
 """ Simple example of creating a basic window and button.  
     Also adds a tooltip. """
@@ -14,7 +13,7 @@ def hello_cb(widget, main_window):
 def destroy_cb(widget, main_window):
 	""" Callback function to hide the main window and then terminate. """
 	main_window.hide()
-	gtk.mainquit()
+	gtk.main_quit()
 
 def main():
     """ Sets up the application
@@ -32,13 +31,12 @@ def main():
 
     # setup tooltips and associate them with the button
     tt = gtk.Tooltips()
-    tt.set_delay(500)
-    tt.set_tip(button, 'Prints "Hello World"', '')
+    tt.set_tip(button, 'Prints "Hello World"', None)
     tt.enable()
 
     # shows the window and any child objects (button in this example)
     window.show_all()
-    gtk.mainloop()
+    gtk.main()
 
 # if we're being run normally then call the main function
 if __name__ == '__main__':
