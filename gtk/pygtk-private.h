@@ -35,6 +35,8 @@ void pygtk_input_marshal(gpointer a, PyObject *func, int nargs, GtkArg *args);
 PyObject    *pygtk_tree_path_to_pyobject(GtkTreePath *path);
 GtkTreePath *pygtk_tree_path_from_pyobject(PyObject *object);
 
+GdkAtom pygdk_atom_from_pyobject(PyObject *object);
+
 static gboolean PyGtk_FatalExceptions = FALSE;
 
 #endif

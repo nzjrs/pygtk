@@ -1,3 +1,47 @@
+2001-10-23  Matt Wilson  <msw@redhat.com>
+
+	* gtk/gtk.override (_wrap_gtk_text_iter_forward_search): use new
+	forward search API with flags enum in CVS.
+	(_wrap_gtk_text_buffer_create_tag): likewise.
+	(_wrap_gtk_selection_data_set): likewise.
+	(_wrap_gtk_selection_add_targets): likewise.
+
+	* gtk/pygtk-private.h (pygdk_atom_from_pyobject): added
+	declaration.
+
+	* gtk/gtk.defs (GtkTextIter.forward_search): use new flags enum
+	(GtkTextIter.backward_search): likewise.
+
+	* gtk/gdk.override (_wrap_gdk_gc_new_with_values):
+	s/GPOINTER_TO_INT/GDK_POINTER_TO_ATOM/
+	(_wrap_gdk_property_get): use pygdk_atom_from_pyobject
+	(_wrap_gdk_property_change): likewise.
+
+	* codegen/argtypes.py (AtomArg.write_param): use
+	pygdk_atom_from_pyobject when getting atom args
+
+	* gtk/gtk-types.defs (TextSearchFlags): added new enum.
+
+	* gtk/gtk-types.c (pygdk_atom_from_pyobject): implemented a
+	function to get a GdkAtom from a Python object
+	(PyGdkWindow_PropertyGet): use pygdk_atom_from_pyobject to get
+	atoms from args, not this two-try ParseTuple.
+	(PyGdkWindow_PropertyChange): likewise.
+	(PyGdkWindow_PropertyDelete): likewise.
+
+	* gtk/gdk-types.defs (Selection): removed, no longer an enum
+	(Target): Likewise.
+	(SelectionType): Likewise.
+
+2001-10-22  Matt Wilson  <msw@redhat.com>
+
+	* gtk/gtk-types.c (pygdk_atom_number): remove numeric bits,
+	GdkAtom is now opaque.
+
+	* gtk/gtk.defs (GtkTreeModelSort.set_model): removed, is static now.
+	(GtkTreeModelSort.convert_path): rename to
+	GtkTreeMOdelSort.convert_path_to_child_path
+
 2001-10-19  Matt Wilson  <msw@redhat.com>
 
 	* gtk/gtk.override (_wrap_gtk_tree_model_iter_children): override

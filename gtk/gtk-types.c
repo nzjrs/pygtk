@@ -585,25 +585,28 @@ PyGdkWindow_SetCursor(PyGdkWindow_Object *self, PyObject *args)
 static PyObject *
 PyGdkWindow_PropertyGet(PyGdkWindow_Object *self, PyObject *args)
 {
-    GdkAtom property, type = 0;
+    PyObject *py_property, py_type = NULL;
     gint pdelete = FALSE;
 
-    GdkAtom atype;
+    GdkAtom atype, property, type;
     gint aformat, alength;
     guchar *data;
 
-    if (!PyArg_ParseTuple(args, "i|ii:GdkWindow.property_get", &property,
-			  &type, &pdelete)) {
-	gchar *propname;
-
-	PyErr_Clear();
-	if (!PyArg_ParseTuple(args, "s|ii:GdkWindow.property_get", &propname,
-			      &type, &pdelete))
-	    return NULL;
-	property = gdk_atom_intern(propname, FALSE);
+    if (!PyArg_ParseTuple(args, "O|Oi:GdkWindow.property_get", &py_property,
+			  &py_type, &pdelete)) {
+	return NULL;
     }
-    if (gdk_property_get(self->obj, property, type, 0, 9999, pdelete,
-			 &atype, &aformat, &alength, &data)) {
+
+    property = pygdk_atom_from_pyobject(py_property);
+    if (Pyerr_Occurred())
+	return NULL;
+
+    type = pygdk_atom_from_pyobject(py_type);
+    if (Pyerr_Occurred())
+	return NULL;
+	
+    if (gdk_property_get(self->obj, property, type, 0, 9999,
+			 pdelete, &atype, &aformat, &alength, &data)) {
 	/* success */
 	PyObject *pdata = NULL;
 	gint i;
@@ -643,6 +646,7 @@ PyGdkWindow_PropertyGet(PyGdkWindow_Object *self, PyObject *args)
 static PyObject *
 PyGdkWindow_PropertyChange(PyGdkWindow_Object *self, PyObject *args)
 {
+    PyObject *py_property, *py_type;
     GdkAtom property, type;
     gint format;
     PyObject *py_mode, *pdata;
@@ -650,16 +654,19 @@ PyGdkWindow_PropertyChange(PyGdkWindow_Object *self, PyObject *args)
     guchar *data = NULL;
     gint nelements;
 
-    if (!PyArg_ParseTuple(args, "iiiOO:GdkWindow.property_change", &property,
-			  &type, &format, &py_mode, &pdata)) {
-	gchar *propname;
-
-	PyErr_Clear();
-	if (!PyArg_ParseTuple(args, "siiOO:GdkWindow.property_change",
-			      &propname, &type, &format, &py_mode, &pdata))
-	    return NULL;
-	property = gdk_atom_intern(propname, FALSE);
+    if (!PyArg_ParseTuple(args, "OOiOO:GdkWindow.property_change",
+			  &py_property, &py_type, &format, &py_mode, &pdata)) {
+	return NULL;
     }
+
+    property = pygdk_atom_from_pyobject(py_property);
+    if (Pyerr_Occurred())
+	return NULL;
+
+    type = pygdk_atom_from_pyobject(py_type);
+    if (Pyerr_Occurred())
+	return NULL;
+    
     if (pygtk_enum_get_value(GDK_TYPE_PROP_MODE, py_mode, (gint *)&mode))
 	return NULL;
     switch (format) {
@@ -732,8 +739,8 @@ PyGdkWindow_PropertyChange(PyGdkWindow_Object *self, PyObject *args)
 	return NULL;
 	break;
     }
-    gdk_property_change(self->obj, property, type, format, mode,
-			data, nelements);
+    gdk_property_change(self->obj, property, type, format, mode, data,
+			nelements);
     if (format != 8)
 	g_free(data);
     Py_INCREF(Py_None);
@@ -743,16 +750,17 @@ PyGdkWindow_PropertyChange(PyGdkWindow_Object *self, PyObject *args)
 static PyObject *
 PyGdkWindow_PropertyDelete(PyGdkWindow_Object *self, PyObject *args)
 {
+    PyObject py_property;
     GdkAtom property;
 
-    if (!PyArg_ParseTuple(args, "i:GdkWindow.property_delete", &property)) {
-	gchar *propname;
-
-	PyErr_Clear();
-	if (!PyArg_ParseTuple(args, "s:GdkWindow.property_delete", &propname))
-	    return NULL;
-	property = gdk_atom_intern(propname, FALSE);
+    if (!PyArg_ParseTuple(args, "O:GdkWindow.property_delete", &property)) {
+	return NULL;
     }
+
+    property = pygdk_atom_from_pyobject(py_property);
+    if (Pyerr_Occurred())
+	return NULL;
+    
     gdk_property_delete(self->obj, property);
     Py_INCREF(Py_None);
     return Py_None;
@@ -1223,6 +1231,19 @@ PyTypeObject PyGdkColormap_Type = {
 };
 #endif
 
+GdkAtom
+pygdk_atom_from_pyobject(PyObject *object)
+{
+    if (object == NULL)
+	return NULL;
+    if (PyString_Check(object))
+	return gdk_atom_intern(PyString_AsString(object), FALSE);
+    if (PyGdkAtom_Check(object))
+	return PyGdkAtom_Get(object);
+    PyErr_SetString(PyExc_TypeError, "unable to convert argument to GdkAtom");
+    return NULL;
+}
+
 static void
 pygdk_atom_dealloc(PyGdkAtom_Object *self)
 {
@@ -1254,69 +1275,6 @@ pygdk_atom_repr(PyGdkAtom_Object *self)
     return PyString_FromString(buf);
 }
 
-static int
-pygdk_atom_coerce(PyObject **self, PyObject **other)
-{
-    PyGdkAtom_Object *old = (PyGdkAtom_Object *)*self;
-    if (PyInt_Check(*other)) {
-	*self = PyInt_FromLong(old->atom);
-	Py_INCREF(*other);
-	return 0;
-    } else if (PyFloat_Check(*other)) {
-	*self = PyFloat_FromDouble((double)old->atom);
-	Py_INCREF(*other);
-	return 0;
-    } else if (PyLong_Check(*other)) {
-	*self = PyLong_FromUnsignedLong(old->atom);
-	Py_INCREF(*other);
-	return 0;
-    } else if (PyString_Check(*other)) {
-	if (!old->name)
-	    old->name = gdk_atom_name(old->atom);
-	if (old->name) {
-	    *self = PyString_FromString(old->name);
-	    Py_INCREF(*other);
-	    return 0;
-	}
-    }
-    return 1;  /* don't know how to convert */
-}
-
-static PyObject *
-pygdk_atom_int(PyGdkAtom_Object *self)
-{
-    return PyInt_FromLong(self->atom);
-}
-
-static PyObject *
-pygdk_atom_long(PyGdkAtom_Object *self)
-{
-    return PyLong_FromUnsignedLong(self->atom);
-}
-
-static PyObject *
-pygdk_atom_float(PyGdkAtom_Object *self)
-{
-    return PyFloat_FromDouble(self->atom);
-}
-
-static PyObject *
-pygdk_atom_oct(PyGdkAtom_Object *self)
-{
-    char buf[100];
-    if (self->atom == 0) return PyString_FromString("0");
-    g_snprintf(buf, 100, "0%lo", self->atom);
-    return PyString_FromString(buf);
-}
-
-static PyObject *
-pygdk_atom_hex(PyGdkAtom_Object *self)
-{
-    char buf[100];
-    g_snprintf(buf, 100, "0x%lx", self->atom);
-    return PyString_FromString(buf);
-}
-
 static PyObject *
 pygdk_atom_str(PyGdkAtom_Object *self)
 {
@@ -1325,32 +1283,6 @@ pygdk_atom_str(PyGdkAtom_Object *self)
 	return PyString_FromString(self->name);
     return pygdk_atom_repr(self);
 }
-
-static PyNumberMethods pygdk_atom_number = {
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (ternaryfunc)0,
-    (unaryfunc)0,
-    (unaryfunc)0,
-    (unaryfunc)0,
-    (inquiry)0,
-    (unaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (binaryfunc)0,
-    (coercion)pygdk_atom_coerce,
-    (unaryfunc)pygdk_atom_int,
-    (unaryfunc)pygdk_atom_long,
-    (unaryfunc)pygdk_atom_float,
-    (unaryfunc)pygdk_atom_oct,
-    (unaryfunc)pygdk_atom_hex
-};
 
 PyTypeObject PyGdkAtom_Type = {
     PyObject_HEAD_INIT(NULL)
@@ -1364,7 +1296,7 @@ PyTypeObject PyGdkAtom_Type = {
     (setattrfunc)0,
     (cmpfunc)pygdk_atom_compare,
     (reprfunc)pygdk_atom_repr,
-    &pygdk_atom_number,
+    0,
     0,
     0,
     (hashfunc)pygdk_atom_hash,

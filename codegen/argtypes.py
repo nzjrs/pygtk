@@ -390,6 +390,17 @@ class CustomBoxedArg(ArgType):
 	       '    return Py_None;'
 
 class AtomArg(IntArg):
+    atom = '    %(name)s = pygdk_atom_from_pyobject(py_%(name)s);\n' +\
+           '    if (PyErr_Occurred())\n' +\
+           '        return NULL;\n'
+    def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
+		    extracode, arglist):
+        varlist.add('GdkAtom', pname)
+	varlist.add('PyObject', '*py_' + pname + ' = NULL')
+	parselist.append('&py_' + pname)
+	extracode.append(self.atom % {'name': pname})
+	arglist.append(pname)
+	return 'O'
     def write_return(self, ptype, varlist):
         return '    return PyGdkAtom_New(%(func)s);'
 

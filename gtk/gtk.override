@@ -45,14 +45,19 @@ static PyObject *
 _wrap_gtk_selection_data_set(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "type", "format", "data", NULL };
+    PyObject *py_type;
     GdkAtom type;
     int format, length;
     guchar *data;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "iis#:GtkSelectionData.set", kwlist,
-				     &type, &format, &data, &length))
+				     "Ois#:GtkSelectionData.set", kwlist,
+				     &py_type, &format, &data, &length))
 	return NULL;
+    type = pygdk_atom_from_pyobject(py_type);
+    if (PyErr_Occurred())
+	return NULL;
+    
     gtk_selection_data_set(pyg_boxed_get(self, GtkSelectionData),
 			   type, format, data, length);
     Py_INCREF(Py_None);
@@ -3435,14 +3440,19 @@ _wrap_gtk_selection_add_targets(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
 {
     static char *kwlist[] = { "selection", "targets", NULL };
-    PyObject *py_targets;
+    PyObject *py_targets, *py_selection;
     GtkTargetEntry *targets;
-    int selection, n_targets, i;
+    GdkAtom selection;
+    int n_targets, i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "iO:GtkWidget.selection_add_targets",
-				     kwlist, &selection, &py_targets))
+				     "OO:GtkWidget.selection_add_targets",
+				     kwlist, &py_selection, &py_targets))
 	return NULL;
+    selection = pygdk_atom_from_pyobject(py_selection);
+    if (PyErr_Occurred())
+	return NULL;
+    
     if (!PySequence_Check(py_targets)) {
 	PyErr_SetString(PyExc_TypeError, "targets must be a sequence");
 	return NULL;
@@ -3456,12 +3466,12 @@ _wrap_gtk_selection_add_targets(PyGObject *self, PyObject *args,
 			      &targets[i].flags, &targets[i].info)) {
 	    PyErr_Clear();
 	    PyErr_SetString(PyExc_TypeError,
-			    "list items should be of form (string,int,int)");
+			    "sequence items should be of form (string,int,int)");
 	    g_free(targets);
 	    return NULL;
 	}
     }
-    gtk_selection_add_targets(GTK_WIDGET(self->obj), (GdkAtom)selection,
+    gtk_selection_add_targets(GTK_WIDGET(self->obj), selection,
 			      targets, n_targets);
     g_free(targets);
     Py_INCREF(Py_None);
@@ -3666,16 +3676,15 @@ static PyObject *
 _wrap_gtk_text_iter_forward_search(PyGBoxed *self, PyObject *args,
 				   PyObject *kwargs)
 {
-    static char *kwlist[] = { "str", "visible_only", "slice", "limit", NULL };
+    static char *kwlist[] = { "str", "flags", "limit", NULL };
     gchar *str;
-    gint visible_only, slice;
     PyObject *py_limit = Py_None;
     GtkTextIter match_start, match_end, *limit = NULL;
+    GtkTextSearchFlags flags;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "sii|O:GtkTextIter.forward_search",
-				     kwlist, &str, &visible_only, &slice,
-				     &py_limit))
+				     "si|O:GtkTextIter.forward_search",
+				     kwlist, &str, &flags, &py_limit))
 	return NULL;
     if (pyg_boxed_check(py_limit, GTK_TYPE_TEXT_ITER))
 	limit = pyg_boxed_get(py_limit, GtkTextIter);
@@ -3684,8 +3693,7 @@ _wrap_gtk_text_iter_forward_search(PyGBoxed *self, PyObject *args,
 	return NULL;
     }
     if (gtk_text_iter_forward_search(pyg_boxed_get(self, GtkTextIter), str,
-				     visible_only, slice, &match_start,
-				     &match_end, limit))
+				     flags, &match_start, &match_end, limit))
 	return Py_BuildValue("(NN)",
 			     pyg_boxed_new(GTK_TYPE_TEXT_ITER, &match_start,
 					   TRUE, TRUE),
@@ -3700,16 +3708,15 @@ static PyObject *
 _wrap_gtk_text_iter_backward_search(PyGBoxed *self, PyObject *args,
 				    PyObject *kwargs)
 {
-    static char *kwlist[] = { "str", "visible_only", "slice", "limit", NULL };
+    static char *kwlist[] = { "str", "flags", "limit", NULL };
     gchar *str;
-    gint visible_only, slice;
     PyObject *py_limit = Py_None;
     GtkTextIter match_start, match_end, *limit = NULL;
+    GtkTextSearchFlags flags;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "sii|O:GtkTextIter.backward_search",
-				     kwlist, &str, &visible_only, &slice,
-				     &py_limit))
+				     kwlist, &str, &flags, &py_limit))
 	return NULL;
     if (pyg_boxed_check(py_limit, GTK_TYPE_TEXT_ITER))
 	limit = pyg_boxed_get(py_limit, GtkTextIter);
@@ -3718,8 +3725,7 @@ _wrap_gtk_text_iter_backward_search(PyGBoxed *self, PyObject *args,
 	return NULL;
     }
     if (gtk_text_iter_backward_search(pyg_boxed_get(self, GtkTextIter), str,
-				      visible_only, slice, &match_start,
-				      &match_end, limit))
+				      flags, &match_start, &match_end, limit))
 	return Py_BuildValue("(NN)",
 			     pyg_boxed_new(GTK_TYPE_TEXT_ITER, &match_start,
 					   TRUE, TRUE),
