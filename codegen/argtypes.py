@@ -590,8 +590,6 @@ matcher.register_custom_boxed('GdkEvent', 'PyGdkEvent_Type',
 matcher.register_custom_boxed('GtkSelectionData', 'PyGtkSelectionData_Type',
                               'PyGtkSelectionData_Get',
                               'PyGtkSelectionData_New')
-matcher.register_custom_boxed('GdkCursor', 'PyGdkCursor_Type',
-                              'PyGdkCursor_Get', 'PyGdkCursor_New')
 matcher.register_custom_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
                               'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
 matcher.register_custom_boxed('GdkDevice', 'PyGdkDevice_Type',

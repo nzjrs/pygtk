@@ -12,9 +12,6 @@ void pygtk_register_classes(PyObject *d);
 
 extern PyMethodDef pygtk_functions[];
 
-extern PyExtensionClass PyGtkObject_Type;
-extern GHashTable *_pygtk_boxed_funcs;
-
 static struct _PyGtk_FunctionStruct functions = {
     VERSION,
     FALSE,
@@ -23,18 +20,7 @@ static struct _PyGtk_FunctionStruct functions = {
     pygtk_unblock_threads,
 
     pygtk_destroy_notify,
-    pygtk_callback_marshal,
 
-    pygtk_args_as_tuple,
-    pygtk_args_from_sequence,
-    pygtk_arg_from_pyobject,
-    pygtk_arg_as_pyobject,
-    pygtk_ret_from_pyobject,
-    pygtk_ret_as_pyobject,
-
-    pygtk_register_boxed,
-
-    &PyGdkFont_Type,  PyGdkFont_New,
     &PyGdkColor_Type,  PyGdkColor_New,
     &PyGdkEvent_Type,  PyGdkEvent_New,
     &PyGtkSelectionData_Type,  PyGtkSelectionData_New,
@@ -91,7 +77,6 @@ init_gtk(void)
     m = Py_InitModule("gtk._gtk", pygtk_functions);
     d = PyModule_GetDict(m);
 
-    _pygtk_boxed_funcs = g_hash_table_new(g_direct_hash, g_direct_equal);
     _pygtk_register_boxed_types(d);
     pygtk_register_classes(d);
 

@@ -16,21 +16,6 @@ struct _PyGtk_FunctionStruct {
     void (* unblock_threads)(void);
 
     GtkDestroyNotify destroy_notify;
-    GtkCallbackMarshal callback_marshal;
-
-    PyObject *(* args_as_tuple)(int nparams, GtkArg *args);
-    int (* args_from_sequence)(GtkArg *args, int nparams, PyObject *seq);
-    int (* arg_from_pyobject)(GtkArg *arg, PyObject *obj);
-    PyObject *(* arg_as_pyobject)(GtkArg *arg);
-    void (* ret_from_pyobject)(GtkArg *ret, PyObject *obj);
-    PyObject *(* ret_as_pyobject)(GtkArg *ret);
-
-    void (* register_boxed)(GtkType boxed_type,
-			    PyObject *(*from_func)(gpointer boxed),
-			    int (*to_func)(gpointer *boxed, PyObject *obj));
-
-    PyTypeObject *gdkFont_type;
-    PyObject *(* gdkFont_new)(GdkFont *font);
 
     PyTypeObject *gdkColor_type;
     PyObject *(* gdkColor_new)(GdkColor *colour);
@@ -61,11 +46,6 @@ struct _PyGtk_FunctionStruct {
 };
 
 /* structure definitions for the various object types in PyGTK */
-typedef struct {
-    PyObject_HEAD
-    GdkFont *obj;
-} PyGdkFont_Object;
-
 typedef struct {
     PyObject_HEAD
     GdkColor obj;
@@ -114,7 +94,6 @@ typedef struct {
 } PyGtkTreeIter_Object;
 
 /* routines to get the C object value out of the PyObject wrapper */
-#define PyGdkFont_Get(v) (((PyGdkFont_Object *)(v))->obj)
 #define PyGdkColor_Get(v) (&((PyGdkColor_Object *)(v))->obj)
 #define PyGdkEvent_Get(v) (((PyGdkEvent_Object *)(v))->obj)
 #define PyGtkSelectionData_Get(v) (((PyGtkSelectionData_Object *)(v))->obj)
@@ -139,7 +118,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #endif
 
 /* type objects */
-#define PyGdkFont_Type          *(_PyGtk_API->gdkFont_type)
 #define PyGdkColor_Type         *(_PyGtk_API->gdkColor_type)
 #define PyGdkEvent_Type         *(_PyGtk_API->gdkEvent_type)
 #define PyGtkSelectionData_Type *(_PyGtk_API->gtkSelectionData_type)
@@ -151,7 +129,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGtkTreeIter_Type      *(_PyGtk_API->gtkTreeIter_type)
 
 /* type checking routines */
-#define PyGdkFont_Check(v) ((v)->ob_type == _PyGtk_API->gdkFont_type)
 #define PyGdkColor_Check(v) ((v)->ob_type == _PyGtk_API->gdkColor_type)
 #define PyGdkEvent_Check(v) ((v)->ob_type == _PyGtk_API->gdkEvent_type)
 #define PyGtkSelectionData_Check(v) ((v)->ob_type == _PyGtk_API->gtkSelectionData_type)
@@ -163,7 +140,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGtkTreeIter_Check(v) ((v)->ob_type == _PyGtk_API->gtkTreeIter_type)
 
 /* type objects */
-#define PyGdkFont_New          (_PyGtk_API->gdkFont_new)
 #define PyGdkColor_New         (_PyGtk_API->gdkColor_new)
 #define PyGdkEvent_New         (_PyGtk_API->gdkEvent_new)
 #define PyGtkSelectionData_New (_PyGtk_API->gtkSelectionData_new)
@@ -178,14 +154,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define pygtk_block_threads (_PyGtk_API->block_threads)
 #define pygtk_unblock_threads (_PyGtk_API->unblock_threads)
 #define pygtk_destroy_notify (_PyGtk_API->destroy_notify)
-#define pygtk_callback_marshal (_PyGtk_API->callback_marshal)
-#define pygtk_args_as_tuple (_PyGtk_API->args_as_tuple)
-#define pygtk_args_from_sequence (_PyGtk_API->args_from_sequence)
-#define pygtk_arg_from_pyobject (_PyGtk_API->arg_from_pyobject)
-#define pygtk_arg_as_pyobject (_PyGtk_API->arg_as_pyobject)
-#define pygtk_ret_from_pyobject (_PyGtk_API->ret_from_pyobject)
-#define pygtk_ret_as_pyobject (_PyGtk_API->ret_as_pyobject)
-#define pygtk_register_boxed (_PyGtk_API->register_boxed)
 
 /* some variables */
 #define PyGtk_FatalExceptions (_PyGtk_API->fatalExceptions)

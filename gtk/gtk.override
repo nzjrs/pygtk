@@ -88,15 +88,19 @@ _wrap_gdk_draw_text(PyGObject *self, PyObject *args, PyObject *kwargs)
     int x, y, len;
     char *text;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!Oiis#:GdkDrawable.draw_text",
-				     kwlist,  &PyGdkFont_Type, &font,
+				     "OOiis#:GdkDrawable.draw_text",
+				     kwlist,  &font,
 				     &gc, &x, &y, &text, &len))
 	return NULL;
+    if (!pyg_boxed_check(font, GDK_TYPE_FONT)) {
+	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
+	return NULL;
+    }
     if (!pygobject_check(gc, &PyGdkGC_Type)) {
 	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
 	return NULL;
     }
-    gdk_draw_text(GDK_DRAWABLE(self->obj), PyGdkFont_Get(font),
+    gdk_draw_text(GDK_DRAWABLE(self->obj), pyg_boxed_get(font, GdkFont),
 		  GDK_GC(gc->obj), x, y, text, len);
     Py_INCREF(Py_None);
     return Py_None;
@@ -230,18 +234,38 @@ ignore
   gdk_color_hash gdk_color_equal
   gdk_color_parse
 %%
-override gdk_font_full_name_get
-_wrap_gdk_font_full_name_get(PyGObject *self, PyObject *args)
+override gdk_fontset_load kwargs
+static PyObject *
+_wrap_gdk_fontset_load(PyObject *self, PyObject *args, PyObject *kwargs)
 {
-    gchar *name;
-    PyObject *ret;
+    static char *kwlist[] = { "fontset_name", NULL };
+    char *fontset_name;
 
-    if (!PyArg_ParseTuple(args, ":GdkFont.full_name_get"))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:fontset_load", kwlist,
+				     &fontset_name))
+        return NULL;
+
+    /* pyg_boxed_new handles NULL checking */
+    return pyg_boxed_new(GDK_TYPE_FONT, gdk_fontset_load(fontset_name),
+			 FALSE, TRUE);
+}
+%%
+override gdk_text_extents kwargs
+static PyObject *
+_wrap_gdk_text_extents(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "text", NULL };
+    gchar *text;
+    gint length;
+    gint lbearing, rbearing, width, ascent, descent;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:GdkFont.extents",
+				     kwlist, &text, &length))
 	return NULL;
-    name = gdk_font_full_name_get(GDK_FONT(self->obj));
-    ret = PyString_FromString(name);
-    gdk_font_full_name_free(name);
-    return ret;
+    gdk_text_extents(pyg_boxed_get(self, GdkFont), text, length,
+		     &lbearing, &rbearing, &width, &ascent, &descent);
+    return Py_BuildValue("(iiiii)", lbearing, rbearing, width,
+			 ascent, descent);
 }
 %%
 override gdk_pixmap_create_from_xpm kwargs
@@ -1173,9 +1197,9 @@ _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
 	return NULL;
     }
-    if (PyGdkFont_Check(font)) {
+    if (pyg_boxed_check(font, GDK_TYPE_FONT)) {
 	mask |= GDK_GC_FONT;
-	values.font = PyGdkFont_Get(font);
+	values.font = pyg_boxed_get(font, GdkFont);
     } else if (font != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
 	return NULL;
@@ -3190,10 +3214,9 @@ _wrap_gtk_toolbar_append_item(PyGObject *self, PyObject *args,
     ret = gtk_toolbar_append_item(GTK_TOOLBAR(self->obj), text, tooltip_text,
 				  tooltip_private_text, icon, NULL, NULL);
     if (ret && PyCallable_Check(callback)) {
-	param = Py_BuildValue("(OO)", callback, param);
-	gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
-				(GtkCallbackMarshal)pygtk_callback_marshal,
-				param, pygtk_destroy_notify, FALSE, FALSE);
+	g_signal_connect_closure(ret, "clicked",
+				 pyg_closure_new(callback, param, NULL),
+				 FALSE);
     }
     return pygobject_new((GObject *)ret);
 }
@@ -3226,10 +3249,9 @@ _wrap_gtk_toolbar_prepend_item(PyGObject *self, PyObject *args,
     ret = gtk_toolbar_prepend_item(GTK_TOOLBAR(self->obj), text, tooltip_text,
 				  tooltip_private_text, icon, NULL, NULL);
     if (ret && PyCallable_Check(callback)) {
-	param = Py_BuildValue("(OO)", callback, param);
-	gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
-				(GtkCallbackMarshal)pygtk_callback_marshal,
-				param, pygtk_destroy_notify, FALSE, FALSE);
+	g_signal_connect_closure(ret, "clicked",
+				 pyg_closure_new(callback, param, NULL),
+				 FALSE);
     }
     return pygobject_new((GObject *)ret);
 }
@@ -3265,10 +3287,9 @@ _wrap_gtk_toolbar_insert_item(PyGObject *self, PyObject *args,
 				  tooltip_private_text, icon, NULL, NULL,
 				  position);
     if (ret && PyCallable_Check(callback)) {
-	param = Py_BuildValue("(OO)", callback, param);
-	gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
-				(GtkCallbackMarshal)pygtk_callback_marshal,
-				param, pygtk_destroy_notify, FALSE, FALSE);
+	g_signal_connect_closure(ret, "clicked",
+				 pyg_closure_new(callback, param, NULL),
+				 FALSE);
     }
     return pygobject_new((GObject *)ret);
 }
@@ -3319,10 +3340,9 @@ _wrap_gtk_toolbar_append_element(PyGObject *self, PyObject *args,
 	(type == GTK_TOOLBAR_CHILD_BUTTON ||
 	 type == GTK_TOOLBAR_CHILD_TOGGLEBUTTON ||
 	 type == GTK_TOOLBAR_CHILD_RADIOBUTTON)) {
-	param = Py_BuildValue("(OO)", callback, param);
-	gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
-				(GtkCallbackMarshal)pygtk_callback_marshal,
-				param, pygtk_destroy_notify, FALSE, FALSE);
+	g_signal_connect_closure(ret, "clicked",
+				 pyg_closure_new(callback, param, NULL),
+				 FALSE);
     }
     return pygobject_new((GObject *)ret);
 }
@@ -3373,10 +3393,9 @@ _wrap_gtk_toolbar_prepend_element(PyGObject *self, PyObject *args,
 	(type == GTK_TOOLBAR_CHILD_BUTTON ||
 	 type == GTK_TOOLBAR_CHILD_TOGGLEBUTTON ||
 	 type == GTK_TOOLBAR_CHILD_RADIOBUTTON)) {
-	param = Py_BuildValue("(OO)", callback, param);
-	gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
-				(GtkCallbackMarshal)pygtk_callback_marshal,
-				param, pygtk_destroy_notify, FALSE, FALSE);
+	g_signal_connect_closure(ret, "clicked",
+				 pyg_closure_new(callback, param, NULL),
+				 FALSE);
     }
     return pygobject_new((GObject *)ret);
 }
@@ -3428,10 +3447,9 @@ _wrap_gtk_toolbar_insert_element(PyGObject *self, PyObject *args,
 	(type == GTK_TOOLBAR_CHILD_BUTTON ||
 	 type == GTK_TOOLBAR_CHILD_TOGGLEBUTTON ||
 	 type == GTK_TOOLBAR_CHILD_RADIOBUTTON)) {
-	param = Py_BuildValue("(OO)", callback, param);
-	gtk_signal_connect_full(GTK_OBJECT(ret), "clicked", NULL,
-				(GtkCallbackMarshal)pygtk_callback_marshal,
-				param, pygtk_destroy_notify, FALSE, FALSE);
+	g_signal_connect_closure(ret, "clicked",
+				 pyg_closure_new(callback, param, NULL),
+				 FALSE);
     }
     return pygobject_new((GObject *)ret);
 }

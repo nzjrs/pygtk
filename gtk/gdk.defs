@@ -94,6 +94,16 @@
   (field (type-and-name gint blue_prec))
 )
 
+(boxed Font
+  (in-module Gdk)
+  (c-name GdkFont)
+  (copy-func gdk_font_ref)
+  (release-func gdk_font_unref)
+  (field (type-and-name GdkFontType type))
+  (field (type-and-name gint ascent))
+  (field (type-and-name gint descent))
+)
+
 
 ;; Enumerations and flags ...
 
@@ -798,13 +808,13 @@
 
 ;; From /opt/pango/include/gtk-2.0/gdk/gdkcursor.h
 
-(function gdk_cursor_new
+(function cursor_new
   (c-name gdk_cursor_new)
   (return-type GdkCursor*)
   (parameter (type-and-name GdkCursorType cursor_type))
 )
 
-(function gdk_cursor_new_from_pixmap
+(function cursor_new_from_pixmap
   (c-name gdk_cursor_new_from_pixmap)
   (return-type GdkCursor*)
   (parameter (type-and-name GdkPixmap* source))
@@ -1198,6 +1208,7 @@
 ;; From /opt/pango/include/gtk-2.0/gdk/gdkfont.h
 
 (function font_load
+  (is-constructor-of GdkFont)
   (c-name gdk_font_load)
   (return-type GdkFont*)
   (parameter (type-and-name const-gchar* font_name))
@@ -1233,7 +1244,7 @@
   (c-name gdk_text_width)
   (return-type gint)
   (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length))
+  (parameter (type-and-name gint text_length) (default "-1"))
 )
 
 (method text_width_wc
@@ -1270,7 +1281,7 @@
   (c-name gdk_text_measure)
   (return-type gint)
   (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length))
+  (parameter (type-and-name gint text_length) (default "-1"))
 )
 
 (method char_measure
@@ -1292,7 +1303,7 @@
   (c-name gdk_text_height)
   (return-type gint)
   (parameter (type-and-name const-gchar* text))
-  (parameter (type-and-name gint text_length))
+  (parameter (type-and-name gint text_length) (default "-1"))
 )
 
 (method char_height
@@ -1338,12 +1349,6 @@
   (parameter (type-and-name gint* width))
   (parameter (type-and-name gint* ascent))
   (parameter (type-and-name gint* descent))
-)
-
-(method full_name_get
-  (of-object Font (Gdk))
-  (c-name gdk_font_full_name_get)
-  (return-type gchar*)
 )
 
 

@@ -25,7 +25,7 @@ def mainquit(*args):
     main_quit()
 mainiteration = main_iteration
 
-load_font = font_load
+load_font = GdkFont
 load_fontset = fontset_load
 create_pixmap = GtkPixmap
 create_pixmap_from_xpm = pixmap_create_from_xpm

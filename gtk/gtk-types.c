@@ -29,19 +29,6 @@ PyGtkStyle_New(GtkStyle *obj)
 #endif
 
 PyObject *
-PyGdkFont_New(GdkFont *obj)
-{
-    PyGdkFont_Object *self;
-
-    self = (PyGdkFont_Object *)PyObject_NEW(PyGdkFont_Object, &PyGdkFont_Type);
-    if (self == NULL)
-	return NULL;
-    self->obj = obj;
-    gdk_font_ref(self->obj);
-    return (PyObject *)self;
-}
-
-PyObject *
 PyGdkColor_New(GdkColor *obj)
 {
     PyGdkColor_Object *self;
@@ -548,116 +535,6 @@ PyTypeObject PyGtkStyle_Type = {
     NULL
 };
 #endif
-
-static void
-pygdk_font_dealloc(PyGdkFont_Object *self)
-{
-    gdk_font_unref(self->obj);
-    PyMem_DEL(self);
-}
-
-static PyObject *
-pygdk_font_width(PyGdkFont_Object *self, PyObject *args)
-{
-    char *text;
-    int length;
-
-    if (!PyArg_ParseTuple(args, "s#:GdkFont.width", &text, &length))
-	return NULL;
-    return PyInt_FromLong(gdk_text_width(self->obj, text, length));
-}
-
-static PyObject *
-pygdk_font_measure(PyGdkFont_Object *self, PyObject *args)
-{
-    char *text;
-    int length;
-
-    if (!PyArg_ParseTuple(args, "s#:GdkFont.measure", &text, &length))
-	return NULL;
-    return PyInt_FromLong(gdk_text_measure(self->obj, text, length));
-}
-
-static PyObject *
-pygdk_font_height(PyGdkFont_Object *self, PyObject *args)
-{
-    char *text;
-    int length;
-
-    if (!PyArg_ParseTuple(args, "s#:GdkFont.height", &text, &length))
-	return NULL;
-    return PyInt_FromLong(gdk_text_height(self->obj, text, length));
-}
-
-static PyObject *
-pygdk_font_extents(PyGdkFont_Object *self, PyObject *args)
-{
-    char *text;
-    int length, lbearing, rbearing, width, ascent, descent;
-    if (!PyArg_ParseTuple(args, "s#:GdkFont.extents", &text, &length))
-	return NULL;
-    gdk_text_extents(self->obj, text, length, &lbearing, &rbearing,
-		     &width, &ascent, &descent);
-    return Py_BuildValue("(iiiii)", lbearing, rbearing, width, ascent, descent);
-}
-
-static PyMethodDef PyGdkFont_methods[] = {
-    {"width",   (PyCFunction)pygdk_font_width,   METH_VARARGS, NULL},
-    {"measure", (PyCFunction)pygdk_font_measure, METH_VARARGS, NULL},
-    {"height",  (PyCFunction)pygdk_font_height,  METH_VARARGS, NULL},
-    {"extents", (PyCFunction)pygdk_font_extents, METH_VARARGS, NULL},
-    {NULL, 0, 0, NULL}
-};
-
-static PyObject *
-pygdk_font_getattr(PyGdkFont_Object *self, char *key)
-{
-    if (!strcmp(key, "__members__"))
-	return Py_BuildValue("[sss]", "ascent", "descent", "type");
-    if (!strcmp(key, "ascent"))
-	return PyInt_FromLong(self->obj->ascent);
-    if (!strcmp(key, "descent"))
-	return PyInt_FromLong(self->obj->descent);
-    if (!strcmp(key, "type"))
-	return PyInt_FromLong(self->obj->type);
-    return Py_FindMethod(PyGdkFont_methods, (PyObject *)self, key);
-}
-
-static int
-pygdk_font_compare(PyGdkFont_Object *self, PyGdkFont_Object *v)
-{
-    if (self->obj == v->obj) return 0;
-    if (self->obj > v->obj) return -1;
-    return 1;
-}
-
-static long
-pygdk_font_hash(PyGdkFont_Object *self)
-{
-    return (long)self->obj;
-}
-
-PyTypeObject PyGdkFont_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GdkFont",
-    sizeof(PyGdkFont_Object),
-    0,
-    (destructor)pygdk_font_dealloc,
-    (printfunc)0,
-    (getattrfunc)pygdk_font_getattr,
-    (setattrfunc)0,
-    (cmpfunc)pygdk_font_compare,
-    (reprfunc)0,
-    0,
-    0,
-    0,
-    (hashfunc)pygdk_font_hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
 
 static void
 pygdk_color_dealloc(PyGdkColor_Object *self)
@@ -3450,20 +3327,6 @@ pygtk_tree_path_from_pyobject(PyObject *object)
 /* marshalers for the boxed types.  Uses uppercase notation so that
  * the macro below can automatically install them. */
 static PyObject *
-PyGdkFont_from_value(const GValue *value)
-{
-    return PyGdkFont_New(g_value_get_boxed(value));
-}
-static int
-PyGdkFont_to_value(GValue *value, PyObject *object)
-{
-    if (PyGdkFont_Check(object)) {
-	g_value_set_boxed(value, PyGdkFont_Get(object));
-	return 0;
-    }
-    return -1;
-}
-static PyObject *
 PyGdkColor_from_value(const GValue *value)
 {
     return PyGdkColor_New(g_value_get_boxed(value));
@@ -3570,7 +3433,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
 #endif
-    register_tp2(GdkFont, GDK_TYPE_FONT);
     register_tp2(GdkColor, GDK_TYPE_COLOR);
     register_tp2(GdkEvent, GDK_TYPE_EVENT);
 #if 0
