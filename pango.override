@@ -183,42 +183,64 @@ _wrap_pango_font_map_list_families(PyGObject *self)
     return ret;
 }
 %%
-override pango_tab_array_get_tab kwargs
+override pango_glyph_string_extents kwargs
 static PyObject *
-_wrap_pango_tab_array_get_tab(PyObject *self, PyObject *args, PyObject *kwargs)
+_wrap_pango_glyph_string_extents(PyObject *self, PyObject *args,
+				 PyObject *kwargs)
 {
-    static char *kwlist[] = { "tab_index", NULL };
-    gint tab_index, location;
-    PangoTabAlign alignment;
+    static char *kwlist[] = { "font", NULL };
+    PyObject *font;
+    PangoRectangle ink_rect, logical_rect;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoTabArray.get_tab",
-				     kwlist, &tab_index))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:PangoGlyphString.extents", kwlist,
+				     &font))
 	return NULL;
+    if (!pygobject_check(font, &PyPangoFont_Type)) {
+	PyErr_SetString(PyExc_TypeError, "font must be a PangoFont");
+	return NULL;
+    }
 
-    pango_tab_array_get_tab(pyg_boxed_get(self, PangoTabArray),
-			    tab_index, &alignment, &location);
-    return Py_BuildValue("(ii)", (int)alignment, location);
+    pango_glyph_string_extents(pyg_boxed_get(self, PangoGlyphString),
+			       PANGO_FONT(pygobject_get(font)),
+			       &ink_rect, &logical_rect);
+
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
 }
 %%
-override pango_tab_array_get_tabs noargs
+override pango_glyph_string_extents_range kwargs
 static PyObject *
-_wrap_pango_tab_array_get_tabs(PyObject *self)
+_wrap_pango_glyph_string_extents_range(PyObject *self, PyObject *args,
+				       PyObject *kwargs)
 {
-    PangoTabAlign *alignments;
-    gint *locations, length, i;
-    PyObject *ret;
+    static char *kwlist[] = { "start", "end", "font", NULL };
+    gint start, end;
+    PyObject *font;
+    PangoRectangle ink_rect, logical_rect;
 
-    length = pango_tab_array_get_size(pyg_boxed_get(self, PangoTabArray));
-    pango_tab_array_get_tabs(pyg_boxed_get(self, PangoTabArray),
-			     &alignments, &locations);
-    ret = PyTuple_New(length);
-    for (i = 0; i < length; i++) {
-	PyObject *item;
-
-	item = Py_BuildValue("(ii)", (int)alignments[i], locations[i]);
-	PyTuple_SetItem(ret, i, item);
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iiO:PangoGlyphString.extents_range",
+				     kwlist, &start, &end, &font))
+	return NULL;
+    if (!pygobject_check(font, &PyPangoFont_Type)) {
+	PyErr_SetString(PyExc_TypeError, "font must be a PangoFont");
+	return NULL;
     }
-    return ret;
+
+    pango_glyph_string_extents_range(pyg_boxed_get(self, PangoGlyphString),
+				     start, end,
+				     PANGO_FONT(pygobject_get(font)),
+				     &ink_rect, &logical_rect);
+
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
 }
 %%
 override pango_layout_set_markup kwargs
@@ -272,7 +294,7 @@ _wrap_pango_layout_set_markup_with_accel(PyGObject *self, PyObject *args,
     return PyUnicode_FromUnicode(&pychr, 1);
 }
 %%
-override pango_layout_index_to_pos kwlist
+override pango_layout_index_to_pos kwargs
 static PyObject *
 _wrap_pango_layout_index_to_pos(PyGObject *self, PyObject *args,
 				PyObject *kwargs)
@@ -290,10 +312,10 @@ _wrap_pango_layout_index_to_pos(PyGObject *self, PyObject *args,
     return Py_BuildValue("(iiii)", pos.x, pos.y, pos.width, pos.height);
 }
 %%
-override pango_layout_get_cursor_pos kwlist
+override pango_layout_get_cursor_pos kwargs
 static PyObject *
 _wrap_pango_layout_get_cursor_pos(PyGObject *self, PyObject *args,
-				PyObject *kwargs)
+				  PyObject *kwargs)
 {
     static char *kwlist[] = { "index", NULL };
     gint index;
@@ -312,4 +334,134 @@ _wrap_pango_layout_get_cursor_pos(PyGObject *self, PyObject *args,
 			 weak_pos.x, weak_pos.y,
 			 weak_pos.width, weak_pos.height);
 }
+%%
+override pango_layout_move_cursor_visually kwargs
+static PyObject *
+_wrap_pango_layout_move_cursor_visually(PyGObject *self, PyObject *args,
+					PyObject *kwargs)
+{
+    static char *kwlist[] = { "strong", "old_index", "old_trailing", "direction", NULL };
+    gboolean strong;
+    gint old_index, old_trailing, direction, new_index = 0, new_trailing = 0;
 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iiii:PangoLayout.move_cursor_visually",
+				     kwlist, &strong, &old_index,
+				     &old_trailing, &direction))
+	return NULL;
+
+    pango_layout_move_cursor_visually(PANGO_LAYOUT(self->obj), strong,
+				      old_index, old_trailing, direction,
+				      &new_index, &new_trailing);
+    return Py_BuildValue("(ii)", new_index, new_trailing);
+}
+%%
+override pango_layout_xy_to_index kwargs
+static PyObject *
+_wrap_pango_layout_xy_to_index(PyGObject *self, PyObject *args,
+			       PyObject *kwargs)
+{
+    static char *kwlist[] = { "x", "y", NULL };
+    gint x, y, index, trailing;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "ii:PangoLayout.xy_to_index", kwlist,
+				     &x, &y))
+	return NULL;
+
+    pango_layout_xy_to_index(PANGO_LAYOUT(self->obj), x, y, &index, &trailing);
+
+    return Py_BuildValue("(ii)", index, trailing);
+}
+%%
+override pango_layout_get_extents noargs
+static PyObject *
+_wrap_pango_layout_get_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_get_extents(PANGO_LAYOUT(self->obj),
+			     &ink_rect, &logical_rect);
+
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_get_pixel_extents noargs
+static PyObject *
+_wrap_pango_layout_get_pixel_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_get_extents(PANGO_LAYOUT(self->obj),
+			     &ink_rect, &logical_rect);
+
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_get_size noargs
+static PyObject *
+_wrap_pango_layout_get_size(PyGObject *self)
+{
+    gint width, height;
+
+    pango_layout_get_size(PANGO_LAYOUT(self->obj), &width, &height);
+
+    return Py_BuildValue("(ii)", width, height);
+}
+%%
+override pango_layout_get_pixel_size noargs
+static PyObject *
+_wrap_pango_layout_get_pixel_size(PyGObject *self)
+{
+    gint width, height;
+
+    pango_layout_get_pixel_size(PANGO_LAYOUT(self->obj), &width, &height);
+
+    return Py_BuildValue("(ii)", width, height);
+}
+%%
+override pango_tab_array_get_tab kwargs
+static PyObject *
+_wrap_pango_tab_array_get_tab(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "tab_index", NULL };
+    gint tab_index, location;
+    PangoTabAlign alignment;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "i:PangoTabArray.get_tab",
+				     kwlist, &tab_index))
+	return NULL;
+
+    pango_tab_array_get_tab(pyg_boxed_get(self, PangoTabArray),
+			    tab_index, &alignment, &location);
+    return Py_BuildValue("(ii)", (int)alignment, location);
+}
+%%
+override pango_tab_array_get_tabs noargs
+static PyObject *
+_wrap_pango_tab_array_get_tabs(PyObject *self)
+{
+    PangoTabAlign *alignments;
+    gint *locations, length, i;
+    PyObject *ret;
+
+    length = pango_tab_array_get_size(pyg_boxed_get(self, PangoTabArray));
+    pango_tab_array_get_tabs(pyg_boxed_get(self, PangoTabArray),
+			     &alignments, &locations);
+    ret = PyTuple_New(length);
+    for (i = 0; i < length; i++) {
+	PyObject *item;
+
+	item = Py_BuildValue("(ii)", (int)alignments[i], locations[i]);
+	PyTuple_SetItem(ret, i, item);
+    }
+    return ret;
+}

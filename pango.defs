@@ -357,17 +357,6 @@
   )
 )
 
-(define-function default_break
-  (c-name "pango_default_break")
-  (return-type "none")
-  (parameters
-    '("const-gchar*" "text")
-    '("gint" "length")
-    '("PangoAnalysis*" "analysis")
-    '("PangoLogAttr*" "attrs")
-  )
-)
-
 
 
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-context.h
@@ -1048,56 +1037,6 @@
 
 
 
-;; From /opt/gtk2/include/pango-1.0/pango/pango-indic.h
-
-(define-function indic_shift_vowels
-  (c-name "pango_indic_shift_vowels")
-  (return-type "none")
-  (parameters
-    '("PangoIndicScript*" "script")
-    '("gunichar*" "chars")
-    '("gunichar*" "end")
-  )
-)
-
-(define-function indic_compact
-  (c-name "pango_indic_compact")
-  (return-type "none")
-  (parameters
-    '("PangoIndicScript*" "script")
-    '("int*" "num")
-    '("gunichar*" "chars")
-    '("int*" "cluster")
-  )
-)
-
-(define-function indic_convert_vowels
-  (c-name "pango_indic_convert_vowels")
-  (return-type "none")
-  (parameters
-    '("PangoIndicScript*" "script")
-    '("gboolean" "in_middle")
-    '("int*" "num")
-    '("gunichar*" "chars")
-    '("gboolean" "has_standalone_vowels")
-  )
-)
-
-(define-function indic_split_out_characters
-  (c-name "pango_indic_split_out_characters")
-  (return-type "none")
-  (parameters
-    '("PangoIndicScript*" "script")
-    '("const-gchar*" "text")
-    '("int" "n_chars")
-    '("gunichar**" "wc")
-    '("int*" "n_glyph")
-    '("PangoGlyphString*" "glyphs")
-  )
-)
-
-
-
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-layout.h
 
 (define-function pango_layout_get_type
@@ -1616,47 +1555,6 @@
   (c-name "pango_layout_iter_get_baseline")
   (return-type "int")
 )
-
-
-
-;; From /opt/gtk2/include/pango-1.0/pango/pango-modules.h
-
-(define-function pango_find_map
-  (c-name "pango_find_map")
-  (return-type "PangoMap*")
-  (parameters
-    '("PangoLanguage*" "language")
-    '("guint" "engine_type_id")
-    '("guint" "render_type_id")
-  )
-)
-
-(define-method get_entry
-  (of-object "PangoMap")
-  (c-name "pango_map_get_entry")
-  (return-type "PangoMapEntry*")
-  (parameters
-    '("guint32" "wc")
-  )
-)
-
-(define-method get_engine
-  (of-object "PangoMap")
-  (c-name "pango_map_get_engine")
-  (return-type "PangoEngine*")
-  (parameters
-    '("guint32" "wc")
-  )
-)
-
-(define-function pango_module_register
-  (c-name "pango_module_register")
-  (return-type "none")
-  (parameters
-    '("PangoIncludedModule*" "module")
-  )
-)
-
 
 
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-tabs.h
