@@ -5941,3 +5941,63 @@ _wrap_gtk_about_dialog_get_artists(PyGObject *self)
 
     return ret;
 }
+%%
+override gtk_selection_data_set_uris kwargs
+static PyObject *
+_wrap_gtk_selection_data_set_uris(PyGBoxed *self, PyObject *args,
+				  PyObject *kwargs)
+{
+    gchar **uris = NULL;
+    static char *kwlist[] = { "uris", NULL };
+    PyObject *py_uris = NULL;
+    int i, n_uris;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, 
+				     "O:GtkSelectionData.set_uris",
+                                     kwlist, &py_uris))
+        return NULL;
+
+    if (!PySequence_Check(py_uris)) {
+        PyErr_SetString(PyExc_TypeError, "uris must be a sequence");
+        return NULL;
+    }
+
+    n_uris = PySequence_Length(py_uris);
+    uris = g_new(gchar *, n_uris + 1);
+    for (i = 0; i < n_uris; i++) {
+        PyObject *item = PySequence_GetItem(py_uris, i);
+        Py_DECREF(item); /* PySequence_GetItem INCREF's */
+        uris[i] = PyString_AsString(item);
+    }
+    uris[n_uris] = NULL;
+
+    gtk_selection_data_set_uris(pyg_boxed_get(self, GtkSelectionData), uris);
+
+    g_free(uris);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_selection_data_get_uris noargs
+static PyObject *
+_wrap_gtk_selection_data_get_uris(PyGBoxed *self)
+{
+    gchar **uris, **tmp;
+    int i = 0, j;
+    PyObject *ret;
+
+    uris = gtk_selection_data_get_uris(pyg_boxed_get(self, GtkSelectionData));
+    if (!uris)
+	return PyTuple_New(0);
+    
+    tmp = uris;
+    while (*tmp)
+        tmp++, i++;
+
+    ret = PyTuple_New(i);
+    for (j = 0; j < i; j++)
+        PyTuple_SetItem(ret, j, PyString_FromString(uris[j]));
+
+    return ret;
+}
