@@ -70,8 +70,10 @@ import pango.Layout as PyPangoLayout_Type
 %%
 ignore
   gtk_accel_group_add
+  gtk_accel_group_connect
   gtk_accel_group_create_add
   gtk_accel_group_create_remove
+  gtk_accel_group_disconnect
   gtk_accel_group_entries_from_object
   gtk_accel_group_get_entry
   gtk_accel_group_handle_add
@@ -97,9 +99,14 @@ ignore
   gtk_check_button_new_with_mnemonic
   gtk_check_menu_item_new_with_label
   gtk_check_menu_item_new_with_mnemonic
+  gtk_clipboard_set_with_owner
+  gtk_clist_set_compare_func
   gtk_color_button_new_with_color
+  gtk_color_selection_set_color
+  gtk_color_selection_get_color
   gtk_container_class_find_child_property
   gtk_container_class_list_child_properties
+  gtk_ctree_set_drag_compare_func
   gtk_dialog_new
   gtk_drag_dest_handle_event
   gtk_drag_source_handle_event
@@ -5361,4 +5368,15 @@ _wrap_gtk_tooltips_get_info_from_tip_window(PyGObject *self)
 			     pygobject_new((GObject *)widget));
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_menu_item_toggle_size_request noargs
+static PyObject *
+_wrap_gtk_menu_item_toggle_size_request(PyGObject *self)
+{
+    gint requisition;
+
+    gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(self->obj), &requisition);
+
+    return PyInt_FromLong(requisition);
 }
