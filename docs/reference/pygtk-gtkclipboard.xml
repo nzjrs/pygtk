@@ -313,10 +313,11 @@ clipboard data and a function (specified by <parameter>get_func</parameter>)
 to call to get the actual data when it is
 requested. <parameter>clear_func</parameter> is a function that is called
 when the contents of the clipboard are being changed to provide cleanup
-operations on the data. <parameter>user_data</parameter> is passed to
-<parameter>get_func</parameter> and <parameter>clear_func</parameter> when
-they are invoked. The 3-tuples listed in targets contain the following
-items:</para>
+operations on
+<parameter>user_data</parameter>. <parameter>user_data</parameter> is passed
+to <parameter>get_func</parameter> and <parameter>clear_func</parameter>
+when they are invoked. The 3-tuples listed in <parameter>targets</parameter>
+contain the following items:</para>
 
     <itemizedlist>
       <listitem>
@@ -333,6 +334,31 @@ clipboard</simpara>
 parameter to help identify the target type</simpara>
       </listitem>
    </itemizedlist>
+
+      <para>The signature of <parameter>get_func</parameter> is:</para>
+
+      <programlisting>
+  def get_func(clipboard, selectiondata, info, data):
+</programlisting>
+
+      <para>where <parameter>clipboard</parameter> is the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>,
+<parameter>selectiondata</parameter> is a <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
+object to set with the data, <parameter>info</parameter> is the application
+assigned integer associated with a target, and <parameter>data</parameter>
+is the <parameter>user_data</parameter> argument.</para>
+
+      <para>The signature of <parameter>clear_func</parameter> is:</para>
+
+      <programlisting>
+  def clear_func(clipboard, data):
+</programlisting>
+
+      <para>where <parameter>clipboard</parameter> is the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link> and
+<parameter>data</parameter> is the <parameter>user_data</parameter>
+argument.</para>
 
     </refsect2>
 
