@@ -4255,3 +4255,69 @@ _wrap_gtk_combo_box_entry_new(PyGObject *self, PyObject *args,
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+%%
+override gtk_entry_completion_set_match_func args
+static gboolean
+pygtk_entry_completion_match_func_cb(GtkEntryCompletion *completion,
+				      const gchar *key,
+				      GtkTreeIter *iter,
+				      gpointer user_data)
+{
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_completion, *py_iter;
+    gboolean ret = FALSE;
+    PyObject *retobj;
+ 
+    g_assert(cunote->func);
+
+    pyg_block_threads();
+ 
+    py_completion = pygobject_new((GObject *)completion);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NsNO)", py_completion,
+                                     key, py_iter, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(NsN)", py_completion,
+                                     key, py_iter);
+    }
+
+    if (retobj != NULL) {
+	ret = PyObject_IsTrue(retobj);
+        Py_DECREF(retobj);
+    } else {
+	PyErr_Print();
+    }
+ 
+    pyg_unblock_threads();
+    return ret;
+}
+static PyObject *
+_wrap_gtk_entry_completion_set_match_func(PyGObject *self, PyObject *args)
+{
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+ 
+    if (!PyArg_ParseTuple(args,
+                          "O|O:GtkEntryCompletion.set_match_func",
+                          &pyfunc, &pyarg))
+        return NULL;
+ 
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+
+    gtk_entry_completion_set_match_func(GTK_ENTRY_COMPLETION(self->obj),
+					pygtk_entry_completion_match_func_cb,
+					cunote, pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
