@@ -2704,16 +2704,6 @@
   (return-type "GtkType")
 )
 
-(define-method border_width
-  (of-object "GtkContainer")
-  (c-name "gtk_container_border_width")
-  (return-type "none")
-  (parameters
-    '("guint" "border_width")
-  )
-  (deprecated "use GtkContainer.set_border_width")
-)
-
 (define-method set_border_width
   (of-object "GtkContainer")
   (c-name "gtk_container_set_border_width")
@@ -5222,12 +5212,12 @@
 (define-function icon_set_new
   (c-name "gtk_icon_set_new")
   (return-type "GtkIconSet*")
-  (is-constructor-of GtkIconSet)
 )
 
 (define-function icon_set_new_from_pixbuf
   (c-name "gtk_icon_set_new_from_pixbuf")
   (return-type "GtkIconSet*")
+  (is-constructor-of GtkIconSet)  
   (parameters
     '("GdkPixbuf*" "pixbuf")
   )
@@ -10871,22 +10861,6 @@
   (deprecated "")
 )
 
-(define-method draw_oval
-  (of-object "GtkStyle")
-  (c-name "gtk_draw_oval")
-  (return-type "none")
-  (parameters
-    '("GdkWindow*" "window")
-    '("GtkStateType" "state_type")
-    '("GtkShadowType" "shadow_type")
-    '("gint" "x")
-    '("gint" "y")
-    '("gint" "width")
-    '("gint" "height")
-  )
-  (deprecated "")
-)
-
 (define-method draw_box
   (of-object "GtkStyle")
   (c-name "gtk_draw_box")
@@ -10942,39 +10916,6 @@
     '("GdkWindow*" "window")
     '("GtkStateType" "state_type")
     '("GtkShadowType" "shadow_type")
-    '("gint" "x")
-    '("gint" "y")
-    '("gint" "width")
-    '("gint" "height")
-  )
-  (deprecated "")
-)
-
-(define-method draw_cross
-  (of-object "GtkStyle")
-  (c-name "gtk_draw_cross")
-  (return-type "none")
-  (parameters
-    '("GdkWindow*" "window")
-    '("GtkStateType" "state_type")
-    '("GtkShadowType" "shadow_type")
-    '("gint" "x")
-    '("gint" "y")
-    '("gint" "width")
-    '("gint" "height")
-  )
-  (deprecated "")
-)
-
-(define-method draw_ramp
-  (of-object "GtkStyle")
-  (c-name "gtk_draw_ramp")
-  (return-type "none")
-  (parameters
-    '("GdkWindow*" "window")
-    '("GtkStateType" "state_type")
-    '("GtkShadowType" "shadow_type")
-    '("GtkArrowType" "arrow_type")
     '("gint" "x")
     '("gint" "y")
     '("gint" "width")
@@ -11409,6 +11350,7 @@
   (return-type "none")
   (parameters
     '("GdkWindow*" "window")
+    '("GtkStateType" "state_type")
     '("GdkRectangle*" "area")
     '("GtkWidget*" "widget")
     '("const-gchar*" "detail")

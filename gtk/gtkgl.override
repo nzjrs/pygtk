@@ -90,7 +90,7 @@ _wrap_gtk_gl_area_share_new(PyGtk_Object *self, PyObject *args,
 			"could not create GtkGLArea object");
 	return NULL;
     }
-    pygtk_register_wrapper((PyObject *)self);
+    pyg_register_wrapper((PyObject *)self);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -99,9 +99,9 @@ override gdk_gl_wait_gdk noargs
 static PyObject *
 _wrap_gdk_gl_wait_gdk(PyObject *self)
 {
-    pygtk_unblock_threads();
+    pyg_unblock_threads();
     gdk_gl_wait_gdk();
-    pygtk_block_threads();
+    pyg_block_threads();
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -110,9 +110,9 @@ override gdk_gl_wait_gl noargs
 static PyObject *
 _wrap_gdk_gl_wait_gl(PyObject *self)
 {
-    pygtk_unblock_threads();
+    pyg_unblock_threads();
     gdk_gl_wait_gl();
-    pygtk_block_threads();
+    pyg_block_threads();
     Py_INCREF(Py_None);
     return Py_None;
 }

@@ -488,7 +488,35 @@ class GtkTreePathArg(ArgType):
                               '    }\n' +
                               '    Py_INCREF(Py_None);\n' +
                               '    return Py_None;')
+													       
+						       
+class GdkRectanglePtrArg(ArgType):
+    null = ('    if (PyTuple_Check(py_%(name)s)) {\n'
+            '        %(name)s = g_new(GdkRectangle, 1);\n'
+	    '        if (!PyArg_ParseTuple(py_%(name)s, "iiii", &%(name)s->x, &%(name)s->y, &%(name)s->width, &%(name)s->height)) {\n'
+	    '            return NULL;\n'
+	    '        }\n'
+	    '    } else {\n'
+	    '        PyErr_SetString(PyExc_TypeError, "%(name)s must be a tuple");\n'
+	    '    }\n')
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pnull:
+	    info.varlist.add('GdkRectangle', '*' + pname + ' = NULL')
+	    info.varlist.add('PyObject', '*py_' + pname + ' = Py_None')
+            info.add_parselist('O', ['&py_' + pname], [pname])
+	else:
+	    info.varlist.add('GdkRectangle', '*' + pname + ' = NULL')
+	    info.varlist.add('PyObject', '*py_' + pname)
+            info.add_parselist('O!', ['&PyTuple_Type', '&py_' + pname],[pname])
+	info.arglist.append(pname)
+	info.codebefore.append(self.null % {'name':  pname})
 
+class GdkRectangleArg(ArgType):
+    def write_return(self, ptype, info):
+	info.varlist.add('GdkRectangle', 'ret')
+	info.codeafter.append('    return Py_BuildValue("(iiii)", ret.x, ret.y, ret.width, ret.height);\n')
+
+	
 class ArgMatcher:
     def __init__(self):
 	self.argtypes = {}
@@ -591,6 +619,8 @@ matcher.register('GtkType', GTypeArg())
 
 matcher.register('GError**', GErrorArg())
 matcher.register('GtkTreePath*', GtkTreePathArg())
+matcher.register('GdkRectangle*', GdkRectanglePtrArg())
+matcher.register('GdkRectangle', GdkRectangleArg())
 
 matcher.register_object('GObject', None, 'G_TYPE_OBJECT')
 

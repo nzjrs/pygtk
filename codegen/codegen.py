@@ -21,7 +21,7 @@ def exc_info():
 
 class FileOutput:
     '''Simple wrapper for file object, that makes writing #line
-    statements easier.'''
+    statements easier.''' # "
     def __init__(self, fp, filename=None):
         self.fp = fp
         self.lineno = 1
@@ -43,7 +43,7 @@ class FileOutput:
 
     def setline(self, linenum, filename):
         '''writes out a #line statement, for use by the C
-        preprocessor.'''
+        preprocessor.''' # "
         self.write('#line %d "%s"\n' % (linenum, filename))
     def resetline(self):
         '''resets line numbering to the original file'''
