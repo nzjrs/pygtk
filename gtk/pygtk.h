@@ -12,6 +12,8 @@ struct _PyGtk_FunctionStruct {
 
     PyTypeObject *gdkAtom_type;
     PyObject *(* gdkAtom_new)(GdkAtom atom);
+    gboolean  (* rectangle_from_pyobject)(PyObject     *object,
+					  GdkRectangle *rectangle);
 };
 
 /* structure definitions for the various object types in PyGTK */
@@ -48,6 +50,10 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 
 /* some variables */
 #define PYGTK_VERSION (_PyGtk_API->pygtkVersion)
+
+/* public functions */
+#define pygdk_rectangle_from_pyobject (_PyGtk_API->rectangle_from_pyobject);
+
 
 /* a function to initialise the pygtk functions */
 #define init_pygtk() { \
