@@ -32,7 +32,7 @@ $(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango-types.defs \
 	&& rm -f gen-pango.c
 
 pkginclude_HEADERS = pygobject.h
-pkgincludedir = $(includedir)/pygtk-2.0/pygtk
+pkgincludedir = $(includedir)/pygtk-2.0
 
 noinst_PYTHON = ltihooks.py
 
