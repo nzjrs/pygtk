@@ -476,7 +476,7 @@ _wrap_gtk_clipboard_set_with_data(PyGObject *self, PyObject *args, PyObject *kwa
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
         PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
@@ -2246,7 +2246,7 @@ _wrap_gtk_drag_dest_set(PyGObject *self, PyObject *args, PyObject *kwargs)
     for (i = 0; i < n_targets; i++) {
         PyObject *item = PySequence_GetItem(py_targets, i);
         Py_DECREF(item);
-        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
@@ -2285,7 +2285,7 @@ _wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
         PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
@@ -2332,7 +2332,6 @@ _wrap_gtk_drag_dest_get_target_list(PyGObject *self)
         PyList_Append(ret, item);
         Py_DECREF(item);
     }
-    gtk_target_list_unref(target_list);
     return ret;
 }
 %%
@@ -2357,7 +2356,7 @@ _wrap_gtk_drag_dest_set_target_list(PyGObject *self, PyObject *args,
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
         PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
@@ -2404,7 +2403,7 @@ _wrap_gtk_drag_source_set(PyGObject *self, PyObject *args, PyObject *kwargs)
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
         PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
@@ -2452,7 +2451,7 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
     tents = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
         PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "zii", &tents[i].target,
+        if (!PyArg_ParseTuple(item, "sii", &tents[i].target,
                               &tents[i].flags, &tents[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,
@@ -2496,7 +2495,7 @@ _wrap_gtk_selection_add_targets(PyGObject *self, PyObject *args,
     targets = g_new(GtkTargetEntry, n_targets);
     for (i = 0; i < n_targets; i++) {
         PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "zii", &targets[i].target,
+        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
                               &targets[i].flags, &targets[i].info)) {
             PyErr_Clear();
             PyErr_SetString(PyExc_TypeError,

@@ -1,3 +1,14 @@
+2004-06-14  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk.override (_wrap_gtk_clipboard_set_with_data)
+	(_wrap_gtk_drag_dest_set) (_wrap_gtk_drag_dest_find_target)
+	(_wrap_gtk_drag_dest_set_target_list) (_wrap_gtk_drag_source_set)
+	(_wrap_gtk_drag_begin) (_wrap_gtk_selection_add_targets)
+	Avoid segfault if first item in a py_targets tuple is None by
+	forcing first item to be a string.
+	(_wrap_gtk_drag_dest_get_target_list) target_list should not
+	be unreffed.
+
 2004-06-14  root  <lgs@cvs.gnome.org>
 
 	* gtk/gtkwidget.override (_wrap_gtk_widget_hide_on_delete): added dummy
