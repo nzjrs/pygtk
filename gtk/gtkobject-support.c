@@ -248,13 +248,6 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 		GTK_VALUE_BOXED(*arg) = PyGtkSelectionData_Get(obj);
 	    else
 		return -1;
-	} else if (arg->type == GTK_TYPE_CTREE_NODE) {
-	    if (obj == Py_None)
-		GTK_VALUE_BOXED(*arg) = NULL;
-	    else if (PyGtkSelectionData_Check(obj))
-		GTK_VALUE_BOXED(*arg) = PyGtkSelectionData_Get(obj);
-	    else
-		return -1;
 	} else {
 	    PyGtk_BoxFuncs *fs= pygtk_get_boxed(arg->type);
 	    if (fs && fs->toarg) {
@@ -342,12 +335,7 @@ pygtk_arg_as_pyobject(GtkArg *arg)
 	    return PyGdkVisual_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_SELECTION_DATA)
 	    return PyGtkSelectionData_New(GTK_VALUE_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_CTREE_NODE) {
-	    if (GTK_VALUE_BOXED(*arg))
-		return PyGtkCTreeNode_New(GTK_VALUE_BOXED(*arg));
-	    Py_INCREF(Py_None);
-	    return Py_None;
-	} else {
+	else {
 	    PyGtk_BoxFuncs *fs = pygtk_get_boxed(arg->type);
 	    if (fs && fs->fromarg)
 		return fs->fromarg(GTK_VALUE_BOXED(*arg));
@@ -504,11 +492,6 @@ pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret)
 		*GTK_RETLOC_BOXED(*ret) = PyGtkSelectionData_Get(py_ret);
 	    else
 		*GTK_RETLOC_BOXED(*ret) = NULL;
-	} else if (ret->type == GTK_TYPE_CTREE_NODE) {
-	    if (PyGtkSelectionData_Check(py_ret))
-		*GTK_RETLOC_BOXED(*ret) = PyGtkCTreeNode_Get(py_ret);
-	    else
-		*GTK_RETLOC_BOXED(*ret) = NULL;
 	} else {
 	    PyGtk_BoxFuncs *fs = pygtk_get_boxed(ret->type);
 	    if (fs && fs->toarg) {
@@ -585,12 +568,7 @@ pygtk_ret_as_pyobject(GtkArg *arg)
 	    return PyGdkVisual_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_SELECTION_DATA)
 	    return PyGtkSelectionData_New(*GTK_RETLOC_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_CTREE_NODE) {
-	    if (*GTK_RETLOC_BOXED(*arg))
-		return PyGtkCTreeNode_New(*GTK_RETLOC_BOXED(*arg));
-	    Py_INCREF(Py_None);
-	    return Py_None;
-	} else {
+	else {
 	    PyGtk_BoxFuncs *fs = pygtk_get_boxed(arg->type);
 	    if (fs && fs->fromarg)
 		return fs->fromarg(*GTK_RETLOC_BOXED(*arg));

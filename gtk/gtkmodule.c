@@ -50,7 +50,7 @@ static struct _PyGtk_FunctionStruct functions = {
 DL_EXPORT(void)
 init_gtk(void)
 {
-    PyObject *m, *d, *private;
+    PyObject *m, *d;
     PyObject *av;
     int argc, i;
     char **argv;
@@ -89,8 +89,6 @@ init_gtk(void)
 	    g_free(argv[i]);
 	g_free(argv);
     }
-    gtk_signal_set_funcs((GtkSignalMarshal)pygtk_signal_marshal,
-			 (GtkSignalDestroy)pygtk_destroy_notify);
 
     /* now initialise pygtk */
     m = Py_InitModule("_gtk", pygtk_functions);
