@@ -1,5 +1,10 @@
 2002-11-16  James Henstridge  <james@daa.com.au>
 
+	* pygtype.c (pyg_value_from_pyobject): if python object is None,
+	set GValue to NULL for boxed, pointer and GObject types.
+	(pyg_value_as_pyobject): convert G_TYPE_POINTER values to
+	gobject.GPointer python objects.
+
 	From patch on bug #96950
 
 	* gtk/gdk.override (_wrap_gdk_pixbuf_save): wrapper for
