@@ -1,3 +1,12 @@
+2000-03-08  James Henstridge  <james@daa.com.au>
+
+	* gtkmodule.c (PyGdkWindow_PropertyChange): fixed up problem in
+	property_change method that could cause a crash if data of
+	size 16 or 32 was set.
+	(PyGtkStyleHelper_SetItem): added missing return that could cause
+	a fallthrough to the g_assert_not_reached() call when setting a
+	bg_pixmap element on a GtkStyle.
+
 2000-03-03  James Henstridge  <james@daa.com.au>
 
 	The following is from Paul Clifford <paul@plasma.demon.co.uk>
