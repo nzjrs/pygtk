@@ -1,21 +1,21 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
-# pygtk - Python bindings for the GTK+ widget set.
-# Copyright (C) 1998-2002  James Henstridge
+# pygtk - Python bindings for the GTK toolkit.
+# Copyright (C) 1998-2003  James Henstridge
 #
 #   gtk/__init__.py: initialisation file for gtk package.
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#                                                                             
+# This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#                                                                             
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
@@ -54,6 +54,10 @@ timeout_remove = _gobject.source_remove
 input_add      = _gobject.io_add_watch
 input_add_full = _gobject.io_add_watch
 input_remove   = _gobject.source_remove
+
+gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
+gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
+gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
 # old names compatibility ...
 mainloop = main
