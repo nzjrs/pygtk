@@ -423,11 +423,8 @@ class GTypeArg(ArgType):
 
 # simple GError handler.
 class GErrorArg(ArgType):
-    handleerror = '    if (%(name)s != NULL) {\n' + \
-                  '        PyErr_SetString(PyExc_RuntimeError, %(name)s->message);\n' + \
-                  '        g_error_free(%(name)s);\n' + \
-                  '        return NULL;\n' + \
-                  '    }\n'
+    handleerror = '    if (pyg_error_check(&%(name)s))\n' + \
+                  '        return NULL;\n'
     def write_param(self, ptype, pname, pdflt, pnull, info):
         info.varlist.add('GError', '*' + pname + ' = NULL')
         info.arglist.append('&' + pname)
@@ -435,26 +432,31 @@ class GErrorArg(ArgType):
 
 class GtkTreePathArg(ArgType):
     # haven't done support for default args.  Is it needed?
+    normal = '    %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);'
     null = '    if (PyTuple_Check(py_%(name)s))\n' + \
 	   '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n' + \
 	   '    else if (py_%(name)s != Py_None) {\n' + \
 	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a GtkTreePath or None");\n' + \
 	   '        return NULL;\n' + \
 	   '    }\n'
+    freepath = '    if (%(name)s)\n' + \
+               '        gtk_tree_path_free(%(name)s);'
     def __init__(self):
         pass
     def write_param(self, ptype, pname, pdflt, pnull, info):
 	if pnull:
             info.varlist.add('GtkTreePath', '*' + pname + ' = NULL')
 	    info.varlist.add('PyObject', '*py_' + pname + ' = Py_None')
-	    info.codebefore.append(self.null % {'name':  pname,
-                                                'type':  ptype[:-1]})
+	    info.codebefore.append(self.null % {'name':  pname})
 	    info.arglist.append(pname)
             info.add_parselist('O', ['&py_' + pname], [pname])
 	else:
-	    info.varlist.add('PyObject', '*' + pname)
-	    info.arglist.append('pygtk_tree_path_from_pyobject(' + pname + ')')
-            info.add_parselist('O!', ['&PyTuple_Type', '&' + pname], [pname])
+            info.varlist.add('GtkTreePath', '*' + pname + ' = NULL')
+	    info.varlist.add('PyObject', '*py_' + pname)
+            info.codebefore.append(self.normal % {'name': pname})
+	    info.arglist.append(pname)
+            info.add_parselist('O!', ['&PyTuple_Type', '&py_' + pname],[pname])
+        info.codeafter.append(self.freepath % {'name': pname})
     def write_return(self, ptype, info):
         info.varlist.add('GtkTreePath', '*ret')
         info.codeafter.append('    if (ret) {\n' +

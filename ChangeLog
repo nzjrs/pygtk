@@ -1,3 +1,16 @@
+2001-12-02  James Henstridge  <james@daa.com.au>
+
+	* codegen/argtypes.py (GTypeArg.write_return): use pyg_error_check
+	to raise the exception.  Now the domain and code elements of the
+	GError are available.
+	(GtkTreePathArg.write_param): add to codeafter in order to free
+	the tree path we created, fixing a leak.
+
+	* gobjectmodule.c (initgobject): create a gobject.GError
+	exception.
+	(pyg_error_check): function for converting a GError into a
+	gobject.GError python exception.
+
 2001-12-01  James Henstridge  <james@daa.com.au>
 
 	* codegen/argtypes.py: change write_return methods to simply add a
