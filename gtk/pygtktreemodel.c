@@ -341,7 +341,6 @@ pygtk_generic_tree_model_get_path(GtkTreeModel *tree_model, GtkTreeIter *iter)
     pyg_block_threads();
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_path",
 				 "(O)", (PyObject *)iter->user_data);
-    pyg_unblock_threads();
     if (py_ret) {
 	GtkTreePath *path = pygtk_tree_path_from_pyobject(py_ret);
 
