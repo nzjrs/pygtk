@@ -39,12 +39,9 @@ static void connect_one(const gchar *handler_name, GtkObject *obj,
 	if (PyTuple_Check(callback)) {
 	    func = PyTuple_GetItem(callback, 0);
 	    extra = PyTuple_GetItem(callback, 1);
-	    Py_INCREF(func);
-	    Py_INCREF(extra);
-	    callback = Py_BuildValue("(OOO)", func, extra, other);
+	    callback = Py_BuildValue("(OON)", func, extra, other);
 	} else {
-	    Py_INCREF(callback);
-	    callback = Py_BuildValue("(O()O)", callback, other);
+	    callback = Py_BuildValue("(O()N)", callback, other);
 	}
     } else
 	Py_INCREF(callback);
@@ -76,12 +73,9 @@ static void connect_many(const gchar *handler_name, GtkObject *obj,
 	if (PyTuple_Check(callback)) {
 	    func = PyTuple_GetItem(callback, 0);
 	    extra = PyTuple_GetItem(callback, 1);
-	    Py_INCREF(func);
-	    Py_INCREF(extra);
-	    callback = Py_BuildValue("(OOO)", func, extra, other);
+	    callback = Py_BuildValue("(OON)", func, extra, other);
 	} else {
-	    Py_INCREF(callback);
-	    callback = Py_BuildValue("(O()O)", callback, other);
+	    callback = Py_BuildValue("(O()N)", callback, other);
 	}
     } else
 	Py_INCREF(callback);
@@ -107,8 +101,7 @@ static PyObject *_wrap_glade_xml_signal_connect(PyObject *self, PyObject *args) 
 	Py_INCREF(cbargs);
     else
 	cbargs = PyTuple_New(0);
-    Py_INCREF(func);
-    data = Py_BuildValue("(OO)", func, cbargs);
+    data = Py_BuildValue("(ON)", func, cbargs);
     glade_xml_signal_connect_full(GLADE_XML(PyGtk_Get(xml)), handler_name,
 				  connect_one, data);
     Py_DECREF(data);

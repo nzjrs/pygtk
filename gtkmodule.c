@@ -104,6 +104,7 @@ PyGtk_New(GtkObject *go) {
     return NULL;
   self->obj = go;
   gtk_object_ref(self->obj);
+  gtk_object_sink(self->obj);
   return (PyObject *)self;
 }
 
@@ -317,7 +318,7 @@ PyGdkDragContext_New(GdkDragContext *ctx) {
 
   self = (PyGdkDragContext_Object *)PyObject_NEW(PyGdkDragContext_Object,
 						 &PyGdkDragContext_Type);
-  if (!self)
+  if (self == NULL)
     return NULL;
   self->obj = ctx;
   gdk_drag_context_ref(self->obj);
@@ -330,7 +331,7 @@ PyGtkSelectionData_New(GtkSelectionData *data) {
 
   self = (PyGtkSelectionData_Object *)PyObject_NEW(PyGtkSelectionData_Object,
 						   &PyGtkSelectionData_Type);
-  if (!self)
+  if (self == NULL)
     return NULL;
   self->obj = data;
   return (PyObject *)self;
@@ -341,7 +342,7 @@ PyGdkAtom_New(GdkAtom atom) {
   PyGdkAtom_Object *self;
 
   self = (PyGdkAtom_Object *)PyObject_NEW(PyGdkAtom_Object, &PyGdkAtom_Type);
-  if (!self)
+  if (self == NULL)
     return NULL;
   self->atom = atom;
   self->name = NULL;
@@ -354,7 +355,7 @@ PyGdkCursor_New(GdkCursor *obj) {
 
   self = (PyGdkCursor_Object *)PyObject_NEW(PyGdkCursor_Object,
 					    &PyGdkCursor_Type);
-  if (!self)
+  if (self == NULL)
     return NULL;
   self->obj = obj;
   return (PyObject *)self;
@@ -366,7 +367,7 @@ PyGtkCTreeNode_New(GtkCTreeNode *node) {
 
   self = (PyGtkCTreeNode_Object *)PyObject_NEW(PyGtkCTreeNode_Object,
 					       &PyGtkCTreeNode_Type);
-  if (!self)
+  if (self == NULL)
     return NULL;
   self->node = node;
   return (PyObject *)self;
@@ -888,21 +889,26 @@ PyGdkEvent_New(GdkEvent *obj) {
     Py_INCREF(Py_None);
     return Py_None;
   }
-  self = (PyGdkEvent_Object *)PyObject_NEW(PyGdkEvent_Object,&PyGdkEvent_Type);
-  if (self == NULL)
+  if ((self = (PyGdkEvent_Object *)
+       PyObject_NEW(PyGdkEvent_Object,&PyGdkEvent_Type)) == NULL)
     return NULL;
   self->obj = obj;
-  self->attrs = PyDict_New();
-  PyDict_SetItemString(self->attrs, "type", v=PyInt_FromLong(obj->type));
+  if ((self->attrs = PyDict_New()) == NULL)
+    return NULL;
+  if ((v = PyInt_FromLong(obj->type)) == NULL)
+    return NULL;
+  PyDict_SetItemString(self->attrs, "type", v);
   Py_DECREF(v);
   if (obj->any.window) {
-    PyDict_SetItemString(self->attrs, "window", v=PyGdkWindow_New(
-						  obj->any.window));
+    if ((v = PyGdkWindow_New(obj->any.window)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "window", v);
     Py_DECREF(v);
   } else
     PyDict_SetItemString(self->attrs, "window", Py_None);
-  PyDict_SetItemString(self->attrs, "send_event", v=PyInt_FromLong(
-    obj->any.send_event));
+  if ((v = PyInt_FromLong(obj->any.send_event)) == NULL)
+    return NULL;
+  PyDict_SetItemString(self->attrs, "send_event", v);
   Py_DECREF(v);
   /* XXX Does anyone need the window attribute?? */
   switch(obj->type) {
@@ -910,199 +916,265 @@ PyGdkEvent_New(GdkEvent *obj) {
   case GDK_DELETE: break;
   case GDK_DESTROY: break;
   case GDK_EXPOSE:            /*GdkEventExpose            expose*/
-    PyDict_SetItemString(self->attrs, "area", v=Py_BuildValue("(iiii)",
-		obj->expose.area.x, obj->expose.area.y, obj->expose.area.width,
-		obj->expose.area.height));
+    if ((v = Py_BuildValue("(iiii)",
+			 obj->expose.area.x,
+			 obj->expose.area.y,
+			 obj->expose.area.width,
+			 obj->expose.area.height)) == NULL)
+	return NULL;
+    PyDict_SetItemString(self->attrs, "area", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "count", v=PyInt_FromLong(
-        obj->expose.count));
+    if ((v = PyInt_FromLong(obj->expose.count)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "count", v);
     Py_DECREF(v);
     break;
   case GDK_MOTION_NOTIFY:     /*GdkEventMotion            motion*/
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
-		obj->motion.time));
+    if ((v = PyInt_FromLong(obj->motion.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs,"x",v=PyFloat_FromDouble(obj->motion.x));
+    if ((v = PyFloat_FromDouble(obj->motion.x)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs,"x", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs,"y",v=PyFloat_FromDouble(obj->motion.y));
+    if ((v = PyFloat_FromDouble(obj->motion.y)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs,"y", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "pressure", v=PyFloat_FromDouble(
-        obj->motion.pressure));
+    if ((v = PyFloat_FromDouble(obj->motion.pressure)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "pressure", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "xtilt", v=PyFloat_FromDouble(
-        obj->motion.xtilt));
+    if ((v = PyFloat_FromDouble(obj->motion.xtilt)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "xtilt", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "ytilt", v=PyFloat_FromDouble(
-        obj->motion.ytilt));
+    if ((v = PyFloat_FromDouble(obj->motion.ytilt)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "ytilt", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "state", v=PyInt_FromLong(
-        obj->motion.state));
+    if ((v = PyInt_FromLong(obj->motion.state)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "state", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "is_hint", v=PyInt_FromLong(
-        obj->motion.is_hint));
+    if ((v = PyInt_FromLong(obj->motion.is_hint)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "is_hint", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "source", v=PyInt_FromLong(
-        obj->motion.source));
+    if ((v = PyInt_FromLong(obj->motion.source)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "source", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "deviceid", v=PyInt_FromLong(
-        obj->motion.deviceid));
+    if ((v = PyInt_FromLong(obj->motion.deviceid)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "deviceid", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "x_root", v=PyFloat_FromDouble(
-        obj->motion.x_root));
+    if ((v = PyFloat_FromDouble(obj->motion.x_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "x_root", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "y_root", v=PyFloat_FromDouble(
-        obj->motion.y_root));
+    if ((v = PyFloat_FromDouble(obj->motion.y_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "y_root", v);
     Py_DECREF(v);
     break;
   case GDK_BUTTON_PRESS:      /*GdkEventButton            button*/
   case GDK_2BUTTON_PRESS:     /*GdkEventButton            button*/
   case GDK_3BUTTON_PRESS:     /*GdkEventButton            button*/
   case GDK_BUTTON_RELEASE:    /*GdkEventButton            button*/
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
-        obj->button.time));
+    if ((v = PyInt_FromLong(obj->button.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs,"x",v=PyFloat_FromDouble(obj->button.x));
+    if ((v = PyFloat_FromDouble(obj->button.x)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs,"x", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs,"y",v=PyFloat_FromDouble(obj->button.y));
+    if ((v = PyFloat_FromDouble(obj->button.y)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs,"y", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "pressure", v=PyFloat_FromDouble(
-        obj->button.pressure));
+    if ((v = PyFloat_FromDouble(obj->button.pressure)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "pressure", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "xtilt", v=PyFloat_FromDouble(
-        obj->button.xtilt));
+    if ((v = PyFloat_FromDouble(obj->button.xtilt)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "xtilt", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "ytilt", v=PyFloat_FromDouble(
-        obj->button.ytilt));
+    if ((v = PyFloat_FromDouble(obj->button.ytilt)) == NULL)
+      return NULL; 
+    PyDict_SetItemString(self->attrs, "ytilt", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "state", v=PyInt_FromLong(
-        obj->button.state));
+    if ((v = PyInt_FromLong(obj->button.state)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "state", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "button", v=PyInt_FromLong(
-        obj->button.button));
+    if ((v = PyInt_FromLong(obj->button.button)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "button", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "source", v=PyInt_FromLong(
-        obj->button.source));
+    if ((v = PyInt_FromLong(obj->button.source)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "source", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "deviceid", v=PyInt_FromLong(
-        obj->button.deviceid));
+    if ((v = PyInt_FromLong(obj->button.deviceid)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "deviceid", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "x_root", v=PyFloat_FromDouble(
-        obj->button.x_root));
+    if ((v = PyFloat_FromDouble(obj->button.x_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "x_root", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "y_root", v=PyFloat_FromDouble(
-        obj->button.y_root));
+    if ((v = PyFloat_FromDouble(obj->button.y_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "y_root", v);
     Py_DECREF(v);
     break;
   case GDK_KEY_PRESS:         /*GdkEventKey               key*/
   case GDK_KEY_RELEASE:       /*GdkEventKey               key*/
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
-							obj->key.time));
+    if ((v = PyInt_FromLong(obj->key.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "state", v=PyInt_FromLong(
-        obj->key.state));
+    if ((v = PyInt_FromLong(obj->key.state)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "state", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "keyval", v=PyInt_FromLong(
-        obj->key.keyval));
+    if ((v = PyInt_FromLong(obj->key.keyval)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "keyval", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "string", v=PyString_FromStringAndSize(
-        obj->key.string, obj->key.length));
+    if ((v = PyString_FromStringAndSize(obj->key.string,
+					obj->key.length)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "string", v);
     Py_DECREF(v);
     break;
   case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
   case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
     if (obj->crossing.subwindow) {
-      PyDict_SetItemString(self->attrs, "subwindow", v=PyGdkWindow_New(
-						obj->crossing.subwindow));
+      if ((v = PyGdkWindow_New(obj->crossing.subwindow)) == NULL)
+	return NULL;
+      PyDict_SetItemString(self->attrs, "subwindow", v);
       Py_DECREF(v);
     } else
       PyDict_SetItemString(self->attrs, "subwindow", Py_None);
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
-						obj->crossing.time));
+    if ((v = PyInt_FromLong(obj->crossing.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "x", v=PyFloat_FromDouble(
-						obj->crossing.x));
+    if ((v = PyFloat_FromDouble(obj->crossing.x)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "x", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "y", v=PyFloat_FromDouble(
-						obj->crossing.y));
+    if ((v = PyFloat_FromDouble(obj->crossing.y)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "y", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "x_root", v=PyFloat_FromDouble(
-						obj->crossing.x_root));
+    if ((v = PyFloat_FromDouble(obj->crossing.x_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "x_root", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "y_root", v=PyFloat_FromDouble(
-						obj->crossing.y_root));
+    if ((v = PyFloat_FromDouble(obj->crossing.y_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "y_root", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "mode", v=PyInt_FromLong(
-						obj->crossing.mode));
+    if ((v = PyInt_FromLong(obj->crossing.mode)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "mode", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "detail", v=PyInt_FromLong(
-        obj->crossing.detail));
+    if ((v = PyInt_FromLong(obj->crossing.detail)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "detail", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "focus", v=PyInt_FromLong(
-						obj->crossing.focus));
+    if ((v = PyInt_FromLong(obj->crossing.focus)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "focus", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "state", v=PyInt_FromLong(
-						obj->crossing.state));
+    if ((v = PyInt_FromLong(obj->crossing.state)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "state", v);
     Py_DECREF(v);
     break;
   case GDK_FOCUS_CHANGE:      /*GdkEventFocus             focus_change*/
-    PyDict_SetItemString(self->attrs, "_in", v=PyInt_FromLong(
-        obj->focus_change.in));
+    if ((v = PyInt_FromLong(obj->focus_change.in)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "_in", v);
     Py_DECREF(v);
     break;
   case GDK_CONFIGURE:         /*GdkEventConfigure         configure*/
-    PyDict_SetItemString(self->attrs, "x", v=PyInt_FromLong(obj->configure.x));
+    if ((v = PyInt_FromLong(obj->configure.x)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "x", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "y", v=PyInt_FromLong(obj->configure.y));
+    if ((v = PyInt_FromLong(obj->configure.y)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "y", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "width", v=PyInt_FromLong(
-        obj->configure.width));
+    if ((v = PyInt_FromLong(obj->configure.width)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "width", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "height", v=PyInt_FromLong(
-        obj->configure.height));
+    if ((v = PyInt_FromLong(obj->configure.height)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "height", v);
     Py_DECREF(v);
     break;
   case GDK_MAP: break;
   case GDK_UNMAP: break;
   case GDK_PROPERTY_NOTIFY:   /*GdkEventProperty          property*/
-    PyDict_SetItemString(self->attrs, "atom", v=PyGdkAtom_New(
-        obj->property.atom));
+    if ((v = PyGdkAtom_New(obj->property.atom)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "atom", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
-        obj->property.time));
+    if ((v = PyInt_FromLong(obj->property.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "state", v=PyInt_FromLong(
-        obj->property.state));
+    if ((v = PyInt_FromLong(obj->property.state)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "state", v);
     Py_DECREF(v);
     break;
   case GDK_SELECTION_CLEAR:   /*GdkEventSelection         selection*/
   case GDK_SELECTION_REQUEST: /*GdkEventSelection         selection*/
   case GDK_SELECTION_NOTIFY:  /*GdkEventSelection         selection*/
-    PyDict_SetItemString(self->attrs, "selection", v=PyGdkAtom_New(
-        obj->selection.selection));
+    if ((v = PyGdkAtom_New(obj->selection.selection)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "selection", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "target", v=PyGdkAtom_New(
-        obj->selection.target));
+    if ((v = PyGdkAtom_New(obj->selection.target)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "target", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "property", v=PyGdkAtom_New(
-        obj->selection.property));
+    if ((v = PyGdkAtom_New(obj->selection.property)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "property", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "requestor", v=PyInt_FromLong(
-        obj->selection.requestor));
+    if ((v = PyInt_FromLong(obj->selection.requestor)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "requestor", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
-        obj->selection.time));
+    if ((v = PyInt_FromLong(obj->selection.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
     break;
   case GDK_PROXIMITY_IN:      /*GdkEventProximity         proximity*/
   case GDK_PROXIMITY_OUT:     /*GdkEventProximity         proximity*/
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(
-        obj->proximity.time));
+    if ((v = PyInt_FromLong(obj->proximity.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "source", v=PyInt_FromLong(
-        obj->proximity.source));
+    if ((v = PyInt_FromLong(obj->proximity.source)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "source", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "deviceid", v=PyInt_FromLong(
-        obj->proximity.deviceid));
+    if ((v = PyInt_FromLong(obj->proximity.deviceid)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "deviceid", v);
     Py_DECREF(v);
     break;
   case GDK_DRAG_ENTER:        /*GdkEventDND               dnd*/
@@ -1111,32 +1183,41 @@ PyGdkEvent_New(GdkEvent *obj) {
   case GDK_DRAG_STATUS:       /*GdkEventDND               dnd*/
   case GDK_DROP_START:        /*GdkEventDND               dnd*/
   case GDK_DROP_FINISHED:     /*GdkEventDND               dnd*/
-    PyDict_SetItemString(self->attrs, "context", v=PyGdkDragContext_New(
-	obj->dnd.context));
+    if ((v = PyGdkDragContext_New(obj->dnd.context)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "context", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "time", v=PyInt_FromLong(obj->dnd.time));
+    if ((v = PyInt_FromLong(obj->dnd.time)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "time", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "x_root", v=PyInt_FromLong(
-	obj->dnd.x_root));
+    if ((v = PyInt_FromLong(obj->dnd.x_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "x_root", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "y_root", v=PyInt_FromLong(
-	obj->dnd.y_root));
+    if ((v = PyInt_FromLong(obj->dnd.y_root)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "y_root", v);
     Py_DECREF(v);
     break;
   case GDK_CLIENT_EVENT:      /*GdkEventClient            client*/
-    PyDict_SetItemString(self->attrs, "message_type", v=PyGdkAtom_New(
-        obj->client.message_type));
+    if ((v = PyGdkAtom_New(obj->client.message_type)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "message_type", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "data_format", v=PyInt_FromLong(
-        obj->client.data_format));
+    if ((v = PyInt_FromLong(obj->client.data_format)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "data_format", v);
     Py_DECREF(v);
-    PyDict_SetItemString(self->attrs, "data", v=PyString_FromStringAndSize(
-        obj->client.data.b, 20));
+    if ((v = PyString_FromStringAndSize(obj->client.data.b, 20)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "data", v);
     Py_DECREF(v);
     break;
   case GDK_VISIBILITY_NOTIFY: /*GdkEventVisibility        visibility*/
-    PyDict_SetItemString(self->attrs, "state", v=PyInt_FromLong(
-        obj->visibility.state));
+    if ((v = PyInt_FromLong(obj->visibility.state)) == NULL)
+      return NULL;
+    PyDict_SetItemString(self->attrs, "state", v);
     Py_DECREF(v);
     break;
   case GDK_NO_EXPOSE:         /*GdkEventNoExpose          no_expose*/
@@ -1371,17 +1452,20 @@ static PyObject *PyGdkWindow_PropertyGet(PyGdkWindow_Object *self,
 	guint32 *data32;
 	switch (aformat) {
 	case 8:
-	    pdata = PyString_FromStringAndSize(data, alength);
+	    if ((pdata = PyString_FromStringAndSize(data, alength)) == NULL)
+	        return NULL;
 	    break;
 	case 16:
 	    data16 = (guint16 *)data;
-	    pdata = PyTuple_New(alength);
+	    if ((pdata = PyTuple_New(alength)) == NULL)
+	        return NULL;
 	    for (i = 0; i < alength; i++)
 		PyTuple_SetItem(pdata, i, PyInt_FromLong(data16[i]));
 	    break;
 	case 32:
 	    data32 = (guint32 *)data;
-	    pdata = PyTuple_New(alength);
+	    if ((pdata = PyTuple_New(alength)) == NULL)
+	        return NULL;
 	    for (i = 0; i < alength; i++)
 		PyTuple_SetItem(pdata, i, PyInt_FromLong(data32[i]));
 	    break;
@@ -1390,7 +1474,7 @@ static PyObject *PyGdkWindow_PropertyGet(PyGdkWindow_Object *self,
 	    g_assert_not_reached();
 	}
 	g_free(data);
-	return Py_BuildValue("(OiO)", PyGdkAtom_New(atype), aformat, pdata);
+	return Py_BuildValue("(NiN)", PyGdkAtom_New(atype), aformat, pdata);
     } else {
 	Py_INCREF(Py_None);
 	return Py_None;
@@ -1603,9 +1687,17 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key) {
     GList *children, *tmp;
     PyObject *ret;
     children = gdk_window_get_children(win);
-    ret = PyList_New(0);
-    for (tmp = children; tmp != NULL; tmp = tmp->next)
-      PyList_Append(ret, PyGdkWindow_New(tmp->data));
+    if ((ret = PyList_New(0)) == NULL)
+      return NULL;
+    for (tmp = children; tmp != NULL; tmp = tmp->next) {
+      PyObject *win = PyGdkWindow_New(tmp->data);
+      if (win == NULL) {
+	Py_DECREF(ret);
+	return NULL;
+      }
+      PyList_Append(ret, win);
+      Py_DECREF(win);
+    }
     g_list_free(children);
     return ret;
   }
@@ -1976,10 +2068,19 @@ PyGdkDragContext_GetAttr(PyGdkDragContext_Object *self, char *key) {
       return Py_None;
     }
   else if (!strcmp(key, "targets")) {
-    PyObject *ret = PyList_New(0);
+    PyObject *atom, *ret = PyList_New(0);
     GList *tmp;
-    for (tmp = self->obj->targets; tmp != NULL; tmp = tmp->next)
-      PyList_Append(ret, PyGdkAtom_New(GPOINTER_TO_INT(tmp->data)));
+
+    if (ret == NULL)
+      return NULL;
+    for (tmp = self->obj->targets; tmp != NULL; tmp = tmp->next) {
+      if ((atom = PyGdkAtom_New(GPOINTER_TO_INT(tmp->data))) == NULL) {
+	Py_DECREF(ret);
+	return NULL;
+      }
+      PyList_Append(ret, atom);
+      Py_DECREF(atom);
+    }
     return ret;
   } else if (!strcmp(key, "actions"))
     return PyInt_FromLong(self->obj->actions);
@@ -2322,8 +2423,16 @@ static PyObject *PyGtkCTreeNode_GetAttr(PyGtkCTreeNode_Object *self,
   } else if (!strcmp(key, "children")) {
     GtkCTreeNode *node = GTK_CTREE_ROW(self->node)->children;
     PyObject *ret = PyList_New(0);
+    if (ret == NULL)
+      return NULL;
     while (node) {
-      PyList_Append(ret, PyGtkCTreeNode_New(node));
+      PyObject *py_node = PyGtkCTreeNode_New(node);
+      if (py_node == NULL) {
+	Py_DECREF(ret);
+	return NULL;
+      }
+      PyList_Append(ret, py_node);
+      Py_DECREF(py_node);
       node = GTK_CTREE_ROW(node)->sibling;
     }
     return ret;
@@ -2959,7 +3068,8 @@ static PyObject *GtkArgs_AsTuple(int nparams, GtkArg *args) {
   PyObject *tuple, *item;
   int i;
 
-  tuple = PyTuple_New(nparams);
+  if ((tuple = PyTuple_New(nparams)) == NULL)
+    return NULL;
   for (i = 0; i < nparams; i++) {
     item = GtkArg_AsPyObject(&args[i]);
     if (item == NULL) {
@@ -3268,7 +3378,7 @@ static GtkArg *PyDict_AsContainerArgs(PyObject *dict,GtkType type,gint *nargs){
 	}
 	pos++;
     }
-    return arg;
+   return arg;
 }
 
 static PyObject *_wrap_gtk_signal_connect(PyObject *self, PyObject *args) {
@@ -3284,12 +3394,15 @@ static PyObject *_wrap_gtk_signal_connect(PyObject *self, PyObject *args) {
         PyErr_SetString(PyExc_TypeError, "third argument must be callable");
         return NULL;
     }
-    Py_INCREF(func);
+
     if (extra)
-	Py_INCREF(extra);
+      Py_INCREF(extra);
     else
-	extra = PyTuple_New(0);
-    data = Py_BuildValue("(OO)", func, extra);
+      extra = PyTuple_New(0);
+
+    if (extra == NULL)
+      return NULL;
+    data = Py_BuildValue("(ON)", func, extra);
     signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
 				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
 				     data, PyGtk_DestroyNotify, FALSE, FALSE);
@@ -3309,12 +3422,15 @@ static PyObject *_wrap_gtk_signal_connect_after(PyObject *self, PyObject *args) 
         PyErr_SetString(PyExc_TypeError, "third argument must be callable");
         return NULL;
     }
-    Py_INCREF(func);
     if (extra)
-	Py_INCREF(extra);
+        Py_INCREF(extra);
     else
-	extra = PyTuple_New(0);
-    data = Py_BuildValue("(OO)", func, extra);
+        extra = PyTuple_New(0);
+
+    if (extra == NULL)
+      return NULL;
+    data = Py_BuildValue("(ON)", func, extra);
+
     signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
 				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
 				     data, PyGtk_DestroyNotify, FALSE, TRUE);
@@ -3335,13 +3451,18 @@ static PyObject *_wrap_gtk_signal_connect_object(PyObject *self, PyObject *args)
         PyErr_SetString(PyExc_TypeError, "third argument must be callable");
         return NULL;
     }
-    Py_INCREF(func);
+    
     if (extra)
 	Py_INCREF(extra);
     else
 	extra = PyTuple_New(0);
-    Py_INCREF(other);
-    data = Py_BuildValue("(OOO)", func, extra, other);
+    
+    if (extra == NULL)
+      return NULL;
+    data = Py_BuildValue("(ONO)", func, extra, other);
+    if (data == NULL)
+      return NULL;
+
     signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
 				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
 				     data, PyGtk_DestroyNotify, FALSE, FALSE);
@@ -3362,13 +3483,14 @@ static PyObject *_wrap_gtk_signal_connect_object_after(PyObject *self, PyObject 
         PyErr_SetString(PyExc_TypeError, "third argument must be callable");
         return NULL;
     }
-    Py_INCREF(func);
+
     if (extra)
 	Py_INCREF(extra);
     else
 	extra = PyTuple_New(0);
-    Py_INCREF(other);
-    data = Py_BuildValue("(OOO)", func, extra, other);
+
+    data = Py_BuildValue("(ONO)", func, extra, other);
+
     signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
 				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
 				     data, PyGtk_DestroyNotify, FALSE, TRUE);
@@ -3535,7 +3657,7 @@ static PyObject *_wrap_gtk_events_pending(PyObject *self, PyObject *args) {
 static PyObject *
 _wrap_gtk_timeout_add(PyObject *self, PyObject *args) {
     guint32 interval;
-    PyObject *callback, *cbargs = NULL;
+    PyObject *callback, *cbargs = NULL, *data;
     if (!PyArg_ParseTuple(args, "iO|O!:gtk_timeout_add", &interval, &callback,
 			  &PyTuple_Type, &cbargs))
         return NULL;
@@ -3547,16 +3669,20 @@ _wrap_gtk_timeout_add(PyObject *self, PyObject *args) {
 	Py_INCREF(cbargs);
     else
 	cbargs = PyTuple_New(0);
-    Py_INCREF(callback);
+    if (cbargs == NULL)
+      return NULL;
+    data = Py_BuildValue("(ON)", callback, cbargs);
+    if (data == NULL)
+      return NULL;
     return PyInt_FromLong(gtk_timeout_add_full(interval, NULL,
         (GtkCallbackMarshal)PyGtk_HandlerMarshal,
-	Py_BuildValue("(OO)", callback, cbargs),
+	data,
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
 
 static PyObject *
 _wrap_gtk_idle_add(PyObject *self, PyObject *args) {
-    PyObject *callback, *cbargs = NULL;
+    PyObject *callback, *cbargs = NULL, *data;
 
     if (!PyArg_ParseTuple(args, "O|O!:gtk_idle_add", &callback,
 			  &PyTuple_Type, &cbargs))
@@ -3569,10 +3695,14 @@ _wrap_gtk_idle_add(PyObject *self, PyObject *args) {
 	Py_INCREF(cbargs);
     else
 	cbargs = PyTuple_New(0);
-    Py_INCREF(callback);
+    if (cbargs == NULL)
+      return NULL;
+    data = Py_BuildValue("(ON)", callback, cbargs);
+    if (data == NULL)
+      return NULL;
     return PyInt_FromLong(gtk_idle_add_full(GTK_PRIORITY_DEFAULT, NULL,
         (GtkCallbackMarshal)PyGtk_HandlerMarshal,
-	Py_BuildValue("(OO)", callback, cbargs),
+	data,
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
 
@@ -3605,7 +3735,7 @@ static PyObject *_wrap_gtk_idle_remove_function(PyObject *self, PyObject *args) 
 static PyObject *
 _wrap_gtk_quit_add(PyObject *self, PyObject *args) {
     int main_level;
-    PyObject *callback, *cbargs = NULL;
+    PyObject *callback, *cbargs = NULL, *data;
     if (!PyArg_ParseTuple(args, "iO|O!:gtk_quit_add", &main_level, &callback,
 			  &PyTuple_Type, &cbargs))
         return NULL;
@@ -3617,10 +3747,14 @@ _wrap_gtk_quit_add(PyObject *self, PyObject *args) {
 	Py_INCREF(cbargs);
     else
 	cbargs = PyTuple_New(0);
-    Py_INCREF(callback);
+    if (cbargs == NULL)
+      return NULL;
+    data = Py_BuildValue("(ON)", callback, cbargs);
+    if (data == NULL)
+      return NULL;
     return PyInt_FromLong(gtk_quit_add_full(main_level, NULL,
         (GtkCallbackMarshal)PyGtk_HandlerMarshal,
-	Py_BuildValue("(OO)", callback, cbargs),
+					    data, 
         (GtkDestroyNotify)PyGtk_DestroyNotify));
 }
 
@@ -3936,13 +4070,24 @@ static PyObject *_wrap_gtk_container_children(PyObject *self, PyObject *args) {
     PyObject *obj;
     GList *list, *tmp;
     PyObject *py_list;
+    PyObject *gtk_obj;
 
     if(!PyArg_ParseTuple(args,"O!:gtk_container_children", &PyGtk_Type, &obj))
         return NULL;
     list = gtk_container_children(GTK_CONTAINER(PyGtk_Get(obj)));
-    py_list = PyList_New(0);
-    for (tmp = list; tmp != NULL; tmp = tmp->next)
-      PyList_Append(py_list, PyGtk_New(GTK_OBJECT(tmp->data)));
+
+    if ((py_list = PyList_New(0)) == NULL) {
+      g_list_free(list);
+      return NULL;
+    }
+
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+      gtk_obj = PyGtk_New(GTK_OBJECT(tmp->data));
+      if (gtk_obj == NULL)
+	return NULL;
+      PyList_Append(py_list, gtk_obj);
+      Py_DECREF(gtk_obj);
+    }
     g_list_free(list);
     return py_list;
 }
@@ -4124,15 +4269,25 @@ _wrap_gtk_button_box_get_child_ipadding(PyObject *self, PyObject *args) {
 static PyObject *_wrap_gtk_clist_get_selection(PyObject *self, PyObject *args) {
   GList *selection;
   guint row;
-  PyObject *clist, *ret;
+  PyObject *clist, *ret, *py_int;
   if (!PyArg_ParseTuple(args, "O!:gtk_clist_get_selection", &PyGtk_Type,
 			&clist))
     return NULL;
   ret = PyList_New(0);
+  if (ret == NULL)
+    return NULL;
+
   for (selection = GTK_CLIST(PyGtk_Get(clist))->selection; selection != NULL;
        selection = selection->next) {
     row = (guint)selection->data;
-    PyList_Append(ret, PyInt_FromLong(row));
+    py_int = PyInt_FromLong(row);
+    if (!py_int) {
+      Py_DECREF(ret);
+      return NULL;
+    }
+
+    PyList_Append(ret, py_int);
+    Py_DECREF(py_int);
   }
   return ret;
 }
@@ -4204,7 +4359,7 @@ static PyObject *_wrap_gtk_clist_get_pixmap(PyObject *self, PyObject *args) {
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(OO)", PyGdkWindow_New(p), mask);
+  return Py_BuildValue("(NN)", PyGdkWindow_New(p), mask);
 }
 
 static PyObject *_wrap_gtk_clist_get_pixtext(PyObject *self, PyObject *args) {
@@ -4229,7 +4384,7 @@ static PyObject *_wrap_gtk_clist_get_pixtext(PyObject *self, PyObject *args) {
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(siOO)", text, (int)spacing,
+  return Py_BuildValue("(siNN)", text, (int)spacing,
 		       PyGdkWindow_New(p), mask);
 }
 
@@ -4650,16 +4805,21 @@ static PyObject *_wrap_gtk_pixmap_new_from_xpm(PyObject *self, PyObject *args) {
     gdk_bitmap_unref(bm);
     return ret;
 }
+
 static PyObject *_wrap_gtk_pixmap_get(PyObject *self, PyObject *args) {
-  PyObject *pix;
+  PyObject *pix, *pymask;
   GdkPixmap *pixmap;
   GdkBitmap *mask;
   if (!PyArg_ParseTuple(args, "O!:gtk_pixmap_get", &PyGtk_Type, &pix))
     return NULL;
   gtk_pixmap_get(GTK_PIXMAP(PyGtk_Get(pix)), &pixmap, &mask);
-  if (!mask) Py_INCREF(Py_None);
-  return Py_BuildValue("(OO)", PyGdkWindow_New(pixmap),
-		       mask ? PyGdkWindow_New(mask) : Py_None);
+  if (mask)
+    pymask = PyGdkWindow_New(mask);
+  else {
+    Py_INCREF(Py_None);
+    pymask = Py_None;
+  }
+  return Py_BuildValue("(NN)", PyGdkWindow_New(pixmap), pymask);
 }
 
 static PyObject *_wrap_gtk_preview_draw_row(PyObject *self, PyObject *args) {
@@ -4994,7 +5154,7 @@ static PyObject *_wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args
     PyErr_SetString(PyExc_IOError, "can't load pixmap");
     return NULL;
   }
-  ret =  Py_BuildValue("(OO)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
+  ret = Py_BuildValue("(NN)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
   gdk_pixmap_unref(pix);
   gdk_bitmap_unref(mask);
   return ret;
@@ -5036,7 +5196,7 @@ static PyObject *_wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *ar
     PyErr_SetString(PyExc_IOError, "can't load pixmap");
     return NULL;
   }
-  ret =  Py_BuildValue("(OO)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
+  ret = Py_BuildValue("(NN)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
   gdk_pixmap_unref(pix);
   gdk_bitmap_unref(mask);
   return ret;
@@ -5077,7 +5237,7 @@ static PyObject *_wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObj
     PyErr_SetString(PyExc_IOError, "can't load pixmap");
     return NULL;
   }
-  ret =  Py_BuildValue("(OO)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
+  ret = Py_BuildValue("(NN)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
   gdk_pixmap_unref(pix);
   gdk_bitmap_unref(mask);
   return ret;
@@ -5131,7 +5291,7 @@ static PyObject *_wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyO
     PyErr_SetString(PyExc_IOError, "can't load pixmap");
     return NULL;
   }
-  ret =  Py_BuildValue("(OO)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
+  ret = Py_BuildValue("(NN)", PyGdkWindow_New(pix), PyGdkWindow_New(mask));
   gdk_pixmap_unref(pix);
   gdk_bitmap_unref(mask);
   return ret;
@@ -5502,9 +5662,17 @@ static PyObject *_wrap_gtk_list_get_selection(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "O!:gtk_list_get_selection",&PyGtk_Type,&list))
         return NULL;
     tmp = GTK_LIST(PyGtk_Get(list))->selection;
-    ret = PyList_New(0);
-    for (; tmp; tmp = tmp->next)
-        PyList_Append(ret, PyGtk_New(tmp->data));
+    if ((ret = PyList_New(0)) == NULL)
+      return NULL;
+    for (; tmp; tmp = tmp->next) {
+        PyObject *obj = PyGtk_New(tmp->data);
+	if (obj == NULL) {
+	  Py_DECREF(ret);
+	  return NULL;
+	}
+        PyList_Append(ret, obj);
+	Py_DECREF(obj);
+    }
     return ret;
 }
 
@@ -5529,9 +5697,17 @@ static PyObject *_wrap_gtk_tree_get_selection(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, "O!:gtk_tree_get_selection",&PyGtk_Type,&tree))
         return NULL;
     tmp = GTK_TREE(PyGtk_Get(tree))->selection;
-    ret = PyList_New(0);
-    for (; tmp; tmp = tmp->next)
-        PyList_Append(ret, PyGtk_New(tmp->data));
+    if ((ret = PyList_New(0)) == NULL)
+      return NULL;
+    for (; tmp; tmp = tmp->next) {
+        PyObject *obj = PyGtk_New(tmp->data);
+	if (obj == NULL) {
+	  Py_DECREF(ret);
+	  return NULL;
+	}
+        PyList_Append(ret, obj);
+	Py_DECREF(obj);
+    }	
     return ret;
 }
 
@@ -5595,15 +5771,22 @@ static PyObject *_wrap_gtk_ctree_new_with_titles(PyObject *self, PyObject *args)
 static PyObject *_wrap_gtk_ctree_get_selection(PyObject *self, PyObject *args) {
   GList *selection;
   GtkCTreeNode *node;
-  PyObject *clist, *ret;
+  PyObject *clist, *ret, *py_node;
   if (!PyArg_ParseTuple(args, "O!:gtk_ctree_get_selection", &PyGtk_Type,
 			&clist))
     return NULL;
-  ret = PyList_New(0);
+  if ((ret = PyList_New(0)) == NULL)
+    return NULL;
+
   for (selection = GTK_CLIST(PyGtk_Get(clist))->selection; selection != NULL;
        selection = selection->next) {
     node = selection->data;
-    PyList_Append(ret, PyGtkCTreeNode_New(node));
+    if ((py_node = PyGtkCTreeNode_New(node)) == NULL) {
+      Py_DECREF(ret);
+      return NULL;
+    }
+    PyList_Append(ret, py_node);
+    Py_DECREF(py_node);
   }
   return ret;
 }
@@ -5723,9 +5906,17 @@ static PyObject *_wrap_gtk_ctree_find_all_by_row_data(PyObject *self, PyObject *
     return NULL;
   }
   ret = gtk_ctree_find_all_by_row_data(GTK_CTREE(PyGtk_Get(ctree)), node,data);
-  list = PyList_New(0);
-  for (tmp = ret; tmp; tmp = tmp->next)
-    PyList_Append(list, PyGtkCTreeNode_New(ret->data));
+  if ((list = PyList_New(0)) == NULL)
+    return NULL;
+  for (tmp = ret; tmp; tmp = tmp->next) {
+    PyObject *obj = PyGtkCTreeNode_New(ret->data);
+    if (obj == NULL) {
+      Py_DECREF(list);
+      return NULL;
+    }
+    PyList_Append(list, obj);
+    Py_DECREF(obj);
+  }
   g_list_free(ret);
   return list;
 }
@@ -5791,7 +5982,7 @@ static PyObject *_wrap_gtk_ctree_node_get_pixmap(PyObject *self, PyObject *args)
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(OO)", PyGdkWindow_New(p), mask);
+  return Py_BuildValue("(NN)", PyGdkWindow_New(p), mask);
 }
 
 static PyObject *_wrap_gtk_ctree_node_get_pixtext(PyObject *self, PyObject *args) {
@@ -5817,7 +6008,7 @@ static PyObject *_wrap_gtk_ctree_node_get_pixtext(PyObject *self, PyObject *args
     Py_INCREF(Py_None);
     mask = Py_None;
   }
-  return Py_BuildValue("(siOO)", text, (int)spacing,
+  return Py_BuildValue("(siNN)", text, (int)spacing,
 		       PyGdkWindow_New(p), mask);
 }
 
@@ -5863,7 +6054,7 @@ static PyObject *_wrap_gtk_ctree_get_node_info(PyObject *self, PyObject *args) {
     Py_INCREF(Py_None);
     m_o = Py_None;
   }
-  return Py_BuildValue("(siOOOOii)", text, (int)spacing, p_c, m_c, p_o, m_o,
+  return Py_BuildValue("(siNNNNii)", text, (int)spacing, p_c, m_c, p_o, m_o,
 		       (int)is_leaf, (int)expanded);
 }
 
@@ -5902,9 +6093,16 @@ static PyObject *_wrap_gtk_ctree_base_nodes(PyObject *self, PyObject *args) {
     return NULL;
   /* the first row is always a base node */
   node = GTK_CTREE_NODE(GTK_CLIST(PyGtk_Get(ctree))->row_list);
-  ret = PyList_New(0);
+  if ((ret = PyList_New(0)) == NULL)
+    return NULL;
   while (node) {
-    PyList_Append(ret, PyGtkCTreeNode_New(node));
+    PyObject *obj = PyGtkCTreeNode_New(node);
+    if (obj == NULL) {
+      Py_DECREF(ret);
+      return NULL;
+    }
+    PyList_Append(ret, obj);
+    Py_DECREF(obj);
     node = GTK_CTREE_ROW(node)->sibling;
   }
   return ret;
@@ -6388,8 +6586,10 @@ void init_gtk() {
      d = PyMapping_GetItemString(d, "PYGTK_FATAL_EXCEPTIONS");
      if (d == NULL)
          PyErr_Clear();
-     else
+     else {
          functions.fatalExceptions=PyGtk_FatalExceptions = PyObject_IsTrue(d);
+	 Py_DECREF(d);
+     }
 
 #ifdef WITH_THREAD
      /* it is required that this function be called to enable the thread

@@ -1,3 +1,20 @@
+2000-01-17  Matt Wilson  <msw@redhat.com>
+
+	* libglademodule.c (connect_one, _wrap_glade_xml_signal_connect):
+	don't INCREF objects passed into Py_BuildValue as they are
+	INCREF'ed for you automatically.  Pass new PyObjects in with 'N'
+	to consume the reference.
+
+	* gtkmodule.c (PyGtk_New): sink the object upon creation.  We
+	don't want floating GtkObjects.
+
+	* gtkmodule.c: general cleanups, testing for success of PyObject
+	creation, reference count fixes.  Several functions used
+	Py_BuildValue with 'O' format strings.  This increfs the object
+	passed into the tuple where.  When using Py*New in Py_BuildValue,
+	use 'N' in the format string to consume the reference of the new
+	object.
+
 2000-01-05  Matt Wilson  <msw@redhat.com>
 
 	* gdkimlibmodule.c, gtkglmodule.c, gtkmodule.c: Patch from ChiDeok
