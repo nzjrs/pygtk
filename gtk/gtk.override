@@ -6214,3 +6214,46 @@ _wrap_gtk_cell_view_get_size_of_row(PyGObject *self, PyObject *args,
     gtk_tree_path_free(path);
     return pyg_boxed_new(GTK_TYPE_REQUISITION, &requisition, TRUE, TRUE);
 }
+%%
+override gtk_clipboard_set_can_store kwargs
+static PyObject *
+_wrap_gtk_clipboard_set_can_store(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", NULL };
+    GtkTargetEntry *targets;
+    PyObject *py_targets;
+    gint n_targets, i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:GtkClipboard.set_can_store",
+                                     kwlist, &py_targets))
+        return NULL;
+    if (py_targets == Py_None) {
+        targets = NULL;
+        n_targets = 0;
+    } else {
+        if (!(py_targets = PySequence_Fast(py_targets,
+                                       "targets must be a sequence")))
+            return NULL;
+        n_targets = PySequence_Fast_GET_SIZE(py_targets);
+        targets = g_new(GtkTargetEntry, n_targets);
+        for (i = 0; i < n_targets; i++) {
+            PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
+            if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
+                                  &targets[i].flags, &targets[i].info)) {
+                PyErr_Clear();
+                PyErr_SetString(PyExc_TypeError,
+                                "list items should be of form (string,int,int)");
+                g_free(targets);
+                Py_DECREF(py_targets);
+                return NULL;
+            }
+        }
+        Py_DECREF(py_targets);
+    }
+    gtk_clipboard_set_can_store(GTK_CLIPBOARD(self->obj), targets, n_targets);
+    g_free(targets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
