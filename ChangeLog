@@ -1,3 +1,10 @@
+2004-03-03  Graham Carlyle  <gcarlyle@cmedltd.com>
+
+	* gobjectmodule.c (pyobject_free): block/unblock threads around
+	Py_DECREF, because we may not hold the interpreter lock at this
+	point.  Fixes #135963 (gc of gtk.ListStore aborts intrepeter after
+	gtk.threads_init() called).  Reviewed by Gustavo Carneiro.
+
 2004-03-02  Johan Dahlin  <johan@gnome.org>
 
 	* gtk/gdk.override (_wrap_gdk_event_tp_getattr): Add
