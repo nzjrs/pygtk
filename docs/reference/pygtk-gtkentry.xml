@@ -102,6 +102,26 @@ linkend="method-gtkentry--get-layout">get_layout</link></methodname>
 linkend="method-gtkentry--get-layout-offsets">get_layout_offsets</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkentry--set-alignment">set_alignment</link></methodname>
+	<methodparam><parameter
+		       role="keyword">xalign</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkentry--get-alignment">get_alignment</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkentry--set-completion">set_completion</link></methodname>
+	<methodparam><parameter
+		       role="keyword">width_chars</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkentry--get-completion">get_completion</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -194,7 +214,7 @@ entry.</entry>
 
 	<row valign="top">
 	  <entry>"scroll-offset"</entry>
-	  <entry>Read/Write</entry>
+	  <entry>Read</entry>
 	  <entry>The number of pixels of the entry scrolled off the screen
 to the left.</entry>
 	</row>
@@ -203,6 +223,14 @@ to the left.</entry>
 	  <entry>"text"</entry>
 	  <entry>Read/Write</entry>
 	  <entry>The contents of the entry.</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"xalign"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>The horizontal alignment ranging from 0.0 to 1.0 representing 
+the fraction of freespace to the left (right for RTL layouts) of the 
+text. Available in GTK+ 2.4 and above.</entry>
 	</row>
 
 	</tbody>
@@ -722,7 +750,7 @@ entry</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>set_text</methodname>() method set the "text"
+      <para>The <methodname>set_text</methodname>() method sets the "text"
 property to the value of <parameter>text</parameter>. The string in
 <parameter>text</parameter> replaces the current contents of the
 entry.</para>
@@ -801,6 +829,118 @@ to take some action if some part of the entry text is clicked.</para>
       <para>Note that as the user scrolls around in the entry the offsets
 will change; you'll need to connect to the "notify::scroll_offset" signal to
 track this.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentry--set-alignment">
+      <title>gtk.Entry.set_alignment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_alignment</methodname>
+	  <methodparam><parameter
+			 role="keyword">xalign</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">xalign</parameter>&nbsp;:</term>
+	  <listitem><simpara>The horizontal alignment ranging from 0.0 to
+	  1.0 representing the freespace to the left (right for RTL layouts)
+	  of the text.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_alignment</methodname>() method sets the
+"xalign" property to the value of <parameter>xalign</parameter>. The
+alignment controls the horizontal positioning of the contents when the
+displayed text is shorter than the width of the entry. The value of
+<parameter>xalign</parameter> is the fraction of freespace to the left
+(right in RTL layouts) of the text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentry--get-alignment">
+      <title>gtk.Entry.get_alignment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_alignment</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The horizontal alignment ranging from 0.0 to
+	  1.0 representing the freespace to the left (right for RTL layouts)
+	  of the text.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_alignment</methodname>() method returns the
+value of the "xalign" property which is the fraction of freespace (if any)
+to the left (right in RTL layouts) of the text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentry--set-completion">
+      <title>gtk.Entry.set_completion</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_completion</methodname>
+	  <methodparam><parameter
+			 role="keyword">completion</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">completion</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_completion</methodname>() method sets the
+<link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+specified by <parameter>completion</parameter> to be the auxiliary
+completion object to use with the entry. All further configuration of the
+completion mechanism is done using <parameter>completion</parameter> and the
+<link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+methods.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentry--get-completion">
+      <title>gtk.Entry.get_completion</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_completion</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the auxiliary completion object</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+       <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+     <para>The <methodname>get_completion</methodname>() method returns the
+<link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+object currently in use by the entry.</para>
 
     </refsect2>
 
