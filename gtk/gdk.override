@@ -4078,5 +4078,9 @@ _wrap_gdk_window_at_pointer(PyObject *self)
 
     window = gdk_window_at_pointer(&x, &y);
 
-    return Py_BuildValue("(Nii)", pygobject_new((GObject *)window), x, y);
+    if (window)
+	return Py_BuildValue("(Nii)", pygobject_new((GObject *)window), x, y);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
