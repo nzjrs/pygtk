@@ -1119,6 +1119,7 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
     case GDK_DRAG_MOTION:       /*GdkEventDND               dnd*/
     case GDK_DRAG_STATUS:       /*GdkEventDND               dnd*/
     case GDK_DROP_START:        /*GdkEventDND               dnd*/
+    case GDK_DROP_FINISHED:     /*GdkEventDND               dnd*/
 	if (!strcmp(attr, "context")) {
 	    PyErr_SetString(PyExc_TypeError, "context is not writable");
 	    return -1;
@@ -1136,12 +1137,13 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    return 0;
 	}
 	break;
-    case GDK_DROP_FINISHED:     /*GdkEventDND               dnd*/
     case GDK_CLIENT_EVENT:      /*GdkEventClient            client*/
-	break;
         if (!strcmp(attr, "message_type")) {
-	    PyErr_SetString(PyExc_TypeError, "context is not writable");
-	    return -1;
+            GdkAtom message_type = pygdk_atom_from_pyobject(value);
+            if (PyErr_Occurred())
+                return -1;
+            event->client.message_type = message_type;
+	    return 0;
 	} else if (!strcmp(attr, "data_format")) {
 	    INT_CHECK();
 	    event->client.data_format = PyInt_AsLong(value);
