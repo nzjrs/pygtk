@@ -941,8 +941,9 @@ def main():
     o = override.Overrides()
     prefix = 'pygtk'
     outfilename = None
-    opts, args = getopt.getopt(sys.argv[1:], "o:p:r:",
-                        ["override=", "prefix=", "register=", "outfilename="])
+    opts, args = getopt.getopt(sys.argv[1:], "o:p:r:t:",
+                        ["override=", "prefix=", "register=", "outfilename=",
+                         "load-types="])
     for opt, arg in opts:
         if opt in ('-o', '--override'):
             o = override.Overrides(arg)
@@ -955,6 +956,9 @@ def main():
             del p
         elif opt == '--outfilename':
             outfilename = arg
+        elif opt in ('-t', '--load-types'):
+            globals = {}
+            execfile(arg, globals)
     if len(args) < 1:
         sys.stderr.write(
             'usage: codegen.py [-o overridesfile] [-p prefix] defsfile\n')
