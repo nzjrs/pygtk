@@ -851,6 +851,10 @@ linkend="method-gtkwidget--class-path">class_path</link></methodname>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--widget-list-style-properties">gtk.widget_list_style_properties</link></methodname>
     <methodparam><parameter role="keyword">cmap</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--widget-class-install-style-property">gtk.widget_class_install_style_property</link></methodname>
+    <methodparam><parameter role="keyword">widget</parameter></methodparam>
+    <methodparam><parameter role="keyword">pspec</parameter></methodparam>
   </methodsynopsis></programlisting>
 
   </refsect1>
@@ -1096,10 +1100,11 @@ right-to-left and left-to-right text.</entry>
 
 	    <row valign="top">
 	      <entry>"allocation"</entry>
-	      <entry>Read</entry>
+	      <entry>Read-Write</entry>
 	      <entry>The <link
 linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
-specifying the widget's space allocation.</entry>
+specifying the widget's space allocation. This attribute is writeable in
+PyGTK 2.4.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -1138,10 +1143,10 @@ widget.</entry>
 
 	    <row valign="top">
 	      <entry>"window"</entry>
-	      <entry>Read</entry>
+	      <entry>Read-Write</entry>
 	      <entry>The <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> used
-by the widget.</entry>
+by the widget. This attribute is writeable in PyGTK 2.4.</entry>
 	    </row>
 
 	</tbody>
@@ -6425,7 +6430,46 @@ function.</para>
      <para>The <function>gtk.widget_list_style_properties</function>()
 function returns a list of the style properties of the <link
 linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> specified
-by widget. The list contains a GParam object for each style property.</para>
+by <parameter>widget</parameter>. The list contains a GParam object for each
+style property.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--widget-class-install-style-propertiy">
+      <title>gtk.widget_class_install_style_property</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.widget_class_install_style_property</methodname>
+	  <methodparam><parameter
+			 role="keyword">widget</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><parameter role="keyword">pspec</parameter>&nbsp;:</term>
+	  <listitem><simpara>a 4-tuple containing the property spec</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+       <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+     <para>The
+<function>gtk.widget_class_install_style_property</function>() function
+installs the style property specified by <parameter>pspec</parameter> on the
+<link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+specified by <parameter>widget</parameter>. <parameter>pspec</parameter> is
+a 4-tuple containing the property name, the property type, a nickname (or
+<literal>None</literal>) and a description of the property (or None).</para>
+
+      <para>This function raises the TypeError exception if
+<parameter>widget</parameter> is not a <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> or if the
+property is already installed.</para>
 
     </refsect2>
 
