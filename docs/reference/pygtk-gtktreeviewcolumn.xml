@@ -1471,13 +1471,18 @@ on or -1.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>set_sort_column_id</methodname>() method sets
-the logical column ID to the value specified by
-<parameter>sort_column_id</parameter> (an integer value). The treeview model
-sorts on the sort_column_id when this treeview column is selected for
-sorting. This method also makes the treeview column header clickable. If
-<parameter>sort_column_id</parameter> is -1 the treeview column can't be
-used for sorting.</para>
+      <para>The <methodname>set_sort_column_id</methodname>() method is a
+convenience method that sets the column's sort column ID to the value
+specified by <parameter>sort_column_id</parameter> (an integer value). The
+treeview model sorts on the <parameter>sort_column_id</parameter> when this
+treeview column is selected for sorting. This method also makes the treeview
+column header clickable. If <parameter>sort_column_id</parameter> is -1
+sorting using the treeview column is disabled.</para>
+
+      <para>This method sets up a number of callbacks that manage the
+sorting of the tree model when the column header is clicked. These callbacks
+provide toggling of the sort order, enabling the sort indicator and so
+on.</para>
 
     </refsect2>
 
@@ -1522,10 +1527,19 @@ that the column is sorted</simpara></listitem>
       <para>The <methodname>set_sort_indicator</methodname>() method sets
 the "sort-indicator" property to the value of
 <parameter>setting</parameter>. If <parameter>setting</parameter> is
-<literal>TRUE</literal> an arrow is displayed in the header button
-indicating the column is sorted. Call the <link
-linkend="method-gtktreeviewcolumn--set-sort-order"><methodname>set_sort_order</methodname>()</link> 
+<literal>TRUE</literal> an arrow is displayed in the header button when the
+column is sorted. Call the <link
+linkend="method-gtktreeviewcolumn--set-sort-order"><methodname>set_sort_order</methodname>()</link>
 to change the direction of the arrow.</para>
+
+      <note>
+        <para>If the <link
+linkend="method-gtktreeviewcolumn--set-sort-column-id"><methodname>set_sort_column_id</methodname>()</link>
+convenience method has been called the visibility of the sort indicator will
+be managed automatically. See the <link
+linkend="method-gtktreeviewcolumn--set-sort-order"><methodname>set_sort_order</methodname>()</link>
+method for more information.</para>
+      </note>
 
     </refsect2>
 
@@ -1543,10 +1557,10 @@ arrow is displayed</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>get_sort_indicator</methodname>() method returns the value of the
-"sort-indicator" property. If "sort-indicator" is <literal>TRUE</literal> an
-arrow is displayed in the header button to indicate that the column is
-sorted.</para>
+      <para>The <methodname>get_sort_indicator</methodname>() method returns
+the value of the "sort-indicator" property. If "sort-indicator" is
+<literal>TRUE</literal> an arrow is displayed in the header button when the
+column is sorted.</para>
 
     </refsect2>
 
