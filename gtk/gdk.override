@@ -4032,3 +4032,39 @@ _wrap_gdk_pixbuf_loader_get_format(PyGObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gdk_query_depths noargs
+static PyObject *
+_wrap_gdk_query_depths(PyObject *self)
+{
+    gint count, i;
+    gint *depths;
+    PyObject *py_depths;
+
+    gdk_query_depths(&depths, &count);
+
+    py_depths = PyTuple_New(count);
+
+    for (i = 0; i < count; i++)
+	PyTuple_SetItem(py_depths, i, PyInt_FromLong(depths[i]));
+
+    return py_depths;
+}
+%%
+override gdk_query_visual_types noargs
+static PyObject *
+_wrap_gdk_query_visual_types(PyObject *self)
+{
+    gint count, i;
+    GdkVisualType *types;
+    PyObject *py_types;
+
+    gdk_query_visual_types(&types, &count);
+
+    py_types = PyTuple_New(count);
+
+    for (i = 0; i < count; i++)
+	PyTuple_SetItem(py_types, i, PyInt_FromLong(types[i]));
+
+    return py_types;
+}
