@@ -512,7 +512,7 @@ _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O!Os:pixmap_create_from_xpm", kwlist,
-                                     &PyGdkWindow_Type, &window,
+                                     &PyGdkDrawable_Type, &window,
                                      &py_trans_color, &filename))
         return NULL;
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
@@ -522,7 +522,7 @@ _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
                         "transparent_color must be a colour or None");
         return NULL;
     }
-    pixmap = gdk_pixmap_create_from_xpm(GDK_WINDOW(window->obj), &mask,
+    pixmap = gdk_pixmap_create_from_xpm(GDK_DRAWABLE(window->obj), &mask,
                                         trans_color, filename);
     if (pixmap == NULL) {
         PyErr_SetString(PyExc_IOError, "can't load pixmap");
