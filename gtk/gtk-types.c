@@ -20,6 +20,7 @@ PyGtkAccelGroup_New(GtkAccelGroup *obj)
     return (PyObject *)self;
 }
 
+#if 0
 PyObject *
 PyGtkStyle_New(GtkStyle *obj)
 {
@@ -39,6 +40,7 @@ PyGtkStyle_New(GtkStyle *obj)
     gtk_style_ref(self->obj);
     return (PyObject *)self;
 }
+#endif
 
 PyObject *
 PyGdkFont_New(GdkFont *obj)
@@ -69,6 +71,7 @@ PyGdkColor_New(GdkColor *obj)
     return (PyObject *)self;
 }
 
+#if 0
 PyObject *
 PyGdkWindow_New(GdkWindow *win)
 {
@@ -95,6 +98,7 @@ PyGdkGC_New(GdkGC *gc)
     gdk_gc_ref(self->obj);
     return (PyObject *)self;
 }
+#endif
 
 PyObject *
 PyGdkVisual_New(GdkVisual *visual)
@@ -110,6 +114,7 @@ PyGdkVisual_New(GdkVisual *visual)
     return (PyObject *)self;
 }
 
+#if 0
 PyObject *
 PyGdkColormap_New(GdkColormap *cmap)
 {
@@ -137,6 +142,7 @@ PyGdkDragContext_New(GdkDragContext *ctx)
     gdk_drag_context_ref(self->obj);
     return (PyObject *)self;
 }
+#endif
 
 PyObject *
 PyGtkSelectionData_New(GtkSelectionData *data)
@@ -266,6 +272,7 @@ PyTypeObject PyGtkAccelGroup_Type = {
     NULL
 };
 
+#if 0
 typedef struct {
     PyObject_HEAD
     GtkStyle *style; /* parent style */
@@ -599,6 +606,7 @@ PyTypeObject PyGtkStyle_Type = {
     0L,0L,0L,0L,
     NULL
 };
+#endif
 
 static void
 PyGdkFont_Dealloc(PyGdkFont_Object *self)
@@ -813,7 +821,7 @@ PyGdkEvent_New(GdkEvent *obj)
     PyDict_SetItemString(self->attrs, "type", v);
     Py_DECREF(v);
     if (obj->any.window) {
-	if ((v = PyGdkWindow_New(obj->any.window)) == NULL)
+	if ((v = pygobject_new((GObject *)obj->any.window)) == NULL)
 	    return NULL;
 	PyDict_SetItemString(self->attrs, "window", v);
 	Py_DECREF(v);
@@ -968,7 +976,7 @@ PyGdkEvent_New(GdkEvent *obj)
     case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
     case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
 	if (obj->crossing.subwindow) {
-	    if ((v = PyGdkWindow_New(obj->crossing.subwindow)) == NULL)
+	    if ((v = pygobject_new((GObject*)obj->crossing.subwindow)) == NULL)
 		return NULL;
 	    PyDict_SetItemString(self->attrs, "subwindow", v);
 	    Py_DECREF(v);
@@ -1096,7 +1104,7 @@ PyGdkEvent_New(GdkEvent *obj)
     case GDK_DRAG_STATUS:       /*GdkEventDND               dnd*/
     case GDK_DROP_START:        /*GdkEventDND               dnd*/
     case GDK_DROP_FINISHED:     /*GdkEventDND               dnd*/
-	if ((v = PyGdkDragContext_New(obj->dnd.context)) == NULL)
+	if ((v = pygobject_new((GObject *)obj->dnd.context)) == NULL)
 	    return NULL;
 	PyDict_SetItemString(self->attrs, "context", v);
 	Py_DECREF(v);
@@ -1197,6 +1205,7 @@ PyTypeObject PyGdkEvent_Type = {
     NULL
 };
 
+#if 0
 static void
 PyGdkWindow_Dealloc(PyGdkWindow_Object *self)
 {
@@ -1884,6 +1893,7 @@ PyTypeObject PyGdkGC_Type = {
     0L,0L,0L,0L,
     NULL
 };
+#endif
 
 static void
 pygdk_visual_dealloc(PyGdkVisual_Object *self)
@@ -1964,6 +1974,7 @@ PyTypeObject PyGdkVisual_Type = {
     NULL
 };
 
+#if 0
 static void
 PyGdkColormap_Dealloc(PyGdkColormap_Object *self)
 {
@@ -2179,6 +2190,7 @@ PyTypeObject PyGdkDragContext_Type = {
     0L,0L,0L,0L,
     NULL
 };
+#endif
 
 static void
 PyGtkSelectionData_Dealloc(PyGtkSelectionData_Object *self)
@@ -2600,16 +2612,22 @@ _pygtk_register_boxed_types(PyObject *moddict)
 
     ExtensionClassImported;
     register_tp(GtkAccelGroup);
+#if 0
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
+#endif
     register_tp(GdkFont);
     register_tp(GdkColor);
     register_tp(GdkEvent);
+#if 0
     register_tp(GdkWindow);
     register_tp(GdkGC);
+#endif
     register_tp(GdkVisual);
+#if 0
     register_tp(GdkColormap);
     register_tp(GdkDragContext);
+#endif
     register_tp(GtkSelectionData);
     register_tp(GdkAtom);
     register_tp(GdkCursor);

@@ -80,192 +80,6 @@ pygtk_destroy_notify(gpointer user_data)
 }
 
 
-static GHashTable *class_hash = NULL;
-
-static const char *pygtk_wrapper_key = "pygtk::wrapper";
-static const char *pygtk_ownedref_key = "pygtk::ownedref";
-
-void
-pygtk_register_class(PyObject *dict, const gchar *class_name,
-		     PyExtensionClass *ec, PyExtensionClass *parent)
-{
-    if (!class_hash)
-	class_hash = g_hash_table_new(g_str_hash, g_str_equal);
-
-    /* set standard pygtk class functions if they aren't already set */
-    if (!ec->tp_dealloc) ec->tp_dealloc = (destructor)pygtk_dealloc;
-    if (!ec->tp_getattr) ec->tp_getattr = (getattrfunc)pygtk_getattr;
-    if (!ec->tp_setattr) ec->tp_setattr = (setattrfunc)pygtk_setattr;
-    if (!ec->tp_compare) ec->tp_compare = (cmpfunc)pygtk_compare;
-    if (!ec->tp_repr)    ec->tp_repr    = (reprfunc)pygtk_repr;
-    if (!ec->tp_hash)    ec->tp_hash    = (hashfunc)pygtk_hash;
-
-    if (parent) {
-	PyExtensionClass_ExportSubclassSingle(dict, (char *)class_name,
-					      *ec, *parent);
-    } else {
-	PyExtensionClass_Export(dict, (char *)class_name, *ec);
-    }
-
-    g_hash_table_insert(class_hash, g_strdup(class_name), ec);
-}
-
-void
-pygtk_register_wrapper(PyObject *self)
-{
-    GtkObject *obj = ((PyGtk_Object *)self)->obj;
-
-    gtk_object_ref(obj);
-    gtk_object_sink(obj);
-    gtk_object_set_data(obj, pygtk_wrapper_key, self);
-
-#if 1
-    /*
-    ((PyGtk_Object *)self)->inst_dict = PyDict_New();
-    */
-#endif
-}
-
-PyObject *
-pygtk_no_constructor(PyObject *self, PyObject *args)
-{
-    gchar buf[512];
-
-    g_snprintf(buf, sizeof(buf), "%s is an abstract widget", self->ob_type->tp_name);
-    PyErr_SetString(PyExc_NotImplementedError, buf);
-    return NULL;
-}
-
-static PyExtensionClass *
-pygtk_lookup_class(GtkType type)
-{
-    PyExtensionClass *ec;
-
-    /* find the python type for this object.  If not found, use parent. */
-    while ((ec = g_hash_table_lookup(class_hash, gtk_type_name(type))) == NULL
-	   && type != 0)
-	type = gtk_type_parent(type);
-    g_assert(ec != NULL);
-    return ec;
-}
-
-PyObject *
-PyGtk_New(GtkObject *obj)
-{
-    PyGtk_Object *self;
-    PyTypeObject *tp;
-    GtkType type;
-
-    if (obj == NULL) {
-	Py_INCREF(Py_None);
-	return Py_None;
-    }
-
-    /* we already have a wrapper for this object -- return it. */
-    if ((self = (PyGtk_Object *)gtk_object_get_data(obj, pygtk_wrapper_key))) {
-	/* if the gtk object currently owns the wrapper reference ... */
-	if (self->hasref) {
-	    self->hasref = FALSE;
-	    gtk_object_remove_no_notify(obj, pygtk_ownedref_key);
-	    gtk_object_ref(obj);
-	}
-	Py_INCREF(self);
-	return (PyObject *)self;
-    }
-
-    tp = (PyTypeObject *)pygtk_lookup_class(GTK_OBJECT_TYPE(obj));
-
-    /* can't use PyObject_NEW, as we want to create a slightly larger struct */
-    self = malloc(sizeof(PyGtk_Object));
-    if (self == NULL)
-	return PyErr_NoMemory();
-    self->ob_type = tp;
-    _Py_NewReference((PyObject *)self);
-
-    self->obj = obj;
-    gtk_object_ref(obj);
-    /* save the wrapper pointer so we can access it later */
-    gtk_object_set_data(obj, pygtk_wrapper_key, self);
-#if 1
-    /* set up the class dictionary */
-    self->inst_dict = PyDict_New();
-#endif
-    return (PyObject *)self;
-}
-
-void
-pygtk_dealloc(PyGtk_Object *self)
-{
-    GtkObject *obj = self->obj;
-
-    /* this bit of code has been handled in pygtk_subclass_dealloc ... */
-    if (obj && !(((PyExtensionClass *)self->ob_type)->class_flags &
-		 EXTENSIONCLASS_PYSUBCLASS_FLAG)) {
-	/* save reference to python wrapper if there are still
-	 * references to the gtk object in such a way that it will be
-	 * freed when the gtk object is destroyed, so is the python
-	 * wrapper, but if a python wrapper can be */
-	if (obj->ref_count > 1) {
-	    Py_INCREF(self); /* grab a reference on the wrapper */
-	    self->hasref = TRUE;
-	    gtk_object_set_data_full(obj, pygtk_ownedref_key,
-				     self, pygtk_destroy_notify);
-	    gtk_object_unref(obj);
-	    return;
-	}
-	if (!self->hasref) /* don't unref the gtk object if it owns us */
-	    gtk_object_unref(obj);
-    }
-    /* subclass_dealloc (ExtensionClass.c) does this for us for python
-     * subclasses */
-    if (self->inst_dict &&
-	!(((PyExtensionClass *)self->ob_type)->class_flags &
-	  EXTENSIONCLASS_PYSUBCLASS_FLAG))
-	Py_DECREF(self->inst_dict);
-    PyMem_DEL(self);
-}
-
-/* standard getattr method */
-PyObject *
-pygtk_getattr(PyGtk_Object *self, char *attr)
-{
-    ExtensionClassImported;
-
-    return Py_FindAttrString((PyObject *)self, attr);
-}
-
-int
-pygtk_setattr(PyGtk_Object *self, char *attr, PyObject *value)
-{
-    PyDict_SetItemString(INSTANCE_DICT(self), attr, value);
-    return 0;
-}
-
-int
-pygtk_compare(PyGtk_Object *self, PyGtk_Object *v)
-{
-    if (self->obj == v->obj) return 0;
-    if (self->obj > v->obj)  return -1;
-    return 1;
-}
-
-long
-pygtk_hash(PyGtk_Object *self)
-{
-    return (long)self->obj;
-}
-
-PyObject *
-pygtk_repr(PyGtk_Object *self)
-{
-    gchar buf[128];
-
-    g_snprintf(buf, sizeof(buf), "<%s at %lx>",
-	       gtk_type_name(GTK_OBJECT_TYPE(self->obj)), (long)self->obj);
-    return PyString_FromString(buf);
-}
-
-
 /* ------------ stuff for converting from gtk <-> python types --------- */
 
 /* this hash table is used to let these functions know about new boxed
@@ -393,9 +207,9 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 	}
 	Py_DECREF(tmp);
 	break;
-    case GTK_TYPE_OBJECT:
-	if (PyGtk_Check(obj, pygtk_lookup_class(arg->type)))
-	    GTK_VALUE_OBJECT(*arg) = PyGtk_Get(obj);
+    case G_TYPE_OBJECT:
+	if (pygobject_check(obj, pygobject_lookup_class(arg->type)))
+	    GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(pygobject_get(obj));
 	else
 	    return -1;
 	break;
@@ -403,11 +217,6 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 	if (arg->type == GTK_TYPE_ACCEL_GROUP) {
 	    if (PyGtkAccelGroup_Check(obj))
 		GTK_VALUE_BOXED(*arg) = PyGtkAccelGroup_Get(obj);
-	    else
-		return -1;
-	} else if (arg->type == GTK_TYPE_STYLE) {
-	    if (PyGtkStyle_Check(obj))
-		GTK_VALUE_BOXED(*arg) = PyGtkStyle_Get(obj);
 	    else
 		return -1;
 	} else if (arg->type == GTK_TYPE_GDK_EVENT) {
@@ -427,30 +236,11 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 		GTK_VALUE_BOXED(*arg) = NULL;
 	    else
 		return -1;
-	} else if (arg->type == GTK_TYPE_GDK_WINDOW) {
-	    if (PyGdkWindow_Check(obj))
-		GTK_VALUE_BOXED(*arg) = PyGdkWindow_Get(obj);
-	    else if (obj == Py_None)
-		GTK_VALUE_BOXED(*arg) = NULL;
-	    else
-		return -1;
 	} else if (arg->type == GTK_TYPE_GDK_VISUAL) {
 	    if (PyGdkVisual_Check(obj))
 		GTK_VALUE_BOXED(*arg) = PyGdkVisual_Get(obj);
 	    else if (obj == Py_None)
 		GTK_VALUE_BOXED(*arg) = NULL;
-	    else
-		return -1;
-	} else if (arg->type == GTK_TYPE_GDK_COLORMAP) {
-	    if (PyGdkColormap_Check(obj))
-		GTK_VALUE_BOXED(*arg) = PyGdkColormap_Get(obj);
-	    else if (obj == Py_None)
-		GTK_VALUE_BOXED(*arg) = NULL;
-	    else
-		return -1;
-	} else if (arg->type == GTK_TYPE_GDK_DRAG_CONTEXT) {
-	    if (PyGdkDragContext_Check(obj))
-		GTK_VALUE_BOXED(*arg) = PyGdkDragContext_Get(obj);
 	    else
 		return -1;
 	} else if (arg->type == GTK_TYPE_SELECTION_DATA) {
@@ -482,11 +272,6 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 	else
 	    return -1;
 	break;
-    case GTK_TYPE_FOREIGN:
-	Py_INCREF(obj);
-	GTK_VALUE_FOREIGN(*arg).data = obj;
-	GTK_VALUE_FOREIGN(*arg).notify = pygtk_destroy_notify;
-	break;
     case GTK_TYPE_SIGNAL:
 	if (PyCallable_Check(obj)) {
 	    Py_INCREF(obj);
@@ -495,21 +280,6 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 	} else
 	    return -1;
 	break;
-    case GTK_TYPE_CALLBACK:
-	if (PyCallable_Check(obj)) {
-	    Py_INCREF(obj);
-	    GTK_VALUE_CALLBACK(*arg).marshal =
-		(GtkCallbackMarshal)pygtk_callback_marshal;
-	    GTK_VALUE_CALLBACK(*arg).data = obj;
-	    GTK_VALUE_CALLBACK(*arg).notify = pygtk_destroy_notify;
-	} else
-	    return -1;
-	break;
-    case GTK_TYPE_ARGS:
-    case GTK_TYPE_C_CALLBACK:
-	fprintf(stderr, "unsupported type");
-	g_assert_not_reached();
-	return -1;
     }
     return 0;
 }
@@ -550,12 +320,9 @@ pygtk_arg_as_pyobject(GtkArg *arg)
 	    Py_INCREF(Py_None);
 	    return Py_None;
 	}
-    case GTK_TYPE_ARGS:
-	return pygtk_args_as_tuple(GTK_VALUE_ARGS(*arg).n_args,
-				   GTK_VALUE_ARGS(*arg).args);
-    case GTK_TYPE_OBJECT:
+    case G_TYPE_OBJECT:
 	if (GTK_VALUE_OBJECT(*arg) != NULL)
-	    return PyGtk_New(GTK_VALUE_OBJECT(*arg));
+	    return pygobject_new((GObject *)GTK_VALUE_OBJECT(*arg));
 	else {
 	    Py_INCREF(Py_None);
 	    return Py_None;
@@ -565,22 +332,14 @@ pygtk_arg_as_pyobject(GtkArg *arg)
     case GTK_TYPE_BOXED:
 	if (arg->type == GTK_TYPE_ACCEL_GROUP)
 	    return PyGtkAccelGroup_New(GTK_VALUE_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_STYLE)
-	    return PyGtkStyle_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_EVENT)
 	    return PyGdkEvent_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_FONT)
 	    return PyGdkFont_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_COLOR)
 	    return PyGdkColor_New(GTK_VALUE_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_GDK_WINDOW)
-	    return PyGdkWindow_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_VISUAL)
 	    return PyGdkVisual_New(GTK_VALUE_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_GDK_COLORMAP)
-	    return PyGdkColormap_New(GTK_VALUE_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_GDK_DRAG_CONTEXT)
-	    return PyGdkDragContext_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_SELECTION_DATA)
 	    return PyGtkSelectionData_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_CTREE_NODE) {
@@ -594,12 +353,6 @@ pygtk_arg_as_pyobject(GtkArg *arg)
 		return fs->fromarg(GTK_VALUE_BOXED(*arg));
 	    return PyCObject_FromVoidPtr(GTK_VALUE_BOXED(*arg), NULL);
 	}
-    case GTK_TYPE_FOREIGN:
-	Py_INCREF((PyObject *)GTK_VALUE_FOREIGN(*arg).data);
-	return (PyObject *)GTK_VALUE_FOREIGN(*arg).data;
-    case GTK_TYPE_CALLBACK:
-	Py_INCREF((PyObject *)GTK_VALUE_CALLBACK(*arg).data);
-	return (PyObject *)GTK_VALUE_CALLBACK(*arg).data;
     case GTK_TYPE_SIGNAL:
 	Py_INCREF((PyObject *)GTK_VALUE_SIGNAL(*arg).d);
 	return (PyObject *)GTK_VALUE_SIGNAL(*arg).d;
@@ -714,9 +467,9 @@ pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret)
 	    *GTK_RETLOC_STRING(*ret) = NULL;
 	}
 	break;
-    case GTK_TYPE_OBJECT:
-	if (PyGtk_Check(py_ret, pygtk_lookup_class(ret->type)))
-	    *GTK_RETLOC_OBJECT(*ret) = PyGtk_Get(py_ret);
+    case G_TYPE_OBJECT:
+	if (pygobject_check(py_ret, pygobject_lookup_class(ret->type)))
+	    *GTK_RETLOC_OBJECT(*ret) = GTK_OBJECT(pygobject_get(py_ret));
 	else
 	    *GTK_RETLOC_OBJECT(*ret) = NULL;
 	break;
@@ -724,11 +477,6 @@ pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret)
 	if (ret->type == GTK_TYPE_ACCEL_GROUP) {
 	    if (PyGtkAccelGroup_Check(py_ret))
 		*GTK_RETLOC_BOXED(*ret) = PyGtkAccelGroup_Get(py_ret);
-	    else
-		*GTK_RETLOC_BOXED(*ret) = NULL;
-	} else if (ret->type == GTK_TYPE_STYLE) {
-	    if (PyGtkStyle_Check(py_ret))
-		*GTK_RETLOC_BOXED(*ret) = PyGtkStyle_Get(py_ret);
 	    else
 		*GTK_RETLOC_BOXED(*ret) = NULL;
 	} else if (ret->type == GTK_TYPE_GDK_EVENT) {
@@ -746,24 +494,9 @@ pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret)
 		*GTK_RETLOC_BOXED(*ret) = PyGdkColor_Get(py_ret);
 	    else
 		*GTK_RETLOC_BOXED(*ret) = NULL;
-	} else if (ret->type == GTK_TYPE_GDK_WINDOW) {
-	    if (PyGdkWindow_Check(py_ret))
-		*GTK_RETLOC_BOXED(*ret) = PyGdkWindow_Get(py_ret);
-	    else
-		*GTK_RETLOC_BOXED(*ret) = NULL;
 	} else if (ret->type == GTK_TYPE_GDK_VISUAL) {
 	    if (PyGdkVisual_Check(py_ret))
 		*GTK_RETLOC_BOXED(*ret) = PyGdkVisual_Get(py_ret);
-	    else
-		*GTK_RETLOC_BOXED(*ret) = NULL;
-	} else if (ret->type == GTK_TYPE_GDK_COLORMAP) {
-	    if (PyGdkColormap_Check(py_ret))
-		*GTK_RETLOC_BOXED(*ret) = PyGdkColormap_Get(py_ret);
-	    else
-		*GTK_RETLOC_BOXED(*ret) = NULL;
-	} else if (ret->type == GTK_TYPE_GDK_DRAG_CONTEXT) {
-	    if (PyGdkDragContext_Check(py_ret))
-		*GTK_RETLOC_BOXED(*ret) = PyGdkDragContext_Get(py_ret);
 	    else
 		*GTK_RETLOC_BOXED(*ret) = NULL;
 	} else if (ret->type == GTK_TYPE_SELECTION_DATA) {
@@ -835,31 +568,21 @@ pygtk_ret_as_pyobject(GtkArg *arg)
 	    Py_INCREF(Py_None);
 	    return Py_None;
 	}
-    case GTK_TYPE_ARGS:
-	break;
-    case GTK_TYPE_OBJECT:
-	return PyGtk_New(*GTK_RETLOC_OBJECT(*arg));
+    case G_TYPE_OBJECT:
+	return pygobject_new((GObject *)*GTK_RETLOC_OBJECT(*arg));
     case GTK_TYPE_POINTER:
 	return PyCObject_FromVoidPtr(*GTK_RETLOC_POINTER(*arg), NULL);
     case GTK_TYPE_BOXED:
 	if (arg->type == GTK_TYPE_ACCEL_GROUP)
 	    return PyGtkAccelGroup_New(*GTK_RETLOC_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_STYLE)
-	    return PyGtkStyle_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_EVENT)
 	    return PyGdkEvent_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_FONT)
 	    return PyGdkFont_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_COLOR)
 	    return PyGdkColor_New(*GTK_RETLOC_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_GDK_WINDOW)
-	    return PyGdkWindow_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_GDK_VISUAL)
 	    return PyGdkVisual_New(*GTK_RETLOC_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_GDK_COLORMAP)
-	    return PyGdkColormap_New(*GTK_RETLOC_BOXED(*arg));
-	else if (arg->type == GTK_TYPE_GDK_DRAG_CONTEXT)
-	    return PyGdkDragContext_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_SELECTION_DATA)
 	    return PyGtkSelectionData_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_CTREE_NODE) {
@@ -954,7 +677,7 @@ pygtk_callback_marshal(GtkObject *o, gpointer data, guint nargs, GtkArg *args)
     } else
 	func = tuple;
     if (!obj && o != NULL)
-	obj = PyGtk_New(o);
+	obj = pygobject_new((GObject *)o);
 
     if (obj) {
 	tuple = PyTuple_New(1);
@@ -996,7 +719,7 @@ pygtk_signal_marshal(GtkObject *object, gpointer user_data,
 
     PyGTK_BLOCK_THREADS
     ret = PyTuple_New(1);
-    PyTuple_SetItem(ret, 0, PyGtk_New(object));
+    PyTuple_SetItem(ret, 0, pygobject_new((GObject *)object));
     arg_list = pygtk_args_as_tuple(nparams, args);
     params = PySequence_Concat(ret, arg_list);
     Py_DECREF(ret);
@@ -1243,52 +966,7 @@ pygtk_flag_get_value(GtkType flag_type, PyObject *obj, int *val)
 
 /* ------------------- Base GtkObject methods ------------------- */
 
-static destructor real_subclass_dealloc = NULL;
-
-static void
-pygtk_subclass_dealloc(PyGtk_Object *self)
-{
-    GtkObject *obj = self->obj;
-
-    if (obj) {
-	/* save reference to python wrapper if there are still
-	 * references to the gtk object in such a way that it will be
-	 * freed when the gtk object is destroyed, so is the python
-	 * wrapper, but if a python wrapper can be */
-	if (obj->ref_count > 1) {
-	    Py_INCREF(self); /* grab a reference on the wrapper */
-	    self->hasref = TRUE;
-	    gtk_object_set_data_full(obj, pygtk_ownedref_key,
-				     self, pygtk_destroy_notify);
-	    gtk_object_unref(obj);
-	    return;
-	}
-	if (!self->hasref) /* don't unref the gtk object if it owns us */
-	    gtk_object_unref(obj);
-    }
-    if (real_subclass_dealloc)
-	(* real_subclass_dealloc)((PyObject *)self);
-}
-
-/* more hackery to stop segfaults caused by multi deallocs on a subclass
- * (which happens quite regularly in pygtk) */
-static PyObject *
-pygtk__class_init__(PyObject *something, PyObject *args)
-{
-    PyExtensionClass *subclass;
-
-    if (!PyArg_ParseTuple(args, "O:GtkObject.__class_init__", &subclass))
-	return NULL;
-    g_message("__class_init__ called for %s", subclass->tp_name);
-    if ((subclass->class_flags & EXTENSIONCLASS_PYSUBCLASS_FLAG) &&
-	subclass->tp_dealloc != (destructor)pygtk_subclass_dealloc) {
-	real_subclass_dealloc = subclass->tp_dealloc;
-	subclass->tp_dealloc = (destructor)pygtk_subclass_dealloc;
-    }
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
+#if 0
 static PyObject *
 _wrap_gtk_signal_connect(PyGtk_Object *self, PyObject *args)
 {
@@ -1620,7 +1298,6 @@ _wrap_gtk_object_get_data(PyGtk_Object *self, PyObject *args)
 }
 
 static PyMethodDef base_object_methods[] = {
-    { "__class_init__", (PyCFunction)pygtk__class_init__, METH_VARARGS|METH_CLASS_METHOD },
     { "connect", (PyCFunction)_wrap_gtk_signal_connect, METH_VARARGS },
     { "connect_after", (PyCFunction)_wrap_gtk_signal_connect_after, METH_VARARGS },
     { "connect_object", (PyCFunction)_wrap_gtk_signal_connect_object, METH_VARARGS },
@@ -1637,3 +1314,4 @@ static PyMethodDef base_object_methods[] = {
 };
 
 PyMethodChain base_object_method_chain = METHOD_CHAIN(base_object_methods);
+#endif /* #if 0 */

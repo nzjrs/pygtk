@@ -241,7 +241,7 @@ class FileArg(ArgType):
 	       '    return Py_None;'
 
 class EnumArg(ArgType):
-    enum = '    if (pygtk_enum_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
+    enum = '    if (pyg_enum_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
 	   '        return NULL;\n'
     def __init__(self, enumname):
 	self.enumname = enumname
@@ -261,7 +261,7 @@ class EnumArg(ArgType):
 	return '    return PyInt_FromLong(%(func)s);'
 
 class FlagsArg(ArgType):
-    flag = '    if (pygtk_flag_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
+    flag = '    if (pyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
 	   '        return NULL;\n'
     def __init__(self, flagname):
 	self.flagname = flagname
@@ -348,7 +348,7 @@ class ObjectArg(ArgType):
 	    return 'O'
     def write_return(self, ptype, varlist):
 	return '    /* PyGtk_New handles NULL checking */\n' + \
-	       '    return pygobject_new((GtkObject *)%(func)s);'
+	       '    return pygobject_new((GObject *)%(func)s);'
 
 class BoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -469,27 +469,14 @@ matcher.register('FILE*', arg)
 
 matcher.register_boxed('GtkAccelGroup', 'PyGtkAccelGroup_Type',
 		       'PyGtkAccelGroup_Get', 'PyGtkAccelGroup_New')
-matcher.register_boxed('GtkStyle', 'PyGtkStyle_Type',
-		       'PyGtkStyle_Get', 'PyGtkStyle_New')
 matcher.register_boxed('GdkFont', 'PyGdkFont_Type',
 		       'PyGdkFont_Get', 'PyGdkFont_New')
 matcher.register_boxed('GdkColor', 'PyGdkColor_Type',
 		       'PyGdkColor_Get', 'PyGdkColor_New')
 matcher.register_boxed('GdkEvent', 'PyGdkEvent_Type',
 		       'PyGdkEvent_Get', 'PyGdkEvent_New')
-matcher.register_boxed('GdkWindow', 'PyGdkWindow_Type',
-		       'PyGdkWindow_Get', 'PyGdkWindow_New')
-matcher.register('GdkPixmap*', matcher.get('GdkWindow*'))
-matcher.register('GdkBitmap*', matcher.get('GdkWindow*'))
-matcher.register('GdkDrawable*', matcher.get('GdkWindow*'))
-matcher.register_boxed('GdkGC', 'PyGdkGC_Type',
-		       'PyGdkGC_Get', 'PyGdkGC_New')
 matcher.register_boxed('GdkVisual', 'PyGdkVisual_Type',
                        'PyGdkVisual_Get', 'PyGdkVisual_New')
-matcher.register_boxed('GdkColormap', 'PyGdkColormap_Type',
-		       'PyGdkColormap_Get', 'PyGdkColormap_New')
-matcher.register_boxed('GdkDragContext', 'PyGdkDragContext_Type',
-		       'PyGdkDragContext_Get', 'PyGdkDragContext_New')
 matcher.register_boxed('GtkSelectionData', 'PyGtkSelectionData_Type',
 		       'PyGtkSelectionData_Get', 'PyGtkSelectionData_New')
 matcher.register_boxed('GdkCursor', 'PyGdkCursor_Type',

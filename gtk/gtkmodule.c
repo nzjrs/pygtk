@@ -33,24 +33,11 @@ static struct _PyGtk_FunctionStruct functions = {
 
     pygtk_register_boxed,
 
-    pygtk_enum_get_value,
-    pygtk_flag_get_value,
-
-    pygtk_register_class,
-    pygtk_register_wrapper,
-    pygtk_no_constructor,
-
-    &PyGtkObject_Type, PyGtk_New,
     &PyGtkAccelGroup_Type,  PyGtkAccelGroup_New,
-    &PyGtkStyle_Type,  PyGtkStyle_New,
     &PyGdkFont_Type,  PyGdkFont_New,
     &PyGdkColor_Type,  PyGdkColor_New,
     &PyGdkEvent_Type,  PyGdkEvent_New,
-    &PyGdkWindow_Type,  PyGdkWindow_New,
-    &PyGdkGC_Type,  PyGdkGC_New,
     &PyGdkVisual_Type, PyGdkVisual_New,
-    &PyGdkColormap_Type,  PyGdkColormap_New,
-    &PyGdkDragContext_Type,  PyGdkDragContext_New,
     &PyGtkSelectionData_Type,  PyGtkSelectionData_New,
     &PyGdkAtom_Type,  PyGdkAtom_New,
     &PyGdkCursor_Type,  PyGdkCursor_New,

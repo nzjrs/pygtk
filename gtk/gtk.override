@@ -1,7 +1,453 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
+#define NO_IMPORT_PYGOBJECT
+#include "pygobject.h"
+#include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
+
+/* small fix */
+#undef gdk_window_get_type
+#define gdk_window_get_type gdk_window_object_get_type
+
+/* gross hack until gdk-pixbuf types get set up as normal enums/flags */
+#define GTK_TYPE_GDK_COLORSPACE G_TYPE_INVALID
+#define GTK_TYPE_GDK_INTERP_TYPE G_TYPE_INVALID
+#define GTK_TYPE_GDK_PIXBUF_ALPHA_MODE G_TYPE_INVALID
+
+static PyExtensionClass *_PyGObject_Type;
+#define PyGObject_Type (*_PyGObject_Type)
+
+%%
+init
+{
+    PyObject *pygobject = PyImport_ImportModule("gobject");
+    if (pygobject != NULL) {
+	PyObject *module_dict = PyModule_GetDict(pygobject);
+
+	_PyGObject_Type = (PyExtensionClass *)PyDict_GetItemString(module_dict,
+								   "GObject");
+    } else {
+	Py_FatalError("could not import gobject");
+	return;
+    }
+}
+
+%%
+override gdk_draw_polygon kwargs
+static PyObject *
+_wrap_gdk_draw_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "filled", "points", NULL };
+    PyGObject *gc;
+    PyObject *py_points;
+    gint filled, npoints, i;
+    GdkPoint *points;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OiO:GdkDrawable.draw_polygon",
+				     kwlist, &gc, &filled, &py_points))
+	return NULL;
+    if (!pygobject_check(gc, &PyGdkGC_Type)) {
+	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
+	return NULL;
+    }
+    if (!PySequence_Check(py_points)) {
+	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
+	return NULL;
+    }
+    npoints = PySequence_Length(py_points);
+    points = g_new(GdkPoint, npoints);
+    for (i = 0; i < npoints; i++) {
+	PyObject *item = PySequence_GetItem(py_points, i);
+	Py_DECREF(item);
+	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence members must be 2-tuples");
+	    g_free(points);
+	    return NULL;
+	}
+    }
+    gdk_draw_polygon(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), filled,
+		     points, npoints);
+    g_free(points);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gdk_draw_text kwargs
+static PyObject *
+_wrap_gdk_draw_text(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "font", "gc", "x", "y", "text",NULL};
+    PyGObject *gc;
+    PyObject *drawable, *font;
+    int x, y, len;
+    char *text;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!Oiis#:GdkDrawable.draw_text",
+				     kwlist,  &PyGdkFont_Type, &font,
+				     &gc, &x, &y, &text, &len))
+	return NULL;
+    if (!pygobject_check(gc, &PyGdkGC_Type)) {
+	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
+	return NULL;
+    }
+    gdk_draw_text(GDK_DRAWABLE(self->obj), PyGdkFont_Get(font),
+		  GDK_GC(gc->obj), x, y, text, len);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gdk_draw_points kwargs
+static PyObject *
+_wrap_gdk_draw_points(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "points", NULL };
+    PyGObject *gc;
+    PyObject *py_points;
+    gint npoints, i;
+    GdkPoint *points;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OO:GdkDrawable.draw_points",
+				     kwlist, &gc, &py_points))
+	return NULL;
+    if (!pygobject_check(gc, &PyGdkGC_Type)) {
+	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
+	return NULL;
+    }
+    if (!PySequence_Check(py_points)) {
+	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
+	return NULL;
+    }
+    npoints = PySequence_Length(py_points);
+    points = g_new(GdkPoint, npoints);
+    for (i = 0; i < npoints; i++) {
+	PyObject *item = PySequence_GetItem(py_points, i);
+	Py_DECREF(item);
+	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence members must be 2-tuples");
+	    g_free(points);
+	    return NULL;
+	}
+    }
+    gdk_draw_points(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), points, npoints);
+    g_free(points);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gdk_draw_segments kwargs
+static PyObject *
+_wrap_gdk_draw_segments(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "segs", NULL };
+    PyGObject *gc;
+    PyObject *py_segs;
+    gint nsegs, i;
+    GdkSegment *segs;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OO:GdkDrawable.draw_segments",
+				     kwlist, &gc, &py_segs))
+	return NULL;
+    if (!pygobject_check(gc, &PyGdkGC_Type)) {
+	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
+	return NULL;
+    }
+    if (!PySequence_Check(py_segs)) {
+	PyErr_SetString(PyExc_TypeError, "segs must be a sequence");
+	return NULL;
+    }
+    nsegs = PySequence_Length(py_segs);
+    segs = g_new(GdkSegment, nsegs);
+    for (i = 0; i < nsegs; i++) {
+	PyObject *item = PySequence_GetItem(py_segs, i);
+	Py_DECREF(item);
+	if (!PyArg_ParseTuple(item, "hhhh", &segs[i].x1, &segs[i].y1,
+			      &segs[i].x2, &segs[i].y2)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence members must be 4-tuples");
+	    g_free(segs);
+	    return NULL;
+	}
+    }
+    gdk_draw_segments(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), segs, nsegs);
+    g_free(segs);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gdk_draw_lines kwargs
+static PyObject *
+_wrap_gdk_draw_lines(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "points", NULL };
+    PyGObject *gc;
+    PyObject *py_points;
+    gint npoints, i;
+    GdkPoint *points;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO:GdkDrawable.draw_lines",
+				     kwlist, &gc, &py_points))
+	return NULL;
+    if (!pygobject_check(gc, &PyGdkGC_Type)) {
+	PyErr_SetString(PyExc_TypeError, "gc must be a GdkGC");
+	return NULL;
+    }
+    if (!PySequence_Check(py_points)) {
+	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
+	return NULL;
+    }
+    npoints = PySequence_Length(py_points);
+    points = g_new(GdkPoint, npoints);
+    for (i = 0; i < npoints; i++) {
+	PyObject *item = PySequence_GetItem(py_points, i);
+	Py_DECREF(item);
+	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "sequence members must be 2-tuples");
+	    g_free(points);
+	    return NULL;
+	}
+    }
+    gdk_draw_lines(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), points, npoints);
+    g_free(points);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+ignore
+  gdk_color_copy gdk_color_free
+  gdk_color_hash gdk_color_equal
+  gdk_color_parse
+%%
+override gdk_pixmap_create_from_xpm kwargs
+static PyObject *
+_wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "window", "transparent_color", "filename", NULL};
+    PyGObject *window;
+    PyObject *py_trans_color, *ret;
+    GdkColor *trans_color = NULL;
+    gchar *filename;
+    GdkPixmap *pixmap;
+    GdkBitmap *mask;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OOs:pixmap_create_from_xpm", kwlist,
+				     &window, &py_trans_color, &filename))
+	return NULL;
+    if (!pygobject_check(window, &PyGdkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
+	return NULL;
+    }
+    if (PyGdkColor_Check(py_trans_color))
+	trans_color = PyGdkColor_Get(py_trans_color);
+    else if (py_trans_color != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"transparent_color must be a colour or None");
+	return NULL;
+    }
+    pixmap = gdk_pixmap_create_from_xpm(GDK_WINDOW(window->obj), &mask,
+					trans_color, filename);
+    if (pixmap == NULL) {
+	PyErr_SetString(PyExc_IOError, "can't load pixmap");
+	return NULL;
+    }
+    ret = Py_BuildValue("(NN)",
+			pygobject_new((GObject *)pixmap),
+			pygobject_new((GObject *)mask));
+    gdk_pixmap_unref(pixmap);
+    gdk_bitmap_unref(mask);
+    return ret;
+}
+%%
+override gdk_pixmap_colormap_create_from_xpm kwargs
+static PyObject *
+_wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
+					  PyObject *kwargs)
+{
+    static char *kwlist[] = { "window", "colormap", "transparent_color",
+			      "filename", NULL };
+    PyObject *py_window, *py_colormap, *py_trans_color, *ret;
+    GdkWindow *window = NULL;
+    GdkColormap *colormap = NULL;
+    GdkColor *trans_color = NULL;
+    gchar *filename;
+    GdkPixmap *pixmap;
+    GdkBitmap *mask;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OOOs:pixmap_colormap_create_from_xpm",
+				     kwlist, &py_window, &py_colormap,
+				     &py_trans_color, &filename))
+	return NULL;
+    if (pygobject_check(py_window, &PyGdkWindow_Type))
+	window = GDK_WINDOW(pygobject_get(py_window));
+    else if (py_window != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
+	return NULL;
+    }
+    if (pygobject_check(py_colormap, &PyGdkColormap_Type))
+	colormap = GDK_COLORMAP(pygobject_get(py_colormap));
+    else if (py_colormap != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"colormap must be a GdkColormap or None");
+	return NULL;
+    }
+    if (PyGdkColor_Check(py_trans_color))
+	trans_color = PyGdkColor_Get(py_trans_color);
+    else if (py_trans_color != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"transparent_color must be a colour or None");
+	return NULL;
+    }
+    pixmap = gdk_pixmap_colormap_create_from_xpm(window, colormap, &mask,
+						 trans_color, filename);
+    if (pixmap == NULL) {
+	PyErr_SetString(PyExc_IOError, "can't load pixmap");
+	return NULL;
+    }
+    ret = Py_BuildValue("(NN)",
+			pygobject_new((GObject *)pixmap),
+			pygobject_new((GObject *)mask));
+    gdk_pixmap_unref(pixmap);
+    gdk_bitmap_unref(mask);
+    return ret;
+}
+%%
+override gdk_pixmap_create_from_xpm_d kwargs
+static PyObject *
+_wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    static char *kwlist[] = { "window", "transparent_color", "data", NULL };
+    PyGObject *window;
+    PyObject *py_trans_color, *py_data, *ret;
+    GdkColor *trans_color = NULL;
+    gchar **data;
+    int len, i;
+    GdkPixmap *pixmap;
+    GdkBitmap *mask;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!OO!:pixmap_create_from_xpm_d", kwlist,
+				     &window, &py_trans_color,
+				     &PyList_Type, &py_data))
+	return NULL;
+    if (!pygobject_check(window, &PyGdkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
+	return NULL;
+    }
+    if (PyGdkColor_Check(py_trans_color))
+	trans_color = PyGdkColor_Get(py_trans_color);
+    else if (py_trans_color != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"transparent_color must be a colour or None");
+	return NULL;
+    }
+    len = PyList_Size(py_data);
+    data = g_new(gchar *, len);
+    for (i = 0; i < len; i ++) {
+	PyObject *item = PyList_GetItem(py_data, i);
+	if (!PyString_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
+	    g_free(data);
+	    return NULL;
+	}
+	data[i] = PyString_AsString(item);
+    }
+    pixmap = gdk_pixmap_create_from_xpm_d(GDK_WINDOW(window->obj), &mask,
+					  trans_color, data);
+    g_free(data);
+    if (pixmap == NULL) {
+	PyErr_SetString(PyExc_IOError, "can't load pixmap");
+	return NULL;
+    }
+    ret = Py_BuildValue("(NN)",
+			pygobject_new((GObject *)pixmap),
+			pygobject_new((GObject *)mask));
+    gdk_pixmap_unref(pixmap);
+    gdk_bitmap_unref(mask);
+    return ret;
+}
+%%
+override gdk_pixmap_colormap_create_from_xpm_d kwargs
+static PyObject *
+_wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
+					    PyObject *kwargs)
+{
+    static char *kwlist[] = { "window", "colormap", "transparent_color",
+			      "data", NULL };
+    PyObject *py_window, *py_colormap, *py_trans_color, *py_data, *ret;
+    GdkWindow *window = NULL;
+    GdkColormap *colormap = NULL;
+    GdkColor *trans_color = NULL;
+    gchar **data;
+    int len, i;
+    GdkPixmap *pixmap;
+    GdkBitmap *mask;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OOOO!:pixmap_colormap_create_from_xpm_d",
+				     kwlist, &py_window, &py_colormap,
+				     &py_trans_color,
+				     &PyList_Type, &py_data))
+	return NULL;
+    if (pygobject_check(py_window, &PyGdkWindow_Type))
+	window = GDK_WINDOW(pygobject_get(py_window));
+    else if (py_window != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
+	return NULL;
+    }
+    if (pygobject_check(py_colormap, &PyGdkColormap_Type))
+	colormap = GDK_COLORMAP(pygobject_get(py_colormap));
+    else if (py_colormap != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"colormap must be a GdkColormap or None");
+	return NULL;
+    }
+    if (PyGdkColor_Check(py_trans_color))
+	trans_color = PyGdkColor_Get(py_trans_color);
+    else if (py_trans_color != Py_None) {
+	PyErr_SetString(PyExc_TypeError,
+			"transparent_color must be a colour or None");
+	return NULL;
+    }
+    len = PyList_Size(py_data);
+    data = g_new(gchar *, len);
+    for (i = 0; i < len; i ++) {
+	PyObject *item = PyList_GetItem(py_data, i);
+	if (!PyString_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
+	    g_free(data);
+	    return NULL;
+	}
+	data[i] = PyString_AsString(item);
+    }
+    pixmap = gdk_pixmap_colormap_create_from_xpm_d(window, colormap, &mask,
+						   trans_color, data);
+    g_free(data);
+    if (pixmap == NULL) {
+	PyErr_SetString(PyExc_IOError, "can't load pixmap");
+	return NULL;
+    }
+    ret = Py_BuildValue("(NN)",
+			pygobject_new((GObject *)pixmap),
+			pygobject_new((GObject *)mask));
+    gdk_pixmap_unref(pixmap);
+    gdk_bitmap_unref(mask);
+    return ret;
+}
 %%
 ignore-glob
   *_get_type
@@ -2333,381 +2779,6 @@ _wrap_gtk_window_set_geometry_hints(PyGtk_Object *self, PyObject *args,
 				  &geometry, geom_mask);
     Py_INCREF(Py_None);
     return Py_None;
-}
-%%
-override gdk_draw_polygon kwargs
-static PyObject *
-_wrap_gdk_draw_polygon(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "drawable", "gc", "filled", "points", NULL };
-    PyObject *drawable, *gc, *py_points;
-    gint filled, npoints, i;
-    GdkPoint *points;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!iO:draw_polygon",
-				     kwlist, &PyGdkWindow_Type, &drawable, &gc,
-				     &filled, &py_points))
-	return NULL;
-    if (!PySequence_Check(py_points)) {
-	PyErr_SetString(PyExc_TypeError, "forth argument must be a sequence");
-	return NULL;
-    }
-    npoints = PySequence_Length(py_points);
-    points = g_new(GdkPoint, npoints);
-    for (i = 0; i < npoints; i++) {
-	PyObject *item = PySequence_GetItem(py_points, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 2-tuples");
-	    g_free(points);
-	    return NULL;
-	}
-    }
-    gdk_draw_polygon(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), filled,
-		     points, npoints);
-    g_free(points);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override gdk_draw_text kwargs
-static PyObject *
-_wrap_gdk_draw_text(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "drawable", "font", "gc", "x", "y", "text",NULL};
-    PyObject *drawable, *font, *gc;
-    int x, y, len;
-    char *text;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!O!iis#:draw_text",
-				     kwlist, &PyGdkWindow_Type, &drawable,
-				     &PyGdkFont_Type, &font,
-				     &PyGdkGC_Type, &gc,
-				     &x, &y, &text, &len))
-	return NULL;
-    gdk_draw_text(PyGdkWindow_Get(drawable), PyGdkFont_Get(font),
-		  PyGdkGC_Get(gc), x, y, text, len);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override gdk_draw_points kwargs
-static PyObject *
-_wrap_gdk_draw_points(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "drawable", "gc", "points", NULL };
-    PyObject *drawable, *gc, *py_points;
-    gint npoints, i;
-    GdkPoint *points;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!O:draw_points",
-				     kwlist, &PyGdkWindow_Type, &drawable, &gc,
-				     &py_points))
-	return NULL;
-    if (!PySequence_Check(py_points)) {
-	PyErr_SetString(PyExc_TypeError, "third argument must be a sequence");
-	return NULL;
-    }
-    npoints = PySequence_Length(py_points);
-    points = g_new(GdkPoint, npoints);
-    for (i = 0; i < npoints; i++) {
-	PyObject *item = PySequence_GetItem(py_points, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 2-tuples");
-	    g_free(points);
-	    return NULL;
-	}
-    }
-    gdk_draw_points(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc),points,npoints);
-    g_free(points);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override gdk_draw_segments kwargs
-static PyObject *
-_wrap_gdk_draw_segments(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "drawable", "gc", "segs", NULL };
-    PyObject *drawable, *gc, *py_segs;
-    gint nsegs, i;
-    GdkSegment *segs;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!O:draw_segments",
-				     kwlist, &PyGdkWindow_Type, &drawable, &gc,
-				     &py_segs))
-	return NULL;
-    if (!PySequence_Check(py_segs)) {
-	PyErr_SetString(PyExc_TypeError, "third argument must be a sequence");
-	return NULL;
-    }
-    nsegs = PySequence_Length(py_segs);
-    segs = g_new(GdkSegment, nsegs);
-    for (i = 0; i < nsegs; i++) {
-	PyObject *item = PySequence_GetItem(py_segs, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hhhh", &segs[i].x1, &segs[i].y1,
-			      &segs[i].x2, &segs[i].y2)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 4-tuples");
-	    g_free(segs);
-	    return NULL;
-	}
-    }
-    gdk_draw_segments(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), segs, nsegs);
-    g_free(segs);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override gdk_draw_lines kwargs
-static PyObject *
-_wrap_gdk_draw_lines(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "drawable", "gc", "points", NULL };
-    PyObject *drawable, *gc, *py_points;
-    gint npoints, i;
-    GdkPoint *points;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!O:draw_lines",
-				     kwlist, &PyGdkWindow_Type, &drawable, &gc,
-				     &py_points))
-	return NULL;
-    if (!PySequence_Check(py_points)) {
-	PyErr_SetString(PyExc_TypeError, "third argument must be a sequence");
-	return NULL;
-    }
-    npoints = PySequence_Length(py_points);
-    points = g_new(GdkPoint, npoints);
-    for (i = 0; i < npoints; i++) {
-	PyObject *item = PySequence_GetItem(py_points, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "hh", &points[i].x, &points[i].y)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 2-tuples");
-	    g_free(points);
-	    return NULL;
-	}
-    }
-    gdk_draw_lines(PyGdkWindow_Get(drawable), PyGdkGC_Get(gc), points,npoints);
-    g_free(points);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-ignore
-  gdk_color_copy gdk_color_free
-  gdk_color_hash gdk_color_equal
-  gdk_color_parse
-%%
-override gdk_pixmap_create_from_xpm kwargs
-static PyObject *
-_wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
-				 PyObject *kwargs)
-{
-    static char *kwlist[] = { "window", "transparent_color", "filename", NULL};
-    PyObject *window, *py_trans_color, *ret;
-    GdkColor *trans_color = NULL;
-    gchar *filename;
-    GdkPixmap *pixmap;
-    GdkBitmap *mask;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!Os:pixmap_create_from_xpm", kwlist,
-				     &PyGdkWindow_Type, &window,
-				     &py_trans_color, &filename))
-	return NULL;
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
-    else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
-    }
-    pixmap = gdk_pixmap_create_from_xpm(PyGdkWindow_Get(window), &mask,
-					trans_color, filename);
-    if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
-    }
-    ret = Py_BuildValue("(NN)", PyGdkWindow_New(pixmap),PyGdkWindow_New(mask));
-    gdk_pixmap_unref(pixmap);
-    gdk_bitmap_unref(mask);
-    return ret;
-}
-%%
-override gdk_pixmap_colormap_create_from_xpm kwargs
-static PyObject *
-_wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
-					  PyObject *kwargs)
-{
-    static char *kwlist[] = { "window", "colormap", "transparent_color",
-			      "filename", NULL };
-    PyObject *py_window, *py_colormap, *py_trans_color, *ret;
-    GdkWindow *window = NULL;
-    GdkColormap *colormap = NULL;
-    GdkColor *trans_color = NULL;
-    gchar *filename;
-    GdkPixmap *pixmap;
-    GdkBitmap *mask;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOOs:pixmap_colormap_create_from_xpm",
-				     kwlist, &py_window, &py_colormap,
-				     &py_trans_color, &filename))
-	return NULL;
-    if (PyGdkWindow_Check(py_window))
-	window = PyGdkWindow_Get(py_window);
-    else if (py_window != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
-	return NULL;
-    }
-    if (PyGdkColormap_Check(py_colormap))
-	colormap = PyGdkColormap_Get(py_colormap);
-    else if (py_colormap != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"colormap must be a GdkColormap or None");
-	return NULL;
-    }
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
-    else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
-    }
-    pixmap = gdk_pixmap_colormap_create_from_xpm(window, colormap, &mask,
-						 trans_color, filename);
-    if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
-    }
-    ret = Py_BuildValue("(NN)", PyGdkWindow_New(pixmap),PyGdkWindow_New(mask));
-    gdk_pixmap_unref(pixmap);
-    gdk_bitmap_unref(mask);
-    return ret;
-}
-%%
-override gdk_pixmap_create_from_xpm_d kwargs
-static PyObject *
-_wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
-				   PyObject *kwargs)
-{
-    static char *kwlist[] = { "window", "transparent_color", "data", NULL };
-    PyObject *window, *py_trans_color, *py_data, *ret;
-    GdkColor *trans_color = NULL;
-    gchar **data;
-    int len, i;
-    GdkPixmap *pixmap;
-    GdkBitmap *mask;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!OO!:pixmap_create_from_xpm_d", kwlist,
-				     &PyGdkWindow_Type, &window,
-				     &py_trans_color,
-				     &PyList_Type, &py_data))
-	return NULL;
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
-    else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
-    }
-    len = PyList_Size(py_data);
-    data = g_new(gchar *, len);
-    for (i = 0; i < len; i ++) {
-	PyObject *item = PyList_GetItem(py_data, i);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
-	    g_free(data);
-	    return NULL;
-	}
-	data[i] = PyString_AsString(item);
-    }
-    pixmap = gdk_pixmap_create_from_xpm_d(PyGdkWindow_Get(window), &mask,
-					  trans_color, data);
-    g_free(data);
-    if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
-    }
-    ret = Py_BuildValue("(NN)", PyGdkWindow_New(pixmap),PyGdkWindow_New(mask));
-    gdk_pixmap_unref(pixmap);
-    gdk_bitmap_unref(mask);
-    return ret;
-}
-%%
-override gdk_pixmap_colormap_create_from_xpm_d kwargs
-static PyObject *
-_wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
-					    PyObject *kwargs)
-{
-    static char *kwlist[] = { "window", "colormap", "transparent_color",
-			      "data", NULL };
-    PyObject *py_window, *py_colormap, *py_trans_color, *py_data, *ret;
-    GdkWindow *window = NULL;
-    GdkColormap *colormap = NULL;
-    GdkColor *trans_color = NULL;
-    gchar **data;
-    int len, i;
-    GdkPixmap *pixmap;
-    GdkBitmap *mask;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOOO!:pixmap_colormap_create_from_xpm_d",
-				     kwlist, &py_window, &py_colormap,
-				     &py_trans_color,
-				     &PyList_Type, &py_data))
-	return NULL;
-    if (PyGdkWindow_Check(py_window))
-	window = PyGdkWindow_Get(py_window);
-    else if (py_window != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
-	return NULL;
-    }
-    if (PyGdkColormap_Check(py_colormap))
-	colormap = PyGdkColormap_Get(py_colormap);
-    else if (py_colormap != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"colormap must be a GdkColormap or None");
-	return NULL;
-    }
-    if (PyGdkColor_Check(py_trans_color))
-	trans_color = PyGdkColor_Get(py_trans_color);
-    else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
-    }
-    len = PyList_Size(py_data);
-    data = g_new(gchar *, len);
-    for (i = 0; i < len; i ++) {
-	PyObject *item = PyList_GetItem(py_data, i);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
-	    g_free(data);
-	    return NULL;
-	}
-	data[i] = PyString_AsString(item);
-    }
-    pixmap = gdk_pixmap_colormap_create_from_xpm_d(window, colormap, &mask,
-						   trans_color, data);
-    g_free(data);
-    if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
-    }
-    ret = Py_BuildValue("(NN)", PyGdkWindow_New(pixmap),PyGdkWindow_New(mask));
-    gdk_pixmap_unref(pixmap);
-    gdk_bitmap_unref(mask);
-    return ret;
 }
 %%
 override gtk_drag_dest_set kwargs

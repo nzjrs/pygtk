@@ -36,7 +36,7 @@ consttmpl = 'static PyObject *\n' + \
 	    '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.__init__"%(parselist)s))\n' + \
 	    '        return NULL;\n' + \
 	    '%(extracode)s\n' + \
-	    '    self->obj = (GtkObject *)%(cname)s(%(arglist)s);\n' + \
+	    '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n' + \
 	    '    if (!self->obj) {\n' + \
 	    '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n' + \
 	    '        return NULL;\n' + \
@@ -65,6 +65,16 @@ attrchecktmpl = '    if (!strcmp(attr, "%(attr)s")) {\n' + \
                 '%(varlist)s' + \
                 '%(code)s\n' + \
                 '    }\n'
+
+noconstructor = 'static PyObject *\n' + \
+                'pygobject_no_constructor(PyObject *self, PyObject *args)\n' +\
+                '{\n' + \
+                '    gchar buf[512];\n' + \
+                '\n' + \
+                '    g_snprintf(buf, sizeof(buf), "%s is an abstract widget", self->ob_type->tp_name);\n' + \
+                '    PyErr_SetString(PyExc_NotImplementedError, buf);\n' + \
+                '    return NULL;\n' + \
+                '}\n\n'
 
 typetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
 	   '    PyObject_HEAD_INIT(NULL)\n' + \
@@ -259,14 +269,22 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
 	    sys.stderr.write('Could not write constructor for ' +
 			     objobj.c_name + '\n')
 	    #traceback.print_exc()
+            # this is a hack ...
+            if not hasattr(overrides, 'no_constructor_written'):
+                fp.write(noconstructor)
+                overrides.no_constructor_written = 1
             methods.append(methdeftmpl %
                            { 'name':  '__init__',
-                             'cname': 'pygtk_no_constructor',
+                             'cname': 'pygobject_no_constructor',
                              'flags': 'METH_VARARGS'})
     else:
+        # this is a hack ...
+        if not hasattr(overrides, 'no_constructor_written'):
+            fp.write(noconstructor)
+            overrides.no_constructor_written = 1
         methods.append(methdeftmpl %
                        { 'name':  '__init__',
-                         'cname': 'pygtk_no_constructor',
+                         'cname': 'pygobject_no_constructor',
                          'flags': 'METH_VARARGS'})
     # do the get_type routine as class method ...
     uclass = string.lower(argtypes._to_upper_str(objobj.c_name)[1:])

@@ -2,50 +2,50 @@
 ; object definitions ...
 (object Colormap
   (in-module Gdk)
-  (parent GObject)
+  (parent Object (G))
   (c-name GdkColormap)
 )
 
 (object DragContext
   (in-module Gdk)
-  (parent GObject)
+  (parent Object (G))
   (c-name GdkDragContext)
 )
 
 (object Drawable
   (in-module Gdk)
-  (parent GObject)
+  (parent Object (G))
   (c-name GdkDrawable)
 )
 
 ; this is fudged a little ...
 (object Window
   (in-module Gdk)
-  (parent GdkDrawable)
+  (parent Drawable (Gdk))
   (c-name GdkWindow)
 )
 
 (object GC
   (in-module Gdk)
-  (parent GObject)
+  (parent Object (G))
   (c-name GdkGC)
 )
 
 (object Image
   (in-module Gdk)
-  (parent GObject)
+  (parent Object (G))
   (c-name GdkImage)
 )
 
 (object Pixbuf
   (in-module Gdk)
-  (parent GObject)
+  (parent Object (G))
   (c-name GdkPixbuf)
 )
 
 (object PixbufAnimation
   (in-module Gdk)
-  (parent GObject)
+  (parent Object (G))
   (c-name GdkPixbufAnimation)
 )
 
@@ -200,8 +200,8 @@
 (enum FontType
   (in-module Gdk)
   (c-name GdkFontType)
-  (value (name ) (c-name GDK_FONT_FONT))
-  (value (name set) (c-name GDK_FONT_FONTSET))
+  (value (name font) (c-name GDK_FONT_FONT))
+  (value (name fontset) (c-name GDK_FONT_FONTSET))
 )
 
 (enum CapStyle
@@ -573,7 +573,7 @@
 (enum Colorspace
   (in-module Gdk)
   (c-name GdkColorspace)
-  (value (name ) (c-name GDK_COLORSPACE_RGB))
+  (value (name rgb) (c-name GDK_COLORSPACE_RGB))
 )
 
 (enum InterpType
@@ -633,17 +633,6 @@
   (parameter (type-and-name gint ncolors))
 )
 
-(method alloc_colors
-  (of-object Colormap (Gdk))
-  (c-name gdk_colormap_alloc_colors)
-  (return-type gint)
-  (parameter (type-and-name GdkColor* colors))
-  (parameter (type-and-name gint ncolors))
-  (parameter (type-and-name gboolean writeable))
-  (parameter (type-and-name gboolean best_match))
-  (parameter (type-and-name gboolean* success))
-)
-
 (method alloc_color
   (of-object Colormap (Gdk))
   (c-name gdk_colormap_alloc_color)
@@ -651,14 +640,6 @@
   (parameter (type-and-name GdkColor* color))
   (parameter (type-and-name gboolean writeable))
   (parameter (type-and-name gboolean best_match))
-)
-
-(method free_colors
-  (of-object Colormap (Gdk))
-  (c-name gdk_colormap_free_colors)
-  (return-type none)
-  (parameter (type-and-name GdkColor* colors))
-  (parameter (type-and-name gint ncolors))
 )
 
 (method get_visual
@@ -2312,7 +2293,7 @@
 )
 
 (function new
-  (is-constructor-of GdkWindow
+  (is-constructor-of GdkWindow)
   (c-name gdk_window_new)
   (return-type GdkWindow*)
   (parameter (type-and-name GdkWindow* parent))

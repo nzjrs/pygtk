@@ -1,5 +1,23 @@
 2000-07-03  James Henstridge  <james@daa.com.au>
 
+	* codegen/codegen.py (noconstructor): handle the null constructor
+	better.
+
+	* gtk/gtk-types.c (_pygtk_register_boxed_types): commented out the
+	object implementations for types that have been converted to
+	GObjects.
+
+	* gtk/gtkobject-support.c: commented out some of this code to get
+	it to compile again.  Also converted some functions over to GObject.
+
+	* codegen/argtypes.py (EnumArg,FlagsArg): use the version from gobject.
+
+	* gtk/gtkmodule.c: update 
+
+	* gtk/gtk.override: fix up the overrides for the new gdk.defs stuff.
+	(GTK_TYPE_GDK_*): add some dummy defines to make things compile until
+	the gdk-pixbuf enums are added to 
+
 	* codegen/argtypes.py (ObjectArg.write_param): use PyGObject
 	rather than PyGtk_Object.
 

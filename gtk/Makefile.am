@@ -15,18 +15,18 @@ INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
 pysitedir = $(PYTHON_SITE)
 pysite_PYTHON = __init__.py GTK.py GDK.py
 
-#pyexecdir = $(PYTHON_SITE_EXEC)
-#pyexec_LTLIBRARIES = _gtkmodule.la $(imlibmodule) $(libglademodule) $(glmodule)
+pyexecdir = $(PYTHON_SITE_EXEC)
+pyexec_LTLIBRARIES = _gtkmodule.la #$(imlibmodule) $(libglademodule) $(glmodule)
 
-#_gtkmodule_la_LDFLAGS = -module -avoid-version
-#_gtkmodule_la_LIBADD = $(GTK_LIBS)
-#_gtkmodule_la_SOURCES = \
-#	pygtk.h \
-#	pygtk-private.h \
-#	gtkmodule.c \
-#	gtkobject-support.c \
-#	gtk-types.c \
-#	gtk.c
+_gtkmodule_la_LDFLAGS = -module -avoid-version
+_gtkmodule_la_LIBADD = $(GTK_LIBS)
+_gtkmodule_la_SOURCES = \
+	pygtk.h \
+	pygtk-private.h \
+	gtkmodule.c \
+	gtkobject-support.c \
+	gtk-types.c \
+	gtk.c
 
 #imlibmodule_la_LDFLAGS = -module -avoid-version
 #imlibmodule_la_LIBADD = $(GDK_IMLIB_LIBS)
