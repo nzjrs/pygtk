@@ -1217,7 +1217,7 @@ class GtkCList(GtkContainer):
 		_gtk.gtk_clist_remove(self._o, row)
 	def row_is_visible(self, row):
 		return _gtk.gtk_clist_row_is_visible(self._o, row)
-	def row_move(self, soure_row, dest_row):
+	def row_move(self, source_row, dest_row):
 		_gtk.gtk_clist_row_move(self._o, source_row, dest_row)
 	def select_all(self):
 		_gtk.gtk_clist_select_all(self._o)
