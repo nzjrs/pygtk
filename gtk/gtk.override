@@ -1676,6 +1676,40 @@ _wrap_gtk_list_store_append(PyGObject *self)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
+override-slot GtkListStore.tp_as_mapping
+static int
+_wrap_gtk_list_store_tp_length(PyGObject *self)
+{
+    return gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self->obj), NULL);
+}
+static PyObject *
+_wrap_gtk_list_store_tp_getitem(PyGObject *self, PyObject *item)
+{
+    GtkTreePath *path;
+    GtkTreeIter iter;
+    PyObject *ret = NULL;
+
+    path = pygtk_tree_path_from_pyobject(item);
+    if (!path) {
+	PyErr_SetString(PyExc_TypeError,
+			"could not parse subscript as a tree path");
+	return  NULL;
+    }
+    if (gtk_tree_model_get_iter(GTK_TREE_MODEL(self->obj), &iter, path)) {
+	ret = _pygtk_list_store_row_new(GTK_LIST_STORE(self->obj), &iter);
+    } else {
+	PyErr_SetString(PyExc_IndexError, "could not find tree path");
+	ret = NULL;
+    }
+    gtk_tree_path_free(path);
+    return ret;
+}
+static PyMappingMethods _wrap_gtk_list_store_tp_as_mapping = {
+    (inquiry)_wrap_gtk_list_store_tp_length,
+    (binaryfunc)_wrap_gtk_list_store_tp_getitem,
+    (objobjargproc)0
+};
+%%
 ignore gtk_tree_store_newv
 %%
 override gtk_tree_store_new

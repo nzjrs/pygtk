@@ -757,6 +757,119 @@ PyTypeObject PyGdkAtom_Type = {
     NULL
 };
 
+typedef struct {
+    PyObject_HEAD
+    GtkListStore *list_store;
+    GtkTreeIter iter;
+} PyGtkListStoreRow;
+staticforward PyTypeObject PyGtkListStoreRow_Type;
+
+PyObject *
+_pygtk_list_store_row_new(GtkListStore *list_store, GtkTreeIter *iter)
+{
+    PyGtkListStoreRow *self;
+
+    self = (PyGtkListStoreRow *) PyObject_NEW(PyGtkListStoreRow,
+					      &PyGtkListStoreRow_Type);
+    if (self == NULL)
+	return NULL;
+    self->list_store = g_object_ref(list_store);
+    self->iter = *iter;
+    return (PyObject *)self;
+}
+
+static void
+pygtk_list_store_row_dealloc(PyGtkListStoreRow *self)
+{
+    g_object_unref(self->list_store);
+    PyObject_DEL(self);
+}
+
+static int
+pygtk_list_store_row_length(PyGtkListStoreRow *self)
+{
+    return gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->list_store));
+}
+
+static PyObject *
+pygtk_list_store_row_getitem(PyGtkListStoreRow *self, gint column)
+{
+    gint n_columns;
+    GValue value = { 0, };
+    PyObject *ret;
+
+    n_columns = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->list_store));
+    if (column < 0)
+	column += n_columns;
+    if (column < 0 || column >= n_columns) {
+	PyErr_SetString(PyExc_IndexError, "column index out of range");
+        return NULL;
+    }
+    gtk_tree_model_get_value(GTK_TREE_MODEL(self->list_store), &self->iter,
+			     column, &value);
+    ret = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+    return ret;
+}
+
+static int
+pygtk_list_store_row_setitem(PyGtkListStoreRow *self, gint column,
+			     PyObject *pyvalue)
+{
+    gint n_columns;
+    GValue value = { 0, };
+
+    n_columns = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->list_store));
+    if (column < 0)
+	column += n_columns;
+    if (column < 0 || column >= n_columns) {
+	PyErr_SetString(PyExc_IndexError, "column index out of range");
+        return -1;
+    }
+    g_value_init(&value, gtk_tree_model_get_column_type(
+		           GTK_TREE_MODEL(self->list_store), column));
+    if (pyg_value_from_pyobject(&value, pyvalue)) {
+	PyErr_SetString(PyExc_TypeError,
+			"value is of wrong type for this column");
+	return -1;
+    }
+    gtk_list_store_set_value(self->list_store, &self->iter, column, &value);
+    g_value_unset(&value);
+    return 0;
+}
+
+static PySequenceMethods pygtk_list_store_row_seqmethods = {
+    (inquiry)pygtk_list_store_row_length,
+    (binaryfunc)0,
+    (intargfunc)0,
+    (intargfunc)pygtk_list_store_row_getitem,
+    (intintargfunc)0,
+    (intobjargproc)pygtk_list_store_row_setitem,
+    (intintobjargproc)0
+};
+
+static PyTypeObject PyGtkListStoreRow_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "gtk.gtk.ListStoreRow",
+    sizeof(PyGtkListStoreRow),
+    0,
+    (destructor)pygtk_list_store_row_dealloc,
+    (printfunc)0,
+    (getattrfunc)0,
+    (setattrfunc)0,
+    (cmpfunc)0,
+    (reprfunc)0,
+    0,
+    &pygtk_list_store_row_seqmethods,
+    0,
+    (hashfunc)0,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    0L,0L,0L,0L,
+    NULL
+};
+
 PyObject *
 pygtk_tree_path_to_pyobject(GtkTreePath *path)
 {
@@ -873,6 +986,7 @@ _pygtk_register_boxed_types(PyObject *moddict)
 
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
     PyGdkAtom_Type.ob_type = &PyType_Type;
+    PyGtkListStoreRow_Type.ob_type = &PyType_Type;
 #if 0
     register_tp(GdkWindow);
 #endif

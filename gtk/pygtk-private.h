@@ -49,4 +49,7 @@ typedef struct {
 
 PyObject *_pygtk_style_helper_new(GtkStyle *style, int type, gpointer array);
 
+PyObject *_pygtk_list_store_row_new(GtkListStore *list_store,
+				    GtkTreeIter *iter);
+
 #endif
