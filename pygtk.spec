@@ -1,23 +1,18 @@
-%define py_prefix /usr
-# py_ver should only be 3 characters (1.5.1 == 1.5)
-%define py_ver 1.5
-%define ver 0.6.6
-
 # you may want to remove some of the sub packages depending on what you
 # have installed on your system when building this package.
 
 Summary: Python bindings for the GTK+ widget set.
 Name: pygtk
-Version: %ver
+Version: 1.99
 Release: 1
-Copyright: GPL
+Copyright: LGPL
 Group: Development/Languages
-Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{ver}.tar.gz
+Source: ftp://ftp.gtk.org/pub/gtk/python/pygtk-%{version}.tar.gz
 BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
-Requires: gtk+ >= 1.2.6
+Requires: gtk+ >= 1.3.7
 Requires: imlib
-Requires: python >= 1.5.2
+Requires: python >= 2.0
 
 %description
 PyGTK is an extension module for python that gives you access to the GTK+
@@ -27,7 +22,7 @@ in python with PyGTK (within reason), but with all of python's benefits.
 %package glarea
 Summary: A wrapper for the GtkGLArea widget for use with PyGTK
 Group: Development/Languages
-Requires: pygtk = %{ver}
+Requires: pygtk = %{version}
 
 %description glarea
 This module contains a wrapper for the GtkGLArea widget, which allows you
@@ -37,7 +32,7 @@ Python OpenGL bindings such as PyOpenGL to actually do any OpenGL rendering.
 %package libglade
 Summary: A wrapper for the libglade library for use with PyGTK
 Group: Development/Languages
-Requires: pygtk = %{ver}
+Requires: pygtk = %{version}
 
 %description libglade
 This module contains a wrapper for the libglade library.  Libglade is a
@@ -46,7 +41,7 @@ is faster) and is more complete.
 
 %prep
 %setup
-./configure --prefix=%{py_prefix}
+./configure --prefix=%{_prefix}
 
 %build
 make
@@ -56,26 +51,18 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
-%{py_prefix}/lib/python%{py_ver}/site-packages/gtk.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/Gtkinter.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/GtkExtra.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/GTK.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/GDK.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/GdkImlib.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/pyglade/*.py*
+%dir %{_prefix}/lib/python?.?/site-packages/gtk
+%{_prefix}/lib/python?.?/site-packages/gtk/__init__.py*
+%{_prefix}/lib/python?.?/site-packages/gtk/GDK.py*
+%{_prefix}/lib/python?.?/site-packages/gtk/GTK.py*
 
-%{py_prefix}/lib/python%{py_ver}/site-packages/_gtkmodule.so
-%{py_prefix}/lib/python%{py_ver}/site-packages/_gdkimlibmodule.so
-
-%{py_prefix}/include/pygtk
+%{_prefix}/lib/python?.?/site-packages/gobjectmodule.so
+%{_prefix}/lib/python?.?/site-packages/pangomodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk/_gtkmodule.so
 
 %doc AUTHORS NEWS README MAPPING ChangeLog description.py
 %doc examples
 
-%files glarea
-%{py_prefix}/lib/python%{py_ver}/site-packages/gtkgl.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/_gtkglmodule.so
-
 %files libglade
-%{py_prefix}/lib/python%{py_ver}/site-packages/libglade.py*
-%{py_prefix}/lib/python%{py_ver}/site-packages/_libglademodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk/libglademodule.so
+
