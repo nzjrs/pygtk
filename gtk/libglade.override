@@ -42,7 +42,6 @@ ignore
   glade_provide
   glade_require
   glade_xml_construct
-  glade_set_custom_handler
   glade_xml_signal_connect_data
   glade_xml_signal_connect_full
   glade_xml_signal_autoconnect_full
@@ -284,6 +283,164 @@ _wrap_glade_set_custom_widget_callbacks(PyObject *self, PyObject *args, PyObject
 				     &object))
 	return NULL;
     glade_set_custom_handler((GladeXMLCustomWidgetHandler)custom_widget_handler, object);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override glade_set_custom_handler
+
+/* stores the handler set by set_custom_handler */
+static PyObject *pyglade_handler = NULL;
+static PyObject *pyglade_user_data = NULL;
+
+static GtkWidget *
+pyglade_custom_widget_handler(GladeXML *xml,
+			      gchar *func_name,
+			      gchar *name,
+			      gchar *string1,
+			      gchar *string2,
+			      gint int1,
+			      gint int2,
+			      gpointer user_data)
+{
+    PyObject *firstargs, *args;
+    PyObject *widget;
+    GtkWidget *ret;
+
+    g_return_val_if_fail(pyglade_handler != NULL, NULL);
+    g_return_val_if_fail(pyglade_user_data != NULL, NULL);
+
+    firstargs = Py_BuildValue("Nssssii", pygobject_new((GObject *)xml),
+			      func_name, name, string1, string2,
+			      int1, int2);
+    args = PySequence_Concat(firstargs, pyglade_user_data);
+    Py_DECREF(firstargs);
+
+    widget = PyObject_CallObject(pyglade_handler, args);
+    Py_DECREF(args);
+    if (!widget) {
+	PyErr_Print();
+	ret = NULL;
+    } else if (pygobject_check(widget, &PyGtkWidget_Type)) {
+	/* this leaks a reference :( */
+	ret = GTK_WIDGET(pygobject_get(widget));
+    } else {
+	Py_DECREF(widget);
+	g_warning("return value of custom widget handler was not a GtkWidget");
+	ret = NULL;
+    }
+    
+    return ret;
+}
+
+static PyObject *
+_wrap_glade_set_custom_handler(PyObject *self, PyObject *args)
+{
+    PyObject *first, *handler, *user_data;
+    gint len;
+
+    len = PyTuple_Size(args);
+    if (len < 1) {
+	PyErr_SetString(PyExc_TypeError, "set_custom_handler requires at least 1 argument");
+	return NULL;
+    }
+    first = PySequence_GetSlice(args, 0, 1);
+    if (!PyArg_ParseTuple(first, "O:set_custom_handler", &handler)) {
+	Py_DECREF(first);
+	return NULL;
+    }
+    Py_DECREF(first);
+    if (!PyCallable_Check(handler)) {
+	PyErr_SetString(PyExc_TypeError, "handler must be callable");
+	return NULL;
+    }
+    user_data = PySequence_GetSlice(args, 1, len);
+
+    /* clear saved data */
+    Py_XDECREF(pyglade_handler);
+    pyglade_handler = NULL;
+    Py_XDECREF(pyglade_user_data);
+    pyglade_user_data = NULL;
+
+    /* store new handlers */
+    Py_INCREF(handler);
+    pyglade_handler = handler;
+    pyglade_user_data = user_data;
+
+    /* set handler */
+    glade_set_custom_handler(pyglade_custom_widget_handler, NULL);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override glade_set_custom_widget_callbacks kwargs
+static GtkWidget *
+pyglade_custom_widget_callbacks_handler(GladeXML *xml,
+					gchar *func_name,
+					gchar *name,
+					gchar *string1,
+					gchar *string2,
+					gint int1,
+					gint int2,
+					gpointer user_data)
+{
+    PyObject *handler, *widget;
+    GtkWidget *ret;
+
+    handler = PyMapping_GetItemString(pyglade_user_data, func_name);
+    if (!handler) {
+        PyErr_Clear();
+        handler = PyObject_GetAttrString(pyglade_user_data, func_name);
+        if (!handler) {
+            PyErr_Clear();
+	    g_warning("could not find handler %s", func_name);
+            return NULL;
+        }
+    }
+    if (!PyCallable_Check(handler)) {
+	g_warning("object is not callable");
+	return NULL;
+    }
+    
+    widget = PyObject_CallFunction(handler, NULL);
+    if (pygobject_check(widget, &PyGtkWidget_Type)) {
+	/* this leaks a reference :( */
+	ret = GTK_WIDGET(pygobject_get(widget));
+    } else {
+	Py_DECREF(widget);
+	g_warning("return value of custom widget handler was not a GtkWidget");
+	ret = NULL;
+    }
+    return ret;
+}
+static PyObject *
+_wrap_glade_set_custom_widget_callbacks(PyObject *self, PyObject *args,
+					PyObject *kwargs)
+{
+    static char *kwlist[] = { "dict", NULL };
+    PyObject *object;
+
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use set_custom_handler instead") < 0)
+	return NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GladeXML.set_custom_widget_callbacks",
+				     kwlist, &object))
+	return NULL;
+
+    /* clear saved data */
+    Py_XDECREF(pyglade_handler);
+    pyglade_handler = NULL;
+    Py_XDECREF(pyglade_user_data);
+    pyglade_user_data = NULL;
+
+    /* store new handlers */
+    Py_INCREF(object);
+    pyglade_user_data = object;
+
+    glade_set_custom_handler(pyglade_custom_widget_callbacks_handler, NULL);
+
     Py_INCREF(Py_None);
     return Py_None;
 }
