@@ -1,11 +1,11 @@
-Gtkmodule and Gtkinter
-======================
+PyGTK
+=====
 Author: James Henstridge <james@daa.com.au>
 
 
 This archive contains modules that allow you to use gtk in Python
 programs.  At present, it is a fairly complete set of bindings.
-Despite the low version number, this peice of software is quite
+Despite the low version number, this piece of software is quite
 useful, and is usable to write moderately complex programs.  (see the
 examples directory for some examples of the simpler programs you could
 write).
@@ -21,7 +21,7 @@ version of the source tree.
 New Versions
 ============
 
-New versions of this package can be found at
+New versions of this package can be found at:
   ftp://ftp.daa.com.au/pub/james/python/
   ftp://ftp.gtk.org/pub/gtk/python/
   ftp://ftp.python.org/pub/contrib/Graphics/
@@ -49,7 +49,7 @@ Compilation
 This archive contains a single C module called gtkmodule.  It contains
 an almost direct mapping of the functions in GTK including GTK signal
 handling, and the gtk_object_new/gtk_object_set commands.  This
-version REQUIRES gtk+-1.1.3 or later, as it includes support for
+version REQUIRES gtk+-1.1.6 or later, as it includes support for
 features not found in previous versions, and there are
 incompatibilities between versions.  Also if you want the GdkImlib
 extension, you must have Imlib version 1.8 or greater.  I recommend
@@ -97,7 +97,10 @@ Also note that some of the functions that refer to that type may have
 changed slightly.  The rest of the changes are mostly invisible, since
 they are mainly internal, and not touched upon by most people's code.
 
-Also, I have changed the arguments for the Gtkinter.new function.  Now
+The Gtkinter module has been renamed to gtk.py, which is more consistent
+with the rest of the module, and the GNOME stuff.
+
+Also, I have changed the arguments for the gtk.new function.  Now
 instead of object arguments being passed in as a dictionary, they are
 passed in as keyword arguments.  This is possible because the 'Gtk*::'
 prefix is no longer needed.
@@ -152,11 +155,11 @@ that I did not use keyword arguments is that things like
 use this clumsy syntax.
 
 
-Gtkinter.py
+gtk.py
 ===========
 
 This module is a wrapper for gtkmodule.  You start using it by
-executing the command "from Gtkinter import *".  This will give you
+executing the command "from gtk import *".  This will give you
 access to all of Gtkinter, and also import GTK, the constants module,
 for you.
 
@@ -175,6 +178,9 @@ gtk_*_new functions.  Through the use of default arguments, both the
 gtk_*_new and gtk_*_new_* functions are both supported through the
 constructor.
 
+The drag and drop functions gtk_drag_* map to GtkWidget.drag_*, and the
+selection functions gtk_selection_* map to GtkWidget.selection_*.
+
 There are also a few extra functions in Gtkinter.  These are new(),
 mainloop() and mainquit().  The function new() implements
 gtk_object_new.  It's first argument can be either a string, or one of
@@ -189,13 +195,13 @@ For further information on the interface, please see the source file
 Gtkinter.py.
 
 
-Should I Use Gtkmodule or GtkInter?
+Should I Use _gtkmodule or gtk.py?
 ===================================
 
-You should probably use the striaght gtkmodule, if you are using
-python to prototype a C application that will use GTK, but in most
-other cases, Gtkinter will probably be a lot easier to use, and will
-look more natural in a python program.
+The gtk.py module allows faster prototyping of interfaces, and is easy
+to convert to C.  It also uses object oriented ideas familiar to most
+Python users.  On the other hand, if you want something as close to C
+as possible, go with _gtkmodule.
 
 
 Contacting the Author
