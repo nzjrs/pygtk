@@ -384,13 +384,10 @@ _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
     GdkBitmap *mask;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOs:pixmap_create_from_xpm", kwlist,
-				     &window, &py_trans_color, &filename))
+				     "O!Os:pixmap_create_from_xpm", kwlist,
+				     &PyGdkWindow_Type, &window,
+				     &py_trans_color, &filename))
 	return NULL;
-    if (!pygobject_check(window, &PyGdkWindow_Type)) {
-	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
-	return NULL;
-    }
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
 	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
@@ -482,13 +479,9 @@ _wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "O!OO!:pixmap_create_from_xpm_d", kwlist,
-				     &window, &py_trans_color,
-				     &PyList_Type, &py_data))
+				     &PyGdkWindow_Type, &window,
+				     &py_trans_color, &PyList_Type, &py_data))
 	return NULL;
-    if (!pygobject_check(window, &PyGdkWindow_Type)) {
-	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
-	return NULL;
-    }
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
 	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
