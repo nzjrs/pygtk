@@ -51,7 +51,7 @@ init_gtk(void)
 		g_free(argv[i]);
 	    g_free(argv);
 	}
-	Py_FatalError("could not open display");
+	PyErr_SetString(PyExc_RuntimeError, "could not open display");
 	return;
     }
     PySys_SetArgv(argc, argv);
