@@ -64,6 +64,7 @@ ignore
   gtk_tree_view_column_pack_end
   gtk_tree_view_column_clear
   gtk_tree_view_column_set_attributes
+  gtk_tree_view_get_row_separator_func
   gtk_tree_view_get_search_equal_func
 %%
 override gtk_tree_view_get_visible_rect noargs
@@ -2985,6 +2986,82 @@ _wrap_gtk_tree_view_set_search_equal_func(PyGObject *self, PyObject *args,
                                         pygtk_set_search_equal_func_marshal,
                                         cunote,
                                         pygtk_custom_destroy_notify);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_set_row_separator_func kwargs
+static gboolean
+pygtk_set_row_separator_func_marshal(GtkTreeModel *model,
+                                     GtkTreeIter *iter,
+                                     gpointer data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = data;
+    PyObject *py_model, *py_iter;
+    PyObject *retobj;
+    gboolean ret = FALSE;
+
+    g_assert (cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    py_model = pygobject_new((GObject *)model);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(NNO)",
+                                     py_model, py_iter, cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(NN)",
+                                     py_model, py_iter);
+
+    if (retobj)
+        ret = retobj == Py_True ? TRUE : FALSE;
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+    }
+    Py_XDECREF(retobj);
+
+    pyg_gil_state_release(state);
+    return ret;    
+}
+
+static PyObject *
+_wrap_gtk_tree_view_set_row_separator_func(PyGObject *self, PyObject *args,
+                                           PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "user_data", NULL };
+    PyObject *py_func = NULL, *py_arg = NULL;
+    PyGtkCustomNotify *cunote;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|OO:GtkTreeView.set_row_separator_func",
+				     kwlist, &py_func, &py_arg))
+        return NULL;
+
+    if (!py_func || py_func == Py_None) {
+        gtk_tree_view_set_row_separator_func(GTK_TREE_VIEW(self->obj),
+                                             NULL, NULL, NULL);
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    if (!PyCallable_Check(py_func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+
+    cunote = g_new(PyGtkCustomNotify, 1);
+    Py_INCREF(py_func);
+    cunote->func = py_func;
+    Py_XINCREF(py_arg);
+    cunote->data = py_arg;
+
+    gtk_tree_view_set_row_separator_func(GTK_TREE_VIEW(self->obj),
+                                         pygtk_set_row_separator_func_marshal,
+                                         cunote,
+                                         pygtk_custom_destroy_notify);
     Py_INCREF(Py_None);
     return Py_None;
 }
