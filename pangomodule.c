@@ -5,6 +5,8 @@
 #include <Python.h>
 #include <pygobject.h>
 
+#include <pango/pango-font.h>
+
 /* include any extra headers needed here */
 
 void pypango_register_classes(PyObject *d);
@@ -25,6 +27,21 @@ initpango(void)
 
     pypango_register_classes(d);
     pypango_add_constants(m, "PANGO_");
+    
+    PyModule_AddObject(m, "SCALE_XX_SMALL",
+		       PyFloat_FromDouble(PANGO_SCALE_XX_SMALL));
+    PyModule_AddObject(m, "SCALE_X_SMALL",
+		       PyFloat_FromDouble(PANGO_SCALE_X_SMALL));
+    PyModule_AddObject(m, "SCALE_SMALL",
+		       PyFloat_FromDouble(PANGO_SCALE_SMALL));
+    PyModule_AddObject(m, "SCALE_MEDIUM",
+		       PyFloat_FromDouble(PANGO_SCALE_MEDIUM));
+    PyModule_AddObject(m, "SCALE_LARGE",
+		       PyFloat_FromDouble(PANGO_SCALE_LARGE));
+    PyModule_AddObject(m, "SCALE_X_LARGE",
+		       PyFloat_FromDouble(PANGO_SCALE_LARGE));
+    PyModule_AddObject(m, "SCALE_XX_LARGE",
+		       PyFloat_FromDouble(PANGO_SCALE_LARGE));    
 
     /* add anything else to the module dictionary (such as constants) */
 

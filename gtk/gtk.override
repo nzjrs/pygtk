@@ -5997,15 +5997,14 @@ override gtk_text_buffer_create_tag kwargs
 static PyObject *
 _wrap_gtk_text_buffer_create_tag(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "tag_name", NULL };
-    gchar *tag_name;
+    gchar *tag_name = NULL;
     GtkTextTag *tag;
     GtkTextTagTable *table;
     
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "s:GtkTextBuffer.create_tag", kwlist,
-				     &tag_name))
+    if (!PyArg_ParseTuple(args, "|z:GtkTextBuffer.create_tag", 
+			  &tag_name)) {
 	return NULL;
+    }
         
     table = GTK_TEXT_TAG_TABLE(GTK_TEXT_BUFFER(self->obj)->tag_table);
     if (tag_name && table && g_hash_table_lookup(table->hash, tag_name)) {
@@ -6020,6 +6019,39 @@ _wrap_gtk_text_buffer_create_tag(PyGObject *self, PyObject *args, PyObject *kwar
         
     tag = gtk_text_buffer_create_tag(GTK_TEXT_BUFFER(self->obj),
 				     tag_name, NULL);
+
+    /* set tag properties if any */
+    if (kwargs) {
+	gint i = 0;
+	PyObject *prop, *val;
+
+	while (PyDict_Next(kwargs, &i, &prop, &val)) {
+	    GParamSpec *pspec;
+	    GValue value = { 0, };
+	    gchar *prop_str = PyString_AsString(prop);
+	    
+            pspec = g_object_class_find_property (G_OBJECT_GET_CLASS(tag),
+						  prop_str);
+            if (!pspec) {
+                PyErr_Format(PyExc_TypeError,
+                             "unsupported tag property `%s'",
+                             prop_str);
+		/* XXX: Free tag? */
+		return NULL;
+	    }
+	    
+	    g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+	    if (pyg_value_from_pyobject(&value, val) < 0) {
+		PyErr_Format(PyExc_TypeError,
+		     "could not convert tag property '%s' to correct type",
+			     prop_str);
+		/* XXX: Free tag? */		
+		return NULL;
+	    }
+	    g_object_set_property((GObject *)tag, prop_str, &value);
+	    g_value_unset(&value);
+       }
+    }
     return pygobject_new((GObject *)tag);
 }
 %%
