@@ -395,13 +395,13 @@ class GObjectReturn(ReturnType):
         return self.props.get('c_type', 'GObject *')
 
     def write_decl(self):
-        self.wrapper.add_declaration("%s *retval;" % self.get_c_type())
+        self.wrapper.add_declaration("%s retval;" % self.get_c_type())
 
     def write_error_return(self):
         self.wrapper.write_code("return NULL;")
 
     def write_conversion(self):
-        self.wrapper.write_code("retval = (%s *) pygobject_get(py_retval);"
+        self.wrapper.write_code("retval = (%s) pygobject_get(py_retval);"
                                 % self.get_c_type())
         self.wrapper.write_code("g_object_ref((GObject *) retval);")
 
