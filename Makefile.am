@@ -78,3 +78,7 @@ EXTRA_DIST = \
 	examples/glade/test2.glade \
 	examples/glade/glade.py \
 	examples/glade/test.glade
+
+
+snap:
+	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
