@@ -1996,13 +1996,13 @@ _wrap_gtk_radio_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 	if (group == NULL)
 	    self->obj = (GObject *)gtk_radio_button_new(NULL);
 	else
-	    self->obj = (GObject *)gtk_radio_button_new(group->group);
+	    self->obj = (GObject *)gtk_radio_button_new_from_widget(group);
     } else {
 	if (group == NULL)
 	    self->obj = (GObject *)gtk_radio_button_new_with_mnemonic(NULL,label);
 	else
-	    self->obj = (GObject *)gtk_radio_button_new_with_mnemonic
-		(group->group, label);
+	    self->obj = (GObject *)gtk_radio_button_new_with_mnemonic_from_widget
+		(group, label);
     }
     if (!self->obj) {
 	PyErr_SetString(PyExc_RuntimeError, "could not create GtkRadioButton object");
@@ -3711,5 +3711,3 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
-
-

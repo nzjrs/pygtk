@@ -338,8 +338,13 @@ class BoxedArg(ArgType):
 	    arglist.append(pname)
 	    return 'O'
     def write_return(self, ptype, varlist):
-	return '    /* pyg_boxed_new handles NULL checking */\n' + \
-	       '    return pyg_boxed_new(' + self.typecode + ', %(func)s, TRUE, TRUE);'
+        if ptype[-1:] == '*':
+            return '    /* pyg_boxed_new handles NULL checking */\n' + \
+                   '    return pyg_boxed_new(' + self.typecode + ', %(func)s, TRUE, TRUE);'
+        else:
+            return '/* pyg_boxed_new handles NULL checking */\n' + \
+                   '    return pyg_boxed_new(' + self.typecode + ', &%(func)s, TRUE, TRUE);'
+            
 
 class CustomBoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
@@ -464,6 +469,7 @@ class ArgMatcher:
             self.register('GdkBitmap*', oa)
     def register_boxed(self, ptype, typecode):
         arg = BoxedArg(ptype, typecode)
+        self.register(ptype, arg)
 	self.register(ptype+'*', arg)
         self.register('const-'+ptype+'*', arg)
     def register_custom_boxed(self, ptype, pytype, getter, new):
