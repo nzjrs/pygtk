@@ -24,6 +24,7 @@ headers
 #define NO_IMPORT_PYGOBJECT
 #include "pygobject.h"
 #include <gtk/gtk.h>
+#include <gtk/gtktreeitem.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk-pixbuf/gdk-pixdata.h>
 #include "pygtk-private.h"
@@ -92,6 +93,8 @@ ignore
   gtk_check_button_new_with_mnemonic
   gtk_check_menu_item_new_with_label
   gtk_check_menu_item_new_with_mnemonic
+  gtk_container_class_find_child_property
+  gtk_container_class_list_child_properties
   gtk_dialog_new
   gtk_drag_dest_handle_event
   gtk_drag_source_handle_event
@@ -99,6 +102,8 @@ ignore
   gtk_entry_select_region
   gtk_exit
   gtk_false 
+  gtk_file_paths_copy
+  gtk_file_paths_free
   gtk_gc_get
   gtk_gc_release
   gtk_get_current_event
@@ -2499,7 +2504,7 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
 
     if (py_window != NULL && py_window != (PyGObject *) Py_None
         && !pygobject_check(py_window, &PyGtkWindow_Type)) {
-        PyErr_SetString(PyExc_TypeError, "window must be a GtkWindow or None");
+        PyErr_SetString(PyExc_TypeError, "parent must be a GtkWindow or None");
         return -1;
     }
 
@@ -3673,4 +3678,96 @@ _wrap_gtk_accel_group_connect_group(PyGObject *self, PyObject *args, PyObject *k
 			    accel_mods, accel_flags, closure);
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_tree_item_new_with_label kwargs
+static PyObject *
+_wrap_gtk_tree_item_new_with_label(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "label", NULL };
+    char *label;
+    GtkWidget *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:gtk_tree_item_new_with_label", kwlist, &label))
+        return NULL;
+    ret = gtk_tree_item_new_with_label((const gchar*)label);
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
+%%
+override gtk_file_chooser_dialog_new kwargs
+static int
+_wrap_gtk_file_chooser_dialog_new(PyGObject *self,
+				  PyObject *args,
+                                  PyObject *kwargs)
+{
+    gchar *title = NULL;
+    PyGObject *py_window = NULL;
+    PyObject *py_buttons = Py_None;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    int len, i;
+
+    static char *kwlist[] = { "title", "parent", "action", "buttons", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|sOiO!:GtkDialog.__init__", kwlist,
+                                     &title, &py_window, &action,
+                                     &PyTuple_Type, &py_buttons))
+        return -1;
+
+    if (py_window != NULL && py_window != (PyGObject *) Py_None
+        && !pygobject_check(py_window, &PyGtkWindow_Type)) {
+        PyErr_SetString(PyExc_TypeError, "parent must be a GtkWindow or None");
+        return -1;
+    }
+
+    if (py_buttons != Py_None)
+        len = PyTuple_Size(py_buttons);
+    else
+        len = 0;
+
+    if (len % 2) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "buttons tuple must contain text/response id pairs");
+        return -1;
+    }
+
+    self->obj = (GObject *)
+        gtk_file_chooser_dialog_new(title,
+				    (py_window && py_window != (PyGObject *) Py_None) ? GTK_WINDOW(py_window->obj) : NULL,
+				    action, NULL);
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkFileChooserDialog object");
+        return -1;
+    }
+
+    for (i = 0; i < len; i += 2) {
+        PyObject *text = PyTuple_GetItem(py_buttons, i);
+        PyObject *id = PyTuple_GetItem(py_buttons, i + 1);
+        if (!PyString_Check(text)) {
+            gtk_object_destroy(GTK_OBJECT(self->obj));
+            self->obj = NULL;
+            PyErr_SetString(PyExc_RuntimeError,
+                            "first member of each text/response id pair "
+                            "must be a string");
+            return -1;
+        }
+        if (!PyInt_Check(id)) {
+            gtk_object_destroy(GTK_OBJECT(self->obj));
+            self->obj = NULL;
+            PyErr_SetString(PyExc_RuntimeError,
+                            "second member of each text/response id pair "
+                            "must be a number");
+            return -1;
+        }
+        gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
+                              PyInt_AsLong(id));
+    }
+    pyg_block_threads();
+    g_object_ref(self->obj); /* we don't own the first reference of windows */
+    pyg_unblock_threads();
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
