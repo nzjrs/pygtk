@@ -7003,4 +7003,46 @@ _wrap_GtkCellLayout__proxy_do_set_cell_data_func (
 	PyErr_Print();
     pyg_gil_state_release(state);
 }
+%%
+override gtk_dialog_set_alternative_button_order kwargs
+static PyObject *
+_wrap_gtk_dialog_set_alternative_button_order(PyGObject *self, PyObject *args,
+                                              PyObject *kwargs)
+{
+    static char *kwlist[] = { "new_order", NULL };
+    gint *new_order, n_params;
+    PyObject *py_new_order;
+    int i;
 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:GtkDialog.set_alternative_button_order",
+                                     kwlist, &py_new_order))
+        return NULL;
+
+    n_params = PySequence_Size(py_new_order);
+    if (!PySequence_Check(py_new_order) || n_params < 1) {
+        PyErr_SetString(PyExc_TypeError,
+                        "new_order must be a sequence with"
+                        "at least one response id int");
+        return NULL;
+    }
+    new_order = (gint *)g_new0(gint, n_params);
+    for (i = 0; i < n_params; i++) {
+        PyObject *item = PySequence_GetItem(py_new_order, i);
+
+        if (!PyInt_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "each new_order item must be an integer");
+            g_free(new_order);
+            Py_XDECREF(item);
+            return NULL;
+        }
+        new_order[i] = PyInt_AsLong(item);
+        Py_DECREF(item);
+    }
+    gtk_dialog_set_alternative_button_order_from_array(GTK_DIALOG(self->obj),
+                                                       n_params, new_order);
+    g_free(new_order);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
