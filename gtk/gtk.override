@@ -3569,6 +3569,22 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
     return PyInt_FromLong(ret);
 }
 %%
+override gtk_main_iteration_do kwargs
+static PyObject *
+_wrap_gtk_main_iteration_do(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = {"block", NULL};
+    int block = 1, ret;
+
+    if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration_do",
+				    kwlist, &block)) 
+        return NULL;
+    pyg_unblock_threads();
+    ret = gtk_main_iteration_do(block);
+    pyg_block_threads();
+    return PyInt_FromLong(ret);
+}
+%%
 override gtk_quit_add
 static gboolean
 quit_handler_marshal(gpointer user_data)
