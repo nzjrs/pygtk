@@ -5743,3 +5743,31 @@ _wrap_gtk_separator_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     return PyGtkWidget_Type.tp_init(self, args, kwargs);
 }
+%%
+override gtk_alignment_new kwargs
+static int
+_wrap_gtk_alignment_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    char *kwlist[] = {"xalign", "yalign", "xscale", "yscale", NULL };
+    gdouble xalign = 0;
+    gdouble yalign = 0;
+    gdouble xscale = 0;
+    gdouble yscale = 0;
+    GType obj_type = pyg_type_from_object((PyObject *) self);
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|dddd:gtk.Alignment.__init__" ,
+                                     kwlist, &xalign, &yalign, &xscale, &yscale))
+        return -1;
+
+    self->obj = g_object_new(obj_type,
+                             "xalign", xalign, "yalign", yalign,
+                             "xscale", xscale, "yscale", yscale, NULL);
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create gtk.Alignment object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
