@@ -6,14 +6,15 @@ import override
 import docextract
 
 class DocWriter:
-    def __init__(self, source_dirs):
+    def __init__(self):
 	# parse the defs file
         self.parser = defsparser.DefsParser(())
         self.overrides = override.Overrides()
         self.classmap = {}
+        self.docs = {}
 
-	# extract documentation from C source code
-	self.docs = docextract.extract(source_dirs)
+    def add_sourcedirs(self, source_dirs):
+        self.docs = docextract.extract(source_dirs, self.docs);
 
     def add_docs(self, defs_file, overrides_file, module_name):
         '''parse information about a given defs file'''
@@ -23,24 +24,23 @@ class DocWriter:
             self.overrides.handle_file(overrides_file)
 
         for obj in self.parser.objects:
-            if not hasattr(obj, 'py_name'):
-                obj.py_name = '%s.%s' % (module_name, obj.name)
-                self.classmap[obj.c_name] = obj.py_name
+            if not self.classmap.has_key(obj.c_name):
+                self.classmap[obj.c_name] = '%s.%s' % (module_name, obj.name)
         for obj in self.parser.interfaces:
-            if not hasattr(obj, 'py_name'):
-                obj.py_name = '%s.%s' % (module_name, obj.name)
-                self.classmap[obj.c_name] = obj.py_name
+            if not self.classmap.has_key(obj.c_name):
+                self.classmap[obj.c_name] = '%s.%s' % (module_name, obj.name)
         for obj in self.parser.boxes:
-            if not hasattr(obj, 'py_name'):
-                obj.py_name = '%s.%s' % (module_name, obj.name)
-                self.classmap[obj.c_name] = obj.py_name
+            if not self.classmap.has_key(obj.c_name):
+                self.classmap[obj.c_name] = '%s.%s' % (module_name, obj.name)
 
     def pyname(self, name):
         return self.classmap.get(name, name)
 
+    def __compare(self, obja, objb):
+        return cmp(self.pyname(obja.c_name), self.pyname(objb.c_name))
     def output_docs(self, output_prefix):
 	obj_defs = self.parser.objects[:]
-	obj_defs.sort(lambda a, b: cmp(a.c_name, b.c_name))
+	obj_defs.sort(self.__compare)
         files = []
 	for obj_def in obj_defs:
             filename = self.create_filename(obj_def.c_name, output_prefix)
@@ -470,6 +470,7 @@ if __name__ == '__main__':
 	    'usage: docgen.py -d file.defs [-s /src/dir] [-o output-prefix]\n')
         sys.exit(1)
 
-    d = DocbookDocWriter(source_dirs)
+    d = DocbookDocWriter()
+    d.add_sourcedirs(source_dirs)
     d.add_docs(defs_file, overrides_file, 'gtk')
     d.output_docs(output_prefix)
