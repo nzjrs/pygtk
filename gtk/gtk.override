@@ -3305,3 +3305,45 @@ _wrap_gtk_accel_map_lookup_entry(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_accel_map_load_fd kwargs
+static PyObject *
+_wrap_gtk_accel_map_load_fd(PyGObject *self, PyObject *args,
+			    PyObject *kwargs)
+{
+    static char *kwlist[] = { "fd", NULL };
+    gint fd;
+    PyObject *py_fd;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:gtk.accel_map_load_fd",
+				     kwlist, &py_fd))
+        return NULL;
+
+    if ((fd = PyObject_AsFileDescriptor(py_fd)) != -1)
+	gtk_accel_map_load_fd(fd);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_accel_map_save_fd kwargs
+static PyObject *
+_wrap_gtk_accel_map_save_fd(PyGObject *self, PyObject *args,
+			    PyObject *kwargs)
+{
+    static char *kwlist[] = { "fd", NULL };
+    gint fd;
+    PyObject *py_fd;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:gtk.accel_map_save_fd",
+				     kwlist, &py_fd))
+        return NULL;
+
+    if ((fd = PyObject_AsFileDescriptor(py_fd)) != -1)
+	gtk_accel_map_save_fd(fd);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
