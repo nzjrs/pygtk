@@ -18,7 +18,49 @@ linkend="class-gtkcontainer">gtk.Container</link></classname></ooclass>
       <constructorsynopsis language="python">
 	<methodname><link
 linkend="constructor-gtktoolbar">gtk.Toolbar</link></methodname>
-	<methodparam></methodparam>  </constructorsynopsis>
+	<methodparam></methodparam>
+      </constructorsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--insert">insert</link></methodname>
+	<methodparam><parameter role="keyword">item</parameter></methodparam>
+	<methodparam><parameter role="keyword">pos</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--get-item-index">get_item_index</link></methodname>
+	<methodparam><parameter role="keyword">item</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--get-n-items">get_n_items</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--get-nth-item">get_nth_item</link></methodname>
+	<methodparam><parameter role="keyword">n</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--get-drop-index">get_drop_index</link></methodname>
+	<methodparam><parameter role="keyword">x</parameter></methodparam>
+	<methodparam><parameter role="keyword">y</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--set-drop-highlight-item">set_drop_highlight_item</link></methodname>
+	<methodparam><parameter role="keyword">tool_item</parameter></methodparam>
+	<methodparam><parameter role="keyword">index</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--set-show-arrow">set_show_arrow</link></methodname>
+	<methodparam><parameter role="keyword">show_arrow</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--get-show-arrow">get_show_arrow</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbar--get-relief-style">get_relief_style</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktoolbar--append-item">append_item</link></methodname>
@@ -283,6 +325,13 @@ linkend="method-gtktoolbar--get-tooltips">get_tooltips</link></methodname>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"show-arrow"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> an arrow should be shown
+if the toolbar doesn't fit. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"toolbar-style"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The toolbar style:
@@ -292,6 +341,38 @@ linkend="method-gtktoolbar--get-tooltips">get_tooltips</link></methodname>
 	    </row>
 
 	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Child Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"expand"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the item should receive
+extra space when the toolbar grows. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	  </tbody>
+	    <row valign="top">
+	      <entry>"homogeneous"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the item should be the
+same size as other homogeneous items. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
 	</tgroup>
       </informaltable>
     </blockquote>
@@ -318,9 +399,10 @@ linkend="method-gtktoolbar--get-tooltips">get_tooltips</link></methodname>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"space-size"</entry>
+	      <entry>"internal-padding"</entry>
 	      <entry>Read</entry>
-	      <entry>The size of spacers</entry>
+	      <entry>The amount of border space between the toolbar shadow
+and the buttons</entry>
 	    </row>
 
 	    <row valign="top">
@@ -333,18 +415,17 @@ or <literal>gtk.SHADOW_ETCHED_OUT</literal></entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"space-size"</entry>
+	      <entry>Read</entry>
+	      <entry>The size of spacers</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"space-style"</entry>
 	      <entry>Read</entry>
 	      <entry>The spacer style:
 <literal>gtk.TOOLBAR_SPACE_EMPTY</literal> or
 <literal>gtk.TOOLBAR_SPACE_LINE</literal></entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"internal-padding"</entry>
-	      <entry>Read</entry>
-	      <entry>The amount of border space between the toolbar shadow
-and the buttons</entry>
 	    </row>
 
 	  </tbody>
@@ -366,6 +447,21 @@ linkend="signal-gtktoolbar--orientation-changed">orientation-changed</link>"</te
 	    language="python"><methodname>callback</methodname>
             <methodparam><parameter>toolbar</parameter></methodparam>
             <methodparam><parameter>orientation</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link
+linkend="signal-gtktoolbar--popup-context-menu">popup-context-menu</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>toolbar</parameter></methodparam>
+            <methodparam><parameter>x</parameter></methodparam>
+            <methodparam><parameter>y</parameter></methodparam>
+            <methodparam><parameter>button</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -406,6 +502,39 @@ item has an associated <link
 linkend="class-gtktooltips"><classname>gtk.Tooltips</classname></link> to
 provide a brief description of the items purpose.</para>
 
+    <para>In <literal>PyGTK</literal> 2.4 the interface ofthe <link
+linkend="class-gtktoolbar"><classname>gtk.Toolbar</classname></link> has
+changed to take advantage of the new <link
+linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+widgets.  The following describes the new features.</para>
+
+    <para>A toolbar can contain instances of a subclass of <link
+linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+(<link
+linkend="class-gtktoolbutton"><classname>gtk.ToolButton</classname></link>,
+<link
+linkend="class-gtkradiotoolbutton"><classname>gtk.RadioToolButton</classname></link>,
+<link
+linkend="class-gtktoggletoolbutton"><classname>gtk.ToggleToolButton</classname></link>
+and <link
+linkend="class-gtktoolseparatoritem"><classname>gtk.ToolSeparatorItem</classname></link>). To
+add a <link
+linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link> to
+the a toolbar, use the <link
+linkend="method-gtktoolbar--insert"><methodname>insert</methodname>()</link>
+method. To remove an item from the toolbar use the <link
+linkend="method-gtkcontainer--remove"><methodname>gtk.Container.remove</methodname>()</link>
+method. To add a button to the toolbar, add an instance of <link
+linkend="class-gtktoolbutton"><classname>gtk.ToolButton</classname></link>. Toolbar
+items can be visually grouped by adding instances of <link
+linkend="class-gtkseparatortoolitem"><classname>gtk.SeparatorToolItem</classname></link>
+to the toolbar. If a <link
+linkend="class-gtkseparatortoolitem"><classname>gtk.SeparatorToolItem</classname></link>
+has the "expand" property set to <literal>TRUE</literal> and the "draw"
+property set to <literal>FALSE</literal> the effect is to force all
+following items to the end of the toolbar. Creating a context menu for the
+toolbar can be done by connecting to the "popup-context-menu" signal.</para>
+
   </refsect1>
 
   <refsect1 id="constructor-gtktoolbar">
@@ -431,6 +560,309 @@ widget.</para>
 
   <refsect1>
     <title>Methods</title>
+
+    <refsect2 id="method-gtktoolbar--insert">
+      <title>gtk.Toolbar.insert</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>insert</methodname>
+	  <methodparam><parameter role="keyword">item</parameter></methodparam>
+	  <methodparam><parameter role="keyword">pos</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">item</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pos</parameter>&nbsp;:</term>
+	  <listitem><simpara>the position of the new item</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>insert</methodname>() method inserts the <link
+linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+specified by <parameter>item</parameter> into the toolbar at the position
+specified by <parameter>pos</parameter>. If <parameter>pos</parameter> is 0
+<parameter>item</parameter> is prepended to the start of the toolbar. If
+<parameter>pos</parameter> is negative, <parameter>item</parameter> is
+appended to the end of the toolbar.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--get-item-index">
+      <title>gtk.Toolbar.get_item_index</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_item_index</methodname>
+	  <methodparam><parameter role="keyword">item</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">item</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+	  that is a child of the toolbar</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the position of item on the
+	  toolbar.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>get_item_index</methodname>() method returns the
+position (starting from 0) on the toolbar of the <link
+linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+specified by <parameter>item</parameter>.  It is an error
+if <parameter>item</parameter> is not a child of the toolbar.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--get-n-items">
+      <title>gtk.Toolbar.get_n_items</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_n_items</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the number of items on the
+	  toolbar</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>get_n_items</methodname>() method returns the
+number of items on the toolbar.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--get-nth-item">
+      <title>gtk.Toolbar.get_nth_item</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_nth_item</methodname>
+	  <methodparam><parameter role="keyword">n</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">n</parameter>&nbsp;:</term>
+	  <listitem><simpara>a position on the toolbar</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The <link
+	  linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+	  on the toolbar at position <parameter>n</parameter>, or
+	  <literal>None</literal> if there isn't an item at position
+	  <parameter>n</parameter></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>get_nth_item</methodname>() method returns the
+toolbar <link
+linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link> at
+the position specified by <parameter>n</parameter>, or
+<literal>None</literal> if the toolbar does not contain an item at position
+<parameter>n</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--get-drop-index">
+      <title>gtk.Toolbar.get_drop_index</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_drop_index</methodname>
+	  <methodparam><parameter role="keyword">x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the x coordinate of a point on the
+	  toolbar</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the y coordinate of a point on the
+	  toolbar</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The toolbar position corresponding to the point
+	  (<parameter>x</parameter>,
+	  <parameter>y</parameter>).</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>get_drop_index</methodname>() method returns the
+position on the toolbar corresponding to the point specified by
+<parameter>x</parameter> and <parameter>y</parameter>. This is useful when
+dragging items to the toolbar. This method returns the position index where
+a new item should be inserted.</para>
+
+      <para>The <parameter>x</parameter> and <parameter>y</parameter>
+coordinates are relative to the toolbar.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--set-drop-highlight-item">
+      <title>gtk.Toolbar.set_drop_highlight_item</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_drop_highlight_item</methodname>
+	  <methodparam><parameter role="keyword">tool_item</parameter></methodparam>
+	  <methodparam><parameter role="keyword">index</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">tool_item</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>,
+	  or <literal>None</literal> to turn off
+	  highlighting</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">index</parameter>&nbsp;:</term>
+	  <listitem><simpara>a position index on the toolbar</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>set_drop_highlight_item</methodname>() method
+highlights the toolbar to give an idea of what it would look like if the
+<link linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+specified by <parameter>tool_item</parameter> was added at the position
+specified by <parameter>index</parameter>. If
+<parameter>tool_item</parameter> is <literal>None</literal>, highlighting is
+turned off and <parameter>index</parameter> is ignored.</para>
+
+      <para>The <parameter>tool_item</parameter> passed to this method must
+not be part of any widget hierarchy. When an item is set as drop highlight
+item it can not added to any widget hierarchy or used as highlight item for
+another toolbar.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--set-show-arrow">
+      <title>gtk.Toolbar.set_show_arrow</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_show_arrow</methodname>
+	  <methodparam><parameter role="keyword">show_arrow</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">show_arrow</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, show an arrow to
+	  indicate menu overflow</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>set_show_arrow</methodname>() method sets the
+"show-arrow" property to the value of <parameter>show_arrow</parameter>. If
+<parameter>show_arrow</parameter> is <literal>TRUE</literal> an arrow is
+displayed (for an overflow menu) when the toolbar doesn't have room for all
+items on it. Items that are not displayed due to a lack of room are
+available through the overflow menu.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--get-show-arrow">
+      <title>gtk.Toolbar.get_show_arrow</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_show_arrow</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if an overflow menu can
+	  be used</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>get_show_arrow</methodname>() method returns the
+value of the "show-arrow" property. If "show-arrow" is
+<literal>TRUE</literal> the toolbar has an overflow menu.  See the <link
+linkend="method-gtktoolbar--set-show-arrow"><methodname>set_show_arrow()</methodname></link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbar--get-relief-style">
+      <title>gtk.Toolbar.get_relief_style</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_relief_style</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the relief style of buttons on the
+	  toolbar</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>get_relief_style</methodname>() method returns
+the relief style of buttons on the toolbar. See the <link
+linkend="method-gtkbutton--set-relief"><methodname>gtk.Button.set_relief()</methodname></link>
+method for more information. The return value will be one of:</para>
+
+    <itemizedlist>
+      <listitem>
+	  <simpara><literal>gtk.RELIEF_NORMAL</literal></simpara>
+      </listitem>
+      <listitem>
+	<simpara><literal>gtk.RELIEF_HALF</literal></simpara>
+      </listitem>
+      <listitem>
+	<simpara><literal>gtk.RELIEF_NONE</literal></simpara>
+      </listitem>
+   </itemizedlist>
+
+    </refsect2>
 
     <refsect2 id="method-gtktoolbar--append-item">
       <title>gtk.Toolbar.append_item</title>
@@ -492,6 +924,10 @@ linkend="class-gtkbutton"><classname>gtk.Button</classname></link>
 widget</simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>append_item</methodname>() method adds a new
 <link linkend="class-gtkbutton"><classname>gtk.Button</classname></link> to
@@ -583,6 +1019,10 @@ linkend="class-gtkbutton"><classname>gtk.Button</classname></link>
 widget</simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>prepend_item</methodname>() method adds a new
 <link linkend="class-gtkbutton"><classname>gtk.Button</classname></link> to
@@ -682,6 +1122,10 @@ widget</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
+
       <para>The <methodname>insert_item</methodname>() method inserts a new
 <link linkend="class-gtkbutton"><classname>gtk.Button</classname></link> the
 toolbar at the position specified by <parameter>position</parameter>
@@ -775,6 +1219,10 @@ widget</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
+
       <para>The <methodname>insert_stock</methodname>() method inserts a new
 <link linkend="class-gtkbutton"><classname>gtk.Button</classname></link> the
 toolbar at the position specified by <parameter>position</parameter>
@@ -813,6 +1261,10 @@ accelerators.</para>
 	  <methodname>append_space</methodname>
 	  <methodparam></methodparam>  </methodsynopsis></programlisting>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
+
       <para>The <methodname>append_space</methodname>() method appends a
 space to the end of the toolbar.</para>
 
@@ -824,6 +1276,10 @@ space to the end of the toolbar.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>prepend_space</methodname>
 	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>prepend_space</methodname>() method prepends a
 space to the beginning of the toolbar.</para>
@@ -846,6 +1302,10 @@ append</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
+
       <para>The <methodname>insert_space</methodname>() method inserts a
 space at the specified <parameter>position</parameter> in the
 toolbar.</para>
@@ -867,6 +1327,10 @@ toolbar.</para>
 remove.</simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>remove_space</methodname>() method removes a
 space from the specified <parameter>position</parameter>.</para>
@@ -950,6 +1414,10 @@ role="keyword">user_data</parameter>&nbsp;:</term>
 linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>append_element</methodname>() method adds a new
 element of the specified <parameter>type</parameter> to the end (right or
@@ -1114,6 +1582,10 @@ role="keyword">user_data</parameter>&nbsp;:</term>
 linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>prepend_element</methodname>() method adds a new
 element of the specified <parameter>type</parameter> to the beginning (left
@@ -1287,6 +1759,10 @@ linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</simpara></l
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
+
       <para>The <methodname>insert_element</methodname>() method adds a new
 element of the specified <parameter>type</parameter> at the specified
 <parameter>position</parameter> in the toolbar with the <link
@@ -1407,6 +1883,10 @@ role="keyword">tooltip_private_text</parameter>&nbsp;:</term>
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
+
       <para>The <methodname>append_widget</methodname>() method adds the
 specified <parameter>widget</parameter> to the end (right or bottom) of the
 toolbar. <parameter>tooltip_text</parameter> and
@@ -1447,6 +1927,10 @@ role="keyword">tooltip_private_text</parameter>&nbsp;:</term>
 <literal>None</literal></simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>prepend_widget</methodname>() method adds the
 specified <parameter>widget</parameter> to the start (left or top) of the
@@ -1495,6 +1979,10 @@ role="keyword">tooltip_private_text</parameter>&nbsp;:</term>
 at.</simpara></listitem>
 	</varlistentry>
       </variablelist>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>insert_widget</methodname>() method adds the
 specified <parameter>widget</parameter> at the specified
@@ -1610,6 +2098,10 @@ of: <literal>gtk.ICON_SIZE_MENU</literal>,
 	</varlistentry>
       </variablelist>
 
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
+
       <para>The <methodname>set_icon_size</methodname>() method sets the
 size of stock icons in the toolbar to the value specified by
 <parameter>icon_size</parameter>. The value of
@@ -1685,6 +2177,10 @@ method, allowing the user preferences to determine the toolbar style.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>unset_icon_size</methodname>
 	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.4 and above</para>
+      </warning>
 
       <para>The <methodname>unset_icon_size</methodname>() method unsets
 toolbar icon size set with the <link
@@ -1819,6 +2315,73 @@ any)</simpara></listitem>
       <para>The "orientation-changed" signal is emitted when the
 <parameter>orientation</parameter> of <parameter>toolbar</parameter> is
 changed.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtktoolbar--popup-context-menu">
+      <title>The "popup-context-menu" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>toolbar</parameter></methodparam>
+	  <methodparam><parameter>x</parameter></methodparam>
+	  <methodparam><parameter>y</parameter></methodparam>
+	  <methodparam><parameter>button</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>toolbar</parameter>&nbsp;:</term>
+	  <listitem><simpara>the toolbar that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the x coordinate of the mouse
+event</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the u coordinate of the mouse
+event</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>button</parameter>&nbsp;:</term>
+	  <listitem><simpara>the number of the mouse button</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+	  handled</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in GTK+ 2.4 and above.</para>
+      </note>
+
+      <para>The "popup-context-menu" signal is emitted when the user
+right-clicks the toolbar or uses the keybinding to display a popup
+menu. Application developers should handle this signal if they want to
+display a context menu on the toolbar. The context-menu should appear at the
+coordinates given by <parameter>x</parameter> and
+<parameter>y</parameter>. The mouse button number is given by the
+<parameter>button</parameter> parameter. If the menu was popped up using the
+keybaord, <parameter>button</parameter> is -1.</para>
 
     </refsect2>
 
