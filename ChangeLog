@@ -1,3 +1,16 @@
+2002-01-07  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pyg_set_thread_block_funcs): handler for
+	registering thread block/unblock funcs.
+	(pygobject_destroy_notify): block threads during DECREF call.
+	(pyg_closure_destroy): block threads during closure DECREF.
+	(pyg_closure_marshal): block threads when calling function.
+	(pyg_signal_class_closure_marshal): block threads.
+	(functions): add extra functions to vtable.
+
+	* pygobject.h (struct _PyGObject_Functions): add thread
+	block/unblock slots to the API table.
+
 2002-01-03  Matt Wilson  <msw@redhat.com>
 
 	* Makefile.am (EXTRA_DIST): add missing demo files
