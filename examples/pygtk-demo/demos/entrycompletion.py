@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
+"""Entry Completion
+
 	gtk.EntryCompletion Test
 	(c) Fernando San Martín Woerner 2004
 	snmartin@galilea.cl
