@@ -3669,5 +3669,47 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args, PyObject *kwa
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_message_dialog_new kwargs
+static PyObject *
+_wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    GtkButtonsType buttons = GTK_BUTTONS_NONE;
+    static char *kwlist[] = { "parent", "flags", "type", "buttons", "message_format", NULL };
+    PyObject *py_flags = NULL, *py_type = NULL, *py_buttons = NULL;
+    GtkDialogFlags flags = 0;
+    GtkWindow *parent = NULL;
+    GtkMessageType type = GTK_MESSAGE_INFO;
+    PyGObject *py_parent = NULL;
+    char *message_format = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOOz:GtkMessageDialog.__init__", kwlist, &py_parent, &py_flags, &py_type, &py_buttons, &message_format))
+        return NULL;
+    if ((PyObject *)py_parent == Py_None)
+        parent = NULL;
+    else if (py_parent && pygobject_check(py_parent, &PyGtkWindow_Type))
+        parent = GTK_WINDOW(py_parent->obj);
+    else if (py_parent) {
+        PyErr_SetString(PyExc_TypeError, "parent should be a GtkWindow or None");
+        return NULL;
+    }
+    if (pyg_enum_get_value(GTK_TYPE_DIALOG_FLAGS, py_flags, (gint *)&flags))
+        return NULL;
+    if (pyg_enum_get_value(GTK_TYPE_MESSAGE_TYPE, py_type, (gint *)&type))
+        return NULL;
+    if (pyg_enum_get_value(GTK_TYPE_BUTTONS_TYPE, py_buttons, (gint *)&buttons))
+        return NULL;
+
+    self->obj = (GObject *)gtk_message_dialog_new(parent, flags, type, buttons, "%s", message_format);
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkMessageDialog object");
+        return NULL;
+    }
+    gtk_object_ref(GTK_OBJECT(self->obj));
+    gtk_object_sink(GTK_OBJECT(self->obj));
+    pygobject_register_wrapper((PyObject *)self);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 
 
