@@ -4,11 +4,13 @@ noinst_PYTHON = \
 	argtypes.py \
 	codegen.py \
 	definitions.py \
+	defsparser.py \
+	docextract.py \
+	docgen.py \
 	h2def.py \
 	mergedefs.py \
+	mkskel.py \
 	override.py \
-	parser.py \
-	scmexpr.py \
-	mkskel.py
+	scmexpr.py
 
 EXTRA_DIST = README.defs

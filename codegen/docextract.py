@@ -1,3 +1,4 @@
+# -*- Mode: Python; py-indent-offset: 4 -*-
 '''Simple module for extracting GNOME style doc comments from C
 sources, so I can use them for other purposes.'''
 
@@ -21,6 +22,13 @@ class FunctionDoc:
 	self.description = self.description + extra
     def append_return(self, extra):
 	self.ret = self.ret + extra
+
+    def get_param_description(self, name):
+        for param, description in self.params:
+            if param == name:
+                return description
+        else:
+            return ''
 
 comment_start_pat = re.compile(r'^\s*/\*\*\s')
 comment_end_pat = re.compile(r'^\s*\*+/')

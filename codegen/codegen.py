@@ -2,7 +2,7 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 import sys, string
 import getopt
-import parser, argtypes, override
+import defsparser, argtypes, override
 
 import traceback, keyword
 
@@ -515,7 +515,7 @@ if __name__ == '__main__':
         sys.stderr.write(
             'usage: codegen.py [-o overridesfile] [-p prefix] defsfile\n')
         sys.exit(1)
-    p = parser.DefsParser(args[0])
+    p = defsparser.DefsParser(args[0])
     p.startParsing()
     register_types(p)
     write_source(p, o, prefix)
