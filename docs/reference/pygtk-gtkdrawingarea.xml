@@ -40,8 +40,30 @@ linkend="constructor-gtkdrawingarea">gtk.DrawingArea</link></methodname>
     <para>The <link
 linkend="class-gtkdrawingarea"><classname>gtk.DrawingArea</classname></link>
 widget is used for creating custom user interface elements. It's essentially
-a blank widget you can draw on. After creating a drawing area, the
-application may want to connect to:</para>
+a blank widget containing a <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> that
+you can draw on. The contained <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> is
+accessed using the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> "window"
+attribute as:</para>
+
+    <programlisting>
+  gdkwindow = drawingarea.window
+</programlisting>
+
+    <para>Since a <link
+    linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+    is a subclass of <link
+    linkend="class-gdkdrawable"><classname>gtk.gdk.Drawable</classname></link>,
+    all of the <link
+    linkend="class-gdkdrawable"><classname>gtk.gdk.Drawable</classname></link>
+    methods are available for drawing on the <link
+    linkend="class-gtkdrawingarea"><classname>gtk.DrawingArea</classname></link>'s
+    gdkwindow.</para>
+
+    <para>After creating a drawing area, the application may want to
+connect to:</para>
 
     <itemizedlist>
       <listitem>
