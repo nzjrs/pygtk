@@ -1092,3 +1092,46 @@ _wrap_gtk_text_attributes__get_draw_bg(PyObject *self, void *closure)
     Py_INCREF(ret);
     return ret;
 }
+%%
+override gtk_text_tag_table_foreach kwargs
+static void
+pygtk_text_tag_table_foreach_cb(GtkTextTag *tag, gpointer user_data)
+{
+    PyObject *callback, *args, *ret;
+
+    pyg_block_threads();
+    callback = PyTuple_GetItem((PyObject *)user_data, 0);
+    args = Py_BuildValue("(NO)",
+			 pygobject_new((GObject *)tag),
+			 PyTuple_GetItem((PyObject *)user_data, 1));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    pyg_unblock_threads();
+}
+static PyObject *
+_wrap_gtk_text_tag_table_foreach(PyGObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data",  NULL };
+    PyObject *func, *data, *py_data = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|O:GtkTextTagTable.foreach",
+				     kwlist, &func, &py_data)) {
+        return NULL;
+    }
+    if (!PyCallable_Check(func)) {
+	PyErr_SetString(PyExc_TypeError, "func must be callable");
+	return NULL;
+    }
+
+    data = Py_BuildValue("(OO)", func, py_data);
+    
+    gtk_text_tag_table_foreach(GTK_TEXT_TAG_TABLE(self->obj),
+			       pygtk_text_tag_table_foreach_cb,
+			       (gpointer)data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
