@@ -3380,6 +3380,93 @@ static PyObject *_wrap_gtk_window_set_icon_name(PyObject *self, PyObject *args) 
 	Py_INCREF(Py_None);
 	return Py_None;
 }
+
+static PyObject *_wrap_gtk_window_set_geometry_hints(PyObject *self, PyObject *args) {
+  PyObject *window, *py_geom_wid, *hints, *key, *value;
+  GtkWidget *geom_wid = NULL;
+  GdkGeometry geometry = { -1,-1, -1,-1, -1,-1, -1,-1, -1.0,-1.0 };
+  GdkWindowHints geom_mask = 0;
+  int i = 0;
+
+  if (!PyArg_ParseTuple(args, "O!OO!:gtk_window_set_geometry_hints",
+			&PyGtk_Type, &window, &py_geom_wid, &PyDict_Type,
+			&hints))
+    return NULL;
+  if (PyGtk_Check(py_geom_wid))
+    geom_wid = GTK_WIDGET(PyGtk_Get(py_geom_wid));
+  else if (py_geom_wid != Py_None) {
+    PyErr_SetString(PyExc_TypeError, "second argument must be a GtkWidget or none");
+    return NULL;
+  }
+  while (PyDict_Next(hints, &i, &key, &value)) {
+    gchar *name;
+    if (!PyString_Check(key)) {
+      PyErr_SetString(PyExc_TypeError, "hint keys must be strings");
+      return NULL;
+    }
+    name = PyString_AsString(key);
+    if (PyInt_Check(value)) {
+      int val = PyInt_AsLong(value);
+      if (!strcmp(name, "min_width")) {
+	geometry.min_width = val;
+	geom_mask |= GDK_HINT_MIN_SIZE;
+      } else if (!strcmp(name, "min_height")) {
+	geometry.min_height = val;
+	geom_mask |= GDK_HINT_MIN_SIZE;
+      } else if (!strcmp(name, "max_width")) {
+	geometry.max_width = val;
+	geom_mask |= GDK_HINT_MAX_SIZE;
+      } else if (!strcmp(name, "max_height")) {
+	geometry.max_height = val;
+	geom_mask |= GDK_HINT_MAX_SIZE;
+      } else if (!strcmp(name, "base_width")) {
+	geometry.base_width = val;
+	geom_mask |= GDK_HINT_BASE_SIZE;
+      } else if (!strcmp(name, "base_height")) {
+	geometry.base_height = val;
+	geom_mask |= GDK_HINT_BASE_SIZE;
+      } else if (!strcmp(name, "width_inc")) {
+	geometry.width_inc = val;
+	geom_mask |= GDK_HINT_RESIZE_INC;
+      } else if (!strcmp(name, "height_inc")) {
+	geometry.height_inc = val;
+	geom_mask |= GDK_HINT_RESIZE_INC;
+      } else {
+	gchar *err = g_strdup_printf("unknown hint name or wrong type for %s",
+				     name);
+	PyErr_SetString(PyExc_TypeError, name);
+	g_free(err);
+	return NULL;
+      }
+    } else if (PyFloat_Check(value)) {
+      double val = PyFloat_AsDouble(value);
+      if (!strcmp(name, "min_aspect")) {
+	geometry.min_aspect = val;
+	geom_mask |= GDK_HINT_ASPECT;
+      } else if (!strcmp(name, "max_aspect")) {
+	geometry.max_aspect = val;
+	geom_mask |= GDK_HINT_ASPECT;
+      } else {
+	gchar *err = g_strdup_printf("unknown hint name or wrong type for %s",
+				     name);
+	PyErr_SetString(PyExc_TypeError, name);
+	g_free(err);
+	return NULL;
+      }
+    } else {
+      gchar *err = g_strdup_printf("unknown hint name or wrong type for %s",
+				   name);
+      PyErr_SetString(PyExc_TypeError, name);
+      g_free(err);
+      return NULL;
+    }
+  }
+  gtk_window_set_geometry_hints(GTK_WINDOW(PyGtk_Get(window)), geom_wid,
+				&geometry, geom_mask);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 /* --- */
 static PyObject *
 _wrap_gtk_box_query_child_packing(PyObject *self, PyObject *args) {
@@ -5088,6 +5175,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_container_children", _wrap_gtk_container_children, 1 },
     { "gtk_window_set_icon", _wrap_gtk_window_set_icon, 1 },
     { "gtk_window_set_icon_name", _wrap_gtk_window_set_icon_name, 1 },
+    { "gtk_window_set_geometry_hints", _wrap_gtk_window_set_geometry_hints, 1 },
     { "gtk_box_query_child_packing", _wrap_gtk_box_query_child_packing, 1 },
     { "gtk_button_box_get_child_size_default", _wrap_gtk_button_box_get_child_size_default, 1 },
     { "gtk_button_box_get_child_ipadding_default", _wrap_gtk_button_box_get_child_ipadding_default, 1 },

@@ -772,6 +772,14 @@ class GtkWindow(GtkBin):
 		_gtk.gtk_window_set_icon_name(self._o, name)
 	def set_transient_for(self, parent):
 		_gtk.gtk_window_set_transient_for(self._o, parent._o)
+	def set_geometry_hints(self, geometry_widget=None, **hints):
+		# acceptable hints are min_width, min_height, max_width,
+		# max_height, base_width, base_height, width_inc, height_inc
+		# (with int values) and min_aspect, max_aspect (double values).
+		if hasattr(geometry_widget, '_o'):
+			geometry_widget = geometry_widget._o
+		_gtk.gtk_window_set_geometry_hints(self._o, geometry_widget,
+						   hints)
 	def set_default_size(self, width, height):
 		_gtk.gtk_window_set_default_size(self._o, width, height)
 	def set_modal(self, modal):
