@@ -69,9 +69,9 @@ $(srcdir)/gtkmodule_defs.c $(srcdir)/gtkmodule_impl.c $(srcdir)/gtkgl_defs.c $(s
 	cd $(srcdir) && $(PYTHON) mkgtk.py
 
 
-gtkmodule.o: gtkmodule.c gtkmodule_defs.c gtkmodule_impl.c
+gtkmodule.lo: gtkmodule.c gtkmodule_defs.c gtkmodule_impl.c
 
-gtkglmodule.o: gtkglmodule.c gtkgl_defs.c gtkgl_impl.c
+gtkglmodule.lo: gtkglmodule.c gtkgl_defs.c gtkgl_impl.c
 
 EXTRA_DIST = \
 	pygtk.spec \
