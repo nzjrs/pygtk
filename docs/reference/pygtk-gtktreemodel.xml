@@ -351,6 +351,49 @@ performance enhancements were made in the sort model. As a result, the
 <literal>gtk.TREE_MODEL_ITERS_PERSIST</literal> flag was added to indicate
 this behavior.</para>
 
+    <para>A <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+object supports some of the Python Mapping protocol that allows you to
+retrieve a <link
+linkend="class-pygtktreemodelrow"><classname>gtk.TreeModelRow</classname></link>
+object representing a row in the model. You can also set the values in a row
+using the same protocol. For example, you can retrieve the second row of a
+<link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+using any of:</para>
+
+    <programlisting>
+  treemodelrow = model[1]
+  treemodelrow = model[(1,)]
+  treemodelrow = model['1']
+  treemodelrow = model["1"]
+</programlisting>
+
+    <para>Also if the model has two columns both containing strings then the
+following will set the values of the third row.</para>
+
+    <programlisting>
+  model[(2,)] = ('new string value', 'string 2')
+</programlisting>
+
+    <para>You can also retrieve the number of top level items in the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> by
+using the Python <function>len</function>() function:</para>
+
+    <programlisting>
+  n_rows = len(model)
+</programlisting>
+
+    <para>A <link
+linkend="class-pygtktreemodelrowiter"><classname>gtk.TreeModelRowIter</classname></link>
+object can be retrieved for iterating over the top level rows of a <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> by
+calling the Python <function>iter</function>() function:</para>
+
+    <programlisting>
+  treemodelrowiter = iter(model)
+</programlisting>
+
   </refsect1>
 
   <refsect1>
@@ -753,7 +796,7 @@ linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>, or
       <para>The <methodname>iter_n_children</methodname>() method returns
 the number of children that <parameter>iter</parameter> has.  As a special
 case, if <parameter>iter</parameter> is <literal>None</literal>, then the
-number of toplevel nodes is returned.</para>
+number of top level nodes is returned.</para>
 
     </refsect2>
 
@@ -826,7 +869,7 @@ to the parent of <parameter>child</parameter> or
       <para>The <methodname>iter_parent</methodname>() method returns a
 <link linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
 pointing to the parent of <parameter>child</parameter>.  If
-<parameter>child</parameter> is at the toplevel, and doesn't have a parent,
+<parameter>child</parameter> is at the top level, and doesn't have a parent,
 then <literal>None</literal> is returned.  <parameter>child</parameter> will
 remain a valid node after this method has been called.</para>
 
@@ -928,7 +971,7 @@ containing the values of one or more cells in the row referenced by the
 <link linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
 specified by <parameter>iter</parameter>. column specifies the first column
 number to retrieve a value from. The additional arguments should contain
-integer column numbers for addtional column values. For example, to get
+integer column numbers for additional column values. For example, to get
 values from columns 0 and 3, you would write:</para>
 
       <programlisting>
@@ -1153,7 +1196,7 @@ pointing to the node whose children have been reordered</simpara></listitem>
 	  <term><parameter
 role="keyword">new_order</parameter>&nbsp;:</term>
 	  <listitem><simpara>a sequence of integers containing the new
-indices of the children, i.e. the former child <literal>n</literal> is now
+indexes of the children, i.e. the former child <literal>n</literal> is now
 at the position specified by
 <parameter>new_order</parameter><literal>[n]</literal>.</simpara></listitem>
 	</varlistentry>
