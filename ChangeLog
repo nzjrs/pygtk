@@ -1,5 +1,45 @@
 2005-01-09  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* gobject/gobjectmodule.c (pyg_type_register): Look for
+	GInterface's among tb_bases and register implementation support
+	for them.
+	(pyg_register_interface_info): Add.  Registers a GInterfaceInfo*
+	containing python proxy implementation with a GInterface GType.
+
+	* gobject/pygobject.h (pyg_register_interface_info): Add.
+
+	* gtk/gtk-types.defs (Editable): Add (vtable "GtkEditableClass"),
+	because the GtkEditable vtable structure name is GtkEditableClass
+	instead of GtkEditableIface.
+
+	* codegen/definitions.py (InterfaceDef.__init__): Add/parse vtable
+	attribute, to contain the C structure name of the virtual table of
+	an interface.  If not given, the vtable name defaults to (c_name +
+	"Iface").  Add attribute interface_info, to hold the
+	GInterfaceInfo variable for the interface.
+
+	* codegen/reversewrapper.py (GEnumReturn.write_conversion): Add
+	missing code=None parameter.
+	(GFlagsReturn.write_conversion): idem.
+
+	* codegen/codegen.py: Add global iproxies_coverage to track
+	coverage statistics of interface proxies.
+	(Wrapper.write_methods): Split out writing virtual method
+	accessors to a separate method (write_virtual_accessors).
+	(GInterfaceWrapper.write_virtual_accessors): Override to disable
+	writing virtual accessors for interfaces.
+	(GInterfaceWrapper.write_virtuals): Override to generate interface
+	virtuals, interface_init function, and interface_info structure.
+	(write_registers): Call pyg_register_interface_info for interfaces
+	with some implementation support.
+
+	* gtk/gtk.defs: Add (define-virtual ...) declarations for all
+	interface virtual methods in gtk.
+
+	Fixes #154974: Interface implementation support.
+
+2005-01-09  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
 	* codegen/reversewrapper.py (GBoxedParam.convert_c2py): When the C
 	type begins with const, force python wrapper to create a copy of
 	the boxed value, and typecast to avoid const warning.

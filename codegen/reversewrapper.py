@@ -434,7 +434,7 @@ for argtype in ('int', 'gint', 'guint', 'short', 'gshort', 'gushort', 'long',
 
 class GEnumReturn(IntReturn):
     def write_conversion(self):
-        self.wrapper.write_code(
+        self.wrapper.write_code(code=None,
             failure_expression=("pyg_enum_get_value(%s, py_retval, (gint *)&retval)" %
                                 self.props['typecode']))
 
@@ -454,6 +454,7 @@ argtypes.matcher.register_reverse("GEnum", GEnumParam)
 class GFlagsReturn(IntReturn):
     def write_conversion(self):
         self.wrapper.write_code(
+            code=None,
             failure_expression=("pyg_flags_get_value(%s, py_retval, (gint *)&retval)" %
                                 self.props['typecode']))
 

@@ -22395,6 +22395,75 @@
   (of-object "GtkCalendar")
   (return-type "none")
 )
+(define-virtual editing_done
+  (of-object "GtkCellEditable")
+  (return-type "none")
+)
+(define-virtual remove_widget
+  (of-object "GtkCellEditable")
+  (return-type "none")
+)
+(define-virtual start_editing
+  (of-object "GtkCellEditable")
+  (return-type "none")
+  (parameters
+    '("GdkEvent*" "event")
+  )
+)
+(define-virtual pack_start
+  (of-object "GtkCellLayout")
+  (return-type "none")
+  (parameters
+    '("GtkCellRenderer*" "cell")
+    '("gboolean" "expand")
+  )
+)
+(define-virtual pack_end
+  (of-object "GtkCellLayout")
+  (return-type "none")
+  (parameters
+    '("GtkCellRenderer*" "cell")
+    '("gboolean" "expand")
+  )
+)
+(define-virtual clear
+  (of-object "GtkCellLayout")
+  (return-type "none")
+)
+(define-virtual add_attribute
+  (of-object "GtkCellLayout")
+  (return-type "none")
+  (parameters
+    '("GtkCellRenderer*" "cell")
+    '("const-gchar*" "attribute")
+    '("gint" "column")
+  )
+)
+(define-virtual set_cell_data_func
+  (of-object "GtkCellLayout")
+  (return-type "none")
+  (parameters
+    '("GtkCellRenderer*" "cell")
+    '("GtkCellLayoutDataFunc" "func")
+    '("gpointer" "func_data")
+    '("GDestroyNotify" "destroy")
+  )
+)
+(define-virtual clear_attributes
+  (of-object "GtkCellLayout")
+  (return-type "none")
+  (parameters
+    '("GtkCellRenderer*" "cell")
+  )
+)
+(define-virtual reorder
+  (of-object "GtkCellLayout")
+  (return-type "none")
+  (parameters
+    '("GtkCellRenderer*" "cell")
+    '("gint" "position")
+  )
+)
 (define-virtual get_size
   (of-object "GtkCellRenderer")
   (return-type "none")
@@ -22476,7 +22545,6 @@
     '("GdkRectangle*" "area")
   )
 )
-
 (define-virtual color_set
   (of-object "GtkColorButton")
   (return-type "none")
@@ -22561,6 +22629,71 @@
 (define-virtual close
   (of-object "GtkDialog")
   (return-type "none")
+)
+(define-virtual insert_text
+  (of-object "GtkEditable")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "text")
+    '("gint" "length")
+    '("gint*" "position")
+  )
+)
+(define-virtual delete_text
+  (of-object "GtkEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "start_pos")
+    '("gint" "end_pos")
+  )
+)
+(define-virtual changed
+  (of-object "GtkEditable")
+  (return-type "none")
+)
+(define-virtual do_insert_text
+  (of-object "GtkEditable")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "text")
+    '("gint" "length")
+    '("gint*" "position")
+  )
+)
+(define-virtual do_delete_text
+  (of-object "GtkEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "start_pos")
+    '("gint" "end_pos")
+  )
+)
+(define-virtual set_selection_bounds
+  (of-object "GtkEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "start_pos")
+    '("gint" "end_pos")
+  )
+)
+(define-virtual get_selection_bounds
+  (of-object "GtkEditable")
+  (return-type "gboolean")
+  (parameters
+    '("gint*" "start_pos")
+    '("gint*" "end_pos")
+  )
+)
+(define-virtual set_position
+  (of-object "GtkEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "position")
+  )
+)
+(define-virtual get_position
+  (of-object "GtkEditable")
+  (return-type "gint")
 )
 (define-virtual populate_popup
   (of-object "GtkEntry")
@@ -22986,6 +23119,77 @@
     '("GtkAdjustment*" "vadjustment")
   )
 )
+(define-virtual selection_changed
+  (of-object "GtkList")
+  (return-type "none")
+)
+(define-virtual select_child
+  (of-object "GtkList")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+  )
+)
+(define-virtual unselect_child
+  (of-object "GtkList")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+  )
+)
+(define-virtual toggle_focus_row
+  (of-object "GtkListItem")
+  (return-type "none")
+)
+(define-virtual select_all
+  (of-object "GtkListItem")
+  (return-type "none")
+)
+(define-virtual unselect_all
+  (of-object "GtkListItem")
+  (return-type "none")
+)
+(define-virtual undo_selection
+  (of-object "GtkListItem")
+  (return-type "none")
+)
+(define-virtual start_selection
+  (of-object "GtkListItem")
+  (return-type "none")
+)
+(define-virtual end_selection
+  (of-object "GtkListItem")
+  (return-type "none")
+)
+(define-virtual extend_selection
+  (of-object "GtkListItem")
+  (return-type "none")
+  (parameters
+    '("GtkScrollType" "scroll_type")
+    '("gfloat" "position")
+    '("gboolean" "auto_start_selection")
+  )
+)
+(define-virtual scroll_horizontal
+  (of-object "GtkListItem")
+  (return-type "none")
+  (parameters
+    '("GtkScrollType" "scroll_type")
+    '("gfloat" "position")
+  )
+)
+(define-virtual scroll_vertical
+  (of-object "GtkListItem")
+  (return-type "none")
+  (parameters
+    '("GtkScrollType" "scroll_type")
+    '("gfloat" "position")
+  )
+)
+(define-virtual toggle_add_mode
+  (of-object "GtkListItem")
+  (return-type "none")
+)
 (define-virtual activate
   (of-object "GtkMenuItem")
   (return-type "none")
@@ -23111,6 +23315,10 @@
 )
 (define-virtual destroy
   (of-object "GtkObject")
+  (return-type "none")
+)
+(define-virtual changed
+  (of-object "GtkOptionMenu")
   (return-type "none")
 )
 (define-virtual cycle_child_focus
@@ -24021,6 +24229,44 @@
     '("GtkWidget*" "child")
   )
 )
+(define-virtual row_draggable
+  (of-object "GtkTreeDragSource")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreePath*" "path")
+  )
+)
+(define-virtual drag_data_get
+  (of-object "GtkTreeDragSource")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreePath*" "path")
+    '("GtkSelectionData*" "selection_data")
+  )
+)
+(define-virtual drag_data_delete
+  (of-object "GtkTreeDragSource")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreePath*" "path")
+  )
+)
+(define-virtual drag_data_received
+  (of-object "GtkTreeDragDest")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreePath*" "dest")
+    '("GtkSelectionData*" "selection_data")
+  )
+)
+(define-virtual row_drop_possible
+  (of-object "GtkTreeDragDest")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreePath*" "dest_path")
+    '("GtkSelectionData*" "selection_data")
+  )
+)
 (define-virtual expand
   (of-object "GtkTreeItem")
   (return-type "none")
@@ -24029,9 +24275,184 @@
   (of-object "GtkTreeItem")
   (return-type "none")
 )
+(define-virtual row_changed
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreePath*" "path")
+    '("GtkTreeIter*" "iter")
+  )
+)
+(define-virtual row_inserted
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreePath*" "path")
+    '("GtkTreeIter*" "iter")
+  )
+)
+(define-virtual row_has_child_toggled
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreePath*" "path")
+    '("GtkTreeIter*" "iter")
+  )
+)
+(define-virtual row_deleted
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreePath*" "path")
+  )
+)
+(define-virtual rows_reordered
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreePath*" "path")
+    '("GtkTreeIter*" "iter")
+    '("gint*" "new_order")
+  )
+)
+(define-virtual get_flags
+  (of-object "GtkTreeModel")
+  (return-type "GtkTreeModelFlags")
+)
+(define-virtual get_n_columns
+  (of-object "GtkTreeModel")
+  (return-type "gint")
+)
+(define-virtual get_column_type
+  (of-object "GtkTreeModel")
+  (return-type "GType")
+  (parameters
+    '("gint" "index_")
+  )
+)
+(define-virtual get_iter
+  (of-object "GtkTreeModel")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreeIter*" "iter")
+    '("GtkTreePath*" "path")
+  )
+)
+(define-virtual get_value
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreeIter*" "iter")
+    '("gint" "column")
+    '("GValue*" "value")
+  )
+)
+(define-virtual iter_next
+  (of-object "GtkTreeModel")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreeIter*" "iter")
+  )
+)
+(define-virtual iter_children
+  (of-object "GtkTreeModel")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreeIter*" "iter")
+    '("GtkTreeIter*" "parent")
+  )
+)
+(define-virtual iter_has_child
+  (of-object "GtkTreeModel")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreeIter*" "iter")
+  )
+)
+(define-virtual iter_n_children
+  (of-object "GtkTreeModel")
+  (return-type "gint")
+  (parameters
+    '("GtkTreeIter*" "iter")
+  )
+)
+(define-virtual iter_nth_child
+  (of-object "GtkTreeModel")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreeIter*" "iter")
+    '("GtkTreeIter*" "parent")
+    '("gint" "n")
+  )
+)
+(define-virtual iter_parent
+  (of-object "GtkTreeModel")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreeIter*" "iter")
+    '("GtkTreeIter*" "child")
+  )
+)
+(define-virtual ref_node
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreeIter*" "iter")
+  )
+)
+(define-virtual unref_node
+  (of-object "GtkTreeModel")
+  (return-type "none")
+  (parameters
+    '("GtkTreeIter*" "iter")
+  )
+)
 (define-virtual changed
   (of-object "GtkTreeSelection")
   (return-type "none")
+)
+(define-virtual sort_column_changed
+  (of-object "GtkTreeSortable")
+  (return-type "none")
+)
+(define-virtual get_sort_column_id
+  (of-object "GtkTreeSortable")
+  (return-type "gboolean")
+  (parameters
+    '("gint*" "sort_column_id")
+    '("GtkSortType*" "order")
+  )
+)
+(define-virtual set_sort_column_id
+  (of-object "GtkTreeSortable")
+  (return-type "none")
+  (parameters
+    '("gint" "sort_column_id")
+    '("GtkSortType" "order")
+  )
+)
+(define-virtual set_sort_func
+  (of-object "GtkTreeSortable")
+  (return-type "none")
+  (parameters
+    '("gint" "sort_column_id")
+    '("GtkTreeIterCompareFunc" "func")
+    '("gpointer" "data")
+    '("GtkDestroyNotify" "destroy")
+  )
+)
+(define-virtual set_default_sort_func
+  (of-object "GtkTreeSortable")
+  (return-type "none")
+  (parameters
+    '("GtkTreeIterCompareFunc" "func")
+    '("gpointer" "data")
+    '("GtkDestroyNotify" "destroy")
+  )
+)
+(define-virtual has_default_sort_func
+  (of-object "GtkTreeSortable")
+  (return-type "gboolean")
 )
 (define-virtual set_scroll_adjustments
   (of-object "GtkTreeView")

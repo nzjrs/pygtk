@@ -114,7 +114,9 @@ class InterfaceDef(Definition):
 	self.module = None
 	self.c_name = None
         self.typecode = None
+        self.vtable = None
 	self.fields = []
+        self.interface_info = None
 	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
@@ -122,6 +124,10 @@ class InterfaceDef(Definition):
 		self.c_name = arg[1]
 	    elif arg[0] == 'gtype-id':
 		self.typecode = arg[1]
+	    elif arg[0] == 'vtable':
+		self.vtable = arg[1]
+        if self.vtable is None:
+            self.vtable = self.c_name + "Iface"
     def write_defs(self, fp=sys.stdout):
 	fp.write('(define-interface ' + self.name + '\n')
 	if self.module:

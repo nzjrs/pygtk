@@ -26,6 +26,7 @@ functions_coverage = Coverage("global functions")
 methods_coverage = Coverage("methods")
 vproxies_coverage = Coverage("virtual proxies")
 vaccessors_coverage = Coverage("virtual accessors")
+iproxies_coverage = Coverage("interface proxies")
 
 def exc_info():
     #traceback.print_exc()
@@ -446,6 +447,22 @@ class Wrapper:
 
         # Add GObject virtual method accessors, for chaining to parent
         # virtuals from subclasses
+        methods += self.write_virtual_accessors()
+            
+        if methods:
+            methoddefs = '_Py%s_methods' % self.objinfo.c_name
+            # write the PyMethodDef structure
+            methods.append('    { NULL, NULL, 0 }\n')
+            self.fp.write('static PyMethodDef %s[] = {\n' % methoddefs)
+            self.fp.write(string.join(methods, ''))
+            self.fp.write('};\n\n')
+        else:
+            methoddefs = 'NULL'
+        return methoddefs
+
+    def write_virtual_accessors(self):
+        klass = self.objinfo.c_name
+        methods = []
         for meth in self.parser.find_virtuals(self.objinfo):
             method_name = self.objinfo.c_name + "__do_" + meth.name
             if self.overrides.is_ignored(method_name):
@@ -478,17 +495,7 @@ class Wrapper:
                 vaccessors_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write virtual accessor method %s.%s: %s\n'
                                 % (klass, meth.name, exc_info()))
-
-        if methods:
-            methoddefs = '_Py%s_methods' % self.objinfo.c_name
-            # write the PyMethodDef structure
-            methods.append('    { NULL, NULL, 0 }\n')
-            self.fp.write('static PyMethodDef %s[] = {\n' % methoddefs)
-            self.fp.write(string.join(methods, ''))
-            self.fp.write('};\n\n')
-        else:
-            methoddefs = 'NULL'
-        return methoddefs
+        return methods
 
     def write_virtuals(self):
         '''Write _wrap_FooBar__proxy_do_zbr() reverse wrapers for GObject virtuals'''
@@ -809,6 +816,70 @@ class GInterfaceWrapper(GObjectWrapper):
         # interfaces have no fields ...
         return '0'
 
+    def write_virtual_accessors(self):
+        ## we don't want the 'chaining' functions for interfaces
+        return []
+
+    def write_virtuals(self):
+        ## Now write reverse method wrappers, which let python code
+        ## implement interface methods.
+        # First, get methods from the defs files
+        klass = self.objinfo.c_name
+        proxies = []
+        for meth in self.parser.find_virtuals(self.objinfo):
+            method_name = self.objinfo.c_name + "__proxy_do_" + meth.name
+            if self.overrides.is_ignored(method_name):
+                continue
+            try:
+                if self.overrides.is_overriden(method_name):
+                    if not self.overrides.is_already_included(method_name):
+                        data = self.overrides.override(method_name)
+                        self.write_function(method_name, data)
+                else:
+                    # write proxy ...
+                    ret, props = argtypes.matcher.get_reverse_ret(meth.ret)
+                    wrapper = reversewrapper.ReverseWrapper(
+                        '_wrap_' + method_name, is_static=True)
+                    wrapper.set_return_type(ret(wrapper, **props))
+                    wrapper.add_parameter(reversewrapper.PyGObjectMethodParam(
+                        wrapper, "self", method_name="do_" + meth.name,
+                        c_type=(klass + ' *')))
+                    for param in meth.params:
+                        handler, props = argtypes.matcher.get_reverse(param.ptype)
+                        wrapper.add_parameter(handler(wrapper, param.pname, **props))
+                    buf = reversewrapper.MemoryCodeSink()
+                    wrapper.generate(buf)
+                    self.fp.write(buf.flush())
+                proxies.append((fixname(meth.name), '_wrap_' + method_name))
+                iproxies_coverage.declare_wrapped()
+            except KeyError:
+                iproxies_coverage.declare_not_wrapped()
+                proxies.append((fixname(meth.name), None))
+                sys.stderr.write('Could not write interface proxy %s.%s: %s\n'
+                                % (klass, meth.name, exc_info()))
+        if proxies:
+            ## Write an interface init function for this object
+            funcname = "__%s__interface_init" % klass
+            vtable = self.objinfo.vtable
+            self.fp.write(('\nstatic void\n'
+                           '%(funcname)s(%(vtable)s *iface)\n'
+                           '{\n') % vars())
+            for name, cname in proxies:
+                do_name = 'do_' + name
+                if cname is not None:
+                    self.fp.write('    iface->%s = %s;\n' % (name, cname))
+            self.fp.write('}\n\n')
+            interface_info = "__%s__iinfo" % klass
+            self.fp.write('''
+static const GInterfaceInfo %s = {
+    (GInterfaceInitFunc) %s,
+    NULL,
+    NULL
+};
+''' % (interface_info, funcname))
+            self.objinfo.interface_info = interface_info
+            
+
 class GBoxedWrapper(Wrapper):
     constructor_tmpl = \
         'static int\n' \
@@ -992,6 +1063,9 @@ def write_registers(parser, fp):
         fp.write('    pyg_register_interface(d, "' + interface.name +
                  '", '+ interface.typecode + ', &Py' + interface.c_name +
                  '_Type);\n')
+        if interface.interface_info is not None:
+            fp.write('    pyg_register_interface_info(%s, &%s);\n' %
+                     (interface.typecode, interface.interface_info))
 
     objects = parser.objects[:]
     pos = 0
@@ -1020,7 +1094,8 @@ def write_registers(parser, fp):
                      '", ' + obj.typecode + ', &Py' + obj.c_name +
                      '_Type, NULL);\n')
         if obj.class_init_func is not None:
-            fp.write('    pyg_register_class_init(%s, %s);\n' % (obj.typecode, obj.class_init_func))
+            fp.write('    pyg_register_class_init(%s, %s);\n' %
+                     (obj.typecode, obj.class_init_func))
     fp.write('}\n')
 
 def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
@@ -1103,6 +1178,7 @@ def main(argv):
     methods_coverage.printstats()
     vproxies_coverage.printstats()
     vaccessors_coverage.printstats()
+    iproxies_coverage.printstats()
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
