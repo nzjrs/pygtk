@@ -200,8 +200,32 @@ _wrap_glade_bindtextdomain(PyObject *self, PyObject *args, PyObject *kwargs)
 				     &domainname, &dirname))
 	return NULL;
     ret = bindtextdomain(domainname, dirname);
+    if (!ret) {
+	PyErr_SetString(PyExc_MemoryError, "Not enough memory available.");
+	return NULL;
+    }
 #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
     bind_textdomain_codeset(domainname, "UTF-8");
 #endif
     return PyString_FromString(ret);
 }
+%%
+override glade_textdomain kwargs
+static PyObject *
+_wrap_glade_textdomain(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "domainname", NULL };
+    char *domainname = NULL, *ret;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|s:glade.textdomain", kwlist,
+				     &domainname))
+	return NULL;
+    ret = textdomain(domainname);
+    if (!ret) {
+	PyErr_SetString(PyExc_MemoryError, "Not enough memory available.");
+	return NULL;
+    }
+    return PyString_FromString(ret);
+}
+
