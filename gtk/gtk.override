@@ -2413,6 +2413,30 @@ _wrap_gtk_radio_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
     return 0;
 }
 %%
+override gtk_radio_button_get_group noargs
+static PyObject *
+_wrap_gtk_radio_button_get_group(PyGObject *self) {
+    PyObject *py_list;
+    GSList *list, *tmp;
+    PyObject *gtk_obj;
+    
+    list = gtk_radio_button_get_group(GTK_RADIO_BUTTON(self->obj));
+    
+    if ((py_list = PyList_New(0)) == NULL) {
+	return NULL;
+    }
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+	gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+	if (gtk_obj == NULL) {
+	    Py_DECREF(py_list);
+	    return NULL;
+	}
+	PyList_Append(py_list, gtk_obj);
+	Py_DECREF(gtk_obj);
+    }
+    return py_list;
+}
+%%
 ignore gtk_list_item_new_with_label
 %%
 override gtk_list_item_new kwargs
