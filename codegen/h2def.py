@@ -14,7 +14,7 @@ import string, sys, re, types
 
 # ------------------ Find object definitions -----------------
 
-obj_name_pat = "[A-Z][a-z]+[A-Z][A-Za-z0-9]*"
+obj_name_pat = "[A-Z][a-z]*[A-Z][A-Za-z0-9]*"
 
 def find_obj_defs(buf, objdefs=[]):
     """
@@ -334,8 +334,6 @@ if __name__ == '__main__':
     for filename in args:
         buf = open(filename).read()
         find_obj_defs(buf, objdefs)
-        if len(filename) > 11 and filename[-11:] == 'gtkobject.h':
-            objdefs.append(('GtkObject', None))
         find_enum_defs(buf, enums)
     objdefs = sort_obj_defs(objdefs)
     write_obj_defs(objdefs,None)
