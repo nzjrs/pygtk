@@ -1,3 +1,4 @@
+# -*- mode: rpm-spec -*-
 %define buildglade %(pkg-config libglade-2.0 && echo 1 || echo 0)
 %define python python2
 
@@ -72,6 +73,8 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
 %defattr(644, root, root, 755)
+%{_prefix}/lib/python?.?/site-packages/pygtk.pth
+%{_prefix}/lib/python?.?/site-packages/pygtk.py*
 %dir %{_prefix}/lib/python?.?/site-packages/gtk-2.0
 %dir %{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk
 %{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtk/__init__.py*
