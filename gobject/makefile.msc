@@ -14,7 +14,7 @@ PYD_POSTFIX = _d
 EXTRACFLAGS = -I$(PYTHON)\include
 MODULE_EXT = pyd
 
-MODULES = _gtk # libglade
+MODULES = gobject
 
 sub-all: 
 	for %d in ($(MODULES)) do nmake -nologo -f makefile.msc sub-one THIS=%d
@@ -50,7 +50,6 @@ libglade.c : libglade.defs libglade.override
 LDFLAGS = /link /machine:ix86 $(LINKDEBUG)
 INSTALL = copy
 
-# GTK_ENABLE_BROKEN for GtkText, GtkTree?? \
 INCLUDES = \
 	-FImsvc_recommended_pragmas.h \
 	-DHAVE_CONFIG_H -I.. -I..\gobject -I. $(EXTRACFLAGS) \
@@ -58,19 +57,14 @@ INCLUDES = \
 	-DGTK_ENABLE_BROKEN \
 	-DVERSION=\"1.99.8\"
 
-#	-I$(LIBGLADE) -I$(LIBXML)
-
-!IFDEF OBJ__gtk
+!IFDEF OBJ_gobject
 OBJECTS = \
-	gtk.obj \
-	gtkmodule.obj \
-	gtkobject-support.obj \
-	gtk-types.obj \
-	gdk.obj \
-	pygtktreemodel.obj \
-	pygtkcellrenderer.obj \
-	pygtktreemodel.obj \
-	gtk-fake-win32.obj
+	gobjectmodule.obj \
+	pygboxed.obj \
+	pygobject.obj \
+	pygflags.obj \
+	pygenum.obj \
+	pygtype.obj
 !ENDIF
 
 !IFNDEF OBJECTS
@@ -79,7 +73,6 @@ OBJECTS = \
 	$(MODULE)module.obj
 !ENDIF
 
-
 $(MODULE)$(PYD_POSTFIX).$(MODULE_EXT) : $(OBJECTS) 
 	$(CC) $(CFLAGS) -LD -Fe$@ $(OBJECTS) $(LDFLAGS) $(EXTRALIBS) \
 	$(GTK2_LIBS) $(GDK_PIXBUF_LIBS) $(GLIB_LIBS) $(ATK_LIBS) /export:init$(MODULE)
@@ -87,8 +80,3 @@ $(MODULE)$(PYD_POSTFIX).$(MODULE_EXT) : $(OBJECTS)
 clean::
 	del *.pyc
 	del *.pyd
-
-extra-clean:
-	del gtk.c
-	del gdk.c
-	del libglade.c
