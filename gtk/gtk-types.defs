@@ -1275,6 +1275,12 @@
   (gtype-id "GTK_TYPE_CELL_EDITABLE")
 )
 
+(define-interface CellLayout
+  (in-module "Gtk")
+  (c-name "GtkCellLayout")
+  (gtype-id "GTK_TYPE_CELL_LAYOUT")
+)
+
 (define-interface Editable
   (in-module "Gtk")
   (c-name "GtkEditable")
@@ -1530,6 +1536,7 @@
   (parent "GtkBin")
   (c-name "GtkComboBox")
   (gtype-id "GTK_TYPE_COMBO_BOX")
+  (implements "GtkCellLayout")
 )
 
 (define-object ComboBoxEntry
@@ -1537,6 +1544,7 @@
   (parent "GtkComboBox")
   (c-name "GtkComboBoxEntry")
   (gtype-id "GTK_TYPE_COMBO_BOX_ENTRY")
+  (implements "GtkCellLayout")
 )
 
 (define-object Container
@@ -1604,6 +1612,7 @@
   (parent "GObject")
   (c-name "GtkEntryCompletion")
   (gtype-id "GTK_TYPE_ENTRY_COMPLETION")
+  (implements "GtkCellLayout")
 )
 
 (define-object EventBox
@@ -2347,6 +2356,7 @@
   (parent "GtkObject")
   (c-name "GtkTreeViewColumn")
   (gtype-id "GTK_TYPE_TREE_VIEW_COLUMN")
+  (implements "GtkCellLayout")
 )
 
 (define-object UIManager
