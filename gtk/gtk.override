@@ -4167,3 +4167,36 @@ _wrap_gtk_combo_box_get_active_iter(PyGObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_cell_layout_set_attributes kwargs
+static PyObject *
+_wrap_gtk_cell_layout_set_attributes(PyGObject *self, PyObject *args,
+                                          PyObject *kwargs)
+{
+    PyObject *py_cell, *key, *item;
+    GtkCellRenderer *cell;
+    gint i = 0;
+
+    if (!PyArg_ParseTuple(args, "O!:GtkCellLayout.set_attributes",
+                          &PyGtkCellRenderer_Type, &py_cell))
+        return NULL;
+    cell = GTK_CELL_RENDERER(pygobject_get(py_cell));
+    gtk_cell_layout_clear_attributes(GTK_CELL_LAYOUT(self->obj), cell);
+    if (kwargs) {
+        while (PyDict_Next(kwargs, &i, &key, &item)) {
+            gchar *attr = PyString_AsString(key);
+
+            if (!PyInt_Check(item)) {
+                gchar err[128];
+                g_snprintf(err, sizeof(err),
+                           "%s must be an integer column number", attr);
+                PyErr_SetString(PyExc_TypeError, err);
+                return NULL;
+            }
+            gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(self->obj),
+					  cell, attr, PyInt_AsLong(item));
+        }
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
