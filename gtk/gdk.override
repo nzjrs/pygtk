@@ -94,36 +94,46 @@ static GStaticPrivate pythreadstate_key = G_STATIC_PRIVATE_INIT;
 static GStaticPrivate lock_count_key = G_STATIC_PRIVATE_INIT;
 static PyInterpreterState *pyinterpstate = NULL;
 
+static gint *
+pygdk_get_lock_count(void)
+{
+    gint *lock_count = g_static_private_get(&lock_count_key);
+
+    if(!lock_count) {
+	lock_count = g_malloc(sizeof(gint));
+	*lock_count = 1;
+	g_static_private_set(&lock_count_key, lock_count, NULL);
+    }
+
+    return lock_count;
+}
+
 static void
 pygdk_block_threads (void)
 {
-    gint lock_count = GPOINTER_TO_INT(g_static_private_get(&lock_count_key));
+    PyThreadState *_save;
+    gint *lock_count = pygdk_get_lock_count();
 
-    if (lock_count == 0) {
-        PyThreadState *_save;
-
-        _save = g_static_private_get(&pythreadstate_key);
-        if (_save == NULL) {
-            _save = PyThreadState_New(pyinterpstate);
-        }
-        Py_BLOCK_THREADS;
-    }                                                                     
-    lock_count++;
-    g_static_private_set(&lock_count_key, GINT_TO_POINTER(lock_count), NULL);
+    (*lock_count)++;
+    if(*lock_count == 1) {
+	_save = g_static_private_get(&pythreadstate_key);
+	g_assert(_save);
+	Py_BLOCK_THREADS;
+	g_static_private_set(&pythreadstate_key, NULL, NULL);
+    }
 }
+
 static void
 pygdk_unblock_threads (void)
 {
-    gint lock_count = GPOINTER_TO_INT(g_static_private_get(&lock_count_key));
+    PyThreadState *_save;
+    gint *lock_count = pygdk_get_lock_count();
 
-    lock_count--;
-    if (lock_count == 0) {
-        PyThreadState *_save;
-
+    if(*lock_count == 1) {
         Py_UNBLOCK_THREADS;
         g_static_private_set(&pythreadstate_key, _save, NULL);
     }
-    g_static_private_set(&lock_count_key, GINT_TO_POINTER(lock_count), NULL);
+    (*lock_count)--;
 }
 #endif
 
@@ -136,7 +146,6 @@ _wrap_gdk_threads_init(PyObject *self)
 
     PyEval_InitThreads();
     gdk_threads_init();
-    g_static_private_set(&lock_count_key, GINT_TO_POINTER(1), NULL);
 
     pyinterpstate = PyThreadState_Get()->interp;
 

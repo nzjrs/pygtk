@@ -10,14 +10,3 @@ Things to do for the gtk 2.0 based release
   new tree models defined in Python.  Need to look at how the
   GtkTreeIter->tree_node lifetime is handled, as it doesn't look like
   anything is called to let us know that that data should be unrefed.
-
-- Make python subclasses of GObjects into new types in the GType
-  system.  Should be possible to do from GObject.__class_init__ and a
-  bit of extra magic.
-
-  Maybe stop adding get_type() class methods, and switch over to
-  adding __gtype__ class attributes.  This is easier when defining new
-  GObject types (ie. just set an attribute), but may mean calling
-  get_type() for all classes.  Could do some special code so that the
-  __gtype__ attributes are of a special type that calls the get_type()
-  macro to convert to an int.
