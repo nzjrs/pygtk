@@ -4975,13 +4975,20 @@ clipboard_request_text_cb(GtkClipboard *clipboard,
 			  const gchar *text,
 			  gpointer user_data)
 {
-    PyObject *callback, *args, *ret;
+    PyObject *callback, *args, *ret, *py_text;
+
+    if (text) {
+        py_text = PyString_FromString(text);
+    } else {
+        py_text = Py_None;
+        Py_INCREF(Py_None);
+    }
 
     pyg_block_threads();
     callback = PyTuple_GetItem((PyObject *)user_data, 0);
     args = Py_BuildValue("(NNO)",
 			 pygobject_new((GObject *)clipboard),
-			 PyString_FromString(text),
+                         py_text,
 			 PyTuple_GetItem((PyObject *)user_data, 1));
     ret = PyObject_CallObject(callback, args);
     if (!ret)
@@ -5025,9 +5032,12 @@ clipboard_request_targets_cb(GtkClipboard *clipboard,
 
     pyg_block_threads();
     callback = PyTuple_GetItem((PyObject *)user_data, 0);
-    py_atoms = PyTuple_New(n_atoms);
-    for (i = 0; i < n_atoms; i++)
-	PyTuple_SetItem(py_atoms, i, PyGdkAtom_New(atoms[i]));
+    if (atoms) {
+        py_atoms = PyTuple_New(n_atoms);
+        for (i = 0; i < n_atoms; i++)
+            PyTuple_SetItem(py_atoms, i, PyGdkAtom_New(atoms[i]));
+    } else
+        py_atoms = PyTuple_New(0);
     args = Py_BuildValue("(NNO)",
 			 pygobject_new((GObject *)clipboard),
 			 py_atoms,
