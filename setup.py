@@ -20,26 +20,26 @@ import glob
 import os
 import sys
 
-from dsextras import getoutput, have_pkgconfig, list_files, \
-     GLOBAL_INC, GLOBAL_MACROS, InstallLib, BuildExt, \
+from dsextras import get_m4_define, getoutput, have_pkgconfig, list_files, \
+     GLOBAL_INC, GLOBAL_MACROS, InstallLib, InstallData, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
 
 if sys.platform != "win32":
     raise SystemExit, "Building PyGTK through distutils is not supported on Linux, please use configure to build PyGTK."
 
-MAJOR_VERSION = 2
-MINOR_VERSION = 3
-MICRO_VERSION = 97
+MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
+MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
+MICRO_VERSION = int(get_m4_define('pygtk_micro_version'))
 
 VERSION = "%d.%d.%d" % (MAJOR_VERSION,
                         MINOR_VERSION,
                         MICRO_VERSION)
 
-GOBJECT_REQUIRED  = '2.4.0'
-ATK_REQUIRED      = '1.0.0'
-PANGO_REQUIRED    = '1.0.0'
-GTK_REQUIRED      = '2.4.0'
-LIBGLADE_REQUIRED = '2.3.6'
+GOBJECT_REQUIRED  = get_m4_define('glib_required_version')
+ATK_REQUIRED      = get_m4_define('atk_required_version')
+PANGO_REQUIRED    = get_m4_define('pango_required_version')
+GTK_REQUIRED      = get_m4_define('gtk_required_version')
+LIBGLADE_REQUIRED = get_m4_define('libglade_required_version')
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
@@ -66,26 +66,16 @@ if version < [2, 3]:
 
 class PyGtkInstallLib(InstallLib):
     def run(self):
-        self.add_template_option('VERSION', VERSION)
-        self.prepare()
 
         # Install pygtk.pth, pygtk.py[c] and templates
         self.install_pth()
         self.install_pygtk()
-        self.install_templates()
 
         # Modify the base installation dir
         install_dir = os.path.join(self.install_dir, PYGTK_SUFFIX_LONG)
         self.set_install_dir(install_dir)
 
         InstallLib.run(self)
-
-    def install_templates(self):
-        file = self.install_template('codegen/pygtk-codegen-2.0.in',
-                                     self.exec_prefix)
-        os.chmod(file, 0755)
-        self.install_template('pygtk-2.0.pc.in',
-                              os.path.join(self.libdir, 'pkgconfig'))
 
     def install_pth(self):
         """Write the pygtk.pth file"""
@@ -102,6 +92,24 @@ class PyGtkInstallLib(InstallLib):
         self.byte_compile([pygtk])
         self.local_outputs.append(pygtk)
         self.local_inputs.append('pygtk.py')
+
+class PyGtkInstallData(InstallData):
+    def run(self):
+        self.add_template_option('VERSION', VERSION)
+        self.prepare()
+
+        # Install templates
+        self.install_templates()
+
+        InstallData.run(self)
+
+    def install_templates(self):
+        file = self.install_template('codegen/pygtk-codegen-2.0.in',
+                                     os.path.join(self.install_dir, 'bin'))
+        os.chmod(file, 0755)
+        self.install_template('pygtk-2.0.pc.in',
+                              os.path.join(self.install_dir,
+                                           'lib','pkgconfig'))
 
 class PyGtkBuild(build):
     enable_threading = 1
@@ -234,6 +242,8 @@ if '--enable-threading' in sys.argv:
             module.extra_compile_args.append(raw)
 doclines = __doc__.split("\n")
 
+options = {"bdist_wininst": {"install_script": "pygtk_postinstall.py"}}
+
 setup(name="pygtk",
       url='http://www.daa.com.au/~james/pygtk/',
       version=VERSION,
@@ -246,6 +256,9 @@ setup(name="pygtk",
       py_modules=py_modules,
       ext_modules=ext_modules,
       data_files=data_files,
+      scripts = ["pygtk_postinstall.py"],
+      options=options,
       cmdclass={'install_lib': PyGtkInstallLib,
+                'install_data': PyGtkInstallData,
                 'build_ext': BuildExt,
                 'build': PyGtkBuild})
