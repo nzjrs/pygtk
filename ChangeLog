@@ -1,3 +1,18 @@
+2004-03-27  Johan Dahlin  <johan@gnome.org>
+
+	* gtk/gtk.override (_wrap_gtk_main_quit): Override, this does
+	two things differently from the old (auto generated) version,
+	first it checks if gtk_main_level() is non zero and raises a
+	RuntimeError if it's not. It also allows arguments and completely
+	ignores them, this is closer to the old 0.6.x behavior and
+	suitable for usage like this: obj.connect(signal, gtk.main_quit),
+	fixes bug 136705
+
+	* gtk/gtkmodule.c (python_do_pending_calls): Check gtk_main_level
+	before calling gtk_main_quit, since it might be called outside of
+	a mainloop (eg, gtk.main_iteration). Avoids warnings on the console
+	as found in example in bug 138163
+
 2004-03-25  Johan Dahlin  <johan@gnome.org>
 
 	* examples/glade/autoconnect.py: New small example

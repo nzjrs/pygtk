@@ -68,7 +68,7 @@ python_do_pending_calls(gpointer data)
     }
     pyg_unblock_threads();
 
-    if (quit)
+    if (quit && gtk_main_level() > 0)
 	gtk_main_quit();
     
     return TRUE;
