@@ -2198,16 +2198,32 @@ PyGtkSelectionData_GetAttr(PyGtkSelectionData_Object *self, char *key) {
   if (!strcmp(key, "__members__"))
     return Py_BuildValue("[sssss]", "data", "format", "selection", "target",
 			 "type");
-  else if (!strcmp(key, "selection"))
-    return PyGdkAtom_New(self->obj->selection);
-  else if (!strcmp(key, "target"))
-    return PyGdkAtom_New(self->obj->target);
-  else if (!strcmp(key, "type"))
-    return PyGdkAtom_New(self->obj->type);
-  else if (!strcmp(key, "format"))
-    return PyInt_FromLong(self->obj->format);
-  else if (!strcmp(key, "data"))
-    return PyString_FromStringAndSize(self->obj->data, self->obj->length);
+
+  if (self->obj->length >= 0) {
+    /* there is a defined selection */
+    if (!strcmp(key, "selection"))
+      return PyGdkAtom_New(self->obj->selection);
+    else if (!strcmp(key, "target"))
+      return PyGdkAtom_New(self->obj->target);
+    else if (!strcmp(key, "type"))
+      return PyGdkAtom_New(self->obj->type);
+    else if (!strcmp(key, "format"))
+      return PyInt_FromLong(self->obj->format);
+    else if (!strcmp(key, "data"))
+      return PyString_FromStringAndSize(self->obj->data, self->obj->length);
+  }
+  else {
+    /* no correct selection here */
+    if (! strcmp (key, "selection") ||
+	! strcmp (key, "target")    ||
+	! strcmp (key, "type")      ||
+	! strcmp (key, "format")    ||
+	! strcmp (key, "data")) {
+      Py_INCREF (Py_None);
+      return Py_None;
+    }
+  }
+
   return Py_FindMethod(PyGtkSelectionData_methods, (PyObject *)self, key);
 }
 
