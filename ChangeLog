@@ -1,5 +1,20 @@
 2002-07-07  James Henstridge  <james@daa.com.au>
 
+	* gtk/gdk.override (_wrap_gdk_event_tp_getattr): return a boxed
+	type for gdk.Event.area for expose events.
+
+	* gtk/gtk.override (_wrap_gtk_widget_intersect): use
+	pygdk_rectangle_from_pyobject.
+
+	* codegen/argtypes.py (arg): register GdkRectanglePtrArg handler
+	for "GtkAllocation*".
+
+	* gtk/gtk.override (_wrap_gtk_paint_polygon): use
+	pygdk_rectangle_from_pyboejct to read rectangle argument.
+	(_wrap_gtk_widget_draw): remove overrides.  Should be handled by
+	code generator.
+	(_wrap_gtk_widget_size_allocate): remove this override too.
+
 	* codegen/argtypes.py (GtkTreePathArg.write_return): update to use
 	this function.
 	(ArgMatcher.register_boxed): short circuit if there is already a

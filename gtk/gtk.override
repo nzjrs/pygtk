@@ -275,7 +275,7 @@ static PyObject *
 _wrap_gtk_paint_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "window", "state_type", "shadow_type", "area", "widget", "detail", "points", "fill", NULL };
-    PyObject *window, *py_state_type, *py_shadow_type;
+    PyObject *window, *py_state_type, *py_shadow_type, *py_area;
     GtkStateType state_type;
     GtkShadowType shadow_type;
     GdkRectangle area;
@@ -287,10 +287,9 @@ _wrap_gtk_paint_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
     gboolean fill;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				    "O!OO(iiii)O!zOi:GdkDrawable.draw_polygon",
+				    "O!OOOO!zOi:GdkDrawable.draw_polygon",
 				     kwlist, &PyGdkWindow_Type, &window,
-				     &py_state_type, &py_shadow_type,
-				     &area.x,&area.y, &area.width,&area.height,
+				     &py_state_type, &py_shadow_type, &py_area,
 				     &PyGtkWidget_Type, &widget, &detail,
 				     &py_points, &fill))
 	return NULL;
@@ -299,6 +298,8 @@ _wrap_gtk_paint_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return NULL;
     if (pyg_enum_get_value(GTK_TYPE_SHADOW_TYPE, py_shadow_type,
 			   (gint *)&shadow_type))
+	return NULL;
+    if (!pygdk_rectangle_from_pyobject(py_area, &area))
 	return NULL;
     if (!PySequence_Check(py_points)) {
 	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
@@ -424,22 +425,6 @@ _wrap_gtk_tree_get_row_drag_data(PyObject *self)
     return Py_None;
 }
 %%
-override gtk_widget_draw kwargs
-static PyObject *
-_wrap_gtk_widget_draw(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "rect", NULL };
-    GdkRectangle rect;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "(iiii):GtkWidget.draw",
-				     kwlist, &(rect.x), &(rect.y),
-				     &(rect.width), &(rect.height)))
-        return NULL;
-    gtk_widget_draw(GTK_WIDGET(self->obj), &rect);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
 override gtk_widget_translate_coordinates kwargs
 static PyObject *
 _wrap_gtk_widget_translate_coordinates(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -485,24 +470,6 @@ _wrap_gtk_widget_size_request(PyGObject *self)
     return Py_BuildValue("(ii)", requisition.width, requisition.height);
 }
 %%
-override gtk_widget_size_allocate kwargs
-static PyObject *
-_wrap_gtk_widget_size_allocate(PyGObject *self, PyObject *args,
-			       PyObject *kwargs)
-{
-    static char *kwlist[] = { "allocation", NULL };
-    GtkAllocation allocation;
-
-    if(!PyArg_ParseTupleAndKeywords(args, kwargs,
-				    "(iiii):GtkWidget.size_allocate", kwlist,
-				    &(allocation.x), &(allocation.y),
-				    &(allocation.width), &(allocation.height)))
-        return NULL;
-    gtk_widget_size_allocate(GTK_WIDGET(self->obj), &allocation);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
 override gtk_widget_get_child_requisition noargs
 static PyObject *
 _wrap_gtk_widget_get_child_requisition(PyGObject *self)
@@ -528,13 +495,14 @@ static PyObject *
 _wrap_gtk_widget_intersect(PyGObject *self, PyObject *args, PyObject*kwargs)
 {
     static char *kwlist[] = { "area", NULL };
-    GdkRectangle area;
-    GdkRectangle intersect;
+    PyObject *py_area;
+    GdkRectangle area, intersect;
 
-    if(!PyArg_ParseTupleAndKeywords(args, kwargs, "(iiii):GtkWidget.intersect",
-				    kwlist, &(area.x), &(area.y),
-				    &(area.width), &(area.height))) 
+    if(!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkWidget.intersect",
+				    kwlist, &py_area))
         return NULL;
+    if (!pygdk_rectangle_from_pyobject(py_area, &area))
+	return NULL;
     if (gtk_widget_intersect(GTK_WIDGET(self->obj), &area, &intersect))
 	return pyg_boxed_new(GDK_TYPE_RECTANGLE, &intersect, TRUE, TRUE);
     else {

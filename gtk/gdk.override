@@ -675,11 +675,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     case GDK_DESTROY: break;
     case GDK_EXPOSE:            /*GdkEventExpose            expose*/
 	if (!strcmp(attr, "area"))
-	    return Py_BuildValue("(iiii)",
-				 event->expose.area.x,
-				 event->expose.area.y,
-				 event->expose.area.width,
-				 event->expose.area.height);
+	    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &event->expose.area,
+				 TRUE, TRUE);
 	if (!strcmp(attr, "count"))
 	    return PyInt_FromLong(event->expose.count);
 	break;

@@ -774,6 +774,7 @@ matcher.register('GtkType', GTypeArg())
 matcher.register('GError**', GErrorArg())
 matcher.register('GtkTreePath*', GtkTreePathArg())
 matcher.register('GdkRectangle*', GdkRectanglePtrArg())
+matcher.register('GtkAllocation*', GdkRectanglePtrArg())
 matcher.register('GdkRectangle', GdkRectangleArg())
 
 matcher.register_object('GObject', None, 'G_TYPE_OBJECT')
