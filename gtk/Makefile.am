@@ -27,9 +27,11 @@ if PLATFORM_WIN32
 common_ldflags += -no-undefined
 endif
 
+pygtkexec_LTLIBRARIES =
+
 # gtk module
 if BUILD_GTK
-pygtkexec_LTLIBRARIES = _gtk.la
+pygtkexec_LTLIBRARIES += _gtk.la
 defs_DATA += 			\
 	gtk.defs 		\
 	gtk-types.defs 		\
