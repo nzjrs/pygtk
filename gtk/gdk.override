@@ -2276,3 +2276,40 @@ _wrap_gdk_rectangle_union(PyGObject *self, PyObject *args)
 			    
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
 }
+%%
+override gdk_pixbuf_new_from_xpm_data kwargs
+static PyObject *
+_wrap_gdk_pixbuf_new_from_xpm_data(PyObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    static char *kwlist[] = { "data", NULL };
+    PyObject *py_data, *ret;
+    gchar **data;
+    int len, i;
+    GdkPixbuf *pixbuf;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:pixbuf_new_from_xpm_data", kwlist,
+				     &PyList_Type, &py_data))
+	return NULL;
+    len = PyList_Size(py_data);
+    data = g_new(gchar *, len);
+    for (i = 0; i < len; i ++) {
+	PyObject *item = PyList_GetItem(py_data, i);
+	if (!PyString_Check(item)) {
+	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
+	    g_free(data);
+	    return NULL;
+	}
+	data[i] = PyString_AsString(item);
+    }
+    pixbuf = gdk_pixbuf_new_from_xpm_data((const char**)data);
+    g_free(data);
+    if (pixbuf == NULL) {
+	PyErr_SetString(PyExc_IOError, "can't load pixbuf");
+	return NULL;
+    }
+    ret = pygobject_new((GObject *)pixbuf);
+    g_object_unref(pixbuf);
+    return ret;
+}

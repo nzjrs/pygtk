@@ -7183,6 +7183,90 @@ _wrap_gtk_icon_size_lookup(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_BuildValue("(ii)", width, height);
 }
 %%
+override-attr GtkTextAttributes.bg_color
+static PyObject *
+_wrap_gtk_text_attributes__get_bg_color(PyObject *self, void *closure)
+{
+    GdkColor ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.bg_color;
+    /* pyg_boxed_new handles NULL checking */
+    return pyg_boxed_new(GDK_TYPE_COLOR, &ret, TRUE, TRUE);
+}
+%%
+override-attr GtkTextAttributes.fg_color
+static PyObject *
+_wrap_gtk_text_attributes__get_fg_color(PyObject *self, void *closure)
+{
+    GdkColor ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.fg_color;
+    /* pyg_boxed_new handles NULL checking */
+    return pyg_boxed_new(GDK_TYPE_COLOR, &ret, TRUE, TRUE);
+}
+%%
+override-attr GtkTextAttributes.bg_stipple
+static PyObject *
+_wrap_gtk_text_attributes__get_bg_stipple(PyObject *self, void *closure)
+{
+    GdkBitmap *ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.bg_stipple;
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
+%%
+override-attr GtkTextAttributes.fg_stipple
+static PyObject *
+_wrap_gtk_text_attributes__get_fg_stipple(PyObject *self, void *closure)
+{
+    GdkBitmap *ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.fg_stipple;
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
+%%
+override-attr GtkTextAttributes.rise
+static PyObject *
+_wrap_gtk_text_attributes__get_rise(PyObject *self, void *closure)
+{
+    int ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.rise;
+    return PyInt_FromLong(ret);
+}
+%%
+override-attr GtkTextAttributes.underline
+static PyObject *
+_wrap_gtk_text_attributes__get_underline(PyObject *self, void *closure)
+{
+    int ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.underline;
+    return PyInt_FromLong(ret);
+}
+%%
+override-attr GtkTextAttributes.strikethrough
+static PyObject *
+_wrap_gtk_text_attributes__get_strikethrough(PyObject *self, void *closure)
+{
+    int ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.strikethrough;
+    return PyInt_FromLong(ret);
+}
+%%
+override-attr GtkTextAttributes.draw_bg
+static PyObject *
+_wrap_gtk_text_attributes__get_draw_bg(PyObject *self, void *closure)
+{
+    int ret;
+
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.draw_bg;
+    return PyInt_FromLong(ret);
+}
+%%
 ignore-win32 
 	GTK_TYPE_PLUG
 	GTK_TYPE_SOCKET

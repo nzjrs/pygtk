@@ -989,3 +989,19 @@ _wrap_pango_tab_array_get_tabs(PyObject *self)
     }
     return ret;
 }
+%%
+override pango_layout_set_text kwargs
+static PyObject *
+_wrap_pango_layout_set_text(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "text", NULL };
+    char *text;
+    gint length;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:PangoLayout.set_text",
+				     kwlist, &text, &length))
+        return NULL;
+    pango_layout_set_text(PANGO_LAYOUT(self->obj), text, length);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
