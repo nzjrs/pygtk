@@ -4,16 +4,17 @@
 (include "gtk-extrafuncs.defs")
 
 ; object definitions ...
+
 (object IconFactory
   (in-module Gtk)
   (parent Object (G))
   (c-name GtkIconFactory)
 )
 
-(object TextMark
+(interface Editable
   (in-module Gtk)
-  (parent Object (G))
-  (c-name GtkTextMark)
+  (parent Widget (Gtk))
+  (c-name GtkEditable)
 )
 
 (object Object
@@ -38,18 +39,6 @@
   (in-module Gtk)
   (parent IMContext (Gtk))
   (c-name GtkIMMulticontext)
-)
-
-(object Adjustment
-  (in-module Gtk)
-  (parent Object (Gtk))
-  (c-name GtkAdjustment)
-  (field (type-and-name gfloat value))
-  (field (type-and-name gfloat lower))
-  (field (type-and-name gfloat upper))
-  (field (type-and-name gfloat step_increment))
-  (field (type-and-name gfloat page_increment))
-  (field (type-and-name gfloat page_size))
 )
 
 (object CellRenderer
@@ -82,10 +71,28 @@
   (c-name GtkCellRendererPixbuf)
 )
 
+(object Adjustment
+  (in-module Gtk)
+  (parent Object (Gtk))
+  (c-name GtkAdjustment)
+  (field (type-and-name gfloat value))
+  (field (type-and-name gfloat lower))
+  (field (type-and-name gfloat upper))
+  (field (type-and-name gfloat step_increment))
+  (field (type-and-name gfloat page_increment))
+  (field (type-and-name gfloat page_size))
+)
+
 (object RcStyle
   (in-module Gtk)
   (parent Object (G))
   (c-name GtkRcStyle)
+)
+
+(object Settings
+  (in-module Gtk)
+  (parent Object (G))
+  (c-name GtkSettings)
 )
 
 (object Style
@@ -99,6 +106,18 @@
   (parent Object (G))
   (c-name GtkTextBuffer)
   (field (type-and-name GtkTextTagTable* tag_table))
+)
+
+(object TextChildAnchor
+  (in-module Gtk)
+  (parent Object (G))
+  (c-name GtkTextChildAnchor)
+)
+
+(object TextMark
+  (in-module Gtk)
+  (parent Object (G))
+  (c-name GtkTextMark)
 )
 
 (object TextTag
@@ -119,15 +138,24 @@
   (c-name GtkTooltips)
 )
 
-(object TreeSelection
-  (in-module Gtk)
-  (parent Object (Gtk))
-  (c-name GtkTreeSelection)
-)
-
 (interface TreeModel
   (in-module Gtk)
   (c-name GtkTreeModel)
+)
+
+(interface TreeDragSource
+  (in-module Gtk)
+  (c-name GtkTreeDragSource)
+)
+
+(interface TreeDragDest
+  (in-module Gtk)
+  (c-name GtkTreeDragDest)
+)
+
+(interface TreeSortable
+  (in-module Gtk)
+  (c-name GtkTreeSortable)
 )
 
 (object ListStore
@@ -135,6 +163,22 @@
   (parent Object (G))
   (c-name GtkListStore)
   (implements GtkTreeModel)
+  (implements GtkTreeDragSource)
+  (implements GtkTreeDragDest)
+  (implements GtkTreeSortable)
+)
+
+(object TreeModelSort
+  (in-module Gtk)
+  (parent Object (G))
+  (c-name GtkTreeModelSort)
+  (implements GtkTreeModel)
+)
+
+(object TreeSelection
+  (in-module Gtk)
+  (parent Object (Gtk))
+  (c-name GtkTreeSelection)
 )
 
 (object TreeStore
@@ -142,6 +186,9 @@
   (parent Object (G))
   (c-name GtkTreeStore)
   (implements GtkTreeModel)
+  (implements GtkTreeDragSource)
+  (implements GtkTreeDragDest)
+  (implements GtkTreeSortable)
 )
 
 (object TreeViewColumn
@@ -255,6 +302,13 @@
   (c-name GtkPreview)
 )
 
+(object OldEditable
+  (in-module Gtk)
+  (parent Widget (Gtk))
+  (c-name GtkOldEditable)
+  (implements GtkEditable)
+)
+
 (object Misc
   (in-module Gtk)
   (parent Widget (Gtk))
@@ -297,24 +351,11 @@
   (c-name GtkInvisible)
 )
 
-(interface Editable
-  (in-module Gtk)
-  (parent Widget (Gtk))
-  (c-name GtkEditable)
-)
-
-(object OldEditable
-  (in-module Gtk)
-  (parent Widget (Gtk))
-  (implements GtkEditable)
-  (c-name GtkOldEditable)
-)
-
 (object Entry
   (in-module Gtk)
   (parent Widget (Gtk))
-  (implements GtkEditable)
   (c-name GtkEntry)
+  (implements GtkEditable)
 )
 
 (object SpinButton
@@ -475,6 +516,12 @@
   (c-name GtkTearoffMenuItem)
 )
 
+(object SeparatorMenuItem
+  (in-module Gtk)
+  (parent MenuItem (Gtk))
+  (c-name GtkSeparatorMenuItem)
+)
+
 (object CheckMenuItem
   (in-module Gtk)
   (parent MenuItem (Gtk))
@@ -486,6 +533,12 @@
   (in-module Gtk)
   (parent CheckMenuItem (Gtk))
   (c-name GtkRadioMenuItem)
+)
+
+(object ImageMenuItem
+  (in-module Gtk)
+  (parent MenuItem (Gtk))
+  (c-name GtkImageMenuItem)
 )
 
 (object ListItem
@@ -660,6 +713,24 @@
   (c-name GtkPlug)
 )
 
+(object Dialog
+  (in-module Gtk)
+  (parent Window (Gtk))
+  (c-name GtkDialog)
+)
+
+(object MessageDialog
+  (in-module Gtk)
+  (parent Dialog (Gtk))
+  (c-name GtkMessageDialog)
+)
+
+(object InputDialog
+  (in-module Gtk)
+  (parent Dialog (Gtk))
+  (c-name GtkInputDialog)
+)
+
 (object FontSelectionDialog
   (in-module Gtk)
   (parent Dialog (Gtk))
@@ -676,47 +747,14 @@
   (in-module Gtk)
   (parent Dialog (Gtk))
   (c-name GtkFileSelection)
-  (field (type-and-name GtkWidget* dir_list))
-  (field (type-and-name GtkWidget* file_list))
-  (field (type-and-name GtkWidget* selection_entry))
-  (field (type-and-name GtkWidget* selection_text))
-  (field (type-and-name GtkWidget* main_vbox))
-  (field (type-and-name GtkWidget* ok_button))
-  (field (type-and-name GtkWidget* cancel_button))
-  (field (type-and-name GtkWidget* help_button))
-)
-
-(object Dialog
-  (in-module Gtk)
-  (parent Window (Gtk))
-  (c-name GtkDialog)
-  (field (type-and-name GtkWidget* vbox))
-  (field (type-and-name GtkWidget* action_area))
-)
-
-(object MessageDialog
-  (in-module Gtk)
-  (parent Dialog (Gtk))
-  (c-name GtkMessageDialog)
-)
-
-(object InputDialog
-  (in-module Gtk)
-  (parent Dialog (Gtk))
-  (c-name GtkInputDialog)
-  (field (type-and-name GtkWidget* close_button))
-  (field (type-and-name GtkWidget* save_button))
 )
 
 (object ColorSelectionDialog
   (in-module Gtk)
   (parent Dialog (Gtk))
   (c-name GtkColorSelectionDialog)
-  (field (type-and-name GtkWidget* colorsel))
-  (field (type-and-name GtkWidget* ok_button))
-  (field (type-and-name GtkWidget* cancel_button))
-  (field (type-and-name GtkWidget* help_button))
 )
+
 
 ;; Enumerations and flags ...
 
@@ -1837,117 +1875,6 @@
 
 
 
-;; From /opt/pango/include/gtk-2.0/gtk/gtkarg.h
-
-(function gtk_arg_new
-  (c-name gtk_arg_new)
-  (return-type GtkArg*)
-  (parameter (type-and-name GtkType arg_type))
-)
-
-(method copy
-  (of-object Arg (Gtk))
-  (c-name gtk_arg_copy)
-  (return-type GtkArg*)
-  (parameter (type-and-name GtkArg* dest_arg))
-)
-
-(method free
-  (of-object Arg (Gtk))
-  (c-name gtk_arg_free)
-  (return-type none)
-  (parameter (type-and-name gboolean free_contents))
-)
-
-(method reset
-  (of-object Arg (Gtk))
-  (c-name gtk_arg_reset)
-  (return-type none)
-)
-
-(method values_equal
-  (of-object Arg (Gtk))
-  (c-name gtk_arg_values_equal)
-  (return-type gboolean)
-  (parameter (type-and-name const-GtkArg* arg2))
-)
-
-(function gtk_args_collect
-  (c-name gtk_args_collect)
-  (return-type gchar*)
-  (parameter (type-and-name GtkType object_type))
-  (parameter (type-and-name GHashTable* arg_info_hash_table))
-  (parameter (type-and-name GSList** arg_list_p))
-  (parameter (type-and-name GSList** info_list_p))
-  (parameter (type-and-name const-gchar* first_arg_name))
-  (parameter (type-and-name va_list var_args))
-)
-
-(function gtk_args_collect_cleanup
-  (c-name gtk_args_collect_cleanup)
-  (return-type none)
-  (parameter (type-and-name GSList* arg_list))
-  (parameter (type-and-name GSList* info_list))
-)
-
-(function gtk_arg_get_info
-  (c-name gtk_arg_get_info)
-  (return-type gchar*)
-  (parameter (type-and-name GtkType object_type))
-  (parameter (type-and-name GHashTable* arg_info_hash_table))
-  (parameter (type-and-name const-gchar* arg_name))
-  (parameter (type-and-name GtkArgInfo** info_p))
-)
-
-(function gtk_arg_type_new_static
-  (c-name gtk_arg_type_new_static)
-  (return-type GtkArgInfo*)
-  (parameter (type-and-name GtkType base_class_type))
-  (parameter (type-and-name const-gchar* arg_name))
-  (parameter (type-and-name guint class_n_args_offset))
-  (parameter (type-and-name GHashTable* arg_info_hash_table))
-  (parameter (type-and-name GtkType arg_type))
-  (parameter (type-and-name guint arg_flags))
-  (parameter (type-and-name guint arg_id))
-)
-
-(function gtk_args_query
-  (c-name gtk_args_query)
-  (return-type GtkArg*)
-  (parameter (type-and-name GtkType class_type))
-  (parameter (type-and-name GHashTable* arg_info_hash_table))
-  (parameter (type-and-name guint32** arg_flags))
-  (parameter (type-and-name guint* n_args_p))
-)
-
-(function gtk_arg_name_strip_type
-  (c-name gtk_arg_name_strip_type)
-  (return-type gchar*)
-  (parameter (type-and-name const-gchar* arg_name))
-)
-
-(function gtk_arg_info_equal
-  (c-name gtk_arg_info_equal)
-  (return-type gint)
-  (parameter (type-and-name gconstpointer arg_info_1))
-  (parameter (type-and-name gconstpointer arg_info_2))
-)
-
-(function gtk_arg_info_hash
-  (c-name gtk_arg_info_hash)
-  (return-type guint)
-  (parameter (type-and-name gconstpointer arg_info))
-)
-
-(method to_valueloc
-  (of-object Arg (Gtk))
-  (c-name gtk_arg_to_valueloc)
-  (return-type none)
-  (parameter (type-and-name gpointer value_pointer))
-)
-
-
-
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkarrow.h
 
 (function gtk_arrow_get_type
@@ -2134,31 +2061,6 @@
   (parameter (type-and-name GtkPathPriorityType priority))
 )
 
-(function gtk_binding_entry_remove
-  (c-name gtk_binding_entry_remove)
-  (return-type none)
-  (parameter (type-and-name GtkBindingSet* binding_set))
-  (parameter (type-and-name guint keyval))
-  (parameter (type-and-name guint modifiers))
-)
-
-(function gtk_binding_entry_add_signall
-  (c-name gtk_binding_entry_add_signall)
-  (return-type none)
-  (parameter (type-and-name GtkBindingSet* binding_set))
-  (parameter (type-and-name guint keyval))
-  (parameter (type-and-name guint modifiers))
-  (parameter (type-and-name const-gchar* signal_name))
-  (parameter (type-and-name GSList* binding_args))
-)
-
-(function gtk_binding_parse_binding
-  (c-name gtk_binding_parse_binding)
-  (return-type guint)
-  (parameter (type-and-name GScanner* scanner))
-)
-
-
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkbox.h
 
@@ -2215,6 +2117,12 @@
   (parameter (type-and-name gint spacing))
 )
 
+(method get_spacing
+  (of-object Box (Gtk))
+  (c-name gtk_box_get_spacing)
+  (return-type gint)
+)
+
 (method reorder_child
   (of-object Box (Gtk))
   (c-name gtk_box_reorder_child)
@@ -2267,20 +2175,16 @@
   (parameter (type-and-name const-gchar* label))
 )
 
-(function gtk_button_new_stock
-  (c-name gtk_button_new_stock)
-  (is-constructor-of GtkButton)
+(function gtk_button_new_from_stock
+  (c-name gtk_button_new_from_stock)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* stock_id))
-  (parameter (type-and-name GtkAccelGroup* accel_group))
 )
 
-(function gtk_button_new_accel
-  (c-name gtk_button_new_accel)
-  (is-constructor-of GtkButton)
+(function gtk_button_new_with_mnemonic
+  (c-name gtk_button_new_with_mnemonic)
   (return-type GtkWidget*)
-  (parameter (type-and-name const-gchar* uline_label))
-  (parameter (type-and-name GtkAccelGroup* accel_group))
+  (parameter (type-and-name const-gchar* label))
 )
 
 (method pressed
@@ -2513,6 +2417,18 @@
   (parameter (type-and-name gboolean radio))
 )
 
+(method get_active
+  (of-object CellRendererToggle (Gtk))
+  (c-name gtk_cell_renderer_toggle_get_active)
+  (return-type gboolean)
+)
+
+(method set_active
+  (of-object CellRendererToggle (Gtk))
+  (c-name gtk_cell_renderer_toggle_set_active)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkcheckbutton.h
@@ -2535,6 +2451,11 @@
   (parameter (type-and-name const-gchar* label))
 )
 
+(function gtk_check_button_new_with_mnemonic
+  (c-name gtk_check_button_new_with_mnemonic)
+  (return-type GtkWidget*)
+  (parameter (type-and-name const-gchar* label))
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkcheckmenuitem.h
@@ -2564,19 +2485,31 @@
   (parameter (type-and-name gboolean is_active))
 )
 
-(method set_show_toggle
-  (of-object CheckMenuItem (Gtk))
-  (c-name gtk_check_menu_item_set_show_toggle)
-  (return-type none)
-  (parameter (type-and-name gboolean always))
-)
-
 (method toggled
   (of-object CheckMenuItem (Gtk))
   (c-name gtk_check_menu_item_toggled)
   (return-type none)
 )
 
+(method set_inconsistent
+  (of-object CheckMenuItem (Gtk))
+  (c-name gtk_check_menu_item_set_inconsistent)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_inconsistent
+  (of-object CheckMenuItem (Gtk))
+  (c-name gtk_check_menu_item_get_inconsistent)
+  (return-type gboolean)
+)
+
+(method set_show_toggle
+  (of-object CheckMenuItem (Gtk))
+  (c-name gtk_check_menu_item_set_show_toggle)
+  (return-type none)
+  (parameter (type-and-name gboolean always))
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkclipboard.h
@@ -3498,6 +3431,27 @@
   (parameter (type-and-name GtkDirectionType direction))
 )
 
+(method propagate_expose
+  (of-object Container (Gtk))
+  (c-name gtk_container_propagate_expose)
+  (return-type none)
+  (parameter (type-and-name GtkWidget* child))
+  (parameter (type-and-name GdkEventExpose* event))
+)
+
+(method set_focus_chain
+  (of-object Container (Gtk))
+  (c-name gtk_container_set_focus_chain)
+  (return-type none)
+  (parameter (type-and-name GList* focusable_widgets))
+)
+
+(method unset_focus_chain
+  (of-object Container (Gtk))
+  (c-name gtk_container_unset_focus_chain)
+  (return-type none)
+)
+
 (method set_reallocate_redraws
   (of-object Container (Gtk))
   (c-name gtk_container_set_reallocate_redraws)
@@ -4361,6 +4315,34 @@
   (varargs t)
 )
 
+(method set_response_sensitive
+  (of-object Dialog (Gtk))
+  (c-name gtk_dialog_set_response_sensitive)
+  (return-type none)
+  (parameter (type-and-name gint response_id))
+  (parameter (type-and-name gboolean setting))
+)
+
+(method set_default_response
+  (of-object Dialog (Gtk))
+  (c-name gtk_dialog_set_default_response)
+  (return-type none)
+  (parameter (type-and-name gint response_id))
+)
+
+(method set_has_separator
+  (of-object Dialog (Gtk))
+  (c-name gtk_dialog_set_has_separator)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_has_separator
+  (of-object Dialog (Gtk))
+  (c-name gtk_dialog_get_has_separator)
+  (return-type gboolean)
+)
+
 (method response
   (of-object Dialog (Gtk))
   (c-name gtk_dialog_response)
@@ -4437,6 +4419,27 @@
   (of-object Widget (Gtk))
   (c-name gtk_drag_dest_unset)
   (return-type none)
+)
+
+(method drag_dest_find_target
+  (of-object Widget (Gtk))
+  (c-name gtk_drag_dest_find_target)
+  (return-type GdkAtom)
+  (parameter (type-and-name GdkDragContext* context))
+  (parameter (type-and-name GtkTargetList* target_list))
+)
+
+(method drag_dest_get_target_list
+  (of-object Widget (Gtk))
+  (c-name gtk_drag_dest_get_target_list)
+  (return-type GtkTargetList*)
+)
+
+(method drag_dest_set_target_list
+  (of-object Widget (Gtk))
+  (c-name gtk_drag_dest_set_target_list)
+  (return-type none)
+  (parameter (type-and-name GtkTargetList* target_list))
 )
 
 (method drag_source_set
@@ -4678,60 +4681,18 @@
   (return-type GtkWidget*)
 )
 
-(function gtk_entry_new_with_max_length
-  (c-name gtk_entry_new_with_max_length)
-  (is-constructor-of GtkEntry)
-  (return-type GtkWidget*)
-  (parameter (type-and-name guint16 max) (default "0"))
-)
-
-(method set_text
-  (of-object Entry (Gtk))
-  (c-name gtk_entry_set_text)
-  (return-type none)
-  (parameter (type-and-name const-gchar* text))
-)
-
-(method append_text
-  (of-object Entry (Gtk))
-  (c-name gtk_entry_append_text)
-  (return-type none)
-  (parameter (type-and-name const-gchar* text))
-)
-
-(method prepend_text
-  (of-object Entry (Gtk))
-  (c-name gtk_entry_prepend_text)
-  (return-type none)
-  (parameter (type-and-name const-gchar* text))
-)
-
-(method set_position
-  (of-object Entry (Gtk))
-  (c-name gtk_entry_set_position)
-  (return-type none)
-  (parameter (type-and-name gint position))
-)
-
-(method get_text
-  (of-object Entry (Gtk))
-  (c-name gtk_entry_get_text)
-  (return-type const-gchar*)
-)
-
-(method select_region
-  (of-object Entry (Gtk))
-  (c-name gtk_entry_select_region)
-  (return-type none)
-  (parameter (type-and-name gint start))
-  (parameter (type-and-name gint end))
-)
-
 (method set_visibility
   (of-object Entry (Gtk))
   (c-name gtk_entry_set_visibility)
   (return-type none)
   (parameter (type-and-name gboolean visible))
+)
+
+(method set_invisible_char
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_set_invisible_char)
+  (return-type none)
+  (parameter (type-and-name gunichar ch))
 )
 
 (method set_editable
@@ -4741,11 +4702,63 @@
   (parameter (type-and-name gboolean editable))
 )
 
+(method set_has_frame
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_set_has_frame)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_has_frame
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_get_has_frame)
+  (return-type gboolean)
+)
+
 (method set_max_length
   (of-object Entry (Gtk))
   (c-name gtk_entry_set_max_length)
   (return-type none)
   (parameter (type-and-name guint16 max))
+)
+
+(method set_activates_default
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_set_activates_default)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_activates_default
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_get_activates_default)
+  (return-type gboolean)
+)
+
+(method set_width_chars
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_set_width_chars)
+  (return-type none)
+  (parameter (type-and-name gint n_chars))
+)
+
+(method get_width_chars
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_get_width_chars)
+  (return-type gint)
+)
+
+(method set_text
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_set_text)
+  (return-type none)
+  (parameter (type-and-name const-gchar* text))
+)
+
+(method get_text
+  (of-object Entry (Gtk))
+  (c-name gtk_entry_get_text)
+  (return-type const-gchar*)
 )
 
 
@@ -4962,6 +4975,12 @@
   (parameter (type-and-name const-gchar* label) (null-ok))
 )
 
+(method get_label
+  (of-object Frame (Gtk))
+  (c-name gtk_frame_get_label)
+  (return-type none)
+)
+
 (method set_label_widget
   (of-object Frame (Gtk))
   (c-name gtk_frame_set_label_widget)
@@ -5059,29 +5078,6 @@
   (is-constructor-of GtkHButtonBox)
   (return-type GtkWidget*)
 )
-
-(function gtk_hbutton_box_get_spacing_default
-  (c-name gtk_hbutton_box_get_spacing_default)
-  (return-type gint)
-)
-
-(function gtk_hbutton_box_get_layout_default
-  (c-name gtk_hbutton_box_get_layout_default)
-  (return-type GtkButtonBoxStyle)
-)
-
-(function gtk_hbutton_box_set_spacing_default
-  (c-name gtk_hbutton_box_set_spacing_default)
-  (return-type none)
-  (parameter (type-and-name gint spacing))
-)
-
-(function gtk_hbutton_box_set_layout_default
-  (c-name gtk_hbutton_box_set_layout_default)
-  (return-type none)
-  (parameter (type-and-name GtkButtonBoxStyle layout))
-)
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkhbox.h
@@ -5227,14 +5223,14 @@
 (function icon_size_lookup
   (c-name gtk_icon_size_lookup)
   (return-type gboolean)
-  (parameter (type-and-name const-gchar* alias))
+  (parameter (type-and-name GtkIconSize size))
   (parameter (type-and-name gint* width))
   (parameter (type-and-name gint* height))
 )
 
 (function icon_size_register
   (c-name gtk_icon_size_register)
-  (return-type none)
+  (return-type GtkIconSize)
   (parameter (type-and-name const-gchar* alias))
   (parameter (type-and-name gint width))
   (parameter (type-and-name gint height))
@@ -5247,9 +5243,27 @@
   (parameter (type-and-name GtkIconSize target))
 )
 
+(function icon_size_from_name
+  (c-name gtk_icon_size_from_name)
+  (return-type GtkIconSize)
+  (parameter (type-and-name const-gchar* name))
+)
+
+(function icon_size_get_name
+  (c-name gtk_icon_size_get_name)
+  (return-type const-gchar*)
+  (parameter (type-and-name GtkIconSize size))
+)
+
 (function icon_set_new
   (c-name gtk_icon_set_new)
   (return-type GtkIconSet*)
+)
+
+(function icon_set_new_from_pixbuf
+  (c-name gtk_icon_set_new_from_pixbuf)
+  (return-type GtkIconSet*)
+  (parameter (type-and-name GdkPixbuf* pixbuf))
 )
 
 (method ref
@@ -5289,6 +5303,11 @@
   (parameter (type-and-name const-GtkIconSource* source))
 )
 
+(function icon_source_new
+  (c-name gtk_icon_source_new)
+  (return-type GtkIconSource*)
+)
+
 (method copy
   (of-object IconSource (Gtk))
   (c-name gtk_icon_source_copy)
@@ -5301,6 +5320,109 @@
   (return-type none)
 )
 
+(method set_filename
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_filename)
+  (return-type none)
+  (parameter (type-and-name const-gchar* filename))
+)
+
+(method set_pixbuf
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_pixbuf)
+  (return-type none)
+  (parameter (type-and-name GdkPixbuf* pixbuf))
+)
+
+(method get_filename
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_filename)
+  (return-type const-gchar*)
+)
+
+(method get_pixbuf
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_pixbuf)
+  (return-type GdkPixbuf*)
+)
+
+(method set_direction_wildcarded
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_direction_wildcarded)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method set_state_wildcarded
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_state_wildcarded)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method set_size_wildcarded
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_size_wildcarded)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_size_wildcarded
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_size_wildcarded)
+  (return-type gboolean)
+)
+
+(method get_state_wildcarded
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_state_wildcarded)
+  (return-type gboolean)
+)
+
+(method get_direction_wildcarded
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_direction_wildcarded)
+  (return-type gboolean)
+)
+
+(method set_direction
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_direction)
+  (return-type none)
+  (parameter (type-and-name GtkTextDirection direction))
+)
+
+(method set_state
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_state)
+  (return-type none)
+  (parameter (type-and-name GtkStateType state))
+)
+
+(method set_size
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_set_size)
+  (return-type none)
+  (parameter (type-and-name GtkIconSize size))
+)
+
+(method get_direction
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_direction)
+  (return-type GtkTextDirection)
+)
+
+(method get_state
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_state)
+  (return-type GtkStateType)
+)
+
+(method get_size
+  (of-object IconSource (Gtk))
+  (c-name gtk_icon_source_get_size)
+  (return-type GtkIconSize)
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkimage.h
@@ -5446,29 +5568,40 @@
   (parameter (type-and-name gchar** size))
 )
 
-(function gtk_image_new
-  (c-name gtk_image_new)
+
+;; From /opt/pango/include/gtk-2.0/gtk/gtkimagemenuitem.h
+
+(function gtk_image_menu_item_get_type
+  (c-name gtk_image_menu_item_get_type)
+  (return-type GtkType)
+)
+
+(function gtk_image_menu_item_new
+  (c-name gtk_image_menu_item_new)
   (return-type GtkWidget*)
-  (parameter (type-and-name GdkImage* val))
-  (parameter (type-and-name GdkBitmap* mask))
+  (parameter (type-and-name GtkWidget* widget))
+  (parameter (type-and-name const-gchar* label))
 )
 
-(method set
-  (of-object Image (Gtk))
-  (c-name gtk_image_set)
+(function gtk_image_menu_item_new_from_stock
+  (c-name gtk_image_menu_item_new_from_stock)
+  (return-type GtkWidget*)
+  (parameter (type-and-name const-gchar* stock_id))
+  (parameter (type-and-name GtkAccelGroup* accel_group))
+)
+
+(method add_image
+  (of-object ImageMenuItem (Gtk))
+  (c-name gtk_image_menu_item_add_image)
   (return-type none)
-  (parameter (type-and-name GdkImage* val))
-  (parameter (type-and-name GdkBitmap* mask))
+  (parameter (type-and-name GtkWidget* child))
 )
 
-(method get
-  (of-object Image (Gtk))
-  (c-name gtk_image_get)
-  (return-type none)
-  (parameter (type-and-name GdkImage** val))
-  (parameter (type-and-name GdkBitmap** mask))
+(method get_image
+  (of-object ImageMenuItem (Gtk))
+  (c-name gtk_image_menu_item_get_image)
+  (return-type GtkWidget*)
 )
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkimcontext.h
@@ -5516,6 +5649,20 @@
   (of-object IMContext (Gtk))
   (c-name gtk_im_context_reset)
   (return-type none)
+)
+
+(method set_cursor_location
+  (of-object IMContext (Gtk))
+  (c-name gtk_im_context_set_cursor_location)
+  (return-type none)
+  (parameter (type-and-name GdkRectangle* area))
+)
+
+(method set_use_preedit
+  (of-object IMContext (Gtk))
+  (c-name gtk_im_context_set_use_preedit)
+  (return-type none)
+  (parameter (type-and-name gboolean use_preedit))
 )
 
 
@@ -5837,11 +5984,64 @@
   (parameter (type-and-name const-char* str))
 )
 
+(function gtk_label_new_with_mnemonic
+  (c-name gtk_label_new_with_mnemonic)
+  (return-type GtkWidget*)
+  (parameter (type-and-name const-char* str))
+)
+
 (method set_text
   (of-object Label (Gtk))
   (c-name gtk_label_set_text)
   (return-type none)
   (parameter (type-and-name const-char* str))
+)
+
+(method get_text
+  (of-object Label (Gtk))
+  (c-name gtk_label_get_text)
+  (return-type const-gchar*)
+)
+
+(method set_attributes
+  (of-object Label (Gtk))
+  (c-name gtk_label_set_attributes)
+  (return-type none)
+  (parameter (type-and-name PangoAttrList* attrs))
+)
+
+(method set_markup
+  (of-object Label (Gtk))
+  (c-name gtk_label_set_markup)
+  (return-type none)
+  (parameter (type-and-name const-gchar* str))
+)
+
+(method set_markup_with_mnemonic
+  (of-object Label (Gtk))
+  (c-name gtk_label_set_markup_with_mnemonic)
+  (return-type none)
+  (parameter (type-and-name const-gchar* str))
+)
+
+(method get_mnemonic_keyval
+  (of-object Label (Gtk))
+  (c-name gtk_label_get_mnemonic_keyval)
+  (return-type guint)
+)
+
+(method set_mnemonic_widget
+  (of-object Label (Gtk))
+  (c-name gtk_label_set_mnemonic_widget)
+  (return-type none)
+  (parameter (type-and-name GtkWidget* widget))
+)
+
+(method set_text_with_mnemonic
+  (of-object Label (Gtk))
+  (c-name gtk_label_set_text_with_mnemonic)
+  (return-type none)
+  (parameter (type-and-name const-gchar* str))
 )
 
 (method set_justify
@@ -5865,11 +6065,33 @@
   (parameter (type-and-name gboolean wrap))
 )
 
-(method parse_uline
+(method set_selectable
   (of-object Label (Gtk))
-  (c-name gtk_label_parse_uline)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* string))
+  (c-name gtk_label_set_selectable)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_selectable
+  (of-object Label (Gtk))
+  (c-name gtk_label_get_selectable)
+  (return-type gboolean)
+)
+
+(method select_region
+  (of-object Label (Gtk))
+  (c-name gtk_label_select_region)
+  (return-type none)
+  (parameter (type-and-name gint start_offset))
+  (parameter (type-and-name gint end_offset))
+)
+
+(method get_layout_offsets
+  (of-object Label (Gtk))
+  (c-name gtk_label_get_layout_offsets)
+  (return-type none)
+  (parameter (type-and-name gint* x))
+  (parameter (type-and-name gint* y))
 )
 
 (method get
@@ -5879,6 +6101,12 @@
   (parameter (type-and-name char** str))
 )
 
+(method parse_uline
+  (of-object Label (Gtk))
+  (c-name gtk_label_parse_uline)
+  (return-type guint)
+  (parameter (type-and-name const-gchar* string))
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtklayout.h
@@ -6768,6 +6996,20 @@
   (return-type none)
 )
 
+(method toggle_size_request
+  (of-object MenuItem (Gtk))
+  (c-name gtk_menu_item_toggle_size_request)
+  (return-type none)
+  (parameter (type-and-name gint* requisition))
+)
+
+(method toggle_size_allocate
+  (of-object MenuItem (Gtk))
+  (c-name gtk_menu_item_toggle_size_allocate)
+  (return-type none)
+  (parameter (type-and-name gint allocation))
+)
+
 (method right_justify
   (of-object MenuItem (Gtk))
   (c-name gtk_menu_item_right_justify)
@@ -7142,30 +7384,6 @@
   (return-type GtkType)
 )
 
-(method user_signal_new
-  (of-object ObjectClass (Gtk))
-  (c-name gtk_object_class_user_signal_new)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalRunType signal_flags))
-  (parameter (type-and-name GtkSignalMarshaller marshaller))
-  (parameter (type-and-name GtkType return_val))
-  (parameter (type-and-name guint nparams))
-  (varargs t)
-)
-
-(method user_signal_newv
-  (of-object ObjectClass (Gtk))
-  (c-name gtk_object_class_user_signal_newv)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalRunType signal_flags))
-  (parameter (type-and-name GtkSignalMarshaller marshaller))
-  (parameter (type-and-name GtkType return_val))
-  (parameter (type-and-name guint nparams))
-  (parameter (type-and-name GtkType* params))
-)
-
 (function object_new
   (c-name gtk_object_new)
   (return-type GtkObject*)
@@ -7222,46 +7440,6 @@
   (return-type none)
 )
 
-(method getv
-  (of-object Object (Gtk))
-  (c-name gtk_object_getv)
-  (return-type none)
-  (parameter (type-and-name guint n_args))
-  (parameter (type-and-name GtkArg* args))
-)
-
-(method get
-  (of-object Object (Gtk))
-  (c-name gtk_object_get)
-  (return-type none)
-  (parameter (type-and-name const-gchar* first_arg_name))
-  (varargs t)
-)
-
-(method set
-  (of-object Object (Gtk))
-  (c-name gtk_object_set)
-  (return-type none)
-  (parameter (type-and-name const-gchar* first_arg_name))
-  (varargs t)
-)
-
-(method setv
-  (of-object Object (Gtk))
-  (c-name gtk_object_setv)
-  (return-type none)
-  (parameter (type-and-name guint n_args))
-  (parameter (type-and-name GtkArg* args))
-)
-
-(function object_query_args
-  (c-name gtk_object_query_args)
-  (return-type GtkArg*)
-  (parameter (type-and-name GtkType class_type))
-  (parameter (type-and-name guint32** arg_flags))
-  (parameter (type-and-name guint* n_args))
-)
-
 (method set_data
   (of-object Object (Gtk))
   (c-name gtk_object_set_data)
@@ -7313,23 +7491,6 @@
   (return-type gpointer)
 )
 
-(method add_signals
-  (of-object ObjectClass (Gtk))
-  (c-name gtk_object_class_add_signals)
-  (return-type none)
-  (parameter (type-and-name guint* signals))
-  (parameter (type-and-name guint nsignals))
-)
-
-(function object_add_arg_type
-  (c-name gtk_object_add_arg_type)
-  (return-type none)
-  (parameter (type-and-name const-gchar* arg_name))
-  (parameter (type-and-name GtkType arg_type))
-  (parameter (type-and-name guint arg_flags))
-  (parameter (type-and-name guint arg_id))
-)
-
 (method set_data_by_id
   (of-object Object (Gtk))
   (c-name gtk_object_set_data_by_id)
@@ -7367,41 +7528,6 @@
   (return-type none)
   (parameter (type-and-name GQuark key_id))
 )
-
-(method arg_set
-  (of-object Object (Gtk))
-  (c-name gtk_object_arg_set)
-  (return-type none)
-  (parameter (type-and-name GtkArg* arg))
-  (parameter (type-and-name GtkArgInfo* info))
-)
-
-(method arg_get
-  (of-object Object (Gtk))
-  (c-name gtk_object_arg_get)
-  (return-type none)
-  (parameter (type-and-name GtkArg* arg))
-  (parameter (type-and-name GtkArgInfo* info))
-)
-
-(function object_args_collect
-  (c-name gtk_object_args_collect)
-  (return-type gchar*)
-  (parameter (type-and-name GtkType object_type))
-  (parameter (type-and-name GSList** arg_list_p))
-  (parameter (type-and-name GSList** info_list_p))
-  (parameter (type-and-name const-gchar* first_arg_name))
-  (parameter (type-and-name va_list var_args))
-)
-
-(function object_arg_get_info
-  (c-name gtk_object_arg_get_info)
-  (return-type gchar*)
-  (parameter (type-and-name GtkType object_type))
-  (parameter (type-and-name const-gchar* arg_name))
-  (parameter (type-and-name GtkArgInfo** info_p))
-)
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkoptionmenu.h
@@ -7595,23 +7721,6 @@
   (return-type none)
   (parameter (type-and-name gint position))
 )
-
-(method set_handle_size
-  (of-object Paned (Gtk))
-  (c-name gtk_paned_set_handle_size)
-  (return-type none)
-  (parameter (type-and-name guint16 size))
-)
-
-(method compute_position
-  (of-object Paned (Gtk))
-  (c-name gtk_paned_compute_position)
-  (return-type none)
-  (parameter (type-and-name gint allocation))
-  (parameter (type-and-name gint child1_req))
-  (parameter (type-and-name gint child2_req))
-)
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkpixmap.h
@@ -7940,6 +8049,30 @@
   (c-name gtk_progress_bar_set_orientation)
   (return-type none)
   (parameter (type-and-name GtkProgressBarOrientation orientation))
+)
+
+(method get_text
+  (of-object ProgressBar (Gtk))
+  (c-name gtk_progress_bar_get_text)
+  (return-type const-gchar*)
+)
+
+(method get_fraction
+  (of-object ProgressBar (Gtk))
+  (c-name gtk_progress_bar_get_fraction)
+  (return-type gdouble)
+)
+
+(method get_pulse_step
+  (of-object ProgressBar (Gtk))
+  (c-name gtk_progress_bar_get_pulse_step)
+  (return-type gdouble)
+)
+
+(method get_orientation
+  (of-object ProgressBar (Gtk))
+  (c-name gtk_progress_bar_get_orientation)
+  (return-type GtkProgressBarOrientation)
 )
 
 (function gtk_progress_bar_new_with_adjustment
@@ -8611,295 +8744,104 @@
 )
 
 
+;; From /opt/pango/include/gtk-2.0/gtk/gtkseparatormenuitem.h
 
-;; From /opt/pango/include/gtk-2.0/gtk/gtksignal.h
-
-(function signal_lookup
-  (c-name gtk_signal_lookup)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkType object_type))
+(function gtk_separator_menu_item_get_type
+  (c-name gtk_separator_menu_item_get_type)
+  (return-type GtkType)
 )
 
-(function signal_name
-  (c-name gtk_signal_name)
-  (return-type gchar*)
-  (parameter (type-and-name guint signal_id))
+(function gtk_separator_menu_item_new
+  (c-name gtk_separator_menu_item_new)
+  (return-type GtkWidget*)
 )
 
-(method  signal_n_emissions
-  (of-object Object (Gtk))
-  (c-name gtk_signal_n_emissions)
-  (return-type guint)
-  (parameter (type-and-name guint signal_id))
+
+;; From /opt/pango/include/gtk-2.0/gtk/gtksettings.h
+
+(function gtk_settings_get_type
+  (c-name gtk_settings_get_type)
+  (return-type GType)
 )
 
-(method signal_n_emissions_by_name
-  (of-object Object (Gtk))
-  (c-name gtk_signal_n_emissions_by_name)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
+(function gtk_settings_get_global
+  (c-name gtk_settings_get_global)
+  (return-type GtkSettings*)
 )
 
-(method emit_stop
-  (of-object Object (Gtk))
-  (c-name gtk_signal_emit_stop)
+(method install_property
+  (of-object Settings (Gtk))
+  (c-name gtk_settings_install_property)
   (return-type none)
-  (parameter (type-and-name guint signal_id))
+  (parameter (type-and-name GParamSpec* pspec))
 )
 
-(method emit_stop_by_name
-  (of-object Object (Gtk))
-  (c-name gtk_signal_emit_stop_by_name)
+(method install_property_parser
+  (of-object Settings (Gtk))
+  (c-name gtk_settings_install_property_parser)
   (return-type none)
-  (parameter (type-and-name const-gchar* name))
+  (parameter (type-and-name GParamSpec* pspec))
+  (parameter (type-and-name GtkRcPropertyParser parser))
 )
 
-(method connect
-  (of-object Object (Gtk))
-  (c-name gtk_signal_connect)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name gpointer func_data))
+(function gtk_rc_property_parse_color
+  (c-name gtk_rc_property_parse_color)
+  (return-type gboolean)
+  (parameter (type-and-name const-GParamSpec* pspec))
+  (parameter (type-and-name const-GString* gstring))
+  (parameter (type-and-name GValue* property_value))
 )
 
-(method connect_after
-  (of-object Object (Gtk))
-  (c-name gtk_signal_connect_after)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name gpointer func_data))
+(function gtk_rc_property_parse_enum
+  (c-name gtk_rc_property_parse_enum)
+  (return-type gboolean)
+  (parameter (type-and-name const-GParamSpec* pspec))
+  (parameter (type-and-name const-GString* gstring))
+  (parameter (type-and-name GValue* property_value))
 )
 
-(method connect_object
-  (of-object Object (Gtk))
-  (c-name gtk_signal_connect_object)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name GtkObject* slot_object))
+(function gtk_rc_property_parse_flags
+  (c-name gtk_rc_property_parse_flags)
+  (return-type gboolean)
+  (parameter (type-and-name const-GParamSpec* pspec))
+  (parameter (type-and-name const-GString* gstring))
+  (parameter (type-and-name GValue* property_value))
 )
 
-(method connect_object_after
-  (of-object Object (Gtk))
-  (c-name gtk_signal_connect_object_after)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name GtkObject* slot_object))
-)
-
-(method connect_full
-  (of-object Object (Gtk))
-  (c-name gtk_signal_connect_full)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name GtkCallbackMarshal marshal))
-  (parameter (type-and-name gpointer data))
-  (parameter (type-and-name GtkDestroyNotify destroy_func))
-  (parameter (type-and-name gint object_signal))
-  (parameter (type-and-name gint after))
-)
-
-(method connect_object_while_alive
-  (of-object Object (Gtk))
-  (c-name gtk_signal_connect_object_while_alive)
-  (return-type none)
-  (parameter (type-and-name const-gchar* signal))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name GtkObject* alive_object))
-)
-
-(method connect_while_alive
-  (of-object Object (Gtk))
-  (c-name gtk_signal_connect_while_alive)
-  (return-type none)
-  (parameter (type-and-name const-gchar* signal))
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name gpointer func_data))
-  (parameter (type-and-name GtkObject* alive_object))
-)
-
-(method disconnect
-  (of-object Object (Gtk))
-  (c-name gtk_signal_disconnect)
-  (return-type none)
-  (parameter (type-and-name guint handler_id))
-)
-
-(method signal_disconnect_by_func
-  (of-object Object (Gtk))
-  (c-name gtk_signal_disconnect_by_func)
-  (return-type none)
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name gpointer data))
-)
-
-(method disconnect_by_data
-  (of-object Object (Gtk))
-  (c-name gtk_signal_disconnect_by_data)
-  (return-type none)
-  (parameter (type-and-name gpointer data))
-)
-
-(method signal_handler_block
-  (of-object Object (Gtk))
-  (c-name gtk_signal_handler_block)
-  (return-type none)
-  (parameter (type-and-name guint handler_id))
-)
-
-(method signal_handler_block_by_func
-  (of-object Object (Gtk))
-  (c-name gtk_signal_handler_block_by_func)
-  (return-type none)
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name gpointer data))
-)
-
-(method signal_handler_block_by_data
-  (of-object Object (Gtk))
-  (c-name gtk_signal_handler_block_by_data)
-  (return-type none)
-  (parameter (type-and-name gpointer data))
-)
-
-(method signal_handler_unblock
-  (of-object Object (Gtk))
-  (c-name gtk_signal_handler_unblock)
-  (return-type none)
-  (parameter (type-and-name guint handler_id))
-)
-
-(method signal_handler_unblock_by_func
-  (of-object Object (Gtk))
-  (c-name gtk_signal_handler_unblock_by_func)
-  (return-type none)
-  (parameter (type-and-name GtkSignalFunc func))
-  (parameter (type-and-name gpointer data))
-)
-
-(method signal_handler_unblock_by_data
-  (of-object Object (Gtk))
-  (c-name gtk_signal_handler_unblock_by_data)
-  (return-type none)
-  (parameter (type-and-name gpointer data))
-)
-
-; (method signal_handler_pending
-;   (of-object Object (Gtk))
-;   (c-name gtk_signal_handler_pending)
-;   (return-type guint)
-;   (parameter (type-and-name guint signal_id))
-;   (parameter (type-and-name gboolean may_be_blocked))
-; )
-
-; (method signal_handler_pending_by_func
-;   (of-object Object (Gtk))
-;   (c-name gtk_signal_handler_pending_by_func)
-;   (return-type guint)
-;   (parameter (type-and-name guint signal_id))
-;   (parameter (type-and-name gboolean may_be_blocked))
-;   (parameter (type-and-name GtkSignalFunc func))
-;   (parameter (type-and-name gpointer data))
-; )
-
-(function signal_add_emission_hook
-  (c-name gtk_signal_add_emission_hook)
-  (return-type guint)
-  (parameter (type-and-name guint signal_id))
-  (parameter (type-and-name GtkEmissionHook hook_func))
-  (parameter (type-and-name gpointer data))
-)
-
-(function signal_add_emission_hook_full
-  (c-name gtk_signal_add_emission_hook_full)
-  (return-type guint)
-  (parameter (type-and-name guint signal_id))
-  (parameter (type-and-name GtkEmissionHook hook_func))
-  (parameter (type-and-name gpointer data))
-  (parameter (type-and-name GDestroyNotify destroy))
-)
-
-(function signal_remove_emission_hook
-  (c-name gtk_signal_remove_emission_hook)
-  (return-type none)
-  (parameter (type-and-name guint signal_id))
-  (parameter (type-and-name guint hook_id))
-)
-
-(function signal_query
-  (c-name gtk_signal_query)
-  (return-type GtkSignalQuery*)
-  (parameter (type-and-name guint signal_id))
-)
-
-(function signal_init
-  (c-name gtk_signal_init)
-  (return-type none)
-)
-
-(function signal_new
-  (c-name gtk_signal_new)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalRunType signal_flags))
-  (parameter (type-and-name GtkType object_type))
-  (parameter (type-and-name guint function_offset))
-  (parameter (type-and-name GtkSignalMarshaller marshaller))
-  (parameter (type-and-name GtkType return_val))
-  (parameter (type-and-name guint nparams))
-  (varargs t)
-)
-
-(function signal_newv
-  (c-name gtk_signal_newv)
-  (return-type guint)
-  (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkSignalRunType signal_flags))
-  (parameter (type-and-name GtkType object_type))
-  (parameter (type-and-name guint function_offset))
-  (parameter (type-and-name GtkSignalMarshaller marshaller))
-  (parameter (type-and-name GtkType return_val))
-  (parameter (type-and-name guint nparams))
-  (parameter (type-and-name GtkType* params))
-)
-
-(method emit
-  (of-object Object (Gtk))
-  (c-name gtk_signal_emit)
-  (return-type none)
-  (parameter (type-and-name guint signal_id))
-  (varargs t)
-)
-
-(method emit_by_name
-  (of-object Object (Gtk))
-  (c-name gtk_signal_emit_by_name)
+(method set_property_value
+  (of-object Settings (Gtk))
+  (c-name gtk_settings_set_property_value)
   (return-type none)
   (parameter (type-and-name const-gchar* name))
-  (varargs t)
+  (parameter (type-and-name const-GtkSettingsValue* svalue))
 )
 
-(method emitv
-  (of-object Object (Gtk))
-  (c-name gtk_signal_emitv)
-  (return-type none)
-  (parameter (type-and-name guint signal_id))
-  (parameter (type-and-name GtkArg* params))
-)
-
-(method emitv_by_name
-  (of-object Object (Gtk))
-  (c-name gtk_signal_emitv_by_name)
+(method set_string_property
+  (of-object Settings (Gtk))
+  (c-name gtk_settings_set_string_property)
   (return-type none)
   (parameter (type-and-name const-gchar* name))
-  (parameter (type-and-name GtkArg* params))
+  (parameter (type-and-name const-gchar* v_string))
+  (parameter (type-and-name const-gchar* origin))
 )
 
+(method set_long_property
+  (of-object Settings (Gtk))
+  (c-name gtk_settings_set_long_property)
+  (return-type none)
+  (parameter (type-and-name const-gchar* name))
+  (parameter (type-and-name glong v_long))
+  (parameter (type-and-name const-gchar* origin))
+)
+
+(method set_double_property
+  (of-object Settings (Gtk))
+  (c-name gtk_settings_set_double_property)
+  (return-type none)
+  (parameter (type-and-name const-gchar* name))
+  (parameter (type-and-name gdouble v_double))
+  (parameter (type-and-name const-gchar* origin))
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtksocket.h
@@ -8949,6 +8891,14 @@
   (parameter (type-and-name guint digits) (default "0"))
 )
 
+(function gtk_spin_button_new_with_range
+  (c-name gtk_spin_button_new_with_range)
+  (return-type GtkWidget*)
+  (parameter (type-and-name gdouble min))
+  (parameter (type-and-name gdouble max))
+  (parameter (type-and-name gdouble step))
+)
+
 (method set_adjustment
   (of-object SpinButton (Gtk))
   (c-name gtk_spin_button_set_adjustment)
@@ -8967,6 +8917,22 @@
   (c-name gtk_spin_button_set_digits)
   (return-type none)
   (parameter (type-and-name guint digits))
+)
+
+(method set_increments
+  (of-object SpinButton (Gtk))
+  (c-name gtk_spin_button_set_increments)
+  (return-type none)
+  (parameter (type-and-name gdouble step))
+  (parameter (type-and-name gdouble page))
+)
+
+(method set_range
+  (of-object SpinButton (Gtk))
+  (c-name gtk_spin_button_set_range)
+  (return-type none)
+  (parameter (type-and-name gdouble min))
+  (parameter (type-and-name gdouble max))
 )
 
 (method get_value_as_float
@@ -10084,6 +10050,21 @@
   (parameter (type-and-name GdkPixbuf* pixbuf))
 )
 
+(method insert_child_anchor
+  (of-object TextBuffer (Gtk))
+  (c-name gtk_text_buffer_insert_child_anchor)
+  (return-type none)
+  (parameter (type-and-name GtkTextIter* iter))
+  (parameter (type-and-name GtkTextChildAnchor* anchor))
+)
+
+(method create_child_anchor
+  (of-object TextBuffer (Gtk))
+  (c-name gtk_text_buffer_create_child_anchor)
+  (return-type GtkTextChildAnchor*)
+  (parameter (type-and-name GtkTextIter* iter))
+)
+
 (method create_mark
   (of-object TextBuffer (Gtk))
   (c-name gtk_text_buffer_create_mark)
@@ -10140,28 +10121,6 @@
   (of-object TextBuffer (Gtk))
   (c-name gtk_text_buffer_get_selection_bound)
   (return-type GtkTextMark*)
-)
-
-(method create_child_anchor
-  (of-object TextBuffer (Gtk))
-  (c-name gtk_text_buffer_create_child_anchor)
-  (return-type GtkTextChildAnchor*)
-  (parameter (type-and-name const-GtkTextIter* where))
-)
-
-(method move_child_anchor
-  (of-object TextBuffer (Gtk))
-  (c-name gtk_text_buffer_move_child_anchor)
-  (return-type none)
-  (parameter (type-and-name GtkTextChildAnchor* anchor))
-  (parameter (type-and-name GtkTextIter* where))
-)
-
-(method delete_child_anchor
-  (of-object TextBuffer (Gtk))
-  (c-name gtk_text_buffer_delete_child_anchor)
-  (return-type none)
-  (parameter (type-and-name GtkTextChildAnchor* anchor))
 )
 
 (method place_cursor
@@ -10281,13 +10240,6 @@
   (parameter (type-and-name GtkTextChildAnchor* anchor))
 )
 
-(method get_tags
-  (of-object TextBuffer (Gtk))
-  (c-name gtk_text_buffer_get_tags)
-  (return-type GSList*)
-  (parameter (type-and-name const-GtkTextIter* iter))
-)
-
 (method get_modified
   (of-object TextBuffer (Gtk))
   (c-name gtk_text_buffer_get_modified)
@@ -10345,26 +10297,30 @@
   (parameter (type-and-name gboolean default_editable))
 )
 
-(method _spew
+(method begin_user_action
   (of-object TextBuffer (Gtk))
-  (c-name _gtk_text_buffer_spew)
+  (c-name gtk_text_buffer_begin_user_action)
   (return-type none)
 )
 
-(method _get_btree
+(method end_user_action
   (of-object TextBuffer (Gtk))
-  (c-name _gtk_text_buffer_get_btree)
-  (return-type GtkTextBTree*)
+  (c-name gtk_text_buffer_end_user_action)
+  (return-type none)
 )
 
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktextchild.h
 
-(method unref
-  (of-object TextChildAnchor (Gtk))
-  (c-name gtk_text_child_anchor_unref)
-  (return-type none)
+(function gtk_text_child_anchor_get_type
+  (c-name gtk_text_child_anchor_get_type)
+  (return-type GType)
+)
+
+(function gtk_text_child_anchor_new
+  (c-name gtk_text_child_anchor_new)
+  (return-type GtkTextChildAnchor*)
 )
 
 (method get_widgets
@@ -10837,6 +10793,13 @@
   (parameter (type-and-name GtkTextAttributes* dest))
 )
 
+(method copy_values
+  (of-object TextAttributes (Gtk))
+  (c-name gtk_text_attributes_copy_values)
+  (return-type none)
+  (parameter (type-and-name GtkTextAttributes* dest))
+)
+
 (method unref
   (of-object TextAttributes (Gtk))
   (c-name gtk_text_attributes_unref)
@@ -10934,6 +10897,17 @@
   (return-type GtkTextBuffer*)
 )
 
+(method scroll_to_iter
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_scroll_to_iter)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTextIter* iter))
+  (parameter (type-and-name gdouble within_margin))
+  (parameter (type-and-name gboolean use_align) (default "FALSE"))
+  (parameter (type-and-name gdouble xalign) (default "0.5"))
+  (parameter (type-and-name gdouble yalign) (default "0.5"))
+)
+
 (method scroll_to_mark
   (of-object TextView (Gtk))
   (c-name gtk_text_view_scroll_to_mark)
@@ -10943,6 +10917,13 @@
   (parameter (type-and-name gboolean use_align) (default "FALSE"))
   (parameter (type-and-name gdouble xalign) (default "0.5"))
   (parameter (type-and-name gdouble yalign) (default "0.5"))
+)
+
+(method scroll_mark_onscreen
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_scroll_mark_onscreen)
+  (return-type none)
+  (parameter (type-and-name GtkTextMark* mark))
 )
 
 (method move_mark_onscreen
@@ -10963,32 +10944,6 @@
   (c-name gtk_text_view_get_visible_rect)
   (return-type none)
   (parameter (type-and-name GdkRectangle* visible_rect))
-)
-
-(method set_wrap_mode
-  (of-object TextView (Gtk))
-  (c-name gtk_text_view_set_wrap_mode)
-  (return-type none)
-  (parameter (type-and-name GtkWrapMode wrap_mode))
-)
-
-(method get_wrap_mode
-  (of-object TextView (Gtk))
-  (c-name gtk_text_view_get_wrap_mode)
-  (return-type GtkWrapMode)
-)
-
-(method set_editable
-  (of-object TextView (Gtk))
-  (c-name gtk_text_view_set_editable)
-  (return-type none)
-  (parameter (type-and-name gboolean setting))
-)
-
-(method get_editable
-  (of-object TextView (Gtk))
-  (c-name gtk_text_view_get_editable)
-  (return-type gboolean)
 )
 
 (method set_cursor_visible
@@ -11091,6 +11046,49 @@
   (parameter (type-and-name gint height))
 )
 
+(method forward_display_line
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_forward_display_line)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTextIter* iter))
+)
+
+(method backward_display_line
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_backward_display_line)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTextIter* iter))
+)
+
+(method forward_display_line_end
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_forward_display_line_end)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTextIter* iter))
+)
+
+(method backward_display_line_start
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_backward_display_line_start)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTextIter* iter))
+)
+
+(method starts_display_line
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_starts_display_line)
+  (return-type gboolean)
+  (parameter (type-and-name const-GtkTextIter* iter))
+)
+
+(method move_visually
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_move_visually)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTextIter* iter))
+  (parameter (type-and-name gint count))
+)
+
 (method add_child_at_anchor
   (of-object TextView (Gtk))
   (c-name gtk_text_view_add_child_at_anchor)
@@ -11118,37 +11116,135 @@
   (parameter (type-and-name gint ypos))
 )
 
-
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtkthemes.h
-
-(method ref
-  (of-object ThemeEngine (Gtk))
-  (c-name gtk_theme_engine_ref)
+(method set_wrap_mode
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_wrap_mode)
   (return-type none)
+  (parameter (type-and-name GtkWrapMode wrap_mode))
 )
 
-(method unref
-  (of-object ThemeEngine (Gtk))
-  (c-name gtk_theme_engine_unref)
+(method get_wrap_mode
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_wrap_mode)
+  (return-type GtkWrapMode)
+)
+
+(method set_editable
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_editable)
   (return-type none)
+  (parameter (type-and-name gboolean setting))
 )
 
-(method create_rc_style
-  (of-object ThemeEngine (Gtk))
-  (c-name gtk_theme_engine_create_rc_style)
-  (return-type GtkRcStyle*)
+(method get_editable
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_editable)
+  (return-type gboolean)
 )
 
-(method register_type
-  (of-object ThemeEngine (Gtk))
-  (c-name gtk_theme_engine_register_type)
-  (return-type GType)
-  (parameter (type-and-name GType parent_type))
-  (parameter (type-and-name const-gchar* type_name))
-  (parameter (type-and-name const-GTypeInfo* type_info))
+(method set_pixels_above_lines
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_pixels_above_lines)
+  (return-type none)
+  (parameter (type-and-name gint pixels_above_lines))
 )
 
+(method get_pixels_above_lines
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_pixels_above_lines)
+  (return-type gint)
+)
+
+(method set_pixels_below_lines
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_pixels_below_lines)
+  (return-type none)
+  (parameter (type-and-name gint pixels_below_lines))
+)
+
+(method get_pixels_below_lines
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_pixels_below_lines)
+  (return-type gint)
+)
+
+(method set_pixels_inside_wrap
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_pixels_inside_wrap)
+  (return-type none)
+  (parameter (type-and-name gint pixels_inside_wrap))
+)
+
+(method get_pixels_inside_wrap
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_pixels_inside_wrap)
+  (return-type gint)
+)
+
+(method set_justification
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_justification)
+  (return-type none)
+  (parameter (type-and-name GtkJustification justification))
+)
+
+(method get_justification
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_justification)
+  (return-type GtkJustification)
+)
+
+(method set_left_margin
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_left_margin)
+  (return-type none)
+  (parameter (type-and-name gint left_margin))
+)
+
+(method get_left_margin
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_left_margin)
+  (return-type gint)
+)
+
+(method set_right_margin
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_right_margin)
+  (return-type none)
+  (parameter (type-and-name gint right_margin))
+)
+
+(method get_right_margin
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_right_margin)
+  (return-type gint)
+)
+
+(method set_indent
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_indent)
+  (return-type none)
+  (parameter (type-and-name gint indent))
+)
+
+(method get_indent
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_indent)
+  (return-type gint)
+)
+
+(method set_tabs
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_set_tabs)
+  (return-type none)
+  (parameter (type-and-name PangoTabArray* tabs))
+)
+
+(method get_tabs
+  (of-object TextView (Gtk))
+  (c-name gtk_text_view_get_tabs)
+  (return-type PangoTabArray*)
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktipsquery.h
@@ -11239,6 +11335,18 @@
   (return-type none)
 )
 
+(method set_inconsistent
+  (of-object ToggleButton (Gtk))
+  (c-name gtk_toggle_button_set_inconsistent)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_inconsistent
+  (of-object ToggleButton (Gtk))
+  (c-name gtk_toggle_button_get_inconsistent)
+  (return-type gboolean)
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktoolbar.h
@@ -11495,6 +11603,67 @@
 )
 
 
+;; From /opt/pango/include/gtk-2.0/gtk/gtktreednd.h
+
+(function gtk_tree_drag_source_get_type
+  (c-name gtk_tree_drag_source_get_type)
+  (return-type GType)
+)
+
+(method drag_data_delete
+  (of-object TreeDragSource (Gtk))
+  (c-name gtk_tree_drag_source_drag_data_delete)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTreePath* path))
+)
+
+(method drag_data_get
+  (of-object TreeDragSource (Gtk))
+  (c-name gtk_tree_drag_source_drag_data_get)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkSelectionData* selection_data))
+)
+
+(function gtk_tree_drag_dest_get_type
+  (c-name gtk_tree_drag_dest_get_type)
+  (return-type GType)
+)
+
+(method drag_data_received
+  (of-object TreeDragDest (Gtk))
+  (c-name gtk_tree_drag_dest_drag_data_received)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTreePath* dest))
+  (parameter (type-and-name GtkSelectionData* selection_data))
+)
+
+(method row_drop_possible
+  (of-object TreeDragDest (Gtk))
+  (c-name gtk_tree_drag_dest_row_drop_possible)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTreeModel* src_model))
+  (parameter (type-and-name GtkTreePath* src_path))
+  (parameter (type-and-name GtkTreePath* dest_path))
+)
+
+(method set_tree_row
+  (of-object SelectionData (Gtk))
+  (c-name gtk_selection_data_set_tree_row)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTreeModel* tree_model))
+  (parameter (type-and-name GtkTreePath* path))
+)
+
+(method get_tree_row
+  (of-object SelectionData (Gtk))
+  (c-name gtk_selection_data_get_tree_row)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTreeModel** tree_model))
+  (parameter (type-and-name GtkTreePath** path))
+)
+
+
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktreemodel.h
 
 (function gtk_tree_model_get_type
@@ -11598,6 +11767,12 @@
   (return-type GtkType)
 )
 
+(method get_flags
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_get_flags)
+  (return-type GtkTreeModelFlags)
+)
+
 (method get_n_columns
   (of-object TreeModel (Gtk))
   (c-name gtk_tree_model_get_n_columns)
@@ -11617,6 +11792,13 @@
   (return-type gboolean)
   (parameter (type-and-name GtkTreeIter* iter))
   (parameter (type-and-name GtkTreePath* path))
+)
+
+(method get_first
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_get_first)
+  (return-type gboolean)
+  (parameter (type-and-name GtkTreeIter* iter))
 )
 
 (method get_path
@@ -11680,6 +11862,141 @@
   (parameter (type-and-name GtkTreeIter* iter))
   (parameter (type-and-name GtkTreeIter* child))
 )
+
+(method ref_node
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_ref_node)
+  (return-type none)
+  (parameter (type-and-name GtkTreeIter* iter))
+)
+
+(method unref_node
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_unref_node)
+  (return-type none)
+  (parameter (type-and-name GtkTreeIter* iter))
+)
+
+(method get
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_get)
+  (return-type none)
+  (parameter (type-and-name GtkTreeIter* iter))
+  (varargs t)
+)
+
+(method get_valist
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_get_valist)
+  (return-type none)
+  (parameter (type-and-name GtkTreeIter* iter))
+  (parameter (type-and-name va_list var_args))
+)
+
+(method range_changed
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_range_changed)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* start_path))
+  (parameter (type-and-name GtkTreeIter* start_iter))
+  (parameter (type-and-name GtkTreePath* end_path))
+  (parameter (type-and-name GtkTreeIter* end_iter))
+)
+
+(method inserted
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_inserted)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkTreeIter* iter))
+)
+
+(method has_child_toggled
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_has_child_toggled)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkTreeIter* iter))
+)
+
+(method deleted
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_deleted)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+)
+
+(method reordered
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_reordered)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkTreeIter* iter))
+  (parameter (type-and-name gint* new_order))
+)
+
+
+;; From /opt/pango/include/gtk-2.0/gtk/gtktreemodelsort.h
+
+(function gtk_tree_model_sort_get_type
+  (c-name gtk_tree_model_sort_get_type)
+  (return-type GtkType)
+)
+
+(function gtk_tree_model_sort_new
+  (c-name gtk_tree_model_sort_new)
+  (return-type GtkTreeModel*)
+)
+
+(method sort_new_with_model
+  (of-object TreeModel (Gtk))
+  (c-name gtk_tree_model_sort_new_with_model)
+  (return-type GtkTreeModel*)
+  (parameter (type-and-name GValueCompareFunc func))
+  (parameter (type-and-name gint sort_col))
+)
+
+(method set_model
+  (of-object TreeModelSort (Gtk))
+  (c-name gtk_tree_model_sort_set_model)
+  (return-type none)
+  (parameter (type-and-name GtkTreeModel* child_model))
+)
+
+(method get_model
+  (of-object TreeModelSort (Gtk))
+  (c-name gtk_tree_model_sort_get_model)
+  (return-type GtkTreeModel*)
+)
+
+(method convert_path
+  (of-object TreeModelSort (Gtk))
+  (c-name gtk_tree_model_sort_convert_path)
+  (return-type GtkTreePath*)
+  (parameter (type-and-name GtkTreePath* child_path))
+)
+
+; (method set_sort_column
+;   (of-object TreeModelSort (Gtk))
+;   (c-name gtk_tree_model_sort_set_sort_column)
+;   (return-type none)
+;   (parameter (type-and-name gint sort_col))
+; )
+
+; (method set_compare
+;   (of-object TreeModelSort (Gtk))
+;   (c-name gtk_tree_model_sort_set_compare)
+;   (return-type none)
+;   (parameter (type-and-name GValueCompareFunc func))
+; )
+
+; (method convert_iter
+;   (of-object TreeModelSort (Gtk))
+;   (c-name gtk_tree_model_sort_convert_iter)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeIter* sort_iter))
+;   (parameter (type-and-name GtkTreeIter* child_iter))
+; )
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktreeselection.h
@@ -11776,6 +12093,46 @@
 
 
 
+;; From /opt/pango/include/gtk-2.0/gtk/gtktreesortable.h
+
+(function gtk_tree_sortable_get_type
+  (c-name gtk_tree_sortable_get_type)
+  (return-type GType)
+)
+
+(method sort_column_changed
+  (of-object TreeSortable (Gtk))
+  (c-name gtk_tree_sortable_sort_column_changed)
+  (return-type none)
+)
+
+(method get_sort_column_id
+  (of-object TreeSortable (Gtk))
+  (c-name gtk_tree_sortable_get_sort_column_id)
+  (return-type gboolean)
+  (parameter (type-and-name gint* sort_column_id))
+  (parameter (type-and-name GtkTreeSortOrder* order))
+)
+
+(method set_sort_column_id
+  (of-object TreeSortable (Gtk))
+  (c-name gtk_tree_sortable_set_sort_column_id)
+  (return-type none)
+  (parameter (type-and-name gint sort_column_id))
+  (parameter (type-and-name GtkTreeSortOrder order))
+)
+
+(method sort_column_id_set_func
+  (of-object TreeSortable (Gtk))
+  (c-name gtk_tree_sortable_sort_column_id_set_func)
+  (return-type none)
+  (parameter (type-and-name gint sort_column_id))
+  (parameter (type-and-name GtkTreeIterCompareFunc func))
+  (parameter (type-and-name gpointer data))
+  (parameter (type-and-name GtkDestroyNotify destroy))
+)
+
+
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktreestore.h
 
 (function gtk_tree_store_get_type
@@ -11829,25 +12186,9 @@
   (varargs t)
 )
 
-(method setv
+(method set_valist
   (of-object TreeStore (Gtk))
   (c-name gtk_tree_store_setv)
-  (return-type none)
-  (parameter (type-and-name GtkTreeIter* iter))
-  (parameter (type-and-name va_list var_args))
-)
-
-(method get
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_get)
-  (return-type none)
-  (parameter (type-and-name GtkTreeIter* iter))
-  (varargs t)
-)
-
-(method getv
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_getv)
   (return-type none)
   (parameter (type-and-name GtkTreeIter* iter))
   (parameter (type-and-name va_list var_args))
@@ -12033,11 +12374,42 @@
   (parameter (type-and-name gint position))
 )
 
+(method insert_column_with_attributes
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_insert_column_with_attributes)
+  (return-type gint)
+  (parameter (type-and-name gint position))
+  (parameter (type-and-name gchar* title))
+  (parameter (type-and-name GtkCellRenderer* cell))
+  (varargs t)
+)
+
 (method get_column
   (of-object TreeView (Gtk))
   (c-name gtk_tree_view_get_column)
   (return-type GtkTreeViewColumn*)
   (parameter (type-and-name gint n))
+)
+
+(method set_expander_column
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_set_expander_column)
+  (return-type none)
+  (parameter (type-and-name gint col))
+)
+
+(method get_expander_column
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_get_expander_column)
+  (return-type gint)
+)
+
+(method scroll_to_point
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_scroll_to_point)
+  (return-type none)
+  (parameter (type-and-name gint tree_x))
+  (parameter (type-and-name gint tree_y))
 )
 
 (method scroll_to_cell
@@ -12061,6 +12433,24 @@
   (parameter (type-and-name GtkTreeViewColumn** column))
   (parameter (type-and-name gint* cell_x))
   (parameter (type-and-name gint* cell_y))
+)
+
+(method get_cell_area
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_get_cell_area)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkTreeViewColumn* column))
+  (parameter (type-and-name GdkRectangle* rect))
+)
+
+(method get_background_area
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_get_background_area)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkTreeViewColumn* column))
+  (parameter (type-and-name GdkRectangle* rect))
 )
 
 (method expand_all
@@ -12090,6 +12480,121 @@
   (parameter (type-and-name GtkTreePath* path))
 )
 
+(method row_activated
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_row_activated)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkTreeViewColumn* column))
+)
+
+(method get_visible_rect
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_get_visible_rect)
+  (return-type none)
+  (parameter (type-and-name GdkRectangle* visible_rect))
+)
+
+(method widget_to_tree_coords
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_widget_to_tree_coords)
+  (return-type none)
+  (parameter (type-and-name gint wx))
+  (parameter (type-and-name gint wy))
+  (parameter (type-and-name gint* tx))
+  (parameter (type-and-name gint* ty))
+)
+
+(method tree_to_widget_coords
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_tree_to_widget_coords)
+  (return-type none)
+  (parameter (type-and-name gint tx))
+  (parameter (type-and-name gint ty))
+  (parameter (type-and-name gint* wx))
+  (parameter (type-and-name gint* wy))
+)
+
+(method set_rules_hint
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_set_rules_hint)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_rules_hint
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_get_rules_hint)
+  (return-type gboolean)
+)
+
+(method set_rows_drag_source
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_set_rows_drag_source)
+  (return-type none)
+  (parameter (type-and-name GdkModifierType start_button_mask))
+  (parameter (type-and-name const-GtkTargetEntry* targets))
+  (parameter (type-and-name gint n_targets))
+  (parameter (type-and-name GdkDragAction actions))
+  (parameter (type-and-name GtkTreeViewDraggableFunc row_draggable_func))
+  (parameter (type-and-name gpointer user_data))
+)
+
+(method set_rows_drag_dest
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_set_rows_drag_dest)
+  (return-type none)
+  (parameter (type-and-name const-GtkTargetEntry* targets))
+  (parameter (type-and-name gint n_targets))
+  (parameter (type-and-name GdkDragAction actions))
+  (parameter (type-and-name GtkTreeViewDroppableFunc location_droppable_func))
+  (parameter (type-and-name gpointer user_data))
+)
+
+(method unset_rows_drag_source
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_unset_rows_drag_source)
+  (return-type none)
+)
+
+(method unset_rows_drag_dest
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_unset_rows_drag_dest)
+  (return-type none)
+)
+
+(method set_drag_dest_row
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_set_drag_dest_row)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath* path))
+  (parameter (type-and-name GtkTreeViewDropPosition pos))
+)
+
+(method get_drag_dest_row
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_get_drag_dest_row)
+  (return-type none)
+  (parameter (type-and-name GtkTreePath** path))
+  (parameter (type-and-name GtkTreeViewDropPosition* pos))
+)
+
+(method get_dest_row_at_pos
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_get_dest_row_at_pos)
+  (return-type gboolean)
+  (parameter (type-and-name gint drag_x))
+  (parameter (type-and-name gint drag_y))
+  (parameter (type-and-name GtkTreePath** path))
+  (parameter (type-and-name GtkTreeViewDropPosition* pos))
+)
+
+(method create_row_drag_icon
+  (of-object TreeView (Gtk))
+  (c-name gtk_tree_view_create_row_drag_icon)
+  (return-type GdkPixmap*)
+  (parameter (type-and-name GtkTreePath* path))
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktreeviewcolumn.h
@@ -12121,6 +12626,12 @@
   (parameter (type-and-name GtkCellRenderer* cell))
 )
 
+(method get_cell_renderer
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_get_cell_renderer)
+  (return-type GtkCellRenderer*)
+)
+
 (method add_attribute
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_add_attribute)
@@ -12134,6 +12645,21 @@
   (c-name gtk_tree_view_column_set_attributes)
   (return-type none)
   (varargs t)
+)
+
+(method set_cell_data_func
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_set_cell_data_func)
+  (return-type none)
+  (parameter (type-and-name GtkCellDataFunc func))
+  (parameter (type-and-name gpointer func_data))
+  (parameter (type-and-name GtkDestroyNotify destroy))
+)
+
+(method clear_attributes
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_clear_attributes)
+  (return-type none)
 )
 
 (method set_cell_data
@@ -12170,13 +12696,13 @@
   (return-type gint)
 )
 
-(method get_size
+(method get_width
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_get_width)
   (return-type gint)
 )
 
-(method set_size
+(method set_width
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_set_width)
   (return-type none)
@@ -12207,6 +12733,12 @@
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_get_max_width)
   (return-type gint)
+)
+
+(method clicked
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_clicked)
+  (return-type none)
 )
 
 (method set_title
@@ -12255,6 +12787,38 @@
   (return-type gfloat)
 )
 
+(method set_sort_column_id
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_set_sort_column_id)
+  (return-type none)
+  (parameter (type-and-name gint sort_column_id))
+)
+
+(method set_sort_indicator
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_set_sort_indicator)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_sort_indicator
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_get_sort_indicator)
+  (return-type gboolean)
+)
+
+(method set_sort_order
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_set_sort_order)
+  (return-type none)
+  (parameter (type-and-name GtkTreeSortOrder order))
+)
+
+(method get_sort_order
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_get_sort_order)
+  (return-type GtkTreeSortOrder)
+)
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtktypeutils.h
@@ -12318,29 +12882,6 @@
   (is-constructor-of GtkVButtonBox)
   (return-type GtkWidget*)
 )
-
-(function gtk_vbutton_box_get_spacing_default
-  (c-name gtk_vbutton_box_get_spacing_default)
-  (return-type gint)
-)
-
-(function gtk_vbutton_box_set_spacing_default
-  (c-name gtk_vbutton_box_set_spacing_default)
-  (return-type none)
-  (parameter (type-and-name gint spacing))
-)
-
-(function gtk_vbutton_box_get_layout_default
-  (c-name gtk_vbutton_box_get_layout_default)
-  (return-type GtkButtonBoxStyle)
-)
-
-(function gtk_vbutton_box_set_layout_default
-  (c-name gtk_vbutton_box_set_layout_default)
-  (return-type none)
-  (parameter (type-and-name GtkButtonBoxStyle layout))
-)
-
 
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkvbox.h
@@ -12458,6 +12999,11 @@
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtkvscrollbar.h
 
+(function gtk_vscrollbar_get_type
+  (c-name gtk_vscrollbar_get_type)
+  (return-type GtkType)
+)
+
 (function gtk_vscrollbar_new
   (c-name gtk_vscrollbar_new)
   (is-constructor-of GtkVScrollbar)
@@ -12498,15 +13044,6 @@
   (varargs t)
 )
 
-(function gtk_widget_newv
-  (c-name gtk_widget_newv)
-  (is-constructor-of GtkWidget)
-  (return-type GtkWidget*)
-  (parameter (type-and-name GtkType type))
-  (parameter (type-and-name guint nargs))
-  (parameter (type-and-name GtkArg* args))
-)
-
 (method ref
   (of-object Widget (Gtk))
   (c-name gtk_widget_ref)
@@ -12532,35 +13069,12 @@
   (parameter (type-and-name GtkWidget** widget_pointer))
 )
 
-(method get
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_get)
-  (return-type none)
-  (parameter (type-and-name GtkArg* arg))
-)
-
-(method getv
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_getv)
-  (return-type none)
-  (parameter (type-and-name guint nargs))
-  (parameter (type-and-name GtkArg* args))
-)
-
 (method set
   (of-object Widget (Gtk))
   (c-name gtk_widget_set)
   (return-type none)
   (parameter (type-and-name const-gchar* first_arg_name))
   (varargs t)
-)
-
-(method setv
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_setv)
-  (return-type none)
-  (parameter (type-and-name guint nargs))
-  (parameter (type-and-name GtkArg* args))
 )
 
 (method unparent
@@ -12744,9 +13258,23 @@
   (return-type gboolean)
 )
 
+(method mnemonic_activate
+  (of-object Widget (Gtk))
+  (c-name gtk_widget_mnemonic_activate)
+  (return-type gboolean)
+  (parameter (type-and-name gboolean group_cycling))
+)
+
 (method event
   (of-object Widget (Gtk))
   (c-name gtk_widget_event)
+  (return-type gint)
+  (parameter (type-and-name GdkEvent* event))
+)
+
+(method send_expose
+  (of-object Widget (Gtk))
+  (c-name gtk_widget_send_expose)
   (return-type gint)
   (parameter (type-and-name GdkEvent* event))
 )
@@ -12772,20 +13300,25 @@
   (parameter (type-and-name GtkWidget* new_parent))
 )
 
-(method popup
-  (of-object Widget (Gtk))
-  (c-name gtk_widget_popup)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-)
-
 (method intersect
   (of-object Widget (Gtk))
   (c-name gtk_widget_intersect)
   (return-type gint)
   (parameter (type-and-name GdkRectangle* area))
   (parameter (type-and-name GdkRectangle* intersection))
+)
+
+(method region_intersect
+  (of-object Widget (Gtk))
+  (c-name gtk_widget_region_intersect)
+  (return-type GdkRegion*)
+  (parameter (type-and-name GdkRegion* region))
+)
+
+(method is_focus
+  (of-object Widget (Gtk))
+  (c-name gtk_widget_is_focus)
+  (return-type gboolean)
 )
 
 (method grab_focus
@@ -13125,6 +13658,45 @@
   (return-type none)
 )
 
+(method install_style_property
+  (of-object WidgetClass (Gtk))
+  (c-name gtk_widget_class_install_style_property)
+  (return-type none)
+  (parameter (type-and-name GParamSpec* pspec))
+)
+
+(method install_style_property_parser
+  (of-object WidgetClass (Gtk))
+  (c-name gtk_widget_class_install_style_property_parser)
+  (return-type none)
+  (parameter (type-and-name GParamSpec* pspec))
+  (parameter (type-and-name GtkRcPropertyParser parser))
+)
+
+(method style_get_property
+  (of-object Widget (Gtk))
+  (c-name gtk_widget_style_get_property)
+  (return-type none)
+  (parameter (type-and-name const-gchar* property_name))
+  (parameter (type-and-name GValue* value))
+)
+
+(method style_get_valist
+  (of-object Widget (Gtk))
+  (c-name gtk_widget_style_get_valist)
+  (return-type none)
+  (parameter (type-and-name const-gchar* first_property_name))
+  (parameter (type-and-name va_list var_args))
+)
+
+(method style_get
+  (of-object Widget (Gtk))
+  (c-name gtk_widget_style_get)
+  (return-type none)
+  (parameter (type-and-name const-gchar* first_property_name))
+  (varargs t)
+)
+
 (function widget_set_default_style
   (c-name gtk_widget_set_default_style)
   (return-type none)
@@ -13240,13 +13812,11 @@
   (parameter (type-and-name const-gchar* wmclass_class))
 )
 
-(method set_policy
+(method set_role
   (of-object Window (Gtk))
-  (c-name gtk_window_set_policy)
+  (c-name gtk_window_set_role)
   (return-type none)
-  (parameter (type-and-name gint allow_shrink))
-  (parameter (type-and-name gint allow_grow))
-  (parameter (type-and-name gint auto_shrink))
+  (parameter (type-and-name const-gchar* role))
 )
 
 (method add_accel_group
@@ -13289,11 +13859,90 @@
   (parameter (type-and-name GtkWindow* parent))
 )
 
+(method set_type_hint
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_type_hint)
+  (return-type none)
+  (parameter (type-and-name GdkWindowTypeHint hint))
+)
+
 (method set_destroy_with_parent
   (of-object Window (Gtk))
   (c-name gtk_window_set_destroy_with_parent)
   (return-type none)
   (parameter (type-and-name gboolean setting))
+)
+
+; (method set_decorations_hint
+;   (of-object Window (Gtk))
+;   (c-name gtk_window_set_decorations_hint)
+;   (return-type none)
+;   (parameter (type-and-name GdkWMDecoration decorations))
+; )
+
+; (method set_functions_hint
+;   (of-object Window (Gtk))
+;   (c-name gtk_window_set_functions_hint)
+;   (return-type none)
+;   (parameter (type-and-name GdkWMFunction functions))
+; )
+
+(method set_resizeable
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_resizeable)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
+)
+
+(method get_resizeable
+  (of-object Window (Gtk))
+  (c-name gtk_window_get_resizeable)
+  (return-type gboolean)
+)
+
+; (method set_size
+;   (of-object Window (Gtk))
+;   (c-name gtk_window_set_size)
+;   (return-type none)
+;   (parameter (type-and-name gint width))
+;   (parameter (type-and-name gint height))
+; )
+
+; (method get_size
+;   (of-object Window (Gtk))
+;   (c-name gtk_window_get_size)
+;   (return-type none)
+;   (parameter (type-and-name gint* width))
+;   (parameter (type-and-name gint* height))
+; )
+
+; (method set_location
+;   (of-object Window (Gtk))
+;   (c-name gtk_window_set_location)
+;   (return-type none)
+;   (parameter (type-and-name gint root_x))
+;   (parameter (type-and-name gint root_y))
+; )
+
+; (method get_location
+;   (of-object Window (Gtk))
+;   (c-name gtk_window_get_location)
+;   (return-type none)
+;   (parameter (type-and-name gint* root_x))
+;   (parameter (type-and-name gint* root_y))
+; )
+
+(method set_gravity
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_gravity)
+  (return-type none)
+  (parameter (type-and-name GdkGravity gravity))
+)
+
+(method get_gravity
+  (of-object Window (Gtk))
+  (c-name gtk_window_get_gravity)
+  (return-type GdkGravity)
 )
 
 (method set_geometry_hints
@@ -13305,12 +13954,27 @@
   (parameter (type-and-name GdkWindowHints geom_mask))
 )
 
-(method set_default_size
+(method set_has_frame
   (of-object Window (Gtk))
-  (c-name gtk_window_set_default_size)
+  (c-name gtk_window_set_has_frame)
   (return-type none)
-  (parameter (type-and-name gint width))
-  (parameter (type-and-name gint height))
+)
+
+(method set_frame_dimensions
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_frame_dimensions)
+  (return-type none)
+  (parameter (type-and-name gint left))
+  (parameter (type-and-name gint top))
+  (parameter (type-and-name gint right))
+  (parameter (type-and-name gint bottom))
+)
+
+(method set_decorated
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_decorated)
+  (return-type none)
+  (parameter (type-and-name gboolean setting))
 )
 
 (method set_modal
@@ -13323,6 +13987,117 @@
 (function window_list_toplevels
   (c-name gtk_window_list_toplevels)
   (return-type GList*)
+)
+
+(method add_mnemonic
+  (of-object Window (Gtk))
+  (c-name gtk_window_add_mnemonic)
+  (return-type none)
+  (parameter (type-and-name guint keyval))
+  (parameter (type-and-name GtkWidget* target))
+)
+
+(method remove_mnemonic
+  (of-object Window (Gtk))
+  (c-name gtk_window_remove_mnemonic)
+  (return-type none)
+  (parameter (type-and-name guint keyval))
+  (parameter (type-and-name GtkWidget* target))
+)
+
+(method mnemonic_activate
+  (of-object Window (Gtk))
+  (c-name gtk_window_mnemonic_activate)
+  (return-type gboolean)
+  (parameter (type-and-name guint keyval))
+  (parameter (type-and-name GdkModifierType modifier))
+)
+
+(method set_mnemonic_modifier
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_mnemonic_modifier)
+  (return-type none)
+  (parameter (type-and-name GdkModifierType modifier))
+)
+
+(method present
+  (of-object Window (Gtk))
+  (c-name gtk_window_present)
+  (return-type none)
+)
+
+(method iconify
+  (of-object Window (Gtk))
+  (c-name gtk_window_iconify)
+  (return-type none)
+)
+
+(method deiconify
+  (of-object Window (Gtk))
+  (c-name gtk_window_deiconify)
+  (return-type none)
+)
+
+(method stick
+  (of-object Window (Gtk))
+  (c-name gtk_window_stick)
+  (return-type none)
+)
+
+(method unstick
+  (of-object Window (Gtk))
+  (c-name gtk_window_unstick)
+  (return-type none)
+)
+
+(method maximize
+  (of-object Window (Gtk))
+  (c-name gtk_window_maximize)
+  (return-type none)
+)
+
+(method unmaximize
+  (of-object Window (Gtk))
+  (c-name gtk_window_unmaximize)
+  (return-type none)
+)
+
+(method begin_resize_drag
+  (of-object Window (Gtk))
+  (c-name gtk_window_begin_resize_drag)
+  (return-type none)
+  (parameter (type-and-name GdkWindowEdge edge))
+  (parameter (type-and-name gint button))
+  (parameter (type-and-name gint root_x))
+  (parameter (type-and-name gint root_y))
+  (parameter (type-and-name guint32 timestamp))
+)
+
+(method begin_move_drag
+  (of-object Window (Gtk))
+  (c-name gtk_window_begin_move_drag)
+  (return-type none)
+  (parameter (type-and-name gint button))
+  (parameter (type-and-name gint root_x))
+  (parameter (type-and-name gint root_y))
+  (parameter (type-and-name guint32 timestamp))
+)
+
+(method set_policy
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_policy)
+  (return-type none)
+  (parameter (type-and-name gint allow_shrink))
+  (parameter (type-and-name gint allow_grow))
+  (parameter (type-and-name gint auto_shrink))
+)
+
+(method set_default_size
+  (of-object Window (Gtk))
+  (c-name gtk_window_set_default_size)
+  (return-type none)
+  (parameter (type-and-name gint width))
+  (parameter (type-and-name gint height))
 )
 
 (method set_focus
@@ -13351,14 +14126,6 @@
   (c-name gtk_window_add_embedded_xid)
   (return-type none)
   (parameter (type-and-name guint xid))
-)
-
-(method reposition
-  (of-object Window (Gtk))
-  (c-name gtk_window_reposition)
-  (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
 )
 
 

@@ -324,14 +324,17 @@ if __name__ == '__main__':
     import getopt
 
     onlyenums = 0
-    
+    onlyobjdefs = 0
+
     opts, args = getopt.getopt(sys.argv[1:], 'v',
-                               ['onlyenums'])
+                               ['onlyenums', 'onlyobjdefs'])
     for o, v in opts:
         if o == '-v':
             verbose = 1
         if o == '--onlyenums':
             onlyenums = 1
+        if o == '--onlyobjdefs':
+            onlyobjdefs = 1
             
     if not args[0:1]:
         print 'Must specify at least one input file name'
@@ -347,6 +350,8 @@ if __name__ == '__main__':
     objdefs = sort_obj_defs(objdefs)
     if onlyenums:
         write_enum_defs(enums,None)
+    elif onlyobjdefs:
+        write_obj_defs(objdefs,None)
     else:
         write_obj_defs(objdefs,None)
         write_enum_defs(enums,None)

@@ -50,10 +50,8 @@ def _to_upper_str(str):
 def _enum_name(typename):
     """create a GTK_TYPE_* name from the given type"""
     part = _to_upper_str(typename)
-    if len(part) > 4 and part[:4] == '_GTK':
-	return 'GTK_TYPE' + part[4:]
-    else:
-	return 'GTK_TYPE' + part
+    second_underscore = string.index(part, '_', 1)
+    return part[1:second_underscore] + '_TYPE' + part[second_underscore:]
 
 
 class VarList:

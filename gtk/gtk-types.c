@@ -1484,7 +1484,7 @@ PyGdkWindow_PropertyChange(PyGdkWindow_Object *self, PyObject *args)
 	    return NULL;
 	property = gdk_atom_intern(propname, FALSE);
     }
-    if (pygtk_enum_get_value(GTK_TYPE_GDK_PROP_MODE, py_mode, (gint *)&mode))
+    if (pygtk_enum_get_value(GDK_TYPE_PROP_MODE, py_mode, (gint *)&mode))
 	return NULL;
     switch (format) {
     case 8:
@@ -2498,7 +2498,7 @@ pygdk_cursor_repr(PyGdkCursor_Object *self)
     if (self->obj->type == GDK_CURSOR_IS_PIXMAP)
 	cname = "*pixmap*";
     else {
-	GtkEnumValue *vals = gtk_type_enum_get_values(GTK_TYPE_GDK_CURSOR_TYPE);
+	GtkEnumValue *vals = gtk_type_enum_get_values(GDK_TYPE_CURSOR_TYPE);
 	while (vals->value_name != NULL && vals->value != self->obj->type)
 	    vals++;
 	if (vals->value_nick) cname = vals->value_nick;
@@ -2515,7 +2515,7 @@ pygdk_cursor_getattr(PyGdkCursor_Object *self, char *attr)
     if (!strcmp(attr, "type"))
 	return PyInt_FromLong(self->obj->type);
     else if (!strcmp(attr, "name")) {
-	GtkEnumValue *vals = gtk_type_enum_get_values(GTK_TYPE_GDK_CURSOR_TYPE);
+	GtkEnumValue *vals = gtk_type_enum_get_values(GDK_TYPE_CURSOR_TYPE);
 
 	while (vals->value_name != NULL && vals->value != self->obj->type)
 	    vals++;
@@ -3784,14 +3784,14 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
 #endif
-    register_tp2(GdkFont, GTK_TYPE_GDK_FONT);
-    register_tp2(GdkColor, GTK_TYPE_GDK_COLOR);
-    register_tp2(GdkEvent, GTK_TYPE_GDK_EVENT);
+    register_tp2(GdkFont, GDK_TYPE_FONT);
+    register_tp2(GdkColor, GDK_TYPE_COLOR);
+    register_tp2(GdkEvent, GDK_TYPE_EVENT);
 #if 0
     register_tp(GdkWindow);
     register_tp(GdkGC);
 #endif
-    register_tp2(GdkVisual, GTK_TYPE_GDK_VISUAL);
+    register_tp2(GdkVisual, GDK_TYPE_VISUAL);
 #if 0
     register_tp(GdkColormap);
     register_tp(GdkDragContext);

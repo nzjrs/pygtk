@@ -13,9 +13,9 @@ headers
 #define gdk_window_get_type gdk_window_object_get_type
 
 /* gross hack until gdk-pixbuf types get set up as normal enums/flags */
-#define GTK_TYPE_GDK_COLORSPACE G_TYPE_INVALID
-#define GTK_TYPE_GDK_INTERP_TYPE G_TYPE_INVALID
-#define GTK_TYPE_GDK_PIXBUF_ALPHA_MODE G_TYPE_INVALID
+#define GDK_TYPE_COLORSPACE G_TYPE_INVALID
+#define GDK_TYPE_INTERP_TYPE G_TYPE_INVALID
+#define GDK_TYPE_PIXBUF_ALPHA_MODE G_TYPE_INVALID
 
 static PyExtensionClass *_PyGObject_Type;
 #define PyGObject_Type (*_PyGObject_Type)
@@ -1412,7 +1412,7 @@ _wrap_gdk_property_change(PyGObject *self, PyObject *args, PyObject *kwargs)
 	    return NULL;
 	property = gdk_atom_intern(propname, FALSE);
     }
-    if (pyg_enum_get_value(GTK_TYPE_GDK_PROP_MODE, py_mode, (gint *)&mode))
+    if (pyg_enum_get_value(GDK_TYPE_PROP_MODE, py_mode, (gint *)&mode))
 	return NULL;
     switch (format) {
     case 8:
@@ -2565,7 +2565,7 @@ _wrap_gtk_pixmap_get(PyGObject *self, PyObject *args)
 }
 
 %%
-ignore gtk_button_new_with_label gtk_button_new_stock gtk_button_new_accel
+ignore gtk_button_new_with_label gtk_button_new_from_stock gtk_button_new_with_mnemonic
 %%
 override gtk_button_new kwargs
 static PyObject *
@@ -3703,7 +3703,7 @@ _wrap_gtk_drag_dest_set(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return NULL;
     if (pyg_flags_get_value(GTK_TYPE_DEST_DEFAULTS, py_flags, (gint *)&flags))
 	return NULL;
-    if (pyg_flags_get_value(GTK_TYPE_GDK_DRAG_ACTION,
+    if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
 			     py_actions, (gint *)&actions))
 	return NULL;
     if (!PySequence_Check(py_targets)) {
@@ -3746,10 +3746,10 @@ _wrap_gtk_drag_source_set(PyGObject *self, PyObject *args, PyObject *kwargs)
 				     "OOO:GtkWidget.drag_source_set", kwlist,
 				     &py_sbmask, &py_targets, &py_actions))
 	return NULL;
-    if (pyg_flags_get_value(GTK_TYPE_GDK_MODIFIER_TYPE,
+    if (pyg_flags_get_value(GDK_TYPE_MODIFIER_TYPE,
 			     py_sbmask, (gint *)&sbmask))
 	return NULL;
-    if (pyg_flags_get_value(GTK_TYPE_GDK_DRAG_ACTION,
+    if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
 			     py_actions, (gint *)&actions))
 	return NULL;
     if (!PySequence_Check(py_targets)) {
@@ -3794,7 +3794,7 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
 				     &py_targets, &py_actions, &button,
 				     &PyGdkEvent_Type, &event))
 	return NULL;
-    if (pyg_flags_get_value(GTK_TYPE_GDK_DRAG_ACTION,
+    if (pyg_flags_get_value(GDK_TYPE_DRAG_ACTION,
 			     py_actions, (gint *)&actions))
 	return NULL;
     if (!PySequence_Check(py_targets)) {
