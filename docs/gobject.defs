@@ -1,0 +1,165 @@
+;; -*- mode: scheme -*-
+
+; fake defs file to fit into documentation
+
+(define-object GObject
+  (in-module "G")
+  (c-name "GObject")
+  (gtype-id "G_TYPE_OBJECT")
+)
+
+(define-method get_property
+  (of-object "GObject")
+  (c-name "g_object_get_property")
+  (return-type "PyObject*")
+  (parameters
+    '("const-gchar*" "property_name")
+  )
+)
+
+(define-method set_property
+  (of-object "GObject")
+  (c-name "g_object_set_property")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "property_name")
+    '("PyObject*" "value")
+  )
+)
+
+(define-method freeze_notify
+  (of-object "GObject")
+  (c-name "g_object_freeze_notify")
+  (return-type "none")
+)
+
+(define-method notify
+  (of-object "GObject")
+  (c-name "g_object_notify")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "property_name")
+  )
+)
+
+(define-method thaw_notify
+  (of-object "GObject")
+  (c-name "g_object_thaw_notify")
+  (return-type "none")
+)
+
+(define-method get_data
+  (of-object "GObject")
+  (c-name "g_object_get_data")
+  (return-type "PyObject*")
+  (parameters
+    '("const-gchar*" "key")
+  )
+)
+
+(define-method set_data
+  (of-object "GObject")
+  (c-name "g_object_set_data")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "key")
+    '("PyObject*" "data")
+  )
+)
+
+(define-method connect
+  (of-object "GObject")
+  (c-name "g_signal_connect")
+  (return-type "gulong")
+  (parameters
+    '("const-gchar*" "detailed_signal")
+    '("PyObject*" "handler")
+  )
+  (varargs #t)
+)
+
+(define-method connect_after
+  (of-object "GObject")
+  (c-name "g_signal_connect_after")
+  (return-type "gulong")
+  (parameters
+    '("const-gchar*" "detailed_signal")
+    '("PyObject*" "handler")
+  )
+  (varargs #t)
+)
+
+(define-method connect_object
+  (of-object "GObject")
+  (c-name "g_signal_connect_swapped")
+  (return-type "gulong")
+  (parameters
+    '("const-gchar*" "detailed_signal")
+    '("PyObject*" "handler")
+  )
+  (varargs #t)
+)
+
+(define-method connect_object_after
+  (of-object "GObject")
+  (c-name "g_signal_connect_swapped_after")
+  (return-type "gulong")
+  (parameters
+    '("const-gchar*" "detailed_signal")
+    '("PyObject*" "handler")
+  )
+  (varargs #t)
+)
+
+(define-method disconnect
+  (of-object "GObject")
+  (c-name "g_signal_handler_disconnect")
+  (return-type "none")
+  (parameters
+    '("gulong" "handler_id")
+  )
+)
+
+(define-method handler_block
+  (of-object "GObject")
+  (c-name "g_signal_handler_handler_block")
+  (return-type "none")
+  (parameters
+    '("gulong" "handler_id")
+  )
+)
+
+(define-method handler_unblock
+  (of-object "GObject")
+  (c-name "g_signal_handler_handler_unblock")
+  (return-type "none")
+  (parameters
+    '("gulong" "handler_id")
+  )
+)
+
+(define-method emit
+  (of-object "GObject")
+  (c-name "g_signal_emit_by_name")
+  (return-type "PyObject*")
+  (parameters
+    '("const-gchar*" "detailed_signal")
+  )
+  (varargs #t)
+)
+
+(define-method stop_emission
+  (of-object "GObject")
+  (c-name "g_signal_stop_emission_by_name")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "detailed_signal")
+  )
+)
+
+(define-method chain
+  (of-object "GObject")
+  (c-name "g_signal_chain_from_overriden")
+  (return-type "PyObject*")
+  (varargs #t)
+)
