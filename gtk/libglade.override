@@ -100,6 +100,7 @@ connect_many(const gchar *handler_name, GObject *obj,
 
     tuple = PyMapping_GetItemString(handler_dict, (gchar *)handler_name);
     if (!tuple) {
+	PyErr_Clear();	
         tuple = PyObject_GetAttrString(handler_dict, (gchar *)handler_name);
         if (!tuple) {
             PyErr_Clear();
