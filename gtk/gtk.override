@@ -4878,13 +4878,11 @@ _wrap_gtk_action_get_proxies(PyGObject *self)
     for (i = 0, tmp = slist; i < slen && tmp != NULL; tmp = tmp->next, i++) {
         PyObject *obj = pygobject_new(G_OBJECT(tmp->data));
         if (obj == NULL) {
-	    g_slist_free(slist);
             Py_DECREF(py_list);
             return NULL;
         }
         PyList_SetItem(py_list, i, obj);
     }
-    g_slist_free(slist);
     return py_list;
 }
 %%
