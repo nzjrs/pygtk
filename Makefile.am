@@ -65,6 +65,7 @@ EXTRA_DIST = \
   pango.defs \
   pango-types.defs \
   pango.override \
+  examples/atk/atk-demo.py \
   examples/gobject/signal.py \
   examples/pygtk-demo/pygtk-demo.py \
   examples/pygtk-demo/demos/__init__.py \

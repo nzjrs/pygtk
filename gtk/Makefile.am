@@ -38,10 +38,12 @@ DISTCLEANFILES = gtk.c gdk.c libglade.c
 
 $(srcdir)/gtk.c: $(srcdir)/gtk.defs $(srcdir)/gdk.defs \
 		 $(srcdir)/gtk-extrafuncs.defs $(srcdir)/gtk-types.defs \
-		 $(srcdir)/gtk.override
+		 $(srcdir)/gtk.override $(srcdir)/../atk.defs \
+		 $(srcdir)/../pango-types.defs
 	(cd $(srcdir) \
 	 && $(PYTHON) ../codegen/codegen.py \
 	    --register ../pango-types.defs \
+	    --register ../atk.defs \
 	    --register gdk-types.defs \
 	    --override gtk.override \
 	    --prefix pygtk gtk.defs) > gen-gtk.c \
