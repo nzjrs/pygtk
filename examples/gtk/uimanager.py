@@ -9,20 +9,6 @@ pygtk.require('2.0')
 
 import gtk
 
-if gtk.pygtk_version < (2,3,90):
-    print "PyGtk 2.3.90 or later required for this example"
-    raise SystemExit
-
-window_actions = [
-    ('FileMenu', None, '_File'),
-    ('New',      gtk.STOCK_NEW, '_New', '<control>N', 'Create a new file', 'file_new_cb'),
-    ('Open',     gtk.STOCK_OPEN, '_Open', '<control>O', 'Open a file', 'file_open_cb'),
-    ('Close',    gtk.STOCK_CLOSE, '_Close', '<control>W', 'Close the current window', 'file_close_cb'),
-    ('Quit',     gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Quit application', 'file_quit_cb'),
-    ('HelpMenu', None, '_Help'),
-    ('About',    None, '_About', None, 'About application', 'help_about_cb'),
-    ]
-
 ui_string = """<ui>
   <menubar name='Menubar'>
     <menu action='FileMenu'>
@@ -43,20 +29,6 @@ ui_string = """<ui>
     <toolitem action='Quit'/>
   </toolbar>
 </ui>"""
-
-def fix_actions(actions, instance):
-    "Helper function to map methods to an instance"
-    retval = []
-    
-    for i in range(len(actions)):
-        curr = actions[i]
-        if len(curr) > 5:
-            curr = list(curr)
-            curr[5] = getattr(instance, curr[5])
-            curr = tuple(curr)
-            
-        retval.append(curr)
-    return retval
 
 class Window(gtk.Window):
     def __init__(self):
@@ -85,8 +57,15 @@ class Window(gtk.Window):
         
     def create_ui(self):
         ag = gtk.ActionGroup('WindowActions')
-
-        actions = fix_actions(window_actions, self)
+        actions = [
+            ('FileMenu', None, '_File'),
+            ('New',      gtk.STOCK_NEW, '_New', '<control>N', 'Create a new file', self.file_new_cb),
+            ('Open',     gtk.STOCK_OPEN, '_Open', '<control>O', 'Open a file', self.file_open_cb),
+            ('Close',    gtk.STOCK_CLOSE, '_Close', '<control>W', 'Close the current window', self.file_close_cb),
+            ('Quit',     gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Quit application', self.file_quit_cb),
+            ('HelpMenu', None, '_Help'),
+            ('About',    None, '_About', None, 'About application', 'help_about_cb'),
+            ]
         ag.add_actions(actions)
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, 0)

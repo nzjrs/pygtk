@@ -3,10 +3,6 @@ pygtk.require('2.0')
 
 import gtk
 
-if gtk.pygtk_version < (2,3,90):
-   print "PyGtk 2.3.90 or later required for this example"
-   raise SystemExit
-
 dialog = gtk.FileChooserDialog("Open..",
                                None,
                                gtk.FILE_CHOOSER_ACTION_OPEN,
@@ -34,7 +30,7 @@ dialog.add_filter(filter)
 response = dialog.run()
 if response == gtk.RESPONSE_OK:
     print dialog.get_filename(), 'selected'
-elif response == gtk.RESPONSE:
+elif response == gtk.RESPONSE_CANCEL:
     print 'Closed, no files selected'
 dialog.destroy()
     
