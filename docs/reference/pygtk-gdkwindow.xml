@@ -1954,6 +1954,33 @@ linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> and
 <parameter>user_data</parameter> is not passed to
 <parameter>function</parameter>.</para>
 
+      <para><parameter>function</parameter> should return one of the
+following values:</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.gdk.FILTER_CONTINUE</literal></term>
+	  <listitem>
+	    <simpara>the event was not handled, continue processing.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.FILTER_TRANSLATE</literal></term>
+	  <listitem>
+	    <simpara>the native event was translated into a GDK event and
+stored in the event that was passed in.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.FILTER_REMOVE</literal></term>
+	  <listitem>
+	    <simpara>the event was handled, terminate processing.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para></para>
+
     </refsect2>
 
 <!-- NOT IMPLEMENTED
