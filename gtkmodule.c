@@ -1785,6 +1785,15 @@ static PyObject *PyGdkWindow_Destroy(PyGdkWindow_Object *self,
   return Py_None;
 }
 
+static PyObject *PyGdkWindow_Clear(PyGdkWindow_Object *self,
+				   PyObject *args) {
+  if (!PyArg_ParseTuple(args, ":GdkWindow.clear"))
+    return NULL;
+  gdk_window_clear(self->obj);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyMethodDef PyGdkWindow_methods[] = {
   {"new_gc", (PyCFunction)PyGdkWindow_NewGC, METH_VARARGS|METH_KEYWORDS, NULL},
   {"set_cursor", (PyCFunction)PyGdkWindow_SetCursor, METH_VARARGS, NULL},
@@ -1802,6 +1811,7 @@ static PyMethodDef PyGdkWindow_methods[] = {
   {"show", (PyCFunction)PyGdkWindow_Show, METH_VARARGS, NULL},
   {"hide", (PyCFunction)PyGdkWindow_Hide, METH_VARARGS, NULL},
   {"_destroy", (PyCFunction)PyGdkWindow_Destroy, METH_VARARGS, NULL},
+  {"clear", (PyCFunction)PyGdkWindow_Clear, METH_VARARGS, NULL},
   {NULL, 0, 0, NULL}
 };
 
@@ -2385,7 +2395,7 @@ static PyMethodDef PyGtkSelectionData_methods[] = {
 static PyObject *
 PyGtkSelectionData_GetAttr(PyGtkSelectionData_Object *self, char *key) {
   if (!strcmp(key, "__members__"))
-    return Py_BuildValue("[sssss]", "data", "format", "selection", "target",
+    return Py_BuildValue("[ssssss]", "data", "format", "selection", "target",
 			 "type", "length");
 
   if (!strcmp(key, "selection"))
@@ -3828,7 +3838,7 @@ static PyObject *_wrap_gtk_signal_emitv_by_name(PyObject *self, PyObject *args) 
   params[i].name = NULL;
   params[i].d.pointer_data = buf; /* buffer to hold return value */
   g_free(query);
-  if (GtkArgs_FromSequence(params, query->nparams, py_params)) {
+  if (GtkArgs_FromSequence(params, nparams, py_params)) {
     g_free(params);
     return NULL;
   }

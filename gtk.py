@@ -1215,6 +1215,8 @@ class GtkCList(GtkContainer):
 			'columns': _gtk.gtk_clist_get_columns,
 			'rows':_gtk.gtk_clist_get_rows,
 			'row_height':_gtk.gtk_clist_get_row_height,
+			'sort_column':_gtk.gtk_clist_get_sort_column,
+			'sort_type':_gtk.gtk_clist_get_sort_type,
 		}
 		if attrs.has_key(attr):
 			return attrs[attr](self._o)
@@ -1847,6 +1849,12 @@ class GtkPaned(GtkContainer):
 	get_type = _gtk.gtk_paned_get_type
 	def __init__(self, _obj=None):
 		if _obj: self._o = _obj; return
+	def __getattr__(self, attr):
+		attrs = {
+			'handle_size': _gtk.gtk_paned_get_handle_size,
+			'gutter_size': _gtk.gtk_paned_get_gutter_size,
+		}
+		return attrs[attr](self._o)
 	def add1(self, child):
 		_gtk.gtk_paned_add1(self._o, child._o)
 	def add2(self, child):
