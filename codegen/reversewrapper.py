@@ -470,6 +470,19 @@ class GFlagsParam(IntParam):
 
 argtypes.matcher.register_reverse("GFlags", GFlagsParam)
 
+
+class GtkTreePathParam(IntParam):
+    def convert_c2py(self):
+        self.wrapper.add_declaration("PyObject *py_%s;" % self.name)
+        self.wrapper.write_code(code=("py_%s = pygtk_tree_path_to_pyobject(%s);" %
+                                      (self.name, self.name)),
+                                cleanup=("Py_DECREF(py_%s);" % self.name),
+                                failure_expression=("!py_%s" % self.name))
+        self.wrapper.add_pyargv_item("py_%s" % self.name)
+
+argtypes.matcher.register_reverse("GtkTreePath*", GtkTreePathParam)
+
+
 class BooleanReturn(ReturnType):
     def get_c_type(self):
         return "gboolean"
