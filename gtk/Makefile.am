@@ -2,7 +2,7 @@ pkgpythondir = $(pythondir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
 
 pygtkdir = $(pkgpythondir)/gtk
-pygtk_PYTHON = __init__.py keysyms.py compat.py
+pygtk_PYTHON = __init__.py keysyms.py compat.py $(top_srcdir)/dsextras.py
 
 pygtkexecdir = $(pkgpyexecdir)/gtk
 
