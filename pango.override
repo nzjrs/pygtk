@@ -1,4 +1,4 @@
-/* -*- Mode: C; c-basic-offset: 4 -*-
+ * -*- Mode: C; c-basic-offset: 4 -*-
  * pygtk- Python bindings for the GTK toolkit.
  * Copyright (C) 1998-2003  James Henstridge
  *
@@ -24,6 +24,10 @@ headers
 #define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
 #include <pango/pango.h>
+
+typedef struct {
+    PyObject *func, *data;
+} PyGtkCustomNotify;
 
 /* ------------- PangoAttribute ------------- */
 
@@ -401,7 +405,8 @@ pypango_attr_iterator_get_attrs(PyPangoAttrIterator *self)
 	PyTuple_SetItem(py_list, i, pypango_attr_new(attr, attr->start_index,
 						     attr->end_index));
     }
-
+    /* don't have to destroy attributes since we use them */
+    g_slist_free(alist);
     return py_list;
 }
 
@@ -1510,3 +1515,73 @@ _wrap_pango_attr_fallback_new(PyObject *self, PyObject *args, PyObject *kwargs)
     return pypango_attr_new(pango_attr_fallback_new(fallback),
 			    start, end);
 }
+%%
+override pango_attr_list_filter kwargs
+static gboolean
+pypango_attr_list_filter_cb(PangoAttribute *attr, gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *retobj, *py_attr;
+    gboolean ret = FALSE;
+    
+
+    pyg_block_threads();
+
+    py_attr = pypango_attr_new(pango_attribute_copy(attr),
+			       attr->start_index, attr->end_index);
+
+    if (cunote->data)
+	retobj = PyObject_CallFunction(cunote->func, "NO", py_attr,
+				       cunote->data);
+    else
+	retobj = PyObject_CallFunction(cunote->func, "N", py_attr);
+
+    if (retobj != NULL) {
+	ret = PyObject_IsTrue(retobj);
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+    }
+
+    pyg_unblock_threads();
+    return ret;
+}
+static PyObject *
+_wrap_pango_attr_list_filter(PyGBoxed *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL };
+    PyObject *py_func, *py_data = NULL;
+    PangoAttrList *attr_list, *filtered_list;
+    PyGtkCustomNotify cunote;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|O:pango.AttrList.filter",
+				     kwlist, &py_func, &py_data))
+	return NULL;
+
+    if (!PyCallable_Check(py_func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be callable");
+        return NULL;
+    }
+
+    cunote.func = py_func;
+    cunote.data = py_data;
+    Py_INCREF(cunote.func);
+    Py_XINCREF(cunote.data);
+
+    attr_list = (PangoAttrList *)pyg_boxed_get(self, PangoAttrList);
+    filtered_list = pango_attr_list_filter(attr_list,
+					   pypango_attr_list_filter_cb,
+					   (gpointer)&cunote);
+
+    Py_DECREF(cunote.func);
+    Py_XDECREF(cunote.data);
+
+    if (filtered_list)
+	return pyg_boxed_new(PANGO_TYPE_ATTR_LIST, filtered_list, FALSE, TRUE);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+	
