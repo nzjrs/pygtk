@@ -108,6 +108,7 @@ EXTRA_DIST += \
   examples/gobject/signal.py \
   examples/gobject/properties.py \
   examples/gtk/filechooser.py \
+  examples/gtk/widget.py \
   examples/gtk/uimanager.py \
   examples/pango/utf8-demo.py \
   examples/pygtk-demo/pygtk-demo.py \
