@@ -97,6 +97,7 @@ EXTRA_DIST += \
   config.h.win32 \
   makefile.msc \
   setup.py \
+  dsextras.py \
   MANIFEST.in \
   examples/atk/atk-demo.py \
   examples/gobject/signal.py \
