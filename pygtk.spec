@@ -10,7 +10,7 @@ Release: 1
 Copyright: GPL
 Group: X11/Libraries
 Source: ftp://ftp.daa.com.au/pub/james/python/pygtk-%{ver}.tar.gz
-BuildRoot: /tmp/pygtk-root
+BuildRoot: /var/tmp/pygtk-root
 Packager: James Henstridge <james@daa.com.au>
 Requires: gtk+ imlib python
 
@@ -43,3 +43,5 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %{py_prefix}/lib/python%{py_ver}/site-packages/_gdkimlibmodule.so
 
 %doc AUTHORS NEWS README ChangeLog description.py
+%doc examples
+
