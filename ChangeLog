@@ -1,3 +1,22 @@
+2002-04-16  Matt Wilson  <msw@redhat.com>
+
+	* gtk/libglade.override (_wrap_glade_bindtextdomain): added
+	wrapper which will allow user to bind a textdomain.  Also sets the
+	codeset to UTF-8 if bind_textdomain_codeset is available.
+
+	* config.h.in: added HAVE_BIND_TEXTDOMAIN_CODESET
+
+	* configure.in: check for bind_textdomain_codeset
+
+	* gtk/libglade.defs (bindtextdomain): added extra function to
+	implement gtk.glade.bindtextdomain
+
+	* gtk/gtk.override
+	(pygtk_cell_data_func_marshal,
+	_wrap_gtk_tree_view_column_set_cell_data_func): added wrapper for
+	GtkTreeViewColumn.set_cell_data_func from Jonathan Blandford
+	<jrb@redhat.com>
+
 2002-04-17  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.defs, gdk/gdk.defs: updates to match final gtk 2.0 APIs.
