@@ -1256,10 +1256,10 @@ class GtkCList(GtkContainer):
 	def set_vadjustment(self, adj):
 		_gtk.gtk_clist_set_vadjustment(self._o, adj._o)
 	def get_hadjustment(self):
-		return GtkAdjusment(_obj=
+		return GtkAdjustment(_obj=
 				    _gtk.gtk_clist_get_hadjustment(self._o))
 	def get_vadjustment(self):
-		return GtkAdjusment(_obj=
+		return GtkAdjustment(_obj=
 				    _gtk.gtk_clist_get_vadjustment(self._o))
 	def set_reorderable(self, reorderable):
 		_gtk.gtk_clist_set_reorderable(self._o, reorderable)
