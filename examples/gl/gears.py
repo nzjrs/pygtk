@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.2
+#!/usr/bin/env python
 
 # A translation of the gears demo that comes with mesa, modified to use
 # a few GtkHScale widgets for the rotation, rather than the keyboard.
