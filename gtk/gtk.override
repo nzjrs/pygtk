@@ -1229,7 +1229,8 @@ _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         return -1;
     if (stock)
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                                 "label", stock, "use-stock", TRUE, NULL);
+                                 "label", stock, "use-stock", TRUE,
+                                 "use-underline", TRUE, NULL);
     else if (text)
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
                                  "label", text, "use-underline",
@@ -1284,20 +1285,23 @@ override gtk_toggle_button_new kwargs
 static int
 _wrap_gtk_toggle_button_new(PyGObject *self, PyObject*args, PyObject*kwargs)
 {
-    static char *kwlist[] = { "label", NULL };
+    static char *kwlist[] = { "label", "use_underline", NULL };
     gchar *text = NULL;
+    PyObject *py_use_underline = Py_True;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "|z:GtkToggleButton.__init__", kwlist,
-                                     &text))
+                                     "|zO):GtkToggleButton.__init__", kwlist,
+                                     &text, &py_use_underline))
         return -1;
     if (text)
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                                 "label", text, "use-underline", TRUE, NULL);
+                                 "label", text, "use-underline",
+                                 PyObject_IsTrue(py_use_underline), NULL);
     else
-        self->obj = (GObject *)gtk_toggle_button_new();
+        self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
     if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkToggleButton object");
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkToggleButton object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
@@ -1308,19 +1312,22 @@ override gtk_check_button_new kwargs
 static int
 _wrap_gtk_check_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 {
-    static char *kwlist[] = { "label", NULL };
+    static char *kwlist[] = { "label", "use_underline", NULL };
     gchar *text = NULL;
+    PyObject *py_use_underline = Py_True;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"|z:GtkCheckButton.__init__",
-                                     kwlist, &text))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"|zO:GtkCheckButton.__init__",
+                                     kwlist, &text, &py_use_underline))
         return -1;
     if (text)
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                                 "label", text, "use-underline", TRUE, NULL);
+                                 "label", text, "use-underline",
+                                 PyObject_IsTrue(py_use_underline), NULL);
     else
         self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
     if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkCheckButton object");
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkCheckButton object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
@@ -1331,13 +1338,15 @@ override gtk_radio_button_new kwargs
 static int
 _wrap_gtk_radio_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
 {
-    static char *kwlist[] = { "group", "label", NULL };
+    static char *kwlist[] = { "group", "label", "use_underline", NULL };
     PyObject *py_group = Py_None;
     gchar *label = NULL;
     GtkRadioButton *group;
+    PyObject *py_use_underline = Py_True;
 
-    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"|Oz:GtkRadioButton.__init__",
-                                     kwlist, &py_group, &label))
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,"|OzO:GtkRadioButton.__init__",
+                                     kwlist, &py_group, &label,
+                                     &py_use_underline))
         return -1;
     if (py_group == Py_None)
         group = NULL;
@@ -1358,11 +1367,13 @@ _wrap_gtk_radio_button_new(PyGObject *self, PyObject *args, PyObject*kwargs)
     } else {
         if (group == NULL)
             self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                                     "label", label, "use-underline", TRUE, NULL);
+                                     "label", label, "use-underline",
+                                     PyObject_IsTrue(py_use_underline), NULL);
         else
             self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
                                      "label", label, "group", group,
-                                     "use-underline", TRUE, NULL);
+                                     "use-underline",
+                                     PyObject_IsTrue(py_use_underline), NULL);
     }
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkRadioButton object");
@@ -1451,13 +1462,21 @@ _wrap_gtk_menu_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         return -1;
     self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
     if (text) {
-        GtkWidget *label;
-        label = gtk_label_new(text);
-        gtk_container_add(GTK_CONTAINER(self->obj), label);
-        gtk_label_set_use_underline(GTK_LABEL(label), PyObject_IsTrue(py_use_underline));
-    }
+        GtkWidget *accel_label;
+        accel_label = g_object_new(GTK_TYPE_ACCEL_LABEL, NULL);
+        gtk_misc_set_alignment(GTK_MISC(accel_label), 0.0, 0.5);
+        gtk_container_add(GTK_CONTAINER(self->obj), accel_label);
+        if (PyObject_IsTrue(py_use_underline))
+            gtk_label_set_text_with_mnemonic(GTK_LABEL(accel_label), text);
+        else
+            gtk_label_set_text(GTK_LABEL(accel_label), text);
+        gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(accel_label),
+                                         GTK_WIDGET(self->obj));
+        gtk_widget_show(accel_label);
+     }
     if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkMenuItem object");
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkMenuItem object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
@@ -1544,13 +1563,21 @@ _wrap_gtk_check_menu_item_new(PyGObject *self, PyObject *args,
         return -1;
     self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
     if (text) {
-        GtkWidget *label;
-        label = gtk_label_new(text);
-        gtk_container_add(GTK_CONTAINER(self->obj), label);
-        gtk_label_set_use_underline(GTK_LABEL(label), PyObject_IsTrue(py_use_underline));
+        GtkWidget *accel_label;
+        accel_label = g_object_new(GTK_TYPE_ACCEL_LABEL, NULL);
+        gtk_misc_set_alignment(GTK_MISC(accel_label), 0.0, 0.5);
+        gtk_container_add(GTK_CONTAINER(self->obj), accel_label);
+        if (PyObject_IsTrue(py_use_underline))
+            gtk_label_set_text_with_mnemonic(GTK_LABEL(accel_label), text);
+        else
+            gtk_label_set_text(GTK_LABEL(accel_label), text);
+        gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(accel_label),
+                                         GTK_WIDGET(self->obj));
+        gtk_widget_show(accel_label);
     }
     if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkCheckMenuItem object");
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkCheckMenuItem object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
@@ -1562,7 +1589,7 @@ static int
 _wrap_gtk_radio_menu_item_new(PyGObject *self, PyObject *args,
                               PyObject *kwargs)
 {
-    static char *kwlist[] = { "group", "label", NULL };
+    static char *kwlist[] = { "group", "label", "use_underline", NULL };
     gchar *text = NULL;
     PyObject *py_group = Py_None;
     GtkRadioMenuItem *group;
@@ -1585,16 +1612,24 @@ _wrap_gtk_radio_menu_item_new(PyGObject *self, PyObject *args,
     self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
 
     if (text) {
-        GtkWidget *label;
-        label = gtk_label_new(text);
-        gtk_container_add(GTK_CONTAINER(self->obj), label);
-        gtk_label_set_use_underline(GTK_LABEL(label), PyObject_IsTrue(py_use_underline));
+        GtkWidget *accel_label;
+        accel_label = g_object_new(GTK_TYPE_ACCEL_LABEL, NULL);
+        gtk_misc_set_alignment(GTK_MISC(accel_label), 0.0, 0.5);
+        gtk_container_add(GTK_CONTAINER(self->obj), accel_label);
+        if (PyObject_IsTrue(py_use_underline))
+            gtk_label_set_text_with_mnemonic(GTK_LABEL(accel_label), text);
+        else
+            gtk_label_set_text(GTK_LABEL(accel_label), text);
+        gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(accel_label),
+                                         GTK_WIDGET(self->obj));
+        gtk_widget_show(accel_label);
     }
     if (group)
         gtk_radio_menu_item_set_group(GTK_RADIO_MENU_ITEM(self->obj),
                                       gtk_radio_menu_item_get_group(group));
     if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkRadioMenuItem object");
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkRadioMenuItem object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);
@@ -2757,7 +2792,7 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     if (pyg_type_from_object((PyObject *) self) != GTK_TYPE_MESSAGE_DIALOG) {
         PyErr_SetString(PyExc_RuntimeError, "__gobject_init__ must be used "
-                        "when subclassing gtk.ImageMenuItem");
+                        "when subclassing gtk.MessageDialog");
         return -1;
     }
 
