@@ -53,18 +53,6 @@ linkend="method-gtkcellrenderertext--set-fixed-height-from-font">set_fixed_heigh
 	  <colspec column="3" colwidth="3.5in"/>
 	  <tbody>
 
-	    <row valign="top">
-	      <entry>"text"</entry>
-	      <entry>Read/Write</entry>
-	<entry>Text to render</entry>
-	  </row>
-
-	<row valign="top">
-	  <entry>"markup"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Marked up text to render</entry>
-	</row>
-
 	<row valign="top">
 	  <entry>"attributes"</entry>
 	  <entry>Read/Write</entry>
@@ -75,13 +63,8 @@ renderer.</entry>
 	<row valign="top">
 	  <entry>"background"</entry>
 	  <entry>Write</entry>
-	  <entry>Background color as a string</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"foreground"</entry>
-	  <entry>Write</entry>
-	  <entry>Foreground color as a string</entry>
+	  <entry>Background color as a string. Default:
+<literal>None</literal></entry>
 	</row>
 
 	<row valign="top">
@@ -91,96 +74,88 @@ renderer.</entry>
 	</row>
 
 	<row valign="top">
-	  <entry>"foreground-gdk"</entry>
+	  <entry>"background-set"</entry>
 	  <entry>Read/Write</entry>
-	  <entry>Foreground color as a gtk.gdk.Color</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"font"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font description as a string</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"font-desc"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font description as a pango.FontDescription</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"family"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Name of the font family, e.g. Sans, Helvetica, Times,
-Monospace</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"style"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font style</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"variant"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font variant</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"weight"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font weight</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"stretch"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font stretch</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"size"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font size</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"size-points"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font size in points</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"scale"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>Font scaling factor</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the background
+color. Default: <literal>FALSE</literal></entry>
 	</row>
 
 	<row valign="top">
 	  <entry>"editable"</entry>
 	  <entry>Read/Write</entry>
 	  <entry>If <literal>TRUE</literal> the text can be modified by the
-user</entry>
+user. GTK+ 2.4 and above. Default: <literal>FALSE</literal></entry>
 	</row>
 
 	<row valign="top">
-	  <entry>"strikethrough"</entry>
+	  <entry>"editable-set"</entry>
 	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> strike through the text</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the text
+editability. GTK+ 2.4 and above. Default: <literal>FALSE</literal></entry>
 	</row>
 
 	<row valign="top">
-	  <entry>"underline"</entry>
+          <entry>"ellipsize"</entry>
 	  <entry>Read/Write</entry>
-	  <entry>Style of underline for this text</entry>
+	  <entry>The preferred place to ellipsize the string, if the cell
+renderer does not have enough room to display the entire string, if at all.
+GTK+ 2.6 and above. Default: <literal>pango.ELLIPSIZE_NONE</literal></entry>
 	</row>
 
 	<row valign="top">
-	  <entry>"rise"</entry>
+	  <entry>"ellipsize-set"</entry>
 	  <entry>Read/Write</entry>
-	  <entry>Offset of text above the baseline (below the baseline if
-rise is negative)</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the text
+editability. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"family"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Name of the font family, e.g. Sans, Helvetica, Times,
+Monospace. Default: <literal>None</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"family-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the font
+family. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"font"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font description as a string. Default:
+<literal>None</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"font-desc"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font description as a <link
+linkend="class-pangofontdescription"><classname>pango.FontDescription</classname></link></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"foreground"</entry>
+	  <entry>Write</entry>
+	  <entry>Foreground color as a string. Default:
+<literal>None</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"foreground-gdk"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Foreground color as a <link
+linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"foreground-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the foreground
+color. Default: <literal>FALSE</literal></entry>
 	</row>
 
 	<row valign="top">
@@ -188,111 +163,178 @@ rise is negative)</entry>
 	  <entry>Read/Write</entry>
 	  <entry>The language this text is in, as an ISO code. Pango can use
 this as a hint when rendering the text. If you don't understand this parameter,
-you probably don't need it. GTK+ 2.4 and above.</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"single-paragraph-mode"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal>, keep all text in a single
-paragraph. GTK+ 2.4 and above.</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"background-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the background
-color</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"foreground-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the foreground
-color</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"family-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the font
-family</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"style-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the font
-style</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"variant-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the font
-variant</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"weight-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the font
-weight</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"stretch-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the font
-stretch</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"size-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the font
-size</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"scale-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag scales the font</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"editable-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the text
-editability</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"strikethrough-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the
-strikethrough</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"underline-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the text
-underlining</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"rise-set"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal> this tag affects the
-rise</entry>
+you probably don't need it. GTK+ 2.4 and above. Default:
+<literal>None</literal></entry>
 	</row>
 
 	<row valign="top">
 	  <entry>"language-set"</entry>
 	  <entry>Read/Write</entry>
 	  <entry>If <literal>TRUE</literal> this tag affects the
-language used to render the text. GTK+ 2.4 and above.</entry>
+language used to render the text. GTK+ 2.4 and above. Default:
+<literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"markup"</entry>
+	  <entry>Write</entry>
+	  <entry>Marked up text to render. Default:
+<literal>None</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"rise"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Offset of text above the baseline (below the baseline if
+rise is negative). Default: 0</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"rise-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the
+rise. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"scale"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font scaling factor. Allowed values &gt;= 0.
+Default: 1</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"scale-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag scales the font.
+Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"single-paragraph-mode"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal>, keep all text in a single
+paragraph. GTK+ 2.4 and above. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"size"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font size. Allowed values &gt;= 0. Default: 0</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"size-points"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font size in points. Allowed values &gt;= 0.
+Default: 0</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"size-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the font
+size. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"stretch"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font stretch. Default:
+<literal>pango.STRETCH_NORMAL</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"stretch-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the font
+stretch. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"strikethrough"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> strike through the text.
+Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"strikethrough-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the
+strikethrough. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"style"</entry>
+	  <entry>Read/Write</entry>
+            <entry>Font style. Default:
+<literal>pango.STYLE_NORMAL</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"style-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the font
+style. Default: <literal>FALSE</literal></entry>
+	</row>
+
+        <row valign="top">
+          <entry>"text"</entry>
+          <entry>Read/Write</entry>
+            <entry>Text to render. Default: <literal>None</literal></entry>
+	  </row>
+
+	<row valign="top">
+	  <entry>"underline"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Style of underline for this text.
+Default: <literal>pango.UNDERLINE_NONE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"underline-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the text
+underlining. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"variant"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font variant. Default:
+<literal>pango.VARIANT_NORMAL</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"variant-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the font
+variant. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"weight"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>Font weight. Allowed values &gt;= 0. Default value:
+400</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"weight-set"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal> this tag affects the font
+weight. Default: <literal>FALSE</literal></entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"width-chars"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>The desired width of the cell, in characters. If this
+property is set to -1, the width will be calculated automatically,
+otherwise the cell will request either 3 characters or the property
+value, whichever is greater. GTK+ 2.6 and above.
+Allowed values &gt;= -1. Default value: -1</entry>
 	</row>
 
 	</tbody>
