@@ -713,7 +713,7 @@ class GPointerWrapper(GBoxedWrapper):
         return substdict
 
 def write_headers(data, fp):
-    fp.write('/* -- THIS FILE IS GENERATE - DO NOT EDIT */')
+    fp.write('/* -- THIS FILE IS GENERATED - DO NOT EDIT */')
     fp.write('/* -*- Mode: C; c-basic-offset: 4 -*- */\n\n')
     fp.write('#include <Python.h>\n\n\n')
     fp.write(data)
