@@ -1,5 +1,12 @@
 2001-12-18  James Henstridge  <james@daa.com.au>
 
+	* gobjectmodule.c (pyg_value_from_pyobject): add support for
+	int64/uint64.  Fix up code for unsigned int/long to parse long
+	ints if necessary.
+	(pyg_value_as_pyobject): add support for int64/uint64, and get
+	UINT/ULONG to return python long ints if necessary, rather than
+	wrapping around.
+
 	* Makefile.am (EXTRA_DIST): add new example to dist.
 
 	* examples/gobject/properties.py: test program that implements a
