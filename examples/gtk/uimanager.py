@@ -23,7 +23,7 @@ window_actions = [
     ]
 
 ui_string = """<ui>
-  <menubar name='MenuBar'>
+  <menubar name='Menubar'>
     <menu action='FileMenu'>
       <menuitem action='New'/>
       <menuitem action='Open'/>
@@ -34,6 +34,12 @@ ui_string = """<ui>
       <menuitem action='About'/>
     </menu>
   </menubar>
+  <toolbar name='Toolbar'>
+    <toolitem action='New'/>
+    <toolitem action='Open'/>
+    <separator/>
+    <toolitem action='Quit'/>
+  </toolbar>
 </ui>"""
 
 def fix_actions(actions, instance):
@@ -58,10 +64,13 @@ class Window(gtk.Window):
         vbox = gtk.VBox()
         self.add(vbox)
 
-        menu = self.create_ui()
-        vbox.pack_start(menu, expand=False)
+        self.create_ui()
+        vbox.pack_start(self.ui.get_widget('/Menubar'), expand=False)
+        vbox.pack_start(self.ui.get_widget('/Toolbar'), expand=False)
 
         sw = gtk.ScrolledWindow()
+        sw.set_policy(gtk.POLICY_AUTOMATIC,
+                      gtk.POLICY_AUTOMATIC)
         vbox.pack_start(sw)
 
         textview = gtk.TextView()
@@ -79,8 +88,7 @@ class Window(gtk.Window):
         self.ui = gtk.UIManager()
         self.ui.insert_action_group(ag, 0)
         self.ui.add_ui_from_string(ui_string)
-        menu = self.ui.get_widget('/MenuBar')
-        return menu
+        self.add_accel_group(self.ui.get_accel_group())
 
     def file_new_cb(self, action):
         self.buffer.set_text("")
