@@ -37,7 +37,6 @@ static struct _PyGtk_FunctionStruct functions = {
     &PyGdkFont_Type,  PyGdkFont_New,
     &PyGdkColor_Type,  PyGdkColor_New,
     &PyGdkEvent_Type,  PyGdkEvent_New,
-    &PyGdkVisual_Type, PyGdkVisual_New,
     &PyGtkSelectionData_Type,  PyGtkSelectionData_New,
     &PyGdkAtom_Type,  PyGdkAtom_New,
     &PyGdkCursor_Type,  PyGdkCursor_New,

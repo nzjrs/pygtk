@@ -231,13 +231,6 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 		GTK_VALUE_BOXED(*arg) = NULL;
 	    else
 		return -1;
-	} else if (arg->type == GDK_TYPE_VISUAL) {
-	    if (PyGdkVisual_Check(obj))
-		GTK_VALUE_BOXED(*arg) = PyGdkVisual_Get(obj);
-	    else if (obj == Py_None)
-		GTK_VALUE_BOXED(*arg) = NULL;
-	    else
-		return -1;
 	} else if (arg->type == GTK_TYPE_SELECTION_DATA) {
 	    if (PyGtkSelectionData_Check(obj))
 		GTK_VALUE_BOXED(*arg) = PyGtkSelectionData_Get(obj);
@@ -316,8 +309,6 @@ pygtk_arg_as_pyobject(GtkArg *arg)
 	    return PyGdkFont_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GDK_TYPE_COLOR)
 	    return PyGdkColor_New(GTK_VALUE_BOXED(*arg));
-	else if (arg->type == GDK_TYPE_VISUAL)
-	    return PyGdkVisual_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_SELECTION_DATA)
 	    return PyGtkSelectionData_New(GTK_VALUE_BOXED(*arg));
 	else {
@@ -459,11 +450,6 @@ pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret)
 		*GTK_RETLOC_BOXED(*ret) = PyGdkColor_Get(py_ret);
 	    else
 		*GTK_RETLOC_BOXED(*ret) = NULL;
-	} else if (ret->type == GDK_TYPE_VISUAL) {
-	    if (PyGdkVisual_Check(py_ret))
-		*GTK_RETLOC_BOXED(*ret) = PyGdkVisual_Get(py_ret);
-	    else
-		*GTK_RETLOC_BOXED(*ret) = NULL;
 	} else if (ret->type == GTK_TYPE_SELECTION_DATA) {
 	    if (PyGtkSelectionData_Check(py_ret))
 		*GTK_RETLOC_BOXED(*ret) = PyGtkSelectionData_Get(py_ret);
@@ -539,8 +525,6 @@ pygtk_ret_as_pyobject(GtkArg *arg)
 	    return PyGdkFont_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GDK_TYPE_COLOR)
 	    return PyGdkColor_New(*GTK_RETLOC_BOXED(*arg));
-	else if (arg->type == GDK_TYPE_VISUAL)
-	    return PyGdkVisual_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GTK_TYPE_SELECTION_DATA)
 	    return PyGtkSelectionData_New(*GTK_RETLOC_BOXED(*arg));
 	else {

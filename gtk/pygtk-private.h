@@ -18,7 +18,6 @@ extern PyExtensionClass PyGtkAccelGroup_Type;
 extern PyTypeObject PyGdkFont_Type;
 extern PyTypeObject PyGdkColor_Type;
 extern PyTypeObject PyGdkEvent_Type;
-extern PyTypeObject PyGdkVisual_Type;
 extern PyTypeObject PyGtkSelectionData_Type;
 extern PyTypeObject PyGdkAtom_Type;
 extern PyTypeObject PyGdkCursor_Type;
@@ -32,7 +31,6 @@ extern PyTypeObject PyGtkTreeIter_Type;
 #define PyGdkFont_Check(v) ((v)->ob_type == &PyGdkFont_Type)
 #define PyGdkColor_Check(v) ((v)->ob_type == &PyGdkColor_Type)
 #define PyGdkEvent_Check(v) ((v)->ob_type == &PyGdkEvent_Type)
-#define PyGdkVisual_Check(v) ((v)->ob_type == &PyGdkVisual_Type)
 #define PyGtkSelectionData_Check(v) ((v)->ob_type == &PyGtkSelectionData_Type)
 #define PyGdkAtom_Check(v) ((v)->ob_type == &PyGdkAtom_Type)
 #define PyGdkCursor_Check(v) ((v)->ob_type == &PyGdkCursor_Type)
@@ -46,7 +44,6 @@ extern PyTypeObject PyGtkTreeIter_Type;
 PyObject *PyGdkFont_New(GdkFont *font);
 PyObject *PyGdkColor_New(GdkColor *colour);
 PyObject *PyGdkEvent_New(GdkEvent *event);
-PyObject *PyGdkVisual_New(GdkVisual *visual);
 PyObject *PyGtkSelectionData_New(GtkSelectionData *data);
 PyObject *PyGdkAtom_New(GdkAtom atom);
 PyObject *PyGdkCursor_New(GdkCursor *cursor);

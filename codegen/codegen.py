@@ -536,6 +536,7 @@ def write_boxed_constructor(objname, funcobj, fp=sys.stdout):
 
 def write_boxed_getattr(parser, boxedobj, fp=sys.stdout):
     typecode = argtypes._enum_name(boxedobj.c_name)
+    uline = argtypes._to_upper_str(boxedobj.c_name)[1:]
     attrchecks = ''
     for ftype, fname in boxedobj.fields:
         try:

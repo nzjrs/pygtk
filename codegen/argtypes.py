@@ -587,8 +587,6 @@ matcher.register_custom_boxed('GdkColor', 'PyGdkColor_Type',
                               'PyGdkColor_Get', 'PyGdkColor_New')
 matcher.register_custom_boxed('GdkEvent', 'PyGdkEvent_Type',
                               'PyGdkEvent_Get', 'PyGdkEvent_New')
-matcher.register_custom_boxed('GdkVisual', 'PyGdkVisual_Type',
-                              'PyGdkVisual_Get', 'PyGdkVisual_New')
 matcher.register_custom_boxed('GtkSelectionData', 'PyGtkSelectionData_Type',
                               'PyGtkSelectionData_Get',
                               'PyGtkSelectionData_New')
