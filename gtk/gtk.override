@@ -155,6 +155,7 @@ ignore
   gtk_exit
   gtk_false
   gtk_file_chooser_button_new_with_backend
+  gtk_file_chooser_button_new_with_dialog
   gtk_file_chooser_dialog_new_with_backend
   gtk_file_chooser_error_quark
   gtk_file_chooser_dialog_widget_new_with_backend
@@ -172,6 +173,7 @@ ignore
   gtk_idle_add_priority
   gtk_idle_remove
   gtk_idle_remove_by_data
+  gtk_icon_view_new_with_model
   gtk_image_item_menu_new_with_label
   gtk_image_menu_item_new_from_stock
   gtk_image_menu_item_new_with_mnemonic
@@ -6335,18 +6337,34 @@ static int
 _wrap_gtk_file_chooser_button_new(PyGObject *self, PyObject *args,
 				  PyObject *kwargs)
 {
-    static char *kwlist[] = { "title", "backend", NULL };
+    static char *kwlist1[] = { "title", "backend", NULL };
+    static char *kwlist2[] = { "dialog", NULL };
     gchar *title, *backend = NULL;
+    PyGObject *dialog;
  
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "s|O!z:GtkFileChooserButton.__init__",
-				     kwlist, &title, &backend))
-        return -1;
-    self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
-                             "title", title,
-                             "file-system-backend", backend,
-                             NULL);
- 
+    if (PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s|z:GtkFileChooserButton.__init__",
+				     kwlist1, &title, &backend))
+        self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
+                                 "title", title,
+                                 "file-system-backend", backend,
+                                 NULL);
+    else {
+        PyErr_Clear();
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+					 "O!:GtkFileChooserButton.__init__",
+                                         kwlist2, &PyGtkFileChooserDialog_Type,
+					 &dialog)) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "Usage: one of:\n"
+			    "  gtk.FileChooserButton(title, backend=None)\n"
+			    "  gtk.FileChooserButton(filechooserdialog)");
+	    return -1;
+	}
+        self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
+                                 "dialog", GTK_WIDGET(dialog->obj), NULL);
+    }
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError,
 			"could not create GtkFileChooserBUtton object");
@@ -6386,4 +6404,34 @@ _wrap_gtk_icon_theme_get_icon_sizes(PyGObject *self, PyObject *args,
 
     g_free(sizes);
     return py_sizes;
+}
+%%
+override gtk_icon_view_new kwargs
+static int
+_wrap_gtk_icon_view_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "model", NULL };
+    PyGObject *pymodel = NULL;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkIconView.__init__",
+				     kwlist, &pymodel))
+        return -1;
+    if (pymodel == NULL || (PyObject *)pymodel == Py_None)
+	self->obj = g_object_new(pyg_type_from_object((PyObject*) self), NULL);
+    else if (pygobject_check(pymodel, &PyGtkTreeModel_Type))
+	self->obj = g_object_new(pyg_type_from_object((PyObject*) self),
+                                 "model", GTK_TREE_MODEL(pymodel->obj), NULL);
+    else {
+	PyErr_SetString(PyExc_TypeError,
+			"model must be a gtk.TreeModel or None");
+	return -1;
+    }
+ 
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkIconView object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
