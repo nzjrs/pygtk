@@ -27,6 +27,18 @@
    (pixtext GTK_CELL_PIXTEXT)
    (widget GTK_CELL_WIDGET))
 
+(define-enum GtkCListDragPos
+   (none GTK_CLIST_DRAG_NONE)
+   (before GTK_CLIST_DRAG_BEFORE)
+   (into GTK_CLIST_DRAG_INTO)
+   (after GTK_CLIST_DRAG_AFTER))
+
+(define-flags GtkButtonAction
+   (ignored GTK_BUTTON_IGNORED)
+   (selects GTK_BUTTON_SELECTS)
+   (drags GTK_BUTTON_DRAGS)
+   (expands GTK_BUTTON_EXPANDS))
+
 ; enumerations from "gtkctree.h"
 
 (define-enum GtkCTreePos
@@ -471,7 +483,9 @@
    (has-default GTK_HAS_DEFAULT)
    (has-grab GTK_HAS_GRAB)
    (rc-style GTK_RC_STYLE)
-   (composite-child GTK_COMPOSITE_CHILD))
+   (composite-child GTK_COMPOSITE_CHILD)
+   (no-reparent GTK_NO_REPARENT)
+   (app-paintable GTK_APP_PAINTABLE))
 
 ; enumerations from "../gdk/gdktypes.h"
 
@@ -852,6 +866,37 @@
    (status-nothing GDK_IM_STATUS_NOTHING)
    (status-none GDK_IM_STATUS_NONE)
    (status-mask GDK_IM_STATUS_MASK))
+
+(define-flags GdkICAttributesType
+   (style GDK_IC_STYLE)
+   (client-window GDK_IC_CLIENT_WINDOW)
+   (focus-window GDK_IC_FOCUS_WINDOW)
+   (filter-events GDK_IC_FILTER_EVENTS)
+   (spot-location GDK_IC_SPOT_LOCATION)
+   (line-spacing GDK_IC_LINE_SPACING)
+   (cursor GDK_IC_CURSOR)
+   (preedit-fontset GDK_IC_PREEDIT_FONTSET)
+   (preedit-area GDK_IC_PREEDIT_AREA)
+   (preedit-area-needed GDK_IC_PREEDIT_AREA_NEEDED)
+   (preedit-foreground GDK_IC_PREEDIT_FOREGROUND)
+   (preedit-background GDK_IC_PREEDIT_BACKGROUND)
+   (preedit-pixmap GDK_IC_PREEDIT_PIXMAP)
+   (preedit-colormap GDK_IC_PREEDIT_COLORMAP)
+   (status-fontset GDK_IC_STATUS_FONTSET)
+   (status-area GDK_IC_STATUS_AREA)
+   (status-area-needed GDK_IC_STATUS_AREA_NEEDED)
+   (status-foreground GDK_IC_STATUS_FOREGROUND)
+   (status-background GDK_IC_STATUS_BACKGROUND)
+   (status-pixmap GDK_IC_STATUS_PIXMAP)
+   (status-colormap GDK_IC_STATUS_COLORMAP)
+   (all-req GDK_IC_ALL_REQ)
+   (client-window GDK_IC_CLIENT_WINDOW)
+   (preedit-area-req GDK_IC_PREEDIT_AREA_REQ)
+   (preedit-fontset GDK_IC_PREEDIT_FONTSET)
+   (preedit-position-req GDK_IC_PREEDIT_POSITION_REQ)
+   (preedit-fontset GDK_IC_PREEDIT_FONTSET)
+   (status-area-req GDK_IC_STATUS_AREA_REQ)
+   (status-fontset GDK_IC_STATUS_FONTSET))
 
 (define-flags GdkWMDecoration
    (all GDK_DECOR_ALL)
