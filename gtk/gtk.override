@@ -5672,32 +5672,27 @@ override gtk_adjustment_new kwargs
 static int
 _wrap_gtk_adjustment_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    GType obj_type = pyg_type_from_object((PyObject *) self);
-    GParameter params[6];
-    PyObject *parsed_args[6] = {NULL, };
     char *kwlist[] = {"value", "lower", "upper", "step_incr",
                       "page_incr", "page_size", NULL };
-    char *arg_names[] = {"lower", "upper", "step_incr",
-                         "page_incr", "page_size", "value", NULL };
-    char *prop_names[] = {"lower", "upper", "step_increment",
-                          "page_increment", "page_size", "value", NULL };
-    guint nparams, i;
+    gdouble value = 0;
+    gdouble lower = 0;
+    gdouble upper = 0;
+    gdouble step_incr = 0;
+    gdouble page_incr = 0;
+    gdouble page_size = 0;
+    GType obj_type = pyg_type_from_object((PyObject *) self);
  
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "|OOOOOO:gtk.Adjustment.__init__" ,
-                                     kwlist ,
-                                     &parsed_args[5], &parsed_args[0],
-                                     &parsed_args[1], &parsed_args[2],
-                                     &parsed_args[3], &parsed_args[4]))
+                                     "|dddddd:gtk.Adjustment.__init__" ,
+                                     kwlist, &value, &lower, &upper, &step_incr,
+                                     &page_incr, &page_size))
         return -1;
 
-    memset(params, 0, sizeof(GParameter)*6);
-    if (!pyg_parse_constructor_args(obj_type, arg_names, prop_names,
-                                    params, &nparams, parsed_args))
-        return -1;
-    self->obj = g_object_newv(obj_type, nparams, params);
-    for (i = 0; i < nparams; ++i)
-        g_value_unset(&params[i].value);
+    self->obj = g_object_new(obj_type, "lower", lower, "upper", upper,
+                             "step_increment", step_incr,
+                             "page_increment", page_incr,
+                             "page_size", page_size,
+                             "value", value, NULL);
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError,
                         "could not create gtk.Adjustment object");
