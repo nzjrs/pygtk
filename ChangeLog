@@ -1,3 +1,18 @@
+2005-02-23  Cedric Gustin  <cedric.gustin@swing.be>
+
+	* setup.py: Move the install_template call for pygobject-2.0.pc.in
+	to the right place in the script. Also define PLATFORM_WIN32 on
+	win32. Fixes bug #150616.
+	* codegen/codegen.py: Do not write the 'pygtk class init' function
+	for objects whose type is explicitly ignored (like GtkPlug and
+	GtkSocket on win32). Otherwise, it generates glib-warnings related
+	to calls to g_object_set_qdata with a NULL 'node'.
+	* gobject/pygtype.c: Do not use g_string_append_printf with a NULL
+	argument, as it crashes on win32. Fixes bug #166546.
+	* gtk/gtk.override: Add GtkSocket__proxy_do_plug_added,
+	GtkSocket__proxy_do_plug_removed and GtkPlug__proxy_do_embedded to
+	the ignore-win32 list.
+
 2005-02-15  Johan Dahlin  <johan@gnome.org>
 
 	* gtk/__init__.py: Deprecate gtk.TRUE and gtk.FALSE

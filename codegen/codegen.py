@@ -537,7 +537,11 @@ class Wrapper:
                 sys.stderr.write('Could not write virtual proxy %s.%s: %s\n'
                                 % (klass, meth.name, exc_info()))
         if virtuals:
-            ## Write a 'pygtk class init' function for this object
+            # Write a 'pygtk class init' function for this object,
+            # except when the object type is explicitly ignored (like
+            # GtkPlug and GtkSocket on win32).
+            if self.overrides.is_ignored(self.objinfo.typecode):
+                return
             class_cast_macro = self.objinfo.typecode.replace('_TYPE_', '_', 1) + "_CLASS"
             cast_macro = self.objinfo.typecode.replace('_TYPE_', '_', 1)
             funcname = "__%s_class_init" % klass

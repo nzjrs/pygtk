@@ -51,6 +51,7 @@ GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
 
 if sys.platform == 'win32':
     GLOBAL_MACROS.append(('VERSION', '\\\"%s\\\"' % VERSION))
+    GLOBAL_MACROS.append(('PLATFORM_WIN32',1))
 else:
     GLOBAL_MACROS.append(('VERSION', '"%s"' % VERSION))
 
@@ -77,8 +78,6 @@ class PyGtkInstallLib(InstallLib):
 
         InstallLib.run(self)
 
-        self.install_template('pygobject-2.0.pc.in',
-                              os.path.join(self.libdir, 'pkgconfig'))
     def install_pth(self):
         """Write the pygtk.pth file"""
         file = os.path.join(self.install_dir, 'pygtk.pth')
@@ -112,6 +111,9 @@ class PyGtkInstallData(InstallData):
         self.install_template('pygtk-2.0.pc.in',
                               os.path.join(self.install_dir,
                                            'lib','pkgconfig'))
+        self.install_template('pygobject-2.0.pc.in',
+                              os.path.join(self.install_dir,
+                                           'lib', 'pkgconfig'))
 
 class PyGtkBuild(build):
     enable_threading = 1
