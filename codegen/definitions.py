@@ -1,5 +1,6 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 import sys
+from copy import *
 
 def get_valid_scheme_definitions(defs):
     return [x for x in defs if isinstance(x, tuple) and len(x) >= 2]
@@ -11,10 +12,16 @@ class Parameter(object):
         self.pname = pname
         self.pdflt = pdflt
         self.pnull = pnull
-        self.prop = prop
+        
     def __len__(self): return 4
     def __getitem__(self, i):
         return (self.ptype, self.pname, self.pdflt, self.pnull)[i]
+
+    def merge(self, old):
+        if old.pdflt is not None:
+            self.pdflt = old.pdflt
+        if old.pnull is not None:
+            self.pnull = old.pnull
 
 # Parameter for property based constructors
 class Property(object):
@@ -22,6 +29,12 @@ class Property(object):
         self.pname = pname
         self.optional = optional
         self.argname = argname
+
+    def merge(self, old):
+        if old.optional is not None:
+            self.optional = old.optional
+        if old.argname is not None:
+            self.argname = old.argname
 
 
 class Definition:
@@ -294,8 +307,10 @@ class MethodDef(Definition):
                 self.write_defs(sys.stderr)
                 raise RuntimeError, "definition missing required %s" % (item,)
             
-    def merge(self, old):
+    def merge(self, old, parmerge):
 	# here we merge extra parameter flags accross to the new object.
+        if not parmerge:
+            self.params = deepcopy(old.params)
 	for i in range(len(self.params)):
 	    ptype, pname, pdflt, pnull = self.params[i]
 	    for p2 in old.params:
@@ -322,6 +337,8 @@ class MethodDef(Definition):
                 if pnull: fp.write(' (null-ok)')
                 fp.write(')\n')
             fp.write('  )\n')
+	if self.varargs:
+	    fp.write('  (varargs #t)\n')
 	fp.write(')\n\n')
 
 class FunctionDef(Definition):
@@ -396,14 +413,30 @@ class FunctionDef(Definition):
 
     _method_write_defs = MethodDef.__dict__['write_defs']
 
-    def merge(self, old):
+    def merge(self, old, parmerge):
+        if not parmerge:
+            self.params = deepcopy(old.params)
 	# here we merge extra parameter flags accross to the new object.
-	for i in range(len(self.params)):
-	    ptype, pname, pdflt, pnull = self.params[i]
-	    for p2 in old.params:
-		if p2[1] == pname:
-		    self.params[i] = (ptype, pname, p2[2], p2[3])
-		    break
+        def merge_param(param):
+	    for old_param in old.params:
+		if old_param.pname == param.pname:
+                    if isinstance(old_param, Property):
+                        # h2def never scans Property's, therefore if
+                        # we have one it was manually written, so we
+                        # keep it.
+                        return deepcopy(old_param)
+                    else:
+                        param.merge(old_param)
+                        return param
+            raise RuntimeError, "could not find %s in old_parameters %r" % (
+                param.pname, [p.pname for p in old.params])
+        try:
+            self.params = map(merge_param, self.params)
+        except RuntimeError:
+            # parameter names changed and we can't find a match; it's
+            # safer to keep the old parameter list untouched.
+            self.params = deepcopy(old.params)
+        
 	if not self.is_constructor_of:
             try:
                 self.is_constructor_of = old.is_constructor_of
@@ -446,5 +479,7 @@ class FunctionDef(Definition):
                     fp.write(')\n')
                 fp.write('  )\n')
             else:
-                assert False, "strange parameter list"
+                assert False, "strange parameter list %r" % self.params[0]
+	if self.varargs:
+	    fp.write('  (varargs #t)\n')
 	fp.write(')\n\n')

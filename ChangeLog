@@ -1,3 +1,21 @@
+2004-11-07  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* codegen/definitions.py (FunctionDef.write_defs): write (varargs
+	#t) when appropriate.
+	(MethodDef.write_defs): idem.
+	(FunctionDef.merge): Refactor/fix and add 'parmerge' argument.
+
+	* codegen/defsparser.py (DefsParser.merge): Add parameter
+	parmerge, to inidicate if we want parameter lists merging or not.
+
+	* codegen/mergedefs.py: Parse command line options with optparse;
+	accept option -p to indicate we want to update parameter lists of
+	existing methods/functions; by default parameter lists are not merged.
+
+	* codegen/h2def.py (proto_pat): Accept \s* between ( and start of
+	argument list.  Fixes parsing of
+	libgnomeui-2.0/libgnomeui/gnome-scores.h, and others.
+
 2004-11-06  Hans Breuer  <hans@breuer.org>
 
 	* config.h.win32 makefile.msc gobject/makefile.msc
