@@ -1,3 +1,30 @@
+2002-03-19  Matt Wilson  <msw@redhat.com>
+
+	* autogen.sh: allow override of autoconf and autoheader
+
+	* gtk/gtk.defs (GtkTreeModel.get_iter_root): use the
+	gtk_tree_model_get_iter_first code, get_iter_root is going to be
+	deprecated.
+	(GtkTreeModel.get_iter_first): added
+
+	* gtk/gtk.override (_wrap_gtk_tree_model_get_iter_root): check the
+	return value of gtk_tree_model_get_iter_root and return None if it
+	failed.  Rename to _wrap_gtk_tree_model_get_iter_first.
+
+	* codegen/codegen.py (write_class, write_interface, write_boxed
+	write_pointer): use overrides.is_already_included to prevent from
+	having the same override code included twice in one file.  This
+	allows two methods to point to the same function.
+
+	* codegen/override.py (Overrides.is_already_included): added a
+	function that returns true if the override code has been emitted
+	already.
+
+2002-03-11  Matt Wilson  <msw@redhat.com>
+
+	* gobjectmodule.c: remove pygobject_exception_notifiers and
+	pyg_fatal_exceptions_notify.
+
 2002-03-18  James Henstridge  <james@daa.com.au>
 
 	* pango.defs: remove indic functions -- they are part of the

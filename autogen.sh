@@ -14,6 +14,8 @@ DIE=0
 
 test -z "$AUTOMAKE" && AUTOMAKE=automake
 test -z "$ACLOCAL" && ACLOCAL=aclocal
+test -z "$AUTOCONF" && AUTOCONF=autoconf
+test -z "$AUTOHEADER" && AUTOHEADER=autoheader
 
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
 	echo
@@ -85,14 +87,14 @@ fi
 $ACLOCAL $ACLOCAL_FLAGS
 
 # optionally feature autoheader
-(autoheader --version)  < /dev/null > /dev/null 2>&1 && autoheader
+($AUTOHEADER --version)  < /dev/null > /dev/null 2>&1 && $AUTOHEADER
 
 # run libtoolize ...
 libtoolize --force
 
 $AUTOMAKE -a $am_opt
-autoheader
-autoconf
+$AUTOHEADER
+$AUTOCONF
 cd $ORIGDIR
 
 $srcdir/configure --enable-maintainer-mode "$@"

@@ -1662,14 +1662,18 @@ _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_tree_model_get_iter_root noargs
+override gtk_tree_model_get_iter_first noargs
 static PyObject *
-_wrap_gtk_tree_model_get_iter_root(PyGObject *self)
+_wrap_gtk_tree_model_get_iter_first(PyGObject *self)
 {
     GtkTreeIter iter;
 
-    gtk_tree_model_get_iter_root(GTK_TREE_MODEL(self->obj), &iter);
-    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(self->obj), &iter))
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    else {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
 }
 %%
 override gtk_tree_model_iter_children kwargs

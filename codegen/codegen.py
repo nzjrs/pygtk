@@ -586,11 +586,12 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(meth.c_name):
-                lineno, filename = overrides.getstartline(meth.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(meth.c_name))
-                fp.resetline()
-                fp.write('\n\n')
+                if not overrides.is_already_included(meth.c_name):
+                    lineno, filename = overrides.getstartline(meth.c_name)
+                    fp.setline(lineno, filename)
+                    fp.write(overrides.override(meth.c_name))
+                    fp.resetline()
+                    fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
                 elif overrides.wants_noargs(meth.c_name):
@@ -651,11 +652,12 @@ def write_interface(parser, interface, overrides, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(meth.c_name):
-                lineno, filename = overrides.getstartline(meth.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(meth.c_name))
-                fp.resetline()
-                fp.write('\n\n')
+                if not overrides.is_already_included(meth.c_name):
+                    lineno, filename = overrides.getstartline(meth.c_name)
+                    fp.setline(lineno, filename)
+                    fp.write(overrides.override(meth.c_name))
+                    fp.resetline()
+                    fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
                 elif overrides.wants_noargs(meth.c_name):
@@ -861,11 +863,12 @@ def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(meth.c_name):
-                lineno, filename = overrides.getstartline(meth.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(meth.c_name))
-                fp.resetline()
-                fp.write('\n\n')
+                if not overrides.is_already_included(meth.c_name):
+                    lineno, filename = overrides.getstartline(meth.c_name)
+                    fp.setline(lineno, filename)
+                    fp.write(overrides.override(meth.c_name))
+                    fp.resetline()
+                    fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
                 elif overrides.wants_noargs(meth.c_name):
@@ -1076,11 +1079,12 @@ def write_pointer(parser, pointerobj, overrides, fp=sys.stdout):
 	try:
             methtype = 'METH_VARARGS'
             if overrides.is_overriden(meth.c_name):
-                lineno, filename = overrides.getstartline(meth.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(meth.c_name))
-                fp.resetline()
-                fp.write('\n\n')
+                if not overrides.is_already_included(meth.c_name):
+                    lineno, filename = overrides.getstartline(meth.c_name)
+                    fp.setline(lineno, filename)
+                    fp.write(overrides.override(meth.c_name))
+                    fp.resetline()
+                    fp.write('\n\n')
                 if overrides.wants_kwargs(meth.c_name):
                     methtype = methtype + '|METH_KEYWORDS'
                 elif overrides.wants_noargs(meth.c_name):

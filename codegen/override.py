@@ -15,6 +15,7 @@ class Overrides:
 	self.ignores = {}
 	self.glob_ignores = []
 	self.overrides = {}
+        self.overridden = {}
 	self.kwargs = {}
         self.noargs = {}
         self.startlines = {}
@@ -104,8 +105,11 @@ class Overrides:
 	return 0
     def is_overriden(self, name):
 	return self.overrides.has_key(name)
+    def is_already_included(self, name):
+        return self.overridden.has_key(name)
     def override(self, name):
-	return self.overrides[name]
+        self.overridden[name] = 1
+        return self.overrides[name]
     def getstartline(self, name):
         return self.startlines[name]
     def wants_kwargs(self, name):
