@@ -20,7 +20,8 @@ _gtkmodule_la_SOURCES = \
   gtkobject-support.c \
   gtk-types.c \
   pygtktreemodel.h \
-  pygtktreemodel.c \
+  pygtktreemodel.c
+nodist__gtkmodule_la_SOURCES = \
   gtk.c \
   gdk.c
 
@@ -28,13 +29,14 @@ glademodule_la_LDFLAGS = -module -avoid-version \
   -export-symbols-regex initlibglade
 glademodule_la_LIBADD = $(LIBGLADE_LIBS)
 glademodule_la_SOURCES = \
-  libglademodule.c \
+  libglademodule.c
+nodist_glademodule_la_SOURCES = \
   libglade.c
 
 pkginclude_HEADERS = pygtk.h
 pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 
-DISTCLEANFILES = gtk.c gdk.c libglade.c
+CLEANFILES = gtk.c gdk.c libglade.c
 
 $(srcdir)/gtk.c: $(srcdir)/gtk.defs $(srcdir)/gdk.defs \
 		 $(srcdir)/gtk-extrafuncs.defs $(srcdir)/gtk-types.defs \
@@ -71,10 +73,6 @@ $(srcdir)/libglade.c: $(srcdir)/libglade.defs $(srcdir)/libglade.override
 	    --prefix pylibglade libglade.defs) > gen-libglade.c \
 	&& cp gen-libglade.c libglade.c \
 	&& rm -f gen-libglade.c
-
-# a hack so that gtk.c is not included in the final package.
-dist-hook:
-	-rm -f $(distdir)/gtk.c $(distdir)/libglade.c
 
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA = gtk.defs gtk-types.defs gtk-extrafuncs.defs \

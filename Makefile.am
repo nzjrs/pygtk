@@ -3,31 +3,44 @@ AUTOMAKE_OPTIONS = 1.5
 
 SUBDIRS = codegen gtk
 
-INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS) $(ATK_CFLAGS)
+INCLUDES = $(PYTHON_INCLUDES)
 
 pyexec_LTLIBRARIES = gobjectmodule.la pangomodule.la atkmodule.la
 
 gobjectmodule_la_LDFLAGS = -module -avoid-version \
  -export-symbols-regex initgobject
-gobjectmodule_la_SOURCES = \
-	gobjectmodule.c \
-	pygobject.h
+gobjectmodule_la_CFLAGS = $(GLIB_CFLAGS)
+gobjectmodule_la_SOURCES = gobjectmodule.c \
+			   pygobject.h
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 
-pangomodule_la_LDFLAGS = -module -avoid-version \
- -export-symbols-regex initpango
-pangomodule_la_SOURCES = \
-  pangomodule.c \
-  pango.c
+# pango module
+
+pangomodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initpango
+pangomodule_la_CFLAGS = $(PANGO_CFLAGS)
+pangomodule_la_SOURCES = pangomodule.c
+nodist_pangomodule_la_SOURCES = pango.c
 pangomodule_la_LIBADD = $(PANGO_LIBS)
+pango.c: pango.defs pango.override
+CLEANFILES = pango.c
+EXTRA_DIST = \
+  pango.defs \
+  pango.override
+
+# atk module
 
 atkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initatk
-atkmodule_la_SOURCES = \
-  atkmodule.c \
-  atk.c
+atkmodule_la_CFLAGS = $(ATK_CFLAGS)
+atkmodule_la_SOURCES = atkmodule.c
+nodist_atkmodule_la_SOURCES = atk.c
 atkmodule_la_LIBADD = $(ATK_LIBS)
+atk.c: pango.defs atk.override
+CLEANFILES += atk.c
+EXTRA_DIST += \
+  atk.defs \
+  atk.override
 
-%.c: $(srcdir)/%.defs $(srcdir)/%.override
+.defs.c:
 	(cd $(srcdir)\
 	 && $(PYTHON) codegen/codegen.py \
 	    --register pango-types.defs \
@@ -43,25 +56,18 @@ pkgincludedir = $(includedir)/pygtk-2.0
 
 noinst_PYTHON = ltihooks.py
 
-dist-hook:
-	-rm -f $(distdir)/pango.c
-
-DISTCLEANFILES = pango.c atk.c
-
 defsdir = $(pkgdatadir)/2.0/defs
 defs_DATA = pango.defs pango-types.defs
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = pygtk-2.0.pc
 
-EXTRA_DIST = \
+EXTRA_DIST += \
   pygtk.spec \
   pygtk.spec.in \
   pygtk-2.0.pc.in \
   MAPPING \
   THREADS \
-  atk.defs \
-  atk.override \
   pango.defs \
   pango-types.defs \
   pango.override \
