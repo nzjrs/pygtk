@@ -41,6 +41,7 @@ extern PyMethodDef pygtk_functions[];
 extern PyMethodDef pygdk_functions[];
 
 PyObject *PyGtkDeprecationWarning;
+PyObject *PyGtkWarning;
 
 static struct _PyGtk_FunctionStruct functions = {
     VERSION,
@@ -74,6 +75,15 @@ sink_gtkobject(GObject *object)
 	g_object_ref(object);
 	gtk_object_sink(GTK_OBJECT(object));
     }
+}
+
+static void
+_pygtk_log_func(const gchar *log_domain,
+                GLogLevelFlags log_level,
+                const gchar *message,
+                gpointer user_data)
+{
+    PyErr_Warn(PyGtkWarning, (char *) message);
 }
 
 static gboolean
@@ -237,6 +247,11 @@ init_gtk(void)
     add_atom(SELECTION_TYPE_WINDOW);
     add_atom(SELECTION_TYPE_STRING);
 #undef add_atom
+
+    PyGtkWarning = PyErr_NewException("gtk.GtkWarning", PyExc_Warning, NULL);
+    PyDict_SetItemString(d, "Warning", PyGtkWarning);
+    g_log_set_handler("Gtk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _pygtk_log_func, NULL);
     
     gtk_timeout_add(100, python_do_pending_calls, NULL);
 }
