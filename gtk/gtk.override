@@ -677,6 +677,117 @@ _wrap_gtk_container_get_focus_chain(PyGObject *self)
     return Py_None;
 }
 %%
+override gtk_container_child_get_property
+static PyObject *
+_wrap_gtk_container_child_get_property(PyGObject *self, PyObject *args)
+{
+    PyGObject *pychild;
+    gchar *property_name;
+    GtkContainer *container;
+    GtkWidget *child;
+    GList *children;
+    GObjectClass *class;
+    GParamSpec *pspec;
+    GValue value = { 0, } ;
+    PyObject *ret;
+    
+    if (!PyArg_ParseTuple(args, "O!s:GtkContainer.child_get_property",
+			  &PyGtkWidget_Type, &pychild, 
+			  &property_name)) {
+	return NULL;
+    }
+
+    container = GTK_CONTAINER(self->obj);
+    child = GTK_WIDGET(pychild->obj);
+    
+    children = gtk_container_get_children(container);
+    if (g_list_find(children, child) == NULL) {
+	PyErr_SetString(PyExc_TypeError,
+			"first argument must be a child");
+	return NULL;	
+    }
+	   
+    class = G_OBJECT_GET_CLASS(container);
+    pspec = gtk_container_class_find_child_property(class, property_name);
+    if (!pspec) {
+	gchar buf[512];
+	g_snprintf(buf, sizeof(buf),
+		   "container does not support property `%s'",
+		   property_name);
+	
+	PyErr_SetString(PyExc_TypeError, buf);
+	return NULL;
+    }
+    
+    g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+
+    gtk_container_child_get_property(container,
+				     child,
+				     property_name,
+				     &value);
+    
+    ret = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+    
+    return ret;
+}
+%%
+override gtk_container_child_set_property
+static PyObject *
+_wrap_gtk_container_child_set_property(PyGObject *self, PyObject *args)
+{
+    gchar *property_name;
+    PyGObject *pychild;
+    GtkContainer *container;
+    GtkWidget *child;
+    GList *children;
+    PyGObject *pyvalue;
+    GObjectClass *class;
+    GParamSpec *pspec;
+    GValue value = { 0, } ;
+    
+    if (!PyArg_ParseTuple(args, "O!sO:GtkContainer.child_set_property",
+			  &PyGtkWidget_Type, &pychild, 
+			  &property_name, &pyvalue)) {
+	return NULL;
+    }
+
+    container = GTK_CONTAINER(self->obj);
+    child = GTK_WIDGET(pychild->obj);
+    
+    children = gtk_container_get_children(container);
+    if (g_list_find(children, child) == NULL) {
+	PyErr_SetString(PyExc_TypeError,
+			"first argument must be a child");
+	return NULL;	
+    }
+
+    class = G_OBJECT_GET_CLASS(self->obj);
+    pspec = gtk_container_class_find_child_property(class, property_name);
+    if (!pspec) {
+	gchar buf[512];
+	g_snprintf(buf, sizeof(buf),
+		   "container does not support property `%s'",
+		   property_name);
+	PyErr_SetString(PyExc_TypeError, buf);
+		
+	return NULL;
+    }
+    
+    g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+    
+    pyg_value_from_pyobject(&value, (PyObject*)pyvalue);
+    
+    gtk_container_child_set_property(container,
+				     child,
+				     property_name,
+				     &value);
+    g_value_unset(&value);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+%%
 override gtk_label_get noargs
 static PyObject *
 _wrap_gtk_label_get(PyGObject *self)
