@@ -12,8 +12,8 @@ FILE=gtk
 
 DIE=0
 
-test -z "$AUTOMAKE" && AUTOMAKE=automake
-test -z "$ACLOCAL" && ACLOCAL=aclocal
+test -z "$AUTOMAKE" && AUTOMAKE=automake-1.6
+test -z "$ACLOCAL" && ACLOCAL=aclocal-1.6
 test -z "$AUTOCONF" && AUTOCONF=autoconf
 test -z "$AUTOHEADER" && AUTOHEADER=autoheader
 
