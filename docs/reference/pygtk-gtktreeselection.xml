@@ -25,7 +25,8 @@ linkend="method-gtktreeselection--set-mode">set_mode</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--get-mode">get_mode</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--set-select-function">set_select_function</link></methodname>
@@ -43,10 +44,20 @@ END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--get-tree-view">get_tree_view</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--get-selected">get_selected</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreeselection--get-selected-rows">get_selected_rows</link></methodname>
+	<methodparam><parameter
+		       role="keyword">model</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreeselection--count-selected-rows">count_selected_rows</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
@@ -95,14 +106,23 @@ linkend="method-gtktreeselection--iter-is-selected">iter_is_selected</link></met
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--select-all">select_all</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--unselect-all">unselect_all</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--select-range">select_range</link></methodname>
+	<methodparam><parameter
+		       role="keyword">start_path</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">end_path</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreeselection--unselect-range">unselect_range</link></methodname>
 	<methodparam><parameter
 		       role="keyword">start_path</parameter></methodparam>
 	<methodparam><parameter
@@ -211,7 +231,8 @@ if it was previously selected.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>get_mode</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -286,7 +307,8 @@ upon.</para>
 
 <programlisting><methodsynopsis language="python">
     <methodname>get_user_data</methodname>
-    <methodparam></methodparam>  </methodsynopsis></programlisting>
+    <methodparam></methodparam>
+  </methodsynopsis></programlisting>
   <variablelist>
     <varlistentry>
       <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -344,6 +366,68 @@ use <parameter>selection</parameter> is
 <literal>gtk.SELECTION_MULTIPLE</literal>.</para>
 
     </refsect2>
+
+    <refsect2 id="method-gtktreeselection--get-selected-rows">
+      <title>gtk.TreeSelection.get_selected_rows</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_selected_rows</methodname>
+	  <methodparam><parameter role="keyword">model</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">model</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
+	  or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a list containing a tree path for each selected
+	  row.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_selected_rows</methodname>() method returns
+a list of the tree paths of all selected rows in the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+specified by <parameter>model</parameter>. Additionally, if you are planning
+on modifying the model after calling this function, you may want to convert
+the returned list into a list of <link
+linkend="class-gtktreerowreference"><classname>gtk.TreeRowReference</classname></link>
+objects.  To do this, you can use the <link
+linkend="constructor-gtktreerowreference">gtk.TreeRowReference</link>()
+constructor.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeselection--count-selected-rows">
+      <title>gtk.TreeSelection.count_selected_rows</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>count_selected_rows</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The number of rows selected.
+
+Since: 2.2</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>count_selected_rows</methodname>() method
+returns the number of rows that have been selected.</para> </refsect2>
+
 
     <refsect2 id="method-gtktreeselection--selected-foreach">
       <title>gtk.TreeSelection.selected_foreach</title>
@@ -599,7 +683,39 @@ range.</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>select_range</methodname>() method selects a
-range of nodes, determined by the tree paths
+range of nodes specified by the tree paths
+<parameter>start_path</parameter> and <parameter>end_path</parameter>
+inclusive.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeselection--unselect-range">
+      <title>gtk.TreeSelection.unselect_range</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>unselect_range</methodname>
+	  <methodparam><parameter>start_path</parameter></methodparam>
+	  <methodparam><parameter>end_path</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>start_path</parameter>&nbsp;:</term>
+	  <listitem><simpara>The initial node of the
+	  range.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>end_path</parameter>&nbsp;:</term>
+	  <listitem><simpara>The final node of the
+	  range.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>unselect_range</methodname>() method unselects
+the range of nodes specified by the tree paths
 <parameter>start_path</parameter> and <parameter>end_path</parameter>
 inclusive.</para>
 
