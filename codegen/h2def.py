@@ -353,7 +353,7 @@ def write_func(fp, name, ret, args, prefix):
             obj = m.group(2)
             if munged_name[:len(obj)] == string.lower(obj):
                 regex = string.join(map(lambda x: x+'_?',string.lower(obj)),'')
-                mname = re.sub(regex, '', name)
+                mname = re.sub(regex, '', name, 1)
                 if prefix:
                     l = len(prefix) + 1
                     if mname[:l] == prefix and mname[l+1] == '_':
