@@ -1,5 +1,28 @@
 2001-03-27  James Henstridge  <james@daa.com.au>
 
+	* examples/gobject/signal.py: simple example program that adds a
+	signal to a class, connects a handler to an instance of that
+	class, and finally emits that signal.  Messages are printed by
+	both the signal handler and class method closure.
+
+	* gobjectmodule.c (pyg_signal_class_closure_marshal): convert
+	dashes in signal name to underscores.  Why does g_siganl_name use
+	dashes?
+	(pyg_signal_class_closure_marshal): fix off by one error when
+	setting up the python argument tuple.  The first element was
+	getting left uninitialised.  Signals introduced in python now
+	work.
+
+	* gtk/gtk.defs (GtkFileSelection.get_filename): return value is
+	const.
+
+	* gtk/gtk.override (_wrap_gtk_list_store_set_value): change name.
+	(_wrap_gtk_tree_store_insert): change name.
+
+	* gtk/gtk.defs (GtkListStore.set_value): change from set_cell to
+	set_value.
+	(GtkListStore.set_value): same here.
+
 	* gobjectmodule.c (pyg_signal_class_closure_get): new function to
 	get the closure used as the `class closure' for signals.  We only
 	need one, as we can get all the information we need from the

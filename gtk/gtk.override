@@ -1674,16 +1674,18 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
-override gtk_list_store_set_cell kwargs
+override gtk_list_store_set_value kwargs
 static PyObject *
-_wrap_gtk_list_store_set_cell(PyGObject *self, PyObject *args, PyObject*kwargs)
+_wrap_gtk_list_store_set_value(PyGObject *self, PyObject *args,
+			       PyObject *kwargs)
 {
     static char *kwlist[] = { "iter", "column", "value", NULL };
     PyObject *iter, *pyvalue;
     gint column;
     GValue value = { 0 };
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!iO:GtkListStore.set_cell",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!iO:GtkListStore.set_value",
 				     kwlist, &PyGtkTreeIter_Type, &iter,
 				     &column, &pyvalue))
 	return NULL;
@@ -1698,8 +1700,8 @@ _wrap_gtk_list_store_set_cell(PyGObject *self, PyObject *args, PyObject*kwargs)
 			"value is of the wrong type for this column");
 	return NULL;
     }
-    gtk_list_store_set_cell(GTK_LIST_STORE(self->obj), PyGtkTreeIter_Get(iter),
-			    column, &value);
+    gtk_list_store_set_value(GTK_LIST_STORE(self->obj),
+			     PyGtkTreeIter_Get(iter), column, &value);
     g_value_unset(&value);
     Py_INCREF(Py_None);
     return Py_None;
@@ -1821,16 +1823,18 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
-override gtk_tree_store_set_cell kwargs
+override gtk_tree_store_set_value kwargs
 static PyObject *
-_wrap_gtk_tree_store_set_cell(PyGObject *self, PyObject *args, PyObject*kwargs)
+_wrap_gtk_tree_store_set_value(PyGObject *self, PyObject *args,
+			       PyObject *kwargs)
 {
     static char *kwlist[] = { "iter", "column", "value", NULL };
     PyObject *iter, *pyvalue;
     gint column;
     GValue value = { 0 };
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!iO:GtkTreeStore.set_cell",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!iO:GtkTreeStore.set_value",
 				     kwlist, &PyGtkTreeIter_Type, &iter,
 				     &column, &pyvalue))
 	return NULL;
@@ -1845,8 +1849,8 @@ _wrap_gtk_tree_store_set_cell(PyGObject *self, PyObject *args, PyObject*kwargs)
 			"value is of the wrong type for this column");
 	return NULL;
     }
-    gtk_tree_store_set_cell(GTK_TREE_STORE(self->obj), PyGtkTreeIter_Get(iter),
-			    column, &value);
+    gtk_tree_store_set_value(GTK_TREE_STORE(self->obj),
+			     PyGtkTreeIter_Get(iter), column, &value);
     g_value_unset(&value);
     Py_INCREF(Py_None);
     return Py_None;

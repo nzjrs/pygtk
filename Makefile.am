@@ -24,6 +24,7 @@ EXTRA_DIST = \
 	pygtk.spec \
 	MAPPING \
 	ExtensionClass.stx \
+	examples/gobject/signal.py \
 	examples/imlib/view.py \
 	examples/ide/gtkcons.py \
 	examples/ide/gtkdb.py \
