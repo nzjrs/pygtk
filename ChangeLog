@@ -1,5 +1,14 @@
 2002-07-15  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtk-types.c (pygtk_tree_model_row_getsets): add next,
+	parent, model and path attributes to row objects.
+	(pygtk_tree_model_row_methods): add an iterchildren() method to
+	row objects.
+
+	* gtk/gtk.override (pygtk_register_classes): rather than #defines,
+	set the tp_as_mapping and tp_iter members of GtkListStore, etc in
+	the init func.
+
 	* gtk/gtk.override (_wrap_gtk_list_store_tp_iter): iter(liststore)
 	returns a gtk.TreeModelRowIter object.
 

@@ -866,6 +866,70 @@ static PySequenceMethods pygtk_tree_model_row_seqmethods = {
     (intintobjargproc)0
 };
 
+static PyObject *
+pygtk_tree_model_row_iterchildren(PyGtkTreeModelRow *self)
+{
+    return _pygtk_tree_model_row_iter_new(self->model, &self->iter);
+}
+
+static PyMethodDef pygtk_tree_model_row_methods[] = {
+    { "iterchildren", (PyCFunction)pygtk_tree_model_row_iterchildren, METH_NOARGS },
+    { NULL, NULL, 0 }
+};
+
+static PyObject *
+pygtk_tree_model_row_get_next(PyGtkTreeModelRow *self, void *closure)
+{
+    GtkTreeIter iter;
+
+    iter = self->iter;
+    if (gtk_tree_model_iter_next(self->model, &iter))
+	return _pygtk_tree_model_row_new(self->model, &iter);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_tree_model_row_get_parent(PyGtkTreeModelRow *self, void *closure)
+{
+    GtkTreeIter parent;
+
+    if (gtk_tree_model_iter_parent(self->model, &self->iter, &parent))
+	return _pygtk_tree_model_row_new(self->model, &parent);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygtk_tree_model_row_get_model(PyGtkTreeModelRow *self, void *closure)
+{
+    return pygobject_new((GObject *)self->model);
+}
+
+static PyObject *
+pygtk_tree_model_row_get_path(PyGtkTreeModelRow *self, void *closure)
+{
+    GtkTreePath *path;
+    PyObject *ret;
+
+    path = gtk_tree_model_get_path(self->model, &self->iter);
+    if (!path) {
+	PyErr_SetString(PyExc_RuntimeError, "could not get tree path");
+	return NULL;
+    }
+    ret = pygtk_tree_path_to_pyobject(path);
+    gtk_tree_path_free(path);
+    return ret;
+}
+
+static PyGetSetDef pygtk_tree_model_row_getsets[] = {
+    { "next", (getter)pygtk_tree_model_row_get_next, (setter)0 },
+    { "parent", (getter)pygtk_tree_model_row_get_parent, (setter)0 },
+    { "model", (getter)pygtk_tree_model_row_get_model, (setter)0 },
+    { "path", (getter)pygtk_tree_model_row_get_path, (setter)0 },
+    { NULL, (getter)0, (setter)0 }
+};
+
 static PyTypeObject PyGtkTreeModelRow_Type = {
     PyObject_HEAD_INIT(NULL)
     0,
@@ -888,7 +952,16 @@ static PyTypeObject PyGtkTreeModelRow_Type = {
     (setattrofunc)0,
     0,
     Py_TPFLAGS_DEFAULT,
-    NULL
+    NULL,
+    (traverseproc)0,
+    (inquiry)0,
+    (richcmpfunc)0,
+    0,
+    (getiterfunc)0,
+    (iternextfunc)0,
+    pygtk_tree_model_row_methods,
+    0,
+    pygtk_tree_model_row_getsets
 };
 
 typedef struct {
@@ -1089,16 +1162,17 @@ PyGdkRectangle_to_value(GValue *value, PyObject *object)
 void
 _pygtk_register_boxed_types(PyObject *moddict)
 {
-#define register_tp(x) Py##x##_Type.ob_type = &PyType_Type; \
-    PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type)
-
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
     PyGdkAtom_Type.ob_type = &PyType_Type;
     PyGtkTreeModelRow_Type.ob_type = &PyType_Type;
-#if 0
-    register_tp(GdkWindow);
-#endif
-    register_tp(GdkAtom);
+    PyGtkTreeModelRowIter_Type.ob_type = &PyType_Type;
+
+    PyType_Ready(&PyGtkStyleHelper_Type);
+    PyType_Ready(&PyGdkAtom_Type);
+    PyType_Ready(&PyGtkTreeModelRow_Type);
+    PyType_Ready(&PyGtkTreeModelRowIter_Type);
+
+    PyDict_SetItemString(moddict, "GdkAtomType", (PyObject *)&PyGdkAtom_Type);
 
     pyg_register_boxed_custom(GTK_TYPE_TREE_PATH,
 			      PyGtkTreePath_from_value,

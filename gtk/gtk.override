@@ -19,6 +19,14 @@ extern PyTypeObject PyGdkPixbufAnimation_Type;
 extern PyTypeObject PyGdkDragContext_Type;
 
 %%
+init
+    PyGtkListStore_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
+    PyGtkListStore_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
+    PyGtkTreeStore_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
+    PyGtkTreeStore_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
+    PyPyGtkGenericTreeModel_Type.tp_as_mapping = PyGtkTreeModel_Type.tp_as_mapping;
+    PyPyGtkGenericTreeModel_Type.tp_iter       = PyGtkTreeModel_Type.tp_iter;
+%%
 modulename gtk
 %%
 import gobject.GObject as PyGObject_Type
@@ -1417,6 +1425,13 @@ static PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping = {
     (objobjargproc)0
 };
 %%
+override-slot GtkTreeModel.tp_iter
+static PyObject *
+_wrap_gtk_tree_model_tp_iter(PyGObject *self)
+{
+    return _pygtk_tree_model_row_iter_new(GTK_TREE_MODEL(self->obj), NULL);
+}
+%%
 override gtk_tree_sortable_get_sort_column_id noargs
 static PyObject *
 _wrap_gtk_tree_sortable_get_sort_column_id(PyGObject *self)
@@ -1733,17 +1748,6 @@ _wrap_gtk_list_store_append(PyGObject *self)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override-slot GtkListStore.tp_as_mapping
-staticforward PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping;
-#define _wrap_gtk_list_store_tp_as_mapping _wrap_gtk_tree_model_tp_as_mapping
-%%
-override-slot GtkListStore.tp_iter
-static PyObject *
-_wrap_gtk_list_store_tp_iter(PyGObject *self)
-{
-    return _pygtk_tree_model_row_iter_new(GTK_TREE_MODEL(self->obj), NULL);
-}
-%%
 ignore gtk_tree_store_newv
 %%
 override gtk_tree_store_new
@@ -2003,10 +2007,6 @@ _wrap_gtk_tree_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
     gtk_tree_store_append(GTK_TREE_STORE(self->obj), &iter, parent);
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
-%%
-override-slot GtkTreeStore.tp_as_mapping
-staticforward PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping;
-#define _wrap_gtk_tree_store_tp_as_mapping _wrap_gtk_tree_model_tp_as_mapping
 %%
 override gtk_tree_model_get_iter_first noargs
 static PyObject *
