@@ -1819,6 +1819,11 @@ _wrap_gtk_tree_model_tp_getitem(PyGObject *self, PyObject *item)
     GtkTreeIter iter;
     PyObject *ret = NULL;
 
+    if (pyg_boxed_check(item, GTK_TYPE_TREE_ITER)) {
+	return _pygtk_tree_model_row_new(GTK_TREE_MODEL(self->obj),
+					 pyg_boxed_get(item, GtkTreeIter));
+    }
+
     path = pygtk_tree_path_from_pyobject(item);
     if (!path) {
 	PyErr_SetString(PyExc_TypeError,

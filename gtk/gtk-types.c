@@ -922,11 +922,18 @@ pygtk_tree_model_row_get_path(PyGtkTreeModelRow *self, void *closure)
     return ret;
 }
 
+static PyObject *
+pygtk_tree_model_row_get_iter(PyGtkTreeModelRow *self, void *closure)
+{
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &self->iter, TRUE, TRUE);
+}
+
 static PyGetSetDef pygtk_tree_model_row_getsets[] = {
     { "next", (getter)pygtk_tree_model_row_get_next, (setter)0 },
     { "parent", (getter)pygtk_tree_model_row_get_parent, (setter)0 },
     { "model", (getter)pygtk_tree_model_row_get_model, (setter)0 },
     { "path", (getter)pygtk_tree_model_row_get_path, (setter)0 },
+    { "iter", (getter)pygtk_tree_model_row_get_iter, (setter)0 },
     { NULL, (getter)0, (setter)0 }
 };
 
