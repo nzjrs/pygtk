@@ -487,6 +487,8 @@ class GObjectWrapper(Wrapper):
         substdict = Wrapper.get_initial_constructor_substdict(self)
         if argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkWindow'):
             substdict['aftercreate'] = "    g_object_ref(self->obj); /* we don't own the first reference of windows */\n"
+        elif argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkInvisible'):
+            substdict['aftercreate'] = "    g_object_ref(self->obj); /* we don't own the first reference of invisibles */\n"
         else:
             substdict['aftercreate'] = ''
         return substdict
