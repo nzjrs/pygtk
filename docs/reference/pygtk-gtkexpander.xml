@@ -15,7 +15,7 @@
       <ooclass><classname><link linkend="class-gtkbin">gtk.Bin</link></classname></ooclass>
       <constructorsynopsis language="python">
 	<methodname><link linkend="constructor-gtkexpander">gtk.Expander</link></methodname>
-	<methodparam><parameter role="keyword">label</parameter></methodparam>
+	<methodparam><parameter role="keyword">label</parameter><initializer>None</initializer></methodparam>
       </constructorsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkexpander--set-expanded">set_expanded</link></methodname>
@@ -72,7 +72,7 @@
 
 <methodsynopsis language="python">
 	<methodname><link linkend="function-gtk--expander-new-with-mnemonic">gtk.expander_new_with_mnemonic</link></methodname>
-	<methodparam><parameter role="keyword">label</parameter></methodparam>
+	<methodparam><parameter role="keyword">label</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -257,12 +257,13 @@ reversed.</para>
 
     <programlisting><constructorsynopsis language="python">
 	<methodname>gtk.Expander</methodname>
-	<methodparam><parameter role="keyword">label</parameter></methodparam>
+	<methodparam><parameter role="keyword">label</parameter><initializer>None</initializer></methodparam>
       </constructorsynopsis></programlisting>
     <variablelist>
       <varlistentry>
 	<term><parameter role="keyword">label</parameter>&nbsp;:</term>
-	<listitem><simpara>the text of the label</simpara></listitem>
+	<listitem><simpara>the text of the label or
+<literal>None</literal></simpara></listitem>
       </varlistentry>
       <varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -275,7 +276,8 @@ reversed.</para>
     </note>
 
     <para>Creates a new expander using <parameter>label</parameter> as the
-text of the label.</para>
+text of the label. If <parameter>label</parameter> is
+<literal>None</literal> or not specified, no label will be created.</para>
 
   </refsect1>
 
@@ -394,7 +396,8 @@ method.</para>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">label</parameter>&nbsp;:</term>
-	  <listitem><simpara>a string to use as the label</simpara></listitem>
+	  <listitem><simpara>a string to use as the label or
+<literal>None</literal></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -404,7 +407,9 @@ method.</para>
 
       <para>The <methodname>set_label</methodname>() method sets the "label"
 property to the value of <parameter>label</parameter> and sets the text of
-the label of the expander. Any previously set label will be cleared.</para>
+the label of the expander. Any previously set label will be cleared. If
+<parameter>label</parameter> is <literal>None</literal> the expander will
+have no label.</para>
 
     </refsect2>
 
@@ -557,7 +562,8 @@ method.</para>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">label_widget</parameter>&nbsp;:</term>
-	  <listitem><simpara>the new label widget</simpara></listitem>
+	  <listitem><simpara>the new label widget or
+<literal>None</literal></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -569,7 +575,9 @@ method.</para>
 expander to use the widget specified by <parameter>label_widget</parameter>
 as the label instead of a <link
 linkend="class-gtklabel"><classname>gtk.Label</classname></link>. This
-widget appears embedded alongside the expander arrow.</para>
+widget appears embedded alongside the expander arrow. If
+<parameter>label_widget</parameter> is <literal>None</literal>, the expander
+will have no label.</para>
 
     </refsect2>
 
@@ -609,13 +617,13 @@ method.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>gtk.expander_new_with_mnemonic</methodname>
 	  <methodparam><parameter
-			 role="keyword">label</parameter></methodparam>
+			 role="keyword">label</parameter><initializer>None</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">label</parameter>&nbsp;:</term>
 	  <listitem><simpara> the text of the label with an underscore in
-front of the mnemonic character</simpara></listitem>
+front of the mnemonic character or <literal>None</literal></simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -636,7 +644,8 @@ linkend="class-gtkexpander"><classname>gtk.Expander</classname></link> using
 underlined. If you need a literal underscore character in a label, use '__'
 (two underscores). The first underlined character represents a keyboard
 accelerator called a mnemonic. Pressing <keycap>Alt</keycap> with that key
-activates the button.</para>
+activates the button. If <parameter>label</parameter> is
+<literal>None</literal> the expander will have no label.</para>
 
     </refsect2>
 
