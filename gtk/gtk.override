@@ -2712,6 +2712,23 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
     return 0;
 }
 %%
+override gtk_tree_view_column_cell_get_size noargs
+static PyObject *
+_wrap_gtk_tree_view_column_cell_get_size(PyGObject *self)
+{
+    GdkRectangle cell_area;
+    gint x_offset, y_offset, width, height;
+    
+    gtk_tree_view_column_cell_get_size(GTK_TREE_VIEW_COLUMN(self->obj),
+				       &cell_area,
+				       &x_offset, &y_offset, &width, &height);
+    
+    return Py_BuildValue("(Niiii)",
+			 pyg_boxed_new(GDK_TYPE_RECTANGLE,
+				       &cell_area, TRUE, TRUE),
+			 x_offset, y_offset, width, height);
+}
+%%
 override gtk_tree_view_column_get_cell_renderers noargs
 static PyObject *
 _wrap_gtk_tree_view_column_get_cell_renderers(PyGObject *self)
