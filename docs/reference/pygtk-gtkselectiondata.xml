@@ -34,7 +34,8 @@ linkend="method-gtkselectiondata--set-text">set_text</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkselectiondata--get-text">get_text</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkselectiondata--get-targets">get_targets</link></methodname>
@@ -56,6 +57,31 @@ linkend="method-gtkselectiondata--tree-set-row-drag-data">tree_set_row_drag_data
 	<methodname><link
 linkend="method-gtkselectiondata--tree-get-row-drag-data">tree_get_row_drag_data</link></methodname>
 	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--set-pixbuf">set_pixbuf</link></methodname>
+	<methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--get-pixbuf">get_pixbuf</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--set-uris">set_uris</link></methodname>
+	<methodparam><parameter role="keyword">uris</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--get-uris">get_uris</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--targets-include-image">targets_include_image</link></methodname>
+	<methodparam><parameter role="keyword">writable</parameter></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -360,6 +386,157 @@ pointer to the tree model is being passed around. In the "<link
 linkend="signal-gtkwidget--drag-data-received">drag-data-received</link>"
 signal handler, you can assume that selection data of type
 <literal>"GTK_TREE_MODEL_ROW"</literal> is from the current process.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--set-pixbuf">
+      <title>gtk.SelectionData.set_pixbuf</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_pixbuf</methodname>
+	  <methodparam><parameter
+			 role="keyword">pixbuf</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">pixbuf</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal>, if the selection was
+successfully set; otherwise, <literal>FALSE</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_pixbuf</methodname>() method sets the
+contents of the selection from the <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+specified by <parameter>pixbuf</parameter>. This method returns
+<literal>TRUE</literal> if the selection data was successfully set.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--get-pixbuf">
+      <title>gtk.SelectionData.get_pixbuf</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_pixbuf</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>if the selection data contained a recognized
+image type and it could be converted to a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>, a
+newly allocated pixbuf is returned, or
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_pixbuf</methodname>() method returns the
+contents of the selection data as a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link> if
+possible.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--set-uris">
+      <title>gtk.SelectionData.set_uris</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_uris</methodname>
+	  <methodparam><parameter
+			 role="keyword">uris</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">uris</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of strings holding
+URIs</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal>, if the selection was
+successfully set; otherwise, <literal>FALSE</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_uris</methodname>() method sets the contents
+of the selection from the list of URIs specified by
+<parameter>uris</parameter>. This method returns <literal>TRUE</literal> if
+the selection data was successfully set.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--get-uris">
+      <title>gtk.SelectionData.get_uris</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_uris</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a list of URIs, or
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_uris</methodname>() method returns the
+contents of the selection data as a list or URIs.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--targets-include-image">
+      <title>gtk.SelectionData.targets_include_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>targets_include_image</methodname>
+	  <methodparam><parameter
+			 role="keyword">writable</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">writable</parameter>&nbsp;:</term>
+	  <listitem><simpara>If <literal>TRUE</literal> only accept targets
+that GTK+ can convert a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+to.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal>, if the selection has a
+list of targets that includes an image target.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>targets_include_image</methodname>() method
+returns <literal>TRUE</literal> if the selection targets include an image
+target.</para>
 
     </refsect2>
 
