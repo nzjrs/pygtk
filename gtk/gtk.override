@@ -938,6 +938,58 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
+override gtk_list_store_set
+static PyObject *
+_wrap_gtk_list_store_set(PyGObject *self, PyObject *args)
+{
+    PyObject *iter;
+    int len, i;
+
+    iter = PyTuple_GetItem(args, 0);
+    if (!pyg_boxed_check(iter, GTK_TYPE_TREE_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+	return NULL;
+    }
+    len = PyTuple_Size(args);
+    if ((len - 1) % 2) {
+	PyErr_SetString(PyExc_TypeError,
+			"Argument list must be column, value pairs.  No -1 "
+			"termination is needed.");
+	return NULL;
+    }
+    for (i = 1; i < len; i+=2) {
+	gint column;
+	GValue value = { 0 };
+	PyObject *py_column = PyTuple_GetItem(args, i);
+	PyObject *py_value = PyTuple_GetItem(args, i + 1);
+
+	if (!PyInt_Check(py_column)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "Expected numeric argument for column.");
+	    return NULL;
+	}
+	column = PyInt_AsLong(py_column);
+	if (column < 0 ||
+	    column >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj))) {
+	    PyErr_SetString(PyExc_ValueError, "column number is out of range");
+	    return NULL;
+	}
+	g_value_init(&value,
+		     gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj),
+						    column));
+	if (pyg_value_from_pyobject(&value, py_value)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "value is of the wrong type for this column");
+	    return NULL;
+	}
+	gtk_list_store_set_value(GTK_LIST_STORE(self->obj),
+				 pyg_boxed_get(iter, GtkTreeIter), column, &value);
+	g_value_unset(&value);
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_list_store_set_value kwargs
 static PyObject *
 _wrap_gtk_list_store_set_value(PyGObject *self, PyObject *args,
@@ -961,7 +1013,9 @@ _wrap_gtk_list_store_set_value(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
 	return NULL;
     }
-    g_value_init(&value, gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj), column));
+    g_value_init(&value,
+		 gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj),
+						column));
     if (pyg_value_from_pyobject(&value, pyvalue)) {
 	PyErr_SetString(PyExc_TypeError,
 			"value is of the wrong type for this column");
@@ -974,7 +1028,10 @@ _wrap_gtk_list_store_set_value(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
-override gtk_list_store_insert kwargs
+ignore
+  gtk_list_store_setv
+%%
+  override gtk_list_store_insert kwargs
 static PyObject *
 _wrap_gtk_list_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
@@ -1089,6 +1146,60 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
+override gtk_tree_store_set
+static PyObject *
+_wrap_gtk_tree_store_set(PyGObject *self, PyObject *args)
+{
+    PyObject *iter;
+    int len, i;
+
+    iter = PyTuple_GetItem(args, 0);
+
+    if (!pyg_boxed_check(iter, GTK_TYPE_TREE_ITER)) {
+	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
+	return NULL;
+    }
+    len = PyTuple_Size(args);
+    if ((len - 1) % 2) {
+	PyErr_SetString(PyExc_TypeError,
+			"Argument list must be column, value pairs.  No -1 "
+			"termination is needed.");
+	return NULL;
+    }
+    for (i = 1; i < len; i+=2) {
+	gint column;
+	GValue value = { 0 };
+	PyObject *py_column = PyTuple_GetItem(args, i);
+	PyObject *py_value = PyTuple_GetItem(args, i + 1);
+
+	if (!PyInt_Check(py_column)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "Expected numeric argument for column.");
+	    return NULL;
+	}
+	column = PyInt_AsLong(py_column);
+	if (column < 0 ||
+	    column >= gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj))) {
+	    PyErr_SetString(PyExc_ValueError, "column number is out of range");
+	    return NULL;
+	}
+	g_value_init(&value,
+		     gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj),
+						    column));
+	if (pyg_value_from_pyobject(&value, py_value)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "value is of the wrong type for this column");
+	    return NULL;
+	}
+	gtk_tree_store_set_value(GTK_TREE_STORE(self->obj),
+				 pyg_boxed_get(iter, GtkTreeIter), column,
+				 &value);
+	g_value_unset(&value);
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_tree_store_set_value kwargs
 static PyObject *
 _wrap_gtk_tree_store_set_value(PyGObject *self, PyObject *args,
@@ -1112,7 +1223,9 @@ _wrap_gtk_tree_store_set_value(PyGObject *self, PyObject *args,
 	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
 	return NULL;
     }
-    g_value_init(&value, gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj), column));
+    g_value_init(&value,
+		 gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj),
+						column));
     if (pyg_value_from_pyobject(&value, pyvalue)) {
 	PyErr_SetString(PyExc_TypeError,
 			"value is of the wrong type for this column");
@@ -1126,10 +1239,7 @@ _wrap_gtk_tree_store_set_value(PyGObject *self, PyObject *args,
 }
 %%
 ignore
-  gtk_tree_store_set
   gtk_tree_store_setv
-  gtk_tree_store_get
-  gtk_tree_store_getv
 %%
 override gtk_tree_store_insert kwargs
 static PyObject *
@@ -4272,5 +4382,3 @@ _wrap_gtk_cell_renderer_get_fixed_size(PyGObject *self, PyObject *args,
 
     return Py_BuildValue("(ii)", width, height);
 }
-
-

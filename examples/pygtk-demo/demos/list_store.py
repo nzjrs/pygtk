@@ -39,11 +39,10 @@ def create_model ():
 			   gobject.TYPE_STRING)
     for item in data:
 	iter = store.append ()
-	store.set_value (iter, COLUMN_FIXED, item[0])
-	store.set_value (iter, COLUMN_NUMBER, item[1])
-	store.set_value (iter, COLUMN_SEVERITY, item[2])
-	store.set_value (iter, COLUMN_DESCRIPTION, item[3])	
-	
+	store.set (iter, COLUMN_FIXED, item[0],
+                   COLUMN_NUMBER, item[1],
+                   COLUMN_SEVERITY, item[2],
+                   COLUMN_DESCRIPTION, item[3], -1)
     return store
 
 def add_columns (treeview):
