@@ -2739,6 +2739,38 @@ def cursor_new(type):
 def cursor_new_from_pixmap(source, mask, fg, bg, x, y):
 	return _gtk.gdk_cursor_new_from_pixmap(source, mask, fg, bg, x, y)
 
+# keyvalues
+def keyval_name(keyval):
+	return _gtk.gdk_keyval_name(keyval)
+def keyval_from_name(keyval_name):
+	return _gtk.gdk_keyval_from_name(keyval_name)
+def keyval_to_lower(keyval):
+	return _gtk.gdk_keyval_to_lower(keyval)
+def keyval_to_upper(keyval):
+	return _gtk.gdk_keyval_to_upper(keyval)
+def keyval_is_lower(keyval):
+	return _gtk.gdk_keyval_is_lower(keyval)
+def keyval_is_upper(keyval):
+	return _gtk.gdk_keyval_is_upper(keyval)
+
+# defaults
+def get_default_style():
+	return _gtk.gtk_widget_get_default_style()
+def set_default_style(style):
+	_gtk.gtk_widget_set_default_style(style)
+def push_style(style):
+	_gtk.gtk_widget_push_style(style)
+def pop_style():
+	_gtk.gtk_widget_pop_style()
+def get_default_colormap():
+	return _gtk.gtk_widget_get_default_colormap()
+def set_default_colormap(colormap):
+	_gtk.gtk_widget_set_default_colormap(colormap)
+def push_colormap(colormap):
+	_gtk.gtk_widget_push_colormap(colormap)
+def pop_colormap():
+	_gtk.gtk_widget_pop_colormap()
+
 # colour allocation
 def colour_alloc(parent, red, green=None, blue=None):
 	print "colour_alloc deprecated.  Use GdkColormap.alloc"
@@ -2842,6 +2874,7 @@ def draw_gray_image(drawable, gc, x, y, width, height,
 	_gtk.gdk_draw_gray_image(drawable, gc, x, y, width, height,
 				 dither, buffer, rowstride)
 
+
 # this function renders an unsigned byte (type code 'b') numpy array to a
 # drawable.  If it is a MxN or MxNx1 array, it is assumed to be a grey image.
 # If it is a MxNx3 or MxNx4 array, it is assumed to be an rgb image.
@@ -2883,6 +2916,9 @@ def push_rgb_visual():
 	_gtk.gtk_rgb_push_visual()
 def pop_visual():
 	_gtk.gtk_pop_visual()
+
+def selection_owner_get(selection):
+	return _gtk.gdk_selection_owner_get(selection)
 
 # these are prefixed with underscores, since they are low level, and
 # would break if pygtk was ported to windows.
