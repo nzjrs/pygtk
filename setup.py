@@ -77,6 +77,8 @@ class PyGtkInstallLib(InstallLib):
 
         InstallLib.run(self)
 
+        self.install_template('pygobject-2.0.pc.in',
+                              os.path.join(self.libdir, 'pkgconfig'))
     def install_pth(self):
         """Write the pygtk.pth file"""
         file = os.path.join(self.install_dir, 'pygtk.pth')

@@ -28,7 +28,16 @@ common_ldflags += -no-undefined
 endif
 
 # gtk module
+if BUILD_GTK
 pygtkexec_LTLIBRARIES = _gtk.la
+defs_DATA += 			\
+	gtk.defs 		\
+	gtk-types.defs 		\
+	gtk-extrafuncs.defs	\
+	gdk.defs 		\
+	gdk-types.defs
+endif
+
 _gtk_la_CFLAGS = $(GTK_CFLAGS)
 _gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
 _gtk_la_LIBADD = $(GTK_LIBS)
@@ -70,18 +79,12 @@ gdk.c: $(srcdir)/gdk.defs $(COMMONDEFS) $(srcdir)/gdk.override
 gtk.c: $(srcdir)/gtk.defs $(COMMONDEFS) $(gtk_overrides) $(srcdir)/gtk-extrafuncs.defs
 CLEANFILES += gtk.c gdk.c
 
-defs_DATA += 			\
-	gtk.defs 		\
-	gtk-types.defs 		\
-	gtk-extrafuncs.defs	\
-	gdk.defs 		\
-	gdk-types.defs
-
 EXTRA_DIST += gdk.override $(gtk_overrides)
 
 # libglade module
 if BUILD_LIBGLADE
 pygtkexec_LTLIBRARIES += glade.la
+defs_DATA += libglade.defs
 endif
 glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
 glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
@@ -90,7 +93,6 @@ glade_la_SOURCES = libglademodule.c
 nodist_glade_la_SOURCES = libglade.c
 libglade.c: $(COMMONDEFS) libglade.override
 CLEANFILES += libglade.c
-defs_DATA += libglade.defs
 EXTRA_DIST += libglade.override
 
 .defs.c:

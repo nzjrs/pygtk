@@ -1,7 +1,11 @@
 # require automake-1.7
 AUTOMAKE_OPTIONS = 1.7
 
-SUBDIRS = codegen gobject . gtk docs examples tests 
+if BUILD_GTK
+  GTK_SUBDIR = gtk
+endif
+
+SUBDIRS = codegen gobject . $(GTK_SUBDIR) docs examples tests 
 
 PLATFORM_VERSION = 2.0
 
@@ -13,7 +17,9 @@ defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = pygtk-$(PLATFORM_VERSION).pc
+pkgconfig_DATA = \
+	pygobject-$(PLATFORM_VERSION).pc \
+	pygtk-$(PLATFORM_VERSION).pc
 
 INCLUDES = \
 	$(PYTHON_INCLUDES) \
@@ -30,6 +36,7 @@ COMMONDEFS = \
 
 pkgpythondir = $(pyexecdir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
+pkgpyexec_LTLIBRARIES =
 
 # this file is common to all pygtk versions.
 pyexec_PYTHON = pygtk.py
@@ -47,7 +54,15 @@ uninstall-local:
 
 pkgpython_PYTHON = dsextras.py
 
-pkgpyexec_LTLIBRARIES = atk.la pango.la 
+if BUILD_ATK
+pkgpyexec_LTLIBRARIES += atk.la
+defs_DATA += atk.defs atk-types.defs
+endif
+
+if BUILD_PANGO
+pkgpyexec_LTLIBRARIES += pango.la
+defs_DATA += pango.defs pango-types.defs
+endif
 
 common_ldflags = -module -avoid-version
 if PLATFORM_WIN32
@@ -62,7 +77,6 @@ nodist_pango_la_SOURCES = pango.c
 pango.c: $(COMMONDEFS) pango.override
 CLEANFILES += pango.c
 EXTRA_DIST += pango.override
-defs_DATA += pango.defs pango-types.defs
 
 # atk module
 atk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initatk
@@ -72,7 +86,6 @@ nodist_atk_la_SOURCES = atk.c
 atk.c: $(COMMONDEFS) atk.override
 CLEANFILES += atk.c
 EXTRA_DIST += atk.override
-defs_DATA += atk.defs atk-types.defs
 
 .defs.c:
 	(cd $(srcdir)\

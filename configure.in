@@ -16,6 +16,7 @@ m4_define(libglade_required_version, 2.4.0)
 
 AC_INIT(pygtk, pygtk_version,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=pygtk])
+AC_SUBST(ACLOCAL_AMFLAGS, "-I m4 -I .")
 
 AC_DEFINE(PYGTK_MAJOR_VERSION, pygtk_major_version, [PyGtk major version])
 AC_SUBST(PYGTK_MAJOR_VERSION, pygtk_major_version)
@@ -96,23 +97,29 @@ if test -n "$export_dynamic"; then
 fi
 
 dnl atk
-PKG_CHECK_MODULES(ATK, atk >= atk_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-4 branch?)])
+PKG_CHECK_MODULES(ATK, atk >= atk_required_version,
+	build_atk=true, build_atk=false)
 AC_SUBST(ATK_CFLAGS)
 AC_SUBST(ATK_LIBS)
+AM_CONDITIONAL(BUILD_ATK, $build_atk)
 if test -n "$export_dynamic"; then
   ATK_LIBS=`echo $ATK_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
 dnl pango
-PKG_CHECK_MODULES(PANGO, pango >= pango_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-4 branch?)])
+PKG_CHECK_MODULES(PANGO, pango >= pango_required_version,
+	build_pango=true, build_pango=false)
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
+AM_CONDITIONAL(BUILD_PANGO, $build_pango)
 if test -n "$export_dynamic"; then
   PANGO_LIBS=`echo $PANGO_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
 dnl gtk+
-AM_PATH_GTK_2_0(gtk_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-4 branch?)],$extra_mods)
+AM_PATH_GTK_2_0(gtk_required_version,
+	         build_gtk=true, build_gtk=false)
+AM_CONDITIONAL(BUILD_GTK, $build_gtk)
 if test -n "$export_dynamic"; then
   GTK_LIBS=`echo $GTK_LIBS | sed -e "s/$export_dynamic//"`
 fi
@@ -130,17 +137,14 @@ else
 fi
 
 dnl libglade
-build_libglade=false
 PKG_CHECK_MODULES(LIBGLADE, libglade-2.0 >= libglade_required_version,
-  build_libglade=true,
-  build_libglade=false)
+	build_libglade=true, build_libglade=false)
 AC_SUBST(LIBGLADE_CFLAGS)
 AC_SUBST(LIBGLADE_LIBS)
 AM_CONDITIONAL(BUILD_LIBGLADE, $build_libglade)
 if test -n "$export_dynamic"; then
   LIBGLADE_LIBS=`echo $LIBGLADE_LIBS | sed -e "s/$export_dynamic//"`
 fi
-
 
 AC_ARG_ENABLE(numpy,
   AC_HELP_STRING([--disable-numpy], [Disable numeric python features]),,
@@ -163,6 +167,7 @@ JH_ADD_CFLAG([-fno-strict-aliasing])
 
 AC_CONFIG_FILES(
   Makefile
+  pygobject-2.0.pc
   pygtk-2.0.pc
   codegen/Makefile
   gobject/Makefile
@@ -175,4 +180,24 @@ AC_CONFIG_FILES(
   PKG-INFO)
 AC_OUTPUT
 
+
+echo
+echo "The following modules will be built:"
+echo
+true                     && echo     gobject
+$build_atk               && echo     atk
+$build_pango             && echo     pango
+$build_gtk               && echo     gtk
+$build_libglade          && echo     gtk.glade
+echo
+
+if test ! $build_atk || ! $build_pango \
+        ! $build_gtk !! ! $build_gtk; then
+  echo "The following modules will NOT be built:"
+  echo
+  $build_atk               || echo     atk
+  $build_pango             || echo     pango
+  $build_gtk               || echo     gtk
+  $build_libglade          || echo     gtk.glade
+fi
 
