@@ -641,7 +641,12 @@ class ArgMatcher:
         self.register('const-'+ptype+'*', arg)
 
     def get(self, ptype):
-	return self.argtypes[ptype]
+        try:
+            return self.argtypes[ptype]
+        except KeyError:
+            if ptype[:8] == 'GdkEvent' and ptype[-1] == '*':
+                return self.argtypes['GdkEvent*']
+            raise
     def object_is_a(self, otype, parent):
         if otype == None: return 0
         if otype == parent: return 1

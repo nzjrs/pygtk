@@ -1888,6 +1888,30 @@ _wrap_gtk_tree_model_iter_children(PyGObject *self, PyObject *args,
     }
 }
 %%
+override gtk_tree_model_foreach
+static PyObject *
+_wrap_gtk_tree_model_foreach(PyGObject *self, PyObject *args)
+{
+    static void pygtk_tree_foreach_marshal(GtkTreeModel *model,
+					   GtkTreePath *path,
+					   GtkTreeIter *iter,
+					   gpointer data);
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify cunote;
+
+    if(!PyArg_ParseTuple(args, "O|O:GtkTreeModel.foreach",
+			 &pyfunc, &pyarg))
+	return NULL;
+
+    cunote.func = pyfunc;
+    cunote.data = pyarg;
+    gtk_tree_model_foreach(GTK_TREE_MODEL(self->obj),
+			   pygtk_tree_foreach_marshal, &cunote);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 ignore
   gtk_tree_view_new
   gtk_tree_view_column_new_with_attributes
@@ -2127,23 +2151,26 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
 			   gpointer data)
 {
     PyGtkCustomNotify *cunote = data;
-    PyObject *pypath, *retobj;
+    PyObject *py_model, *py_path, *py_iter, *retobj;
 
     g_assert(cunote->func);
     
-    pypath = pygtk_tree_path_to_pyobject(path);
+    py_model = pygobject_new((GObject *)model);
+    py_path = pygtk_tree_path_to_pyobject(path);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
     if (cunote->data)
-	retobj = PyEval_CallFunction(cunote->func, "(OO)", pypath,
+	retobj = PyEval_CallFunction(cunote->func, "(NNNO)",
+				     py_model, py_path, py_iter,
 				     cunote->data);
     else
-	retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+	retobj = PyEval_CallFunction(cunote->func, "(NNN)",
+				     py_model, py_path, py_iter);
 
     if (retobj == NULL) {
 	PyErr_Print();
 	PyErr_Clear();
     }
     
-    Py_DECREF(pypath);
     Py_XDECREF(retobj);
 }
 static PyObject *
