@@ -1,3 +1,19 @@
+2001-06-21  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtkobject-support.c (pygtk_dict_as_container_args): comment
+	out, as container args have been switched to properties now.
+
+2001-06-19  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pyg_value_from_pyobject): handle PyGBoxed
+	types.
+	(pyg_value_as_pyobject): pass out PyGBoxed types if no custom
+	handler is found, rather than straight CObjects.  Will need to do
+	something about cases where we want mutable values (ie. don't copy
+	the boxed type).
+
+	* configure.in: require glib/gtk+ 1.3.6
+
 2001-06-13  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtk.defs (Dialog): add fields that were missing (pointed out

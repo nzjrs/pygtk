@@ -816,7 +816,6 @@ pygtk_dict_as_args(PyObject *dict, GtkType type, gint *nargs)
     }
     return arg;
 }
-#endif
 
 GtkArg *
 pygtk_dict_as_container_args(PyObject *dict, GtkType type, gint *nargs)
@@ -858,5 +857,6 @@ pygtk_dict_as_container_args(PyObject *dict, GtkType type, gint *nargs)
     }
    return arg;
 }
+#endif
 
 

@@ -94,6 +94,12 @@
   (c-name GtkSettings)
 )
 
+(object SizeGroup
+  (in-module Gtk)
+  (parent Object (G))
+  (c-name GtkSizeGroup)
+)
+
 (object Style
   (in-module Gtk)
   (parent Object (G))
@@ -427,12 +433,6 @@
   (in-module Gtk)
   (parent Paned (Gtk))
   (c-name GtkHPaned)
-)
-
-(object Packer
-  (in-module Gtk)
-  (parent Container (Gtk))
-  (c-name GtkPacker)
 )
 
 (object Notebook
@@ -1303,14 +1303,6 @@
   (value (name child-arg) (c-name GTK_ARG_CHILD_ARG))
 )
 
-(flags PackerOptions
-  (in-module Gtk)
-  (c-name GtkPackerOptions)
-  (value (name pack-expand) (c-name GTK_PACK_EXPAND))
-  (value (name fill-x) (c-name GTK_FILL_X))
-  (value (name fill-y) (c-name GTK_FILL_Y))
-)
-
 (enum SideType
   (in-module Gtk)
   (c-name GtkSideType)
@@ -1566,6 +1558,16 @@
   (value (name receives-default) (c-name GTK_RECEIVES_DEFAULT))
   (value (name double-buffered) (c-name GTK_DOUBLE_BUFFERED))
 )
+
+(enum SizeGroupMode
+  (in-module Gtk)
+  (c-name GtkSizeGroupMode)
+  (value (name none) (c-name GTK_SIZE_GROUP_NONE))
+  (value (name horizontal) (c-name GTK_SIZE_GROUP_HORIZONTAL))
+  (value (name vertical) (c-name GTK_SIZE_GROUP_VERTICAL))
+  (value (name both) (c-name GTK_SIZE_GROUP_BOTH))
+)
+
 
 ;; From /opt/pango/include/gtk-2.0/gtk/gtk.h
 
@@ -6612,7 +6614,7 @@
 
 (function get_default_language
   (c-name gtk_get_default_language)
-  (return-type gchar*)
+  (return-type PangoLanguage*)
 )
 
 (function events_pending
@@ -7633,99 +7635,6 @@
   (c-name gtk_option_menu_set_history)
   (return-type none)
   (parameter (type-and-name guint index))
-)
-
-
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtkpacker.h
-
-(function gtk_packer_get_type
-  (c-name gtk_packer_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_packer_new
-  (c-name gtk_packer_new)
-  (is-constructor-of GtkPacker)
-  (return-type GtkWidget*)
-)
-
-(method add_defaults
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_add_defaults)
-  (return-type none)
-  (parameter (type-and-name GtkWidget* child))
-  (parameter (type-and-name GtkSideType side))
-  (parameter (type-and-name GtkAnchorType anchor))
-  (parameter (type-and-name GtkPackerOptions options))
-)
-
-(method add
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_add)
-  (return-type none)
-  (parameter (type-and-name GtkWidget* child))
-  (parameter (type-and-name GtkSideType side))
-  (parameter (type-and-name GtkAnchorType anchor))
-  (parameter (type-and-name GtkPackerOptions options))
-  (parameter (type-and-name guint border_width) (default "0"))
-  (parameter (type-and-name guint pad_x) (default "0"))
-  (parameter (type-and-name guint pad_y) (default "0"))
-  (parameter (type-and-name guint i_pad_x) (default "0"))
-  (parameter (type-and-name guint i_pad_y) (default "0"))
-)
-
-(method set_child_packing
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_set_child_packing)
-  (return-type none)
-  (parameter (type-and-name GtkWidget* child))
-  (parameter (type-and-name GtkSideType side))
-  (parameter (type-and-name GtkAnchorType anchor))
-  (parameter (type-and-name GtkPackerOptions options))
-  (parameter (type-and-name guint border_width) (default "0"))
-  (parameter (type-and-name guint pad_x) (default "0"))
-  (parameter (type-and-name guint pad_y) (default "0"))
-  (parameter (type-and-name guint i_pad_x) (default "0"))
-  (parameter (type-and-name guint i_pad_y) (default "0"))
-)
-
-(method reorder_child
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_reorder_child)
-  (return-type none)
-  (parameter (type-and-name GtkWidget* child))
-  (parameter (type-and-name gint position))
-)
-
-(method set_spacing
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_set_spacing)
-  (return-type none)
-  (parameter (type-and-name guint spacing))
-)
-
-(method set_default_border_width
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_set_default_border_width)
-  (return-type none)
-  (parameter (type-and-name guint border))
-)
-
-(method set_default_pad
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_set_default_pad)
-  (return-type none)
-  (parameter (type-and-name guint pad_x))
-  (parameter (type-and-name guint pad_y))
-)
-
-(method set_default_ipad
-  (of-object Packer (Gtk))
-  (c-name gtk_packer_set_default_ipad)
-  (return-type none)
-  (parameter (type-and-name guint i_pad_x))
-  (parameter (type-and-name guint i_pad_y))
 )
 
 
@@ -8982,6 +8891,48 @@
   (parameter (type-and-name const-gchar* name))
   (parameter (type-and-name gdouble v_double))
   (parameter (type-and-name const-gchar* origin))
+)
+
+
+;; From /opt/pango/include/gtk-2.0/gtk/gtksizegroup.h
+
+(function gtk_size_group_get_type
+  (c-name gtk_size_group_get_type)
+  (return-type GType)
+)
+
+(function size_group_new
+  (c-name gtk_size_group_new)
+  (is-constructor-of GtkSizeGroup)
+  (return-type GtkSizeGroup*)
+  (parameter (type-and-name GtkSizeGroupMode mode))
+)
+
+(method set_mode
+  (of-object SizeGroup Gtk)
+  (c-name gtk_size_group_set_mode)
+  (return-type none)
+  (parameter (type-and-name GtkSizeGroupMode mode))
+)
+
+(method get_mode
+  (of-object SizeGroup Gtk)
+  (c-name gtk_size_group_get_mode)
+  (return-type GtkSizeGroupMode)
+)
+
+(method add_widget
+  (of-object SizeGroup Gtk)
+  (c-name gtk_size_group_add_widget)
+  (return-type none)
+  (parameter (type-and-name GtkWidget* widget))
+)
+
+(method remove_widget
+  (of-object SizeGroup Gtk)
+  (c-name gtk_size_group_remove_widget)
+  (return-type none)
+  (parameter (type-and-name GtkWidget* widget))
 )
 
 
@@ -14224,6 +14175,7 @@
   (of-object Window (Gtk))
   (c-name gtk_window_set_has_frame)
   (return-type none)
+  (parameter (type-and-name gboolean setting))
 )
 
 (method set_frame_dimensions
