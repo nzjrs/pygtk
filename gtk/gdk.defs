@@ -470,6 +470,53 @@
   (return-type "GSList*")
 )
 
+(define-method flush
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_flush")
+  (return-type "none")
+)
+ 
+(define-method set_double_click_distance
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_set_double_click_distance")
+  (return-type "none")
+  (parameters
+    '("guint" "distance")
+  )
+)
+ 
+(define-method supports_cursor_alpha
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_supports_cursor_alpha")
+  (return-type "gboolean")
+)
+ 
+(define-method supports_cursor_color
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_supports_cursor_color")
+  (return-type "gboolean")
+)
+ 
+(define-method get_default_cursor_size
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_get_default_cursor_size")
+  (return-type "guint")
+)
+
+(define-method get_maximal_cursor_size
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_get_maximal_cursor_size")
+  (return-type "none")
+  (parameters
+    '("guint*" "width")
+    '("guint*" "height")
+  )
+)
+(define-method get_default_group
+  (of-object "GdkDisplay")
+  (c-name "gdk_display_get_default_group")
+  (return-type "GdkWindow*")
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkdnd.h
 
@@ -2760,6 +2807,22 @@
     '("GdkWindow*" "parent")
     '("GdkWindowAttr*" "attributes")
     '("gint" "attributes_mask")
+  )
+)
+
+(define-method set_keep_above
+  (c-name "gdk_window_set_keep_above")
+  (of-object "GdkWindow")
+  (parameters
+    '("gboolean" "setting")
+  )
+)
+
+(define-method set_keep_below
+  (c-name "gdk_window_set_keep_below")
+  (of-object "GdkWindow")
+  (parameters
+    '("gboolean" "setting")
   )
 )
 
