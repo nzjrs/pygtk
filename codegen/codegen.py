@@ -341,7 +341,7 @@ class Wrapper:
                                  'flags': methflags})
             except:
                 sys.stderr.write('Could not write method %s.%s: %s\n'
-                                % (klass, method_name, exc_info()))
+                                % (klass, meth.name, exc_info()))
 
         # Now try to see if there are any defined in the override
         for method_name in self.overrides.get_defines_for(klass):
@@ -360,7 +360,7 @@ class Wrapper:
                                  'flags': methflags})
             except:
                 sys.stderr.write('Could not write method %s.%s: %s\n'
-                                % (klass, method_name, exc_info()))
+                                % (klass, meth.name, exc_info()))
             
         if methods:
             methoddefs = '_Py%s_methods' % self.objinfo.c_name
