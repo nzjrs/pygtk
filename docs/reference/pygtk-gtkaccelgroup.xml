@@ -28,9 +28,9 @@ linkend="method-gtkaccelgroup--lock">lock</link></methodname>
 	<methodname><link
 linkend="method-gtkaccelgroup--unlock">unlock</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
-<methodsynopsis language="python">
+      <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gtkaccelgroup--connect">connect</link></methodname>
+linkend="method-gtkaccelgroup--connect-group">connect</link></methodname>
 	<methodparam><parameter
 		       role="keyword">accel_key</parameter></methodparam>
 	<methodparam><parameter
@@ -39,14 +39,28 @@ linkend="method-gtkaccelgroup--connect">connect</link></methodname>
 		       role="keyword">accel_flags</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">callback</parameter></methodparam>
-  </methodsynopsis>
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkaccelgroup--connect-group">connect_group</link></methodname>
+	<methodparam><parameter
+		       role="keyword">accel_key</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">accel_mods</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">accel_flags</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">callback</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkaccelgroup- -connect-by-path">connect_by_path</link></methodname>
-	<methodparam><parameter>accel_path</parameter></methodparam>
-	<methodparam><parameter>closure</parameter></methodparam>
-  </methodsynopsis>
+	<methodparam><parameter
+		       role="keyword">accel_path</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">callback</parameter></methodparam>
+      </methodsynopsis>
+<!-- NOT IMPLEMENTED
 <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkaccelgroup- -disconnect">disconnect</link></methodname>
@@ -96,6 +110,12 @@ linkend="function-gtk--accelerator-set-default-mod-mask">gtk.accelerator_set_def
 linkend="function-gtk--accelerator-get-default-mod-mask">gtk.accelerator_get_default_mod_mask</link></methodname>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
+linkend="function-gtk--accel-map-add-entry">gtk.accel_map_add_entry</link></methodname>
+	<methodparam><parameter role="keyword">accel_path</parameter></methodparam>
+	<methodparam><parameter role="keyword">accel_key</parameter></methodparam>
+	<methodparam><parameter role="keyword">accel_mods</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
 linkend="function-gtk--accel-map-change-entry">gtk.accel_map_lookup_entry</link></methodname>
 	<methodparam><parameter role="keyword">accel_path</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
@@ -121,6 +141,14 @@ linkend="function-gtk--accel-map-load-fd">gtk.accel_map_load_fd</link></methodna
 	<methodname><link
 linkend="function-gtk--accel-map-save-fd">gtk.accel_map_save_fd</link></methodname>
 	<methodparam><parameter role="keyword">fd</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gtk--accel-map-lock-path">gtk.accel_map_lock_path</link></methodname>
+	<methodparam><parameter role="keyword">accel_path</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gtk--accel-map-unlock-path">gtk.accel_map_unlock_path</link></methodname>
+	<methodparam><parameter role="keyword">accel_path</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gtk--accel-map-add-filter">gtk.accel_map_add_filter</link></methodname>
@@ -266,8 +294,8 @@ for this accelerator group.</para>
 
     </refsect2>
 
-    <refsect2 id="method-gtkaccelgroup--connect">
-      <title>gtk.AccelGroup.connect</title>
+    <refsect2 id="method-gtkaccelgroup--connect-group">
+      <title>gtk.AccelGroup.connect_group</title>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>connect</methodname>
@@ -306,16 +334,21 @@ accelerator activation</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>connect</methodname>() method installs an
+      <note>
+	<para>This method is available in PyGTK 2.2 as
+	<parameter>connect</parameter>() and was changed in PyGTK 2.4 and
+	above to <parameter>connect_group</parameter>() to avoid conflict
+	with the <link
+	linkend="method-gobject--connect"><methodname>gobject.GObject.connect</methodname>()</link>
+	method.</para>
+      </note>
+
+      <para>The <methodname>connect_group</methodname>() method installs an
 accelerator in the accelerator group. When the accelerator group is being
 activated, the function (or method) specified by
 <parameter>callback</parameter> will be invoked if the accelerator key and
 modifier key match those specified by <parameter>accel_key</parameter> and
 <parameter>accel_mods</parameter>.</para>
-
-      <note>
-	<para>This method is only available in PyGTK 2.2 and above.</para>
-      </note>
 
       <para>The
 value of <parameter>modifier</parameter> is a combination of:</para>
@@ -450,44 +483,64 @@ can only be connected to one accelerator group.</para>
 
   </refsect2>
 
-<!-- NOT IMPLEMENTED
-
-    <refsect2 id="method-gtkaccelgroup- -connect-by-path">
+    <refsect2 id="method-gtkaccelgroup--connect-by-path">
       <title>gtk.AccelGroup.connect_by_path</title>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>connect_by_path</methodname>
-	  <methodparam><parameter>accel_path</parameter></methodparam>
-	  <methodparam><parameter>closure</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">accel_path</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">callback</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
-	  <term><parameter>accel_path</parameter>&nbsp;:</term>
+	  <term><parameter
+		       role="keyword">accel_path</parameter>&nbsp;:</term>
 	  <listitem><simpara>path used for determining key and
 modifiers.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
-	  <term><parameter>closure</parameter>&nbsp;:</term>
-	  <listitem><simpara>closure to be executed upon accelerator
+	  <term><parameter
+		       role="keyword">callback</parameter>&nbsp;:</term>
+	  <listitem><simpara>function or method to be executed upon accelerator
 activation</simpara></listitem>
 	</varlistentry>
       </variablelist>
-      <para>
-Installs an accelerator in this group, using an accelerator path to look up
-the appropriate key and modifiers (see
-<function>gtk_accel_map_add_entry()</function>). When
-<parameter>accel_group</parameter> is being activated in response to a call
-to <function>accel_groups_activate()</function>,
-<parameter>closure</parameter> will be invoked if the
-<parameter>accel_key</parameter> and <parameter>accel_mods</parameter> from
-<function>accel_groups_activate()</function> match the key and modifiers for
-the path.
-</para>
-      <para>
-The signature used for the <parameter>closure</parameter> is that of
-<literal>GtkAccelGroupActivate</literal>.
-</para>  </refsect2>
 
+      <note>
+	<para>This method is available in PyGTK 2.4 and above</para>
+      </note>
+
+      <para>The <methodname>connect_by_path</methodname>() method installs
+an accelerator in the accelerator group, using an accelerator path to look
+up the appropriate key and modifiers (see the function <link
+linkend="function-gtk--accel-map-add-entry"><function>gtk.accel_map_add_entry</function>()</link>). When
+the accelerator group is being activated, the function (or method) specified
+by <parameter>callback</parameter> will be invoked if the
+<parameter>accel_key</parameter> and <parameter>accel_mods</parameter> that
+cause the activation match the key and modifiers for the accelerator path
+specified by <parameter>accel_path</parameter>.</para>
+
+      <para>The <parameter>callback</parameter> function is defined as:</para>
+
+      <programlisting>
+  def callback(accel_group, acceleratable, keyval, modifier)
+</programlisting>
+
+      <para>where <parameter>accel_group</parameter> is the accelerator
+group, <parameter>acceleratable</parameter> is the object that the
+<parameter>accel_group</parameter> is attached to (e.g. a <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link>),
+<parameter>keyval</parameter> is the accelerator key and
+<parameter>modifier</parameter> is the key
+modifier. <parameter>callback</parameter> returns <literal>TRUE</literal> if
+the accelerator was handled by <parameter>callback</parameter>.</para>
+
+    </refsect2>
+
+
+<!-- NOT IMPLEMENTED
 
     <refsect2 id="method-gtkaccelgroup- -disconnect">
       <title>gtk.AccelGroup.disconnect</title>
@@ -968,6 +1021,63 @@ function for more detail on modifier masks.</para>
 
     </refsect2>
 
+    <refsect2 id="function-gtk--accel-map-add-entry">
+      <title>gtk.accel_map_add_entry</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.accel_map_add_entry</methodname>
+	  <methodparam><parameter
+			 role="keyword">accel_path</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">accel_key</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">accel_mods</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">accel_path</parameter>&nbsp;:</term>
+	  <listitem><simpara>a valid accelerator path</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">accel_key</parameter>&nbsp;:</term>
+	  <listitem><simpara>the accelerator key</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">accel_mods</parameter>&nbsp;:</term>
+	  <listitem><simpara>the accelerator modifiers</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.accel_map_add_entry</function>() function
+registers a new accelerator specified by <parameter>accel_key</parameter>
+and <parameter>accel_mods</parameter> with the global accelerator map. The
+accelerator will be associated with the accelerator path specified by
+<parameter>accel_path</parameter>. This function should only be called once
+per <parameter>accel_path</parameter> with the canonical
+<parameter>accel_key</parameter> and <parameter>accel_mods</parameter> for
+this path. To change the accelerator during runtime programatically, use the
+<link
+linkend="function-gtk--accel-map-change-entry"><function>gtk.accel_map_change_entry</function>()</link>
+function. The accelerator path must consist of
+"&lt;WINDOWTYPE&gt;/Category1/Category2/.../Action", where
+&lt;WINDOWTYPE&gt; should be a unique application-specific identifier, that
+corresponds to the kind of window the accelerator is being used in,
+e.g. "Gimp-Image", "Abiword-Document" or "Gnumeric-Settings". The
+Category1/.../Action portion is most appropriately chosen by the action the
+accelerator triggers, i.e. for accelerators on menu items, choose the item's
+menu path, e.g. "File/Save As", "Image/View/Zoom" or "Edit/Select All". So a
+full valid accelerator path may look like:
+"&lt;Gimp-Toolbox&gt;/File/Dialogs/Tool Options...".</para>
+
+    </refsect2>
+
     <refsect2 id="function-gtk--accel-map-lookup-entry">
       <title>gtk.accel_map_lookup_entry</title>
 
@@ -1167,6 +1277,83 @@ function.</para>
 
     </refsect2>
 
+    <refsect2 id="function-gtk--accel-map-lock-path">
+      <title>gtk.accel_map_lock_path</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.accel_map_lock_path</methodname>
+	  <methodparam><parameter
+			 role="keyword">accel_path</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">accel_path</parameter>&nbsp;:</term>
+	  <listitem><simpara>a valid accelerator path</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.accel_map_lock_path</function>() function
+      locks the accelerator path specified by
+      <parameter>accel_path</parameter>. If the accelerator map doesn't yet
+      contain an entry for <parameter>accel_path</parameter>, a new one is
+      created.</para>
+
+      <para>Locking an accelerator path prevents its accelerator from being
+      changed during runtime. A locked accelerator path can be unlocked by
+      the <link
+      linkend="function-gtk--accel-map-unlock-path"><function>gtk.accel_map_unlock_path</function>()</link>
+      function. Refer to the <link
+      linkend="function-gtk--accel-map-change-entry"><function>gtk.accel_map_change_entry</function>()</link>
+      function for information about runtime accelerator changes.</para>
+
+      <para>If called more than once, <parameter>accel_path</parameter>
+      remains locked until the <link
+      linkend="function-gtk--accel-map-unlock-path"><function>gtk.accel_map_unlock_path</function>()</link>
+      function has been called an equivalent number of times.</para>
+
+      <para>Note that locking of individual accelerator paths is independent
+      from locking the <link
+      linkend="class-gtkaccelgroup"><classname>gtk.AccelGroup</classname></link>
+      containing them. For runtime accelerator changes to be possible both
+      the accelerator path and its <link
+      linkend="class-gtkaccelgroup"><classname>gtk.AccelGroup</classname></link>
+      have to be unlocked.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--accel-map-unlock-path">
+      <title>gtk.accel_map_unlock_path</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.accel_map_unlock_path</methodname>
+	  <methodparam><parameter
+			 role="keyword">accel_path</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">accel_path</parameter>&nbsp;:</term>
+	  <listitem><simpara>a valid accelerator path</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <function>gtk.accel_map_unlock_path</function>() function
+      undoes the last call to the <link
+      linkend="function-gtk--accel-map-lock-path"><function>gtk.accel_map_lock_path</function>()</link>
+      function on the accelerator path specified by
+      <parameter>accel_path</parameter>. Refer to the <link
+      linkend="function-gtk--accel-map-lock-path"><function>gtk.accel_map_lock_path</function>()</link>
+      function for information about accelerator path locking.</para>
+
+    </refsect2>
+
     <refsect2 id="function-gtk--accel-map-add-filter">
       <title>gtk.accel_map_add_filter</title>
 
@@ -1246,7 +1433,7 @@ with</simpara></listitem>
 	  <term><parameter>user_param1</parameter>&nbsp;:</term>
           <listitem><simpara>the first user parameter (if any) specified
 with the <link
-linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+linkend="method-gobject--connect"><methodname>gobject.GObject.connect</methodname>()</link>
 method</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
