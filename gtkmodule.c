@@ -5949,7 +5949,7 @@ static PyObject *_wrap_gdk_color_new(PyObject *self, PyObject *args) {
     GdkColor gdk_color;
     
     if (!PyArg_ParseTuple(args, "llll:gdk_color_new", 
-			  &red, &green, blue, &(gdk_color.pixel)))
+			  &red, &green, &blue, &(gdk_color.pixel)))
 	return NULL;
 
     g_warning("you should be using GdkColormap.alloc() to allocate colours");
