@@ -301,9 +301,13 @@ pygtk_generic_cell_renderer_start_editing (GtkCellRenderer      *cell,
     Py_DECREF(py_widget);
     Py_DECREF(py_background_area);
     Py_DECREF(py_cell_area);
-    if (pygobject_check(py_ret, &PyGtkCellEditable_Type)) {
+    if (py_ret == Py_None) {
+	ret = NULL;
+    }
+    else if (pygobject_check(py_ret, &PyGtkCellEditable_Type)) {
 	ret = GTK_CELL_EDITABLE(g_object_ref(pygobject_get(py_ret)));
-    } else {
+    }
+    else {
 	g_warning("return of start_editing() was not a GtkCellEditable");
     }
     Py_DECREF(py_ret);
