@@ -1,3 +1,11 @@
+2004-07-27  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk-types.c (pygdk_atom_compare) Remove.
+	(pygdk_atom_richcompare) Implement with comparison to strings.
+	(PyGdkAtom_Type) Set tp_compare to 0 and tp_richcompare to
+	pygdk_atom_richcompare.
+	Allow an Atom to be compared with a string. Fixes #148564.
+
 2004-07-26  Johan Dahlin  <johan@gnome.org>
 
 	* acinclude.m4: Remove, replaced with:

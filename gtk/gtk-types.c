@@ -740,14 +740,6 @@ pygdk_atom_dealloc(PyGdkAtom_Object *self)
     PyObject_DEL(self);
 }
 
-static int
-pygdk_atom_compare(PyGdkAtom_Object *self, PyGdkAtom_Object *v)
-{
-    if (self->atom == v->atom) return 0;
-    if (self->atom > v->atom) return -1;
-    return 1;
-}
-
 static long
 pygdk_atom_hash(PyGdkAtom_Object *self)
 {
@@ -773,6 +765,45 @@ pygdk_atom_str(PyGdkAtom_Object *self)
     return pygdk_atom_repr(self);
 }
 
+static PyObject *
+pygdk_atom_richcompare(PyGdkAtom_Object *self, PyGdkAtom_Object *v, int op)
+{
+    PyObject *result = Py_NotImplemented;
+ 
+    if (PyString_Check(v)) {
+        PyObject *str = pygdk_atom_str(self);
+        result =  PyObject_RichCompare(str, (PyObject *)v, op);
+        Py_DECREF(str);
+        return result;
+    }
+    if (PyGdkAtom_Check(v)) {
+        switch (op) {
+        case Py_LT:
+            result = (self->atom < v->atom) ? Py_True : Py_False;
+            break;
+        case Py_LE:
+            result = (self->atom <= v->atom) ? Py_True : Py_False;
+            break;
+        case Py_EQ:
+            result = (self->atom == v->atom) ? Py_True : Py_False;
+            break;
+        case Py_NE:
+            result = (self->atom != v->atom) ? Py_True : Py_False;
+            break;
+        case Py_GE:
+            result = (self->atom >= v->atom) ? Py_True : Py_False;
+            break;
+        case Py_GT:
+            result = (self->atom > v->atom) ? Py_True : Py_False;
+            break;
+        default:
+            break;
+        }
+    }
+    Py_INCREF(result);
+    return result;
+}
+
 PyTypeObject PyGdkAtom_Type = {
     PyObject_HEAD_INIT(NULL)
     0,
@@ -783,7 +814,7 @@ PyTypeObject PyGdkAtom_Type = {
     (printfunc)0,
     (getattrfunc)0,
     (setattrfunc)0,
-    (cmpfunc)pygdk_atom_compare,
+    (cmpfunc)0,
     (reprfunc)pygdk_atom_repr,
     0,
     0,
@@ -795,7 +826,10 @@ PyTypeObject PyGdkAtom_Type = {
     (setattrofunc)0,
     0,
     Py_TPFLAGS_DEFAULT,
-    NULL
+    NULL,
+    0,
+    0,
+    (richcmpfunc)pygdk_atom_richcompare,
 };
 
 typedef struct {
