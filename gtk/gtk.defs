@@ -2002,8 +2002,8 @@
   (is-constructor-of "GtkClipboard")
   (return-type "GtkClipboard*")
   (parameters
-    '("GdkDisplay*" "display")
-    '("GdkAtom" "selection")
+    '("GdkDisplay*" "display" (default "gdk_display_get_default()"))
+    '("GdkAtom" "selection" (default "GDK_SELECTION_CLIPBOARD"))
   )
 )
 
@@ -2011,7 +2011,7 @@
   (c-name "gtk_clipboard_get")
   (return-type "GtkClipboard*")
   (parameters
-    '("GdkAtom" "selection")
+    '("GdkAtom" "selection" (default "GDK_SELECTION_CLIPBOARD"))
   )
 )
 
