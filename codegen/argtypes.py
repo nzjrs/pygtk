@@ -95,13 +95,7 @@ class StringArg(ArgType):
 	else:
             info.add_parselist('s', ['&' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
-        if ptype[:6] == 'const-' or ptype in ('static_string',):
-	    info.varlist.add('const gchar', '*ret')
-            info.codeafter.append('    if (ret)\n' +
-                                  '        return PyString_FromString(ret);\n'+
-                                  '    Py_INCREF(Py_None);\n' +
-                                  '    return Py_None;')
-	else:
+        if ownsreturn:
 	    # have to free result ...
 	    info.varlist.add('gchar', '*ret')
             info.codeafter.append('    if (ret) {\n' +
@@ -109,6 +103,12 @@ class StringArg(ArgType):
                                   '        g_free(ret);\n' +
                                   '        return py_ret;\n' +
                                   '    }\n' +
+                                  '    Py_INCREF(Py_None);\n' +
+                                  '    return Py_None;')
+	else:
+	    info.varlist.add('const gchar', '*ret')
+            info.codeafter.append('    if (ret)\n' +
+                                  '        return PyString_FromString(ret);\n'+
                                   '    Py_INCREF(Py_None);\n' +
                                   '    return Py_None;')
 
