@@ -27,7 +27,6 @@ try:
 except ImportError:
     pass
 
-
 FALSE = False
 TRUE  = True
 import gobject as _gobject
@@ -55,20 +54,19 @@ gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
 # _gobject deprecation
 from types import ModuleType as _module
+from warnings import warn as _warn
+
 class _GObjectWrapper(_module):
-    from warnings import warn
-    warn = staticmethod(warn)
     _gobject = _gobject
     def __getattr__(self, attr):
-        self.warn('gtk._gobject is deprecated, use gobject directly instead')
+        _warn('gtk._gobject is deprecated, use gobject directly instead',
+	      DeprecationWarning, 2)
         return getattr(self._gobject, attr)
 _gobject = _GObjectWrapper('gtk._gobject')
 del _GObjectWrapper, _module
 
 # other deprecated symbols
 class _Deprecated:
-    from warnings import warn
-    warn = staticmethod(warn)
     def __init__(self, func, oldname, module=''):
         self.func = func
         self.oldname = oldname
@@ -87,7 +85,7 @@ class _Deprecated:
                                                                self.name)
         # DeprecationWarning is imported from _gtk, so it's not the same
         # as the one found in exceptions.
-        self.warn(message, DeprecationWarning)
+        _warn(message, DeprecationWarning, 2)
         return self.func(*args, **kwargs)
 
 # old names compatibility ...
