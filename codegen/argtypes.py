@@ -4,6 +4,7 @@ import string
 import traceback
 
 _conv_special_cases = {
+    'GObject': '_G_OBJECT',
     'GtkCList': '_GTK_CLIST',
     'GtkCTree': '_GTK_CTREE',
     'GtkCTreePos': '_GTK_CTREE_POS',
@@ -399,8 +400,8 @@ class AtomArg(IntArg):
 class GErrorArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
-	    arglist.append('NULL')
-            return ''
+        arglist.append('NULL')
+        return ''
 
 class ArgMatcher:
     def __init__(self):
@@ -506,6 +507,9 @@ matcher.register_boxed('GdkDevice', 'PyGdkDevice_Type',
 matcher.register_boxed('GtkTextIter', 'PyGtkTextIter_Type',
 		       'PyGtkTextIter_Get', 'PyGtkTextIter_New')
 matcher.register('const-GtkTextIter*', matcher.get('GtkTextIter*'))
+matcher.register_boxed('GtkTreeIter', 'PyGtkTreeIter_Type',
+		       'PyGtkTreeIter_Get', 'PyGtkTreeIter_New')
+matcher.register('const-GtkTreeIter*', matcher.get('GtkTreeIter*'))
 
 matcher.register('GdkAtom', AtomArg())
 matcher.register('GError**', GErrorArg())

@@ -62,6 +62,9 @@ struct _PyGtk_FunctionStruct {
 
     PyTypeObject *gtkTextIter_type;
     PyObject *(* gtkTextIter_new)(GtkTextIter *iter);
+
+    PyTypeObject *gtkTreeIter_type;
+    PyObject *(* gtkTreeIter_new)(GtkTreeIter *iter);
 };
 
 /* structure definitions for the various object types in PyGTK */
@@ -122,6 +125,11 @@ typedef struct {
     GtkTextIter iter;
 } PyGtkTextIter_Object;
 
+typedef struct {
+    PyObject_HEAD
+    GtkTreeIter iter;
+} PyGtkTreeIter_Object;
+
 /* routines to get the C object value out of the PyObject wrapper */
 #define PyGtkAccelGroup_Get(v) (((PyGtkAccelGroup_Object *)(v))->obj)
 #define PyGdkFont_Get(v) (((PyGdkFont_Object *)(v))->obj)
@@ -134,6 +142,7 @@ typedef struct {
 #define PyGtkCTreeNode_Get(v) (((PyGtkCTreeNode_Object *)(v))->node)
 #define PyGdkDevice_Get(v) (((PyGdkDevice_Object *)(v))->obj)
 #define PyGtkTextIter_Get(v) (&((PyGtkTextIter_Object *)(v))->iter)
+#define PyGtkTreeIter_Get(v) (&((PyGtkTreeIter_Object *)(v))->iter)
 
 /* this section is dependent on whether we are being included from gtkmodule.c
  * or not.  A similar source level interface should be provided in both
@@ -160,6 +169,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGtkCTreeNode_Type     *(_PyGtk_API->gtkCTreeNode_type)
 #define PyGdkDevice_Type        *(_PyGtk_API->gdkDevice_type)
 #define PyGtkTextIter_Type      *(_PyGtk_API->gtkTextIter_type)
+#define PyGtkTreeIter_Type      *(_PyGtk_API->gtkTreeIter_type)
 
 /* type checking routines */
 #define PyGtkAccelGroup_Check(v) ((v)->ob_type == _PyGtk_API->gtkAccelGroup_type)
@@ -173,6 +183,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == _PyGtk_API->gtkCTreeNode_type)
 #define PyGdkDevice_Check(v) ((v)->ob_type == _PyGtk_API->gdkDevice_type)
 #define PyGtkTextIter_Check(v) ((v)->ob_type == _PyGtk_API->gtkTextIter_type)
+#define PyGtkTreeIter_Check(v) ((v)->ob_type == _PyGtk_API->gtkTreeIter_type)
 
 /* type objects */
 #define PyGtkAccelGroup_New    (_PyGtk_API->gtkAccelGroup_new)
@@ -186,6 +197,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGtkCTreeNode_New     (_PyGtk_API->gtkCTreeNode_new)
 #define PyGdkDevice_New        (_PyGtk_API->gdkDevice_new)
 #define PyGtkTextIter_New      (_PyGtk_API->gtkTextIter_new)
+#define PyGtkTreeIter_New      (_PyGtk_API->gtkTreeIter_new)
 
 /* miscelaneous other functions */
 #define pygtk_block_threads (_PyGtk_API->block_threads)

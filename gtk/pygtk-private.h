@@ -25,6 +25,7 @@ extern PyTypeObject PyGdkCursor_Type;
 extern PyTypeObject PyGtkCTreeNode_Type;
 extern PyTypeObject PyGdkDevice_Type;
 extern PyTypeObject PyGtkTextIter_Type;
+extern PyTypeObject PyGtkTreeIter_Type;
 
 /* check the type of a PyObject */
 #define PyGtkAccelGroup_Check(v) ((v)->ob_type == &PyGtkAccelGroup_Type)
@@ -38,6 +39,7 @@ extern PyTypeObject PyGtkTextIter_Type;
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == &PyGtkCTreeNode_Type)
 #define PyGdkDevice_Check(v) ((v)->ob_type == &PyGdkDevice_Type)
 #define PyGtkTextIter_Check(v) ((v)->ob_type == &PyGtkTextIter_Type)
+#define PyGtkTreeIter_Check(v) ((v)->ob_type == &PyGtkTreeIter_Type)
 
 /* constructors for PyObject wrappers ... */
 PyObject *PyGtkAccelGroup_New(GtkAccelGroup *obj);
@@ -51,6 +53,7 @@ PyObject *PyGdkCursor_New(GdkCursor *cursor);
 PyObject *PyGtkCTreeNode_New(GtkCTreeNode *node);
 PyObject *PyGdkDevice_New(GdkDevice *device);
 PyObject *PyGtkTextIter_New(GtkTextIter *iter);
+PyObject *PyGtkTreeIter_New(GtkTreeIter *iter);
 
 /* miscelaneous functions */
 void pygtk_block_threads(void);

@@ -225,6 +225,22 @@ PyGtkTextIter_New(GtkTextIter *iter)
     return (PyObject *)self;
 }
 
+PyObject *
+PyGtkTreeIter_New(GtkTreeIter *iter)
+{
+    PyGtkTreeIter_Object *self;
+
+    self = (PyGtkTreeIter_Object *)PyObject_NEW(PyGtkTreeIter_Object,
+						&PyGtkTreeIter_Type);
+    if (self == NULL)
+	return NULL;
+    if (iter)
+	self->iter = *iter;
+    else
+	memset(&self->iter, 0, sizeof(GtkTreeIter));
+    return (PyObject *)self;
+}
+
 static void
 pygtk_accel_group_dealloc(PyGtkAccelGroup_Object *self)
 {
@@ -3393,20 +3409,50 @@ pygtk_text_iter_forward_search(PyGtkTextIter_Object *self, PyObject *args)
 {
     gchar *str;
     gint visible_only, slice;
-    GtkTextIter match_start, match_end;
+    PyObject *py_limit = Py_None;
+    GtkTextIter match_start, match_end, *limit = NULL;
 
-    if (!PyArg_ParseTuple(args, "sii:GtkTextIter.forward_search",
-			  &str, &visible_only, &slice))
+    if (!PyArg_ParseTuple(args, "sii|O:GtkTextIter.forward_search",
+			  &str, &visible_only, &slice, &py_limit))
 	return NULL;
+    if (PyGtkTextIter_Check(py_limit))
+	limit = PyGtkTextIter_Get(py_limit);
+    else if (py_limit != Py_None) {
+	PyErr_SetString(PyExc_TypeError,"limit must be a GtkTextIter or None");
+	return NULL;
+    }
     if (gtk_text_iter_forward_search(&self->iter, str, visible_only, slice,
-				     &match_start, &match_end))
+				     &match_start, &match_end, limit))
 	return Py_BuildValue("(NN)", PyGtkTextIter_New(&match_start),
 			     PyGtkTextIter_New(&match_end));
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-/* XXXX - gtk_text_iter_backward_search (doesn't seem to be implemented) */
+static PyObject *
+pygtk_text_iter_backward_search(PyGtkTextIter_Object *self, PyObject *args)
+{
+    gchar *str;
+    gint visible_only, slice;
+    PyObject *py_limit = Py_None;
+    GtkTextIter match_start, match_end, *limit = NULL;
+
+    if (!PyArg_ParseTuple(args, "sii|O:GtkTextIter.backward_search",
+			  &str, &visible_only, &slice, &py_limit))
+	return NULL;
+    if (PyGtkTextIter_Check(py_limit))
+	limit = PyGtkTextIter_Get(py_limit);
+    else if (py_limit != Py_None) {
+	PyErr_SetString(PyExc_TypeError,"limit must be a GtkTextIter or None");
+	return NULL;
+    }
+    if (gtk_text_iter_backward_search(&self->iter, str, visible_only, slice,
+				     &match_start, &match_end, limit))
+	return Py_BuildValue("(NN)", PyGtkTextIter_New(&match_start),
+			     PyGtkTextIter_New(&match_end));
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 
 static PyMethodDef pygtk_text_iter_methods[] = {
     { "copy", (PyCFunction)pygtk_text_iter_copy, METH_VARARGS },
@@ -3453,6 +3499,7 @@ static PyMethodDef pygtk_text_iter_methods[] = {
     { "forward_to_tag_toggle", (PyCFunction)pygtk_text_iter_forward_to_tag_toggle, METH_VARARGS },
     { "backward_to_tag_toggle", (PyCFunction)pygtk_text_iter_backward_to_tag_toggle, METH_VARARGS },
     { "forward_search", (PyCFunction)pygtk_text_iter_forward_search, METH_VARARGS },
+    { "backward_search", (PyCFunction)pygtk_text_iter_backward_search, METH_VARARGS },
     { NULL, NULL, 0 }
 };
 
@@ -3478,6 +3525,47 @@ PyTypeObject PyGtkTextIter_Type = {
     0,
     0,
     (hashfunc)pygtk_text_iter_hash,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    0L,0L,0L,0L,
+    NULL
+};
+
+static void
+pygtk_tree_iter_dealloc(PyGtkTreeIter_Object *self)
+{
+    PyMem_DEL(self);
+}
+
+static int
+pygtk_tree_iter_compare(PyGtkTreeIter_Object *self, PyGtkTreeIter_Object *v)
+{
+    if (self->iter.tree_node == v->iter.tree_node) return 0;
+    if (self->iter.tree_node > v->iter.tree_node) return -1;
+    return 1;
+}
+static long
+pygtk_tree_iter_hash(PyGtkTreeIter_Object *self)
+{
+    return (long)self->iter.tree_node;
+}
+
+PyTypeObject PyGtkTreeIter_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "GtkTreeIter",
+    sizeof(PyGtkTreeIter_Object),
+    0,
+    (destructor)pygtk_tree_iter_dealloc,
+    (printfunc)0,
+    (getattrfunc)0,
+    (setattrfunc)0,
+    (cmpfunc)pygtk_tree_iter_compare,
+    (reprfunc)0,
+    0,
+    0,
+    0,
+    (hashfunc)pygtk_tree_iter_hash,
     (ternaryfunc)0,
     (reprfunc)0,
     0L,0L,0L,0L,
@@ -3621,4 +3709,5 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GtkCTreeNode);
     register_tp(GdkDevice);
     register_tp2(GtkTextIter, GTK_TYPE_TEXT_ITER);
+    register_tp(GtkTreeIter);
 }
