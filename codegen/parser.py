@@ -19,6 +19,7 @@ class DefsParser(IncludeParser):
     def __init__(self, arg):
 	IncludeParser.__init__(self, arg)
 	self.objects = []
+        self.interfaces = []
 	self.enums = []      # enums and flags
 	self.functions = []  # functions and methods
 	self.c_name = {}     # hash of c names of functions
@@ -28,6 +29,10 @@ class DefsParser(IncludeParser):
 	odef = apply(ObjectDef, args)
 	self.objects.append(odef)
 	self.c_name[odef.c_name] = odef
+    def interface(self, *args):
+        idef = apply(InterfaceDef, args)
+        self.interfaces.append(idef)
+        self.c_name[idef.c_name] = idef
     def enum(self, *args):
         edef = apply(EnumDef, args)
         self.enums.append(edef)

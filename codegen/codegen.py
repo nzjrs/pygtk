@@ -105,6 +105,33 @@ typetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
 	   '    %(methods)s,\n' + \
            '    EXTENSIONCLASS_INSTDICT_FLAG,\n' + \
 	   '};\n\n'
+interfacetypetmpl = 'PyExtensionClass Py%(class)s_Type = {\n' + \
+	   '    PyObject_HEAD_INIT(NULL)\n' + \
+	   '    0,				/* ob_size */\n' + \
+	   '    "%(class)s",			/* tp_name */\n' + \
+	   '    sizeof(PyPureMixinObject),	/* tp_basicsize */\n' + \
+	   '    0,				/* tp_itemsize */\n' + \
+	   '    /* methods */\n' + \
+	   '    (destructor)0,			/* tp_dealloc */\n' + \
+	   '    (printfunc)0,			/* tp_print */\n' + \
+	   '    (getattrfunc)0,			/* tp_getattr */\n' + \
+	   '    (setattrfunc)0,			/* tp_setattr */\n' + \
+	   '    (cmpfunc)0,			/* tp_compare */\n' + \
+	   '    (reprfunc)0,			/* tp_repr */\n' + \
+	   '    0,				/* tp_as_number */\n' + \
+	   '    0,				/* tp_as_sequence */\n' + \
+	   '    0,				/* tp_as_mapping */\n' + \
+	   '    (hashfunc)0,			/* tp_hash */\n' + \
+           '    (ternaryfunc)0,			/* tp_call */\n' + \
+           '    (reprfunc)0,			/* tp_str */\n' + \
+	   '    (getattrofunc)0,		/* tp_getattro */\n' + \
+	   '    (setattrofunc)0,		/* tp_setattro */\n' + \
+	   '    /* Space for future expansion */\n' + \
+	   '    0L, 0L,\n' + \
+	   '    NULL, /* Documentation string */\n' + \
+	   '    %(methods)s,\n' + \
+           '    EXTENSIONCLASS_BASICNEW_FLAG,\n' + \
+	   '};\n\n'
 
 def fixname(name):
     if keyword.iskeyword(name):
@@ -342,6 +369,50 @@ def write_class(parser, objobj, overrides, fp=sys.stdout):
     dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
     fp.write(typetmpl % dict)
 
+def write_interface(parser, interface, overrides, fp=sys.stdout):
+    fp.write('\n/* ----------- ' + interface.c_name + ' ----------- */\n\n')
+    methods = []
+    if not hasattr(overrides, 'no_constructor_written'):
+        fp.write(noconstructor)
+    overrides.no_constructor_written = 1
+    methods.append(methdeftmpl %
+                   { 'name':  '__init__',
+                     'cname': 'pygobject_no_constructor',
+                     'flags': 'METH_VARARGS'})
+    # do the get_type routine as class method ...
+    uclass = string.lower(argtypes._to_upper_str(interface.c_name)[1:])
+    for meth in parser.find_methods(interface):
+        if overrides.is_ignored(meth.c_name):
+            continue
+	try:
+            methtype = 'METH_VARARGS'
+            if overrides.is_overriden(meth.c_name):
+                fp.write(overrides.override(meth.c_name))
+                fp.write('\n\n')
+                if overrides.wants_kwargs(meth.c_name):
+                    methtype = methtype + '|METH_KEYWORDS'
+            else:
+                write_method(interface.c_name, meth, fp)
+                methtype = methtype + '|METH_KEYWORDS'
+	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
+					   'cname': '_wrap_' + meth.c_name,
+					   'flags': methtype})
+	except:
+	    sys.stderr.write('Could not write method ' + interface.c_name +
+			     '.' + meth.name + '\n')
+            #traceback.print_exc()
+
+    # write the PyMethodDef structure
+    methods.append('    { NULL, NULL, 0 }\n')
+    fp.write('static PyMethodDef _Py' + interface.c_name + '_methods[] = {\n')
+    fp.write(string.join(methods, ''))
+    fp.write('};\n\n')
+
+    # write the type template
+    dict = { 'class': interface.c_name, 'getattr': '0' }
+    dict['methods'] = 'METHOD_CHAIN(_Py' + dict['class'] + '_methods)'
+    fp.write(typetmpl % dict)
+
 def write_functions(parser, overrides, prefix, fp=sys.stdout):
     fp.write('\n/* ----------- functions ----------- */\n\n')
     functions = []
@@ -379,9 +450,14 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('/* ---------- forward type declarations ---------- */\n')
     for obj in parser.objects:
         fp.write('PyExtensionClass Py' + obj.c_name + '_Type;\n')
+    for interface in parser.interfaces:
+        fp.write('PyExtensionClass Py' + interface.c_name + '_Type;\n')
     fp.write('\n')
     for obj in parser.objects:
         write_class(parser, obj, overrides, fp)
+        fp.write('\n')
+    for interface in parser.interfaces:
+        write_interface(parser, interface, overrides, fp)
         fp.write('\n')
 
     write_functions(parser, overrides, prefix, fp)
@@ -390,12 +466,27 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('void\n' + prefix + '_register_classes(PyObject *d)\n{\n')
     fp.write('    ExtensionClassImported;\n')
     fp.write(overrides.get_init() + '\n')
+    for interface in parser.interfaces:
+        if interface.parent != (None, None):
+            fp.write('    PyExtensionClass_ExportSubclassSingle(d, "' +
+                     interface.c_name + '", Py' + interface.c_name +
+                     '_Type, Py' + interface.parent[1] + interface.parent[0] +
+                     '_Type);\n')
+        else:
+            fp.write('    PyExtensionClass_Export(d, "' +
+                     interface.c_name + '", Py' + interface.c_name +
+                     '_Type);\n')
     for obj in parser.objects:
+        bases = []
         if obj.parent != (None, None):
+            bases.append(obj.parent[1] + obj.parent[0])
+        bases = bases + obj.implements
+        if bases:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
                      '", &Py' + obj.c_name +
-                     '_Type, Py_BuildValue("(O)", (PyObject *)&Py' +
-                     obj.parent[1] + obj.parent[0] + '_Type));\n')
+                     '_Type, Py_BuildValue("(' + 'O' * len(bases) + ')", ' +
+                     string.join(map(lambda s: '&Py'+s+'_Type', bases), ', ') +
+                     '));\n')
         else:
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
                      '", &Py' + obj.c_name + '_Type, NULL);\n')
@@ -403,6 +494,12 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
 
 def register_types(parser):
     for obj in parser.objects:
+        if obj.parent != (None, None):
+            argtypes.matcher.register_object(obj.c_name,
+                                             obj.parent[1] + obj.parent[0])
+        else:
+            argtypes.matcher.register_object(obj.c_name, None)
+    for obj in parser.interfaces:
         if obj.parent != (None, None):
             argtypes.matcher.register_object(obj.c_name,
                                              obj.parent[1] + obj.parent[0])

@@ -1,5 +1,21 @@
 2000-11-09  James Henstridge  <james@daa.com.au>
 
+	* codegen/codegen.py (register_types): register interfaces into
+	the argument type matcher.
+	(write_source): write out interface source.  Register interface
+	class types before object types, as they may be used by objects.
+	(write_source): set multiple base classes if an object implements
+	an interface.
+	(write_interface): function to write out the code for an
+	interface.  It is really a simplified version of write_class.
+
+	* codegen/parser.py (DefsParser.interface): handle interface
+	clauses.
+
+	* codegen/definitions.py (InterfaceDef): add a class for interface
+	definitions.
+	(ObjectDef): add support for an implements keyword.
+
 	* codegen/codegen.py (write_source): change code generator to pass
 	bases in as a tuple rather than a single PyExtensionClass
 	structure.

@@ -20,6 +20,7 @@ class ObjectDef(Definition):
 	self.c_name = None
 	self.parent = (None, None)
 	self.fields = []
+        self.implements = []
 	for arg in args:
 	    if type(arg) != type(()) or len(arg) < 2:
 		continue
@@ -36,11 +37,14 @@ class ObjectDef(Definition):
 		for parg in arg[1:]:
 		    if parg[0] == 'type-and-name':
 			self.fields.append((parg[1], parg[2]))
+            elif arg[0] == 'implements':
+                self.implements.append(arg[1])
     def merge(self, old):
 	# currently the .h parser doesn't try to work out what fields of
 	# an object structure should be public, so we just copy the list
 	# from the old version ...
 	self.fields = old.fields
+        self.implements = old.implements
     def write_defs(self, fp=sys.stdout):
 	fp.write('(object ' + self.name + '\n')
 	if self.module:
@@ -54,6 +58,40 @@ class ObjectDef(Definition):
 	    fp.write('  (c-name ' + self.c_name + ')\n')
 	for (ftype, fname) in self.fields:
 	    fp.write('  (field (type-and-name ' + ftype + ' ' + fname + '))\n')
+        for interface in self.implements:
+            fp.write('  (implements ' + interface + ')\n')
+	fp.write(')\n\n')
+
+class InterfaceDef(Definition):
+    def __init__(self, name, *args):
+	self.name = name
+	self.module = None
+	self.c_name = None
+	self.parent = (None, None)
+	self.fields = []
+	for arg in args:
+	    if type(arg) != type(()) or len(arg) < 2:
+		continue
+	    if arg[0] == 'in-module':
+		self.module = arg[1]
+	    elif arg[0] == 'parent':
+		if len(arg) > 2:
+		    self.parent = (arg[1], arg[2][0])
+		else:
+		    self.parent = (arg[1], None)
+	    elif arg[0] == 'c-name':
+		self.c_name = arg[1]
+    def write_defs(self, fp=sys.stdout):
+	fp.write('(interface ' + self.name + '\n')
+	if self.module:
+	    fp.write('  (in-module ' + self.module + ')\n')
+	if self.parent != (None, None):	
+	    fp.write('  (parent ' + self.parent[0])
+	    if self.parent[1]:
+		fp.write(' (' + self.parent[1] + ')')
+	    fp.write(')\n')
+	if self.c_name:
+	    fp.write('  (c-name ' + self.c_name + ')\n')
 	fp.write(')\n\n')
 
 class EnumDef(Definition):
