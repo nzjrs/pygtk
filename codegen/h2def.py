@@ -221,10 +221,14 @@ def clean_func(buf):
     pat=re.compile(r'\s+ (\w+) \[ \s* \]',re.VERBOSE)
     buf=pat.sub(r'[] \1', buf)
 
+    # make return types that are const work.
+    buf = string.replace(buf, 'G_CONST_RETURN ', 'const-')
+    buf = string.replace(buf, 'const ', 'const-')
+
     return buf
 
 proto_pat=re.compile(r"""
-(?P<ret>(\w|\&|\*)+\s*)  # return type
+(?P<ret>(-|\w|\&|\*)+\s*)  # return type
 \s+                   # skip whitespace
 (?P<func>\w+)\s*[(]   # match the function name until the opening (
 (?P<args>.*?)[)]     # group the function arguments
@@ -244,14 +248,12 @@ def define_func(buf,fp):
             continue
         func = m.group('func')
         ret = m.group('ret')
-        ret = string.replace(ret, 'G_CONST_RETURN ', 'const-')
-        ret = string.replace(ret, 'const ', 'const-')
         args=m.group('args')
         args=arg_split_pat.split(args,', ')
         for i in range(len(args)):
             spaces = string.count(args[i], ' ')
             args[i] = string.replace(args[i], ' ', '-', spaces - 1)
-
+            
         write_func(fp, func, ret, args)
 
 get_type_pat = re.compile(r'(const-)?([A-Za-z0-9]+)\*?\s+')
