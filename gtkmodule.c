@@ -2045,7 +2045,7 @@ static PyObject *
 PyGdkColor_Alloc(PyGdkColormap_Object *self, PyObject *args) {
   GdkColor color = {0, 0, 0, 0};
   gchar *color_name;
-  if (!PyArg_ParseTuple(args, "iii:GdkColormap.alloc",
+  if (!PyArg_ParseTuple(args, "hhh:GdkColormap.alloc",
 			&(color.red), &(color.green), &(color.blue))) {
     PyErr_Clear();
     if (!PyArg_ParseTuple(args, "s:GdkColormap.alloc", &color_name))
