@@ -179,7 +179,7 @@ static PyObject *_wrap_gdk_imlib_get_pixmap(PyObject *self, PyObject *args) {
     GdkPixmap *pix;
     GdkBitmap *mask;
 
-    if (!PyArg_ParseTuple(args, "O!:gdk_imlib_make_pixmap",
+    if (!PyArg_ParseTuple(args, "O!:gdk_imlib_get_pixmap",
 			  &PyGdkImlibImage_Type, &image))
         return NULL;
     pix  = gdk_imlib_move_image(PyGdkImlibImage_Get(image));
@@ -723,7 +723,27 @@ static PyObject *_wrap_gdk_imlib_get_filename(PyObject *self, PyObject *args) {
     return PyString_FromString(PyGdkImlibImage_Get(image)->filename);
 }
 
+static PyObject *_wrap_gdk_imlib_push_visual(PyObject *self, PyObject *args) {
+    if (!PyArg_ParseTuple(args, ":gdk_imlib_push_visual"))
+        return NULL;
+    gtk_widget_push_visual(gdk_imlib_get_visual());
+    gtk_widget_push_colormap(gdk_imlib_get_colormap());
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *_wrap_gdk_imlib_pop_visual(PyObject *self, PyObject *args) {
+    if (!PyArg_ParseTuple(args, ":gdk_imlib_pop_visual"))
+        return NULL;
+    gtk_widget_pop_visual();
+    gtk_widget_pop_colormap();
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 static PyMethodDef _gdkimlibMethods[] = {
+    { "gdk_imlib_push_visual", _wrap_gdk_imlib_push_visual, 1 },
+    { "gdk_imlib_pop_visual", _wrap_gdk_imlib_pop_visual, 1 },
     { "gdk_imlib_get_filename", _wrap_gdk_imlib_get_filename, 1 },
     { "gdk_imlib_get_rgb_height", _wrap_gdk_imlib_get_rgb_height, 1 },
     { "gdk_imlib_get_rgb_width", _wrap_gdk_imlib_get_rgb_width, 1 },

@@ -1,3 +1,34 @@
+1999-02-02  James Henstridge  <james@daa.com.au>
+
+	* generate/gtklists.defs, gtk.py: added GtkCList.focus_row.
+	
+	* _gdkimlibmodule.c, GdkImlib.py: added push_visual and pop_visual,
+	that can be used to easily set GTK to use the imlib visual/colormap
+	combination.
+
+	* gtkmodule.c: the PyObject -> GtkArg conversion routines were not
+	catching some exceptions that they generated.  This would cause
+	wierd problems if you passed the wrong argument types to signal
+	handlers.  This was found by Chi-Deok Hwang <cdhwang@sr.hei.co.kr>
+
+	* examples/simple/dnd.py, examples/simple/dndpixmaps.py: and example
+	of drag and drop contributed by Chi-Deok Hwang <cdhwang@sr.hei.co.kr>
+	
+	* gtkmodule.c: added gtk_ctree_get_selection, that returns nodes
+	rather than pointers.
+
+	* gtk.py: made changes to reflect those below.  Also added
+	GtkWidget.get_colormap() (it was missing previously).
+
+	* generate/gtkedit.defs (gtk_spin_button_update): added function.
+
+	* generate/gtkmenus.defs (gtk_check_menu_item_set_active): function
+	renaming.
+	(gtk_menu_set_title): added function.
+
+	* generate/gtkmisc.defs (gtk_toggle_button_[sg]et_active): added
+	functions, and removed gtk_toggle_button_set_state.
+
 1999-01-27  James Henstridge  <james@daa.com.au>
 
 	* gtkmodule.c: fixed some typos in _wrap_gtk_ctree_get_row_data and

@@ -144,3 +144,11 @@ def get_sysconfig():
 	return _gdkimlib.gdk_imlib_get_sysconfig()
 def best_color_match(r, g, b):
 	return _gdkimlib.gdk_imlib_best_color_match(r, g, b)
+
+# these are to help with apps that use imlib a lot.  They push/pop
+# imlib's visual/colormap combination ...
+def push_visual():
+	_gdkimlib.gdk_imlib_push_visual()
+def pop_visual():
+	_gdkimlib.gdk_imlib_pop_visual()
+

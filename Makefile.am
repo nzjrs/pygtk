@@ -57,6 +57,8 @@ EXTRA_DIST = \
 	examples/simple/tooltip1.py \
 	examples/simple/tooltip2.py \
 	examples/simple/scribble.py \
+	examples/simple/dnd.py \
+	examples/simple/dndpixmap.py \
 	examples/simple/README \
 	examples/testgtk/testgtk.py \
 	examples/testgtk/test.xpm \

@@ -249,6 +249,8 @@ class GtkWidget(GtkObject):
 					       hot_x, hot_y)
 	def drag_get_source_widget(self, context):
 		return _obj2inst(_gtk.gtk_drag_get_source_widget(context))
+	def drag_status(self, context, action, time):
+		_gtk.gdk_drag_status(context, action, time)
 	def draw(self, rect):
 		_gtk.gtk_widget_draw(self._o, rect)
 	def draw_default(self, obj=None):
@@ -263,6 +265,8 @@ class GtkWidget(GtkObject):
 		_gtk.gtk_widget_lock_accelerators(self._o)
 	def get_ancestor(self, type):
 		return _obj2inst(_gtk.gtk_widget_get_ancestor(self._o, type))
+	def get_colormap(self):
+		return _gtk.gtk_widget_get_colormap(self._o)
 	def get_composite_name(self):
 		return _gtk.gtk_widget_get_composite_name(self._o)
 	def get_events(self):
@@ -522,7 +526,12 @@ class GtkToggleButton(GtkButton):
 	def set_mode(self, di):
 		_gtk.gtk_toggle_button_set_mode(self._o, di)
 	def set_state(self, state):
-		_gtk.gtk_toggle_button_set_state(self._o, state)
+		print "GtkToggleButton.set_state deprecated -- use set_active"
+		self.set_active(state)
+	def set_active(self, active):
+		_gtk.gtk_toggle_button_set_active(self._o, active)
+	def get_active(self):
+		return _gtk.gtk_toggle_button_get_active(self._o)
 	def toggled(self, obj):
 		_gtk.gtk_toggle_button_toggled(self._o)
 
@@ -641,7 +650,10 @@ class GtkCheckMenuItem(GtkMenuItem):
 	def set_show_toggle(self, always):
 		_gtk.gtk_check_menu_item_set_show_toggle(self._o, always)
 	def set_state(self, state):
-		_gtk.gtk_check_menu_item_set_state(self._o, state)
+		print "GtkCheckMenuItem.set_state is deprecated -- use set_active"
+		self.set_active(state)
+	def set_active(self, active):
+		_gtk.gtk_check_menu_item_set_active(self._o, active)
 	def toggled(self, obj=None):
 		_gtk.gtk_check_menu_item_toggled(self._o)
 
@@ -1051,6 +1063,7 @@ class GtkCList(GtkContainer):
 	def __getattr__(self, attr):
 		attrs = {
 			'selection':_gtk.gtk_clist_get_selection,
+			'focus_row':_gtk.gtk_clist_get_focus_row,
 		}
 		if attrs.has_key(attr):
 			return attrs[attr](self._o)
@@ -1211,6 +1224,14 @@ class GtkCTree(GtkCList):
 			self._o = _gtk.gtk_ctree_new_with_titles(cols,
 								 tree_col,
 								 titles)
+	def __getattr__(self, attr):
+		attrs = {
+			'selection':_gtk.gtk_ctree_get_selection,
+		}
+		if attrs.has_key(attr):
+			return attrs[attr](self._o)
+		else:
+			return GtkCList.__getattr__(self, attr)
 	def base_nodes(self):
 		# this returns a list of the base nodes.  Useful for recursion
 		return _gtk.gtk_ctree_base_nodes(self._o)
@@ -1492,6 +1513,8 @@ class GtkMenu(GtkMenuShell):
 		_gtk.gtk_menu_set_accel_group(self._o, group._ag)
 	def set_tearoff_state(self, torn_off):
 		_gtk.gtk_menu_set_tearoff_state(self._o, torn_off)
+	def set_title(self, title):
+		_gtk.gtk_menu_set_title(self._o, title)
 
 class GtkNotebook(GtkContainer):
 	get_type = _gtk.gtk_notebook_get_type
@@ -1965,6 +1988,8 @@ class GtkSpinButton(GtkEntry):
 		_gtk.gtk_spin_button_set_shadow_type(self._o, shadow_type)
 	def set_snap_to_ticks(self, snap):
 		_gtk.gtk_spin_button_set_snap_to_ticks(self._o, snap)
+	def update(self):
+		_gtk.gtk_spin_button_update(self._o)
 
 class GtkText(GtkEditable):
 	get_type = _gtk.gtk_text_get_type
@@ -2507,3 +2532,14 @@ def draw_segments(drawable, gc, segs):
 def draw_lines(drawable, gc, points):
 	_gtk.gdk_draw_lines(drawable, gc, points)
 
+
+# screen size
+def screen_width():
+	return _gtk.gdk_screen_width()
+def screen_height():
+	return _gtk.gdk_screen_height()
+
+def screen_width_mm():
+	return _gtk.gdk_screen_width_mm()
+def screen_height_mm():
+	return _gtk.gdk_screen_height_mm()

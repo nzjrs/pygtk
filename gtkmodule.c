@@ -370,7 +370,7 @@ PyGtkSelectionData_New(GtkSelectionData *data) {
 						   &PyGtkSelectionData_Type);
   if (!self)
     return NULL;
-  self->obj = gtk_selection_data_copy(data);
+  self->obj = data;
   return (PyObject *)self;
 }
 
@@ -1635,7 +1635,6 @@ static PyTypeObject PyGdkDragContext_Type = {
 
 static void
 PyGtkSelectionData_Dealloc(PyGtkSelectionData_Object *self) {
-  gtk_selection_data_free(self->obj);
   PyMem_DEL(self);
 }
 
@@ -2009,15 +2008,19 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
   case GTK_TYPE_BOOL:
     if (tmp = PyNumber_Int(obj))
       GTK_VALUE_BOOL(*arg) = (PyInt_AsLong(tmp) != 0);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_CHAR:
     if (tmp = PyObject_Str(obj))
       GTK_VALUE_CHAR(*arg) = PyString_AsString(tmp)[0];
-    else 
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_ENUM:
@@ -2031,50 +2034,64 @@ static int GtkArg_FromPyObject(GtkArg *arg, PyObject *obj) {
   case GTK_TYPE_INT:
     if (tmp = PyNumber_Int(obj))
       GTK_VALUE_INT(*arg) = PyInt_AsLong(tmp);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_UINT:
     if (tmp = PyNumber_Int(obj))
       GTK_VALUE_UINT(*arg) = PyInt_AsLong(tmp);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_LONG:
     if (tmp = PyNumber_Int(obj))
       GTK_VALUE_LONG(*arg) = PyInt_AsLong(tmp);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_ULONG:
     if (tmp = PyNumber_Int(obj))
       GTK_VALUE_ULONG(*arg) = PyInt_AsLong(tmp);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_FLOAT:
     if (tmp = PyNumber_Float(obj))
       GTK_VALUE_FLOAT(*arg) = PyFloat_AsDouble(tmp);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_DOUBLE:
     if (tmp = PyNumber_Float(obj))
       GTK_VALUE_DOUBLE(*arg) = PyFloat_AsDouble(tmp);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_STRING:
     if (tmp = PyObject_Str(obj))
       GTK_VALUE_STRING(*arg) = PyString_AsString(tmp);
-    else
+    else {
+      PyErr_Clear();
       return -1;
+    }
     Py_DECREF(tmp);
     break;
   case GTK_TYPE_OBJECT:
@@ -2284,15 +2301,19 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     if (tmp = PyNumber_Int(py_ret)) {
       *GTK_RETLOC_BOOL(*ret) = (PyInt_AsLong(tmp) != 0);
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_BOOL(*ret) = FALSE;
+    }
     break;
   case GTK_TYPE_CHAR:
     if (tmp = PyObject_Str(py_ret)) {
       *GTK_RETLOC_CHAR(*ret) = PyString_AsString(tmp)[0];
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_CHAR(*ret) = '\0';
+    }
     break;
   case GTK_TYPE_ENUM:
     if (PyGtkEnum_get_value(ret->type, py_ret, GTK_RETLOC_ENUM(*ret))) {
@@ -2310,50 +2331,64 @@ static void GtkRet_FromPyObject(GtkArg *ret, PyObject *py_ret) {
     if (tmp = PyNumber_Int(py_ret)) {
       *GTK_RETLOC_INT(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_INT(*ret) = 0;
+    }
     break;
   case GTK_TYPE_UINT:
     if (tmp = PyNumber_Int(py_ret)) {
       *GTK_RETLOC_UINT(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_UINT(*ret) = 0;
+    }
     break;
   case GTK_TYPE_LONG:
     if (tmp = PyNumber_Int(py_ret)) {
       *GTK_RETLOC_LONG(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_LONG(*ret) = 0;
+    }
     break;
   case GTK_TYPE_ULONG:
     if (tmp = PyNumber_Int(py_ret)) {
       *GTK_RETLOC_ULONG(*ret) = PyInt_AsLong(tmp);
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_ULONG(*ret) = 0;
+    }
     break;
   case GTK_TYPE_FLOAT:
     if (tmp = PyNumber_Float(py_ret)) {
       *GTK_RETLOC_FLOAT(*ret) = PyFloat_AsDouble(tmp);
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_FLOAT(*ret) = 0;
+    }
     break;
   case GTK_TYPE_DOUBLE:
     if (tmp = PyNumber_Float(py_ret)) {
       *GTK_RETLOC_DOUBLE(*ret) = PyFloat_AsDouble(tmp);
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_DOUBLE(*ret) = 0;
+    }
     break;
   case GTK_TYPE_STRING:
     if (tmp = PyObject_Str(py_ret)) {
       *GTK_RETLOC_STRING(*ret) = g_strdup(PyString_AsString(py_ret));
       Py_DECREF(tmp);
-    } else
+    } else {
+      PyErr_Clear();
       *GTK_RETLOC_STRING(*ret) = NULL;
+    }
     break;
   case GTK_TYPE_OBJECT:
     if (PyGtk_Check(py_ret))
@@ -4561,6 +4596,22 @@ static PyObject *_wrap_gtk_ctree_new_with_titles(PyObject *self, PyObject *args)
   return item;
 }
 
+static PyObject *_wrap_gtk_ctree_get_selection(PyObject *self, PyObject *args) {
+  GList *selection;
+  GtkCTreeNode *node;
+  PyObject *clist, *ret;
+  if (!PyArg_ParseTuple(args, "O!:gtk_ctree_get_selection", &PyGtk_Type,
+			&clist))
+    return NULL;
+  ret = PyList_New(0);
+  for (selection = GTK_CLIST(PyGtk_Get(clist))->selection; selection != NULL;
+       selection = selection->next) {
+    node = selection->data;
+    PyList_Append(ret, PyGtkCTreeNode_New(node));
+  }
+  return ret;
+}
+
 static PyObject *_wrap_gtk_ctree_insert_node(PyObject *self, PyObject *args) {
   PyObject *ctree, *py_parent, *py_sibling, *py_text;
   PyObject *py_pixmap_closed, *py_mask_closed;
@@ -4948,6 +4999,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_drag_source_set", _wrap_gtk_drag_source_set, 1 },
     { "gtk_drag_begin", _wrap_gtk_drag_begin, 1 },
     { "gtk_ctree_new_with_titles", _wrap_gtk_ctree_new_with_titles, 1 },
+    { "gtk_ctree_get_selection", _wrap_gtk_ctree_get_selection, 1 },
     { "gtk_ctree_insert_node", _wrap_gtk_ctree_insert_node, 1 },
     { "gtk_ctree_find_by_row_data", _wrap_gtk_ctree_find_by_row_data, 1 },
     { "gtk_ctree_find_all_by_row_data", _wrap_gtk_ctree_find_all_by_row_data, 1 },
