@@ -608,38 +608,37 @@ class DocbookDocWriter(DocWriter):
             indent = indent + '  '
         fp.write('</synopsis>\n\n')
 
-    def write_constructor(self, func_def, func_doc, fp):
-        prototype = self.create_constructor_prototype(func_def)
-        fp.write(prototype + '\n')
-        varlist_started = 0
-        for type, name, dflt, null in func_def.params:
-            if not varlist_started:
-                fp.write('  <variablelist>\n')
-                varlist_started = 1
+    def write_params(self, params, ret, func_doc, fp):
+        if not params and (not ret or ret == 'none'):
+            return
+        fp.write('  <variablelist>\n')
+        for type, name, dflt, null in params:
             if func_doc:
                 descr = string.strip(func_doc.get_param_description(name))
             else:
                 descr = 'a ' + type
             fp.write('    <varlistentry>\n')
-            fp.write('      <term><parameter>'+ name +'</parameter></term>\n')
-            fp.write('      <listitem>' + self.reformat_text(descr) +
-                     '</listitem>\n')
+            fp.write('      <term><parameter>%s</parameter></term>\n' % name)
+            fp.write('      <listitem>%s</listitem>\n' %
+                     self.reformat_text(descr))
             fp.write('    </varlistentry>\n')
-        if func_def.ret and func_def.ret != 'none':
-            if not varlist_started:
-                fp.write('  <variablelist>\n')
-                varlist_started = 1
+        if ret and ret != 'none':
             if func_doc and func_doc.ret:
                 descr = string.strip(func_doc.ret)
             else:
-                descr = 'a ' + func_def.ret
+                descr = 'a ' + ret
             fp.write('    <varlistentry>\n')
-            fp.write('      <term>Returns:</term>\n')
-            fp.write('      <listitem>' + self.reformat_text(descr) +
-                     '</listitem>\n')
+            fp.write('      <term><emphasis>Returns:</emphasis></term>\n')
+            fp.write('      <listitem>%s</listitem>\n' %
+                     self.reformat_text(descr))
             fp.write('    </varlistentry>\n')
-        if varlist_started:
-            fp.write('  </variablelist>\n')
+        fp.write('  </variablelist>\n')
+
+    def write_constructor(self, func_def, func_doc, fp):
+        prototype = self.create_constructor_prototype(func_def)
+        fp.write(prototype + '\n')
+        self.write_params(func_def.params, func_def.ret, func_doc, fp)
+
         if func_doc and func_doc.description:
             fp.write(self.reformat_text(func_doc.description))
         fp.write('\n\n\n')
@@ -650,35 +649,7 @@ class DocbookDocWriter(DocWriter):
                  meth_def.name + '</title>\n\n')
         prototype = self.create_method_prototype(meth_def)
         fp.write(prototype + '\n')
-        varlist_started = 0
-        for type, name, dflt, null in meth_def.params:
-            if not varlist_started:
-                fp.write('  <variablelist>\n')
-                varlist_started = 1
-            if func_doc:
-                descr = string.strip(func_doc.get_param_description(name))
-            else:
-                descr = 'a ' + type
-            fp.write('    <varlistentry>\n')
-            fp.write('      <term><parameter>'+ name +'</parameter></term>\n')
-            fp.write('      <listitem>' + self.reformat_text(descr) +
-                     '</listitem>\n')
-            fp.write('    </varlistentry>\n')
-        if meth_def.ret and meth_def.ret != 'none': 
-            if not varlist_started:
-                fp.write('  <variablelist>\n')
-                varlist_started = 1
-            if func_doc and func_doc.ret:
-                descr = string.strip(func_doc.ret)
-            else:
-                descr = 'a ' + meth_def.ret
-            fp.write('    <varlistentry>\n')
-            fp.write('      <term>Returns:</term>\n')
-            fp.write('      <listitem>' + self.reformat_text(descr) +
-                     '</listitem>\n')
-            fp.write('    </varlistentry>\n')
-        if varlist_started:
-            fp.write('  </variablelist>\n')
+        self.write_params(meth_def.params, meth_def.ret, func_doc, fp)
         if func_doc and func_doc.description:
             fp.write(self.reformat_text(func_doc.description))
         fp.write('  </refsect2>\n\n\n')
