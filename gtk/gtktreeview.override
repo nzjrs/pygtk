@@ -2875,3 +2875,83 @@ _wrap_gtk_tree_view_set_column_drag_function(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_tree_view_set_search_equal_func kwargs
+static gboolean
+pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
+                                    gint column,
+                                    const gchar *key,
+                                    GtkTreeIter *iter,
+                                    gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *py_model, *py_column, *py_key, *py_iter;
+    PyObject *retobj;
+    gboolean ret = FALSE;
+
+    g_assert (cunote->func);
+
+    pyg_block_threads();
+
+    py_model = pygobject_new((GObject *)model);
+    py_column = pygobject_new((GObject *)column);
+    py_key = PyString_FromString(key);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(NNNNO)",
+                                     py_model, py_column, py_key, py_iter,
+                                     cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(NNNN)",
+                                     py_model, py_column, py_key, py_iter);
+
+    if (retobj)
+        ret = retobj == Py_True ? TRUE : FALSE;
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+    }
+    Py_XDECREF(retobj);
+
+    pyg_unblock_threads();
+    return ret;    
+}
+
+static PyObject *
+_wrap_gtk_tree_view_set_search_equal_func(PyGObject *self, PyObject *args,
+                                          PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "user_data", NULL };
+    PyObject *py_func = NULL, *py_arg = NULL;
+    PyGtkCustomNotify *cunote;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|OO:GtkTreeView.set_search_equal_func",
+				     kwlist, &py_func, &py_arg))
+        return NULL;
+
+    if (!py_func || py_func == Py_None) {
+        gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(self->obj),
+                                               NULL, NULL, NULL);
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    if (!PyCallable_Check(py_func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+
+    cunote = g_new(PyGtkCustomNotify, 1);
+    Py_INCREF(py_func);
+    cunote->func = py_func;
+    Py_XINCREF(py_arg);
+    cunote->data = py_arg;
+
+    gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(self->obj),
+                                        pygtk_set_search_equal_func_marshal,
+                                        cunote,
+                                        pygtk_custom_destroy_notify);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
