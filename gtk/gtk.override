@@ -3660,7 +3660,7 @@ _wrap_gtk_accel_map_lookup_entry(PyGObject *self, PyObject *args,
 
     if (gtk_accel_map_lookup_entry((const gchar *)accel_path, &accel_key))
 	return Py_BuildValue("iN", accel_key.accel_key,
-			     pyg_enum_from_gtype(GDK_TYPE_MODIFIER_TYPE, accel_key.accel_mods));
+			     pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE, accel_key.accel_mods));
 
     Py_INCREF(Py_None);
     return Py_None;
