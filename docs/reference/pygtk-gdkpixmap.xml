@@ -81,7 +81,7 @@ linkend="function-gdk--pixmap-colormap-create-from-xpm">gtk.gdk.pixmap_colormap_
 		       role="keyword">filename</parameter></methodparam>
       </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
-linkend="function-gdk--pixmap-create-from-xpm-d">gtk.gdk..pixmap_create_from_xpm_d</link></methodname>
+linkend="function-gdk--pixmap-create-from-xpm-d">gtk.gdk.pixmap_create_from_xpm_d</link></methodname>
 	<methodparam><parameter
 		       role="keyword">window</parameter></methodparam>
 	<methodparam><parameter
@@ -107,6 +107,20 @@ linkend="function-gdk--pixmap-foreign-new">gtk.gdk.pixmap_foreign_new</link></me
       </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gdk--pixmap-lookup">gtk.gdk.pixmap_lookup</link></methodname>
+	<methodparam><parameter
+		       role="keyword">anid</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--pixmap-foreign-new-for-display">gtk.gdk.pixmap_foreign_new_for_display</link></methodname>
+	<methodparam><parameter
+		       role="keyword">display</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">anid</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--pixmap-lookup-for-display">gtk.gdk.pixmap_lookup_for_display</link></methodname>
+	<methodparam><parameter
+		       role="keyword">display</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">anid</parameter></methodparam>
       </methodsynopsis></programlisting>
@@ -643,6 +657,104 @@ returns looks up and returns the <link
 linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> that
 wraps the native pixmap handle specified by <parameter>anid</parameter>.
 This method returns <literal>None</literal> if no <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> wraps
+<parameter>anid</parameter>. In the X backend, <parameter>anid</parameter>
+must specify an Xlib XID that is a native pixmap handle.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--pixmap-foreign-new-for-display">
+      <title>gtk.gdk.pixmap_foreign_new_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.pixmap_foreign_new_for_display</methodname>
+	  <methodparam><parameter
+			 role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">anid</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+	  object</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">anid</parameter>&nbsp;:</term>
+	  <listitem><simpara> a native window system pixmap
+handle.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara> the new <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>
+wrapper for the native pixmap or <literal>None</literal> if the pixmap has
+been destroyed.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK2.2 and above.</para>
+      </note>
+
+      <para>The
+<function>gtk.gdk.pixmap_foreign_new_for_display</function>() function
+returns a <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> that
+wraps the native window specified by <parameter>anid</parameter> for the
+<link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by <parameter>display</parameter>. If the pixmap has been
+destroyed this function returns <literal>None</literal>. In the X backend,
+<parameter>anid</parameter> must specify an Xlib XID that is a native pixmap
+handle.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--pixmap-lookup-for-display">
+      <title>gtk.gdk.pixmap_lookup_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.pixmap_lookup_for_display</methodname>
+	  <methodparam><parameter
+			 role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">anid</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+	  object</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">anid</parameter>&nbsp;:</term>
+	  <listitem><simpara> a native window system pixmap
+handle.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara> the new <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>
+wrapper for the native pixmap or <literal>None</literal> if the pixmap has
+been destroyed.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This function is available in PyGTK2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.pixmap_lookup_for_display</function>()
+function returns looks up and returns the <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> that
+wraps the native pixmap handle specified by <parameter>anid</parameter> for
+the <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
+specified by <parameter>display</parameter>.  This method returns
+<literal>None</literal> if no <link
 linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> wraps
 <parameter>anid</parameter>. In the X backend, <parameter>anid</parameter>
 must specify an Xlib XID that is a native pixmap handle.</para>
