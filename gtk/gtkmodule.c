@@ -149,14 +149,18 @@ init_gtk(void)
 	    g_free(argv);
 	}
 	PyErr_SetString(PyExc_RuntimeError, "could not open display");
-	/* set the LC_NUMERIC locale back to "C", as Python requires
+	/* set the LC_NUMERIC locale back to "C", as Python < 2.4 requires
 	 * that it be set that way. */
+#if PY_VERSION_HEX < 0x020400F0
 	setlocale(LC_NUMERIC, "C");
+#endif
 	return;
     }
-    /* set the LC_NUMERIC locale back to "C", as Python requires that
+    /* set the LC_NUMERIC locale back to "C", as Python < 2.4 requires that
      * it be set that way. */
+#if PY_VERSION_HEX < 0x020400F0
     setlocale(LC_NUMERIC, "C");
+#endif
     if (argv != NULL) {
 	PySys_SetArgv(argc, argv);
 	for (i = 0; i < argc; i++)
