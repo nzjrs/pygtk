@@ -269,8 +269,6 @@ def create_button_box(_button):
 def make_toolbar(win):
 		toolbar = GtkToolbar(ORIENTATION_HORIZONTAL, TOOLBAR_BOTH)
 		bg = win.get_style().bg[STATE_NORMAL]
-		if not win.flags(REALIZED):
-			win.realize()
 
 		pix, mask = create_pixmap_from_xpm(win, None, "test.xpm")
 
@@ -348,7 +346,6 @@ def create_toolbar(_button):
 		win.set_title("Toolbar test")
 		win.set_policy(FALSE, TRUE, TRUE)
 		win.connect("delete_event", delete_event)
-		win.realize()
 		toolbar = make_toolbar(win)
 		win.add(toolbar)
 		toolbar.show()
@@ -359,9 +356,9 @@ def create_handle_box(_button):
 		win = GtkWindow()
 		wins["handle_box"] = win
 		win.set_title("Handle Box Test")
+		win.set_policy(FALSE, FALSE, FALSE)
 		win.connect("delete_event", delete_event)
 		win.set_border_width(20)
-		win.realize()
 
 		hbox = GtkHandleBox()
 		win.add(hbox)
@@ -443,7 +440,6 @@ def create_pixmap(_button):
 		wins["pixmap"] = win
 		win.connect("delete_event", delete_event)
 		win.set_title("pixmap")
-		win.realize()
 
 		box1 = GtkVBox()
 		win.add(box1)
@@ -458,8 +454,8 @@ def create_pixmap(_button):
 		box2.pack_start(button, expand=FALSE, fill=FALSE)
 		button.show()
 
-		pixmap = GtkPixmap(win, "test.xpm",
-				   button.get_style().bg[STATE_NORMAL])
+		pix, msk = create_pixmap_from_xpm(win, None, "test.xpm")
+		pixmap = GtkPixmap(pix, msk)
 		label = GtkLabel("Pixmap\ntest")
 		box3 = GtkHBox()
 		box3.set_border_width(2)
@@ -1067,7 +1063,6 @@ def create_text(_button):
 		vscrollbar.show()
 
 		text.freeze()
-		text.realize()
 #		style = text.get_style()
 #		font = style.font ; fg = style.white; bg = style.bg[
 	        text.insert_defaults("some text\n")
@@ -1233,7 +1228,7 @@ def create_dnd(_button):
 					"spite of this oppression",))
 		win = GtkWindow(WINDOW_TOPLEVEL)
 		wins["dnd"] = win
-		win.connect("delete_event", lambda win,_e: win.hide())
+		win.connect("delete_event", delete_event)
 		win.set_title("Drag -N- Drop")
 
 		box1 = GtkVBox()
@@ -1257,7 +1252,6 @@ def create_dnd(_button):
 		button = GtkButton("Drag me!")
 		box3.pack_start(button)
 		button.show()
-		button.realize()
 		button.connect('drag_data_get', dnd_drag_data_get)
 		button.drag_source_set(GDK.BUTTON1_MASK|GDK.BUTTON3_MASK,
 				       targets, GDK.ACTION_COPY)
@@ -1326,6 +1320,7 @@ def create_progress_bar(_button):
 		def killit(arg1=None, arg2=None, tid=win.func, win=win):
 			timeout_remove(tid[1])
 			win.hide()
+			return TRUE
 		win.connect("destroy", killit)
 		win.connect("delete_event", killit)
 
@@ -1343,13 +1338,12 @@ def create_gamma_curve(_button):
 	if not wins.has_key("gamma_curve"):
 		win = GtkWindow()
 		wins["gamma_curve"] = win
-		win.connect("delete_event", lambda _w, _e, win=win: win.hide())
+		win.connect("delete_event", delete_event)
 		win.set_title("test")
 		win.set_usize(200, 150)
 
 		curve = GtkGammaCurve()
 		win.add(curve)
-		curve.realize()
 		curve.show()
 	wins["gamma_curve"].show()
 
@@ -1474,7 +1468,7 @@ def create_cursor_test(_button):
 		
 		win = GtkWindow()
 		wins["cursor_test"] = win
-		win.connect("delete_event", lambda _w, _e, win=win: win.hide())
+		win.connect("delete_event", delete_event)
 		win.set_title("Cursor Test")
 
 		main_vbox = GtkVBox(FALSE, 5)
