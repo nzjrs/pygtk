@@ -150,16 +150,11 @@ linkend="method-gtktreeview--set-expander-column">set_expander_column</link></me
 	<methodname><link
 linkend="method-gtktreeview--get-expander-column">get_expander_column</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
 <methodsynopsis language="python">
-    <methodname><link linkend="method-gtktreeview- -set-column-drag-function">set_column_drag_function</link></methodname>
-    <methodparam><parameter role="keyword">func</parameter></methodparam>
-    <methodparam><parameter role="keyword">user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">destroy</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+        <methodname><link linkend="method-gtktreeview--set-column-drag-function">set_column_drag_function</link></methodname>
+        <methodparam><parameter role="keyword">func</parameter></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeview--scroll-to-point">scroll_to_point</link></methodname>
@@ -1518,15 +1513,13 @@ next to it.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-    <refsect2 id="method-gtktreeview- -set-column-drag-function">
+    <refsect2 id="method-gtktreeview--set-column-drag-function">
     <title>gtk.TreeView.set_column_drag_function</title>
 
 <programlisting><methodsynopsis language="python">
     <methodname>set_column_drag_function</methodname>
     <methodparam><parameter role="keyword">func</parameter></methodparam>
     <methodparam><parameter role="keyword">user_data</parameter></methodparam>
-    <methodparam><parameter role="keyword">destroy</parameter></methodparam>
   </methodsynopsis></programlisting>
   <variablelist>
     <varlistentry>
@@ -1537,27 +1530,39 @@ next to it.</para>
       <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
       <listitem><simpara>User data to be passed to <parameter>func</parameter>, or <literal>None</literal></simpara></listitem>
     </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">destroy</parameter>&nbsp;:</term>
-      <listitem><simpara>Destroy notifier for <parameter>user_data</parameter>, or <literal>None</literal></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>a void</simpara></listitem>
-    </varlistentry>
   </variablelist>
-<para>
-Sets a user function for determining where a column may be dropped when
-dragged.  This function is called on every column pair in turn at the
-beginning of a column drag to determine where a drop can take place.  The
-arguments passed to <parameter>func</parameter> are: the <parameter>tree_view</parameter>, the <link linkend="class-gtktreeviewcolumn"><classname>gtk.TreeViewColumn</classname></link> being
-dragged, the two <link linkend="class-gtktreeviewcolumn"><classname>gtk.TreeViewColumn</classname></link> s determining the drop spot, and
-<parameter>user_data</parameter>.  If either of the <link linkend="class-gtktreeviewcolumn"><classname>gtk.TreeViewColumn</classname></link> arguments for the drop spot
-are <literal>None</literal>, then they indicate an edge.  If <parameter>func</parameter> is set to be <literal>None</literal>, then
-<parameter>tree_view</parameter> reverts to the default behavior of allowing all columns to be
-dropped everywhere.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+
+      <note>
+        <para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_column_drag_function</methodname>() method
+sets the user function specified by <parameter>func</parameter> for
+determining where a column may be dropped when dragged. The user function is
+called on every column pair in turn at the beginning of a column drag to
+determine where a drop can take place. The signature of
+<parameter>func</parameter> is:</para>
+
+      <programlisting>
+  def func(<parameter>tree_view</parameter>, <parameter>column</parameter>, <parameter>prev_colunn</parameter>, <parameter>next_column</parameter>, <parameter>data</parameter>)
+</programlisting>
+
+      <para>where <parameter>tree_view</parameter> is the <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>,
+<parameter>column</parameter> is the <link
+linkend="class-gtktreeviewcolumn"><classname>gtk.TreeViewColumn</classname></link>
+being dragged, prev_column and next_column are the two <link
+linkend="class-gtktreeviewcolumn"><classname>gtk.TreeViewColumn</classname></link>
+objects bracketing the drop spot, and <parameter>data</parameter> is
+<parameter>user_data</parameter>. If <parameter>prev_column</parameter> or
+<parameter>next_column</parameter> is <literal>None</literal>, then the drop
+is at an edge. If <parameter>func</parameter> is <literal>None</literal>,
+the user drag function is removed and the <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
+reverts to the default behavior of allowing any reorderable column to be
+dropped anywhere.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gtktreeview--scroll-to-point">
       <title>gtk.TreeView.scroll_to_point</title>
