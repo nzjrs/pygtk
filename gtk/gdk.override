@@ -1947,11 +1947,17 @@ _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
     return pygc;
 }
 %%
-override-slot GdkGC.tp_getattr
+override-slot GdkGC.tp_getattro
 PyObject *
-_wrap_gdk_gc_tp_getattr(PyGObject *self, char *attr)
+_wrap_gdk_gc_tp_getattro(PyGObject *self, PyObject *py_attr)
 {
     GdkGCValues gc;
+    char *attr;
+
+    if (PyString_Check(py_attr))
+        attr = PyString_AsString(py_attr);
+    else
+        return PyObject_GenericGetAttr((PyObject *)self, py_attr);
 
     if (!strcmp(attr, "__members__"))
         return Py_BuildValue("[ssssssssssssssssss]", "background", "cap_style",
@@ -2006,16 +2012,25 @@ _wrap_gdk_gc_tp_getattr(PyGObject *self, char *attr)
     }
 }
 %%
-override-slot GdkGC.tp_setattr
+override-slot GdkGC.tp_setattro
 static int
-_wrap_gdk_gc_tp_setattr(PyGObject *self, char *attr, PyObject *value)
+_wrap_gdk_gc_tp_setattro(PyGObject *self, PyObject *py_attr, PyObject *value)
 {
     GdkGC *gc = GDK_GC(self->obj);
+    char *attr;
 
     if (value == NULL) {
         PyErr_SetString(PyExc_TypeError, "can't delete attributes");
         return -1;
     }
+
+    if (PyString_Check(py_attr))
+        attr = PyString_AsString(py_attr);
+    else {
+        PyErr_SetString(PyExc_AttributeError, "could not write attribute");
+        return -1;
+    }
+
     if (PyInt_Check(value)) {
         int i = PyInt_AsLong(value);
         GdkGCValues v;

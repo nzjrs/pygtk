@@ -98,8 +98,8 @@ class Wrapper:
         '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
         '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
         '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
-        '    (getattrofunc)0,			/* tp_getattro */\n' \
-        '    (setattrofunc)0,			/* tp_setattro */\n' \
+        '    (getattrofunc)%(tp_getattro)s,	/* tp_getattro */\n' \
+        '    (setattrofunc)%(tp_setattro)s,	/* tp_setattro */\n' \
         '    (PyBufferProcs*)%(tp_as_buffer)s,	/* tp_as_buffer */\n' \
         '    %(tp_flags)s,                      /* tp_flags */\n' \
         '    NULL, 				/* Documentation string */\n' \
@@ -124,7 +124,8 @@ class Wrapper:
         '    (inquiry)%(tp_is_gc)s              /* tp_is_gc */\n' \
         '};\n\n'
 
-    slots_list = ['tp_getattr', 'tp_setattr', 'tp_compare', 'tp_repr',
+    slots_list = ['tp_getattr', 'tp_setattr', 'tp_getattro', 'tp_setattro',
+                  'tp_compare', 'tp_repr',
                   'tp_as_number', 'tp_as_sequence', 'tp_as_mapping', 'tp_hash',
                   'tp_call', 'tp_str', 'tp_as_buffer', 'tp_richcompare', 'tp_iter',
                   'tp_iternext', 'tp_descr_get', 'tp_descr_set', 'tp_init',

@@ -1,5 +1,12 @@
 2005-01-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* gtk/gdk.override: Override slots tp_getattro and tp_setattro of
+	GdkGC instead of tp_setattr and tp_getattr.  Fixes #159468.
+
+	* codegen/codegen.py: Allow override of tp_getattro and
+	tp_setattro (non-deprecated variants of tp_getattr and
+	tp_setattr).
+
 	* gobject/pygflags.c (pyg_flags_new): Check that __gtype__ is
 	PyGTypeWrapper_Type, not PyGEnum_Type.
 	(pyg_flags_add): Set a custom __gtype__ for the new flags class.
