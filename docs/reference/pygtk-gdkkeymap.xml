@@ -115,7 +115,7 @@ linkend="function-gdk--unicode-to-keyval">gtk.gdk.unicode_to_keyval</link></meth
 
     <variablelist>
       <varlistentry>
-        <term>"<link linkend="signal-gtkgdkkeymap--direction-changed">direction-changed</link>"</term>
+        <term>"<link linkend="signal-gdkkeymap--direction-changed">direction-changed</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>gdkkeymap</parameter></methodparam>
@@ -125,7 +125,7 @@ linkend="function-gdk--unicode-to-keyval">gtk.gdk.unicode_to_keyval</link></meth
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkgdkkeymap--keys-changed">keys-changed</link>"</term>
+        <term>"<link linkend="signal-gdkkeymap--keys-changed">keys-changed</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>gdkkeymap</parameter></methodparam>
@@ -306,8 +306,8 @@ linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
 and <parameter>group</parameter>) into a keyval, effective group, level and
 consumed modifiers that affected the translation (and are unavailable for
 application use) which are returned in a 4-tuple. See the <link
-linkend="function-gdk--keyval_get_keys"><function>gtk.gdk.keyval_get_keys</function>()</link>
-function for an explanation of groups and levels. The effective group is the
+linkend="method-gdkkeymap--lookup-key"><methodname>lookup_key</methodname>()</link>
+method for an explanation of groups and levels. The effective group is the
 group that was actually used for the translation; some keys such as
 <keycap>Enter</keycap> are not affected by the active keyboard group. The
 level is derived from <parameter>state</parameter>. For convenience, the
@@ -729,10 +729,10 @@ case, if applicable.</para>
     </refsect2>
 
     <refsect2 id="function-gdk--keyval-to-lower">
-      <title>gtk.gdk.to_lower</title>
+      <title>gtk.gdk.keyval_to_lower</title>
 
       <programlisting><methodsynopsis language="python">
-          <methodname>gtk.gdk.to_lower</methodname>
+          <methodname>gtk.gdk.keyval_to_lower</methodname>
           <methodparam><parameter
 			 role="keyword">keyval</parameter></methodparam>
         </methodsynopsis></programlisting>
@@ -876,7 +876,7 @@ converts the ISO10646 (unicode) character specified by
   <refsect1>
     <title>Signals</title>
 
-    <refsect2 id="signal-gtkgdkkeymap--direction-changed">
+    <refsect2 id="signal-gdkkeymap--direction-changed">
       <title>The "direction-changed" Signal</title>
 
       <programlisting><methodsynopsis language="python">
@@ -908,6 +908,45 @@ any)</simpara></listitem>
 
       <para>The "direction-changed" signal is emitted when the pango text
 direction of <parameter>gdkkeymap</parameter> is changed</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gdkkeymap--keys-changed">
+      <title>The "keys-changed" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>gdkkeymap</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>gdkkeymap</parameter>&nbsp;:</term>
+	  <listitem><simpara>the gdkkeymap that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in GTK+ 2.2 and above.</para>
+      </note>
+
+      <para>The "keys-changed" signal is emitted when the mapping
+represented by <parameter>keymap</parameter> changes.</para>
 
     </refsect2>
 
