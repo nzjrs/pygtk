@@ -52,9 +52,25 @@ gdk.c: $(srcdir)/gdk.defs $(COMMONDEFS) $(srcdir)/gdk.override
 gtk.c: $(srcdir)/gtk.defs $(COMMONDEFS) $(srcdir)/gtk.override $(srcdir)/gtk-extrafuncs.defs
 nodist__gtkmodule_la_SOURCES = gtk.c gdk.c
 CLEANFILES += gtk.c gdk.c
-defs_DATA += gtk.defs gtk-types.defs gtk-extrafuncs.defs gdk.defs \
-	     gdk-types.defs
-EXTRA_DIST += gtk.override gdk.override
+
+defs_DATA += 			\
+	gtk.defs 		\
+	gtk-types.defs 		\
+	gtk-extrafuncs.defs	\
+	gdk.defs 		\
+	gdk-types.defs
+
+EXTRA_DIST += 			\
+	gdk.override		\
+	gtk.override 		\
+	gtkclist.override	\
+	gtkwidget.override	\
+	gtkcontainer.override	\
+	gtkstyle.override	\
+	gtkwindow.override	\
+	gtkctree.override	\
+	gtktextview.override	\
+	gtktreeview.override
 
 # libglade module
 if BUILD_LIBGLADE

@@ -1,0 +1,521 @@
+/* -*- Mode: C; c-basic-offset: 4 -*- */
+%%
+ignore
+  gtk_container_get_toplevels
+  gtk_container_add_child_arg_type
+  gtk_container_query_child_args
+  gtk_container_child_args_collect
+  gtk_container_child_arg_get_info
+  gtk_container_foreach_full
+  gtk_container_add_with_args
+  gtk_container_addv
+  gtk_container_child_set_valist
+  gtk_container_child_get_valist
+%%
+override gtk_container_children noargs
+static PyObject *
+_wrap_gtk_container_children(PyGObject *self)
+{
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use GtkContainer.get_children"))
+        return NULL;
+    return _wrap_gtk_container_get_children(self);
+}
+%%
+override gtk_container_get_children noargs
+static PyObject *
+_wrap_gtk_container_get_children(PyGObject *self)
+{
+    GList *list, *tmp;
+    PyObject *py_list;
+
+    list = gtk_container_get_children(GTK_CONTAINER(self->obj));
+
+    if ((py_list = PyList_New(0)) == NULL) {
+        g_list_free(list);
+        return NULL;
+    }
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+        PyObject *gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+
+        if (gtk_obj == NULL) {
+            g_list_free(list);
+            Py_DECREF(py_list);
+            return NULL;
+        }
+        PyList_Append(py_list, gtk_obj);
+        Py_DECREF(gtk_obj);
+    }
+    g_list_free(list);
+    return py_list;
+}
+%%
+override gtk_container_set_focus_chain kwargs
+static PyObject *
+_wrap_gtk_container_set_focus_chain(PyGObject *self, PyObject *args,
+                                    PyObject *kwargs)
+{
+    static char *kwlist[] = { "focusable_widgets", NULL };
+    PyObject *py_focusable_widgets;
+    gint len, i;
+    GList *focusable_widgets = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:GtkContainer.set_focus_chain", kwlist,
+                                     &py_focusable_widgets))
+        return NULL;
+    if (!PySequence_Check(py_focusable_widgets)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "focusable_widgets must be a sequence");
+        return NULL;
+    }
+    len = PySequence_Length(py_focusable_widgets);
+    for (i = 0; i < len; i++) {
+        PyObject *item = PySequence_GetItem(py_focusable_widgets, i);
+
+        if (!pygobject_check(item, &PyGtkWidget_Type)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "focusable_widgets members must be GtkWidgets");
+            Py_DECREF(item);
+            return NULL;
+        }
+        focusable_widgets = g_list_prepend(focusable_widgets,
+                                           pygobject_get(item));
+        Py_DECREF(item);
+    }
+    focusable_widgets = g_list_reverse(focusable_widgets);
+    gtk_container_set_focus_chain(GTK_CONTAINER(self->obj), focusable_widgets);
+    g_list_free(focusable_widgets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_container_get_focus_chain noargs
+static PyObject *
+_wrap_gtk_container_get_focus_chain(PyGObject *self)
+{
+    GList *list = NULL;
+
+    if (gtk_container_get_focus_chain(GTK_CONTAINER(self->obj), &list)) {
+        PyObject *py_list;
+        GList *tmp;
+
+        if ((py_list = PyList_New(0)) == NULL) {
+            g_list_free(list);
+            return NULL;
+        }
+        for (tmp = list; tmp != NULL; tmp = tmp->next) {
+            PyObject *gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+
+            if (gtk_obj == NULL) {
+                g_list_free(list);
+                Py_DECREF(py_list);
+                return NULL;
+            }
+            PyList_Append(py_list, gtk_obj);
+            Py_DECREF(gtk_obj);
+        }
+        g_list_free(list);
+        return py_list;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_container_child_get_property
+static PyObject *
+_wrap_gtk_container_child_get_property(PyGObject *self, PyObject *args)
+{
+    PyGObject *pychild;
+    gchar *property_name;
+    GtkContainer *container;
+    GtkWidget *child;
+    GList *children;
+    GObjectClass *class;
+    GParamSpec *pspec;
+    GValue value = { 0, } ;
+    PyObject *ret;
+
+    if (!PyArg_ParseTuple(args, "O!s:GtkContainer.child_get_property",
+                          &PyGtkWidget_Type, &pychild,
+                          &property_name)) {
+        return NULL;
+    }
+
+    container = GTK_CONTAINER(self->obj);
+    child = GTK_WIDGET(pychild->obj);
+
+    children = gtk_container_get_children(container);
+    if (g_list_find(children, child) == NULL) {
+        PyErr_SetString(PyExc_TypeError,
+                        "first argument must be a child");
+        return NULL;
+    }
+
+    class = G_OBJECT_GET_CLASS(container);
+    pspec = gtk_container_class_find_child_property(class, property_name);
+    if (!pspec) {
+        gchar buf[512];
+        g_snprintf(buf, sizeof(buf),
+                   "container does not support property `%s'",
+                   property_name);
+
+        PyErr_SetString(PyExc_TypeError, buf);
+        return NULL;
+    }
+
+    g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+
+    gtk_container_child_get_property(container,
+                                     child,
+                                     property_name,
+                                     &value);
+
+    ret = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+
+    return ret;
+}
+%%
+override gtk_container_child_set_property
+static PyObject *
+_wrap_gtk_container_child_set_property(PyGObject *self, PyObject *args)
+{
+    gchar *property_name;
+    PyGObject *pychild;
+    GtkContainer *container;
+    GtkWidget *child;
+    GList *children;
+    PyGObject *pyvalue;
+    GObjectClass *class;
+    GParamSpec *pspec;
+    GValue value = { 0, } ;
+
+    if (!PyArg_ParseTuple(args, "O!sO:GtkContainer.child_set_property",
+                          &PyGtkWidget_Type, &pychild,
+                          &property_name, &pyvalue)) {
+        return NULL;
+    }
+
+    container = GTK_CONTAINER(self->obj);
+    child = GTK_WIDGET(pychild->obj);
+
+    children = gtk_container_get_children(container);
+    if (g_list_find(children, child) == NULL) {
+        PyErr_SetString(PyExc_TypeError,
+                        "first argument must be a child");
+        return NULL;
+    }
+
+    class = G_OBJECT_GET_CLASS(self->obj);
+    pspec = gtk_container_class_find_child_property(class, property_name);
+    if (!pspec) {
+        gchar buf[512];
+        g_snprintf(buf, sizeof(buf),
+                   "container does not support property `%s'",
+                   property_name);
+        PyErr_SetString(PyExc_TypeError, buf);
+
+        return NULL;
+    }
+
+    g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+
+    pyg_value_from_pyobject(&value, (PyObject*)pyvalue);
+
+    gtk_container_child_set_property(container,
+                                     child,
+                                     property_name,
+                                     &value);
+    g_value_unset(&value);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_container_child_set
+static PyObject *
+_wrap_gtk_container_child_set(PyGObject *self, PyObject *args)
+{
+    PyGObject *pychild;
+    GtkContainer *container;
+    GtkWidget *child;
+    GList *children;
+    GObjectClass *class;
+    int len, i;
+
+    pychild = (PyGObject*)PyTuple_GetItem(args, 0);
+    if (!pygobject_check(pychild, &PyGtkWidget_Type)) {
+        PyErr_SetString(PyExc_TypeError, "first argument should be a GtkWidget");
+        return NULL;
+    }
+
+    container = GTK_CONTAINER(self->obj);
+    child = GTK_WIDGET(pychild->obj);
+
+    children = gtk_container_get_children(container);
+    if (g_list_find(children, child) == NULL) {
+        PyErr_SetString(PyExc_TypeError,
+                        "first argument must be a child");
+        return NULL;
+    }
+
+    len = PyTuple_Size(args);
+    if ((len - 1) % 2) {
+        PyErr_SetString(PyExc_TypeError,
+                        "Argument list must be column, value pairs.  No -1 "
+                        "termination is needed.");
+        return NULL;
+    }
+
+    class = G_OBJECT_GET_CLASS(self->obj);
+    for (i = 1; i < len; i+=2) {
+        PyObject *py_property = PyTuple_GetItem(args, i);
+        PyObject *py_value = PyTuple_GetItem(args, i + 1);
+        gchar *property_name;
+        GParamSpec *pspec;
+        GValue value = { 0 };
+
+        if (!PyString_Check(py_property)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "Expected string argument for property.");
+            return NULL;
+        }
+
+        property_name = PyString_AsString(py_property);
+
+        pspec = gtk_container_class_find_child_property(class, property_name);
+        if (!pspec) {
+            gchar buf[512];
+            g_snprintf(buf, sizeof(buf),
+                       "container does not support property `%s'",
+                       property_name);
+            PyErr_SetString(PyExc_TypeError, buf);
+
+            return NULL;
+        }
+
+        g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+
+        pyg_value_from_pyobject(&value, (PyObject*)py_value);
+
+        gtk_container_child_set_property(container, child, property_name, &value);
+
+        g_value_unset(&value);
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_container_child_get
+static PyObject *
+_wrap_gtk_container_child_get(PyGObject *self, PyObject *args)
+{
+    PyGObject *pychild;
+    GtkContainer *container;
+    GtkWidget *child;
+    GList *children;
+    GObjectClass *class;
+    int len, i;
+    PyObject *tuple;
+
+    pychild = (PyGObject*)PyTuple_GetItem(args, 0);
+    if (!pygobject_check(pychild, &PyGtkWidget_Type)) {
+        PyErr_SetString(PyExc_TypeError, "first argument should be a GtkWidget");
+        return NULL;
+    }
+
+    container = GTK_CONTAINER(self->obj);
+    child = GTK_WIDGET(pychild->obj);
+
+    children = gtk_container_get_children(container);
+    if (g_list_find(children, child) == NULL) {
+        PyErr_SetString(PyExc_TypeError,
+                        "first argument must be a child");
+        return NULL;
+    }
+
+    len = PyTuple_Size(args);
+    tuple = PyTuple_New(len-1);
+    class = G_OBJECT_GET_CLASS(self->obj);
+    for (i = 1; i < len; i++) {
+        PyObject *py_property = PyTuple_GetItem(args, i);
+        gchar *property_name;
+        GParamSpec *pspec;
+        GValue value = { 0 };
+        PyObject *item;
+
+        if (!PyString_Check(py_property)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "Expected string argument for property.");
+            return NULL;
+        }
+
+        property_name = PyString_AsString(py_property);
+
+        pspec = gtk_container_class_find_child_property(class, property_name);
+        if (!pspec) {
+            gchar buf[512];
+            g_snprintf(buf, sizeof(buf),
+                       "container does not support property `%s'",
+                       property_name);
+            PyErr_SetString(PyExc_TypeError, buf);
+
+            return NULL;
+        }
+
+        g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+
+        gtk_container_child_get_property(container, child, property_name, &value);
+
+        item = pyg_value_as_pyobject(&value, TRUE);
+        PyTuple_SetItem(tuple, i-1, item);
+        Py_INCREF(item);
+
+        g_value_unset(&value);
+    }
+
+    Py_INCREF(tuple);
+    return tuple;
+}
+%%
+override gtk_container_add_with_properties
+static PyObject *
+_wrap_gtk_container_add_with_properties(PyGObject *self, PyObject *args)
+{
+    PyGObject *pychild;
+    GtkContainer *container;
+    GtkWidget *child;
+    GObjectClass *class;
+    int len, i;
+
+    pychild = (PyGObject*)PyTuple_GetItem(args, 0);
+    if (!pygobject_check(pychild, &PyGtkWidget_Type)) {
+        PyErr_SetString(PyExc_TypeError, "first argument should be a GtkWidget");
+        return NULL;
+    }
+
+    container = GTK_CONTAINER(self->obj);
+    child = GTK_WIDGET(pychild->obj);
+
+    len = PyTuple_Size(args);
+    if ((len - 1) % 2) {
+        PyErr_SetString(PyExc_TypeError,
+                        "Argument list must be column, value pairs.  No -1 "
+                        "termination is needed.");
+        return NULL;
+    }
+
+    gtk_widget_freeze_child_notify(child);
+
+    gtk_container_add(container, child);
+
+    class = G_OBJECT_GET_CLASS(self->obj);
+    for (i = 1; i < len; i+=2) {
+        PyObject *py_property = PyTuple_GetItem(args, i);
+        PyObject *py_value = PyTuple_GetItem(args, i + 1);
+        gchar *property_name;
+        GParamSpec *pspec;
+        GValue value = { 0 };
+
+        if (!PyString_Check(py_property)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "Expected string argument for property.");
+            return NULL;
+        }
+
+        property_name = PyString_AsString(py_property);
+
+        pspec = gtk_container_class_find_child_property(class, property_name);
+        if (!pspec) {
+            gchar buf[512];
+            g_snprintf(buf, sizeof(buf),
+                       "container does not support property `%s'",
+                       property_name);
+            PyErr_SetString(PyExc_TypeError, buf);
+
+            return NULL;
+        }
+
+        g_value_init(&value, G_PARAM_SPEC_VALUE_TYPE(pspec));
+
+        pyg_value_from_pyobject(&value, (PyObject*)py_value);
+
+        gtk_container_child_set_property(container, child, property_name, &value);
+
+        g_value_unset(&value);
+    }
+
+    gtk_widget_thaw_child_notify(child);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_container_foreach
+static void
+pygtk_container_for_common_marshal(GtkWidget *widget,
+				   gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *py_widget, *retobj;
+
+    g_assert(cunote->func);
+
+    pyg_block_threads();
+
+    py_widget = pygobject_new((GObject*)widget);
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(NO)",
+                                     py_widget, cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(N)",
+                                     py_widget);
+
+    if (retobj == NULL) {
+        PyErr_Print();
+    }
+
+    Py_XDECREF(retobj);
+
+    pyg_unblock_threads();
+}
+static PyObject *
+pygtk_container_for_common(PyGObject *self, PyObject *args, unsigned for_index)
+{
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify cunote;
+    static struct {
+        char *parse_arg;
+        void (*for_func)(GtkContainer *container, GtkCallback callback,
+                          gpointer callback_data);
+    } table[] = {
+            { "O|O:GtkContainer.foreach", gtk_container_foreach },
+            { "O|O:GtkContainer.forall", gtk_container_forall }
+    };
+
+    g_assert(for_index < countof(table));
+
+    if (!PyArg_ParseTuple(args, table[for_index].parse_arg,
+                          &pyfunc, &pyarg))
+         return NULL;
+ 
+    cunote.func = pyfunc;
+    cunote.data = pyarg;
+    table[for_index].for_func(GTK_CONTAINER(self->obj),
+			      pygtk_container_for_common_marshal,
+			      &cunote);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+static PyObject *
+_wrap_gtk_container_foreach(PyGObject *self, PyObject *args)
+{
+    return pygtk_container_for_common(self, args, PYGTK_CONTAINER_FOREACH);
+}
+%%
+override gtk_container_forall
+static PyObject *
+_wrap_gtk_container_forall(PyGObject *self, PyObject *args)
+{
+    return pygtk_container_for_common(self, args, PYGTK_CONTAINER_FORALL);
+}
