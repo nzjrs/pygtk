@@ -5,7 +5,6 @@
 #define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
 #include <Python.h>
-#include <ExtensionClass.h>
 #include <gtk/gtk.h>
 
 struct _PyGtk_FunctionStruct {
@@ -78,7 +77,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 	Py_FatalError("could not import _gtk"); \
 	return; \
     } \
-    ExtensionClassImported; \
 }
 
 #endif

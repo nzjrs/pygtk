@@ -11,17 +11,17 @@ headers
 #undef gdk_window_get_type
 #define gdk_window_get_type gdk_window_object_get_type
 
-static PyExtensionClass *_PyGObject_Type;
+static PyTypeObject *_PyGObject_Type;
 #define PyGObject_Type (*_PyGObject_Type)
 
-static PyExtensionClass *_PyPangoContext_Type;
+static PyTypeObject *_PyPangoContext_Type;
 #define PyPangoContext_Type (*_PyPangoContext_Type)
-static PyExtensionClass *_PyPangoFont_Type;
+static PyTypeObject *_PyPangoFont_Type;
 #define PyPangoFont_Type (*_PyPangoFont_Type)
-static PyExtensionClass *_PyPangoLayout_Type;
+static PyTypeObject *_PyPangoLayout_Type;
 #define PyPangoLayout_Type (*_PyPangoLayout_Type)
 
-extern PyExtensionClass PyGtkWidget_Type;
+extern PyTypeObject PyGtkWidget_Type;
 
 %%
 init
@@ -32,8 +32,8 @@ init
     if (pygobject != NULL) {
 	PyObject *module_dict = PyModule_GetDict(pygobject);
 
-	_PyGObject_Type = (PyExtensionClass *)PyDict_GetItemString(module_dict,
-								   "GObject");
+	_PyGObject_Type = (PyTypeObject *)PyDict_GetItemString(module_dict,
+							       "GObject");
     } else {
 	Py_FatalError("could not import gobject");
 	return;
@@ -43,14 +43,11 @@ init
 	PyObject *module_dict = PyModule_GetDict(pypango);
 
 	_PyPangoContext_Type =
-	    (PyExtensionClass *)PyDict_GetItemString(module_dict,
-						     "Context");
+	    (PyTypeObject *)PyDict_GetItemString(module_dict, "Context");
 	_PyPangoFont_Type =
-	    (PyExtensionClass *)PyDict_GetItemString(module_dict,
-						     "Font");
+	    (PyTypeObject *)PyDict_GetItemString(module_dict, "Font");
 	_PyPangoLayout_Type =
-	    (PyExtensionClass *)PyDict_GetItemString(module_dict,
-						     "Layout");
+	    (PyTypeObject *)PyDict_GetItemString(module_dict, "Layout");
     } else {
 	Py_FatalError("could not import pango");
 	return;
@@ -515,7 +512,7 @@ _wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
 ignore gdk_cursor_new_from_pixmap
 %%
 override gdk_cursor_new kwargs
-static PyObject *
+static int
 _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist1[] = { "cursor_type", NULL };
@@ -531,12 +528,12 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 
         if (pyg_enum_get_value(GDK_TYPE_CURSOR_TYPE, py_cursor_type,
 			       (gint *)&cursor_type))
-	    return NULL;
+	    return -1;
 	self->boxed = gdk_cursor_new(cursor_type);
 	if (!self->boxed) {
 	    PyErr_SetString(PyExc_RuntimeError,
 			    "could not create GdkCursor object");
-	    return NULL;
+	    return -1;
 	}
 	self->free_on_dealloc = TRUE;
     } else {
@@ -548,22 +545,22 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 					 "OOOOii:GdkCursor.__init__", kwlist2,
 					 &source, &mask, &fg, &bg, &x, &y))
-	    return NULL;
+	    return -1;
 	if (!pygobject_check(source, &PyGdkPixmap_Type)) {
 	    PyErr_SetString(PyExc_TypeError, "source should be a GdkPixmap");
-	    return NULL;
+	    return -1;
 	}
 	if (!pygobject_check(mask, &PyGdkPixmap_Type)) {
 	    PyErr_SetString(PyExc_TypeError, "mask should be a GdkPixmap");
-	    return NULL;
+	    return -1;
 	}
 	if (!pyg_boxed_check(fg, GDK_TYPE_COLOR)) {
 	    PyErr_SetString(PyExc_TypeError, "fg should be a GdkColor");
-	    return NULL;
+	    return -1;
 	}
 	if (!pyg_boxed_check(bg, GDK_TYPE_COLOR)) {
 	    PyErr_SetString(PyExc_TypeError, "bg should be a GdkColor");
-	    return NULL;
+	    return -1;
 	}
 	self->boxed = gdk_cursor_new_from_pixmap(GDK_PIXMAP(source->obj),
 						 GDK_PIXMAP(mask->obj),
@@ -573,12 +570,11 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 	if (!self->boxed) {
 	    PyErr_SetString(PyExc_RuntimeError,
 			    "could not create GdkCursor object");
-	    return NULL;
+	    return -1;
 	}
 	self->free_on_dealloc = TRUE;
     }
-    Py_INCREF(Py_None);
-    return Py_None;
+    return 0;
 }
 %%
 override gdk_event_getattr
@@ -821,29 +817,37 @@ _wrap_gdk_event_getattr(PyObject *self, char *attr)
 }
 %%
 override-attr GdkDevice.axes
-GdkDevice *device = GDK_DEVICE(self->obj);
-PyObject *ret;
-gint i;
+static PyObject *
+_wrap_gdk_device__get_axes(PyGObject *self, void *closure)
+{
+    GdkDevice *device = GDK_DEVICE(self->obj);
+    PyObject *ret;
+    gint i;
 
-ret = PyTuple_New(device->num_axes);
-for (i = 0; i < device->num_axes; i++)
-    PyTuple_SetItem(ret, i, Py_BuildValue("(idd)",
-					  device->axes[i].use,
-					  device->axes[i].min,
-					  device->axes[i].max));
-return ret;
+    ret = PyTuple_New(device->num_axes);
+    for (i = 0; i < device->num_axes; i++)
+	PyTuple_SetItem(ret, i, Py_BuildValue("(idd)",
+					      device->axes[i].use,
+					      device->axes[i].min,
+					      device->axes[i].max));
+    return ret;
+}
 %%
 override-attr GdkDevice.keys
-GdkDevice *device = GDK_DEVICE(self->obj);
-PyObject *ret;
-gint i;
+static PyObject *
+_wrap_gdk_device__get_keys(PyGObject *self, void *closure)
+{
+    GdkDevice *device = GDK_DEVICE(self->obj);
+    PyObject *ret;
+    gint i;
 
-ret = PyTuple_New(device->num_keys);
-for (i = 0; i < device->num_keys; i++)
-    PyTuple_SetItem(ret, i, Py_BuildValue("(ii)",
-					  device->keys[i].keyval,
-					  device->keys[i].modifiers));
-return ret;
+    ret = PyTuple_New(device->num_keys);
+    for (i = 0; i < device->num_keys; i++)
+	PyTuple_SetItem(ret, i, Py_BuildValue("(ii)",
+					      device->keys[i].keyval,
+					      device->keys[i].modifiers));
+    return ret;
+}
 %%
 override gdk_device_get_state kwargs
 static PyObject *
@@ -981,19 +985,23 @@ _wrap_gdk_drag_find_window(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 %%
 override-attr GdkDragContext.targets
-PyObject *atom, *ret = PyList_New(0);
-GList *tmp;
-if (ret == NULL)
-    return NULL;
-for (tmp = GDK_DRAG_CONTEXT(self->obj)->targets; tmp; tmp = tmp->next) {
-    if ((atom = PyGdkAtom_New(GPOINTER_TO_INT(tmp->data))) == NULL) {
-	Py_DECREF(ret);
+static PyObject *
+_wrap_gdk_drag_context__get_targets(PyGObject *self, void *closure)
+{
+    PyObject *atom, *ret = PyList_New(0);
+    GList *tmp;
+    if (ret == NULL)
 	return NULL;
+    for (tmp = GDK_DRAG_CONTEXT(self->obj)->targets; tmp; tmp = tmp->next) {
+	if ((atom = PyGdkAtom_New(GPOINTER_TO_INT(tmp->data))) == NULL) {
+	    Py_DECREF(ret);
+	    return NULL;
+	}
+	PyList_Append(ret, atom);
+	Py_DECREF(atom);
     }
-    PyList_Append(ret, atom);
-    Py_DECREF(atom);
+    return ret;
 }
-return ret;
 %%
 override gdk_gc_new_with_values kwargs
 static PyObject *

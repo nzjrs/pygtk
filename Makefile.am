@@ -5,13 +5,7 @@ SUBDIRS = codegen gtk
 
 INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS)
 
-pyexec_LTLIBRARIES = ExtensionClass.la gobjectmodule.la pangomodule.la
-
-ExtensionClass_la_LDFLAGS = -module -avoid-version \
- -export-symbols-regex initExtensionClass
-ExtensionClass_la_SOURCES = \
-	ExtensionClass.h \
-	ExtensionClass.c
+pyexec_LTLIBRARIES = gobjectmodule.la pangomodule.la
 
 gobjectmodule_la_LDFLAGS = -module -avoid-version \
  -export-symbols-regex initgobject
@@ -36,7 +30,7 @@ $(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango.override
 	&& cp gen-pango.c pango.c \
 	&& rm -f gen-pango.c
 
-pkginclude_HEADERS = pygobject.h ExtensionClass.h
+pkginclude_HEADERS = pygobject.h
 
 noinst_PYTHON = ltihooks.py
 
@@ -53,7 +47,6 @@ EXTRA_DIST = \
   pygtk.spec \
   pygtk-2.0.pc.in \
   MAPPING \
-  ExtensionClass.stx \
   pango.defs \
   pango.override \
   examples/gobject/signal.py \

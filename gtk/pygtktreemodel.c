@@ -188,7 +188,7 @@ pygtk_tree_model_get_column_type(GtkTreeModel *tree_model, gint index)
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "get_column_type",
 				 "(i)", index);
     if (py_ret) {
-	GType ret = PyInt_AsLong(py_ret);
+	GType ret = pyg_type_from_object(py_ret);
 
 	Py_DECREF(py_ret);
 	return ret;

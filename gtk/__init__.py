@@ -11,10 +11,6 @@ except ImportError:
 FALSE = 0
 TRUE  = 1
 
-# hack so that ltihooks is used when importing ExtensionClass ...
-import ExtensionClass
-del ExtensionClass
-
 import gobject
 del gobject
 

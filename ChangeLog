@@ -1,3 +1,142 @@
+2001-09-29  James Henstridge  <james@daa.com.au>
+
+	* gtk/pygtktreemodel.c (pygtk_tree_model_get_column_type): use
+	pyg_type_from_object instead.  Based on patch from Elliot.
+
+	* gtk/gtk.override (_wrap_gtk_selection_data__get_data): convert
+	getter to a function to match codegen changes.
+
+	* : merge in python22-branch (see changelog entries below).
+
+2001-09-25  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pygobject_get_dict): getter for __dict__ on
+	GObject wrappers.
+	(PyGObject_Type): include getsets list.
+
+	* codegen/codegen.py (write_getsets): change "struct getsets" to
+	PyGetSetDef to match recent changes in python.
+
+	* gtk/gdk.override (_wrap_gdk_device__get_axes): change to getter.
+	(_wrap_gdk_device__get_keys): turn into a getter.
+	(_wrap_gdk_drag_context__get_targets): same here.
+
+	* gtk/gtk.override (_wrap_gtk_clist__get_selection): turn into a
+	getter.
+	(_wrap_gtk_ctree__get_selection): turn into a getter.
+
+	* codegen/codegen.py (write_getsets): rename to write_getsets, and
+	don't allow overriding the whole routine, as it is implemented as
+	a number of smaller routines now.
+	(gettertmpl): rename from getattrtmpl.  Refactor for handling
+	single attribute.
+	(write_getsets): finish conversion over to using getsets.
+	(write_class): call write_getsets instead.
+	(typetmpl): substitute %(getsets)s rather than %(getattr)s.
+
+2001-09-23  James Henstridge  <james@daa.com.au>
+
+	* gtk/__init__.py: don't import ExtensionClass.
+
+	* gobjectmodule.c (object_gc_free): new function to free an GC
+	managed object.
+	(PyGObject_Type): use object_gc_free for the tp_free slot.
+
+	* codegen/codegen.py (write_class): don't write getattr routine.
+	This is a temporary hack to see if things work.
+
+	* gobjectmodule.c (pygobject_dealloc): handle case of destruction
+	when self->obj == NULL.
+
+	* gtk/gtk.override (_wrap_gtk_clist_new_with_titles): return an
+	int.
+	(_wrap_gtk_tree_view_get_path_at_pos): same here.
+	(_wrap_gtk_button_new): same here.
+	(_wrap_gtk_toggle_button_new): same here.
+	(_wrap_gtk_check_button_new): same here.
+	(_wrap_gtk_radio_button_new): same here.
+	(_wrap_gtk_list_item_new): same here.
+	(_wrap_gtk_menu_item_new): same here.
+	(_wrap_gtk_check_menu_item_new): same here.
+	(_wrap_gtk_radio_menu_item_new): same here.
+	(_wrap_gtk_ctree_new_with_titles): same here.
+	(_wrap_gtk_dialog_new_with_buttons): same here.
+	(_wrap_gtk_message_dialog_new): same here.
+	(_wrap_gtk_message_dialog_new): same here.
+
+	* gtk/gdk.override (_wrap_gdk_cursor_new): return an int.
+
+	* pango.override (_wrap_pango_font_description_new): constructors
+	return ints.
+
+	* codegen/codegen.py (write_constructor): small hack to convert
+	"return NULL;" to "return -1;" in constructors, as they should
+	return ints.
+	(write_boxed_constructor): same here.
+
+2001-09-22  James Henstridge  <james@daa.com.au>
+
+	* gtk/pygtk.h: remove traces of ExtensionClass.
+
+	* gtk/libglade.override: s/PyExtensionClass/PyTypeObject/.
+
+	* gtk/gtk-types.c (_pygtk_register_boxed_types): get rid of
+	mentions of ExtensionClass.
+
+	* gtk/gdk.override: s/PyExtensionClass/PyTypeObject/.
+
+	* gtk/gtk.override: s/PyExtensionClass/PyTypeObject/.
+
+	* gobjectmodule.c (pygobject_traverse): implement a traverse
+	function for PyGObject.
+	(PyGObject_Type): add GC support.
+	(object_free): use PyObject_GC_Del to delete the memory.
+	(pygobject_dealloc): stop GC tracking the object here.
+	(pygobject_register_class): set a few more type fields here.
+	(pygobject_new): use PyObject_GC_New to allocate the object here.
+	(pygobject_dealloc): readd the 1-1 object/wrapper hack.  It should
+	work as expected since adding GC support.
+
+	* pango.override: s/PyExtensionClass/PyTypeObject/
+
+	* codegen/codegen.py (consttmpl): constructor template returns an
+	int.
+	(noconstructor): return int rather than PyObject.
+	(typetmpl): change def to be a PyTypeObject, with extra fields.
+	(interfacetypetmpl): same here.
+	(boxedconsttmpl): return int rather than pyobject.
+	(boxedtmpl): change def to PyTypeObject.
+	(write_class): put the constructor in the right place.
+	(write_boxed): put the constructor in the right place.
+	(write_source): don't include ExtensionClass.h, forward declare
+	type objects as PyTypeObjects, rather than PyExtensionClasses.
+
+	* gobjectmodule.c (pygobject_register_class): set type->ob_type.
+	(pyg_register_boxed): same here.
+	(pyg_register_interface): same here.
+	(initgobject): set the ob_type member of PyGInterface_Type and
+	PyGBoxed_Type.
+	(pygobject__gobject_init__): add __gobject_init__ method, that
+	just calls pygobject_init.
+	(pygobject_methods): readd __gobject_init__ method.
+
+2001-09-21  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pygobject_register_class): convert to use
+	PyTypeObjects instead of ExtensionClass.
+	(pygobject_new): don't need to set inst_dict.  Python takes care
+	of that for us.
+	(pyg_register_boxed): convert to 2.2.
+	(pyg_boxed_new): convert to 2.2.
+	(pyg_value_from_pyobject): get rid of ExtensionClass calls.
+	(pygobject_init): convert to 2.2.
+
+	* pygobject.h: don't include ExtensionClass.h
+
+	* configure.in (AM_PATH_PYTHON): require python 2.2.
+
+	* Makefile.am: remove ExtensionClass.
+
 2001-09-28  Matt Wilson  <msw@redhat.com>
 
 	* gtk/gtk.defs (gtk_progress_bar_new_with_adjustment): mark as

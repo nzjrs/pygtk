@@ -3,9 +3,6 @@
 #include "pygtk-private.h"
 #include <structmember.h>
 
-/* these aren't ExtensionClass's */
-#undef Py_FindMethod
-
 #if 0
 PyObject *
 PyGtkStyle_New(GtkStyle *obj)
@@ -1451,7 +1448,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
     PyDict_SetItemString(moddict, #x "Type", (PyObject *)&Py##x##_Type); \
     pyg_register_boxed_custom(tp, Py##x##_from_value, Py##x##_to_value)
 
-    ExtensionClassImported;
 #if 0
     register_tp(GtkStyle);
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;

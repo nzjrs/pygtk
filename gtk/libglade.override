@@ -4,9 +4,9 @@ headers
 #include <pygobject.h>
 #include <glade/glade.h>
 
-static PyExtensionClass *_PyGObject_Type;
+static PyTypeObject *_PyGObject_Type;
 #define PyGObject_Type (*_PyGObject_Type)
-static PyExtensionClass *_PyGtkWidget_Type;
+static PyTypeObject *_PyGtkWidget_Type;
 #define PyGtkWidget_Type (*_PyGtkWidget_Type)
 %%
 init
@@ -16,7 +16,7 @@ init
     if ((module = PyImport_ImportModule("gobject")) != NULL) {
         PyObject *module_dict = PyModule_GetDict(module);
 
-        _PyGObject_Type = (PyExtensionClass *)
+        _PyGObject_Type = (PyTypeObject *)
 	    PyDict_GetItemString(module_dict, "GObject");
     } else {
         Py_FatalError("could not import gobject");
@@ -25,7 +25,7 @@ init
     if ((module = PyImport_ImportModule("gtk._gtk")) != NULL) {
         PyObject *module_dict = PyModule_GetDict(module);
 
-        _PyGtkWidget_Type = (PyExtensionClass *)
+        _PyGtkWidget_Type = (PyTypeObject *)
 	    PyDict_GetItemString(module_dict, "Widget");
     } else {
         Py_FatalError("could not import gtk._gtk");

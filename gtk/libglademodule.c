@@ -8,7 +8,6 @@
 
 void pylibglade_register_classes(PyObject *d);
 extern PyMethodDef pylibglade_functions[];
-extern PyExtensionClass PyGladeXML_Type;
 
 DL_EXPORT(void)
 initglade(void)

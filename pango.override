@@ -5,7 +5,7 @@ headers
 #include <pygobject.h>
 #include <pango/pango.h>
 
-static PyExtensionClass *_PyGObject_Type;
+static PyTypeObject *_PyGObject_Type;
 #define PyGObject_Type (*_PyGObject_Type)
 
 %%
@@ -16,8 +16,8 @@ init
     if (pygobject != NULL) {
         PyObject *module_dict = PyModule_GetDict(pygobject);
 
-        _PyGObject_Type = (PyExtensionClass *)PyDict_GetItemString(module_dict,
-                                                                   "GObject");
+        _PyGObject_Type = (PyTypeObject *)PyDict_GetItemString(module_dict,
+							       "GObject");
     } else {
         Py_FatalError("could not import gobject");
         return;
@@ -49,7 +49,7 @@ ignore
 ignore pango_font_description_from_string
 %%
 override pango_font_description_new kwargs
-static PyObject *
+static int
 _wrap_pango_font_description_new(PyGBoxed *self, PyObject *args,
 				 PyObject *kwargs)
 {
@@ -59,7 +59,7 @@ _wrap_pango_font_description_new(PyGBoxed *self, PyObject *args,
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "|z:PangoFontDescription.__init__",
 				     kwlist, &str))
-	return NULL;
+	return -1;
 
     self->gtype = PANGO_TYPE_FONT_DESCRIPTION;
     self->free_on_dealloc = FALSE;
@@ -70,9 +70,8 @@ _wrap_pango_font_description_new(PyGBoxed *self, PyObject *args,
     if (!self->boxed) {
 	PyErr_SetString(PyExc_RuntimeError,
 			"could not create PangoFontDescription object");
-	return NULL;
+	return -1;
     }
     self->free_on_dealloc = TRUE;
-    Py_INCREF(Py_None);
-    return Py_None;
+    return 0;
 }
