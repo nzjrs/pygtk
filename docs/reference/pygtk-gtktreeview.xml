@@ -398,6 +398,53 @@ END NOT IMPLEMENTED -->
       </methodsynopsis>
 END NOT IMPLEMENTED -->
 
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktreeview--get-fixed-height-mode">get_fixed_height_mode</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktreeview--set-fixed-height-mode">set_fixed_height_mode</link></methodname>
+	<methodparam><parameter
+		       role="keyword">enable</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktreeview--get-hover-selection">get_hover_selection</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktreeview--set-hover-selection">set_hover_selection</link></methodname>
+	<methodparam><parameter
+		       role="keyword">hover</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktreeview--get-hover-expand">get_hover_expand</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktreeview--set-hover-expand">set_hover_expand</link></methodname>
+	<methodparam><parameter
+		       role="keyword">expand</parameter></methodparam>
+      </methodsynopsis>
+
+<!-- NOT IMPLEMENTED
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview- -get-row-separator-func">get_row_separator_func</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+END NOT IMPLEMENTED -->
+
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-row-separator-func">set_row_separator_func</link></methodname>
+        <methodparam><parameter role="keyword">func</parameter><initializer>None</initializer></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
+
     </classsynopsis>
 
   </refsect1>
@@ -429,7 +476,7 @@ END NOT IMPLEMENTED -->
 	      <entry>"enable-search"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the user can search through
-columns interactively</entry>
+columns interactively. Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -442,8 +489,8 @@ columns interactively</entry>
 	      <entry>"fixed-height-mode"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, assume all rows have the
-same height thereby speeding up display. Available in GTK+ 2.4 and
-above.</entry>
+same height thereby speeding up display. Default value:
+<literal>FALSE</literal>. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -456,14 +503,42 @@ above.</entry>
 	      <entry>"headers-clickable"</entry>
 	      <entry>Write</entry>
 	      <entry>If <literal>TRUE</literal>, the column headers respond
-to click events</entry>
+to click events. Default value: <literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"headers-visible"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, show the column header
-buttons</entry>
+buttons. Default value: <literal>TRUE</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"hover-expand"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>TRUE</literal>, rows expand or collapse if
+the pointer moves over them. This mode is primarily intended for treeviews
+in popups, e.g. in <link
+linkend="class-gtkcombobox"><classname>gtk.ComboBox</classname></link> or
+<link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>. Default
+value: <literal>FALSE</literal>. Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"hover-selection"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>TRUE</literal>, the selected row follows
+the pointer. Currently, this works only for the selection modes
+<literal>gtk.SELECTION_SINGLE</literal> and
+<literal>gtk.SELECTION_BROWSE</literal>. This mode is primarily intended for
+treeviews in popups, e.g. in <link
+linkend="class-gtkcombobox"><classname>gtk.ComboBox</classname></link> or
+<link
+linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>. Default
+value: <literal>FALSE</literal>. Available in GTK+ 2.6 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -476,21 +551,22 @@ buttons</entry>
 	      <entry>"reorderable"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the view is
-reorderable</entry>
+reorderable. Default value: <literal>FALSE</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"rules-hint"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, hint to the theme engine to
-draw rows in alternating colors</entry>
+draw rows in alternating colors. Default value:
+<literal>FALSE</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"search-column"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The model column to search when searching through
-code</entry>
+code. Allowed values: >= -1. Default value: -1</entry>
 	    </row>
 
 	    <row valign="top">
@@ -521,7 +597,7 @@ code</entry>
 	      <entry>"allow-rules"</entry>
 	      <entry>Read</entry>
 	      <entry>If <literal>TRUE</literal>, allow drawing of
-alternating color rows.</entry>
+alternating color rows. Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -535,14 +611,15 @@ to use for even rows. Available in GTK+ 2.2 and above.</entry>
 	    <row valign="top">
 	      <entry>"expander-size"</entry>
 	      <entry>Read</entry>
-	      <entry>The size of the expander arrow.</entry>
+	      <entry>The size of the expander arrow. Allowed values: >= 0.
+Default value: 12</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"horizontal-separator"</entry>
 	      <entry>Read</entry>
 	      <entry>The horizontal space between cells. Must be an even
-number.</entry>
+number. Allowed values: >= 0. Default value: 2</entry>
 	    </row>
 
 	    <row valign="top">
@@ -564,7 +641,7 @@ to use for odd rows. Available in GTK+ 2.2 and above.</entry>
 	      <entry>"vertical-separator"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The vertical space between cells. Must be an even
-number.</entry>
+number. Allowed values: >= 0. Default value: 2</entry>
 	    </row>
 
 	  </tbody>
@@ -2881,7 +2958,7 @@ END NOT IMPLEMENTED -->
 
       <para>The <methodname>set_search_equal_func</methodname>() method sets
 the compare function for the interactive search capabilities to the function
-specified by <parameter>func</parameter>. if
+specified by <parameter>func</parameter>. If
 <parameter>user_data</parameter> is specified and not
 <literal>None</literal>, it is passed to <parameter>func</parameter>. If
 <parameter>func</parameter> is <literal>None</literal>, the default <link
@@ -2941,6 +3018,231 @@ ATK for determining the number of visible children that are removed when the
 user collapses a row, or a row is deleted.
 </para>  </refsect2>
 END NOT IMPLEMENTED -->
+
+    <refsect2 id="method-gtktreeview--get-fixed-height-mode">
+      <title>gtk.TreeView.get_fixed_height_mode</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_fixed_height_mode</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if fixed height mode
+is enabled.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_fixed_height_mode</methodname>() method
+returns the value of the "fixed-height-mode" property. If the
+"fixed-height-mode" property is <literal>TRUE</literal>, all rows are
+assumed to be the same height.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-fixed-height-mode">
+      <title>gtk.TreeView.set_fixed_height_mode</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_fixed_height_mode</methodname>
+	  <methodparam><parameter
+			 role="keyword">enable</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">enable</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> enable fixed height
+mode.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_fixed_height_mode</methodname>() method sets
+the "fixed-height-mode" property to the value of
+<parameter>enable</parameter>. If <parameter>enable</parameter> is
+<literal>TRUE</literal> all rows are assumed to have the same height which
+speeds up <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
+displays. Only enable this option if all rows are the same height and all
+columns are of type <literal>gtk.TREE_VIEW_COLUMN_FIXED</literal> (see the
+<link linkend="gtk-treeviewcolumn-sizing-constants">TreeViewColumn Sizing
+Constants</link>).</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--get-hover-selection">
+      <title>gtk.TreeView.get_hover_selection</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_hover_selection</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if hover selection
+mode is enabled.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_hover_selection</methodname>() method
+returns the value of the "hover-selection" property. If the
+"hover-selection" property is <literal>TRUE</literal> the selected row
+follows the pointer. See the <link
+linkend="method-gtktreeview--set-hover-selection"><methodname>set_hover_selection</methodname>()</link>
+method for more detail.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-hover-selection">
+      <title>gtk.TreeView.set_hover_selection</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_hover_selection</methodname>
+	  <methodparam><parameter
+			 role="keyword">hover</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">hover</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> enable hover
+selection mode.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname></methodname>() method sets the
+"hover-selection" property to the value of <parameter>hover</parameter>. If
+<parameter>hover</parameter> is <literal>TRUE</literal> the hover selection
+mode is enables and the selected row follows the pointer. Currently, this
+works only for the selection modes <literal>gtk.SELECTION_SINGLE</literal>
+and <literal>gtk.SELECTION_BROWSE</literal> (see the <link
+linkend="gtk-selection-mode-constants">Selection Mode
+Constants</link>).</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--get-hover-expand">
+      <title>gtk.TreeView.get_hover_expand</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_hover_expand</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if hover expand mode is
+enabled</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_hover_expand</methodname>() method returns
+the value of the "hover-expand" property. If the "hover-expand" property is
+<literal>TRUE</literal> rows expand or collapse if the pointer moves over
+them.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-hover-expand">
+      <title>gtk.TreeView.set_hover_expand</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_hover_expand</methodname>
+	  <methodparam><parameter
+			 role="keyword">expand</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">expand</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> enable hover expand
+mode.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_hover_expand</methodname>() method sets the
+"hover-expand" property to the value of <parameter>expand</parameter>. If
+<parameter>expand</parameter> is <literal>TRUE</literal>, rows expand or
+collapse if the pointer moves over them. </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-row-separator-func">
+      <title>gtk.TreeView.set_row_separator_func</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>set_row_separator_func</methodname>
+          <methodparam><parameter role="keyword">func</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">func</parameter>&nbsp;:</term>
+          <listitem><simpara>the row separator function or
+<literal>None</literal></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+          <listitem><simpara>user data to pass to <parameter>func</parameter>, or <literal>None</literal></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_row_separator_func</methodname>() method
+sets the row separator function to the function specified by
+<parameter>func</parameter>. The row separator function is used to determine
+if a row should be displayed as a separator. If
+<parameter>user_data</parameter> is specified and not
+<literal>None</literal>, it is passed to <parameter>func</parameter>. If
+<parameter>func</parameter> is <literal>None</literal>, no separators will
+be drawn. The signature of <parameter>func</parameter> is:</para>
+
+      <programlisting>
+  def func(<parameter>model</parameter>, <parameter>iter</parameter>, <parameter>data</parameter>)
+</programlisting>
+
+      <para>where <parameter>model</parameter> is the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> of
+the <link
+linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>,
+<parameter>iter</parameter> is a <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+pointing to the current candidate row and <parameter>data</parameter> is the
+context data <parameter>user_data</parameter>. <parameter>func</parameter>
+should return <literal>TRUE</literal> to indicate that the row is a
+separator.</para>
+
+      <para>A common way to implement this is to have a boolean column in
+ <parameter>model</parameter>, whose values <parameter>func</parameter>
+ returns.</para>
+
+    </refsect2>
 
   </refsect1>
 
