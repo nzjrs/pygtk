@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = 1.4a
 
 SUBDIRS = codegen gtk
 
-INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS)
+INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) $(PANGO_CFLAGS)
 
 pyexec_LTLIBRARIES = ExtensionClass.la gobjectmodule.la pangomodule.la
 
@@ -25,6 +25,7 @@ pangomodule_la_LDFLAGS = -module -avoid-version \
 pangomodule_la_SOURCES = \
   pangomodule.c \
   pango.c
+pangomodule_la_LIBADD = $(PANGO_LIBS)
 
 $(srcdir)/pango.c: $(srcdir)/pango.defs $(srcdir)/pango.override
 	-chmod a+w $(srcdir)
