@@ -7024,7 +7024,8 @@ void init_gtk() {
 #ifdef WITH_THREAD
      /* it is required that this function be called to enable the thread
       * safety functions */
-     g_thread_init(NULL);
+     if (!g_threads_got_initialized)
+         g_thread_init(NULL);
 #endif
 
      if (PyErr_Occurred())
