@@ -395,6 +395,16 @@
   )
 )
 
+(define-method load_fontset
+  (of-object "PangoContext")
+  (c-name "pango_context_load_fontset")
+  (return-type "PangoFontset*")
+  (parameters
+    '("const-PangoFontDescription*" "desc")
+    '("PangoLanguage*" "language")
+  )
+)
+
 (define-method get_metrics
   (of-object "PangoContext")
   (c-name "pango_context_get_metrics")
@@ -603,6 +613,12 @@
   )
 )
 
+(define-method get_family
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_family")
+  (return-type "const-char*")
+)
+
 (define-method set_style
   (of-object "PangoFontDescription")
   (c-name "pango_font_description_set_style")
@@ -744,6 +760,11 @@
   (return-type "char*")
 )
 
+(define-function pango_font_metrics_get_type
+  (c-name "pango_font_metrics_get_type")
+  (return-type "GType")
+)
+
 (define-method ref
   (of-object "PangoFontMetrics")
   (c-name "pango_font_metrics_ref")
@@ -801,6 +822,12 @@
   )
 )
 
+(define-method get_name
+  (of-object "PangoFontFamily")
+  (c-name "pango_font_family_get_name")
+  (return-type "const-char*")
+)
+
 (define-function pango_font_face_get_type
   (c-name "pango_font_face_get_type")
   (return-type "GType")
@@ -810,6 +837,12 @@
   (of-object "PangoFontFace")
   (c-name "pango_font_face_describe")
   (return-type "PangoFontDescription*")
+)
+
+(define-method get_face_name
+  (of-object "PangoFontFace")
+  (c-name "pango_font_face_get_face_name")
+  (return-type "const-char*")
 )
 
 (define-function pango_font_get_type
