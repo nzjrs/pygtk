@@ -74,11 +74,13 @@ def add_columns (treeview):
     treeview.append_column (column)
 
     # column for bug numbers
-    renderer = gtk.CellRendererText ()
-    column = gtk.TreeViewColumn ('Bug number', renderer, text=COLUMN_NUMBER)
-    treeview.append_column (column)
+    # test using gtk_tree_view_insert_column_with_attributes
+    column = treeview.insert_column_with_attributes(-1, 'Bug Number',
+                                                    gtk.CellRendererText (),
+                                                    text=COLUMN_NUMBER)
     
     # columns for severities
+    # test using gtk_tree_view_column_new, then gtk_tree_view_append_column
     renderer = gtk.CellRendererText ()
     column = gtk.TreeViewColumn ('Severity', renderer, text=COLUMN_SEVERITY)
     treeview.append_column (column)

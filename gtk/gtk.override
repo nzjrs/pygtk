@@ -2047,7 +2047,6 @@ _wrap_gtk_tree_model_foreach(PyGObject *self, PyObject *args)
 %%
 ignore
   gtk_tree_view_new
-  gtk_tree_view_column_new_with_attributes
 %%
 override gtk_tree_view_column_new kwargs
 static int
@@ -2258,6 +2257,49 @@ _wrap_gtk_tree_view_get_path_at_pos(PyGObject *self, PyObject *args,
 	Py_INCREF(Py_None);
 	return Py_None;
     }
+}
+%%
+override gtk_tree_view_insert_column_with_attributes kwargs
+static PyObject *
+_wrap_gtk_tree_view_insert_column_with_attributes(PyGObject *self, PyObject *args,
+						  PyObject *kwargs)
+{
+    gint position, real_position;
+    GtkTreeViewColumn *column;
+    GtkCellRenderer *cell;
+    PyObject *py_cell, *key, *item;
+    const char *title;
+    gint i = 0;
+
+    if (!PyArg_ParseTuple(args,
+			  "isO!:GtkTreeView.insert_column_with_attributes",
+			  &position, &title, &PyGtkCellRenderer_Type, &py_cell))
+	return NULL;
+
+    cell = GTK_CELL_RENDERER(pygobject_get(py_cell));
+
+    real_position =
+	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW(self->obj),
+						     position, title, cell,
+						     NULL);
+    column = gtk_tree_view_get_column (GTK_TREE_VIEW(self->obj),
+				       real_position);
+    if (kwargs) {
+	while (PyDict_Next(kwargs, &i, &key, &item)) {
+	    gchar *attr = PyString_AsString(key);
+
+	    if (!PyInt_Check(item)) {
+		gchar err[128];
+		g_snprintf(err, sizeof(err),
+			   "%s must be an integer column number", attr);
+		PyErr_SetString(PyExc_TypeError, err);
+		return NULL;
+	    }
+	    gtk_tree_view_column_add_attribute(column, cell, attr,
+					       PyInt_AsLong(item));
+	}
+    }
+    return pygobject_new ((GObject *) column);
 }
 %%
 override gtk_tree_selection_get_selected noargs
