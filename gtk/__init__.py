@@ -19,6 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+from types import ModuleType as _module
+from warnings import warn as _warn
+
 # this can go when things are a little further along
 try:
     import ltihooks, sys
@@ -27,8 +30,6 @@ try:
 except ImportError:
     pass
 
-FALSE = False
-TRUE  = True
 import gobject as _gobject
 
 # load the required modules:
@@ -70,7 +71,33 @@ class _Deprecated:
 	except TypeError, e:
 	    msg = str(e).replace(self.name, self.oldname)
 	    raise TypeError(msg)
-	    
+
+class _DeprecatedConstant:
+    def __init__(self, value, name, suggestion):
+        self._v = value
+        self._name = name
+        self._suggestion = suggestion
+        
+    def _deprecated(self, value):
+        message = '%s is deprecated, use %s instead' % (self._name,
+                                                        self._suggestion)
+        _warn(message, DeprecationWarning, 3)
+        return value
+    
+    __nonzero__ = lambda self: self._deprecated(self._v == True)
+    __int__     = lambda self: self._deprecated(int(self._v))
+    __str__     = lambda self: self._deprecated(str(self._v))
+    __repr__    = lambda self: self._deprecated(repr(self._v))
+    __cmp__     = lambda self, other: self._deprecated(cmp(self._v, other))
+        
+# _gobject deprecation
+class _GObjectWrapper(_module):
+    _gobject = _gobject
+    def __getattr__(self, attr):
+        _warn('gtk._gobject is deprecated, use gobject directly instead',
+	      DeprecationWarning, 2)
+        return getattr(self._gobject, attr)
+    
 # old names compatibility ...
 idle_add       = _Deprecated(_gobject.idle_add, 'idle_add', 'gobject')
 idle_remove    = _Deprecated(_gobject.source_remove, 'idle_remove', 'gobject')
@@ -80,28 +107,20 @@ input_add      = _Deprecated(_gobject.io_add_watch, 'input_add', 'gobject')
 input_add_full = _Deprecated(_gobject.io_add_watch, 'input_add_full', 'gobject')
 input_remove   = _Deprecated(_gobject.source_remove, 'input_remove', 'gobject')
 
-mainloop = _Deprecated(main, 'mainloop')
-mainquit = _Deprecated(main_quit, 'mainquit')
-mainiteration = _Deprecated(main_iteration, 'mainiteration')
-load_font = _Deprecated(gdk.Font, 'load_font', 'gtk.gdk')
-load_fontset = _Deprecated(gdk.fontset_load, 'load_fontset', 'gtk.gdk')
-create_pixmap = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gtk.gdk')
-create_pixmap_from_xpm = _Deprecated(gdk.pixmap_create_from_xpm,
-                                     'pixmap_create_from_xpm', 'gtk.gdk')
+mainloop                 = _Deprecated(main, 'mainloop')
+mainquit                 = _Deprecated(main_quit, 'mainquit')
+mainiteration            = _Deprecated(main_iteration, 'mainiteration')
+load_font                = _Deprecated(gdk.Font, 'load_font', 'gtk.gdk')
+load_fontset             = _Deprecated(gdk.fontset_load, 'load_fontset', 'gtk.gdk')
+create_pixmap            = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gtk.gdk')
+create_pixmap_from_xpm   = _Deprecated(gdk.pixmap_create_from_xpm,
+                                       'pixmap_create_from_xpm', 'gtk.gdk')
 create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
                                        'pixmap_create_from_xpm_d', 'gtk.gdk')
 
-# _gobject deprecation
-from types import ModuleType as _module
-from warnings import warn as _warn
-
-class _GObjectWrapper(_module):
-    _gobject = _gobject
-    def __getattr__(self, attr):
-        _warn('gtk._gobject is deprecated, use gobject directly instead',
-	      DeprecationWarning, 2)
-        return getattr(self._gobject, attr)
+TRUE = _DeprecatedConstant(True, 'gtk.TRUE', 'True')
+FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
+	    
 _gobject = _GObjectWrapper('gtk._gobject')
-del _GObjectWrapper, _module
 
-del _Deprecated
+del _Deprecated, _DeprecatedConstant, _GObjectWrapper, _module, 
