@@ -54,14 +54,20 @@ class DefsParser(IncludeParser):
 	mdef = apply(MethodDef, args)
 	self.functions.append(mdef)
 	self.c_name[mdef.c_name] = mdef
-    
     def merge(self, old):
-	for obj in self.objects:
-	    if old.c_name.has_key(obj.c_name):
-		obj.merge(old.c_name[obj.c_name])
+        for obj in self.objects:
+            if old.c_name.has_key(obj.c_name):
+                obj.merge(old.c_name[obj.c_name])
 	for f in self.functions:
-	    if old.c_name.has_key(f.c_name):
-		f.merge(old.c_name[f.c_name])
+            if old.c_name.has_key(f.c_name):
+                f.merge(old.c_name[f.c_name])
+    def printMissing(self, old):
+	for obj in self.objects:
+	    if not old.c_name.has_key(obj.c_name):
+                obj.write_defs()
+	for f in self.functions:
+	    if not old.c_name.has_key(f.c_name):
+		f.write_defs()
 
     def write_defs(self, fp=sys.stdout):
 	for obj in self.objects:

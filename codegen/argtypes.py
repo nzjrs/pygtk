@@ -183,22 +183,22 @@ class DoubleArg(ArgType):
         info.codeafter.append('    return PyFloat_FromDouble(ret);')
 
 class FileArg(ArgType):
-    nulldflt = '    if (py_%(name)s == Py_None)\n' + \
-	       '        %(name)s = NULL;\n' + \
-	       '    else if (py_%(name)s && PyFile_Check(py_%(name)s)\n' + \
-	       '        %s = PyFile_AsFile(py_%(name)s);\n' + \
-	       '    else if (py_%(name)s) {\n' + \
-	       '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a file object or None");\n' + \
-	       '        return NULL;\n' + \
-	       '    }\n'
-    null = '    if (py_%(name)s && PyFile_Check(py_%(name)s)\n' + \
-	   '        %(name)s = PyFile_AsFile(py_%(name)s);\n' + \
-	   '    else if (py_%(name)s != Py_None) {\n' + \
-	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a file object or None");\n' + \
-	   '        return NULL;\n' + \
-	   '    }\n'
-    dflt = '    if (py_%(name)s)\n' + \
-	   '        %(name)s = PyFile_AsFile(py_%(name)s);\n'
+    nulldflt = ('    if (py_%(name)s == Py_None)\n'
+                '        %(name)s = NULL;\n'
+                '    else if (py_%(name)s && PyFile_Check(py_%(name)s)\n'
+                '        %s = PyFile_AsFile(py_%(name)s);\n'
+                '    else if (py_%(name)s) {\n'
+                '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a file object or None");\n'
+                '        return NULL;\n' 
+                '    }')
+    null = ('    if (py_%(name)s && PyFile_Check(py_%(name)s)\n'
+            '        %(name)s = PyFile_AsFile(py_%(name)s);\n'
+            '    else if (py_%(name)s != Py_None) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a file object or None");\n'
+            '        return NULL;\n'
+            '    }\n')
+    dflt = ('    if (py_%(name)s)\n'
+            '        %(name)s = PyFile_AsFile(py_%(name)s);\n')
     def write_param(self, ptype, pname, pdflt, pnull, info):
 	if pnull:
 	    if pdflt:
@@ -229,8 +229,8 @@ class FileArg(ArgType):
                               '    return Py_None;')
 
 class EnumArg(ArgType):
-    enum = '    if (pyg_enum_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
-	   '        return NULL;\n'
+    enum = ('    if (pyg_enum_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n'
+            '        return NULL;\n')
     def __init__(self, enumname, typecode):
 	self.enumname = enumname
 	self.typecode = typecode
@@ -249,8 +249,8 @@ class EnumArg(ArgType):
         info.codeafter.append('    return PyInt_FromLong(ret);')
 
 class FlagsArg(ArgType):
-    flag = '    if (%(default)spyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n' + \
-	   '        return NULL;\n'
+    flag = ('    if (%(default)spyg_flags_get_value(%(typecode)s, py_%(name)s, (gint *)&%(name)s))\n'
+            '        return NULL;\n')
     def __init__(self, flagname, typecode):
 	self.flagname = flagname
 	self.typecode = typecode
@@ -274,30 +274,30 @@ class FlagsArg(ArgType):
 class ObjectArg(ArgType):
     # should change these checks to more typesafe versions that check
     # a little further down in the class heirachy.
-    nulldflt = '    if ((PyObject *)py_%(name)s == Py_None)\n' + \
-	       '        %(name)s = NULL;\n' + \
-	       '    else if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n' + \
-	       '        %(name)s = %(cast)s(py_%(name)s->obj);\n' + \
-	       '    else if (py_%(name)s) {\n' + \
-	       '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n' + \
-	       '        return NULL;\n' + \
-	       '    }\n'
-    null = '    if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n' + \
-	   '        %(name)s = %(cast)s(py_%(name)s->obj);\n' + \
-	   '    else if ((PyObject *)py_%(name)s != Py_None) {\n' + \
-	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n' + \
-	   '        return NULL;\n' + \
-	   '    }\n'
-    dflt = '    if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n' + \
-	   '        %(name)s = %(cast)s(py_%(name)s->obj);\n' + \
-	   '    else if (py_%(name)s) {\n' + \
-	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n' + \
-	   '        return NULL;\n' + \
-	   '    }\n'
-    check = '    if (!pygobject_check(%(name)s, &Py%(type)s_Type)) {\n' + \
-	    '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n' + \
-	    '        return NULL;\n' + \
-	    '    }\n'
+    nulldflt = ('    if ((PyObject *)py_%(name)s == Py_None)\n'
+                '        %(name)s = NULL;\n'
+                '    else if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n'
+                '        %(name)s = %(cast)s(py_%(name)s->obj);\n'
+                '    else if (py_%(name)s) {\n'
+                '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n'
+                '        return NULL;\n'
+                '    }\n')
+    null = ('    if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n'
+            '        %(name)s = %(cast)s(py_%(name)s->obj);\n'
+            '    else if ((PyObject *)py_%(name)s != Py_None) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n'
+            '        return NULL;\n'
+            '    }\n')
+    dflt = ('    if (py_%(name)s && pygobject_check(py_%(name)s, &Py%(type)s_Type))\n'
+            '        %(name)s = %(cast)s(py_%(name)s->obj);\n'
+            '    else if (py_%(name)s) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n'
+            '        return NULL;\n'
+            '    }\n')
+    check = ('    if (!pygobject_check(%(name)s, &Py%(type)s_Type)) {\n'
+             '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n'
+             '        return NULL;\n'
+             '    }\n')
     def __init__(self, objname, parent, typecode):
 	self.objname = objname
 	self.cast = string.replace(typecode, '_TYPE_', '_', 1)
@@ -342,18 +342,18 @@ class ObjectArg(ArgType):
 
 class BoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
-    check = '    if (pyg_boxed_check(py_%(name)s, %(typecode)s))\n' + \
-           '        %(name)s = pyg_boxed_get(py_%(name)s, %(typename)s);\n' + \
-	   '    else {\n' + \
-	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s");\n' + \
-	   '        return NULL;\n' + \
-	   '    }\n'
-    null = '    if (pyg_boxed_check(py_%(name)s, %(typecode)s))\n' + \
-           '        %(name)s = pyg_boxed_get(py_%(name)s, %(typename)s);\n' + \
-	   '    else if (py_%(name)s != Py_None) {\n' + \
-	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s");\n' + \
-	   '        return NULL;\n' + \
-	   '    }\n'
+    check = ('    if (pyg_boxed_check(py_%(name)s, %(typecode)s))\n'
+             '        %(name)s = pyg_boxed_get(py_%(name)s, %(typename)s);\n'
+             '    else {\n'
+             '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s");\n'
+             '        return NULL;\n'
+             '    }\n')
+    null = ('    if (pyg_boxed_check(py_%(name)s, %(typecode)s))\n'
+            '        %(name)s = pyg_boxed_get(py_%(name)s, %(typename)s);\n'
+            '    else if (py_%(name)s != Py_None) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s or None");\n'
+            '        return NULL;\n'
+            '    }\n')
     def __init__(self, ptype, typecode):
 	self.typename = ptype
 	self.typecode = typecode
@@ -384,12 +384,12 @@ class BoxedArg(ArgType):
 
 class CustomBoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
-    null = '    if (%(check)s(py_%(name)s))\n' + \
-	   '        %(name)s = %(get)s(py_%(name)s);\n' + \
-	   '    else if (py_%(name)s != Py_None) {\n' + \
-	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s");\n' + \
-	   '        return NULL;\n' + \
-	   '    }\n'
+    null = ('    if (%(check)s(py_%(name)s))\n'
+            '        %(name)s = %(get)s(py_%(name)s);\n'
+            '    else if (py_%(name)s != Py_None) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(type)s or None");\n'
+            '        return NULL;\n'
+            '    }\n')
     def __init__(self, ptype, pytype, getter, new):
 	self.pytype = pytype
 	self.getter = getter
@@ -417,9 +417,9 @@ class CustomBoxedArg(ArgType):
                               '    return Py_None;')
 
 class AtomArg(IntArg):
-    atom = '    %(name)s = pygdk_atom_from_pyobject(py_%(name)s);\n' +\
-           '    if (PyErr_Occurred())\n' +\
-           '        return NULL;\n'
+    atom = ('    %(name)s = pygdk_atom_from_pyobject(py_%(name)s);\n'
+            '    if (PyErr_Occurred())\n'
+            '        return NULL;\n')
     def write_param(self, ptype, pname, pdflt, pnull, info):
         info.varlist.add('GdkAtom', pname)
 	info.varlist.add('PyObject', '*py_' + pname + ' = NULL')
@@ -431,8 +431,8 @@ class AtomArg(IntArg):
         info.codeafter.append('    return PyGdkAtom_New(ret);')
 
 class GTypeArg(ArgType):
-    gtype = '    if ((%(name)s = pyg_type_from_object(py_%(name)s)) == 0)\n' +\
-            '        return NULL;\n'
+    gtype = ('    if ((%(name)s = pyg_type_from_object(py_%(name)s)) == 0)\n'
+             '        return NULL;\n')
     def write_param(self, ptype, pname, pdflt, pnull, info):
         info.varlist.add('GType', pname)
 	info.varlist.add('PyObject', '*py_' + pname + ' = NULL')
@@ -445,8 +445,8 @@ class GTypeArg(ArgType):
 
 # simple GError handler.
 class GErrorArg(ArgType):
-    handleerror = '    if (pyg_error_check(&%(name)s))\n' + \
-                  '        return NULL;\n'
+    handleerror = ('    if (pyg_error_check(&%(name)s))\n'
+                   '        return NULL;\n')
     def write_param(self, ptype, pname, pdflt, pnull, info):
         info.varlist.add('GError', '*' + pname + ' = NULL')
         info.arglist.append('&' + pname)
@@ -455,14 +455,14 @@ class GErrorArg(ArgType):
 class GtkTreePathArg(ArgType):
     # haven't done support for default args.  Is it needed?
     normal = '    %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);'
-    null = '    if (PyTuple_Check(py_%(name)s))\n' + \
-	   '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n' + \
-	   '    else if (py_%(name)s != Py_None) {\n' + \
-	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a GtkTreePath or None");\n' + \
-	   '        return NULL;\n' + \
-	   '    }\n'
-    freepath = '    if (%(name)s)\n' + \
-               '        gtk_tree_path_free(%(name)s);'
+    null = ('    if (PyTuple_Check(py_%(name)s))\n'
+            '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
+            '    else if (py_%(name)s != Py_None) {\n'
+            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a GtkTreePath or None");\n'
+            '        return NULL;\n'
+            '    }\n')
+    freepath = ('    if (%(name)s)\n'
+                '        gtk_tree_path_free(%(name)s);')
     def __init__(self):
         pass
     def write_param(self, ptype, pname, pdflt, pnull, info):

@@ -1,3 +1,24 @@
+2001-12-07  Matt Wilson  <msw@redhat.com>
+
+	* gtk/gtk.override (ignore-glob): ignore all functions that start
+	with _
+	
+	* codegen/definitions.py (FunctionDef.merge): if a cname changed
+	from a method to a function, the merge would fail here.  Handle
+	the exception.
+
+	* codegen/argtypes.py, codegen/codegen.py: don't use + for
+	strings, use literal concatenation or """.
+
+	* codegen/defsparser.py (DefsParser.printMissing): new function to
+	support missingdefs.py
+
+	* codegen/missingdefs.py: new program to help find things missing
+	in .defs files
+
+	* gtk/gtk.defs, gtk/gtk-types.defs: merged in missing entries in
+	the defs file.
+
 2001-12-06  Matt Wilson  <msw@redhat.com>
 
 	* codegen/argtypes.py (BoxedArg, CustomBoxedArg): for null-ok

@@ -287,7 +287,10 @@ class FunctionDef(Definition):
 		    self.params[i] = (ptype, pname, p2[2], p2[3])
 		    break
 	if not self.is_constructor_of:
-	    self.is_constructor_of = old.is_constructor_of
+            try:
+                self.is_constructor_of = old.is_constructor_of
+            except AttributeError:
+                pass
 	if isinstance(old, MethodDef):
 	    self.name = old.name
 	    # transmogrify from function into method ...

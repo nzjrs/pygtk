@@ -50,235 +50,240 @@ class FileOutput:
         self.setline(self.lineno + 1, self.filename)
 
 # have to do return type processing
-functmpl = 'static PyObject *\n' + \
-	   '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n' + \
-	   '{\n' + \
-	   '%(varlist)s' + \
-           '%(parseargs)s' + \
-	   '%(codebefore)s' + \
-           '    %(funccall)s\n' + \
-	   '%(codeafter)s\n' + \
-	   '}\n\n'
+functmpl = ('static PyObject *\n'
+            '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n'
+            '{\n'
+            '%(varlist)s'
+            '%(parseargs)s'
+            '%(codebefore)s'
+            '    %(funccall)s\n'
+            '%(codeafter)s\n'
+            '}\n\n')
+
 funccalltmpl = '%(cname)s(%(arglist)s);'
 
-methtmpl = 'static PyObject *\n' + \
-	   '_wrap_%(cname)s(PyGObject *self%(extraparams)s)\n' + \
-	   '{\n' + \
-	   '%(varlist)s' + \
-           '%(parseargs)s' + \
-	   '%(codebefore)s' + \
-           '    %(funccall)s\n' + \
-	   '%(codeafter)s\n' + \
-	   '}\n\n'
+methtmpl = ('static PyObject *\n'
+            '_wrap_%(cname)s(PyGObject *self%(extraparams)s)\n'
+            '{\n'
+            '%(varlist)s'
+            '%(parseargs)s'
+            '%(codebefore)s'
+            '    %(funccall)s\n'
+            '%(codeafter)s\n'
+            '}\n\n')
+
 methcalltmpl = '%(cname)s(%(cast)s(self->obj)%(arglist)s);'
 
-consttmpl = 'static int\n' + \
-	    '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n' + \
-	    '{\n' + \
-	    '%(varlist)s' + \
-            '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.__init__"%(parselist)s))\n' + \
-            '        return -1;\n' + \
-	    '%(codebefore)s' + \
-	    '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n' + \
-            '%(codeafter)s\n' + \
-	    '    if (!self->obj) {\n' + \
-	    '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n' + \
-	    '        return -1;\n' + \
-	    '    }\n' + \
-            '%(gtkobjectsink)s' + \
-	    '    pygobject_register_wrapper((PyObject *)self);\n' + \
-            '    return 0;\n' + \
-	    '}\n\n'
+consttmpl = ('static int\n'
+             '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n'
+             '{\n'
+             '%(varlist)s'
+             '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.__init__"%(parselist)s))\n'
+             '        return -1;\n'
+             '%(codebefore)s'
+             '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n'
+             '%(codeafter)s\n'
+             '    if (!self->obj) {\n'
+             '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n'
+             '        return -1;\n'
+             '    }\n'
+             '%(gtkobjectsink)s'
+             '    pygobject_register_wrapper((PyObject *)self);\n'
+             '    return 0;\n'
+             '}\n\n')
 
 methdeftmpl = '    { "%(name)s", (PyCFunction)%(cname)s, %(flags)s },\n'
 
-gettertmpl = 'static PyObject *\n' + \
-             '%(funcname)s(PyGObject *self, void *closure)\n' + \
-             '{\n' + \
-             '%(varlist)s' + \
-             '    ret = %(field)s;\n' + \
-             '%(codeafter)s\n' + \
-             '}\n\n'
+gettertmpl = ('static PyObject *\n'
+              '%(funcname)s(PyGObject *self, void *closure)\n'
+              '{\n'
+              '%(varlist)s'
+              '    ret = %(field)s;\n'
+              '%(codeafter)s\n'
+              '}\n\n')
 
-noconstructor = 'static int\n' + \
-                'pygobject_no_constructor(PyObject *self, PyObject *args, PyObject *kwargs)\n' +\
-                '{\n' + \
-                '    gchar buf[512];\n' + \
-                '\n' + \
-                '    g_snprintf(buf, sizeof(buf), "%s is an abstract widget", self->ob_type->tp_name);\n' + \
-                '    PyErr_SetString(PyExc_NotImplementedError, buf);\n' + \
-                '    return -1;\n' + \
-                '}\n\n'
+noconstructor = ('static int\n'
+                 'pygobject_no_constructor(PyObject *self, PyObject *args, PyObject *kwargs)\n'
+                 '{\n'
+                 '    gchar buf[512];\n'
+                 '\n'
+                 '    g_snprintf(buf, sizeof(buf), "%s is an abstract widget", self->ob_type->tp_name);\n'
+                 '    PyErr_SetString(PyExc_NotImplementedError, buf);\n'
+                 '    return -1;\n'
+                 '}\n\n')
 
-typetmpl = 'PyTypeObject Py%(class)s_Type = {\n' + \
-	   '    PyObject_HEAD_INIT(NULL)\n' + \
-	   '    0,				/* ob_size */\n' + \
-	   '    "%(classname)s",		/* tp_name */\n' + \
-	   '    sizeof(PyGObject),		/* tp_basicsize */\n' + \
-	   '    0,				/* tp_itemsize */\n' + \
-	   '    /* methods */\n' + \
-	   '    (destructor)0,			/* tp_dealloc */\n' + \
-	   '    (printfunc)0,			/* tp_print */\n' + \
-	   '    (getattrfunc)0,			/* tp_getattr */\n' + \
-	   '    (setattrfunc)0,			/* tp_setattr */\n' + \
-	   '    (cmpfunc)0,			/* tp_compare */\n' + \
-	   '    (reprfunc)0,			/* tp_repr */\n' + \
-	   '    0,				/* tp_as_number */\n' + \
-	   '    0,				/* tp_as_sequence */\n' + \
-	   '    0,				/* tp_as_mapping */\n' + \
-	   '    (hashfunc)0,			/* tp_hash */\n' + \
-           '    (ternaryfunc)0,			/* tp_call */\n' + \
-           '    (reprfunc)0,			/* tp_str */\n' + \
-	   '    (getattrofunc)0,		/* tp_getattro */\n' + \
-	   '    (setattrofunc)0,		/* tp_setattro */\n' + \
-           '    0,				/* tp_as_buffer */\n' + \
-           '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' + \
-	   '    NULL, /* Documentation string */\n' + \
-           '    (traverseproc)0,		/* tp_traverse */\n' + \
-           '    (inquiry)0,			/* tp_clear */\n' + \
-           '    (richcmpfunc)0,			/* tp_richcompare */\n' + \
-           '    offsetof(PyGObject, weakreflist), /* tp_weaklistoffset */\n' +\
-           '    (getiterfunc)0,			/* tp_iter */\n' + \
-           '    (iternextfunc)0,		/* tp_iternext */\n' + \
-	   '    %(methods)s,			/* tp_methods */\n' + \
-           '    0,				/* tp_members */\n' + \
-           '    %(getsets)s,			/* tp_getset */\n' + \
-           '    NULL,				/* tp_base */\n' + \
-           '    NULL,				/* tp_dict */\n' + \
-           '    (descrgetfunc)0,		/* tp_descr_get */\n' + \
-           '    (descrsetfunc)0,		/* tp_descr_set */\n' + \
-           '    offsetof(PyGObject, inst_dict),	/* tp_dictoffset */\n' + \
-           '    (initproc)%(initfunc)s,		/* tp_init */\n' + \
-	   '};\n\n'
+typetmpl = """PyTypeObject Py%(class)s_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,					/* ob_size */
+    "%(classname)s",			/* tp_name */
+    sizeof(PyGObject),			/* tp_basicsize */
+    0,					/* tp_itemsize */
+    /* methods */
+    (destructor)0,			/* tp_dealloc */
+    (printfunc)0,			/* tp_print */
+    (getattrfunc)0,			/* tp_getattr */
+    (setattrfunc)0,			/* tp_setattr */
+    (cmpfunc)0,				/* tp_compare */
+    (reprfunc)0,			/* tp_repr */
+    0,					/* tp_as_number */
+    0,					/* tp_as_sequence */
+    0,					/* tp_as_mapping */
+    (hashfunc)0,			/* tp_hash */
+    (ternaryfunc)0,			/* tp_call */
+    (reprfunc)0,			/* tp_str */
+    (getattrofunc)0,			/* tp_getattro */
+    (setattrofunc)0,			/* tp_setattro */
+    0,					/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+    NULL, 				/* Documentation string */
+    (traverseproc)0,			/* tp_traverse */
+    (inquiry)0,				/* tp_clear */
+    (richcmpfunc)0,			/* tp_richcompare */
+    offsetof(PyGObject, weakreflist),	/* tp_weaklistoffset */
+    (getiterfunc)0,			/* tp_iter */
+    (iternextfunc)0,			/* tp_iternext */
+    %(methods)s,			/* tp_methods */
+    0,					/* tp_members */
+    %(getsets)s,		       	/* tp_getset */
+    NULL,				/* tp_base */
+    NULL,				/* tp_dict */
+    (descrgetfunc)0,			/* tp_descr_get */
+    (descrsetfunc)0,			/* tp_descr_set */
+    offsetof(PyGObject, inst_dict),	/* tp_dictoffset */
+    (initproc)%(initfunc)s,		/* tp_init */
+};\n\n"""
 
-interfacetypetmpl = 'PyTypeObject Py%(class)s_Type = {\n' + \
-	   '    PyObject_HEAD_INIT(NULL)\n' + \
-	   '    0,				/* ob_size */\n' + \
-	   '    "%(classname)s",		/* tp_name */\n' + \
-	   '    sizeof(PyObject),		/* tp_basicsize */\n' + \
-	   '    0,				/* tp_itemsize */\n' + \
-	   '    /* methods */\n' + \
-	   '    (destructor)0,			/* tp_dealloc */\n' + \
-	   '    (printfunc)0,			/* tp_print */\n' + \
-	   '    (getattrfunc)0,			/* tp_getattr */\n' + \
-	   '    (setattrfunc)0,			/* tp_setattr */\n' + \
-	   '    (cmpfunc)0,			/* tp_compare */\n' + \
-	   '    (reprfunc)0,			/* tp_repr */\n' + \
-	   '    0,				/* tp_as_number */\n' + \
-	   '    0,				/* tp_as_sequence */\n' + \
-	   '    0,				/* tp_as_mapping */\n' + \
-	   '    (hashfunc)0,			/* tp_hash */\n' + \
-           '    (ternaryfunc)0,			/* tp_call */\n' + \
-           '    (reprfunc)0,			/* tp_str */\n' + \
-	   '    (getattrofunc)0,		/* tp_getattro */\n' + \
-	   '    (setattrofunc)0,		/* tp_setattro */\n' + \
-           '    0,				/* tp_as_buffer */\n' + \
-           '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' + \
-	   '    NULL, /* Documentation string */\n' + \
-           '    (traverseproc)0,		/* tp_traverse */\n' + \
-           '    (inquiry)0,			/* tp_clear */\n' + \
-           '    (richcmpfunc)0,			/* tp_richcompare */\n' + \
-           '    0,				/* tp_weaklistoffset */\n' +\
-           '    (getiterfunc)0,			/* tp_iter */\n' + \
-           '    (iternextfunc)0,		/* tp_iternext */\n' + \
-	   '    %(methods)s,			/* tp_methods */\n' + \
-           '    0,				/* tp_members */\n' + \
-           '    0,				/* tp_getset */\n' + \
-           '    NULL,				/* tp_base */\n' + \
-           '    NULL,				/* tp_dict */\n' + \
-           '    (descrgetfunc)0,		/* tp_descr_get */\n' + \
-           '    (descrsetfunc)0,		/* tp_descr_set */\n' + \
-           '    0,				/* tp_dictoffset */\n' + \
-           '    (initproc)0,			/* tp_init */\n' + \
-	   '};\n\n'
+interfacetypetmpl = """PyTypeObject Py%(class)s_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,					/* ob_size */
+    "%(classname)s",			/* tp_name */
+    sizeof(PyObject),			/* tp_basicsize */
+    0,					/* tp_itemsize */
+    /* methods */
+    (destructor)0,			/* tp_dealloc */
+    (printfunc)0,			/* tp_print */
+    (getattrfunc)0,			/* tp_getattr */
+    (setattrfunc)0,			/* tp_setattr */
+    (cmpfunc)0,				/* tp_compare */
+    (reprfunc)0,			/* tp_repr */
+    0,					/* tp_as_number */
+    0,					/* tp_as_sequence */
+    0,					/* tp_as_mapping */
+    (hashfunc)0,			/* tp_hash */
+    (ternaryfunc)0,			/* tp_call */
+    (reprfunc)0,			/* tp_str */
+    (getattrofunc)0,			/* tp_getattro */
+    (setattrofunc)0,			/* tp_setattro */
+    0,					/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+    NULL, 				/* Documentation string */
+    (traverseproc)0,			/* tp_traverse */
+    (inquiry)0,				/* tp_clear */
+    (richcmpfunc)0,			/* tp_richcompare */
+    0,					/* tp_weaklistoffset */
+    (getiterfunc)0,			/* tp_iter */
+    (iternextfunc)0,			/* tp_iternext */
+    %(methods)s,			/* tp_methods */
+    0,					/* tp_members */
+    0,					/* tp_getset */
+    NULL,				/* tp_base */
+    NULL,				/* tp_dict */
+    (descrgetfunc)0,			/* tp_descr_get */
+    (descrsetfunc)0,			/* tp_descr_set */
+    0,					/* tp_dictoffset */
+    (initproc)0,			/* tp_init */
+};\n\n"""
 
-boxedmethtmpl = 'static PyObject *\n' + \
-                '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n' + \
-                '{\n' + \
-                '%(varlist)s' + \
-                '%(parseargs)s' + \
-                '%(codebefore)s' + \
-                '    %(funccall)s\n' + \
-                '%(codeafter)s\n' + \
-                '}\n\n'
+boxedmethtmpl = ('static PyObject *\n'
+                 '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n'
+                 '{\n'
+                 '%(varlist)s'
+                 '%(parseargs)s'
+                 '%(codebefore)s'
+                 '    %(funccall)s\n'
+                 '%(codeafter)s\n'
+                 '}\n\n')
+
 boxedmethcalltmpl = '%(cname)s(pyg_boxed_get(self, %(typename)s)%(arglist)s);'
 
-boxedconsttmpl = 'static int\n' + \
-                 '_wrap_%(cname)s(PyGBoxed *self, PyObject *args, PyObject *kwargs)\n' + \
-                 '{\n' + \
-                 '%(varlist)s' + \
-                 '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.__init__"%(parselist)s))\n' + \
-                 '        return -1;\n' + \
-                 '%(codebefore)s' + \
-                 '    self->gtype = %(typecode)s;\n' + \
-                 '    self->free_on_dealloc = FALSE;\n' + \
-                 '    self->boxed = %(cname)s(%(arglist)s);\n' + \
-                 '%(codeafter)s\n' + \
-                 '    if (!self->boxed) {\n' + \
-                 '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' + \
-                 '        return -1;\n' + \
-                 '    }\n' + \
-                 '    self->free_on_dealloc = TRUE;\n' + \
-                 '    return 0;\n' + \
-                 '}\n\n'
+boxedconsttmpl = ('static int\n'
+                  '_wrap_%(cname)s(PyGBoxed *self, PyObject *args, PyObject *kwargs)\n'
+                  '{\n'
+                  '%(varlist)s'
+                  '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.__init__"%(parselist)s))\n'
+                  '        return -1;\n'
+                  '%(codebefore)s'
+                  '    self->gtype = %(typecode)s;\n'
+                  '    self->free_on_dealloc = FALSE;\n'
+                  '    self->boxed = %(cname)s(%(arglist)s);\n'
+                  '%(codeafter)s\n'
+                  '    if (!self->boxed) {\n'
+                  '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n'
+                  '        return -1;\n'
+                  '    }\n'
+                  '    self->free_on_dealloc = TRUE;\n'
+                  '    return 0;\n'
+                  '}\n\n')
+                  
+boxedgetattrtmpl = ('static PyObject *\n'
+                    '%(getattr)s(PyObject *self, char *attr)\n'
+                    '{\n'
+                    '    if (!strcmp(attr, "__members__"))\n'
+                    '        return Py_BuildValue(%(members)s);\n'
+                    '%(attrchecks)s'
+                    '    return Py_FindMethod(%(methods)s, self, attr);\n'
+                    '}\n\n')
+                    
+attrchecktmpl = ('    if (!strcmp(attr, "%(attr)s")) {\n'
+                 '    %(varlist)s'
+                 '        ret = %(field)s;\n'
+                 '%(codeafter)s\n'
+                 '    }\n')
 
-boxedgetattrtmpl = 'static PyObject *\n' + \
-                   '%(getattr)s(PyObject *self, char *attr)\n' + \
-                   '{\n' + \
-                   '    if (!strcmp(attr, "__members__"))\n' + \
-                   '        return Py_BuildValue(%(members)s);\n' + \
-                   '%(attrchecks)s' + \
-                   '    return Py_FindMethod(%(methods)s, self, attr);\n' + \
-                   '}\n\n'
-attrchecktmpl = '    if (!strcmp(attr, "%(attr)s")) {\n' + \
-                '    %(varlist)s' + \
-                '        ret = %(field)s;\n' + \
-                '%(codeafter)s\n' + \
-                '    }\n'
-overrideattrchecktmpl = '    if (!strcmp(attr, "%(attr)s")) {\n' + \
-                        '%(code)s\n' + \
-                        '    }\n'
+overrideattrchecktmpl = ('    if (!strcmp(attr, "%(attr)s")) {\n'
+                         '%(code)s\n'
+                         '    }\n')
 
-boxedtmpl = 'PyTypeObject Py%(typename)s_Type = {\n' + \
-            '    PyObject_HEAD_INIT(NULL)\n' + \
-            '    0,				/* ob_size */\n' + \
-            '    "%(typename)s",			/* tp_name */\n' + \
-            '    sizeof(PyGBoxed),		/* tp_basicsize */\n' + \
-            '    0,				/* tp_itemsize */\n' + \
-            '    /* methods */\n' + \
-            '    (destructor)0,			/* tp_dealloc */\n' + \
-            '    (printfunc)0,			/* tp_print */\n' + \
-            '    (getattrfunc)%(getattr)s,	/* tp_getattr */\n' + \
-            '    (setattrfunc)0,			/* tp_setattr */\n' + \
-            '    (cmpfunc)0,			/* tp_compare */\n' + \
-            '    (reprfunc)0,			/* tp_repr */\n' + \
-            '    0,				/* tp_as_number */\n' + \
-            '    0,				/* tp_as_sequence */\n' + \
-            '    0,				/* tp_as_mapping */\n' + \
-            '    (hashfunc)0,			/* tp_hash */\n' + \
-            '    (ternaryfunc)0,			/* tp_call */\n' + \
-            '    (reprfunc)0,			/* tp_str */\n' + \
-            '    (getattrofunc)0,		/* tp_getattro */\n' + \
-            '    (setattrofunc)0,		/* tp_setattro */\n' + \
-            '    0,				/* tp_as_buffer */\n' + \
-            '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' +\
-            '    NULL, /* Documentation string */\n' + \
-            '    (traverseproc)0,		/* tp_traverse */\n' + \
-            '    (inquiry)0,			/* tp_clear */\n' + \
-            '    (richcmpfunc)0,		/* tp_richcompare */\n' + \
-            '    0,				/* tp_weaklistoffset */\n' +\
-            '    (getiterfunc)0,			/* tp_iter */\n' + \
-            '    (iternextfunc)0,		/* tp_iternext */\n' + \
-            '    %(methods)s,			/* tp_methods */\n' + \
-            '    0,				/* tp_members */\n' + \
-            '    0,				/* tp_getset */\n' + \
-            '    NULL,				/* tp_base */\n' + \
-            '    NULL,				/* tp_dict */\n' + \
-            '    (descrgetfunc)0,		/* tp_descr_get */\n' + \
-            '    (descrsetfunc)0,		/* tp_descr_set */\n' + \
-            '    0,				/* tp_dictoffset */\n' + \
-            '    (initproc)%(initfunc)s,	/* tp_init */\n' + \
-            '};\n\n'
+boxedtmpl = """PyTypeObject Py%(typename)s_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,					/* ob_size */
+    "%(typename)s",			/* tp_name */
+    sizeof(PyGBoxed),			/* tp_basicsize */
+    0,					/* tp_itemsize */
+    /* methods */
+    (destructor)0,			/* tp_dealloc */
+    (printfunc)0,			/* tp_print */
+    (getattrfunc)%(getattr)s,		/* tp_getattr */
+    (setattrfunc)0,			/* tp_setattr */
+    (cmpfunc)0,				/* tp_compare */
+    (reprfunc)0,			/* tp_repr */
+    0,					/* tp_as_number */
+    0,					/* tp_as_sequence */
+    0,					/* tp_as_mapping */
+    (hashfunc)0,			/* tp_hash */
+    (ternaryfunc)0,			/* tp_call */
+    (reprfunc)0,			/* tp_str */
+    (getattrofunc)0,			/* tp_getattro */
+    (setattrofunc)0,			/* tp_setattro */
+    0,					/* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+    NULL,				/* Documentation string */
+    (traverseproc)0,			/* tp_traverse */
+    (inquiry)0,				/* tp_clear */
+    (richcmpfunc)0,			/* tp_richcompare */
+    0,					/* tp_weaklistoffset */
+    (getiterfunc)0,			/* tp_iter */
+    (iternextfunc)0,			/* tp_iternext */
+    %(methods)s,			/* tp_methods */
+    0,					/* tp_members */
+    0,					/* tp_getset */
+    NULL,				/* tp_base */
+    NULL,				/* tp_dict */
+    (descrgetfunc)0,			/* tp_descr_get */
+    (descrsetfunc)0,			/* tp_descr_set */
+    0,					/* tp_dictoffset */
+    (initproc)%(initfunc)s,		/* tp_init */
+};\n\n"""
 
 def fixname(name):
     if keyword.iskeyword(name):
@@ -315,8 +320,8 @@ def write_function(funcobj, fp=sys.stdout):
     dict['codeafter']  = info.get_codeafter()
 
     if info.parsestr:
-        parsetmpl = '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(name)s"%(parselist)s))\n' + \
-                    '        return NULL;\n'
+        parsetmpl = ('    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(name)s"%(parselist)s))\n'
+                     '        return NULL;\n')
         parsedict = {'name':      fixname(funcobj.name),
                      'typecodes': info.parsestr,
                      'parselist': info.get_parselist()}
@@ -366,8 +371,8 @@ def write_method(objname, castmacro, methobj, fp=sys.stdout):
     dict['codeafter']  = info.get_codeafter()
 
     if info.parsestr:
-        parsetmpl = '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.%(name)s"%(parselist)s))\n' + \
-                    '        return NULL;\n'
+        parsetmpl = ('    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.%(name)s"%(parselist)s))\n'
+                     '        return NULL;\n')
         parsedict = {'class':     objname,
                      'name':      fixname(methobj.name),
                      'typecodes': info.parsestr,
@@ -400,8 +405,8 @@ def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
 
     if argtypes.matcher.object_is_a(objname, 'GtkObject'):
         dict['gtkobjectsink'] = \
-			'    gtk_object_ref(GTK_OBJECT(self->obj));\n' + \
-			'    gtk_object_sink(GTK_OBJECT(self->obj));\n'
+                       ('    gtk_object_ref(GTK_OBJECT(self->obj));\n'
+			'    gtk_object_sink(GTK_OBJECT(self->obj));\n')
 
     for ptype, pname, pdflt, pnull in funcobj.params:
 	if pdflt and '|' not in info.parsestr:
@@ -606,8 +611,8 @@ def write_boxed_method(objname, methobj, fp=sys.stdout):
     dict['codeafter']  = info.get_codeafter()
     
     if info.parsestr:
-        parsetmpl = '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.%(name)s"%(parselist)s))\n' + \
-                    '        return NULL;\n'
+        parsetmpl = ('    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.%(name)s"%(parselist)s))\n'
+                     '        return NULL;\n')
         parsedict = {'typecodes': info.parsestr,
                      'typename':  objname,
                      'name':      fixname(methobj.name),
