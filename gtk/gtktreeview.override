@@ -2546,3 +2546,28 @@ _wrap_gtk_tree_model_filter_convert_iter_to_child_iter(PyGObject *self,
 	GTK_TREE_MODEL_FILTER(self->obj), &iter, filter_iter);
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
+%%
+override gtk_tree_view_column_cell_get_position kwargs
+static PyObject *
+_wrap_gtk_tree_view_column_cell_get_position(PyGObject *self, PyObject *args,
+					     PyObject *kwargs)
+{
+    static char *kwlist[] = { "cell_renderer", NULL };
+    PyGObject *py_cell;
+    gint start, width;
+
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:GtkTreeViewColumn.cell_get_position",
+				     kwlist, &PyGtkCellRenderer_Type,
+				     &py_cell))
+        return NULL;
+
+    if (gtk_tree_view_column_cell_get_position(GTK_TREE_VIEW_COLUMN(self->obj),
+					       GTK_CELL_RENDERER(py_cell->obj),
+					       &start, &width))
+	return Py_BuildValue("(ii)", start, width);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
