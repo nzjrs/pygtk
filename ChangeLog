@@ -1,3 +1,19 @@
+2002-01-11  Matt Wilson  <msw@redhat.com>
+
+	* codegen/argtypes.py (GtkTreePathArg.normal): added missing newline
+
+	* gtk/gtk.defs (item_factory_path_from_widget): the return here
+	should be gconst-gchar*.  The header in gtk is wrong, filed
+	#68527 against gtk.
+
+	* gtk/gtk.override (pygtk_item_factory_cb): if the user passed
+	data to GtkItemFactory.create_items, call the callable with the
+	function data as the first parameter.
+	(_wrap_gtk_item_factory_create_items): take an optional
+	callback_data argument.  Use PyGtkCustomNotify and
+	g_object_weak_ref to free up the reference to the callable and
+	data after the item factory is freed.
+
 2002-01-11  James Henstridge  <james@daa.com.au>
 
 	* codegen/h2def.py (find_obj_defs): handle typedef struct { ... }

@@ -454,7 +454,7 @@ class GErrorArg(ArgType):
 
 class GtkTreePathArg(ArgType):
     # haven't done support for default args.  Is it needed?
-    normal = '    %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);'
+    normal = '    %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
     null = ('    if (PyTuple_Check(py_%(name)s))\n'
             '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
             '    else if (py_%(name)s != Py_None) {\n'

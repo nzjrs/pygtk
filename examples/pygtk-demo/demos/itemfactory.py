@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-'''Item Factory
+"""Item Factory
 
 The GtkItemFactory object allows the easy creation of menus
-from an array of descriptions of menu items.'''
+from an array of descriptions of menu items."""
 
 description = 'Item Factory'
 
