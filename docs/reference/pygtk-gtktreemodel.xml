@@ -1185,13 +1185,16 @@ at. It may not be a valid location anymore.</para>
 	<varlistentry>
 	  <term><parameter role="keyword">path</parameter>&nbsp;:</term>
 	  <listitem><simpara>A tree path pointing to the tree node whose
-children have been reordered</simpara></listitem>
+	  children have been reordered, or <literal>None</literal> or () or
+	  "" to indicate the top level node.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
 	  <listitem><simpara>A valid <link
-linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
-pointing to the node whose children have been reordered</simpara></listitem>
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  pointing to the node whose children have been reordered, or
+	  <literal>None</literal> to indicate the top level
+	  node.</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter
@@ -1205,7 +1208,10 @@ at the position specified by
 
       <para>The <methodname>rows_reordered</methodname>() method emits the
 "rows_reordered" signal on the tree model. This method should be called by a
-tree model when its rows have been reordered.</para>
+tree model when its rows have been reordered. If <parameter>iter</parameter>
+is <literal>None</literal> to indicate that the top level rows have been
+reordered, <parameter>path</parameter> should be <literal>None</literal> or
+() or "".</para>
 
     </refsect2>
 
@@ -1551,7 +1557,11 @@ any)</simpara></listitem>
 are reordered. <parameter>new_order</parameter> is an array of node index
 numbers representing the new order of the rows. The value of
 <parameter>new_order</parameter> cannot be retrieved in PyGTK because it is
-passed as an opaque pointer (gpointer) value.</para>
+passed as an opaque pointer (<link
+linkend="class-gobjectgpointer"><classname>gobject.GPointer</classname></link>)
+value. <parameter>iter</parameter> may be <literal>None</literal> and
+<parameter>path</parameter> an empty tuple to indicate that the top level
+rows were reordered.</para>
 
     </refsect2>
 
