@@ -1,3 +1,20 @@
+2003-03-04  Jon Trowbridge  <trow@ximian.com>
+
+	* pygobject.c (pygobject_dealloc): Unblock threads before
+	invalidating our closures, since this might trigger a destructor
+	that needs to execute python code.
+	(pygobject_clear): Ditto.
+
+	* pygboxed.c (pyg_boxed_dealloc): Unblock threads before freeing
+	the boxed type, since the destructor may need to execute python
+	code.
+	(pyg_boxed_new): Block threads while we make our Py* calls.
+	(pyg_pointer_new): Block threads while we make our Py* calls.
+
+	* gobjectmodule.c (pyg_object_set_property): We need to block
+	threads before our call to pygobject_new.
+	(pyg_object_get_property): Ditto.
+
 2003-03-02  Johan Dahlin  <jdahlin@async.com.br>
 
 	* gobjectmodule.c (pyg_io_add_watch): Fix function name in exception.
