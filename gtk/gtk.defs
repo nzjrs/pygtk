@@ -13358,6 +13358,22 @@
   )
 )
 
+(define-method get_columns
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_columns")
+  (return-type "GList*")
+)
+
+(define-method move_column_after
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_move_column_after")
+  (return-type "none")
+  (parameters
+    '("GtkTreeViewColumn*" "column")
+    '("GtkTreeViewColumn*" "base_column")
+  )
+)
+
 (define-method set_expander_column
   (of-object "GtkTreeView")
   (c-name "gtk_tree_view_set_expander_column")
@@ -13448,6 +13464,25 @@
   )
 )
 
+(define-method map_expanded_rows
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_map_expanded_rows")
+  (return-type "none")
+  (parameters
+    '("GtkTreeViewMappingFunc" "func")
+    '("gpointer" "data")
+  )
+)
+
+(define-method row_expanded
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_row_expanded")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreePath*" "path")
+  )
+)
+
 (define-method expand_rows
   (of-object "GtkTreeView")
   (c-name "gtk_tree_view_expand_rows")
@@ -13476,6 +13511,22 @@
     '("GtkTreeViewColumn*" "focus_column")
     '("gboolean" "start_editing")
   )
+)
+
+(define-method get_cursor
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_cursor")
+  (return-type "none")
+  (parameters
+    '("GtkTreePath**" "path")
+    '("GtkTreeViewColumn**" "focus_column")
+  )
+)
+
+(define-method get_bin_window
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_bin_window")
+  (return-type "GdkWindow*")
 )
 
 (define-method get_path_at_pos
@@ -13544,6 +13595,29 @@
     '("gint" "ty")
     '("gint*" "wx")
     '("gint*" "wy")
+  )
+)
+
+(define-method enable_model_drag_source
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_enable_model_drag_source")
+  (return-type "none")
+  (parameters
+    '("GdkModifierType" "start_button_mask")
+    '("const-GtkTargetEntry*" "targets")
+    '("gint" "n_targets")
+    '("GdkDragAction" "actions")
+  )
+)
+
+(define-method enable_model_drag_dest
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_enable_model_drag_dest")
+  (return-type "none")
+  (parameters
+    '("const-GtkTargetEntry*" "targets")
+    '("gint" "n_targets")
+    '("GdkDragAction" "actions")
   )
 )
 
@@ -13627,6 +13701,63 @@
   )
 )
 
+(define-method set_enable_search
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_set_enable_search")
+  (return-type "none")
+  (parameters
+    '("gboolean" "enable_search")
+  )
+)
+
+(define-method get_enable_search
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_enable_search")
+  (return-type "gboolean")
+)
+
+(define-method get_search_column
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_search_column")
+  (return-type "gint")
+)
+
+(define-method set_search_column
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_set_search_column")
+  (return-type "none")
+  (parameters
+    '("gint" "column")
+  )
+)
+
+(define-method get_search_equal_func
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_search_equal_func")
+  (return-type "GtkTreeViewSearchEqualFunc")
+)
+
+(define-method set_search_equal_func
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_set_search_equal_func")
+  (return-type "none")
+  (parameters
+    '("GtkTreeViewSearchEqualFunc" "search_equal_func")
+    '("gpointer" "search_user_data")
+    '("GtkDestroyNotify" "search_destroy")
+  )
+)
+
+(define-method set_destroy_count_func
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_set_destroy_count_func")
+  (return-type "none")
+  (parameters
+    '("GtkTreeDestroyCountFunc" "func")
+    '("gpointer" "data")
+    '("GtkDestroyNotify" "destroy")
+  )
+)
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtktreeviewcolumn.h
 
