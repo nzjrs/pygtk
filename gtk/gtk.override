@@ -3751,9 +3751,8 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
 	window = GTK_WINDOW(py_window->obj);
 
     self->obj = (GObject *)
-        gtk_file_chooser_dialog_new_with_backend(title, window, action,
-						 backend, NULL);
-
+	gtk_file_chooser_dialog_new_with_backend(title, window, action,
+						     backend, NULL);
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError,
                         "could not create GtkFileChooserDialog object");
@@ -4132,7 +4131,6 @@ override gtk_color_button_get_color noargs
 static PyObject *
 _wrap_gtk_color_button_get_color(PyGObject *self)
 {
-    PyObject *py_color;
     GdkColor color = {0, 0, 0, 0};
  
     gtk_color_button_get_color(GTK_COLOR_BUTTON(self->obj), &color);
