@@ -1,3 +1,28 @@
+2001-12-21  James Henstridge  <james@daa.com.au>
+
+	* gtk/gdk.defs (gdk_colormap_change): comment out, as we have two
+	GdkColormap.change's.
+
+	* gtk/gtk.defs (append): this is a method of menu
+	(prepend): same here.
+	(insert): same here.
+	(): now comment out the above three, as they shadow the methods
+	their deprecation messages recommend using.  (problem picked out
+	by running xmllint over output docs).
+
+	* codegen/docgen.py (DocbookDocWriter.__init__): add constructor
+	with a use_xml parameter, which turns on DocBook/XML output.
+	(DocbookDocWriter.create_filename): use ".xml" as extension if we
+	are writing DocBook/XML.
+	(DocbookDocWriter.output_toc): optionally write out the
+	DocBook/XML doctype.
+
+	* codegen/docgen.py (DocWriter.output_interface_docs): new
+	function for outputting documentation about interfaces.
+	(DocWriter.output_docs): output interface definitions.
+	(DocbookDocWriter.write_heirachy): convert the list of interfaces
+	the class implements into a list.
+
 2001-12-20  James Henstridge  <james@daa.com.au>
 
 	* build-docs.py: script to generate documentation.

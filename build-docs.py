@@ -1,5 +1,7 @@
 import sys, os
 
+use_xml = 0
+
 sys.path.insert(0, 'codegen')
 
 if not os.path.exists('docs'):
@@ -7,18 +9,16 @@ if not os.path.exists('docs'):
 
 import docgen
 
-dg = docgen.DocbookDocWriter()
+dg = docgen.DocbookDocWriter(use_xml=use_xml)
 
 # extract documentation from glib
-sys.stderr.write('extracting documentation from C source ...')
-sys.stderr.flush()
+sys.stderr.write('extracting documentation from C source ...\n')
 dg.add_sourcedirs([
     '../../glib',
     '../../pango',
     '../../atk',
     '../../gtk+',
     '../../libglade'])
-sys.stderr.write('done.\n')
 
 # pango docs ...
 sys.stderr.write('loading pango defs ...')
@@ -51,7 +51,10 @@ dg.add_docs('gtk/libglade.defs', 'gtk/libglade.override', 'gtk.glade')
 sys.stderr.write('done.\n')
 
 # write docs into the docs/ subdir with pygtk prefix
-sys.stderr.write('writing sgml ...')
+if use_xml:
+    sys.stderr.write('writing xml ...')
+else:
+    sys.stderr.write('writing sgml ...')
 sys.stderr.flush()
 dg.output_docs('docs/pygtk')
 sys.stderr.write('done.\n')

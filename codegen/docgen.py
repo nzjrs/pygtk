@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- Mode: Python; py-indent-offset: 4 -*-
 import sys, os, string, re, getopt
+
 import defsparser
+import definitions
 import override
 import docextract
 
@@ -39,15 +41,20 @@ class DocWriter:
     def __compare(self, obja, objb):
         return cmp(self.pyname(obja.c_name), self.pyname(objb.c_name))
     def output_docs(self, output_prefix):
-	obj_defs = self.parser.objects[:]
-	obj_defs.sort(self.__compare)
         files = []
+
+	obj_defs = self.parser.objects + self.parser.interfaces
+	obj_defs.sort(self.__compare)
 	for obj_def in obj_defs:
             filename = self.create_filename(obj_def.c_name, output_prefix)
 	    fp = open(filename, 'w')
-	    self.output_object_docs(obj_def, fp)
+            if isinstance(obj_def, definitions.ObjectDef):
+                self.output_object_docs(obj_def, fp)
+            elif isinstance(obj_def, definitions.InterfaceDef):
+                self.output_interface_docs(obj_def, fp)
 	    fp.close()
             files.append((os.path.basename(filename), obj_def))
+
         if files:
             filename = self.create_filename('docs', output_prefix)
 	    fp = open(filename, 'w')
@@ -94,6 +101,20 @@ class DocWriter:
             self.close_section(fp)
 
         self.write_class_footer(obj_def.c_name, fp)
+
+    def output_interface_docs(self, int_def, fp=sys.stdout):
+	self.write_class_header(int_def.c_name, fp)
+
+        methods = self.parser.find_methods(int_def)
+        methods = filter(lambda meth, self=self:
+                         not self.overrides.is_ignored(meth.c_name), methods)
+        if methods:
+            self.write_heading('Methods', fp)
+            for method in methods:
+                self.write_method(method, self.docs.get(method.c_name, None), fp)
+            self.close_section(fp)
+
+        self.write_class_footer(int_def.c_name, fp)
 
     def output_toc(self, files, fp=sys.stdout):
         fp.write('TOC\n\n')
@@ -180,12 +201,22 @@ class DocWriter:
         fp.write('\n\n')
 
 class DocbookDocWriter(DocWriter):
+    def __init__(self, use_xml=0):
+        DocWriter.__init__(self)
+        self.use_xml = use_xml
+    
     def create_filename(self, obj_name, output_prefix):
 	'''Create output filename for this particular object'''
-	return output_prefix + '-' + string.lower(obj_name) + '.sgml'
+        stem = output_prefix + '-' + string.lower(obj_name)
+        if self.use_xml:
+            return stem + '.xml'
+        else:
+            return stem + '.sgml'
 
     # make string -> reference translation func
     __transtable = [ '-' ] * 256
+    for digit in '0123456789':
+        __transtable[ord(digit)] = digit
     for letter in 'abcdefghijklmnopqrstuvwxyz':
         __transtable[ord(letter)] = letter
         __transtable[ord(string.upper(letter))] = letter
@@ -313,7 +344,7 @@ class DocbookDocWriter(DocWriter):
     
     def write_class_header(self, obj_name, fp):
         fp.write('<sect1 id="' + self.make_class_ref(obj_name) + '">\n')
-        fp.write('  <title>Class ' + self.pyname(obj_name) + '</title>\n\n')
+        fp.write('  <title>' + self.pyname(obj_name) + '</title>\n\n')
     def write_class_footer(self, obj_name, fp):
         fp.write('</sect1>\n')
     def write_heading(self, text, fp):
@@ -330,7 +361,12 @@ class DocbookDocWriter(DocWriter):
                      self.make_class_ref(name) + '">'+ self.pyname(name) + '</link>')
             if interfaces:
                 fp.write(' (implements ')
-                fp.write(string.join(map(self.pyname, interfaces), ', '))
+                for i in range(len(interfaces)):
+                    fp.write('<link linkend="%s">%s</link>' %
+                             (self.make_class_ref(interfaces[i]),
+                              self.pyname(interfaces[i])))
+                    if i != len(interfaces) - 1:
+                        fp.write(', ')
                 fp.write(')\n')
             else:
                 fp.write('\n')
@@ -353,7 +389,7 @@ class DocbookDocWriter(DocWriter):
             fp.write('      <term><parameter>'+ name +'</parameter></term>\n')
             fp.write('      <listitem>' + self.reformat_text(descr) +
                      '</listitem>\n')
-            fp.write('    </varlistentry\n')
+            fp.write('    </varlistentry>\n')
         if func_def.ret and func_def.ret != 'none':
             if not varlist_started:
                 fp.write('  <variablelist>\n')
@@ -366,7 +402,7 @@ class DocbookDocWriter(DocWriter):
             fp.write('      <term>Returns:</term>\n')
             fp.write('      <listitem>' + self.reformat_text(descr) +
                      '</listitem>\n')
-            fp.write('    </varlistentry\n')
+            fp.write('    </varlistentry>\n')
         if varlist_started:
             fp.write('  </variablelist>\n')
         if func_doc and func_doc.description:
@@ -392,7 +428,7 @@ class DocbookDocWriter(DocWriter):
             fp.write('      <term><parameter>'+ name +'</parameter></term>\n')
             fp.write('      <listitem>' + self.reformat_text(descr) +
                      '</listitem>\n')
-            fp.write('    </varlistentry\n')
+            fp.write('    </varlistentry>\n')
         if meth_def.ret and meth_def.ret != 'none': 
             if not varlist_started:
                 fp.write('  <variablelist>\n')
@@ -405,7 +441,7 @@ class DocbookDocWriter(DocWriter):
             fp.write('      <term>Returns:</term>\n')
             fp.write('      <listitem>' + self.reformat_text(descr) +
                      '</listitem>\n')
-            fp.write('    </varlistentry\n')
+            fp.write('    </varlistentry>\n')
         if varlist_started:
             fp.write('  </variablelist>\n')
         if func_doc and func_doc.description:
@@ -413,15 +449,20 @@ class DocbookDocWriter(DocWriter):
         fp.write('  </sect3>\n\n\n')
 
     def output_toc(self, files, fp=sys.stdout):
-        fp.write('<!doctype article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [\n')
+        if self.use_xml:
+            fp.write('<?xml version="1.0" standalone="no"?>\n')
+            fp.write('<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"\n')
+            fp.write('    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [\n')
+        else:
+            fp.write('<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V3.1//EN" [\n')
         for filename, obj_def in files:
-            fp.write('  <!entity ' + string.translate(obj_def.c_name,
+            fp.write('  <!ENTITY ' + string.translate(obj_def.c_name,
                                                       self.__transtable) +
                      ' SYSTEM "' + filename + '" >\n')
         fp.write(']>\n\n')
 
         fp.write('<article id="index">\n\n')
-        fp.write('  <artheader>\n')
+        fp.write('  <articleinfo>\n')
         fp.write('    <title>PyGTK Docs</title>\n')
         fp.write('    <authorgroup>\n')
         fp.write('      <author>\n')
@@ -429,7 +470,7 @@ class DocbookDocWriter(DocWriter):
         fp.write('        <surname>Henstridge</surname>\n')
         fp.write('      </author>\n')
         fp.write('    </authorgroup>\n')
-        fp.write('  </artheader>\n\n')
+        fp.write('  </articleinfo>\n\n')
 
         fp.write('  <sect1>\n')
         fp.write('    <title>Class Heirachy</title>\n')
