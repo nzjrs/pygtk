@@ -51,7 +51,7 @@ EXTRA_DIST = \
 	MAPPING \
 	ExtensionClass.stx \
 	pango.defs \
-	pango.overrides \
+	pango.override \
 	examples/gobject/signal.py \
 	examples/pygtk-demo/pygtk-demo.py \
 	examples/pygtk-demo/demos/__init__.py \
