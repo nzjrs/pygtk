@@ -31,13 +31,11 @@ linkend="constructor-gtkliststore">gtk.ListStore</link></methodname>
 	<methodparam><parameter>...</parameter></methodparam>
       </constructorsynopsis>
 
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtkliststore- -set-column-types">set_column_types</link></methodname>
-    <methodparam><parameter role="keyword">n_columns</parameter></methodparam>
-    <methodparam><parameter role="keyword">types</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkliststore--set-column-types">set_column_types</link></methodname>
+	<methodparam><parameter>type</parameter></methodparam>
+	<methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis>
 
       <methodsynopsis language="python">
 	<methodname><link
@@ -102,7 +100,39 @@ linkend="method-gtkliststore--append">append</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkliststore--clear">clear</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkliststore--iter-is-valid">iter_is_valid</link></methodname>
+	<methodparam><parameter
+		       role="keyword">iter</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkliststore--reorder">reorder</link></methodname>
+	<methodparam><parameter>new_order</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkliststore--swap">swap</link></methodname>
+	<methodparam><parameter
+		       role="keyword">a</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">b</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkliststore--move-after">move_after</link></methodname>
+	<methodparam><parameter
+		       role="keyword">iter</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">position</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkliststore--move-before">move_before</link></methodname>
+	<methodparam><parameter
+		       role="keyword">iter</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">position</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -248,32 +278,41 @@ linkend="class-gobject"><classname>GObject</classname></link> class.</para>
   <refsect1>
     <title>Methods</title>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gtkliststore- -set-column-types">
+  <refsect2 id="method-gtkliststore--set-column-types">
     <title>gtk.ListStore.set_column_types</title>
 
 <programlisting><methodsynopsis language="python">
     <methodname>set_column_types</methodname>
-    <methodparam><parameter role="keyword">n_columns</parameter></methodparam>
-    <methodparam><parameter role="keyword">types</parameter></methodparam>
+    <methodparam><parameter>type</parameter></methodparam>
+    <methodparam><parameter>...</parameter></methodparam>
   </methodsynopsis></programlisting>
   <variablelist>
     <varlistentry>
-      <term><parameter role="keyword">n_columns</parameter>&nbsp;:</term>
-      <listitem><simpara>Number of columns for the list store</simpara></listitem>
+      <term><parameter>type</parameter>&nbsp;:</term>
+      <listitem><simpara>the type of the first column</simpara></listitem>
     </varlistentry>
     <varlistentry>
-      <term><parameter role="keyword">types</parameter>&nbsp;:</term>
-      <listitem><simpara>An array length n of <literal>GTypes</literal></simpara></listitem>
+      <term><parameter>...</parameter>&nbsp;:</term>
+      <listitem><simpara>zero or more type specifications</simpara></listitem>
     </varlistentry>
   </variablelist>
-<para>
-This function is meant primarily for <literal>GObjects</literal> that inherit from <link linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>,
-and should only be used when constructing a new <link linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>.  It will not
-function after a row has been added, or a method on the <link linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
-interface is called.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>set_column_types</methodname>() method sets the
+liststore columns to the types specified by <parameter>type</parameter> and
+any additional type parameters. This method is meant primarily for classes
+that inherit from <link
+linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>,
+and should only be used when constructing a new <link
+linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>.
+It will not function after a row has been added, or a method on the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+interface is called.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gtkliststore--set-value">
       <title>gtk.ListStore.set_value</title>
@@ -608,6 +647,175 @@ methods.</para>
 
       <para>The <methodname>clear</methodname>() method removes all rows
 from the liststore.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkliststore--iter-is-valid">
+      <title>gtk.ListStore.iter_is_valid</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>iter_is_valid</methodname>
+	  <methodparam><parameter role="keyword">iter</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the iter is valid,
+	  <literal>FALSE</literal> if the iter is invalid.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <warning>
+	<para>This method is slow. Only use it for debugging and/or testing
+purposes.</para>
+      </warning>
+
+      <para>The <methodname>iter_is_valid</methodname>() method checks if
+the <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+specified by <parameter>iter</parameter> is a valid iter for this <link
+linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkliststore--reorder">
+      <title>gtk.ListStore.reorder</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>reorder</methodname>
+	  <methodparam><parameter>new_order</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>new_order</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of integers mapping the new position of
+	  each child to its old position before the re-ordering,
+	  i.e. <parameter>new_order</parameter><literal>[newpos] =
+	  oldpos</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>reorder</methodname>() method reorders the <link
+linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>
+items to follow the order indicated by
+<parameter>new_order</parameter>. Note that this method only works with
+unsorted stores.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkliststore--swap">
+      <title>gtk.ListStore.swap</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>swap</methodname>
+	  <methodparam><parameter role="keyword">a</parameter></methodparam>
+	  <methodparam><parameter role="keyword">b</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">a</parameter>&nbsp;:</term> <listitem><simpara>A
+	  <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">b</parameter>&nbsp;:</term>
+	  <listitem><simpara>Another <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>swap</methodname>() method swaps the listtore
+rows specified by the <link
+linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>s
+<parameter>a</parameter> and <parameter>b</parameter>. Note that this method
+only works with unsorted stores.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkliststore--move-after">
+      <title>gtk.ListStore.move_after</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>move_after</methodname>
+	  <methodparam><parameter role="keyword">iter</parameter></methodparam>
+	  <methodparam><parameter role="keyword">position</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">position</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>move_after</methodname>() method moves the
+liststore row referenced by <parameter>iter</parameter> to the position
+after the row referenced by <parameter>position</parameter>. Note that this
+method only works with unsorted stores. If <parameter>position</parameter>
+is <literal>None</literal>, the row referenced by
+<parameter>iter</parameter> will be moved to the start of the list.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkliststore--move-before">
+      <title>gtk.ListStore.move_before</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>move_before</methodname>
+	  <methodparam><parameter role="keyword">iter</parameter></methodparam>
+	  <methodparam><parameter role="keyword">position</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">position</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>,
+	  or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>move_before</methodname>() method moves the
+liststore row referenced by <parameter>iter</parameter> to the position
+before the row referenced by <parameter>position</parameter>. Note that this
+method only works with unsorted stores. If <parameter>position</parameter>
+is <literal>None</literal>, the row referenced by
+<parameter>iter</parameter> will be moved to the end of the list.</para>
 
     </refsect2>
 
