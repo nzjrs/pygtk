@@ -25,8 +25,10 @@ pyexec_LTLIBRARIES += gobjectmodule.la
 gobjectmodule_la_LDFLAGS = -module -avoid-version \
  -export-symbols-regex initgobject
 gobjectmodule_la_CFLAGS = $(GLIB_CFLAGS)
-gobjectmodule_la_SOURCES = gobjectmodule.c pygobject.h
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
+gobjectmodule_la_SOURCES = \
+  pygobject.h pygobject-private.h \
+  gobjectmodule.c pygboxed.c
 
 # pango module
 pyexec_LTLIBRARIES += pangomodule.la
