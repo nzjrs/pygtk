@@ -94,6 +94,10 @@ linkend="method-gtknotebook--get-nth-page">get_nth_page</link></methodname>
 		       role="keyword">page_num</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtknotebook--get-n-pages">get_n_pages</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtknotebook--page-num">page_num</link></methodname>
 	<methodparam><parameter
@@ -270,17 +274,29 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"tab-pos"</entry>
+	      <entry>"enable-popup"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The side of the notebook that holds the tabs:
-<literal>gtk.POS_LEFT</literal>, <literal>gtk.POS_RIGHT</literal>,
-<literal>gtk.POS_TOP</literal> or <literal>gtk.POS_BOTTOM</literal></entry>
+	      <entry>If <literal>TRUE</literal>, pressing the right mouse
+button on the notebook pops up a menu that you can use to go to a
+page</entry>
 	    </row>
 	    <row valign="top">
-	      <entry>"show-tabs"</entry>
+	      <entry>"homogeneous"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, tabs should be
-shown</entry>
+	      <entry>If <literal>TRUE</literal>, tabs should have
+homogeneous sizes </entry>
+	    </row>
+	    </row>
+	    <row valign="top">
+	      <entry>"page"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The index of the current page</entry>
+	    </row>
+	    <row valign="top">
+	      <entry>"scrollable"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, scroll arrows are added if
+there are too many tabs to fit</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"show-border"</entry>
@@ -289,10 +305,10 @@ shown</entry>
 shown</entry>
 	    </row>
 	    <row valign="top">
-	      <entry>"scrollable"</entry>
+	      <entry>"show-tabs"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, scroll arrows are added if
-there are too many tabs to fit</entry>
+	      <entry>If <literal>TRUE</literal>, tabs should be
+shown</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"tab-border"</entry>
@@ -306,27 +322,16 @@ there are too many tabs to fit</entry>
 labels</entry>
 	    </row>
 	    <row valign="top">
+	      <entry>"tab-pos"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The side of the notebook that holds the tabs:
+<literal>gtk.POS_LEFT</literal>, <literal>gtk.POS_RIGHT</literal>,
+<literal>gtk.POS_TOP</literal> or <literal>gtk.POS_BOTTOM</literal></entry>
+	    </row>
+	    <row valign="top">
 	      <entry>"tab-vborder"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The width of the vertical border of tab labels</entry>
-	    </row>
-	    <row valign="top">
-	      <entry>"page"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The index of the current page</entry>
-	    </row>
-	    <row valign="top">
-	      <entry>"enable-popup"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, pressing the right mouse
-button on the notebook pops up a menu that you can use to go to a
-page</entry>
-	    </row>
-	    <row valign="top">
-	      <entry>"homogeneous"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, tabs should have
-homogeneous sizes </entry>
 	    </row>
 
 	  </tbody>
@@ -347,11 +352,6 @@ homogeneous sizes </entry>
 	  <colspec column="3" colwidth="4in"/>
 	  <tbody>
 
-	    <row valign="top">
-	      <entry>"tab-label"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The string displayed on the child's tab label</entry>
-	    </row>
 	    <row valign="top">
 	      <entry>"menu-label"</entry>
 	      <entry>Read-Write</entry>
@@ -375,12 +375,67 @@ tabs</entry>
 the allocated area</entry>
 	    </row>
 	    <row valign="top">
+	      <entry>"tab-label"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The string displayed on the child's tab label</entry>
+	    </row>
+	    <row valign="top">
 	      <entry>tab-pack""</entry>
 	      <entry>Read-Write</entry>
 	      <entry>A pack type indicating whether the child is packed with
 reference to the start or end of the parent:
 <literal>gtk.PACK_START</literal> or
 <literal>gtk.PACK_END</literal>.</entry>
+	    </row>
+
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Style Properties</title>
+
+    <note>
+      <para>These style properties are available in PyGTK 2.4 and above.</para>
+    </note>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"has-backward-stepper"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>
+	      the standard backward arrow button is displayed.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"has-forward-stepper"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>
+	      the standard forward arrow button is displayed.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"has-secondary-backward-stepper"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> a second backward arrow
+button is displayed on the opposite end of the tab area.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"has-secondary-forward-stepper"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> a second forward arrow
+button is displayed on the opposite end of the tab area.</entry>
 	    </row>
 
 	  </tbody>
@@ -880,6 +935,30 @@ child widget contained in the page with the index specified by
 <parameter>page_num</parameter>. If <parameter>page_num</parameter> is out
 of bounds for the page range of the notebook this method returns
 <literal>None</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-n-pages">
+      <title>gtk.Notebook.get_n_pages</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_n_pages</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the number of pages in the
+	  notebook.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_n_pages</methodname>() method returns the
+number of pages in a notebook.</para>
 
     </refsect2>
 
@@ -1618,6 +1697,11 @@ method</simpara></listitem>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
 	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
+	</varlistentry>
       </variablelist>
 
       <para>The "focus-tab" signal is emitted when the focus is changed by
@@ -1689,7 +1773,8 @@ signal</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter>move_focus</parameter>&nbsp;:</term>
-	  <listitem><simpara>if TRUE move the focus to </simpara></listitem>
+	  <listitem><simpara>if <literal>TRUE</literal> move the
+focus to a child widget</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter>user_param1</parameter>&nbsp;:</term>
@@ -1702,6 +1787,11 @@ method</simpara></listitem>
 	  <term><parameter>...</parameter>&nbsp;:</term>
 	  <listitem><simpara>additional user parameters (if
 any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the signal was
+handled</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
