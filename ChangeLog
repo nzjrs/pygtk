@@ -1,3 +1,18 @@
+2002-06-04  Matt Wilson  <msw@redhat.com>
+
+	* gtk/gtk-extrafuncs.defs (set_all): add GtkAdjustment.set_all
+
+	* gtk/gtk.override (_wrap_gtk_adjustment_set_all): implement, for
+	compatibility with PyGtk 0.6.x.  Mark it as deprecated.
+	(_wrap_gtk_adjustment__set_value) 
+	(_wrap_gtk_adjustment__set_lower) 
+	(_wrap_gtk_adjustment__set_upper) 
+	(_wrap_gtk_adjustment__set_step_increment) 
+	(_wrap_gtk_adjustment__set_page_increment) 
+	(_wrap_gtk_adjustment__set_page_size): implement setters for
+	GtkAdjustment.{value, lower, upper, step_increment,
+	page_increment, set_page_size}
+
 2002-06-03  Matt Wilson  <msw@redhat.com>
 
 	* gtk/gtk.override
@@ -7,7 +22,7 @@
 	* gtk/gdk-types.defs (EventExpose): added to make the code
 	generator write GdkEventExpose * for
 	_wrap_gtk_container_propagate_expose (gets rid of a warning)
-
+ 
 2002-05-31  Matt Wilson  <msw@redhat.com>
 
 	* examples/pygtk-demo/demos/list_store.py (fixed_toggled): the
