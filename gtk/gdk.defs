@@ -2710,3 +2710,143 @@
 )
 
 
+;; From /opt/gnome/include/gtk-2.0/gdk/gdkkeys.h
+
+(define-function gdk_keymap_get_type
+  (c-name "gdk_keymap_get_type")
+  (return-type "GType")
+)
+
+(define-function keymap_get_default
+  (c-name "gdk_keymap_get_default")
+  (return-type "GdkKeymap*")
+)
+
+(define-method lookup_key
+  (of-object "GdkKeymap")
+  (c-name "gdk_keymap_lookup_key")
+  (return-type "guint")
+  (parameters
+    '("const-GdkKeymapKey*" "key")
+  )
+)
+
+(define-method translate_keyboard_state
+  (of-object "GdkKeymap")
+  (c-name "gdk_keymap_translate_keyboard_state")
+  (return-type "gboolean")
+  (parameters
+    '("guint" "hardware_keycode")
+    '("GdkModifierType" "state")
+    '("gint" "group")
+    '("guint*" "keyval")
+    '("gint*" "effective_group")
+    '("gint*" "level")
+    '("GdkModifierType*" "consumed_modifiers")
+  )
+)
+
+(define-method get_entries_for_keyval
+  (of-object "GdkKeymap")
+  (c-name "gdk_keymap_get_entries_for_keyval")
+  (return-type "gboolean")
+  (parameters
+    '("guint" "keyval")
+    '("GdkKeymapKey**" "keys")
+    '("gint*" "n_keys")
+  )
+)
+
+(define-method get_entries_for_keycode
+  (of-object "GdkKeymap")
+  (c-name "gdk_keymap_get_entries_for_keycode")
+  (return-type "gboolean")
+  (parameters
+    '("guint" "hardware_keycode")
+    '("GdkKeymapKey**" "keys")
+    '("guint**" "keyvals")
+    '("gint*" "n_entries")
+  )
+)
+
+(define-method get_direction
+  (of-object "GdkKeymap")
+  (c-name "gdk_keymap_get_direction")
+  (return-type "PangoDirection")
+)
+
+(define-function keyval_name
+  (c-name "gdk_keyval_name")
+  (return-type "gchar*")
+  (parameters
+    '("guint" "keyval")
+  )
+)
+
+(define-function keyval_from_name
+  (c-name "gdk_keyval_from_name")
+  (return-type "guint")
+  (parameters
+    '("const-gchar*" "keyval_name")
+  )
+)
+
+(define-function keyval_convert_case
+  (c-name "gdk_keyval_convert_case")
+  (return-type "none")
+  (parameters
+    '("guint" "symbol")
+    '("guint*" "lower")
+    '("guint*" "upper")
+  )
+)
+
+(define-function keyval_to_upper
+  (c-name "gdk_keyval_to_upper")
+  (return-type "guint")
+  (parameters
+    '("guint" "keyval")
+  )
+)
+
+(define-function keyval_to_lower
+  (c-name "gdk_keyval_to_lower")
+  (return-type "guint")
+  (parameters
+    '("guint" "keyval")
+  )
+)
+
+(define-function keyval_is_upper
+  (c-name "gdk_keyval_is_upper")
+  (return-type "gboolean")
+  (parameters
+    '("guint" "keyval")
+  )
+)
+
+(define-function keyval_is_lower
+  (c-name "gdk_keyval_is_lower")
+  (return-type "gboolean")
+  (parameters
+    '("guint" "keyval")
+  )
+)
+
+(define-function keyval_to_unicode
+  (c-name "gdk_keyval_to_unicode")
+  (return-type "guint32")
+  (parameters
+    '("guint" "keyval")
+  )
+)
+
+(define-function gdk_unicode_to_keyval
+  (c-name "gdk_unicode_to_keyval")
+  (return-type "guint")
+  (parameters
+    '("guint32" "wc")
+  )
+)
+
+
