@@ -3822,3 +3822,15 @@ _wrap_gdk_atom_intern(PyObject *self, PyObject *args, PyObject *kwargs)
     }
     return PyGdkAtom_New(ret);
 }
+%%
+override gdk_display_get_maximal_cursor_size noargs
+static PyObject *
+_wrap_gdk_display_get_maximal_cursor_size(PyGObject *self)
+{
+    guint width, height;
+
+    gdk_display_get_maximal_cursor_size(GDK_DISPLAY(self->obj),
+					&width, &height);
+
+    return Py_BuildValue("(ii)", width, height);
+}
