@@ -1415,27 +1415,6 @@ _wrap_gtk_list_store_append(PyGObject *self, PyObject *args, PyObject *kwargs)
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
 %%
-override gtk_list_store_remove kwargs
-static PyObject *
-_wrap_gtk_list_store_remove(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "iter", NULL };
-    PyObject *py_iter;
-    GtkTreeIter *iter = NULL;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkListStore.remove", kwlist, &py_iter))
-        return NULL;
-    if (pyg_boxed_check(py_iter, GTK_TYPE_TREE_ITER))
-        iter = pyg_boxed_get(py_iter, GtkTreeIter);
-    else {
-        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTreeIter");
-        return NULL;
-    }
-    gtk_list_store_remove(GTK_LIST_STORE(self->obj), iter);
-    
-    return pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
-}
-%%
 override gtk_list_store_reorder args
 static PyObject *
 _wrap_gtk_list_store_reorder(PyGObject *self, PyObject *args)
