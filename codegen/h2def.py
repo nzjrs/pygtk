@@ -252,6 +252,10 @@ def clean_func(buf):
     pat = re.compile(r"""G_BEGIN_DECLS|BEGIN_LIBGTOP_DECLS""", re.MULTILINE) 
     buf=pat.sub('',buf)
 
+    #extern "C"
+    pat = re.compile(r"""^\s*(extern)\s+\"C\"\s+{""", re.MULTILINE) 
+    buf=pat.sub('',buf)
+
     #multiple whitespace
     pat = re.compile(r"""\s+""", re.MULTILINE) 
     buf=pat.sub(' ',buf)
@@ -436,5 +440,5 @@ if __name__ == '__main__':
         write_obj_defs(objdefs,None)
         write_enum_defs(enums,None)
 
-        for filename in args:
+	for filename in args:
             write_def(filename,None)
