@@ -77,8 +77,7 @@ def main():
     window = gtk.Window()
     window.set_title("Dialogs")
     window.set_border_width(8)
-    if __name__ == '__main__':
-        window.connect('destroy', lambda win: gtk.main_quit())
+    window.connect('destroy', lambda win: gtk.main_quit())
     
     frame = gtk.Frame("Dialogs")
     window.add(frame)
@@ -128,6 +127,7 @@ def main():
 
     window.show_all()
     
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

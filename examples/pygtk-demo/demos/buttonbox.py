@@ -35,8 +35,7 @@ def create_bbox(horizontal=gtk.TRUE, title=None, spacing=0,
 
 def main():
     win = gtk.Window()
-    if __name__ == '__main__':
-	win.connect('destroy', lambda win: gtk.main_quit())
+    win.connect('destroy', lambda win: gtk.main_quit())
 
     win.set_title('Button Boxes')
     win.set_border_width(10)
@@ -77,6 +76,7 @@ def main():
 		    padding=5)
 
     win.show_all()
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
     
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

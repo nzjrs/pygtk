@@ -85,15 +85,14 @@ def update_statusbar(buffer, statusbar):
 mark_set_callback = (lambda buffer, new_location, mark, statusbar:
                      update_statusbar(buffer, statusbar))
     
-		     
+
 def main():
     #register_stock_icons ()
     
     # Create the toplevel window
     window = gtk.Window()
     window.set_title('Application Window')
-    if __name__ == '__main__':
-	window.connect('destroy', lambda win: gtk.main_quit())
+    window.connect('destroy', lambda win: gtk.main_quit())
 
     table = gtk.Table(1, 4, gtk.FALSE)
     window.add(table)
@@ -104,7 +103,7 @@ def main():
     window.add_accel_group(accel_group)
     
     item_factory = gtk.ItemFactory(gtk.MenuBar, '<main>', accel_group)
-
+    
     # create menu items
 
     item_factory.create_items(menu_items, window)
@@ -175,9 +174,10 @@ def main():
     buffer.connect('changed', update_statusbar, statusbar)
     buffer.connect('mark_set', mark_set_callback, statusbar)
     update_statusbar(buffer, statusbar)
-    
+   
     window.show_all()
 
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

@@ -26,8 +26,7 @@ def create_menu(depth, length=5):
 
 def main():
     window = gtk.Window()
-    if __name__ == '__main__':
-	window.connect('destroy', lambda win: gtk.main_quit())
+    window.connect('destroy', lambda win: gtk.main_quit())
     window.set_title('Menus')
 
     vbox = gtk.VBox()
@@ -46,7 +45,7 @@ def main():
     
     menuitem = gtk.MenuItem('bar')
     menuitem.set_submenu(create_menu(2))
-    menuitem.right_justify()
+    menuitem.set_right_justified(gtk.TRUE)
     menubar.add(menuitem)
 
     vbox2 = gtk.VBox(spacing=10)
@@ -71,6 +70,7 @@ def main():
     button.grab_default()
 
     window.show_all()
-
-    if __name__ == '__main__': gtk.main()
-if __name__ == '__main__': main()
+    gtk.main()
+    
+if __name__ == '__main__':
+    main()

@@ -15,7 +15,7 @@ import gtk
 def toggle_resize(w, child):
     paned = child.parent
     
-    if child == paned.children()[0]:
+    if child == paned.get_children()[0]:
         paned.remove(child)
         paned.pack1(child, w.get_active(), 0)
     else:
@@ -25,7 +25,7 @@ def toggle_resize(w, child):
 def toggle_shrink(w, child):
     paned = child.parent
     
-    if child == paned.children()[0]:
+    if child == paned.get_children()[0]:
         paned.remove(child)
         paned.pack1(child, 0, w.get_active())
     else:
@@ -43,12 +43,12 @@ def create_pane_options(paned, frame_label, label1, label2):
     table.attach_defaults(label, 0, 1, 0, 1)
     
     check_button = gtk.CheckButton("_Resize")
-    check_button.connect('toggled', toggle_resize, paned.children()[0])
+    check_button.connect('toggled', toggle_resize, paned.get_children()[0])
     table.attach_defaults(check_button, 0, 1, 1, 2)
     
     check_button = gtk.CheckButton("_Shrink")
     check_button.set_active(gtk.TRUE)
-    check_button.connect('toggled', toggle_shrink, paned.children()[0])
+    check_button.connect('toggled', toggle_shrink, paned.get_children()[0])
     table.attach_defaults(check_button, 0, 1, 2, 3)
     
     label = gtk.Label(label2)
@@ -56,12 +56,12 @@ def create_pane_options(paned, frame_label, label1, label2):
     
     check_button = gtk.CheckButton("_Resize")
     check_button.set_active(gtk.TRUE)
-    check_button.connect('toggled', toggle_resize, paned.children()[1])
+    check_button.connect('toggled', toggle_resize, paned.get_children()[1])
     table.attach_defaults(check_button, 1, 2, 1, 2)
     
     check_button = gtk.CheckButton("_Shrink")
     check_button.set_active(gtk.TRUE)
-    check_button.connect('toggled', toggle_shrink, paned.children()[1])
+    check_button.connect('toggled', toggle_shrink, paned.get_children()[1])
     table.attach_defaults(check_button, 1, 2, 2, 3)
     
     return frame
@@ -70,8 +70,7 @@ def main():
     window = gtk.Window()
     window.set_title("Paned Widgets")
     window.set_border_width(0)
-    if __name__ == '__main__':
-        window.connect('destroy', lambda win: gtk.main_quit())
+    window.connect('destroy', lambda win: gtk.main_quit())
     
     vbox = gtk.VBox(gtk.FALSE, 0)
     window.add(vbox)
@@ -111,6 +110,7 @@ def main():
     
     window.show_all()
     
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

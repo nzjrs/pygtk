@@ -39,8 +39,7 @@ def main():
     window = gtk.Window()
     window.set_title("Color selection")
     window.set_border_width(8)
-    if __name__ == '__main__':
-        window.connect('destroy', lambda win: gtk.main_quit())
+    window.connect('destroy', lambda win: gtk.main_quit())
     
     vbox = gtk.VBox()
     vbox.set_border_width(8)
@@ -70,6 +69,7 @@ def main():
     
     window.show_all()
     
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

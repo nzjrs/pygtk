@@ -57,8 +57,7 @@ def main():
             (gtk.STOCK_CLOSE, gtk.RESPONSE_NONE))
     window.set_resizable(gtk.FALSE)
     window.connect('response', lambda w, d: window.destroy())
-    if __name__ == '__main__':
-        window.connect('destroy', lambda win: gtk.main_quit())
+    window.connect('destroy', lambda win: gtk.main_quit())
     
     vbox = gtk.VBox(gtk.FALSE, 5)
     window.vbox.pack_start(vbox, gtk.TRUE, gtk.TRUE, 0)
@@ -103,6 +102,7 @@ def main():
     
     window.show_all()
     
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

@@ -89,8 +89,7 @@ class MyTreeModel(gtk.GenericTreeModel):
 
 def main():
     window = gtk.Window()
-    if __name__ == '__main__':
-        window.connect('destroy', lambda win: gtk.main_quit())
+    window.connect('destroy', lambda win: gtk.main_quit())
     window.set_title('Menus')
 
     scrolled_window = gtk.ScrolledWindow()
@@ -107,7 +106,8 @@ def main():
     scrolled_window.add(tree_view)
     window.show_all()
 
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()
 

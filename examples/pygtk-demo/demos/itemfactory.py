@@ -37,8 +37,7 @@ menu_items = (
 
 def main():
     win = gtk.Window()
-    if __name__ == '__main__':
-	win.connect('destroy', lambda win: gtk.main_quit())
+    win.connect('destroy', lambda win: gtk.main_quit())
 
     win.set_title('Item Factory')
     win.set_border_width(10)
@@ -78,6 +77,7 @@ def main():
     button.grab_default()
 
     win.show_all()
-    if __name__ == '__main__': gtk.main()
+    gtk.main()
     
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()
