@@ -3974,23 +3974,27 @@ _wrap_gdk_window_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 %%
 override gdk_window_set_user_data kwargs
+
+static void __gdk_window_set_user_data_window_destroyed(gpointer widget,
+                                                        GObject *window);
+
 static void
-__gdk_window_set_user_data_weak_notify(gpointer data,
-                                       GObject *where_the_object_was)
+__gdk_window_set_user_data_widget_destroyed(gpointer  window,
+                                            GObject  *widget)
 {
-    PyGObject *window = (PyGObject *) data;
-    gdk_window_set_user_data(GDK_WINDOW(window->obj), NULL);
+    gpointer old_user_data = NULL;
+    gdk_window_get_user_data(GDK_WINDOW(window), &old_user_data);
+    gdk_window_set_user_data(GDK_WINDOW(window), NULL);
+    g_object_weak_unref(G_OBJECT(window), __gdk_window_set_user_data_window_destroyed,
+                        widget);
 }
 
 static void
-__gdk_window_destroy(GdkWindow *self)
+__gdk_window_set_user_data_window_destroyed(gpointer widget,
+                                            GObject *window)
 {
-    gpointer old_user_data = NULL;
-      /* Remove any existing weak reference */
-    gdk_window_get_user_data(self, &old_user_data);
-    if (old_user_data)
-        g_object_weak_unref(G_OBJECT(old_user_data),
-                            __gdk_window_set_user_data_weak_notify, self);
+    g_object_weak_unref(G_OBJECT(widget), __gdk_window_set_user_data_widget_destroyed,
+                        window);
 }
 
 static PyObject *
@@ -4010,21 +4014,16 @@ _wrap_gdk_window_set_user_data(PyGObject *self, PyObject *args, PyObject *kwargs
                         " Maybe you want to use GObject.set_data()");
 	return NULL;
     }
-      /* Remove any existing weak reference */
+      /* Remove any existing weak references */
     gdk_window_get_user_data(GDK_WINDOW(self->obj), &old_user_data);
-    if (old_user_data)
-        g_object_weak_unref(old_user_data,
-                            __gdk_window_set_user_data_weak_notify, self);
-
-      /* Add new weak reference */
+    if (old_user_data) {
+        g_object_weak_unref(old_user_data, __gdk_window_set_user_data_widget_destroyed, self->obj);
+        g_object_weak_unref(self->obj, __gdk_window_set_user_data_window_destroyed, old_user_data);
+    }
+      /* Add new weak references */
     gdk_window_set_user_data(GDK_WINDOW(self->obj), GTK_WIDGET(user_data->obj));
-    g_object_weak_ref(self->obj, __gdk_window_set_user_data_weak_notify, self);
-
-      /* connect (only once) "destroy" signal to remove our weak
-       * reference, if any */
-    if (!g_signal_handler_find(self, G_SIGNAL_MATCH_FUNC, 0, 0, 0, 
-                               __gdk_window_destroy, NULL))
-        g_signal_connect(self, "destroy", (GCallback) __gdk_window_destroy, NULL);
+    g_object_weak_ref(user_data->obj, __gdk_window_set_user_data_widget_destroyed, self->obj);
+    g_object_weak_ref(self->obj, __gdk_window_set_user_data_window_destroyed, user_data->obj);
 
     Py_INCREF(Py_None);
     return Py_None;
