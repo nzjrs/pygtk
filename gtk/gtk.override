@@ -1972,6 +1972,11 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
     GType *column_types;
 
     len = PyTuple_Size(args);
+    if (len == 0) {
+	PyErr_SetString(PyExc_TypeError, "GtkListStore requires at least one argument");
+	return NULL;	
+    }
+    
     column_types = g_new(GType, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
@@ -2003,12 +2008,18 @@ _wrap_gtk_list_store_set(PyGObject *self, PyObject *args)
     PyObject *iter;
     int len, i;
 
+    len = PyTuple_Size(args);
+    if (len == 0) {
+	PyErr_SetString(PyExc_TypeError, "GtkListStore.set requires at least three arguments");
+	return NULL;	
+    }
+    
     iter = PyTuple_GetItem(args, 0);
     if (!pyg_boxed_check(iter, GTK_TYPE_TREE_ITER)) {
 	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
 	return NULL;
     }
-    len = PyTuple_Size(args);
+
     if ((len - 1) % 2) {
 	PyErr_SetString(PyExc_TypeError,
 			"Argument list must be column, value pairs.  No -1 "
@@ -2178,6 +2189,11 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
     GType *column_types;
 
     len = PyTuple_Size(args);
+    if (len == 0) {
+	PyErr_SetString(PyExc_TypeError, "GtkTreeStore requires at least one argument");
+	return NULL;	
+    }
+
     column_types = g_new(GType, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
@@ -2209,13 +2225,18 @@ _wrap_gtk_tree_store_set(PyGObject *self, PyObject *args)
     PyObject *iter;
     int len, i;
 
+    len = PyTuple_Size(args);
+    if (len == 0) {
+	PyErr_SetString(PyExc_TypeError, "GtkTreeStore.set requires at least three arguments");
+	return NULL;	
+    }
+    
     iter = PyTuple_GetItem(args, 0);
-
     if (!pyg_boxed_check(iter, GTK_TYPE_TREE_ITER)) {
 	PyErr_SetString(PyExc_TypeError, "iter must be a GtkTreeIter");
 	return NULL;
     }
-    len = PyTuple_Size(args);
+
     if ((len - 1) % 2) {
 	PyErr_SetString(PyExc_TypeError,
 			"Argument list must be column, value pairs.  No -1 "
