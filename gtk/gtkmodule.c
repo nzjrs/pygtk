@@ -24,7 +24,6 @@ static struct _PyGtk_FunctionStruct functions = {
     &PyGdkEvent_Type,  PyGdkEvent_New,
     &PyGtkSelectionData_Type,  PyGtkSelectionData_New,
     &PyGdkAtom_Type,  PyGdkAtom_New,
-    &PyGdkCursor_Type,  PyGdkCursor_New,
     &PyGtkCTreeNode_Type,  PyGtkCTreeNode_New,
     &PyGdkDevice_Type, PyGdkDevice_New,
 };

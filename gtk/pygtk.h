@@ -26,9 +26,6 @@ struct _PyGtk_FunctionStruct {
     PyTypeObject *gdkAtom_type;
     PyObject *(* gdkAtom_new)(GdkAtom atom);
 
-    PyTypeObject *gdkCursor_type;
-    PyObject *(* gdkCursor_new)(GdkCursor *cursor);
-
     PyTypeObject *gtkCTreeNode_type;
     PyObject *(* gtkCTreeNode_new)(GtkCTreeNode *node);
 
@@ -56,11 +53,6 @@ typedef struct {
 
 typedef struct {
     PyObject_HEAD
-    GdkCursor *obj;
-} PyGdkCursor_Object;
-
-typedef struct {
-    PyObject_HEAD
     GtkCTreeNode *node;
 } PyGtkCTreeNode_Object;
 
@@ -73,7 +65,6 @@ typedef struct {
 #define PyGdkEvent_Get(v) (((PyGdkEvent_Object *)(v))->obj)
 #define PyGtkSelectionData_Get(v) (((PyGtkSelectionData_Object *)(v))->obj)
 #define PyGdkAtom_Get(v) (((PyGdkAtom_Object *)(v))->atom)
-#define PyGdkCursor_Get(v) (((PyGdkCursor_Object *)(v))->obj)
 #define PyGtkCTreeNode_Get(v) (((PyGtkCTreeNode_Object *)(v))->node)
 #define PyGdkDevice_Get(v) (((PyGdkDevice_Object *)(v))->obj)
 
@@ -94,7 +85,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGdkEvent_Type         *(_PyGtk_API->gdkEvent_type)
 #define PyGtkSelectionData_Type *(_PyGtk_API->gtkSelectionData_type)
 #define PyGdkAtom_Type          *(_PyGtk_API->gdkAtom_type)
-#define PyGdkCursor_Type        *(_PyGtk_API->gdkCursor_type)
 #define PyGtkCTreeNode_Type     *(_PyGtk_API->gtkCTreeNode_type)
 #define PyGdkDevice_Type        *(_PyGtk_API->gdkDevice_type)
 
@@ -102,7 +92,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGdkEvent_Check(v) ((v)->ob_type == _PyGtk_API->gdkEvent_type)
 #define PyGtkSelectionData_Check(v) ((v)->ob_type == _PyGtk_API->gtkSelectionData_type)
 #define PyGdkAtom_Check(v) ((v)->ob_type == _PyGtk_API->gdkAtom_type)
-#define PyGdkCursor_Check(v) ((v)->ob_type == _PyGtk_API->gdkCursor_type)
 #define PyGtkCTreeNode_Check(v) ((v)->ob_type == _PyGtk_API->gtkCTreeNode_type)
 #define PyGdkDevice_Check(v) ((v)->ob_type == _PyGtk_API->gdkDevice_type)
 
@@ -110,7 +99,6 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 #define PyGdkEvent_New         (_PyGtk_API->gdkEvent_new)
 #define PyGtkSelectionData_New (_PyGtk_API->gtkSelectionData_new)
 #define PyGdkAtom_New          (_PyGtk_API->gdkAtom_new)
-#define PyGdkCursor_New        (_PyGtk_API->gdkCursor_new)
 #define PyGtkCTreeNode_New     (_PyGtk_API->gtkCTreeNode_new)
 #define PyGdkDevice_New        (_PyGtk_API->gdkDevice_new)
 

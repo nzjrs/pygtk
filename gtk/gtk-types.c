@@ -110,19 +110,6 @@ PyGdkAtom_New(GdkAtom atom)
 }
 
 PyObject *
-PyGdkCursor_New(GdkCursor *obj)
-{
-    PyGdkCursor_Object *self;
-
-    self = (PyGdkCursor_Object *)PyObject_NEW(PyGdkCursor_Object,
-					      &PyGdkCursor_Type);
-    if (self == NULL)
-	return NULL;
-    self->obj = obj;
-    return (PyObject *)self;
-}
-
-PyObject *
 PyGtkCTreeNode_New(GtkCTreeNode *node)
 {
     PyGtkCTreeNode_Object *self;
@@ -2028,85 +2015,6 @@ PyTypeObject PyGdkAtom_Type = {
 };
 
 static void
-pygdk_cursor_dealloc(PyGdkCursor_Object *self)
-{
-    gdk_cursor_destroy(self->obj);
-    PyMem_DEL(self);
-}
-
-static int
-pygdk_cursor_compare(PyGdkCursor_Object *self, PyGdkCursor_Object *v)
-{
-    if (self->obj == v->obj) return 0;
-    if (self->obj > v->obj) return -1;
-    return 1;
-}
-
-static long
-pygdk_cursor_hash(PyGdkCursor_Object *self)
-{
-    return (long)self->obj;
-}
-
-static PyObject *
-pygdk_cursor_repr(PyGdkCursor_Object *self)
-{
-    char buf[256], *cname = NULL;
-
-    if (self->obj->type == GDK_CURSOR_IS_PIXMAP)
-	cname = "*pixmap*";
-    else {
-	GtkEnumValue *vals = gtk_type_enum_get_values(GDK_TYPE_CURSOR_TYPE);
-	while (vals->value_name != NULL && vals->value != self->obj->type)
-	    vals++;
-	if (vals->value_nick) cname = vals->value_nick;
-	else cname = "*unknown*";
-    }
-
-    g_snprintf(buf, 256, "<GdkCursor '%s'>", cname);
-    return PyString_FromString(buf);
-}
-
-static PyObject *
-pygdk_cursor_getattr(PyGdkCursor_Object *self, char *attr)
-{
-    if (!strcmp(attr, "type"))
-	return PyInt_FromLong(self->obj->type);
-    else if (!strcmp(attr, "name")) {
-	GtkEnumValue *vals = gtk_type_enum_get_values(GDK_TYPE_CURSOR_TYPE);
-
-	while (vals->value_name != NULL && vals->value != self->obj->type)
-	    vals++;
-	if (vals->value_nick) return PyString_FromString(vals->value_nick);
-	return PyString_FromString("*unknown*");
-    }
-    PyErr_SetString(PyExc_AttributeError, attr);
-    return NULL;
-}
-
-PyTypeObject PyGdkCursor_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "GdkCursor",
-    sizeof(PyGdkCursor_Object),
-    0,
-    (destructor)pygdk_cursor_dealloc,
-    (printfunc)0,
-    (getattrfunc)pygdk_cursor_getattr,
-    (setattrfunc)0,
-    (cmpfunc)pygdk_cursor_compare,
-    (reprfunc)pygdk_cursor_repr,
-    0,
-    0,
-    0,
-    (hashfunc)pygdk_cursor_hash,
-    (ternaryfunc)0,
-    (reprfunc)0,
-    0L,0L,0L,0L,
-    NULL
-};
-
-static void
 pygtk_ctree_node_dealloc(PyGtkCTreeNode_Object *self)
 {
     PyMem_DEL(self);
@@ -2547,7 +2455,6 @@ _pygtk_register_boxed_types(PyObject *moddict)
 #endif
     register_tp2(GtkSelectionData, GTK_TYPE_SELECTION_DATA);
     register_tp(GdkAtom);
-    register_tp(GdkCursor);
     register_tp(GtkCTreeNode);
     register_tp(GdkDevice);
     pyg_boxed_register(GTK_TYPE_TREE_PATH,

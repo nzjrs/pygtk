@@ -115,6 +115,14 @@
   (field (type-and-name guint16 blue))
 )
 
+(boxed Cursor
+  (in-module Gdk)
+  (c-name GdkCursor)
+  (copy-func gdk_cursor_ref)
+  (release-func gdk_cursor_unref)
+  (field (type-and-name GdkCursorType type))
+)
+
 
 ;; Enumerations and flags ...
 
@@ -820,12 +828,14 @@
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkcursor.h
 
 (function cursor_new
+  (is-constructor-of GdkCursor)
   (c-name gdk_cursor_new)
   (return-type GdkCursor*)
   (parameter (type-and-name GdkCursorType cursor_type))
 )
 
 (function cursor_new_from_pixmap
+  (is-constructor-of GdkCursor)
   (c-name gdk_cursor_new_from_pixmap)
   (return-type GdkCursor*)
   (parameter (type-and-name GdkPixmap* source))

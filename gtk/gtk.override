@@ -488,6 +488,75 @@ _wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
     return ret;
 }
 %%
+ignore gdk_cursor_new_from_pixmap
+%%
+override gdk_cursor_new kwargs
+static PyObject *
+_wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist1[] = { "cursor_type", NULL };
+    static char *kwlist2[] = { "source", "mask", "fg", "bg", "x", "y", NULL };
+    PyObject *py_cursor_type;
+
+    self->gtype = GDK_TYPE_CURSOR;
+    self->free_on_dealloc = FALSE;
+    self->boxed = NULL;
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkCursor.__init__",
+				    kwlist1, &py_cursor_type)) {
+	GdkCursorType cursor_type;
+
+        if (pyg_enum_get_value(GDK_TYPE_CURSOR_TYPE, py_cursor_type,
+			       (gint *)&cursor_type))
+	    return NULL;
+	self->boxed = gdk_cursor_new(cursor_type);
+	if (!self->boxed) {
+	    PyErr_SetString(PyExc_RuntimeError,
+			    "could not create GdkCursor object");
+	    return NULL;
+	}
+	self->free_on_dealloc = TRUE;
+    } else {
+	PyGObject *source, *mask;
+	PyObject *fg, *bg;
+	gint x, y;
+	PyErr_Clear();
+
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+					 "OOOOii:GdkCursor.__init__", kwlist2,
+					 &source, &mask, &fg, &bg, &x, &y))
+	    return NULL;
+	if (!pygobject_check(source, &PyGdkPixmap_Type)) {
+	    PyErr_SetString(PyExc_TypeError, "source should be a GdkPixmap");
+	    return NULL;
+	}
+	if (!pygobject_check(mask, &PyGdkPixmap_Type)) {
+	    PyErr_SetString(PyExc_TypeError, "mask should be a GdkPixmap");
+	    return NULL;
+	}
+	if (!pyg_boxed_check(fg, GDK_TYPE_COLOR)) {
+	    PyErr_SetString(PyExc_TypeError, "fg should be a GdkColor");
+	    return NULL;
+	}
+	if (!pyg_boxed_check(bg, GDK_TYPE_COLOR)) {
+	    PyErr_SetString(PyExc_TypeError, "bg should be a GdkColor");
+	    return NULL;
+	}
+	self->boxed = gdk_cursor_new_from_pixmap(GDK_PIXMAP(source->obj),
+						 GDK_PIXMAP(mask->obj),
+						 pyg_boxed_get(fg, GdkColor),
+						 pyg_boxed_get(bg, GdkColor),
+						 x, y);
+	if (!self->boxed) {
+	    PyErr_SetString(PyExc_RuntimeError,
+			    "could not create GdkCursor object");
+	    return NULL;
+	}
+	self->free_on_dealloc = TRUE;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_widget_draw kwargs
 static PyObject *
 _wrap_gtk_widget_draw(PyGObject *self, PyObject *args, PyObject *kwargs)
