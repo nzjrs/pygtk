@@ -6889,6 +6889,93 @@ _wrap_gtk_adjustment_set_all(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
+override gtk_text_view_get_iter_location kwargs
+static PyObject *
+_wrap_gtk_text_view_get_iter_location(PyGObject *self, PyObject *args,
+				      PyObject *kwargs)
+{
+    static char *kwlist[] = { "iter", NULL };
+    PyObject *py_iter;
+    GdkRectangle location;
+    GtkTextIter *iter = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkTextView.get_iter_location",
+				     kwlist, &py_iter))
+        return NULL;
+    if (pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER))
+        iter = pyg_boxed_get(py_iter, GtkTextIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTextIter");
+        return NULL;
+    }
+    gtk_text_view_get_iter_location(GTK_TEXT_VIEW(self->obj), iter, &location);
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &location, TRUE, TRUE);
+}
+%%
+override gtk_text_view_get_line_at_y kwargs
+static PyObject *
+_wrap_gtk_text_view_get_line_at_y(PyGObject *self, PyObject *args,
+				  PyObject *kwargs)
+{
+    static char *kwlist[] = { "y", NULL };
+    GtkTextIter iter;
+    gint y, line_top;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:GtkTextView.get_line_at_y",
+				     kwlist, &y))
+	return NULL;
+    gtk_text_view_get_line_at_y(GTK_TEXT_VIEW(self->obj),
+				&iter, y, &line_top);
+    return Py_BuildValue("(Ni)",
+			 pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE),
+			 line_top);
+}
+%%
+override gtk_text_view_get_line_yrange kwargs
+static PyObject *
+_wrap_gtk_text_view_get_line_yrange(PyGObject *self, PyObject *args,
+				  PyObject *kwargs)
+{
+    static char *kwlist[] = { "iter", NULL };
+    GtkTextIter *iter = NULL;
+    gint y = -1, height = -1;
+    PyObject *py_iter;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkTextView.get_line_yrange",
+				     kwlist, &py_iter))
+	return NULL;
+    if (pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER))
+        iter = pyg_boxed_get(py_iter, GtkTextIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTextIter");
+        return NULL;
+    }
+    gtk_text_view_get_line_yrange(GTK_TEXT_VIEW(self->obj),
+				  iter, &y, &height);
+    return Py_BuildValue("(ii)", y, height);
+}
+%%
+override gtk_text_view_get_iter_at_location kwargs
+static PyObject *
+_wrap_gtk_text_view_get_iter_at_location(PyGObject *self, PyObject *args,
+					 PyObject *kwargs)
+{
+    static char *kwlist[] = { "x", "y", NULL };
+    GtkTextIter iter;
+    gint x, y;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "ii:GtkTextView.get_iter_at_location",
+				     kwlist, &x, &y))
+	return NULL;
+    gtk_text_view_get_iter_at_location(GTK_TEXT_VIEW(self->obj),
+				       &iter, x, y);
+    return pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE);
+}
+%%
 ignore-win32 
 	GTK_TYPE_PLUG
 	GTK_TYPE_SOCKET
