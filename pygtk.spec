@@ -1,7 +1,7 @@
 %define py_prefix /usr
 # py_ver should only be 3 characters (1.5.1 == 1.5)
 %define py_ver 1.5
-%define ver 0.6.5
+%define ver 0.6.6
 
 # you may want to remove some of the sub packages depending on what you
 # have installed on your system when building this package.

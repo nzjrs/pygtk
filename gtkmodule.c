@@ -1668,6 +1668,67 @@ static PyObject *PyGdkWindow_InputGetPointer(PyGdkWindow_Object *self,
   return Py_BuildValue("(dddddi)", x, y, pressure, xtilt, ytilt, mask);
 }
 
+static PyObject *PyGdkWindow_PointerGrab(PyGdkWindow_Object *self,
+					 PyObject *args) {
+  gint owner_events, time = GDK_CURRENT_TIME;
+  GdkEventMask event_mask;
+  GdkWindow *confine_to = NULL;
+  GdkCursor *cursor = NULL;
+  PyObject *py_confine_to = Py_None, *py_cursor = Py_None;
+
+  if (!PyArg_ParseTuple(args, "ii|OOi:GdkWindow.pointer_grab", &owner_events,
+			&event_mask, &py_confine_to, &py_cursor, &time))
+    return NULL;
+  if (PyGdkWindow_Check(py_confine_to))
+    confine_to = PyGdkWindow_Get(py_confine_to);
+  else if (py_confine_to != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "third argument should be a GdkWindow or None");
+    return NULL;
+  }
+  if (PyGdkCursor_Check(py_cursor))
+    cursor = PyGdkCursor_Get(py_cursor);
+  else if (py_cursor != Py_None) {
+    PyErr_SetString(PyExc_TypeError,
+		    "forth argument should be a GdkCursor or None");
+    return NULL;
+  }
+  return PyInt_FromLong(gdk_pointer_grab(self->obj, owner_events, event_mask,
+					 confine_to, cursor, time));
+}
+
+static PyObject *PyGdkWindow_PointerUngrab(PyGdkWindow_Object *self,
+					   PyObject *args) {
+  gint time = GDK_CURRENT_TIME;
+
+  if (!PyArg_ParseTuple(args, "|i:GdkWindow.pointer_ungrab", &time))
+    return NULL;
+  gdk_pointer_ungrab(time);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+static PyObject *PyGdkWindow_KeyboardGrab(PyGdkWindow_Object *self,
+					  PyObject *args) {
+  gint owner_events, time = GDK_CURRENT_TIME;
+
+  if (!PyArg_ParseTuple(args, "i|i:GdkWindow.keyboard_grab", &owner_events,
+			&time))
+    return NULL;
+  return PyInt_FromLong(gdk_keyboard_grab(self->obj, owner_events, time));
+}
+
+static PyObject *PyGdkWindow_KeyboardUngrab(PyGdkWindow_Object *self,
+					    PyObject *args) {
+  gint time = GDK_CURRENT_TIME;
+
+  if (!PyArg_ParseTuple(args, "|i:GdkWindow.keyboard_ungrab", &time))
+    return NULL;
+  gdk_keyboard_ungrab(time);
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyMethodDef PyGdkWindow_methods[] = {
   {"new_gc", (PyCFunction)PyGdkWindow_NewGC, METH_VARARGS|METH_KEYWORDS, NULL},
   {"set_cursor", (PyCFunction)PyGdkWindow_SetCursor, METH_VARARGS, NULL},
@@ -1677,6 +1738,10 @@ static PyMethodDef PyGdkWindow_methods[] = {
   {"_raise", (PyCFunction)PyGdkWindow_Raise, METH_VARARGS, NULL},
   {"lower", (PyCFunction)PyGdkWindow_Lower, METH_VARARGS, NULL},
   {"input_get_pointer", (PyCFunction)PyGdkWindow_InputGetPointer, METH_VARARGS, NULL},
+  {"pointer_grab", (PyCFunction)PyGdkWindow_PointerGrab, METH_VARARGS, NULL},
+  {"pointer_ungrab", (PyCFunction)PyGdkWindow_PointerUngrab, METH_VARARGS, NULL},
+  {"keyboard_grab", (PyCFunction)PyGdkWindow_KeyboardGrab, METH_VARARGS, NULL},
+  {"keyboard_ungrab", (PyCFunction)PyGdkWindow_KeyboardUngrab, METH_VARARGS, NULL},
   {NULL, 0, 0, NULL}
 };
 

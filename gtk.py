@@ -794,7 +794,7 @@ class GtkTreeItem(GtkItem):
 		attrs = {
 			'subtree': subtree_wrap,
 			}
-		if attrs.has_key(attrs):
+		if attrs.has_key(attr):
 			return attrs[attr](self._o)
 		return GtkItem.__getattr__(self, attr)
 	def set_subtree(self, subtree):
@@ -2603,7 +2603,7 @@ def rc_parse(fname):
 def rc_parse_string(string):
 	_gtk.gtk_rc_parse_string(string)
 def rc_reparse_all():
-	_gtk.gtk_rc_repase_all()
+	_gtk.gtk_rc_reparse_all()
 
 # font loading
 def load_font(font):
