@@ -3097,14 +3097,27 @@ _wrap_gtk_tree_selection_get_selected(PyGObject *self)
 {
     GtkTreeModel *model;
     GtkTreeIter iter;
+    GtkSelectionMode mode;
+
+    mode = gtk_tree_selection_get_mode(GTK_TREE_SELECTION(self->obj));
+    if (mode == GTK_SELECTION_MULTIPLE) {
+	PyErr_SetString(PyExc_TypeError,
+			"GtkTreeSelection.get_selected can not be used when"
+			" selection mode is gtk.SELECTION_MULTIPLE");
+	return NULL;
+    }
 
     if (gtk_tree_selection_get_selected(GTK_TREE_SELECTION(self->obj),
-					&model, &iter))
-	return Py_BuildValue("(NN)", pygobject_new((GObject *)model),
+					&model, &iter)) {
+	return Py_BuildValue("(NN)",
+			     pygobject_new((GObject *)model),
 			     pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter,
 					   TRUE, TRUE));
-    else
-	return Py_BuildValue ("(NN)", pygobject_new((GObject *)model), Py_None);
+    } else {
+	return Py_BuildValue ("(NN)",
+			      pygobject_new((GObject *)model),
+			      Py_None);
+    }
 }
 %%
 override gtk_tree_selection_selected_foreach
