@@ -94,6 +94,19 @@ linkend="method-gtkselectiondata--targets-include-image">targets_include_image</
 	<methodparam><parameter role="keyword">widget</parameter></methodparam>
 	<methodparam><parameter role="keyword">selection</parameter></methodparam>
 	<methodparam><parameter role="keyword">time</parameter><initializer>0</initializer></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--target-list-add-image-targets">gtk.target_list_add_image_targets</link></methodname>
+	<methodparam><parameter role="keyword">list</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">info</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter role="keyword">writable</parameter><initializer>FALSE</initializer></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--target-list-add-text-targets">gtk.target_list_add_text_targets</link></methodname>
+	<methodparam><parameter role="keyword">list</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">info</parameter><initializer>0</initializer></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--target-list-add-uri-targets">gtk.target_list_add_uri_targets</link></methodname>
+	<methodparam><parameter role="keyword">list</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">info</parameter><initializer>0</initializer></methodparam>
       </methodsynopsis>
 </programlisting>
 
@@ -599,6 +612,141 @@ linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>
 specified by <parameter>display</parameter>. If
 <parameter>widget</parameter> is <literal>None</literal>, the ownership of
 the selection is released.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--target-list-add-image-targets">
+      <title>gtk.target_list_add_image_targets</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.target_list_add_image_targets</methodname>
+	  <methodparam><parameter
+			 role="keyword">list</parameter><initializer>None</initializer></methodparam>
+	  <methodparam><parameter
+			 role="keyword">info</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter role="keyword">writable</parameter><initializer>FALSE</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">list</parameter>&nbsp;:</term>
+	  <listitem><simpara>A sequence of target entry tuples or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">info</parameter>&nbsp;:</term>
+	  <listitem><simpara>an application specified ID that will be
+passed back to the application</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">writable</parameter>&nbsp;:</term>
+	  <listitem><simpara>If <literal>TRUE</literal>, only add targets
+for image formats that a pixbuf can be converted to.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new list concatenating
+<parameter>list</parameter> and the built-in image targets supported by
+<link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.target_list_add_image_targets</function>()
+function adds the image target tuples supported by <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
+to the list of target entry tuples specified by
+<parameter>list</parameter>. <literal>info</literal> is used as the info
+field of the target entry tuples.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--target-list-add-text-targets">
+      <title>gtk.target_list_add_text_targets</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.target_list_add_text_targets</methodname>
+	  <methodparam><parameter
+			 role="keyword">list</parameter><initializer>None</initializer></methodparam>
+	  <methodparam><parameter
+			 role="keyword">info</parameter><initializer>0</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">list</parameter>&nbsp;:</term>
+	  <listitem><simpara>A sequence of target entry tuples or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">info</parameter>&nbsp;:</term>
+	  <listitem><simpara>an application specified ID that will be
+passed back to the application</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new list concatenating
+<parameter>list</parameter> and the built-in text targets supported by
+<link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.target_list_add_text_targets</function>()
+function adds the text target tuples supported by <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
+to the list of target entry tuples specified by
+<parameter>list</parameter>. <literal>info</literal> is used as the info
+field of the target entry tuples.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--target-list-add-uri-targets">
+      <title>gtk.target_list_add_uri_targets</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.target_list_add_uri_targets</methodname>
+	  <methodparam><parameter
+			 role="keyword">list</parameter><initializer>None</initializer></methodparam>
+	  <methodparam><parameter
+			 role="keyword">info</parameter><initializer>0</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">list</parameter>&nbsp;:</term>
+	  <listitem><simpara>A sequence of target entry tuples or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">info</parameter>&nbsp;:</term>
+	  <listitem><simpara>an application specified ID that will be
+passed back to the application</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new list concatenating
+<parameter>list</parameter> and the built-in URI targets supported by
+<link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.target_list_add_uri_targets</function>()
+function adds the URI target tuples supported by <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
+to the list of target entry tuple specified by
+<parameter>list</parameter>. <literal>info</literal> is used as the info
+field of the target entry tuples.</para>
 
     </refsect2>
 
