@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# -*- Mode: Python; py-indent-offset: 4 -*-
 import sys, os, string
-import getopt
+import getopt, traceback, keyword
 import defsparser, argtypes, override
-import traceback, keyword, exceptions
 
 def exc_info():
     #traceback.print_exc()
@@ -11,13 +8,18 @@ def exc_info():
     ret = ""
     try:
         sval = str(value)
-        if etype == exceptions.KeyError:
+        if etype == KeyError:
             ret = "No ArgType for %s" % (sval,)
         else:
             ret = sval
     finally:
         del etype, value, tb
     return ret
+
+def fixname(name):
+    if keyword.iskeyword(name):
+	return name + '_'
+    return name
 
 class FileOutput:
     '''Simple wrapper for file object, that makes writing #line
@@ -49,1124 +51,656 @@ class FileOutput:
         '''resets line numbering to the original file'''
         self.setline(self.lineno + 1, self.filename)
 
-# list of slots that we will override
-slots_list = ['tp_getattr', 'tp_setattr', 'tp_compare', 'tp_repr',
-              'tp_as_number', 'tp_as_sequence', 'tp_as_mapping', 'tp_hash',
-              'tp_call', 'tp_str', 'tp_richcompare', 'tp_iter',
-              'tp_iternext', 'tp_descr_get', 'tp_descr_set']
+class Wrapper:
+    type_tmpl = None
+    slots_list = ['tp_getattr', 'tp_setattr', 'tp_compare', 'tp_repr',
+                  'tp_as_number', 'tp_as_sequence', 'tp_as_mapping', 'tp_hash',
+                  'tp_call', 'tp_str', 'tp_richcompare', 'tp_iter',
+                  'tp_iternext', 'tp_descr_get', 'tp_descr_set', 'tp_init']
 
-# have to do return type processing
-functmpl = ('static PyObject *\n'
-            '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n'
-            '{\n'
-            '%(varlist)s'
-            '%(parseargs)s'
-            '%(codebefore)s'
-            '    %(funccall)s\n'
-            '%(codeafter)s\n'
-            '}\n\n')
-
-funccalltmpl = '%(cname)s(%(arglist)s);'
-
-methtmpl = ('static PyObject *\n'
-            '_wrap_%(cname)s(PyGObject *self%(extraparams)s)\n'
-            '{\n'
-            '%(varlist)s'
-            '%(parseargs)s'
-            '%(codebefore)s'
-            '    %(funccall)s\n'
-            '%(codeafter)s\n'
-            '}\n\n')
-
-methcalltmpl = '%(cname)s(%(cast)s(self->obj)%(arglist)s);'
-
-consttmpl = ('static int\n'
-             '_wrap_%(cname)s(PyGObject *self, PyObject *args, PyObject *kwargs)\n'
-             '{\n'
-             '%(varlist)s'
-             '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.__init__"%(parselist)s))\n'
-             '        return -1;\n'
-             '%(codebefore)s'
-             '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n'
-             '%(codeafter)s\n'
-             '    if (!self->obj) {\n'
-             '        PyErr_SetString(PyExc_RuntimeError, "could not create %(class)s object");\n'
-             '        return -1;\n'
-             '    }\n'
-             '%(gtkobjectsink)s'
-             '    pygobject_register_wrapper((PyObject *)self);\n'
-             '    return 0;\n'
-             '}\n\n')
-
-methdeftmpl = '    { "%(name)s", (PyCFunction)%(cname)s, %(flags)s },\n'
-
-deprecatedtmpl = ('    if (PyErr_Warn(PyExc_DeprecationWarning, "%s") < 0)\n'
-                  '        return NULL;\n')
-
-gettertmpl = ('static PyObject *\n'
-              '%(funcname)s(PyGObject *self, void *closure)\n'
-              '{\n'
-              '%(varlist)s'
-              '    ret = %(field)s;\n'
-              '%(codeafter)s\n'
-              '}\n\n')
-
-noconstructor = ('static int\n'
-                 'pygobject_no_constructor(PyObject *self, PyObject *args, PyObject *kwargs)\n'
-                 '{\n'
-                 '    gchar buf[512];\n'
-                 '\n'
-                 '    g_snprintf(buf, sizeof(buf), "%s is an abstract widget", self->ob_type->tp_name);\n'
-                 '    PyErr_SetString(PyExc_NotImplementedError, buf);\n'
-                 '    return -1;\n'
-                 '}\n\n')
-
-typetmpl = """PyTypeObject Py%(class)s_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,					/* ob_size */
-    "%(classname)s",			/* tp_name */
-    sizeof(PyGObject),			/* tp_basicsize */
-    0,					/* tp_itemsize */
-    /* methods */
-    (destructor)0,			/* tp_dealloc */
-    (printfunc)0,			/* tp_print */
-    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
-    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
-    (cmpfunc)%(tp_compare)s,		/* tp_compare */
-    (reprfunc)%(tp_repr)s,		/* tp_repr */
-    %(tp_as_number)s,			/* tp_as_number */
-    %(tp_as_sequence)s,			/* tp_as_sequence */
-    %(tp_as_mapping)s,			/* tp_as_mapping */
-    (hashfunc)%(tp_hash)s,		/* tp_hash */
-    (ternaryfunc)%(tp_call)s,		/* tp_call */
-    (reprfunc)%(tp_str)s,		/* tp_str */
-    (getattrofunc)0,			/* tp_getattro */
-    (setattrofunc)0,			/* tp_setattro */
-    0,					/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-    NULL, 				/* Documentation string */
-    (traverseproc)0,			/* tp_traverse */
-    (inquiry)0,				/* tp_clear */
-    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
-    offsetof(PyGObject, weakreflist),	/* tp_weaklistoffset */
-    (getiterfunc)%(tp_iter)s,		/* tp_iter */
-    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
-    %(methods)s,			/* tp_methods */
-    0,					/* tp_members */
-    %(getsets)s,		       	/* tp_getset */
-    NULL,				/* tp_base */
-    NULL,				/* tp_dict */
-    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
-    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
-    offsetof(PyGObject, inst_dict),	/* tp_dictoffset */
-    (initproc)%(initfunc)s,		/* tp_init */
-};\n\n"""
-
-interfacetypetmpl = """PyTypeObject Py%(class)s_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,					/* ob_size */
-    "%(classname)s",			/* tp_name */
-    sizeof(PyObject),			/* tp_basicsize */
-    0,					/* tp_itemsize */
-    /* methods */
-    (destructor)0,			/* tp_dealloc */
-    (printfunc)0,			/* tp_print */
-    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
-    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
-    (cmpfunc)%(tp_compare)s,		/* tp_compare */
-    (reprfunc)%(tp_repr)s,		/* tp_repr */
-    %(tp_as_number)s,			/* tp_as_number */
-    %(tp_as_sequence)s,			/* tp_as_sequence */
-    %(tp_as_mapping)s,			/* tp_as_mapping */
-    (hashfunc)%(tp_hash)s,		/* tp_hash */
-    (ternaryfunc)%(tp_call)s,		/* tp_call */
-    (reprfunc)%(tp_str)s,		/* tp_str */
-    (getattrofunc)0,			/* tp_getattro */
-    (setattrofunc)0,			/* tp_setattro */
-    0,					/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-    NULL, 				/* Documentation string */
-    (traverseproc)0,			/* tp_traverse */
-    (inquiry)0,				/* tp_clear */
-    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
-    0,					/* tp_weaklistoffset */
-    (getiterfunc)%(tp_iter)s,		/* tp_iter */
-    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
-    %(methods)s,			/* tp_methods */
-    0,					/* tp_members */
-    0,					/* tp_getset */
-    NULL,				/* tp_base */
-    NULL,				/* tp_dict */
-    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
-    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
-    0,					/* tp_dictoffset */
-    (initproc)0,			/* tp_init */
-};\n\n"""
-
-boxedmethtmpl = ('static PyObject *\n'
-                 '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n'
-                 '{\n'
-                 '%(varlist)s'
-                 '%(parseargs)s'
-                 '%(codebefore)s'
-                 '    %(funccall)s\n'
-                 '%(codeafter)s\n'
-                 '}\n\n')
-
-boxedmethcalltmpl = '%(cname)s(pyg_boxed_get(self, %(typename)s)%(arglist)s);'
-
-boxedconsttmpl = ('static int\n'
-                  '_wrap_%(cname)s(PyGBoxed *self, PyObject *args, PyObject *kwargs)\n'
-                  '{\n'
-                  '%(varlist)s'
-                  '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.__init__"%(parselist)s))\n'
-                  '        return -1;\n'
-                  '%(codebefore)s'
-                  '    self->gtype = %(typecode)s;\n'
-                  '    self->free_on_dealloc = FALSE;\n'
-                  '    self->boxed = %(cname)s(%(arglist)s);\n'
-                  '%(codeafter)s\n'
-                  '    if (!self->boxed) {\n'
-                  '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n'
-                  '        return -1;\n'
-                  '    }\n'
-                  '    self->free_on_dealloc = TRUE;\n'
-                  '    return 0;\n'
-                  '}\n\n')
-                  
-boxedgettertmpl = ('static PyObject *\n'
-                   '%(funcname)s(PyObject *self, void *closure)\n'
-                   '{\n'
-                   '%(varlist)s'
-                   '    ret = %(field)s;\n'
-                   '%(codeafter)s\n'
-                   '}\n\n')
-                    
-
-boxedtmpl = """PyTypeObject Py%(typename)s_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,					/* ob_size */
-    "%(classname)s",			/* tp_name */
-    sizeof(PyGBoxed),			/* tp_basicsize */
-    0,					/* tp_itemsize */
-    /* methods */
-    (destructor)0,			/* tp_dealloc */
-    (printfunc)0,			/* tp_print */
-    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
-    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
-    (cmpfunc)%(tp_compare)s,		/* tp_compare */
-    (reprfunc)%(tp_repr)s,		/* tp_repr */
-    %(tp_as_number)s,			/* tp_as_number */
-    %(tp_as_sequence)s,			/* tp_as_sequence */
-    %(tp_as_mapping)s,			/* tp_as_mapping */
-    (hashfunc)%(tp_hash)s,		/* tp_hash */
-    (ternaryfunc)%(tp_call)s,		/* tp_call */
-    (reprfunc)%(tp_str)s,		/* tp_str */
-    (getattrofunc)0,			/* tp_getattro */
-    (setattrofunc)0,			/* tp_setattro */
-    0,					/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-    NULL,				/* Documentation string */
-    (traverseproc)0,			/* tp_traverse */
-    (inquiry)0,				/* tp_clear */
-    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
-    0,					/* tp_weaklistoffset */
-    (getiterfunc)%(tp_iter)s,		/* tp_iter */
-    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
-    %(methods)s,			/* tp_methods */
-    0,					/* tp_members */
-    %(getsets)s,			/* tp_getset */
-    NULL,				/* tp_base */
-    NULL,				/* tp_dict */
-    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
-    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
-    0,					/* tp_dictoffset */
-    (initproc)%(initfunc)s,		/* tp_init */
-};\n\n"""
-
-pointermethcalltmpl = '%(cname)s(pyg_pointer_get(self, %(typename)s)%(arglist)s);'
-
-pointerconsttmpl = ('static int\n'
-                    '_wrap_%(cname)s(PyGPointer *self, PyObject *args, PyObject *kwargs)\n'
-                    '{\n'
-                    '%(varlist)s'
-                    '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.__init__"%(parselist)s))\n'
-                    '        return -1;\n'
-                    '%(codebefore)s'
-                    '    self->gtype = %(typecode)s;\n'
-                    '    self->pointer = %(cname)s(%(arglist)s);\n'
-                    '%(codeafter)s\n'
-                    '    if (!self->pointer) {\n'
-                    '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n'
-                    '        return -1;\n'
-                    '    }\n'
-                    '    return 0;\n'
-                    '}\n\n')
-
-pointertmpl = """PyTypeObject Py%(typename)s_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,					/* ob_size */
-    "%(classname)s",			/* tp_name */
-    sizeof(PyGPointer),			/* tp_basicsize */
-    0,					/* tp_itemsize */
-    /* methods */
-    (destructor)0,			/* tp_dealloc */
-    (printfunc)0,			/* tp_print */
-    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */
-    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */
-    (cmpfunc)%(tp_compare)s,		/* tp_compare */
-    (reprfunc)%(tp_repr)s,		/* tp_repr */
-    %(tp_as_number)s,			/* tp_as_number */
-    %(tp_as_sequence)s,			/* tp_as_sequence */
-    %(tp_as_mapping)s,			/* tp_as_mapping */
-    (hashfunc)%(tp_hash)s,		/* tp_hash */
-    (ternaryfunc)%(tp_call)s,		/* tp_call */
-    (reprfunc)%(tp_str)s,		/* tp_str */
-    (getattrofunc)0,			/* tp_getattro */
-    (setattrofunc)0,			/* tp_setattro */
-    0,					/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
-    NULL,				/* Documentation string */
-    (traverseproc)0,			/* tp_traverse */
-    (inquiry)0,				/* tp_clear */
-    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */
-    0,					/* tp_weaklistoffset */
-    (getiterfunc)%(tp_iter)s,		/* tp_iter */
-    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */
-    %(methods)s,			/* tp_methods */
-    0,					/* tp_members */
-    %(getsets)s,			/* tp_getset */
-    NULL,				/* tp_base */
-    NULL,				/* tp_dict */
-    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */
-    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */
-    0,					/* tp_dictoffset */
-    (initproc)%(initfunc)s,		/* tp_init */
-};\n\n"""
-
-
-def fixname(name):
-    if keyword.iskeyword(name):
-	return name + '_'
-    return name
-
-def write_function(funcobj, fp=sys.stdout):
-    info = argtypes.WrapperInfo()
-
-# have to do return type processing
-    if funcobj.varargs:
-        raise ValueError, "varargs functions not supported"
+    getter_tmpl = \
+        'static PyObject *\n' \
+        '%(funcname)s(PyObject *self, void *closure)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '    ret = %(field)s;\n' \
+        '%(codeafter)s\n' \
+        '}\n\n'
     
-    dict = {
-	'cname':   funcobj.c_name,
-    }
+    parse_tmpl = \
+        '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(name)s"%(parselist)s))\n' \
+        '        return %(errorreturn)s;\n'
 
-    for ptype, pname, pdflt, pnull in funcobj.params:
-	if pdflt and '|' not in info.parsestr:
-            info.add_parselist('|', [], [])
-	handler = argtypes.matcher.get(ptype)
-        handler.write_param(ptype, pname, pdflt, pnull, info)
+    deprecated_tmpl = \
+        '    if (PyErr_Warn(PyExc_DeprecationWarning, "%(deprecationmsg)s") < 0)\n' \
+        '        return %(errorreturn)s;\n'
 
-    funccall = funccalltmpl % { 'cname': funcobj.c_name,
-                                'arglist': info.get_arglist() }
-    if funcobj.ret not in ('none', None):
-        funccall = 'ret = ' + funccall
+    methdef_tmpl = '    { "%(name)s", (PyCFunction)%(cname)s, %(flags)s },\n'
 
-    handler = argtypes.matcher.get(funcobj.ret)
-    handler.write_return(funcobj.ret, info)
+    noconstructor = \
+        'static int\n' \
+        'pygobject_no_constructor(PyObject *self, PyObject *args, PyObject *kwargs)\n' \
+        '{\n' \
+        '    gchar buf[512];\n' \
+        '\n' \
+        '    g_snprintf(buf, sizeof(buf), "%s is an abstract widget", self->ob_type->tp_name);\n' \
+        '    PyErr_SetString(PyExc_NotImplementedError, buf);\n' \
+        '    return -1;\n' \
+        '}\n\n'
 
-    deprecated = ""
-    if funcobj.deprecated != None:
-        deprecated = deprecatedtmpl % funcobj.deprecated
+    function_tmpl = \
+        'static PyObject *\n' \
+        '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '%(parseargs)s' \
+        '%(codebefore)s' \
+        '    %(setreturn)s%(cname)s(%(arglist)s);\n' \
+        '%(codeafter)s\n' \
+        '}\n\n'
+
+    # template for method calls
+    constructor_tmpl = None
+    method_tmpl = None
+
+    def __init__(self, parser, objinfo, overrides, fp=FileOutput(sys.stdout)):
+        self.parser = parser
+        self.objinfo = objinfo
+        self.overrides = overrides
+        self.fp = fp
+
+    def get_lower_name(self):
+        return string.lower(string.replace(self.objinfo.typecode,
+                                           '_TYPE_', '_', 1))
+
+    def get_field_accessor(self, fieldname):
+        raise NotImplementedError
+
+    def get_initial_class_substdict(self): return {}
+
+    def get_initial_constructor_substdict(self):
+        return { 'name': '%s.__init__' % self.objinfo.c_name,
+                 'errorreturn': '-1' }
+    def get_initial_method_substdict(self, method):
+        return { 'name': '%s.%s' % (self.objinfo.c_name, method.name) }
+
+    def write_class(self):
+        self.fp.write('\n/* ----------- ' + self.objinfo.c_name + ' ----------- */\n\n')
+        substdict = self.get_initial_class_substdict()
+        substdict['typename'] = self.objinfo.c_name
+        if self.overrides.modulename:
+            substdict['classname'] = '%s.%s' % (self.overrides.modulename,
+                                           self.objinfo.name)
+        else:
+            substdict['classname'] = self.objinfo.name
+
+        substdict['tp_init'] = self.write_constructor()
+        substdict['tp_methods'] = self.write_methods()
+        substdict['tp_getset'] = self.write_getsets()
+
+        # handle slots ...
+        for slot in self.slots_list:
+            if substdict.has_key(slot) and substdict[slot] != '0':
+                continue
+            
+            slotname = '%s.%s' % (self.objinfo.c_name, slot)
+            slotfunc = '_wrap_%s_%s' % (self.get_lower_name(), slot)
+            if slot[:6] == 'tp_as_':
+                slotfunc = '&' + slotfunc
+            if self.overrides.slot_is_overriden(slotname):
+                lineno, filename = self.overrides.getstartline(slotname)
+                self.fp.setline(lineno, filename)
+                self.fp.write(self.overrides.slot_override(slotname))
+                self.fp.resetline()
+                self.fp.write('\n\n')
+                substdict[slot] = slotfunc
+            else:
+                substdict[slot] = '0'
     
-    dict['codebefore'] = deprecated + info.get_codebefore()
-    dict['funccall']   = funccall
-    dict['codeafter']  = info.get_codeafter()
+        self.fp.write(self.type_tmpl % substdict)
 
-    if info.parsestr:
-        parsetmpl = ('    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(name)s"%(parselist)s))\n'
-                     '        return NULL;\n')
-        parsedict = {'name':      fixname(funcobj.name),
-                     'typecodes': info.parsestr,
-                     'parselist': info.get_parselist()}
-
-        dict['parseargs'] = parsetmpl % parsedict
-        dict['varlist'] = info.get_kwlist() + info.get_varlist()
-        dict['extraparams'] = ', PyObject *args, PyObject *kwargs'
-        flags = 'METH_VARARGS|METH_KEYWORDS'
-    else:
-        dict['parseargs'] = ''
-        dict['varlist'] = info.get_varlist()
-        dict['extraparams'] = ''
-        flags = 'METH_NOARGS'
-
-    fp.write(functmpl % dict)
-
-    return flags
-
-def write_method(objname, castmacro, methobj, fp=sys.stdout):
-    info = argtypes.WrapperInfo()
-    info.arglist.append('')
-
-    if methobj.varargs:
-        raise ValueError, "varargs methods not supported"
-    
-    dict = {
-	'cname':   methobj.c_name,
-    }
-    
-    for ptype, pname, pdflt, pnull in methobj.params:
-	if pdflt and '|' not in info.parsestr:
-            info.add_parselist('|', [], [])
-	handler = argtypes.matcher.get(ptype)
-        handler.write_param(ptype, pname, pdflt, pnull, info)
-
-    funccall = methcalltmpl % { 'cname':   methobj.c_name,
-                                'cast':    castmacro,
-                                'arglist': info.get_arglist() }
-    if methobj.ret not in ('none', None):
-        funccall = 'ret = ' + funccall
-
-    handler = argtypes.matcher.get(methobj.ret)
-    handler.write_return(methobj.ret, info)
-
-    deprecated = ""
-    if methobj.deprecated != None:
-        deprecated = deprecatedtmpl % methobj.deprecated
-
-    dict['codebefore'] = deprecated + info.get_codebefore()
-    dict['funccall']   = funccall
-    dict['codeafter']  = info.get_codeafter()
-
-    if info.parsestr:
-        parsetmpl = ('    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(class)s.%(name)s"%(parselist)s))\n'
-                     '        return NULL;\n')
-        parsedict = {'class':     objname,
-                     'name':      fixname(methobj.name),
-                     'typecodes': info.parsestr,
-                     'parselist': info.get_parselist()}
-
-        dict['parseargs'] = parsetmpl % parsedict
-        dict['varlist'] = info.get_kwlist() + info.get_varlist()
-        dict['extraparams'] = ', PyObject *args, PyObject *kwargs'
-        flags = 'METH_VARARGS|METH_KEYWORDS'
-    else:
-        dict['parseargs'] = ''
-        dict['varlist']   = info.get_varlist()
-        dict['extraparams'] = ''
-        flags = 'METH_NOARGS'
-
-    fp.write(methtmpl % dict)
-
-    return flags
-
-def write_constructor(objname, castmacro, funcobj, fp=sys.stdout):
-    info = argtypes.WrapperInfo()
-
-    dict = {
-	'name':    funcobj.name,
-	'cname':   funcobj.c_name,
-	'class':   objname,
-	'cast':    castmacro,
-	'gtkobjectsink': ''
-    }
-
-    if argtypes.matcher.object_is_a(objname, 'GtkObject'):
-        dict['gtkobjectsink'] = \
-                       ('    gtk_object_ref(GTK_OBJECT(self->obj));\n'
-			'    gtk_object_sink(GTK_OBJECT(self->obj));\n')
-
-    for ptype, pname, pdflt, pnull in funcobj.params:
-	if pdflt and '|' not in info.parsestr:
-            info.add_parselist('|', [], [])
-	handler = argtypes.matcher.get(ptype)
-        handler.write_param(ptype, pname, pdflt, pnull, info)
+    def write_function_wrapper(self, function_obj, template,
+                               handle_return=0, is_method=0, kwargs_needed=0,
+                               substdict=None):
+        '''This function is the guts of all functions that generate
+        wrappers for functions, methods and constructors.'''
+        if not substdict: substdict = {}
         
-    deprecated = ""
-    if funcobj.deprecated != None:
-        deprecated = deprecatedtmpl % funcobj.deprecated
+        info = argtypes.WrapperInfo()
 
-    dict['varlist']    = info.get_kwlist() + info.get_varlist()
-    dict['typecodes']  = info.parsestr
-    dict['parselist']  = info.get_parselist()
-    dict['codebefore'] = string.replace(deprecated + info.get_codebefore(),
-                                        'return NULL;', 'return -1;')
-    dict['codeafter']  = string.replace(info.get_codeafter(),
-                                       'return NULL;', 'return -1;')
-    dict['arglist']    = info.get_arglist()
+        substdict.setdefault('errorreturn', 'NULL')
 
-    fp.write(consttmpl % dict)
+        # for methods, we want the leading comma
+        if is_method:
+            info.arglist.append('')
 
-def write_getsets(parser, objobj, castmacro, overrides, fp=sys.stdout):
-    getsets_name = string.lower(castmacro) + '_getsets'
-    getterprefix = '_wrap_' + string.lower(castmacro) + '__get_'
-    setterprefix = '_wrap_' + string.lower(castmacro) + '__set_'
+        if function_obj.varargs:
+            raise ValueError, "varargs functions not supported"
 
-    # no overrides for the whole function.  If no fields, don't write a func
-    if not objobj.fields:
-        return '0'
-    getsets = []
-    for ftype, fname in objobj.fields:
-        gettername = '0'
-        settername = '0'
-        attrname = objobj.c_name + '.' + fname
-        if overrides.attr_is_overriden(attrname):
-            lineno, filename = overrides.getstartline(attrname)
-            code = overrides.attr_override(attrname)
-            fp.setline(lineno, filename)
-            fp.write(code)
-            fp.resetline()
-            if string.find(code, getterprefix + fname) >= 0:
-                gettername = getterprefix + fname
-            if string.find(code, setterprefix + fname) >= 0:
-                settername = setterprefix + fname
-        if gettername == '0':
+        for ptype, pname, pdflt, pnull in function_obj.params:
+            if pdflt and '|' not in info.parsestr:
+                info.add_parselist('|', [], [])
+            handler = argtypes.matcher.get(ptype)
+            handler.write_param(ptype, pname, pdflt, pnull, info)
+
+        substdict['setreturn'] = ''
+        if handle_return:
+            if function_obj.ret not in ('none', None):
+                substdict['setreturn'] = 'ret = '
+            handler = argtypes.matcher.get(function_obj.ret)
+            handler.write_return(function_obj.ret, info)
+
+        if function_obj.deprecated != None:
+            deprecated = self.deprecated_tmpl % {
+                'deprecationmsg': function_obj.deprecated,
+                'errorreturn': substdict['errorreturn'] }
+        else:
+            deprecated = ''
+
+        # if name isn't set, set it to function_obj.name
+        substdict.setdefault('name', function_obj.name)
+
+        if self.objinfo:
+            substdict['typename'] = self.objinfo.c_name
+        substdict['cname'] = function_obj.c_name
+        substdict['varlist'] = info.get_varlist()
+        substdict['typecodes'] = info.parsestr
+        substdict['parselist'] = info.get_parselist()
+        substdict['arglist'] = info.get_arglist()
+        substdict['codebefore'] = deprecated + \
+            string.replace(info.get_codebefore(),
+            'return NULL', 'return ' + substdict['errorreturn'])
+        substdict['codeafter'] = string.replace(info.get_codeafter(),
+            'return NULL', 'return ' + substdict['errorreturn'])
+
+        if info.parsestr or kwargs_needed:
+            substdict['parseargs'] = self.parse_tmpl % substdict
+            substdict['extraparams'] = ', PyObject *args, PyObject *kwargs'
+            flags = 'METH_VARARGS|METH_KEYWORDS'
+
+            # prepend the keyword list to the variable list
+            substdict['varlist'] = info.get_kwlist() + substdict['varlist']
+        else:
+            substdict['parseargs'] = ''
+            substdict['extraparams'] = ''
+            flags = 'METH_NOARGS'
+
+        return template % substdict, flags
+
+    def write_constructor(self):
+        initfunc = '0'
+        constructor = self.parser.find_constructor(self.objinfo,self.overrides)
+        if constructor:
             try:
-                funcname = getterprefix + fname
-                info = argtypes.WrapperInfo()
-                handler = argtypes.matcher.get(ftype)
-                handler.write_return(ftype, info)
-                fp.write(gettertmpl %
-                         { 'funcname': funcname,
-                           'varlist': info.varlist,
-                           'field': castmacro+'(self->obj)->' + fname,
-                           'codeafter': info.get_codeafter() })
-                gettername = funcname
+                if self.overrides.is_overriden(constructor.c_name):
+                    lineno, filename = self.overrides.getstartline(
+                        constructor.c_name)
+                    self.fp.setline(lineno, filename)
+                    self.fp.write(self.overrides.override(constructor.c_name))
+                    self.fp.resetline()
+                    self.fp.write('\n\n')
+                else:
+                    # write constructor from template ...
+                    code = self.write_function_wrapper(constructor,
+                        self.constructor_tmpl,
+                        handle_return=0, is_method=0, kwargs_needed=1,
+                        substdict=self.get_initial_constructor_substdict())[0]
+                    self.fp.write(code)
+                initfunc = '_wrap_' + constructor.c_name
             except:
-                sys.stderr.write("Could not write getter for %s.%s: %s\n"
-                                 % (objobj.c_name, fname, exc_info()))
-        if gettername != '0' or settername != '0':
-            getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
-                           (fixname(fname), gettername, settername))
-
-    if not getsets:
-        return '0'
-    fp.write('static PyGetSetDef %s[] = {\n' % getsets_name)
-    for getset in getsets:
-        fp.write(getset)
-    fp.write('    { NULL, (getter)0, (setter)0 },\n')
-    fp.write('};\n\n')
-    
-    return getsets_name
-
-def write_class(parser, objobj, overrides, fp=sys.stdout):
-    fp.write('\n/* ----------- ' + objobj.c_name + ' ----------- */\n\n')
-    constructor = parser.find_constructor(objobj, overrides)
-    methods = []
-    castmacro = string.replace(objobj.typecode, '_TYPE_', '_', 1)
-    initfunc = '0'
-    if constructor:
-	try:
-            if overrides.is_overriden(constructor.c_name):
-                lineno, filename = overrides.getstartline(constructor.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(constructor.c_name))
-                fp.resetline()
-                fp.write('\n\n')
-            else:
-                write_constructor(objobj.c_name, castmacro, constructor, fp)
-            initfunc = '_wrap_' + constructor.c_name
-	except:
-	    sys.stderr.write('Could not write constructor for %s: %s\n' 
-			     % (objobj.c_name, exc_info()))
+                sys.stderr.write('Could not write constructor for %s: %s\n' 
+                                 % (self.objinfo.c_name, exc_info()))
+                # this is a hack ...
+                if not hasattr(self.overrides, 'no_constructor_written'):
+                    self.fp.write(self.noconstructor)
+                    self.overrides.no_constructor_written = 1
+                initfunc = 'pygobject_no_constructor'
+        else:
             # this is a hack ...
-            if not hasattr(overrides, 'no_constructor_written'):
-                fp.write(noconstructor)
-                overrides.no_constructor_written = 1
+            if not hasattr(self.overrides, 'no_constructor_written'):
+                self.fp.write(self.noconstructor)
+                self.overrides.no_constructor_written = 1
             initfunc = 'pygobject_no_constructor'
-    else:
-        # this is a hack ...
-        if not hasattr(overrides, 'no_constructor_written'):
-            fp.write(noconstructor)
-            overrides.no_constructor_written = 1
-        initfunc = 'pygobject_no_constructor'
-    for meth in parser.find_methods(objobj):
-        if overrides.is_ignored(meth.c_name):
-            continue
-	try:
-            methtype = 'METH_VARARGS'
-            if overrides.is_overriden(meth.c_name):
-                if not overrides.is_already_included(meth.c_name):
-                    lineno, filename = overrides.getstartline(meth.c_name)
-                    fp.setline(lineno, filename)
-                    fp.write(overrides.override(meth.c_name))
-                    fp.resetline()
-                    fp.write('\n\n')
-                if overrides.wants_kwargs(meth.c_name):
-                    methtype = methtype + '|METH_KEYWORDS'
-                elif overrides.wants_noargs(meth.c_name):
-                    methtype = 'METH_NOARGS'
-            else:
-                methtype = write_method(objobj.c_name, castmacro, meth, fp)
-	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
-					   'cname': '_wrap_' + meth.c_name,
-					   'flags': methtype})
-	except:
-	    sys.stderr.write('Could not write method %s.%s: %s\n'
-                             % (objobj.c_name, meth.name, exc_info()))
+        return initfunc
 
-    # write the PyMethodDef structure
-    methods.append('    { NULL, NULL, 0 }\n')
-    fp.write('static PyMethodDef _Py' + objobj.c_name + '_methods[] = {\n')
-    fp.write(string.join(methods, ''))
-    fp.write('};\n\n')
-
-    # write the type template
-    dict = {
-        'class': objobj.c_name,
-        'classname': objobj.name,
-        'initfunc': initfunc
-    }
-    if overrides.modulename:
-        dict['classname'] = '%s.%s' % (overrides.modulename, objobj.name)
-    else:
-        dict['classname'] = objobj.name
-    dict['getsets'] = write_getsets(parser, objobj, castmacro, overrides, fp)
-    dict['methods'] = '_Py' + dict['class'] + '_methods'
-
-    # handle slots ...
-    for slot in slots_list:
-        slotname = '%s.%s' % (objobj.c_name, slot)
-        slotfunc = '_wrap_%s_%s' % (string.lower(castmacro), slot)
-        if slot[:6] == 'tp_as_':
-            slotfunc = '&' + slotfunc
-        if overrides.slot_is_overriden(slotname):
-            lineno, filename = overrides.getstartline(slotname)
-            fp.setline(lineno, filename)
-            fp.write(overrides.slot_override(slotname))
-            fp.resetline()
-            fp.write('\n\n')
-            dict[slot] = slotfunc
-        else:
-            dict[slot] = '0'
-    
-    fp.write(typetmpl % dict)
-
-def write_interface(parser, interface, overrides, fp=sys.stdout):
-    fp.write('\n/* ----------- ' + interface.c_name + ' ----------- */\n\n')
-    methods = []
-    castmacro = string.replace(interface.typecode, '_TYPE_', '_', 1)
-    for meth in parser.find_methods(interface):
-        if overrides.is_ignored(meth.c_name):
-            continue
-	try:
-            methtype = 'METH_VARARGS'
-            if overrides.is_overriden(meth.c_name):
-                if not overrides.is_already_included(meth.c_name):
-                    lineno, filename = overrides.getstartline(meth.c_name)
-                    fp.setline(lineno, filename)
-                    fp.write(overrides.override(meth.c_name))
-                    fp.resetline()
-                    fp.write('\n\n')
-                if overrides.wants_kwargs(meth.c_name):
-                    methtype = methtype + '|METH_KEYWORDS'
-                elif overrides.wants_noargs(meth.c_name):
-                    methtype = 'METH_NOARGS'
-            else:
-                methtype = write_method(interface.c_name, castmacro, meth, fp)
-	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
-					   'cname': '_wrap_' + meth.c_name,
-					   'flags': methtype})
-	except:
-	    sys.stderr.write('Could not write method %s.%s: %s\n'
-                             % (interface.c_name, meth.name, exc_info()))
-
-    # write the PyMethodDef structure
-    methods.append('    { NULL, NULL, 0 }\n')
-    fp.write('static PyMethodDef _Py' + interface.c_name + '_methods[] = {\n')
-    fp.write(string.join(methods, ''))
-    fp.write('};\n\n')
-
-    # write the type template
-    dict = { 'class': interface.c_name }
-    if overrides.modulename:
-        dict['classname'] = '%s.%s' % (overrides.modulename, interface.name)
-    else:
-        dict['classname'] = inerface.name
-    dict['methods'] = '_Py' + dict['class'] + '_methods'
-
-    # handle slots ...
-    for slot in slots_list:
-        slotname = '%s.%s' % (interface.c_name, slot)
-        slotfunc = '_wrap_%s_%s' % (string.lower(castmacro), slot)
-        if slot[:6] == 'tp_as_':
-            slotfunc = '&' + slotfunc
-        if overrides.slot_is_overriden(slotname):
-            lineno, filename = overrides.getstartline(slotname)
-            fp.setline(lineno, filename)
-            fp.write(overrides.slot_override(slotname))
-            fp.resetline()
-            fp.write('\n\n')
-            dict[slot] = slotfunc
-        else:
-            dict[slot] = '0'
-
-    fp.write(interfacetypetmpl % dict)
-
-## boxed types ...
-def write_boxed_method(objname, methobj, fp=sys.stdout):
-    info = argtypes.WrapperInfo()
-    info.arglist.append('')
-
-    if methobj.varargs:
-        raise ValueError, "varargs methods not supported"
-    
-    dict = {
-	'cname':    methobj.c_name,
-    }
-    
-    for ptype, pname, pdflt, pnull in methobj.params:
-	if pdflt and '|' not in info.parsestr:
-            info.add_parselist('|', [], [])
-	handler = argtypes.matcher.get(ptype)
-        handler.write_param(ptype, pname, pdflt, pnull, info)
-
-    funccall = boxedmethcalltmpl % { 'cname':    methobj.c_name,
-                                     'typename': objname,
-                                     'arglist':  info.get_arglist() }
-    if methobj.ret not in ('none', None):
-        funccall = 'ret = ' + funccall
-
-    handler = argtypes.matcher.get(methobj.ret)
-    handler.write_return(methobj.ret, info)
-
-    dict['codebefore'] = info.get_codebefore()
-    dict['funccall']   = funccall
-    dict['codeafter']  = info.get_codeafter()
-    
-    if info.parsestr:
-        parsetmpl = ('    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.%(name)s"%(parselist)s))\n'
-                     '        return NULL;\n')
-        parsedict = {'typecodes': info.parsestr,
-                     'typename':  objname,
-                     'name':      fixname(methobj.name),
-                     'parselist': info.get_parselist()}
-
-        dict['parseargs'] = parsetmpl % parsedict
-        dict['varlist'] = info.get_kwlist() + info.get_varlist()
-        dict['extraparams'] = ', PyObject *args, PyObject *kwargs'
-        flags = 'METH_VARARGS|METH_KEYWORDS'
-    else:
-        dict['parseargs'] = ''
-        dict['varlist']    = info.get_varlist()
-        dict['extraparams'] = ''
-        flags = 'METH_NOARGS'
-
-    fp.write(boxedmethtmpl % dict)
-
-    return flags
-
-def write_boxed_constructor(objname, typecode, funcobj, fp=sys.stdout):
-    info = argtypes.WrapperInfo()
-
-    dict = {
-	'name':    funcobj.name,
-	'cname':   funcobj.c_name,
-	'typename': objname,
-        'typecode': typecode,
-    }
-
-    for ptype, pname, pdflt, pnull in funcobj.params:
-	if pdflt and '|' not in info.parsestr:
-	    info.add_parselist('|', [], [])
-	handler = argtypes.matcher.get(ptype)
-        spec = handler.write_param(ptype, pname, pdflt, pnull, info)
-
-    dict['varlist']    = info.get_kwlist() + info.get_varlist()
-    dict['typecodes']  = info.parsestr
-    dict['parselist']  = info.get_parselist()
-    dict['codebefore'] = string.replace(info.get_codebefore(),
-                                       'return NULL;', 'return -1;')
-    dict['codeafter']  = string.replace(info.get_codeafter(),
-                                       'return NULL;', 'return -1;')
-    dict['arglist']    = info.get_arglist()
-    fp.write(boxedconsttmpl % dict)
-
-def write_boxed_getsets(parser, boxedobj, overrides, fp=sys.stdout):
-    typecode = boxedobj.typecode
-    uline = string.replace(typecode, '_TYPE_', '_', 1)
-    getsets_name = string.lower(uline) + '_getsets'
-    getterprefix = '_wrap_' + string.lower(uline) + '__get_'
-    setterprefix = '_wrap_' + string.lower(uline) + '__set_'
-
-    if not boxedobj.fields:
-        return '0'
-
-    getsets = []
-    for ftype, fname in boxedobj.fields:
-        attrname = boxedobj.c_name + '.' + fname
-        gettername = '0'
-        settername = '0'
-        if overrides.attr_is_overriden(attrname):
-            lineno, filename = overrides.getstartline(attrname)
-            code = overrides.attr_override(attrname)
-            fp.setline(lineno, filename)
-            fp.write(code)
-            fp.resetline()
-            if string.find(code, getterprefix + fname) >= 0:
-                gettername = getterprefix + fname
-            if string.find(code, setterprefix + fname) >= 0:
-                settername = setterprefix + fname
-        if gettername == '0':
+    def write_methods(self):
+        methods = []
+        for meth in self.parser.find_methods(self.objinfo):
+            if self.overrides.is_ignored(meth.c_name):
+                continue
             try:
-                funcname = getterprefix + fname
-                info =  argtypes.WrapperInfo()
-                handler = argtypes.matcher.get(ftype)
-                handler.write_return(ftype, info)
-                field = 'pyg_boxed_get(self, ' + boxedobj.c_name + ')->' + fname
-                fp.write(boxedgettertmpl %
-                         { 'funcname': funcname,
-                           'varlist': info.varlist,
-                           'field': field,
-                           'codeafter': info.get_codeafter() })
-                gettername = funcname
+                methflags = 'METH_VARARGS'
+                if self.overrides.is_overriden(meth.c_name):
+                    if not self.overrides.is_already_included(meth.c_name):
+                        lineno, filename = self.overrides.getstartline(meth.c_name)
+                        self.fp.setline(lineno, filename)
+                        self.fp.write(self.overrides.override(meth.c_name))
+                        self.fp.resetline()
+                        self.fp.write('\n\n')
+                    if self.overrides.wants_kwargs(meth.c_name):
+                        methflags = methflags + '|METH_KEYWORDS'
+                    elif self.overrides.wants_noargs(meth.c_name):
+                        methflags = 'METH_NOARGS'
+                else:
+                    # write constructor from template ...
+                    code, methflags = self.write_function_wrapper(meth,
+                        self.method_tmpl, handle_return=1, is_method=1,
+                        substdict=self.get_initial_method_substdict(meth))
+                    self.fp.write(code)
+                methods.append(self.methdef_tmpl %
+                               { 'name':  fixname(meth.name),
+                                 'cname': '_wrap_' + meth.c_name,
+                                 'flags': methflags})
             except:
-                sys.stderr.write("Could not write getter for %s.%s: %s\n"
-                                 % (boxedobj.c_name, fname, exc_info()))
-        if gettername != '0' or settername != '0':
-            getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
-                           (fixname(fname), gettername, settername))
+                sys.stderr.write('Could not write method %s.%s: %s\n'
+                                % (self.objinfo.c_name, meth.name, exc_info()))
 
-    if not getsets:
-        return '0'
-    fp.write('static PyGetSetDef %s[] = {\n' % getsets_name)
-    for getset in getsets:
-        fp.write(getset)
-    fp.write('    { NULL, (getter)0, (setter)0 },\n')
-    fp.write('};\n\n')
-
-    return getsets_name
-
-def write_boxed(parser, boxedobj, overrides, fp=sys.stdout):
-    fp.write('\n/* ----------- ' + boxedobj.c_name + ' ----------- */\n\n')
-    constructor = parser.find_constructor(boxedobj, overrides)
-    methods = []
-    initfunc = '0'
-    if constructor:
-	try:
-            if overrides.is_overriden(constructor.c_name):
-                lineno, filename = overrides.getstartline(constructor.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(constructor.c_name))
-                fp.resetline()
-                fp.write('\n\n')
-            else:
-                write_boxed_constructor(boxedobj.c_name, boxedobj.typecode,
-                                        constructor, fp)
-            initfunc = '_wrap_' + constructor.c_name
-	except:
-	    sys.stderr.write('Could not write constructor for %s: %s\n'
-                             % (boxedobj.c_name, exc_info()))
-    for meth in parser.find_methods(boxedobj):
-        if overrides.is_ignored(meth.c_name):
-            continue
-	try:
-            methtype = 'METH_VARARGS'
-            if overrides.is_overriden(meth.c_name):
-                if not overrides.is_already_included(meth.c_name):
-                    lineno, filename = overrides.getstartline(meth.c_name)
-                    fp.setline(lineno, filename)
-                    fp.write(overrides.override(meth.c_name))
-                    fp.resetline()
-                    fp.write('\n\n')
-                if overrides.wants_kwargs(meth.c_name):
-                    methtype = methtype + '|METH_KEYWORDS'
-                elif overrides.wants_noargs(meth.c_name):
-                    methtype = 'METH_NOARGS'
-            else:
-                methtype = write_boxed_method(boxedobj.c_name, meth, fp)
-	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
-					   'cname': '_wrap_' + meth.c_name,
-					   'flags': methtype})
-	except:
-	    sys.stderr.write('Could not write method %s.%s: %s\n'
-                             % (boxedobj.c_name, meth.name, exc_info()))
-
-    # write the PyMethodDef structure
-    methods.append('    { NULL, NULL, 0 }\n')
-    fp.write('static PyMethodDef _Py' + boxedobj.c_name + '_methods[] = {\n')
-    fp.write(string.join(methods, ''))
-    fp.write('};\n\n')
-
-    # write the type template
-    dict = { 'typename': boxedobj.c_name, 'initfunc': initfunc }
-
-    if overrides.modulename:
-        dict['classname'] = '%s.%s' % (overrides.modulename, boxedobj.name)
-    else:
-        dict['classname'] = boxedobj.name
-
-    dict['getsets'] = write_boxed_getsets(parser, boxedobj, overrides, fp)
-    dict['methods'] = '_Py' + dict['typename'] + '_methods'
-
-    # handle slots ...
-    for slot in slots_list:
-        slotname = '%s.%s' % (boxedobj.c_name, slot)
-        slotfunc = '_wrap_%s_%s' % \
-                   (string.lower(string.replace(boxedobj.typecode,
-                                                '_TYPE_', '_', 1)), slot)
-        if slot[:6] == 'tp_as_':
-            slotfunc = '&' + slotfunc
-        if overrides.slot_is_overriden(slotname):
-            lineno, filename = overrides.getstartline(slotname)
-            fp.setline(lineno, filename)
-            fp.write(overrides.slot_override(slotname))
-            fp.resetline()
-            fp.write('\n\n')
-            dict[slot] = slotfunc
+        if methods:
+            methoddefs = '_Py%s_methods' % self.objinfo.c_name
+            # write the PyMethodDef structure
+            methods.append('    { NULL, NULL, 0 }\n')
+            self.fp.write('static PyMethodDef %s[] = {\n' % methoddefs)
+            self.fp.write(string.join(methods, ''))
+            self.fp.write('};\n\n')
         else:
-            dict[slot] = '0'
-
-    fp.write(boxedtmpl % dict)
-
-## pointer types ...
-def write_pointer_method(objname, methobj, fp=sys.stdout):
-    info = argtypes.WrapperInfo()
-    info.arglist.append('')
-
-    if methobj.varargs:
-        raise ValueError, "varargs methods not supported"
+            methoddefs = 'NULL'
+        return methoddefs
     
-    dict = {
-	'cname':    methobj.c_name,
-    }
+    def write_getsets(self):
+        lower_name = self.get_lower_name()
+        getsets_name = lower_name + '_getsets'
+        getterprefix = '_wrap_' + lower_name + '__get_'
+        setterprefix = '_wrap_' + lower_name + '__set_'
+
+        # no overrides for the whole function.  If no fields, don't write a func
+        if not self.objinfo.fields:
+            return '0'
+        getsets = []
+        for ftype, fname in self.objinfo.fields:
+            gettername = '0'
+            settername = '0'
+            attrname = self.objinfo.c_name + '.' + fname
+            if self.overrides.attr_is_overriden(attrname):
+                lineno, filename = self.overrides.getstartline(attrname)
+                code = self.overrides.attr_override(attrname)
+                self.fp.setline(lineno, filename)
+                self.fp.write(code)
+                self.fp.resetline()
+                if string.find(code, getterprefix + fname) >= 0:
+                    gettername = getterprefix + fname
+                if string.find(code, setterprefix + fname) >= 0:
+                    settername = setterprefix + fname
+            if gettername == '0':
+                try:
+                    funcname = getterprefix + fname
+                    info = argtypes.WrapperInfo()
+                    handler = argtypes.matcher.get(ftype)
+                    handler.write_return(ftype, info)
+                    self.fp.write(self.getter_tmpl %
+                                  { 'funcname': funcname,
+                                    'varlist': info.varlist,
+                                    'field': self.get_field_accessor(fname),
+                                    'codeafter': info.get_codeafter() })
+                    gettername = funcname
+                except:
+                    sys.stderr.write("Could not write getter for %s.%s: %s\n"
+                                     % (self.objinfo.c_name, fname, exc_info()))
+            if gettername != '0' or settername != '0':
+                getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
+                               (fixname(fname), gettername, settername))
+
+        if not getsets:
+            return '0'
+        self.fp.write('static PyGetSetDef %s[] = {\n' % getsets_name)
+        for getset in getsets:
+            self.fp.write(getset)
+        self.fp.write('    { NULL, (getter)0, (setter)0 },\n')
+        self.fp.write('};\n\n')
     
-    for ptype, pname, pdflt, pnull in methobj.params:
-	if pdflt and '|' not in info.parsestr:
-            info.add_parselist('|', [], [])
-	handler = argtypes.matcher.get(ptype)
-        handler.write_param(ptype, pname, pdflt, pnull, info)
+        return getsets_name
 
-    funccall = pointermethcalltmpl % { 'cname':    methobj.c_name,
-                                       'typename': objname,
-                                       'arglist':  info.get_arglist() }
-    if methobj.ret not in ('none', None):
-        funccall = 'ret = ' + funccall
-
-    handler = argtypes.matcher.get(methobj.ret)
-    handler.write_return(methobj.ret, info)
-
-    dict['codebefore'] = info.get_codebefore()
-    dict['funccall']   = funccall
-    dict['codeafter']  = info.get_codeafter()
-    
-    if info.parsestr:
-        parsetmpl = ('    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "%(typecodes)s:%(typename)s.%(name)s"%(parselist)s))\n'
-                     '        return NULL;\n')
-        parsedict = {'typecodes': info.parsestr,
-                     'typename':  objname,
-                     'name':      fixname(methobj.name),
-                     'parselist': info.get_parselist()}
-
-        dict['parseargs'] = parsetmpl % parsedict
-        dict['varlist'] = info.get_kwlist() + info.get_varlist()
-        dict['extraparams'] = ', PyObject *args, PyObject *kwargs'
-        flags = 'METH_VARARGS|METH_KEYWORDS'
-    else:
-        dict['parseargs'] = ''
-        dict['varlist']    = info.get_varlist()
-        dict['extraparams'] = ''
-        flags = 'METH_NOARGS'
-
-    fp.write(boxedmethtmpl % dict)
-
-    return flags
-
-def write_pointer_constructor(objname, typecode, funcobj, fp=sys.stdout):
-    info = argtypes.WrapperInfo()
-
-    dict = {
-	'name':    funcobj.name,
-	'cname':   funcobj.c_name,
-	'typename': objname,
-        'typecode': typecode,
-    }
-
-    for ptype, pname, pdflt, pnull in funcobj.params:
-	if pdflt and '|' not in info.parsestr:
-	    info.add_parselist('|', [], [])
-	handler = argtypes.matcher.get(ptype)
-        spec = handler.write_param(ptype, pname, pdflt, pnull, info)
-
-    dict['varlist']    = info.get_kwlist() + info.get_varlist()
-    dict['typecodes']  = info.parsestr
-    dict['parselist']  = info.get_parselist()
-    dict['codebefore'] = string.replace(info.get_codebefore(),
-                                       'return NULL;', 'return -1;')
-    dict['codeafter']  = string.replace(info.get_codeafter(),
-                                       'return NULL;', 'return -1;')
-    dict['arglist']    = info.get_arglist()
-    fp.write(pointerconsttmpl % dict)
-
-def write_pointer_getsets(parser, pointerobj, overrides, fp=sys.stdout):
-    typecode = pointerobj.typecode
-    uline = string.replace(typecode, '_TYPE_', '_', 1)
-    getsets_name = string.lower(uline) + '_getsets'
-    getterprefix = '_wrap_' + string.lower(uline) + '__get_'
-    setterprefix = '_wrap_' + string.lower(uline) + '__set_'
-
-    if not pointerobj.fields:
-        return '0'
-
-    getsets = []
-    for ftype, fname in pointerobj.fields:
-        attrname = pointerobj.c_name + '.' + fname
-        gettername = '0'
-        settername = '0'
-        if overrides.attr_is_overriden(attrname):
-            lineno, filename = overrides.getstartline(attrname)
-            code = overrides.attr_override(attrname)
-            fp.setline(lineno, filename)
-            fp.write(code)
-            fp.resetline()
-            if string.find(code, getterprefix + fname) >= 0:
-                gettername = getterprefix + fname
-            if string.find(code, setterprefix + fname) >= 0:
-                settername = setterprefix + fname
-        if gettername == '0':
+    def write_functions(self, prefix):
+        self.fp.write('\n/* ----------- functions ----------- */\n\n')
+        functions = []
+        for func in self.parser.find_functions():
+            if self.overrides.is_ignored(func.c_name):
+                continue
             try:
-                funcname = getterprefix + fname
-                info =  argtypes.WrapperInfo()
-                handler = argtypes.matcher.get(ftype)
-                handler.write_return(ftype, info)
-                field = 'pyg_pointer_get(self, ' + pointerobj.c_name + ')->' + fname
-                fp.write(boxedgettertmpl %
-                         { 'funcname': funcname,
-                           'varlist': info.varlist,
-                           'field': field,
-                           'codeafter': info.get_codeafter() })
-                gettername = funcname
+                methflags = 'METH_VARARGS'
+                if self.overrides.is_overriden(func.c_name):
+                    lineno, filename = self.overrides.getstartline(func.c_name)
+                    self.fp.setline(lineno, filename)
+                    self.fp.write(self.overrides.override(func.c_name))
+                    self.fp.resetline()
+                    self.fp.write('\n\n')
+                    if self.overrides.wants_kwargs(func.c_name):
+                        methflags = methflags + '|METH_KEYWORDS'
+                    elif self.overrides.wants_noargs(func.c_name):
+                        methflags = 'METH_NOARGS'
+                else:
+                    # write constructor from template ...
+                    code, methflags = self.write_function_wrapper(func,
+                        self.function_tmpl, handle_return=1, is_method=0)
+                    self.fp.write(code)
+                functions.append(self.methdef_tmpl %
+                                 { 'name':  func.name,
+                                   'cname': '_wrap_' + func.c_name,
+                                   'flags': methflags })
             except:
-                sys.stderr.write("Could not write check for %s.%s: %s\n"
-                                 % (pointerobj.c_name, fname, exc_info()))
-        if gettername != '0' or settername != '0':
-            getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
-                           (fixname(fname), gettername, settername))
+                sys.stderr.write('Could not write function %s: %s\n'
+                                 % (func.name, exc_info()))
+        # write the PyMethodDef structure
+        functions.append('    { NULL, NULL, 0 }\n')
+        
+        self.fp.write('PyMethodDef ' + prefix + '_functions[] = {\n')
+        self.fp.write(string.join(functions, ''))
+        self.fp.write('};\n\n')
 
-    if not getsets:
-        return '0'
-    fp.write('static PyGetSetDef %s[] = {\n' % getsets_name)
-    for getset in getsets:
-        fp.write(getset)
-    fp.write('    { NULL, (getter)0, (setter)0 },\n')
-    fp.write('};\n\n')
+class GObjectWrapper(Wrapper):
+    type_tmpl = \
+        'PyTypeObject Py%(typename)s_Type = {\n' \
+        '    PyObject_HEAD_INIT(NULL)\n' \
+        '    0,					/* ob_size */\n' \
+        '    "%(classname)s",			/* tp_name */\n' \
+        '    sizeof(PyGObject),			/* tp_basicsize */\n' \
+        '    0,					/* tp_itemsize */\n' \
+        '    /* methods */\n' \
+        '    (destructor)0,			/* tp_dealloc */\n' \
+        '    (printfunc)0,			/* tp_print */\n' \
+        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
+        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
+        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
+        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
+        '    %(tp_as_number)s,			/* tp_as_number */\n' \
+        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
+        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
+        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
+        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
+        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
+        '    (getattrofunc)0,			/* tp_getattro */\n' \
+        '    (setattrofunc)0,			/* tp_setattro */\n' \
+        '    0,					/* tp_as_buffer */\n' \
+        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
+        '    NULL, 				/* Documentation string */\n' \
+        '    (traverseproc)0,			/* tp_traverse */\n' \
+        '    (inquiry)0,			/* tp_clear */\n' \
+        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
+        '    offsetof(PyGObject, weakreflist),	/* tp_weaklistoffset */\n' \
+        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
+        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
+        '    %(tp_methods)s,			/* tp_methods */\n' \
+        '    0,					/* tp_members */\n' \
+        '    %(tp_getset)s,		       	/* tp_getset */\n' \
+        '    NULL,				/* tp_base */\n' \
+        '    NULL,				/* tp_dict */\n' \
+        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
+        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
+        '    offsetof(PyGObject, inst_dict),	/* tp_dictoffset */\n' \
+        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
+        '};\n\n'
 
-    return getsets_name
+    constructor_tmpl = \
+        'static int\n' \
+        '_wrap_%(cname)s(PyGObject *self%(extraparams)s)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '%(parseargs)s' \
+        '%(codebefore)s' \
+        '    self->obj = (GObject *)%(cname)s(%(arglist)s);\n' \
+        '%(codeafter)s\n' \
+        '    if (!self->obj) {\n' \
+        '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' \
+        '        return -1;\n' \
+        '    }\n' \
+        '%(gtkobjectsink)s' \
+        '    pygobject_register_wrapper((PyObject *)self);\n' \
+        '    return 0;\n' \
+        '}\n\n'
+    method_tmpl = \
+        'static PyObject *\n' \
+        '_wrap_%(cname)s(PyGObject *self%(extraparams)s)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '%(parseargs)s' \
+        '%(codebefore)s' \
+        '    %(setreturn)s%(cname)s(%(cast)s(self->obj)%(arglist)s);\n' \
+        '%(codeafter)s\n' \
+        '}\n\n'
 
-def write_pointer(parser, pointerobj, overrides, fp=sys.stdout):
-    fp.write('\n/* ----------- ' + pointerobj.c_name + ' ----------- */\n\n')
-    constructor = parser.find_constructor(pointerobj, overrides)
-    methods = []
-    initfunc = '0'
-    if constructor:
-	try:
-            if overrides.is_overriden(constructor.c_name):
-                lineno, filename = overrides.getstartline(constructor.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(constructor.c_name))
-                fp.resetline()
-                fp.write('\n\n')
-            else:
-                write_pointer_constructor(pointerobj.c_name, pointerobj.typecode,
-                                          constructor, fp)
-            initfunc = '_wrap_' + constructor.c_name
-	except:
-	    sys.stderr.write('Could not write constructor for %s: %s\n'
-                             % (pointerobj.c_name, exc_info()))
-    for meth in parser.find_methods(pointerobj):
-        if overrides.is_ignored(meth.c_name):
-            continue
-	try:
-            methtype = 'METH_VARARGS'
-            if overrides.is_overriden(meth.c_name):
-                if not overrides.is_already_included(meth.c_name):
-                    lineno, filename = overrides.getstartline(meth.c_name)
-                    fp.setline(lineno, filename)
-                    fp.write(overrides.override(meth.c_name))
-                    fp.resetline()
-                    fp.write('\n\n')
-                if overrides.wants_kwargs(meth.c_name):
-                    methtype = methtype + '|METH_KEYWORDS'
-                elif overrides.wants_noargs(meth.c_name):
-                    methtype = 'METH_NOARGS'
-            else:
-                methtype = write_pointer_method(pointerobj.c_name, meth, fp)
-	    methods.append(methdeftmpl % { 'name':  fixname(meth.name),
-					   'cname': '_wrap_' + meth.c_name,
-					   'flags': methtype})
-	except:
-	    sys.stderr.write('Could not write method %s.%s: %s\n'
-                             % (pointerobj.c_name, meth.name, exc_info()))
+    def __init__(self, parser, objinfo, overrides, fp=FileOutput(sys.stdout)):
+        Wrapper.__init__(self, parser, objinfo, overrides, fp)
+        if self.objinfo:
+            self.castmacro = string.replace(self.objinfo.typecode,
+                                            '_TYPE_', '_', 1)
 
-    # write the PyMethodDef structure
-    methods.append('    { NULL, NULL, 0 }\n')
-    fp.write('static PyMethodDef _Py' + pointerobj.c_name + '_methods[] = {\n')
-    fp.write(string.join(methods, ''))
-    fp.write('};\n\n')
+    def get_field_accessor(self, fieldname):
+        castmacro = string.replace(self.objinfo.typecode, '_TYPE_', '_', 1)
+        return '%s(pygobject_get(self))->%s' % (castmacro, fieldname)
 
-    # write the type template
-    dict = { 'typename': pointerobj.c_name, 'initfunc': initfunc }
-
-    if overrides.modulename:
-        dict['classname'] = '%s.%s' % (overrides.modulename, pointerobj.name)
-    else:
-        dict['classname'] = pointerobj.name
-
-    dict['getsets'] = write_pointer_getsets(parser, pointerobj, overrides, fp)
-    dict['methods'] = '_Py' + dict['typename'] + '_methods'
-
-    # handle slots ...
-    for slot in slots_list:
-        slotname = '%s.%s' % (pointerobj.c_name, slot)
-        slotfunc = '_wrap_%s_%s' % \
-                   (string.lower(string.replace(pointerobj.typecode,
-                                                '_TYPE_', '_', 1)), slot)
-        if slot[:6] == 'tp_as_':
-            slotfunc = '&' + slotfunc
-        if overrides.slot_is_overriden(slotname):
-            lineno, filename = overrides.getstartline(slotname)
-            fp.setline(lineno, filename)
-            fp.write(overrides.slot_override(slotname))
-            fp.resetline()
-            fp.write('\n\n')
-            dict[slot] = slotfunc
+    def get_initial_constructor_substdict(self):
+        substdict = Wrapper.get_initial_constructor_substdict(self)
+        if argtypes.matcher.object_is_a(self.objinfo.c_name, 'GtkObject'):
+            substdict['gtkobjectsink'] = \
+                '    g_object_ref(self->obj);\n' \
+                '    gtk_object_sink(GTK_OBJECT(self->obj));\n'
         else:
-            dict[slot] = '0'
+            substdict['gtkobjectsink'] = ''
+        return substdict
 
-    fp.write(pointertmpl % dict)
+    def get_initial_method_substdict(self, method):
+        substdict = Wrapper.get_initial_method_substdict(self, method)
+        substdict['cast'] = string.replace(self.objinfo.typecode, '_TYPE_', '_', 1)
+        return substdict
 
+class GInterfaceWrapper(GObjectWrapper):
+    type_tmpl = \
+        'PyTypeObject Py%(typename)s_Type = {\n' \
+        '    PyObject_HEAD_INIT(NULL)\n' \
+        '    0,					/* ob_size */\n' \
+        '    "%(classname)s",			/* tp_name */\n' \
+        '    sizeof(PyObject),			/* tp_basicsize */\n' \
+        '    0,					/* tp_itemsize */\n' \
+        '    /* methods */\n' \
+        '    (destructor)0,			/* tp_dealloc */\n' \
+        '    (printfunc)0,			/* tp_print */\n' \
+        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
+        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
+        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
+        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
+        '    %(tp_as_number)s,			/* tp_as_number */\n' \
+        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
+        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
+        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
+        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
+        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
+        '    (getattrofunc)0,			/* tp_getattro */\n' \
+        '    (setattrofunc)0,			/* tp_setattro */\n' \
+        '    0,					/* tp_as_buffer */\n' \
+        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
+        '    NULL, 				/* Documentation string */\n' \
+        '    (traverseproc)0,			/* tp_traverse */\n' \
+        '    (inquiry)0,			/* tp_clear */\n' \
+        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
+        '    0,					/* tp_weaklistoffset */\n' \
+        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
+        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
+        '    %(tp_methods)s,			/* tp_methods */\n' \
+        '    0,					/* tp_members */\n' \
+        '    %(tp_getset)s,		       	/* tp_getset */\n' \
+        '    NULL,				/* tp_base */\n' \
+        '    NULL,				/* tp_dict */\n' \
+        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
+        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
+        '    0,					/* tp_dictoffset */\n' \
+        '    (initproc)0,			/* tp_init */\n' \
+        '};\n\n'
 
-def write_functions(parser, overrides, prefix, fp=sys.stdout):
-    fp.write('\n/* ----------- functions ----------- */\n\n')
-    functions = []
-    for func in parser.find_functions():
-        if overrides.is_ignored(func.c_name):
-            continue
-	try:
-            methtype = 'METH_VARARGS'
-            if overrides.is_overriden(func.c_name):
-                lineno, filename = overrides.getstartline(func.c_name)
-                fp.setline(lineno, filename)
-                fp.write(overrides.override(func.c_name))
-                fp.resetline()
-                fp.write('\n\n')
-                if overrides.wants_kwargs(func.c_name):
-                    methtype = methtype + '|METH_KEYWORDS'
-                elif overrides.wants_noargs(func.c_name):
-                    methtype = 'METH_NOARGS'
-            else:
-                methtype = write_function(func, fp)
-	    functions.append(methdeftmpl % { 'name':  func.name,
-                                             'cname': '_wrap_' + func.c_name,
-                                             'flags': methtype})
-	except:
-	    sys.stderr.write('Could not write function %s: %s\n'
-                             %(func.name, exc_info()))
-    # write the PyMethodDef structure
-    functions.append('    { NULL, NULL, 0 }\n')
-    fp.write('PyMethodDef ' + prefix + '_functions[] = {\n')
-    fp.write(string.join(functions, ''))
-    fp.write('};\n\n')
+    def write_constructor(self):
+        # interfaces have no constructors ...
+        return '0'
+    def write_getsets(self):
+        # interfaces have no fields ...
+        return '0'
+
+class GBoxedWrapper(Wrapper):
+    type_tmpl = \
+        'PyTypeObject Py%(typename)s_Type = {\n' \
+        '    PyObject_HEAD_INIT(NULL)\n' \
+        '    0,					/* ob_size */\n' \
+        '    "%(classname)s",			/* tp_name */\n' \
+        '    sizeof(PyGBoxed),			/* tp_basicsize */\n' \
+        '    0,					/* tp_itemsize */\n' \
+        '    /* methods */\n' \
+        '    (destructor)0,			/* tp_dealloc */\n' \
+        '    (printfunc)0,			/* tp_print */\n' \
+        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
+        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
+        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
+        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
+        '    %(tp_as_number)s,			/* tp_as_number */\n' \
+        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
+        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
+        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
+        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
+        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
+        '    (getattrofunc)0,			/* tp_getattro */\n' \
+        '    (setattrofunc)0,			/* tp_setattro */\n' \
+        '    0,					/* tp_as_buffer */\n' \
+        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
+        '    NULL, 				/* Documentation string */\n' \
+        '    (traverseproc)0,			/* tp_traverse */\n' \
+        '    (inquiry)0,			/* tp_clear */\n' \
+        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
+        '    0,					/* tp_weaklistoffset */\n' \
+        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
+        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
+        '    %(tp_methods)s,			/* tp_methods */\n' \
+        '    0,					/* tp_members */\n' \
+        '    %(tp_getset)s,		       	/* tp_getset */\n' \
+        '    NULL,				/* tp_base */\n' \
+        '    NULL,				/* tp_dict */\n' \
+        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
+        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
+        '    0,					/* tp_dictoffset */\n' \
+        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
+        '};\n\n'
+
+    constructor_tmpl = \
+        'static int\n' \
+        '_wrap_%(cname)s(PyGBoxed *self%(extraparams)s)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '%(parseargs)s' \
+        '%(codebefore)s' \
+        '    self->gtype = %(typecode)s;\n' \
+        '    self->free_on_dealloc = FALSE;\n' \
+        '    self->boxed = %(cname)s(%(arglist)s);\n' \
+        '%(codeafter)s\n' \
+        '    if (!self->boxed) {\n' \
+        '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' \
+        '        return -1;\n' \
+        '    }\n' \
+        '    self->free_on_dealloc = TRUE;\n' \
+        '    return 0;\n' \
+        '}\n\n'
+
+    method_tmpl = \
+        'static PyObject *\n' \
+        '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '%(parseargs)s' \
+        '%(codebefore)s' \
+        '    %(setreturn)s%(cname)s(pyg_boxed_get(self, %(typename)s)%(arglist)s);\n' \
+        '%(codeafter)s\n' \
+        '}\n\n'
+
+    def get_field_accessor(self, fieldname):
+        return 'pyg_boxed_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)
+
+    def get_initial_constructor_substdict(self):
+        substdict = Wrapper.get_initial_constructor_substdict(self)
+        substdict['typecode'] = self.objinfo.typecode
+        return substdict
+
+class GPointerWrapper(GBoxedWrapper):
+    type_tmpl = \
+        'PyTypeObject Py%(typename)s_Type = {\n' \
+        '    PyObject_HEAD_INIT(NULL)\n' \
+        '    0,					/* ob_size */\n' \
+        '    "%(classname)s",			/* tp_name */\n' \
+        '    sizeof(PyGPointer),		/* tp_basicsize */\n' \
+        '    0,					/* tp_itemsize */\n' \
+        '    /* methods */\n' \
+        '    (destructor)0,			/* tp_dealloc */\n' \
+        '    (printfunc)0,			/* tp_print */\n' \
+        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
+        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
+        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
+        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
+        '    %(tp_as_number)s,			/* tp_as_number */\n' \
+        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
+        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
+        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
+        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
+        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
+        '    (getattrofunc)0,			/* tp_getattro */\n' \
+        '    (setattrofunc)0,			/* tp_setattro */\n' \
+        '    0,					/* tp_as_buffer */\n' \
+        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
+        '    NULL, 				/* Documentation string */\n' \
+        '    (traverseproc)0,			/* tp_traverse */\n' \
+        '    (inquiry)0,			/* tp_clear */\n' \
+        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
+        '    0,					/* tp_weaklistoffset */\n' \
+        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
+        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
+        '    %(tp_methods)s,			/* tp_methods */\n' \
+        '    0,					/* tp_members */\n' \
+        '    %(tp_getset)s,		       	/* tp_getset */\n' \
+        '    NULL,				/* tp_base */\n' \
+        '    NULL,				/* tp_dict */\n' \
+        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
+        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
+        '    0,					/* tp_dictoffset */\n' \
+        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
+        '};\n\n'
+
+    constructor_tmpl = \
+        'static int\n' \
+        '_wrap_%(cname)s(PyGPointer *self%(extraparams)s)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '%(parseargs)s' \
+        '%(codebefore)s' \
+        '    self->gtype = %(typecode)s;\n' \
+        '    self->pointer = %(cname)s(%(arglist)s);\n' \
+        '%(codeafter)s\n' \
+        '    if (!self->pointer) {\n' \
+        '        PyErr_SetString(PyExc_RuntimeError, "could not create %(typename)s object");\n' \
+        '        return -1;\n' \
+        '    }\n' \
+        '    return 0;\n' \
+        '}\n\n'
+
+    method_tmpl = \
+        'static PyObject *\n' \
+        '_wrap_%(cname)s(PyObject *self%(extraparams)s)\n' \
+        '{\n' \
+        '%(varlist)s' \
+        '%(parseargs)s' \
+        '%(codebefore)s' \
+        '    %(setreturn)s%(cname)s(pyg_pointer_get(self, %(typename)s)%(arglist)s);\n' \
+        '%(codeafter)s\n' \
+        '}\n\n'
+
+    def get_field_accessor(self, fieldname):
+        return 'pyg_pointer_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)
+
+    def get_initial_constructor_substdict(self):
+        substdict = Wrapper.get_initial_constructor_substdict(self)
+        substdict['typecode'] = self.objinfo.typecode
+        return substdict
 
 def write_enums(parser, prefix, fp=sys.stdout):
     if not parser.enums:
@@ -1206,20 +740,26 @@ def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
     for interface in parser.interfaces:
         fp.write('PyTypeObject Py' + interface.c_name + '_Type;\n')
     fp.write('\n')
+    
     for boxed in parser.boxes:
-        write_boxed(parser, boxed, overrides, fp)
+        wrapper = GBoxedWrapper(parser, boxed, overrides, fp)
+        wrapper.write_class()
         fp.write('\n')
     for pointer in parser.pointers:
-        write_pointer(parser, pointer, overrides, fp)
+        wrapper = GPointerWrapper(parser, pointer, overrides, fp)
+        wrapper.write_class()
         fp.write('\n')
     for obj in parser.objects:
-        write_class(parser, obj, overrides, fp)
+        wrapper = GObjectWrapper(parser, obj, overrides, fp)
+        wrapper.write_class()
         fp.write('\n')
     for interface in parser.interfaces:
-        write_interface(parser, interface, overrides, fp)
+        wrapper = GInterfaceWrapper(parser, interface, overrides, fp)
+        wrapper.write_class()
         fp.write('\n')
 
-    write_functions(parser, overrides, prefix, fp)
+    wrapper = Wrapper(parser, None, overrides, fp)
+    wrapper.write_functions(prefix)
 
     write_enums(parser, prefix, fp)
 
