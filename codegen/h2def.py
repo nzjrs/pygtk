@@ -47,15 +47,27 @@ def find_obj_defs(buf, objdefs=[]):
     pat = re.compile(r"""/[*](.|\n)*?[*]/""", re.MULTILINE)
     buf=pat.sub('',buf)
 
+    maybeobjdefs = []  # contains all possible objects from file
+
     # first find all structures that look like they may represent a GtkObject
     pat = re.compile("struct _(" + obj_name_pat + ")\s*{\s*" +
                      "(" + obj_name_pat + ")\s+", re.MULTILINE)
-    maybeobjdefs = []  # contains all possible objects from file
     pos = 0
     while pos < len(buf):
         m = pat.search(buf, pos)
         if not m: break
         maybeobjdefs.append((m.group(1), m.group(2)))
+        pos = m.end()
+
+    # handle typedef struct { ... } style struct defs.
+    pat = re.compile("typedef struct\s+[_\w]*\s*{\s*" +
+                     "(" + obj_name_pat + ")\s+[^}]*}\s*" +
+                     "(" + obj_name_pat + ")\s*;", re.MULTILINE)
+    pos = 0
+    while pos < len(buf):
+        m = pat.search(buf, pos)
+        if not m: break
+        maybeobjdefs.append((m.group(2), m.group(2)))
         pos = m.end()
 
     # now find all structures that look like they might represent a class:
@@ -66,6 +78,20 @@ def find_obj_defs(buf, objdefs=[]):
         m = pat.search(buf, pos)
         if not m: break
         t = (m.group(1), m.group(2))
+        # if we find an object structure together with a corresponding
+        # class structure, then we have probably found a GtkObject subclass.
+        if t in maybeobjdefs:
+            objdefs.append(t)
+        pos = m.end()
+
+    pat = re.compile("typedef struct\s+[_\w]*\s*{\s*" +
+                     "(" + obj_name_pat + ")Class\s+[^}]*}\s*" +
+                     "(" + obj_name_pat + ")Class\s*;", re.MULTILINE)
+    pos = 0
+    while pos < len(buf):
+        m = pat.search(buf, pos)
+        if not m: break
+        t = (m.group(2), m.group(1))
         # if we find an object structure together with a corresponding
         # class structure, then we have probably found a GtkObject subclass.
         if t in maybeobjdefs:
