@@ -59,6 +59,7 @@ def fix_actions(actions, instance):
 class Window(gtk.Window):
     def __init__(self):
         gtk.Window.__init__(self)
+        self.set_position(gtk.WIN_POS_CENTER)
         self.connect('delete-event', self.delete_event_cb)
         self.set_size_request(400, 200)
         vbox = gtk.VBox()
@@ -69,8 +70,7 @@ class Window(gtk.Window):
         vbox.pack_start(self.ui.get_widget('/Toolbar'), expand=False)
 
         sw = gtk.ScrolledWindow()
-        sw.set_policy(gtk.POLICY_AUTOMATIC,
-                      gtk.POLICY_AUTOMATIC)
+        sw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         vbox.pack_start(sw)
 
         textview = gtk.TextView()
@@ -94,8 +94,7 @@ class Window(gtk.Window):
         self.buffer.set_text("")
         
     def file_open_cb(self, action):
-        dialog = gtk.FileChooserDialog("Open..",
-                                       None,
+        dialog = gtk.FileChooserDialog("Open..", self,
                                        gtk.FILE_CHOOSER_ACTION_OPEN,
                                        (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                         gtk.STOCK_OPEN, gtk.RESPONSE_OK))
@@ -106,11 +105,14 @@ class Window(gtk.Window):
         filter.add_pattern("*")
         dialog.add_filter(filter)
 
+        dialog.hide()
+
         if dialog.run() == gtk.RESPONSE_OK:
-            dialog.hide()
             filename = dialog.get_filename()
             self.buffer.set_text(file(filename).read())
 
+        dialog.destroy()
+        
     def file_quit_cb(self, action):
         self.close()
 
@@ -118,7 +120,7 @@ class Window(gtk.Window):
         dialog = gtk.MessageDialog(self,
                                    gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
                                    gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
-                                   "Small example of the new GtkUIManger class")
+                                   "Small example of the new GtkUIManger")
         dialog.run()
         dialog.destroy()
 
