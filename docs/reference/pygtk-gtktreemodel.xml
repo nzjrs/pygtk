@@ -42,6 +42,10 @@ linkend="method-gtktreemodel--get-iter-from-string">get_iter_from_string</link><
 		       role="keyword">path_string</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreemodel--get-string-from-iter">get_string_from_iter</link></methodname>
+	<methodparam><parameter>iter</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreemodel--get-iter-root">get_iter_root</link></methodname>
 	<methodparam></methodparam>
@@ -114,19 +118,6 @@ linkend="method-gtktreemodel--unref-node">unref_node</link></methodname>
 	<methodparam><parameter
 		       role="keyword">iter</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktreemodel- -get">get</link></methodname>
-    <methodparam><parameter role="keyword">iter</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktreemodel- -get-valist">get_valist</link></methodname>
-    <methodparam><parameter role="keyword">iter</parameter></methodparam>
-    <methodparam><parameter role="keyword">var_args</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreemodel--foreach">foreach</link></methodname>
@@ -163,12 +154,16 @@ linkend="method-gtktreemodel--row-deleted">row_deleted</link></methodname>
 	<methodparam><parameter
 		       role="keyword">path</parameter></methodparam>
       </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtktreemodel--rows-reordered">rows_reordered</link></methodname>
-    <methodparam><parameter role="keyword">path</parameter></methodparam>
-    <methodparam><parameter role="keyword">iter</parameter></methodparam>
-    <methodparam><parameter role="keyword">new_order</parameter></methodparam>
-  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreemodel--rows-reordered">rows_reordered</link></methodname>
+	<methodparam><parameter role="keyword">path</parameter></methodparam>
+	<methodparam><parameter role="keyword">iter</parameter></methodparam>
+	<methodparam><parameter role="keyword">new_order</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreemodel--filter-new">filter_new</link></methodname>
+	<methodparam><parameter role="keyword">root</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
 
     </classsynopsis>
 
@@ -496,6 +491,37 @@ pointing to the path represented by <parameter>path_string</parameter>, if
 it exists. This method raises a <literal>ValueError</literal> exception if
 <parameter>path_string</parameter> does not represent a valid tree
 path.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreemodel--get-string-from-iter">
+      <title>gtk.TreeModel.get_string_from_iter</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_string_from_iter</methodname>
+	  <methodparam><parameter>iter</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>An <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A string representation of iter</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <methodname>get_string_from_iter</methodname>() method
+returns a string representation of the path pointed to by
+<parameter>iter</parameter>. This string is a ':' separated list of
+numbers. For example, "4:10:0:3" would be an acceptable return value for
+this string.</para>
 
     </refsect2>
 
@@ -1103,6 +1129,38 @@ at the position specified by
       <para>The <methodname>rows_reordered</methodname>() method emits the
 "rows_reordered" signal on the tree model. This method should be called by a
 tree model when its rows have been reordered.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreemodel--filter-new">
+      <title>gtk.TreeModel.filter_new</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>filter_new</methodname>
+	  <methodparam><parameter role="keyword">root</parameter><initializer>None</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">root</parameter>&nbsp;:</term>
+	  <listitem><simpara>a tree path or
+	  <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A new <link
+	  linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>filter_new</methodname>() method creates a new
+<link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>,
+with the tree model as the child_model and the virtual root specified by
+<parameter>root</parameter>.</para>
 
     </refsect2>
 
