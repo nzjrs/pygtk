@@ -186,8 +186,11 @@ icons. In the case where the default screen is being used, looking up an
 icon can be as simple as:</para>
 
     <programlisting>
-  icon_theme = gtk.icon_theme_get-default()
-  icon_theme.load_icon("my-icon-name", 48, 0)
+  icon_theme = gtk.icon_theme_get_default()
+  try:
+      icon_theme.load_icon("my-icon-name", 48, 0)
+  except gobject.GError, exc:
+      print "can't load icon", exc
 </programlisting>
 
     <para></para>
