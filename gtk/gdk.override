@@ -82,11 +82,11 @@ pygdk_block_threads (void)
     if (lock_count == 0) {
         PyThreadState *_save;
 
-	_save = g_static_private_get(&pythreadstate_key);
+        _save = g_static_private_get(&pythreadstate_key);
         if (_save == NULL) {
             _save = PyThreadState_New(pyinterpstate);
-	}
-	Py_BLOCK_THREADS;
+        }
+        Py_BLOCK_THREADS;
     }                                                                     
     lock_count++;
     g_static_private_set(&lock_count_key, GINT_TO_POINTER(lock_count), NULL);
@@ -100,8 +100,8 @@ pygdk_unblock_threads (void)
     if (lock_count == 0) {
         PyThreadState *_save;
 
-	Py_UNBLOCK_THREADS;
-	g_static_private_set(&pythreadstate_key, _save, NULL);
+        Py_UNBLOCK_THREADS;
+        g_static_private_set(&pythreadstate_key, _save, NULL);
     }
     g_static_private_set(&lock_count_key, GINT_TO_POINTER(lock_count), NULL);
 }
@@ -124,7 +124,7 @@ _wrap_gdk_threads_init(PyObject *self)
     return Py_None;
 #else
     PyErr_SetString(PyExc_RuntimeError,
-		    "pygtk threading disabled at compile time");
+                    "pygtk threading disabled at compile time");
     return NULL;
 #endif
 }
@@ -154,28 +154,28 @@ _wrap_gdk_draw_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkPoint *points;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!iO:GdkDrawable.draw_polygon", kwlist,
-				     &PyGdkGC_Type, &gc, &filled, &py_points))
-	return NULL;
+                                     "O!iO:GdkDrawable.draw_polygon", kwlist,
+                                     &PyGdkGC_Type, &gc, &filled, &py_points))
+        return NULL;
     if (!PySequence_Check(py_points)) {
-	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "points must be a sequence");
+        return NULL;
     }
     npoints = PySequence_Length(py_points);
     points = g_new(GdkPoint, npoints);
     for (i = 0; i < npoints; i++) {
-	PyObject *item = PySequence_GetItem(py_points, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 2-tuples");
-	    g_free(points);
-	    return NULL;
-	}
+        PyObject *item = PySequence_GetItem(py_points, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "sequence members must be 2-tuples");
+            g_free(points);
+            return NULL;
+        }
     }
     gdk_draw_polygon(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), filled,
-		     points, npoints);
+                     points, npoints);
     g_free(points);
     Py_INCREF(Py_None);
     return Py_None;
@@ -191,16 +191,16 @@ _wrap_gdk_draw_text(PyGObject *self, PyObject *args, PyObject *kwargs)
     int x, y, len;
     char *text;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OO!iis#:GdkDrawable.draw_text", kwlist,
-				     &font, &PyGdkGC_Type, &gc,
-				     &x, &y, &text, &len))
-	return NULL;
+                                     "OO!iis#:GdkDrawable.draw_text", kwlist,
+                                     &font, &PyGdkGC_Type, &gc,
+                                     &x, &y, &text, &len))
+        return NULL;
     if (!pyg_boxed_check(font, GDK_TYPE_FONT)) {
-	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
+        return NULL;
     }
     gdk_draw_text(GDK_DRAWABLE(self->obj), pyg_boxed_get(font, GdkFont),
-		  GDK_GC(gc->obj), x, y, text, len);
+                  GDK_GC(gc->obj), x, y, text, len);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -216,25 +216,25 @@ _wrap_gdk_draw_points(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkPoint *points;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!O:GdkDrawable.draw_points", kwlist,
-				     &PyGdkGC_Type, &gc, &py_points))
-	return NULL;
+                                     "O!O:GdkDrawable.draw_points", kwlist,
+                                     &PyGdkGC_Type, &gc, &py_points))
+        return NULL;
     if (!PySequence_Check(py_points)) {
-	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "points must be a sequence");
+        return NULL;
     }
     npoints = PySequence_Length(py_points);
     points = g_new(GdkPoint, npoints);
     for (i = 0; i < npoints; i++) {
-	PyObject *item = PySequence_GetItem(py_points, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 2-tuples");
-	    g_free(points);
-	    return NULL;
-	}
+        PyObject *item = PySequence_GetItem(py_points, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "sequence members must be 2-tuples");
+            g_free(points);
+            return NULL;
+        }
     }
     gdk_draw_points(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), points, npoints);
     g_free(points);
@@ -253,26 +253,26 @@ _wrap_gdk_draw_segments(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkSegment *segs;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!O:GdkDrawable.draw_segments", kwlist,
-				     &PyGdkGC_Type, &gc, &py_segs))
-	return NULL;
+                                     "O!O:GdkDrawable.draw_segments", kwlist,
+                                     &PyGdkGC_Type, &gc, &py_segs))
+        return NULL;
     if (!PySequence_Check(py_segs)) {
-	PyErr_SetString(PyExc_TypeError, "segs must be a sequence");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "segs must be a sequence");
+        return NULL;
     }
     nsegs = PySequence_Length(py_segs);
     segs = g_new(GdkSegment, nsegs);
     for (i = 0; i < nsegs; i++) {
-	PyObject *item = PySequence_GetItem(py_segs, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "iiii", &segs[i].x1, &segs[i].y1,
-			      &segs[i].x2, &segs[i].y2)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 4-tuples");
-	    g_free(segs);
-	    return NULL;
-	}
+        PyObject *item = PySequence_GetItem(py_segs, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "iiii", &segs[i].x1, &segs[i].y1,
+                              &segs[i].x2, &segs[i].y2)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "sequence members must be 4-tuples");
+            g_free(segs);
+            return NULL;
+        }
     }
     gdk_draw_segments(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), segs, nsegs);
     g_free(segs);
@@ -291,25 +291,25 @@ _wrap_gdk_draw_lines(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkPoint *points;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!O:GdkDrawable.draw_lines", kwlist,
-				     &PyGdkGC_Type, &gc, &py_points))
-	return NULL;
+                                     "O!O:GdkDrawable.draw_lines", kwlist,
+                                     &PyGdkGC_Type, &gc, &py_points))
+        return NULL;
     if (!PySequence_Check(py_points)) {
-	PyErr_SetString(PyExc_TypeError, "points must be a sequence");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "points must be a sequence");
+        return NULL;
     }
     npoints = PySequence_Length(py_points);
     points = g_new(GdkPoint, npoints);
     for (i = 0; i < npoints; i++) {
-	PyObject *item = PySequence_GetItem(py_points, i);
-	Py_DECREF(item);
-	if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "sequence members must be 2-tuples");
-	    g_free(points);
-	    return NULL;
-	}
+        PyObject *item = PySequence_GetItem(py_points, i);
+        Py_DECREF(item);
+        if (!PyArg_ParseTuple(item, "ii", &points[i].x, &points[i].y)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "sequence members must be 2-tuples");
+            g_free(points);
+            return NULL;
+        }
     }
     gdk_draw_lines(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), points, npoints);
     g_free(points);
@@ -322,7 +322,7 @@ static PyObject *
 _wrap_gdk_draw_rgb_image(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "gc", "x", "y", "width", "height", "dith",
-			      "rgb_buf", "rowstride", "xdith", "ydith", NULL };
+                              "rgb_buf", "rowstride", "xdith", "ydith", NULL };
     PyGObject *gc;
     PyObject *py_dith;
     gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0, len;
@@ -330,28 +330,28 @@ _wrap_gdk_draw_rgb_image(PyGObject *self, PyObject *args, PyObject *kwargs)
     guchar *rgb_buf;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!iiiiOs#|iii:GdkDrawable.draw_rgb_image",
-				     kwlist, &PyGdkGC_Type, &gc, &x, &y,
-				     &width, &height, &py_dith,
-				     &rgb_buf, &len, &rowstride,
-				     &xdith, &ydith))
-	return NULL;
+                                     "O!iiiiOs#|iii:GdkDrawable.draw_rgb_image",
+                                     kwlist, &PyGdkGC_Type, &gc, &x, &y,
+                                     &width, &height, &py_dith,
+                                     &rgb_buf, &len, &rowstride,
+                                     &xdith, &ydith))
+        return NULL;
 
     if (pyg_enum_get_value(GDK_TYPE_RGB_DITHER, py_dith, (gint *)&dith))
-	return NULL;
+        return NULL;
     if (!(width > 0 && height > 0)) {
-	PyErr_SetString(PyExc_ValueError,
-			"height and width must be greater than zero");
-	return NULL;
+        PyErr_SetString(PyExc_ValueError,
+                        "height and width must be greater than zero");
+        return NULL;
     }
     if (rowstride == -1) rowstride = width * 3;
     if (len < rowstride * (height - 1) + width*3) {
-	PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
-	return NULL;
+        PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
+        return NULL;
     }
     gdk_draw_rgb_image_dithalign(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj),
-				 x, y, width, height, dith, rgb_buf,
-				 rowstride, xdith, ydith);
+                                 x, y, width, height, dith, rgb_buf,
+                                 rowstride, xdith, ydith);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -363,7 +363,7 @@ static PyObject *
 _wrap_gdk_draw_rgb_32_image(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "gc", "x", "y", "width", "height", "dith",
-			      "rgb_buf", "rowstride", "xdith", "ydith", NULL };
+                              "rgb_buf", "rowstride", "xdith", "ydith", NULL };
     PyGObject *gc;
     PyObject *py_dith;
     gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0, len;
@@ -371,28 +371,28 @@ _wrap_gdk_draw_rgb_32_image(PyGObject *self, PyObject *args, PyObject *kwargs)
     guchar *rgb_buf;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				"O!iiiiOs#|iii:GdkDrawable.draw_rgb_32_image",
-				     kwlist, &PyGdkGC_Type, &gc, &x, &y,
-				     &width, &height, &py_dith,
-				     &rgb_buf, &len, &rowstride,
-				     &xdith, &ydith))
-	return NULL;
+                                "O!iiiiOs#|iii:GdkDrawable.draw_rgb_32_image",
+                                     kwlist, &PyGdkGC_Type, &gc, &x, &y,
+                                     &width, &height, &py_dith,
+                                     &rgb_buf, &len, &rowstride,
+                                     &xdith, &ydith))
+        return NULL;
 
     if (pyg_enum_get_value(GDK_TYPE_RGB_DITHER, py_dith, (gint *)&dith))
-	return NULL;
+        return NULL;
     if (!(width > 0 && height > 0)) {
-	PyErr_SetString(PyExc_ValueError,
-			"height and width must be greater than zero");
-	return NULL;
+        PyErr_SetString(PyExc_ValueError,
+                        "height and width must be greater than zero");
+        return NULL;
     }
     if (rowstride == -1) rowstride = width * 4;
     if (len < rowstride * (height - 1) + width*4) {
-	PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
-	return NULL;
+        PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
+        return NULL;
     }
     gdk_draw_rgb_32_image_dithalign(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj),
-				    x, y, width, height, dith, rgb_buf,
-				    rowstride, xdith, ydith);
+                                    x, y, width, height, dith, rgb_buf,
+                                    rowstride, xdith, ydith);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -404,7 +404,7 @@ static PyObject *
 _wrap_gdk_draw_gray_image(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "gc", "x", "y", "width", "height", "dith",
-			      "buf", "rowstride", NULL };
+                              "buf", "rowstride", NULL };
     PyGObject *gc;
     PyObject *py_dith;
     gint x, y, width, height, rowstride = -1, len;
@@ -412,26 +412,26 @@ _wrap_gdk_draw_gray_image(PyGObject *self, PyObject *args, PyObject *kwargs)
     guchar *buf;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!iiiiOs#|i:GdkDrawable.draw_gray_image",
-				     kwlist, &PyGdkGC_Type, &gc, &x, &y,
-				     &width, &height, &py_dith,
-				     &buf, &len, &rowstride))
-	return NULL;
+                                     "O!iiiiOs#|i:GdkDrawable.draw_gray_image",
+                                     kwlist, &PyGdkGC_Type, &gc, &x, &y,
+                                     &width, &height, &py_dith,
+                                     &buf, &len, &rowstride))
+        return NULL;
 
     if (pyg_enum_get_value(GDK_TYPE_RGB_DITHER, py_dith, (gint *)&dith))
-	return NULL;
+        return NULL;
     if (!(width > 0 && height > 0)) {
-	PyErr_SetString(PyExc_ValueError,
-			"height and width must be greater than zero");
-	return NULL;
+        PyErr_SetString(PyExc_ValueError,
+                        "height and width must be greater than zero");
+        return NULL;
     }
     if (rowstride == -1) rowstride = width;
     if (len < rowstride * (height - 1) + width) {
-	PyErr_SetString(PyExc_IndexError, "buf is not large enough");
-	return NULL;
+        PyErr_SetString(PyExc_IndexError, "buf is not large enough");
+        return NULL;
     }
     gdk_draw_gray_image(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), x, y,
-			width, height, dith, buf, rowstride);
+                        width, height, dith, buf, rowstride);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -443,16 +443,16 @@ ignore
 override gdk_color_new kwargs
 static int
 _wrap_gdk_color_new(PyGBoxed *self,
-		    PyObject *args,
-		    PyObject *kwargs)
+                    PyObject *args,
+                    PyObject *kwargs)
 {
     static char *kwlist[] = {"red", "green", "blue", "pixel", NULL };
     GdkColor colour = {0, 0, 0, 0};
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiii:gdk.Color", kwlist,
-				     &(colour.red), &(colour.green),
-				     &(colour.blue), &(colour.pixel))) {
-	return -1;
+                                     &(colour.red), &(colour.green),
+                                     &(colour.blue), &(colour.pixel))) {
+        return -1;
     }
     
     self->boxed =  g_boxed_copy(GDK_TYPE_COLOR, &colour);
@@ -467,25 +467,25 @@ static int
 _wrap_gdk_color_tp_setattr(PyGBoxed *self, char *attr, PyObject *value)
 {
     if (value == NULL) {
-	PyErr_SetString(PyExc_TypeError, "can't delete attributes");
-	return -1;
+        PyErr_SetString(PyExc_TypeError, "can't delete attributes");
+        return -1;
     }
 
     if (PyInt_Check(value)) {
-	int i = PyInt_AsLong(value);
-	if (!strcmp(attr, "red")) {
-	    pyg_boxed_get(self, GdkColor)->red = i;
-	    return 0;
-	} else if (!strcmp(attr, "green")) {
-	    pyg_boxed_get(self, GdkColor)->green = i;	    
-	    return 0;
-	} else if (!strcmp(attr, "blue")) {
-	    pyg_boxed_get(self, GdkColor)->blue = i;
-	    return 0;
-	} else if (!strcmp(attr, "pixel")) {
-	    pyg_boxed_get(self, GdkColor)->pixel = i;
-	    return 0;
-	} 
+        int i = PyInt_AsLong(value);
+        if (!strcmp(attr, "red")) {
+            pyg_boxed_get(self, GdkColor)->red = i;
+            return 0;
+        } else if (!strcmp(attr, "green")) {
+            pyg_boxed_get(self, GdkColor)->green = i;       
+            return 0;
+        } else if (!strcmp(attr, "blue")) {
+            pyg_boxed_get(self, GdkColor)->blue = i;
+            return 0;
+        } else if (!strcmp(attr, "pixel")) {
+            pyg_boxed_get(self, GdkColor)->pixel = i;
+            return 0;
+        } 
     }
 
     PyErr_SetString(PyExc_AttributeError, "could not write attribute");
@@ -501,7 +501,7 @@ _wrap_gdk_color_parse(PyObject *self, PyObject *args, PyObject *kwargs)
     GdkColor colour;
     
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:color_parse", kwlist,
-				     &spec))
+                                     &spec))
         return NULL;
 
     gdk_color_parse (spec, &colour);
@@ -518,12 +518,12 @@ _wrap_gdk_fontset_load(PyObject *self, PyObject *args, PyObject *kwargs)
     char *fontset_name;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:fontset_load", kwlist,
-				     &fontset_name))
+                                     &fontset_name))
         return NULL;
 
     /* pyg_boxed_new handles NULL checking */
     return pyg_boxed_new(GDK_TYPE_FONT, gdk_fontset_load(fontset_name),
-			 FALSE, TRUE);
+                         FALSE, TRUE);
 }
 %%
 override gdk_text_extents kwargs
@@ -536,18 +536,18 @@ _wrap_gdk_text_extents(PyObject *self, PyObject *args, PyObject *kwargs)
     gint lbearing, rbearing, width, ascent, descent;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:GdkFont.extents",
-				     kwlist, &text, &length))
-	return NULL;
+                                     kwlist, &text, &length))
+        return NULL;
     gdk_text_extents(pyg_boxed_get(self, GdkFont), text, length,
-		     &lbearing, &rbearing, &width, &ascent, &descent);
+                     &lbearing, &rbearing, &width, &ascent, &descent);
     return Py_BuildValue("(iiiii)", lbearing, rbearing, width,
-			 ascent, descent);
+                         ascent, descent);
 }
 %%
 override gdk_pixmap_create_from_xpm kwargs
 static PyObject *
 _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
-				 PyObject *kwargs)
+                                 PyObject *kwargs)
 {
     static char *kwlist[] = { "window", "transparent_color", "filename", NULL};
     PyGObject *window;
@@ -558,26 +558,26 @@ _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
     GdkBitmap *mask;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!Os:pixmap_create_from_xpm", kwlist,
-				     &PyGdkWindow_Type, &window,
-				     &py_trans_color, &filename))
-	return NULL;
+                                     "O!Os:pixmap_create_from_xpm", kwlist,
+                                     &PyGdkWindow_Type, &window,
+                                     &py_trans_color, &filename))
+        return NULL;
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
-	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
+        trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError,
+                        "transparent_color must be a colour or None");
+        return NULL;
     }
     pixmap = gdk_pixmap_create_from_xpm(GDK_WINDOW(window->obj), &mask,
-					trans_color, filename);
+                                        trans_color, filename);
     if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
+        PyErr_SetString(PyExc_IOError, "can't load pixmap");
+        return NULL;
     }
     ret = Py_BuildValue("(NN)",
-			pygobject_new((GObject *)pixmap),
-			pygobject_new((GObject *)mask));
+                        pygobject_new((GObject *)pixmap),
+                        pygobject_new((GObject *)mask));
     gdk_pixmap_unref(pixmap);
     gdk_bitmap_unref(mask);
     return ret;
@@ -586,10 +586,10 @@ _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
 override gdk_pixmap_colormap_create_from_xpm kwargs
 static PyObject *
 _wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
-					  PyObject *kwargs)
+                                          PyObject *kwargs)
 {
     static char *kwlist[] = { "window", "colormap", "transparent_color",
-			      "filename", NULL };
+                              "filename", NULL };
     PyObject *py_window, *py_colormap, *py_trans_color, *ret;
     GdkWindow *window = NULL;
     GdkColormap *colormap = NULL;
@@ -599,39 +599,39 @@ _wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
     GdkBitmap *mask;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOOs:pixmap_colormap_create_from_xpm",
-				     kwlist, &py_window, &py_colormap,
-				     &py_trans_color, &filename))
-	return NULL;
+                                     "OOOs:pixmap_colormap_create_from_xpm",
+                                     kwlist, &py_window, &py_colormap,
+                                     &py_trans_color, &filename))
+        return NULL;
     if (pygobject_check(py_window, &PyGdkWindow_Type))
-	window = GDK_WINDOW(pygobject_get(py_window));
+        window = GDK_WINDOW(pygobject_get(py_window));
     else if (py_window != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
+        return NULL;
     }
     if (pygobject_check(py_colormap, &PyGdkColormap_Type))
-	colormap = GDK_COLORMAP(pygobject_get(py_colormap));
+        colormap = GDK_COLORMAP(pygobject_get(py_colormap));
     else if (py_colormap != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"colormap must be a GdkColormap or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError,
+                        "colormap must be a GdkColormap or None");
+        return NULL;
     }
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
-	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
+        trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError,
+                        "transparent_color must be a colour or None");
+        return NULL;
     }
     pixmap = gdk_pixmap_colormap_create_from_xpm(window, colormap, &mask,
-						 trans_color, filename);
+                                                 trans_color, filename);
     if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
+        PyErr_SetString(PyExc_IOError, "can't load pixmap");
+        return NULL;
     }
     ret = Py_BuildValue("(NN)",
-			pygobject_new((GObject *)pixmap),
-			pygobject_new((GObject *)mask));
+                        pygobject_new((GObject *)pixmap),
+                        pygobject_new((GObject *)mask));
     gdk_pixmap_unref(pixmap);
     gdk_bitmap_unref(mask);
     return ret;
@@ -640,7 +640,7 @@ _wrap_gdk_pixmap_colormap_create_from_xpm(PyObject *self, PyObject *args,
 override gdk_pixmap_create_from_xpm_d kwargs
 static PyObject *
 _wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
-				   PyObject *kwargs)
+                                   PyObject *kwargs)
 {
     static char *kwlist[] = { "window", "transparent_color", "data", NULL };
     PyGObject *window;
@@ -652,38 +652,38 @@ _wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
     GdkBitmap *mask;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!OO!:pixmap_create_from_xpm_d", kwlist,
-				     &PyGdkWindow_Type, &window,
-				     &py_trans_color, &PyList_Type, &py_data))
-	return NULL;
+                                     "O!OO!:pixmap_create_from_xpm_d", kwlist,
+                                     &PyGdkWindow_Type, &window,
+                                     &py_trans_color, &PyList_Type, &py_data))
+        return NULL;
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
-	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
+        trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError,
+                        "transparent_color must be a colour or None");
+        return NULL;
     }
     len = PyList_Size(py_data);
     data = g_new(gchar *, len);
     for (i = 0; i < len; i ++) {
-	PyObject *item = PyList_GetItem(py_data, i);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
-	    g_free(data);
-	    return NULL;
-	}
-	data[i] = PyString_AsString(item);
+        PyObject *item = PyList_GetItem(py_data, i);
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError, "data items must be strings");
+            g_free(data);
+            return NULL;
+        }
+        data[i] = PyString_AsString(item);
     }
     pixmap = gdk_pixmap_create_from_xpm_d(GDK_WINDOW(window->obj), &mask,
-					  trans_color, data);
+                                          trans_color, data);
     g_free(data);
     if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
+        PyErr_SetString(PyExc_IOError, "can't load pixmap");
+        return NULL;
     }
     ret = Py_BuildValue("(NN)",
-			pygobject_new((GObject *)pixmap),
-			pygobject_new((GObject *)mask));
+                        pygobject_new((GObject *)pixmap),
+                        pygobject_new((GObject *)mask));
     gdk_pixmap_unref(pixmap);
     gdk_bitmap_unref(mask);
     return ret;
@@ -692,10 +692,10 @@ _wrap_gdk_pixmap_create_from_xpm_d(PyObject *self, PyObject *args,
 override gdk_pixmap_colormap_create_from_xpm_d kwargs
 static PyObject *
 _wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
-					    PyObject *kwargs)
+                                            PyObject *kwargs)
 {
     static char *kwlist[] = { "window", "colormap", "transparent_color",
-			      "data", NULL };
+                              "data", NULL };
     PyObject *py_window, *py_colormap, *py_trans_color, *py_data, *ret;
     GdkWindow *window = NULL;
     GdkColormap *colormap = NULL;
@@ -706,52 +706,52 @@ _wrap_gdk_pixmap_colormap_create_from_xpm_d(PyObject *self, PyObject *args,
     GdkBitmap *mask;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOOO!:pixmap_colormap_create_from_xpm_d",
-				     kwlist, &py_window, &py_colormap,
-				     &py_trans_color,
-				     &PyList_Type, &py_data))
-	return NULL;
+                                     "OOOO!:pixmap_colormap_create_from_xpm_d",
+                                     kwlist, &py_window, &py_colormap,
+                                     &py_trans_color,
+                                     &PyList_Type, &py_data))
+        return NULL;
     if (pygobject_check(py_window, &PyGdkWindow_Type))
-	window = GDK_WINDOW(pygobject_get(py_window));
+        window = GDK_WINDOW(pygobject_get(py_window));
     else if (py_window != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow or None");
+        return NULL;
     }
     if (pygobject_check(py_colormap, &PyGdkColormap_Type))
-	colormap = GDK_COLORMAP(pygobject_get(py_colormap));
+        colormap = GDK_COLORMAP(pygobject_get(py_colormap));
     else if (py_colormap != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"colormap must be a GdkColormap or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError,
+                        "colormap must be a GdkColormap or None");
+        return NULL;
     }
     if (pyg_boxed_check(py_trans_color, GDK_TYPE_COLOR))
-	trans_color = pyg_boxed_get(py_trans_color, GdkColor);
+        trans_color = pyg_boxed_get(py_trans_color, GdkColor);
     else if (py_trans_color != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"transparent_color must be a colour or None");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError,
+                        "transparent_color must be a colour or None");
+        return NULL;
     }
     len = PyList_Size(py_data);
     data = g_new(gchar *, len);
     for (i = 0; i < len; i ++) {
-	PyObject *item = PyList_GetItem(py_data, i);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
-	    g_free(data);
-	    return NULL;
-	}
-	data[i] = PyString_AsString(item);
+        PyObject *item = PyList_GetItem(py_data, i);
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError, "data items must be strings");
+            g_free(data);
+            return NULL;
+        }
+        data[i] = PyString_AsString(item);
     }
     pixmap = gdk_pixmap_colormap_create_from_xpm_d(window, colormap, &mask,
-						   trans_color, data);
+                                                   trans_color, data);
     g_free(data);
     if (pixmap == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixmap");
-	return NULL;
+        PyErr_SetString(PyExc_IOError, "can't load pixmap");
+        return NULL;
     }
     ret = Py_BuildValue("(NN)",
-			pygobject_new((GObject *)pixmap),
-			pygobject_new((GObject *)mask));
+                        pygobject_new((GObject *)pixmap),
+                        pygobject_new((GObject *)mask));
     gdk_pixmap_unref(pixmap);
     gdk_bitmap_unref(mask);
     return ret;
@@ -771,56 +771,56 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     self->free_on_dealloc = FALSE;
     self->boxed = NULL;
     if (PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkCursor.__init__",
-				    kwlist1, &py_cursor_type)) {
-	GdkCursorType cursor_type;
+                                    kwlist1, &py_cursor_type)) {
+        GdkCursorType cursor_type;
 
         if (pyg_enum_get_value(GDK_TYPE_CURSOR_TYPE, py_cursor_type,
-			       (gint *)&cursor_type))
-	    return -1;
-	self->boxed = gdk_cursor_new(cursor_type);
-	if (!self->boxed) {
-	    PyErr_SetString(PyExc_RuntimeError,
-			    "could not create GdkCursor object");
-	    return -1;
-	}
-	self->free_on_dealloc = TRUE;
+                               (gint *)&cursor_type))
+            return -1;
+        self->boxed = gdk_cursor_new(cursor_type);
+        if (!self->boxed) {
+            PyErr_SetString(PyExc_RuntimeError,
+                            "could not create GdkCursor object");
+            return -1;
+        }
+        self->free_on_dealloc = TRUE;
     } else {
-	PyGObject *source, *mask;
-	PyObject *fg, *bg;
-	gint x, y;
-	PyErr_Clear();
+        PyGObject *source, *mask;
+        PyObject *fg, *bg;
+        gint x, y;
+        PyErr_Clear();
 
-	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-					 "OOOOii:GdkCursor.__init__", kwlist2,
-					 &source, &mask, &fg, &bg, &x, &y))
-	    return -1;
-	if (!pygobject_check(source, &PyGdkPixmap_Type)) {
-	    PyErr_SetString(PyExc_TypeError, "source should be a GdkPixmap");
-	    return -1;
-	}
-	if (!pygobject_check(mask, &PyGdkPixmap_Type)) {
-	    PyErr_SetString(PyExc_TypeError, "mask should be a GdkPixmap");
-	    return -1;
-	}
-	if (!pyg_boxed_check(fg, GDK_TYPE_COLOR)) {
-	    PyErr_SetString(PyExc_TypeError, "fg should be a GdkColor");
-	    return -1;
-	}
-	if (!pyg_boxed_check(bg, GDK_TYPE_COLOR)) {
-	    PyErr_SetString(PyExc_TypeError, "bg should be a GdkColor");
-	    return -1;
-	}
-	self->boxed = gdk_cursor_new_from_pixmap(GDK_PIXMAP(source->obj),
-						 GDK_PIXMAP(mask->obj),
-						 pyg_boxed_get(fg, GdkColor),
-						 pyg_boxed_get(bg, GdkColor),
-						 x, y);
-	if (!self->boxed) {
-	    PyErr_SetString(PyExc_RuntimeError,
-			    "could not create GdkCursor object");
-	    return -1;
-	}
-	self->free_on_dealloc = TRUE;
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                         "OOOOii:GdkCursor.__init__", kwlist2,
+                                         &source, &mask, &fg, &bg, &x, &y))
+            return -1;
+        if (!pygobject_check(source, &PyGdkPixmap_Type)) {
+            PyErr_SetString(PyExc_TypeError, "source should be a GdkPixmap");
+            return -1;
+        }
+        if (!pygobject_check(mask, &PyGdkPixmap_Type)) {
+            PyErr_SetString(PyExc_TypeError, "mask should be a GdkPixmap");
+            return -1;
+        }
+        if (!pyg_boxed_check(fg, GDK_TYPE_COLOR)) {
+            PyErr_SetString(PyExc_TypeError, "fg should be a GdkColor");
+            return -1;
+        }
+        if (!pyg_boxed_check(bg, GDK_TYPE_COLOR)) {
+            PyErr_SetString(PyExc_TypeError, "bg should be a GdkColor");
+            return -1;
+        }
+        self->boxed = gdk_cursor_new_from_pixmap(GDK_PIXMAP(source->obj),
+                                                 GDK_PIXMAP(mask->obj),
+                                                 pyg_boxed_get(fg, GdkColor),
+                                                 pyg_boxed_get(bg, GdkColor),
+                                                 x, y);
+        if (!self->boxed) {
+            PyErr_SetString(PyExc_RuntimeError,
+                            "could not create GdkCursor object");
+            return -1;
+        }
+        self->free_on_dealloc = TRUE;
     }
     return 0;
 }
@@ -837,298 +837,298 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     case GDK_DELETE: break;
     case GDK_DESTROY: break;
     case GDK_EXPOSE:            /*GdkEventExpose            expose*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssss]",
-				 "type", "window", "send_event",
-				 "area", "count");
-	if (!strcmp(attr, "area"))
-	    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &event->expose.area,
-				 TRUE, TRUE);
-	if (!strcmp(attr, "count"))
-	    return PyInt_FromLong(event->expose.count);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssss]",
+                                 "type", "window", "send_event",
+                                 "area", "count");
+        if (!strcmp(attr, "area"))
+            return pyg_boxed_new(GDK_TYPE_RECTANGLE, &event->expose.area,
+                                 TRUE, TRUE);
+        if (!strcmp(attr, "count"))
+            return PyInt_FromLong(event->expose.count);
+        break;
     case GDK_MOTION_NOTIFY:     /*GdkEventMotion            motion*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[ssssssssssss]",
-				 "type", "window", "send_event",
-				 "time", "x", "y", "axes", "state",
-				 "is_hint", "device", "x_root", "y_root");
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->motion.time);
-	if (!strcmp(attr, "x"))
-	    return PyFloat_FromDouble(event->motion.x);
-	if (!strcmp(attr, "y"))
-	    return PyFloat_FromDouble(event->motion.y);
-	if (!strcmp(attr, "axes")) {
-	    if (event->motion.axes) {
-		PyObject *v = PyTuple_New(event->motion.device->num_axes);
-		if (!v) return NULL;
-		for (i = 0; i < event->motion.device->num_axes; i++)
-		    PyTuple_SetItem(v, i,PyFloat_FromDouble(
-						event->motion.axes[i]));
-		return v;
-	    } else {
-		Py_INCREF(Py_None);
-		return Py_None;
-	    }
-	}
-	if (!strcmp(attr, "state"))
-	    return PyInt_FromLong(event->motion.state);
-	if (!strcmp(attr, "is_hint"))
-	    return PyInt_FromLong(event->motion.is_hint);
-	if (!strcmp(attr, "device"))
-	    return pygobject_new((GObject *)event->motion.device);
-	if (!strcmp(attr, "x_root"))
-	    return PyFloat_FromDouble(event->motion.x_root);
-	if (!strcmp(attr, "y_root"))
-	    return PyFloat_FromDouble(event->motion.y_root);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssssssssssss]",
+                                 "type", "window", "send_event",
+                                 "time", "x", "y", "axes", "state",
+                                 "is_hint", "device", "x_root", "y_root");
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->motion.time);
+        if (!strcmp(attr, "x"))
+            return PyFloat_FromDouble(event->motion.x);
+        if (!strcmp(attr, "y"))
+            return PyFloat_FromDouble(event->motion.y);
+        if (!strcmp(attr, "axes")) {
+            if (event->motion.axes) {
+                PyObject *v = PyTuple_New(event->motion.device->num_axes);
+                if (!v) return NULL;
+                for (i = 0; i < event->motion.device->num_axes; i++)
+                    PyTuple_SetItem(v, i,PyFloat_FromDouble(
+                                                event->motion.axes[i]));
+                return v;
+            } else {
+                Py_INCREF(Py_None);
+                return Py_None;
+            }
+        }
+        if (!strcmp(attr, "state"))
+            return PyInt_FromLong(event->motion.state);
+        if (!strcmp(attr, "is_hint"))
+            return PyInt_FromLong(event->motion.is_hint);
+        if (!strcmp(attr, "device"))
+            return pygobject_new((GObject *)event->motion.device);
+        if (!strcmp(attr, "x_root"))
+            return PyFloat_FromDouble(event->motion.x_root);
+        if (!strcmp(attr, "y_root"))
+            return PyFloat_FromDouble(event->motion.y_root);
+        break;
     case GDK_BUTTON_PRESS:      /*GdkEventButton            button*/
     case GDK_2BUTTON_PRESS:     /*GdkEventButton            button*/
     case GDK_3BUTTON_PRESS:     /*GdkEventButton            button*/
     case GDK_BUTTON_RELEASE:    /*GdkEventButton            button*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[ssssssssssss]",
-				 "type", "window", "send_event",
-				 "time", "x", "y", "axes", "state",
-				 "button", "device", "x_root", "y_root");
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->button.time);
-	if (!strcmp(attr, "x"))
-	    return PyFloat_FromDouble(event->button.x);
-	if (!strcmp(attr, "y"))
-	    return PyFloat_FromDouble(event->button.y);
-	if (!strcmp(attr, "axes")) {
-	    if (event->button.axes) {
-		PyObject *v = PyTuple_New(event->button.device->num_axes);
-		if (!v) return NULL;
-		for (i = 0; i < event->button.device->num_axes; i++)
-		    PyTuple_SetItem(v, i,PyFloat_FromDouble(
-						event->button.axes[i]));
-		return v;
-	    } else {
-		Py_INCREF(Py_None);
-		return Py_None;
-	    }
-	}
-	if (!strcmp(attr, "state"))
-	    return PyInt_FromLong(event->button.state);
-	if (!strcmp(attr, "button"))
-	    return PyInt_FromLong(event->button.button);
-	if (!strcmp(attr, "device"))
-	    return pygobject_new((GObject *)event->button.device);
-	if (!strcmp(attr, "x_root"))
-	    return PyFloat_FromDouble(event->button.x_root);
-	if (!strcmp(attr, "y_root"))
-	    return PyFloat_FromDouble(event->button.y_root);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssssssssssss]",
+                                 "type", "window", "send_event",
+                                 "time", "x", "y", "axes", "state",
+                                 "button", "device", "x_root", "y_root");
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->button.time);
+        if (!strcmp(attr, "x"))
+            return PyFloat_FromDouble(event->button.x);
+        if (!strcmp(attr, "y"))
+            return PyFloat_FromDouble(event->button.y);
+        if (!strcmp(attr, "axes")) {
+            if (event->button.axes) {
+                PyObject *v = PyTuple_New(event->button.device->num_axes);
+                if (!v) return NULL;
+                for (i = 0; i < event->button.device->num_axes; i++)
+                    PyTuple_SetItem(v, i,PyFloat_FromDouble(
+                                                event->button.axes[i]));
+                return v;
+            } else {
+                Py_INCREF(Py_None);
+                return Py_None;
+            }
+        }
+        if (!strcmp(attr, "state"))
+            return PyInt_FromLong(event->button.state);
+        if (!strcmp(attr, "button"))
+            return PyInt_FromLong(event->button.button);
+        if (!strcmp(attr, "device"))
+            return pygobject_new((GObject *)event->button.device);
+        if (!strcmp(attr, "x_root"))
+            return PyFloat_FromDouble(event->button.x_root);
+        if (!strcmp(attr, "y_root"))
+            return PyFloat_FromDouble(event->button.y_root);
+        break;
     case GDK_KEY_PRESS:         /*GdkEventKey               key*/
     case GDK_KEY_RELEASE:       /*GdkEventKey               key*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssssss]",
-				 "type", "window", "send_event",
-				 "time", "state", "keyval", "string");
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->key.time);
-	if (!strcmp(attr, "state"))
-	    return PyInt_FromLong(event->key.state);
-	if (!strcmp(attr, "keyval"))
-	    return PyInt_FromLong(event->key.keyval);
-	if (!strcmp(attr, "string"))
-	    return PyString_FromStringAndSize(event->key.string,
-					      event->key.length);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssssss]",
+                                 "type", "window", "send_event",
+                                 "time", "state", "keyval", "string");
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->key.time);
+        if (!strcmp(attr, "state"))
+            return PyInt_FromLong(event->key.state);
+        if (!strcmp(attr, "keyval"))
+            return PyInt_FromLong(event->key.keyval);
+        if (!strcmp(attr, "string"))
+            return PyString_FromStringAndSize(event->key.string,
+                                              event->key.length);
+        break;
     case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
     case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssssssssssss]",
-				 "type", "window", "send_event",
-				 "subwindow", "time", "x", "y",
-				 "x_root", "y_root", "mode", "detail",
-				 "focus", "state");
-	if (!strcmp(attr, "subwindow"))
-	    return pygobject_new((GObject *)event->crossing.subwindow);
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->crossing.time);
-	if (!strcmp(attr, "x"))
-	    return PyFloat_FromDouble(event->crossing.x);
-	if (!strcmp(attr, "y"))
-	    return PyFloat_FromDouble(event->crossing.y);
-	if (!strcmp(attr, "x_root"))
-	    return PyFloat_FromDouble(event->crossing.x_root);
-	if (!strcmp(attr, "y_root"))
-	    return PyFloat_FromDouble(event->crossing.y_root);
-	if (!strcmp(attr, "mode"))
-	    return PyInt_FromLong(event->crossing.mode);
-	if (!strcmp(attr, "detail"))
-	    return PyInt_FromLong(event->crossing.detail);
-	if (!strcmp(attr, "focus"))
-	    return PyInt_FromLong(event->crossing.focus);
-	if (!strcmp(attr, "state"))
-	    return PyInt_FromLong(event->crossing.state);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssssssssssss]",
+                                 "type", "window", "send_event",
+                                 "subwindow", "time", "x", "y",
+                                 "x_root", "y_root", "mode", "detail",
+                                 "focus", "state");
+        if (!strcmp(attr, "subwindow"))
+            return pygobject_new((GObject *)event->crossing.subwindow);
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->crossing.time);
+        if (!strcmp(attr, "x"))
+            return PyFloat_FromDouble(event->crossing.x);
+        if (!strcmp(attr, "y"))
+            return PyFloat_FromDouble(event->crossing.y);
+        if (!strcmp(attr, "x_root"))
+            return PyFloat_FromDouble(event->crossing.x_root);
+        if (!strcmp(attr, "y_root"))
+            return PyFloat_FromDouble(event->crossing.y_root);
+        if (!strcmp(attr, "mode"))
+            return PyInt_FromLong(event->crossing.mode);
+        if (!strcmp(attr, "detail"))
+            return PyInt_FromLong(event->crossing.detail);
+        if (!strcmp(attr, "focus"))
+            return PyInt_FromLong(event->crossing.focus);
+        if (!strcmp(attr, "state"))
+            return PyInt_FromLong(event->crossing.state);
+        break;
     case GDK_FOCUS_CHANGE:      /*GdkEventFocus             focus_change*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[ssss]",
-				 "type", "window", "send_event",
-				 "in_");
-	if (!strcmp(attr, "in_"))
-	    return PyInt_FromLong(event->focus_change.in);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssss]",
+                                 "type", "window", "send_event",
+                                 "in_");
+        if (!strcmp(attr, "in_"))
+            return PyInt_FromLong(event->focus_change.in);
+        break;
     case GDK_CONFIGURE:         /*GdkEventConfigure         configure*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssssss]",
-				 "type", "window", "send_event",
-				 "x", "y", "width", "height");
-	if (!strcmp(attr, "x"))
-	    return PyInt_FromLong(event->configure.x);
-	if (!strcmp(attr, "y"))
-	    return PyInt_FromLong(event->configure.y);
-	if (!strcmp(attr, "width"))
-	    return PyInt_FromLong(event->configure.width);
-	if (!strcmp(attr, "height"))
-	    return PyInt_FromLong(event->configure.height);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssssss]",
+                                 "type", "window", "send_event",
+                                 "x", "y", "width", "height");
+        if (!strcmp(attr, "x"))
+            return PyInt_FromLong(event->configure.x);
+        if (!strcmp(attr, "y"))
+            return PyInt_FromLong(event->configure.y);
+        if (!strcmp(attr, "width"))
+            return PyInt_FromLong(event->configure.width);
+        if (!strcmp(attr, "height"))
+            return PyInt_FromLong(event->configure.height);
+        break;
     case GDK_MAP: break;
     case GDK_UNMAP: break;
     case GDK_PROPERTY_NOTIFY:   /*GdkEventProperty          property*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[ssssss]",
-				 "type", "window", "send_event",
-				 "atom", "time", "state");
-	if (!strcmp(attr, "atom"))
-	    return PyGdkAtom_New(event->property.atom);
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->property.time);
-	if (!strcmp(attr, "state"))
-	    return PyInt_FromLong(event->property.state);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssssss]",
+                                 "type", "window", "send_event",
+                                 "atom", "time", "state");
+        if (!strcmp(attr, "atom"))
+            return PyGdkAtom_New(event->property.atom);
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->property.time);
+        if (!strcmp(attr, "state"))
+            return PyInt_FromLong(event->property.state);
+        break;
     case GDK_SELECTION_CLEAR:   /*GdkEventSelection         selection*/
     case GDK_SELECTION_REQUEST: /*GdkEventSelection         selection*/
     case GDK_SELECTION_NOTIFY:  /*GdkEventSelection         selection*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[ssssssss]",
-				 "type", "window", "send_event",
-				 "selection", "target", "property",
-				 "requestor", "time");
-	if (!strcmp(attr, "selection"))
-	    return PyGdkAtom_New(event->selection.selection);
-	if (!strcmp(attr, "target"))
-	    return PyGdkAtom_New(event->selection.target);
-	if (!strcmp(attr, "property"))
-	    return PyGdkAtom_New(event->selection.property);
-	if (!strcmp(attr, "requestor"))
-	    return PyInt_FromLong(event->selection.requestor);
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->selection.time);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssssssss]",
+                                 "type", "window", "send_event",
+                                 "selection", "target", "property",
+                                 "requestor", "time");
+        if (!strcmp(attr, "selection"))
+            return PyGdkAtom_New(event->selection.selection);
+        if (!strcmp(attr, "target"))
+            return PyGdkAtom_New(event->selection.target);
+        if (!strcmp(attr, "property"))
+            return PyGdkAtom_New(event->selection.property);
+        if (!strcmp(attr, "requestor"))
+            return PyInt_FromLong(event->selection.requestor);
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->selection.time);
+        break;
     case GDK_PROXIMITY_IN:      /*GdkEventProximity         proximity*/
     case GDK_PROXIMITY_OUT:     /*GdkEventProximity         proximity*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssss]",
-				 "type", "window", "send_event",
-				 "time", "device");
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->proximity.time);
-	if (!strcmp(attr, "device"))
-	    return pygobject_new((GObject *)event->proximity.device);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssss]",
+                                 "type", "window", "send_event",
+                                 "time", "device");
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->proximity.time);
+        if (!strcmp(attr, "device"))
+            return pygobject_new((GObject *)event->proximity.device);
+        break;
     case GDK_DRAG_ENTER:        /*GdkEventDND               dnd*/
     case GDK_DRAG_LEAVE:        /*GdkEventDND               dnd*/
     case GDK_DRAG_MOTION:       /*GdkEventDND               dnd*/
     case GDK_DRAG_STATUS:       /*GdkEventDND               dnd*/
     case GDK_DROP_START:        /*GdkEventDND               dnd*/
     case GDK_DROP_FINISHED:     /*GdkEventDND               dnd*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssssss]",
-				 "type", "window", "send_event",
-				 "context", "time", "x_root", "y_root");
-	if (!strcmp(attr, "context"))
-	    return pygobject_new((GObject *)event->dnd.context);
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->dnd.time);
-	if (!strcmp(attr, "x_root"))
-	    return PyFloat_FromDouble(event->dnd.x_root);
-	if (!strcmp(attr, "y_root"))
-	    return PyFloat_FromDouble(event->dnd.y_root);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssssss]",
+                                 "type", "window", "send_event",
+                                 "context", "time", "x_root", "y_root");
+        if (!strcmp(attr, "context"))
+            return pygobject_new((GObject *)event->dnd.context);
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->dnd.time);
+        if (!strcmp(attr, "x_root"))
+            return PyFloat_FromDouble(event->dnd.x_root);
+        if (!strcmp(attr, "y_root"))
+            return PyFloat_FromDouble(event->dnd.y_root);
+        break;
     case GDK_CLIENT_EVENT:      /*GdkEventClient            client*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[ssssss]",
-				 "type", "window", "send_event",
-				 "message_type", "data_format", "data");
-	if (!strcmp(attr, "message_type"))
-	    return PyGdkAtom_New(event->client.message_type);
-	if (!strcmp(attr, "data_format"))
-	    return PyInt_FromLong(event->client.data_format);
-	if (!strcmp(attr, "data"))
-	    return PyString_FromStringAndSize(event->client.data.b, 20);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssssss]",
+                                 "type", "window", "send_event",
+                                 "message_type", "data_format", "data");
+        if (!strcmp(attr, "message_type"))
+            return PyGdkAtom_New(event->client.message_type);
+        if (!strcmp(attr, "data_format"))
+            return PyInt_FromLong(event->client.data_format);
+        if (!strcmp(attr, "data"))
+            return PyString_FromStringAndSize(event->client.data.b, 20);
+        break;
     case GDK_VISIBILITY_NOTIFY: /*GdkEventVisibility        visibility*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[ssss]",
-				 "type", "window", "send_event",
-				 "state");
-	if (!strcmp(attr, "state"))
-	    return PyInt_FromLong(event->visibility.state);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssss]",
+                                 "type", "window", "send_event",
+                                 "state");
+        if (!strcmp(attr, "state"))
+            return PyInt_FromLong(event->visibility.state);
+        break;
     case GDK_NO_EXPOSE:         /*GdkEventNoExpose          no_expose*/
-	break;
+        break;
     case GDK_SCROLL:            /*GdkEventScroll            scroll*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssssssssss]",
-				 "type", "window", "send_event",
-				 "time", "x", "y", "state", "direction",
-				 "device", "x_root", "y_root");
-	if (!strcmp(attr, "time"))
-	    return PyInt_FromLong(event->scroll.time);
-	if (!strcmp(attr, "x"))
-	    return PyFloat_FromDouble(event->scroll.x);
-	if (!strcmp(attr, "y"))
-	    return PyFloat_FromDouble(event->scroll.y);
-	if (!strcmp(attr, "state"))
-	    return PyInt_FromLong(event->scroll.state);
-	if (!strcmp(attr, "direction"))
-	    return PyInt_FromLong(event->scroll.direction);
-	if (!strcmp(attr, "device"))
-	    return pygobject_new((GObject *)event->scroll.device);
-	if (!strcmp(attr, "x_root"))
-	    return PyFloat_FromDouble(event->scroll.x_root);
-	if (!strcmp(attr, "y_root"))
-	    return PyFloat_FromDouble(event->scroll.y_root);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssssssssss]",
+                                 "type", "window", "send_event",
+                                 "time", "x", "y", "state", "direction",
+                                 "device", "x_root", "y_root");
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->scroll.time);
+        if (!strcmp(attr, "x"))
+            return PyFloat_FromDouble(event->scroll.x);
+        if (!strcmp(attr, "y"))
+            return PyFloat_FromDouble(event->scroll.y);
+        if (!strcmp(attr, "state"))
+            return PyInt_FromLong(event->scroll.state);
+        if (!strcmp(attr, "direction"))
+            return PyInt_FromLong(event->scroll.direction);
+        if (!strcmp(attr, "device"))
+            return pygobject_new((GObject *)event->scroll.device);
+        if (!strcmp(attr, "x_root"))
+            return PyFloat_FromDouble(event->scroll.x_root);
+        if (!strcmp(attr, "y_root"))
+            return PyFloat_FromDouble(event->scroll.y_root);
+        break;
     case GDK_WINDOW_STATE:      /*GdkEventWindowState       window_state*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssss]",
-				 "type", "window", "send_event",
-				 "changed_mask", "new_window_state");
-	if (!strcmp(attr, "changed_mask"))
-	    return PyInt_FromLong(event->window_state.changed_mask);
-	if (!strcmp(attr, "new_window_state"))
-	    return PyInt_FromLong(event->window_state.new_window_state);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssss]",
+                                 "type", "window", "send_event",
+                                 "changed_mask", "new_window_state");
+        if (!strcmp(attr, "changed_mask"))
+            return PyInt_FromLong(event->window_state.changed_mask);
+        if (!strcmp(attr, "new_window_state"))
+            return PyInt_FromLong(event->window_state.new_window_state);
+        break;
     case GDK_SETTING:           /*GdkEventSetting           setting*/
-	if (!strcmp(attr, "__members__"))
-	    return Py_BuildValue("[sssss]",
-				 "type", "window", "send_event",
-				 "action", "name");
-	if (!strcmp(attr, "action"))
-	    return PyInt_FromLong(event->setting.action);
-	if (!strcmp(attr, "name"))
-	    return PyString_FromString(event->setting.name);
-	break;
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssss]",
+                                 "type", "window", "send_event",
+                                 "action", "name");
+        if (!strcmp(attr, "action"))
+            return PyInt_FromLong(event->setting.action);
+        if (!strcmp(attr, "name"))
+            return PyString_FromString(event->setting.name);
+        break;
     default:
-	break;
+        break;
     }
     
     if (!strcmp(attr, "type"))
-	return PyInt_FromLong(event->type);
+        return PyInt_FromLong(event->type);
     if (!strcmp(attr, "window"))
-	return pygobject_new((GObject *)event->any.window);
+        return pygobject_new((GObject *)event->any.window);
     if (!strcmp(attr, "send_event"))
-	return PyInt_FromLong(event->any.send_event);
+        return PyInt_FromLong(event->any.send_event);
     if (!strcmp(attr, "__members__"))
-	return Py_BuildValue("[sss]", "type", "window", "send_event");
+        return Py_BuildValue("[sss]", "type", "window", "send_event");
 
     return Py_FindMethod(_PyGdkEvent_methods, self, attr);
 }
@@ -1142,14 +1142,14 @@ _wrap_gdk_event_get_axis(PyGObject *self, PyObject *args)
     gdouble value;
 
     if (!PyArg_ParseTuple(args, "d:gdk.event_get_axis",
-			  &axis_use))
-	return NULL;
-				     
+                          &axis_use))
+        return NULL;
+                                     
     if (gdk_event_get_axis(event, axis_use, &value)) {
-	return PyFloat_FromDouble(value);
+        return PyFloat_FromDouble(value);
     } else {
-	Py_INCREF(Py_None);
-	return Py_None;
+        Py_INCREF(Py_None);
+        return Py_None;
     }
 }
 %%
@@ -1161,9 +1161,9 @@ _wrap_gdk_event_get_coords(PyGObject *self)
     gdouble x, y;
 
     if (gdk_event_get_coords(event, &x, &y))
-	return Py_BuildValue("(dd)", x, y);
+        return Py_BuildValue("(dd)", x, y);
     else
-	return Py_BuildValue("()");
+        return Py_BuildValue("()");
 }
 %%
 override gdk_event_get_root_coords noargs
@@ -1174,9 +1174,9 @@ _wrap_gdk_event_get_root_coords(PyGObject *self)
     gdouble x, y;
 
     if (gdk_event_get_root_coords(event, &x, &y))
-	return Py_BuildValue("(dd)", x, y);
+        return Py_BuildValue("(dd)", x, y);
     else
-	return Py_BuildValue("()");
+        return Py_BuildValue("()");
 }
 %%
 override-attr GdkDevice.axes
@@ -1189,10 +1189,10 @@ _wrap_gdk_device__get_axes(PyGObject *self, void *closure)
 
     ret = PyTuple_New(device->num_axes);
     for (i = 0; i < device->num_axes; i++)
-	PyTuple_SetItem(ret, i, Py_BuildValue("(idd)",
-					      device->axes[i].use,
-					      device->axes[i].min,
-					      device->axes[i].max));
+        PyTuple_SetItem(ret, i, Py_BuildValue("(idd)",
+                                              device->axes[i].use,
+                                              device->axes[i].min,
+                                              device->axes[i].max));
     return ret;
 }
 %%
@@ -1206,9 +1206,9 @@ _wrap_gdk_device__get_keys(PyGObject *self, void *closure)
 
     ret = PyTuple_New(device->num_keys);
     for (i = 0; i < device->num_keys; i++)
-	PyTuple_SetItem(ret, i, Py_BuildValue("(ii)",
-					      device->keys[i].keyval,
-					      device->keys[i].modifiers));
+        PyTuple_SetItem(ret, i, Py_BuildValue("(ii)",
+                                              device->keys[i].keyval,
+                                              device->keys[i].modifiers));
     return ret;
 }
 %%
@@ -1225,17 +1225,17 @@ _wrap_gdk_device_get_state(PyGObject *self, PyObject *args, PyObject *kwargs)
     guint i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkDevice.get_state",
-				     kwlist, &window))
-	return NULL;
+                                     kwlist, &window))
+        return NULL;
     if (!pygobject_check(window, &PyGdkWindow_Type)) {
-	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
+        return NULL;
     }
     axes = g_new0(gdouble, device->num_axes);
     gdk_device_get_state(device, GDK_WINDOW(window->obj), axes, &mask);
     py_axes = PyTuple_New(device->num_axes);
     for (i = 0; i < device->num_axes; i++)
-	PyTuple_SetItem(py_axes, i, PyFloat_FromDouble(axes[i]));
+        PyTuple_SetItem(py_axes, i, PyFloat_FromDouble(axes[i]));
     g_free(axes);
     return Py_BuildValue("(Ni)", py_axes, mask);
 }
@@ -1256,25 +1256,25 @@ _wrap_gdk_device_get_history(PyGObject *self, PyObject *args, PyObject *kwargs)
     guint i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "Oii:GdkDevice.get_history", kwlist,
-				     &window, &start, &stop))
-	return NULL;
+                                     "Oii:GdkDevice.get_history", kwlist,
+                                     &window, &start, &stop))
+        return NULL;
     if (!pygobject_check(window, &PyGdkWindow_Type)) {
-	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
+        return NULL;
     }
     gdk_device_get_history(device, GDK_WINDOW(window->obj), start, stop,
-			   &events, &n_events);
+                           &events, &n_events);
     pyevents = PyTuple_New(n_events);
     for (i = 0; i < n_events; i++) {
-	PyObject *axes;
-	gint j;
+        PyObject *axes;
+        gint j;
 
-	axes = PyTuple_New(device->num_axes);
-	for (j = 0; j < device->num_axes; j++)
-	    PyTuple_SetItem(axes, j, PyFloat_FromDouble(events[i]->axes[j]));
-	PyTuple_SetItem(pyevents, i, Py_BuildValue("(iN)", events[i]->time,
-						   axes));
+        axes = PyTuple_New(device->num_axes);
+        for (j = 0; j < device->num_axes; j++)
+            PyTuple_SetItem(axes, j, PyFloat_FromDouble(events[i]->axes[j]));
+        PyTuple_SetItem(pyevents, i, Py_BuildValue("(iN)", events[i]->time,
+                                                   axes));
     }
     gdk_device_free_history(events, n_events);
     return pyevents;
@@ -1293,31 +1293,31 @@ _wrap_gdk_device_get_axis(PyGObject *self, PyObject *args, PyObject *kwargs)
     gint i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi:GdkDevice.get_axis",
-				     kwlist, &py_axes, &use))
-	return NULL;
+                                     kwlist, &py_axes, &use))
+        return NULL;
     if (!PySequence_Check(py_axes)) {
-	PyErr_SetString(PyExc_TypeError, "axes must be a sequence");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "axes must be a sequence");
+        return NULL;
     }
     if (PySequence_Length(py_axes) != device->num_axes) {
-	PyErr_SetString(PyExc_TypeError, "axes has the wrong length");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "axes has the wrong length");
+        return NULL;
     }
     axes = g_new(gdouble, device->num_axes);
     for (i = 0; i < device->num_axes; i++) {
-	PyObject *item = PySequence_GetItem(py_axes, i);
+        PyObject *item = PySequence_GetItem(py_axes, i);
 
-	axes[i] = PyFloat_AsDouble(item);
-	Py_DECREF(item);
-	if (PyErr_Occurred()) {
-	    g_free(axes);
-	    return NULL;
+        axes[i] = PyFloat_AsDouble(item);
+        Py_DECREF(item);
+        if (PyErr_Occurred()) {
+            g_free(axes);
+            return NULL;
        }
     }
     ret = gdk_device_get_axis(device, axes, use, &value);
     g_free(axes);
     if (ret)
-	return PyFloat_FromDouble(value);
+        return PyFloat_FromDouble(value);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -1333,18 +1333,18 @@ _wrap_gdk_drag_find_window(PyGObject *self, PyObject *args, PyObject *kwargs)
     GdkDragProtocol protocol;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "Oii:GdkDragContext.drag_find_window",
-				     kwlist, &drag_window, &x_root, &y_root))
-	return NULL;
+                                     "Oii:GdkDragContext.drag_find_window",
+                                     kwlist, &drag_window, &x_root, &y_root))
+        return NULL;
     if (!pygobject_check(drag_window, &PyGdkWindow_Type)) {
-	PyErr_SetString(PyExc_TypeError, "drag_window must be a GdkWindow");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "drag_window must be a GdkWindow");
+        return NULL;
     }
     gdk_drag_find_window(GDK_DRAG_CONTEXT(self->obj),
-			 GDK_WINDOW(drag_window->obj), x_root, y_root,
-			 &dest_window, &protocol);
+                         GDK_WINDOW(drag_window->obj), x_root, y_root,
+                         &dest_window, &protocol);
     return Py_BuildValue("(Ni)", pygobject_new((GObject *)dest_window),
-			 protocol);
+                         protocol);
 }
 %%
 override-attr GdkDragContext.targets
@@ -1354,14 +1354,14 @@ _wrap_gdk_drag_context__get_targets(PyGObject *self, void *closure)
     PyObject *atom, *ret = PyList_New(0);
     GList *tmp;
     if (ret == NULL)
-	return NULL;
+        return NULL;
     for (tmp = GDK_DRAG_CONTEXT(self->obj)->targets; tmp; tmp = tmp->next) {
-	if ((atom = PyGdkAtom_New(GDK_POINTER_TO_ATOM(tmp->data))) == NULL) {
-	    Py_DECREF(ret);
-	    return NULL;
-	}
-	PyList_Append(ret, atom);
-	Py_DECREF(atom);
+        if ((atom = PyGdkAtom_New(GDK_POINTER_TO_ATOM(tmp->data))) == NULL) {
+            Py_DECREF(ret);
+            return NULL;
+        }
+        PyList_Append(ret, atom);
+        Py_DECREF(atom);
     }
     return ret;
 }
@@ -1371,11 +1371,11 @@ static PyObject *
 _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "foreground", "background", "font", "function",
-			      "fill", "tile", "stipple", "clip_mask",
-			      "subwindow_mode", "ts_x_origin", "ts_y_origin",
-			      "clip_x_origin", "clip_y_origin",
-			      "graphics_exposures", "line_width", "line_style",
-			      "cap_style", "join_style", NULL };
+                              "fill", "tile", "stipple", "clip_mask",
+                              "subwindow_mode", "ts_x_origin", "ts_y_origin",
+                              "clip_x_origin", "clip_y_origin",
+                              "graphics_exposures", "line_width", "line_style",
+                              "cap_style", "join_style", NULL };
     PyObject *foreground = Py_None, *background = Py_None;
     PyObject *font = Py_None;
     gint function = -1, fill = -1;
@@ -1389,104 +1389,104 @@ _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
     PyObject *pygc;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "|OOOiiOOOiiiiiiiiii:GdkDrawable.new_gc",
-				     kwlist, &foreground, &background, &font,
-				     &function, &fill, &tile, &stipple,
-				     &clip_mask, &subwindow_mode,
-				     &ts_x_origin, &ts_y_origin,
-				     &clip_x_origin, &clip_y_origin,
-				     &graphics_exposures, &line_width,
-				     &line_style, &cap_style, &join_style))
-	return NULL;
+                                     "|OOOiiOOOiiiiiiiiii:GdkDrawable.new_gc",
+                                     kwlist, &foreground, &background, &font,
+                                     &function, &fill, &tile, &stipple,
+                                     &clip_mask, &subwindow_mode,
+                                     &ts_x_origin, &ts_y_origin,
+                                     &clip_x_origin, &clip_y_origin,
+                                     &graphics_exposures, &line_width,
+                                     &line_style, &cap_style, &join_style))
+        return NULL;
     if (pyg_boxed_check(foreground, GDK_TYPE_COLOR)) {
-	mask |= GDK_GC_FOREGROUND;
-	values.foreground = *pyg_boxed_get(foreground, GdkColor);
+        mask |= GDK_GC_FOREGROUND;
+        values.foreground = *pyg_boxed_get(foreground, GdkColor);
     } else if (foreground != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "foreground must be a GdkColor");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "foreground must be a GdkColor");
+        return NULL;
     }
     if (pyg_boxed_check(background, GDK_TYPE_COLOR)) {
-	mask |= GDK_GC_BACKGROUND;
-	values.background = *pyg_boxed_get(background, GdkColor);
+        mask |= GDK_GC_BACKGROUND;
+        values.background = *pyg_boxed_get(background, GdkColor);
     } else if (background != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
+        return NULL;
     }
     if (pyg_boxed_check(font, GDK_TYPE_FONT)) {
-	mask |= GDK_GC_FONT;
-	values.font = pyg_boxed_get(font, GdkFont);
+        mask |= GDK_GC_FONT;
+        values.font = pyg_boxed_get(font, GdkFont);
     } else if (font != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
+        return NULL;
     }
     if (function != -1) {
-	mask |= GDK_GC_FUNCTION;
-	values.function = function;
+        mask |= GDK_GC_FUNCTION;
+        values.function = function;
     }
     if (fill != -1) {
-	mask |= GDK_GC_FILL;
-	values.fill = fill;
+        mask |= GDK_GC_FILL;
+        values.fill = fill;
     }
     if (pygobject_check(tile, &PyGdkPixmap_Type)) {
-	mask |= GDK_GC_TILE;
-	values.tile = GDK_PIXMAP(pygobject_get(tile));
+        mask |= GDK_GC_TILE;
+        values.tile = GDK_PIXMAP(pygobject_get(tile));
     } else if (tile != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "tile must be a GdkPixmap");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "tile must be a GdkPixmap");
+        return NULL;
     }
     if (pygobject_check(stipple, &PyGdkPixmap_Type)) {
-	mask |= GDK_GC_STIPPLE;
-	values.stipple = GDK_PIXMAP(pygobject_get(stipple));
+        mask |= GDK_GC_STIPPLE;
+        values.stipple = GDK_PIXMAP(pygobject_get(stipple));
     } else if (stipple != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "stipple must be a GdkPixmap");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "stipple must be a GdkPixmap");
+        return NULL;
     }
     if (pygobject_check(clip_mask, &PyGdkPixmap_Type)) {
-	mask |= GDK_GC_CLIP_MASK;
-	values.clip_mask = GDK_PIXMAP(pygobject_get(clip_mask));
+        mask |= GDK_GC_CLIP_MASK;
+        values.clip_mask = GDK_PIXMAP(pygobject_get(clip_mask));
     } else if (clip_mask != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "clip_mask must be a GdkPixmap");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "clip_mask must be a GdkPixmap");
+        return NULL;
     }
     if (subwindow_mode != -1) {
-	mask |= GDK_GC_SUBWINDOW;
-	values.subwindow_mode = subwindow_mode;
+        mask |= GDK_GC_SUBWINDOW;
+        values.subwindow_mode = subwindow_mode;
     }
     if (ts_x_origin != -1) {
-	mask |= GDK_GC_TS_X_ORIGIN;
-	values.ts_x_origin = ts_x_origin;
+        mask |= GDK_GC_TS_X_ORIGIN;
+        values.ts_x_origin = ts_x_origin;
     }
     if (ts_y_origin != -1) {
-	mask |= GDK_GC_TS_Y_ORIGIN;
-	values.ts_y_origin = ts_y_origin;
+        mask |= GDK_GC_TS_Y_ORIGIN;
+        values.ts_y_origin = ts_y_origin;
     }
     if (clip_x_origin != -1) {
-	mask |= GDK_GC_CLIP_X_ORIGIN;
-	values.clip_x_origin = clip_x_origin;
+        mask |= GDK_GC_CLIP_X_ORIGIN;
+        values.clip_x_origin = clip_x_origin;
     }
     if (clip_y_origin != -1) {
-	mask |= GDK_GC_CLIP_Y_ORIGIN;
-	values.clip_y_origin = clip_y_origin;
+        mask |= GDK_GC_CLIP_Y_ORIGIN;
+        values.clip_y_origin = clip_y_origin;
     }
     if (graphics_exposures != -1) {
-	mask |= GDK_GC_EXPOSURES;
-	values.graphics_exposures = graphics_exposures;
+        mask |= GDK_GC_EXPOSURES;
+        values.graphics_exposures = graphics_exposures;
     }
     if (line_width != -1) {
-	mask |= GDK_GC_LINE_WIDTH;
-	values.line_width = line_width;
+        mask |= GDK_GC_LINE_WIDTH;
+        values.line_width = line_width;
     }
     if (line_style != -1) {
-	mask |= GDK_GC_LINE_STYLE;
-	values.line_style = line_style;
+        mask |= GDK_GC_LINE_STYLE;
+        values.line_style = line_style;
     }
     if (cap_style != -1) {
-	mask |= GDK_GC_CAP_STYLE;
-	values.cap_style = cap_style;
+        mask |= GDK_GC_CAP_STYLE;
+        values.cap_style = cap_style;
     }
     if (join_style != -1) {
-	mask |= GDK_GC_JOIN_STYLE;
-	values.join_style = join_style;
+        mask |= GDK_GC_JOIN_STYLE;
+        values.join_style = join_style;
     }
     gc = gdk_gc_new_with_values(GDK_DRAWABLE(self->obj), &values, mask);
     pygc = pygobject_new((GObject *)gc);
@@ -1501,55 +1501,55 @@ _wrap_gdk_gc_tp_getattr(PyGObject *self, char *attr)
     GdkGCValues gc;
 
     if (!strcmp(attr, "__members__"))
-	return Py_BuildValue("[ssssssssssssssssss]", "background", "cap_style",
-			     "clip_mask", "clip_x_origin", "clip_y_origin",
-			     "fill", "font", "foreground", "function",
-			     "graphics_exposures", "join_style", "line_style",
-			     "line_width", "stipple", "sub_window", "tile",
-			     "ts_x_origin", "ts_y_origin");
+        return Py_BuildValue("[ssssssssssssssssss]", "background", "cap_style",
+                             "clip_mask", "clip_x_origin", "clip_y_origin",
+                             "fill", "font", "foreground", "function",
+                             "graphics_exposures", "join_style", "line_style",
+                             "line_width", "stipple", "sub_window", "tile",
+                             "ts_x_origin", "ts_y_origin");
     gdk_gc_get_values(GDK_GC(self->obj), &gc);
     if (!strcmp(attr, "foreground")) 
-	return pyg_boxed_new(GDK_TYPE_COLOR, &(gc.foreground), TRUE, TRUE);
+        return pyg_boxed_new(GDK_TYPE_COLOR, &(gc.foreground), TRUE, TRUE);
     if (!strcmp(attr, "background")) 
-	return pyg_boxed_new(GDK_TYPE_COLOR, &(gc.background), TRUE, TRUE);
+        return pyg_boxed_new(GDK_TYPE_COLOR, &(gc.background), TRUE, TRUE);
     if (!strcmp(attr, "font")) 
-	return pyg_boxed_new(GDK_TYPE_FONT, gc.font, TRUE, TRUE);
+        return pyg_boxed_new(GDK_TYPE_FONT, gc.font, TRUE, TRUE);
     if (!strcmp(attr, "function")) 
-	return PyInt_FromLong(gc.function);
+        return PyInt_FromLong(gc.function);
     if (!strcmp(attr, "fill")) 
-	return PyInt_FromLong(gc.fill);
+        return PyInt_FromLong(gc.fill);
     if (!strcmp(attr, "tile")) 
-	return pygobject_new((GObject *)gc.tile);
+        return pygobject_new((GObject *)gc.tile);
     if (!strcmp(attr, "stipple")) 
-	return pygobject_new((GObject *)gc.stipple);
+        return pygobject_new((GObject *)gc.stipple);
     if (!strcmp(attr, "clip_mask")) 
-	return pygobject_new((GObject *)gc.clip_mask);
+        return pygobject_new((GObject *)gc.clip_mask);
     if (!strcmp(attr, "subwindow_mode"))
-	return PyInt_FromLong(gc.subwindow_mode);
+        return PyInt_FromLong(gc.subwindow_mode);
     if (!strcmp(attr, "ts_x_origin")) 
-	return PyInt_FromLong(gc.ts_x_origin);
+        return PyInt_FromLong(gc.ts_x_origin);
     if (!strcmp(attr, "ts_y_origin")) 
-	return PyInt_FromLong(gc.ts_y_origin);
+        return PyInt_FromLong(gc.ts_y_origin);
     if (!strcmp(attr, "clip_x_origin")) 
-	return PyInt_FromLong(gc.clip_x_origin);
+        return PyInt_FromLong(gc.clip_x_origin);
     if (!strcmp(attr, "clip_y_origin")) 
-	return PyInt_FromLong(gc.clip_y_origin);
+        return PyInt_FromLong(gc.clip_y_origin);
     if (!strcmp(attr, "graphics_exposures"))
-	return PyInt_FromLong(gc.graphics_exposures);
+        return PyInt_FromLong(gc.graphics_exposures);
     if (!strcmp(attr, "line_width")) 
-	return PyInt_FromLong(gc.line_width);
+        return PyInt_FromLong(gc.line_width);
     if (!strcmp(attr, "line_style")) 
-	return PyInt_FromLong(gc.line_style);
+        return PyInt_FromLong(gc.line_style);
     if (!strcmp(attr, "cap_style")) 
-	return PyInt_FromLong(gc.cap_style);
+        return PyInt_FromLong(gc.cap_style);
     if (!strcmp(attr, "join_style")) 
-	return PyInt_FromLong(gc.join_style);
+        return PyInt_FromLong(gc.join_style);
 
     {
-	PyObject *name = PyString_FromString(attr);
-	PyObject *ret = PyObject_GenericGetAttr((PyObject *)self, name);
-	Py_DECREF(name);
-	return ret;
+        PyObject *name = PyString_FromString(attr);
+        PyObject *ret = PyObject_GenericGetAttr((PyObject *)self, name);
+        Py_DECREF(name);
+        return ret;
     }
 }
 %%
@@ -1560,81 +1560,81 @@ _wrap_gdk_gc_tp_setattr(PyGObject *self, char *attr, PyObject *value)
     GdkGC *gc = GDK_GC(self->obj);
 
     if (value == NULL) {
-	PyErr_SetString(PyExc_TypeError, "can't delete attributes");
-	return -1;
+        PyErr_SetString(PyExc_TypeError, "can't delete attributes");
+        return -1;
     }
     if (PyInt_Check(value)) {
-	int i = PyInt_AsLong(value);
-	GdkGCValues v;
-	gdk_gc_get_values(gc, &v);
-	if (!strcmp(attr, "function")) {
-	    gdk_gc_set_function(gc, i);
-	    return 0;
-	} else if (!strcmp(attr, "fill")) {
-	    gdk_gc_set_fill(gc, i);
-	    return 0;
-	} else if (!strcmp(attr, "subwindow_mode")) {
-	    gdk_gc_set_subwindow(gc, i);
-	    return 0;
-	} else if (!strcmp(attr, "ts_x_origin")) {
-	    gdk_gc_set_ts_origin(gc, i, v.ts_y_origin);
-	    return 0;
-	} else if (!strcmp(attr, "ts_y_origin")) {
-	    gdk_gc_set_ts_origin(gc, v.ts_x_origin, i);
-	    return 0;
-	} else if (!strcmp(attr, "clip_x_origin")) {
-	    gdk_gc_set_clip_origin(gc, i, v.clip_y_origin);
-	    return 0;
-	} else if (!strcmp(attr, "clip_y_origin")) {
-	    gdk_gc_set_clip_origin(gc, v.clip_x_origin, i);
-	    return 0;
-	} else if (!strcmp(attr, "graphics_exposures")) {
-	    gdk_gc_set_exposures(gc, i);
-	    return 0;
-	} else if (!strcmp(attr, "line_width")) {
-	    gdk_gc_set_line_attributes(gc, i, v.line_style,
-				       v.cap_style, v.join_style);
-	    return 0;
-	} else if (!strcmp(attr, "line_style")) {
-	    gdk_gc_set_line_attributes(gc, v.line_width, i,
-				       v.cap_style, v.join_style);
-	    return 0;
-	} else if (!strcmp(attr, "cap_style")) {
-	    gdk_gc_set_line_attributes(gc, v.line_width, v.line_style,
-				       i, v.join_style);
-	    return 0;
-	} else if (!strcmp(attr, "join_style")) {
-	    gdk_gc_set_line_attributes(gc, v.line_width, v.line_style,
-				       v.cap_style, i);
-	    return 0;
-	}
+        int i = PyInt_AsLong(value);
+        GdkGCValues v;
+        gdk_gc_get_values(gc, &v);
+        if (!strcmp(attr, "function")) {
+            gdk_gc_set_function(gc, i);
+            return 0;
+        } else if (!strcmp(attr, "fill")) {
+            gdk_gc_set_fill(gc, i);
+            return 0;
+        } else if (!strcmp(attr, "subwindow_mode")) {
+            gdk_gc_set_subwindow(gc, i);
+            return 0;
+        } else if (!strcmp(attr, "ts_x_origin")) {
+            gdk_gc_set_ts_origin(gc, i, v.ts_y_origin);
+            return 0;
+        } else if (!strcmp(attr, "ts_y_origin")) {
+            gdk_gc_set_ts_origin(gc, v.ts_x_origin, i);
+            return 0;
+        } else if (!strcmp(attr, "clip_x_origin")) {
+            gdk_gc_set_clip_origin(gc, i, v.clip_y_origin);
+            return 0;
+        } else if (!strcmp(attr, "clip_y_origin")) {
+            gdk_gc_set_clip_origin(gc, v.clip_x_origin, i);
+            return 0;
+        } else if (!strcmp(attr, "graphics_exposures")) {
+            gdk_gc_set_exposures(gc, i);
+            return 0;
+        } else if (!strcmp(attr, "line_width")) {
+            gdk_gc_set_line_attributes(gc, i, v.line_style,
+                                       v.cap_style, v.join_style);
+            return 0;
+        } else if (!strcmp(attr, "line_style")) {
+            gdk_gc_set_line_attributes(gc, v.line_width, i,
+                                       v.cap_style, v.join_style);
+            return 0;
+        } else if (!strcmp(attr, "cap_style")) {
+            gdk_gc_set_line_attributes(gc, v.line_width, v.line_style,
+                                       i, v.join_style);
+            return 0;
+        } else if (!strcmp(attr, "join_style")) {
+            gdk_gc_set_line_attributes(gc, v.line_width, v.line_style,
+                                       v.cap_style, i);
+            return 0;
+        }
     } else if (pyg_boxed_check(value, GDK_TYPE_COLOR)) {
-	GdkColor *c = pyg_boxed_get(value, GdkColor);
-	if (!strcmp(attr, "foreground")) {
-	    gdk_gc_set_foreground(gc, c);
-	    return 0;
-	} else if (!strcmp(attr, "background")) {
-	    gdk_gc_set_background(gc, c);
-	    return 0;
-	}
+        GdkColor *c = pyg_boxed_get(value, GdkColor);
+        if (!strcmp(attr, "foreground")) {
+            gdk_gc_set_foreground(gc, c);
+            return 0;
+        } else if (!strcmp(attr, "background")) {
+            gdk_gc_set_background(gc, c);
+            return 0;
+        }
     } else if (pyg_boxed_check(value, GDK_TYPE_FONT)) {
-	if (!strcmp(attr, "font")) {
-	    gdk_gc_set_font(gc, pyg_boxed_get(value, GdkFont));
-	    return 0;
-	}
+        if (!strcmp(attr, "font")) {
+            gdk_gc_set_font(gc, pyg_boxed_get(value, GdkFont));
+            return 0;
+        }
     } else if (pygobject_check(value, &PyGdkWindow_Type) || value == Py_None) {
-	PyGObject *window = (PyGObject *)value;
-	GdkWindow *w = (value==Py_None)?NULL:GDK_WINDOW(window->obj);
-	if (!strcmp(attr, "tile")) {
-	    gdk_gc_set_tile(gc, w);
-	    return 0;
-	} else if (!strcmp(attr, "stipple")) {
-	    gdk_gc_set_stipple(gc, w);
-	    return 0;
-	} else if (!strcmp(attr, "clip_mask")) {
-	    gdk_gc_set_clip_mask(gc, w);
-	    return 0;
-	}
+        PyGObject *window = (PyGObject *)value;
+        GdkWindow *w = (value==Py_None)?NULL:GDK_WINDOW(window->obj);
+        if (!strcmp(attr, "tile")) {
+            gdk_gc_set_tile(gc, w);
+            return 0;
+        } else if (!strcmp(attr, "stipple")) {
+            gdk_gc_set_stipple(gc, w);
+            return 0;
+        } else if (!strcmp(attr, "clip_mask")) {
+            gdk_gc_set_clip_mask(gc, w);
+            return 0;
+        }
     }
 
     PyErr_SetString(PyExc_AttributeError, "could not write attribute");
@@ -1650,28 +1650,28 @@ _wrap_gdk_gc_set_dashes(PyGObject *self, PyObject *args)
     guchar *dash_list;
 
     if (!PyArg_ParseTuple(args, "iO:GdkGC.set_dashes", &dash_offset, &list))
-	return NULL;
+        return NULL;
     if (!PySequence_Check(list)) {
-	PyErr_SetString(PyExc_TypeError, "second argument must be a sequence");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "second argument must be a sequence");
+        return NULL;
     }
     n = PySequence_Length(list);
     dash_list = g_new(char, n);
     for (i = 0; i < n; i++) {
-	PyObject *item = PySequence_GetItem(list, i);
-	Py_DECREF(item);
+        PyObject *item = PySequence_GetItem(list, i);
+        Py_DECREF(item);
 
-	if (!PyInt_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "sequence member must be an int");
-	    g_free(dash_list);
-	    return NULL;
-	}
-	dash_list[i] = (guchar)PyInt_AsLong(item);
-	if (dash_list[i] == 0) {
-	    PyErr_SetString(PyExc_TypeError, "sequence member must not be 0");
-	    g_free(dash_list);
-	    return NULL;
-	}
+        if (!PyInt_Check(item)) {
+            PyErr_SetString(PyExc_TypeError, "sequence member must be an int");
+            g_free(dash_list);
+            return NULL;
+        }
+        dash_list[i] = (guchar)PyInt_AsLong(item);
+        if (dash_list[i] == 0) {
+            PyErr_SetString(PyExc_TypeError, "sequence member must not be 0");
+            g_free(dash_list);
+            return NULL;
+        }
     }
     gdk_gc_set_dashes(GDK_GC(self->obj), dash_offset, dash_list, n);
     g_free(dash_list);
@@ -1702,26 +1702,26 @@ _wrap_gdk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
     PyObject *py_context;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GdkWindow.drag_begin",
-				     kwlist, &py_targets))
-	return NULL;
+                                     kwlist, &py_targets))
+        return NULL;
     if (!PySequence_Check(py_targets)) {
-	PyErr_SetString(PyExc_TypeError, "targets must be a list of ints");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "targets must be a list of ints");
+        return NULL;
     }
     len = PySequence_Length(py_targets);
     for (i = 0; i < len; i++) {
-	PyObject *item = PySequence_GetItem(py_targets, i);
+        PyObject *item = PySequence_GetItem(py_targets, i);
 
-	if (PyInt_Check(item)) {
-	    targets = g_list_append(targets,
-				    GUINT_TO_POINTER(PyInt_AsLong(item)));
-	    Py_DECREF(item);
-	} else {
-	    PyErr_SetString(PyExc_TypeError, "targets must be a list of ints");
-	    Py_DECREF(item);
-	    g_list_free(targets);
-	    return NULL;
-	}
+        if (PyInt_Check(item)) {
+            targets = g_list_append(targets,
+                                    GUINT_TO_POINTER(PyInt_AsLong(item)));
+            Py_DECREF(item);
+        } else {
+            PyErr_SetString(PyExc_TypeError, "targets must be a list of ints");
+            Py_DECREF(item);
+            g_list_free(targets);
+            return NULL;
+        }
     }
     context = gdk_drag_begin(GDK_WINDOW(self->obj), targets);
     g_list_free(targets);
@@ -1747,77 +1747,77 @@ _wrap_gdk_property_get(PyGObject *self, PyObject *args, PyObject *kwargs)
     guchar *data;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O|Oi:GdkWindow.property_get", kwlist,
-				     &py_property, &py_type, 
-				     &pdelete)) {
-	return NULL;
+                                     "O|Oi:GdkWindow.property_get", kwlist,
+                                     &py_property, &py_type, 
+                                     &pdelete)) {
+        return NULL;
     }
     property = pygdk_atom_from_pyobject(py_property);
     if (PyErr_Occurred())
-	return NULL;
+        return NULL;
 
     type = pygdk_atom_from_pyobject(py_type);
     if (PyErr_Occurred())
-	return NULL;
+        return NULL;
 
     if (gdk_property_get(GDK_WINDOW(self->obj), property, type, 0, 9999,
-			 pdelete, &atype, &aformat, &alength, &data)) {
-	/* success */
-	PyObject *pdata = NULL;
-	gint nelements, i;
-	switch (aformat) {
-	case 8:
-	    if ((pdata = PyString_FromStringAndSize(data, alength)) == NULL)
-	        return NULL;
-	    break;
-	case 16: {
-	    short *data16;
+                         pdelete, &atype, &aformat, &alength, &data)) {
+        /* success */
+        PyObject *pdata = NULL;
+        gint nelements, i;
+        switch (aformat) {
+        case 8:
+            if ((pdata = PyString_FromStringAndSize(data, alength)) == NULL)
+                return NULL;
+            break;
+        case 16: {
+            short *data16;
 
-	    data16 = (short *)data;
-	    nelements = alength / sizeof(short);
-	    if ((pdata = PyList_New(nelements)) == NULL)
-	        return NULL;
-	    for (i = 0; i < nelements; i++)
-		PyList_SetItem(pdata, i, PyInt_FromLong(data16[i]));
-	    break;
-	}
-	case 32: {
-	    if (atom_type == GDK_NONE) {
-		atom_type = gdk_atom_intern("ATOM", TRUE);
-		atom_pair_type = gdk_atom_intern("ATOM_PAIR", TRUE);
-	    }
+            data16 = (short *)data;
+            nelements = alength / sizeof(short);
+            if ((pdata = PyList_New(nelements)) == NULL)
+                return NULL;
+            for (i = 0; i < nelements; i++)
+                PyList_SetItem(pdata, i, PyInt_FromLong(data16[i]));
+            break;
+        }
+        case 32: {
+            if (atom_type == GDK_NONE) {
+                atom_type = gdk_atom_intern("ATOM", TRUE);
+                atom_pair_type = gdk_atom_intern("ATOM_PAIR", TRUE);
+            }
 
-	    /* special handling for atom types */
-	    if (atype == atom_type || atype == atom_pair_type) {
-		GdkAtom *data32;
+            /* special handling for atom types */
+            if (atype == atom_type || atype == atom_pair_type) {
+                GdkAtom *data32;
 
-		data32 = (GdkAtom *)data;
-		nelements = alength / sizeof(GdkAtom);
-		if ((pdata = PyList_New(nelements)) == NULL)
-		    return NULL;
-		for (i = 0; i < nelements; i++)
-		    PyList_SetItem(pdata, i, PyGdkAtom_New(data32[i]));
-	    } else {
-		long *data32;
+                data32 = (GdkAtom *)data;
+                nelements = alength / sizeof(GdkAtom);
+                if ((pdata = PyList_New(nelements)) == NULL)
+                    return NULL;
+                for (i = 0; i < nelements; i++)
+                    PyList_SetItem(pdata, i, PyGdkAtom_New(data32[i]));
+            } else {
+                long *data32;
 
-		data32 = (long *)data;
-		nelements  = alength / sizeof(long);
-		if ((pdata = PyList_New(nelements)) == NULL)
-		    return NULL;
-		for (i = 0; i < nelements; i++)
-		    PyList_SetItem(pdata, i, PyInt_FromLong(data32[i]));
-	    }
-	    break;
-	}
-	default:
-	    g_warning("got a property format != 8, 16 or 32");
-	    g_assert_not_reached();
-	}
-	g_free(data);
-	return Py_BuildValue("(NiN)", PyGdkAtom_New(atype), aformat, pdata);
+                data32 = (long *)data;
+                nelements  = alength / sizeof(long);
+                if ((pdata = PyList_New(nelements)) == NULL)
+                    return NULL;
+                for (i = 0; i < nelements; i++)
+                    PyList_SetItem(pdata, i, PyInt_FromLong(data32[i]));
+            }
+            break;
+        }
+        default:
+            g_warning("got a property format != 8, 16 or 32");
+            g_assert_not_reached();
+        }
+        g_free(data);
+        return Py_BuildValue("(NiN)", PyGdkAtom_New(atype), aformat, pdata);
     } else {
-	Py_INCREF(Py_None);
-	return Py_None;
+        Py_INCREF(Py_None);
+        return Py_None;
     }
 }
 %%
@@ -1835,119 +1835,119 @@ _wrap_gdk_property_change(PyGObject *self, PyObject *args, PyObject *kwargs)
     gint nelements;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "OOiOO:GdkWindow.property_change", kwlist,
-				     &py_property, &py_type, &format, &py_mode,
-				     &pdata)) {
-	return NULL;
+                                     "OOiOO:GdkWindow.property_change", kwlist,
+                                     &py_property, &py_type, &format, &py_mode,
+                                     &pdata)) {
+        return NULL;
     }
     property = pygdk_atom_from_pyobject(py_property);
     if (PyErr_Occurred())
-	return NULL;
+        return NULL;
 
     type = pygdk_atom_from_pyobject(py_type);
     if (PyErr_Occurred())
-	return NULL;
+        return NULL;
     
     if (pyg_enum_get_value(GDK_TYPE_PROP_MODE, py_mode, (gint *)&mode))
-	return NULL;
+        return NULL;
     switch (format) {
     case 8:
-	if (!PyString_Check(pdata)) {
-	    PyErr_SetString(PyExc_TypeError, "data not a string and format=8");
-	    return NULL;
-	}
-	data = PyString_AsString(pdata);
-	nelements = PyString_Size(pdata);
-	break;
+        if (!PyString_Check(pdata)) {
+            PyErr_SetString(PyExc_TypeError, "data not a string and format=8");
+            return NULL;
+        }
+        data = PyString_AsString(pdata);
+        nelements = PyString_Size(pdata);
+        break;
     case 16: {
-	short *data16;
-	gint i;
+        short *data16;
+        gint i;
 
-	if (!PySequence_Check(pdata)) {
-	    PyErr_SetString(PyExc_TypeError,
-			    "data not a sequence and format=16");
-	    return NULL;
-	}
-	nelements = PySequence_Length(pdata);
-	data16 = g_new(short, nelements);
-	data = (guchar *)data16;
-	for (i = 0; i < nelements; i++) {
-	    PyObject *item = PySequence_GetItem(pdata, i);
+        if (!PySequence_Check(pdata)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "data not a sequence and format=16");
+            return NULL;
+        }
+        nelements = PySequence_Length(pdata);
+        data16 = g_new(short, nelements);
+        data = (guchar *)data16;
+        for (i = 0; i < nelements; i++) {
+            PyObject *item = PySequence_GetItem(pdata, i);
 
-	    if (item) data16[i] = PyInt_AsLong(item);
-	    if (!item || PyErr_Occurred()) {
-		Py_XDECREF(item);
-		g_free(data16);
-		PyErr_Clear();
-		PyErr_SetString(PyExc_TypeError,"data element not an int");
-		return NULL;
-	    }
-	    Py_DECREF(item);
-	}
-	break;
+            if (item) data16[i] = PyInt_AsLong(item);
+            if (!item || PyErr_Occurred()) {
+                Py_XDECREF(item);
+                g_free(data16);
+                PyErr_Clear();
+                PyErr_SetString(PyExc_TypeError,"data element not an int");
+                return NULL;
+            }
+            Py_DECREF(item);
+        }
+        break;
     }
     case 32: {
-	gint i;
+        gint i;
 
-	if (!PySequence_Check(pdata)) {
-	    PyErr_SetString(PyExc_TypeError,
-			    "data not a sequence and format=32");
-	    return NULL;
-	}
-	nelements = PySequence_Length(pdata);
+        if (!PySequence_Check(pdata)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "data not a sequence and format=32");
+            return NULL;
+        }
+        nelements = PySequence_Length(pdata);
 
-	if (atom_type == GDK_NONE) {
-	    atom_type = gdk_atom_intern("ATOM", TRUE);
-	    atom_pair_type = gdk_atom_intern("ATOM_PAIR", TRUE);
-	}
+        if (atom_type == GDK_NONE) {
+            atom_type = gdk_atom_intern("ATOM", TRUE);
+            atom_pair_type = gdk_atom_intern("ATOM_PAIR", TRUE);
+        }
 
-	/* special handling for atom types */
-	if (type == atom_type || type == atom_pair_type) {
-	    GdkAtom *data32 = g_new(GdkAtom, nelements);
+        /* special handling for atom types */
+        if (type == atom_type || type == atom_pair_type) {
+            GdkAtom *data32 = g_new(GdkAtom, nelements);
 
-	    data = (guchar *)data32;
-	    for (i = 0; i < nelements; i++) {
-		PyObject *item = PySequence_GetItem(pdata, i);
+            data = (guchar *)data32;
+            for (i = 0; i < nelements; i++) {
+                PyObject *item = PySequence_GetItem(pdata, i);
 
-		if (item) data32[i] = pygdk_atom_from_pyobject(item);
-		if (!item || PyErr_Occurred()) {
-		    Py_XDECREF(item);
-		    g_free(data32);
-		    PyErr_Clear();
-		    PyErr_SetString(PyExc_TypeError,"data element not an atom");
-		    return NULL;
-		}
-		Py_DECREF(item);
-	    }
-	} else {
-	    long *data32 = g_new(long, nelements);
+                if (item) data32[i] = pygdk_atom_from_pyobject(item);
+                if (!item || PyErr_Occurred()) {
+                    Py_XDECREF(item);
+                    g_free(data32);
+                    PyErr_Clear();
+                    PyErr_SetString(PyExc_TypeError,"data element not an atom");
+                    return NULL;
+                }
+                Py_DECREF(item);
+            }
+        } else {
+            long *data32 = g_new(long, nelements);
 
-	    data = (guchar *)data32;
-	    for (i = 0; i < nelements; i++) {
-		PyObject *item = PySequence_GetItem(pdata, i);
+            data = (guchar *)data32;
+            for (i = 0; i < nelements; i++) {
+                PyObject *item = PySequence_GetItem(pdata, i);
 
-		if (item) data32[i] = PyInt_AsLong(item);
-		if (!item || PyErr_Occurred()) {
-		    Py_XDECREF(item);
-		    g_free(data32);
-		    PyErr_Clear();
-		    PyErr_SetString(PyExc_TypeError,"data element not an int");
-		    return NULL;
-		}
-		Py_DECREF(item);
-	    }
-	}
-	break;
+                if (item) data32[i] = PyInt_AsLong(item);
+                if (!item || PyErr_Occurred()) {
+                    Py_XDECREF(item);
+                    g_free(data32);
+                    PyErr_Clear();
+                    PyErr_SetString(PyExc_TypeError,"data element not an int");
+                    return NULL;
+                }
+                Py_DECREF(item);
+            }
+        }
+        break;
     }
     default:
-	PyErr_SetString(PyExc_TypeError, "format must be 8, 16 or 32");
-	return NULL;
-	break;
+        PyErr_SetString(PyExc_TypeError, "format must be 8, 16 or 32");
+        return NULL;
+        break;
     }
     gdk_property_change(GDK_WINDOW(self->obj), property, type, format, mode,
-			data, nelements);
+                        data, nelements);
     if (format != 8)
-	g_free(data);
+        g_free(data);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -1959,7 +1959,7 @@ _wrap_gdk_window_get_geometry(PyGObject *self)
     gint x, y, width, height, depth;
 
     gdk_window_get_geometry(GDK_WINDOW(self->obj), &x, &y, &width, &height,
-			    &depth);
+                            &depth);
     return Py_BuildValue("(iiiii)", x, y, width, height, depth);
 }
 %%
@@ -2024,10 +2024,10 @@ _wrap_gdk_window_get_children(PyGObject *self)
     children = gdk_window_get_children(GDK_WINDOW(self->obj));
     list = PyList_New(0);
     for (tmp = children; tmp != NULL; tmp = tmp->next) {
-	PyObject *item = pygobject_new((GObject *)tmp->data);
+        PyObject *item = pygobject_new((GObject *)tmp->data);
 
-	PyList_Append(list, item);
-	Py_DECREF(item);
+        PyList_Append(list, item);
+        Py_DECREF(item);
     }
     g_list_free(children);
     return list;
@@ -2036,7 +2036,7 @@ _wrap_gdk_window_get_children(PyGObject *self)
 override gdk_pixbuf_render_pixmap_and_mask kwargs
 static PyObject *
 _wrap_gdk_pixbuf_render_pixmap_and_mask(PyGObject *self, PyObject *args,
-					PyObject *kwargs)
+                                        PyObject *kwargs)
 {
     static char *kwlist[] = { "alpha_threshold", NULL};
     int alpha_threshold = 127;
@@ -2045,26 +2045,26 @@ _wrap_gdk_pixbuf_render_pixmap_and_mask(PyGObject *self, PyObject *args,
     PyObject *pypixmap, *pymask, *ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "|i:GdkPixbuf.render_pixmap_and_mask", kwlist,
-				     &alpha_threshold))
-	return NULL;
+                                     "|i:GdkPixbuf.render_pixmap_and_mask", kwlist,
+                                     &alpha_threshold))
+        return NULL;
     gdk_pixbuf_render_pixmap_and_mask(GDK_PIXBUF(self->obj), &pixmap, &mask,
-				      alpha_threshold);
+                                      alpha_threshold);
 
     if (pixmap) {
-	pypixmap = pygobject_new((GObject *) pixmap);
-	gdk_pixmap_unref(pixmap);
+        pypixmap = pygobject_new((GObject *) pixmap);
+        gdk_pixmap_unref(pixmap);
     } else {
-	Py_INCREF(Py_None);
-	pypixmap = Py_None;
+        Py_INCREF(Py_None);
+        pypixmap = Py_None;
     }
 
     if (mask) {
-	pymask = pygobject_new((GObject *) mask);
-	gdk_bitmap_unref(mask);
+        pymask = pygobject_new((GObject *) mask);
+        gdk_bitmap_unref(mask);
     } else {
-	Py_INCREF(Py_None);
-	pymask = Py_None;
+        Py_INCREF(Py_None);
+        pymask = Py_None;
     }
     
     ret = Py_BuildValue("(NN)", pypixmap, pymask);
@@ -2083,11 +2083,11 @@ _wrap_gdk_pixbuf__get_pixel_array(PyGObject *self, void *closure)
     dims[0] = gdk_pixbuf_get_width(pixbuf);
     dims[1] = gdk_pixbuf_get_height(pixbuf);
     if (gdk_pixbuf_get_has_alpha(pixbuf))
-	dims[2] = 4;
+        dims[2] = 4;
     array = (PyArrayObject *)PyArray_FromDimsAndData(3, dims, PyArray_UBYTE,
-					(char *)gdk_pixbuf_get_pixels(pixbuf));
+                                        (char *)gdk_pixbuf_get_pixels(pixbuf));
     if (array == NULL)
-	return NULL;
+        return NULL;
 
     array->strides[0] = gdk_pixbuf_get_rowstride(pixbuf);
     /* the array holds a ref to the pixbuf pixels through this wrapper*/
@@ -2114,8 +2114,8 @@ _wrap_gdk_pixbuf_get_pixels(PyGObject *self)
     height = gdk_pixbuf_get_height(pixbuf);
 
     if (pixels == NULL) {
-	PyErr_SetString(PyExc_ValueError, "could not get pixel data");
-	return NULL;
+        PyErr_SetString(PyExc_ValueError, "could not get pixel data");
+        return NULL;
     }
 
     return PyString_FromStringAndSize(pixels, rowstride*height);
@@ -2124,7 +2124,7 @@ _wrap_gdk_pixbuf_get_pixels(PyGObject *self)
 override gdk_pixbuf_save kwargs
 static PyObject *
 _wrap_gdk_pixbuf_save(PyGObject *self, PyObject *args,
-		      PyObject *kwargs)
+                      PyObject *kwargs)
 {
     static char *kwlist[] = {"filename", "type", "options", NULL};
     gchar *filename, *type, **option_keys = NULL, **option_values = NULL;
@@ -2132,45 +2132,45 @@ _wrap_gdk_pixbuf_save(PyGObject *self, PyObject *args,
     GError *error = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "ss|O!:GdkPixbuf.save", kwlist,
-				     &filename, &type,
-				     &PyDict_Type, &py_options))
-	return NULL;
+                                     "ss|O!:GdkPixbuf.save", kwlist,
+                                     &filename, &type,
+                                     &PyDict_Type, &py_options))
+        return NULL;
 
     if (py_options != NULL) {
-	guint len;
-	gint pos = 0, i = 0;
-	PyObject *key, *value;
-	
-	len = PyDict_Size(py_options);
-	option_keys = g_new(gchar *, len + 1);
-	option_values = g_new(gchar *, len + 1);
+        guint len;
+        gint pos = 0, i = 0;
+        PyObject *key, *value;
+        
+        len = PyDict_Size(py_options);
+        option_keys = g_new(gchar *, len + 1);
+        option_values = g_new(gchar *, len + 1);
 
-	while (PyDict_Next(py_options, &pos, &key, &value)) {
-	    if (!PyString_Check(key) || !PyString_Check(value)) {
-		g_free(option_keys);
-		g_free(option_values);
-		PyErr_SetString(PyExc_TypeError,
-				"keys and values must be strings");
-		return NULL;
-	    }
+        while (PyDict_Next(py_options, &pos, &key, &value)) {
+            if (!PyString_Check(key) || !PyString_Check(value)) {
+                g_free(option_keys);
+                g_free(option_values);
+                PyErr_SetString(PyExc_TypeError,
+                                "keys and values must be strings");
+                return NULL;
+            }
 
-	    option_keys[i]   = PyString_AsString(key);
-	    option_values[i] = PyString_AsString(value);
-	    i++;
-	}
-	
-	option_keys[len] = NULL;
-	option_values[len] = NULL;
+            option_keys[i]   = PyString_AsString(key);
+            option_values[i] = PyString_AsString(value);
+            i++;
+        }
+        
+        option_keys[len] = NULL;
+        option_values[len] = NULL;
     }
     gdk_pixbuf_savev(GDK_PIXBUF(self->obj), filename, type,
-		     option_keys, option_values, &error);
-	
+                     option_keys, option_values, &error);
+        
     g_free(option_keys);
     g_free(option_values);
  
     if (pyg_error_check(&error))
-	return NULL;
+        return NULL;
     
     Py_INCREF(Py_None);
     return Py_None;
@@ -2179,7 +2179,7 @@ _wrap_gdk_pixbuf_save(PyGObject *self, PyObject *args,
 override gdk_colormap_alloc_color kwargs
 static PyObject *
 _wrap_gdk_colormap_alloc_color(PyGObject *self, PyObject *args,
-			      PyObject *kwargs)
+                              PyObject *kwargs)
 {
     static char *kwlist1[] = { "red", "green", "blue", "writeable", "best_match", NULL };
     static char *kwlist2[] = { "spec", "writeable", "best_match", NULL };
@@ -2188,27 +2188,27 @@ _wrap_gdk_colormap_alloc_color(PyGObject *self, PyObject *args,
     gboolean best_match = TRUE;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "HHH|ii:GdkColormap.alloc_color", kwlist1,
-				     &colour.red, &colour.green, &colour.blue,
-				     &writeable, &best_match)) {
-	gchar *color_name;
+                                     "HHH|ii:GdkColormap.alloc_color", kwlist1,
+                                     &colour.red, &colour.green, &colour.blue,
+                                     &writeable, &best_match)) {
+        gchar *color_name;
 
-	PyErr_Clear();
-	if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-					 "s|ii:GdkColormap.alloc_color",
-					 kwlist2, &color_name, &writeable,
-					 &best_match))
-	    return NULL;
-	if (!gdk_color_parse(color_name, &colour)) {
-	    PyErr_SetString(PyExc_TypeError,
-			    "unable to parse colour specification");
-	    return NULL;
-	}
+        PyErr_Clear();
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                         "s|ii:GdkColormap.alloc_color",
+                                         kwlist2, &color_name, &writeable,
+                                         &best_match))
+            return NULL;
+        if (!gdk_color_parse(color_name, &colour)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "unable to parse colour specification");
+            return NULL;
+        }
     }
     if (!gdk_colormap_alloc_color(GDK_COLORMAP(self->obj),
-				  &colour, writeable, best_match)) {
-	PyErr_SetString(PyExc_RuntimeError, "couldn't allocate colour");
-	return NULL;
+                                  &colour, writeable, best_match)) {
+        PyErr_SetString(PyExc_RuntimeError, "couldn't allocate colour");
+        return NULL;
     }
     return pyg_boxed_new(GDK_TYPE_COLOR, &colour, TRUE, TRUE);
 }
@@ -2218,7 +2218,7 @@ static PyObject *
 _wrap_gdk_color_alloc(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     if (!PyErr_Warn(PyExc_DeprecationWarning, "use GdkColormap.alloc_color")<0)
-	return NULL;
+        return NULL;
     return _wrap_gdk_colormap_alloc_color(self, args, kwargs);
 }
 %%
@@ -2235,8 +2235,8 @@ _wrap_gdk_rectangle_getitem(PyGBoxed *self, int pos)
 
     if (pos < 0) pos += 4;
     if (pos < 0 || pos >= 4) {
-	PyErr_SetString(PyExc_IndexError, "index out of range");
-	return NULL;
+        PyErr_SetString(PyExc_IndexError, "index out of range");
+        return NULL;
     }
     rect = pyg_boxed_get(self, GdkRectangle);
     switch (pos) {
@@ -2245,8 +2245,8 @@ _wrap_gdk_rectangle_getitem(PyGBoxed *self, int pos)
     case 2: return PyInt_FromLong(rect->width);
     case 3: return PyInt_FromLong(rect->height);
     default:
-	g_assert_not_reached();
-	return NULL;
+        g_assert_not_reached();
+        return NULL;
     }
 }
 static int
@@ -2257,21 +2257,21 @@ _wrap_gdk_rectangle_setitem(PyGBoxed *self, int pos, PyObject *value)
 
     if (pos < 0) pos += 4;
     if (pos < 0 || pos >= 4) {
-	PyErr_SetString(PyExc_IndexError, "index out of range");
-	return -1;
+        PyErr_SetString(PyExc_IndexError, "index out of range");
+        return -1;
     }
     rect = pyg_boxed_get(self, GdkRectangle);
     val = PyInt_AsLong(value);
     if (PyErr_Occurred())
-	return -1;
+        return -1;
     switch(pos) {
     case 0: rect->x      = val; break;
     case 1: rect->y      = val; break;
     case 2: rect->width  = val; break;
     case 3: rect->height = val; break;
     default:
-	g_assert_not_reached();
-	return -1;
+        g_assert_not_reached();
+        return -1;
     }
     return 0;
 }
@@ -2293,7 +2293,7 @@ _wrap_gdk_rectangle__set_x(PyGBoxed *self, PyObject *value, void *closure)
 
     val = PyInt_AsLong(value);
     if (PyErr_Occurred())
-	return -1;
+        return -1;
     pyg_boxed_get(self, GdkRectangle)->x = val;
     return 0;
 }
@@ -2306,7 +2306,7 @@ _wrap_gdk_rectangle__set_y(PyGBoxed *self, PyObject *value, void *closure)
 
     val = PyInt_AsLong(value);
     if (PyErr_Occurred())
-	return -1;
+        return -1;
     pyg_boxed_get(self, GdkRectangle)->y = val;
     return 0;
 }
@@ -2319,7 +2319,7 @@ _wrap_gdk_rectangle__set_width(PyGBoxed *self, PyObject *value, void *closure)
 
     val = PyInt_AsLong(value);
     if (PyErr_Occurred())
-	return -1;
+        return -1;
     pyg_boxed_get(self, GdkRectangle)->width = val;
     return 0;
 }
@@ -2332,7 +2332,7 @@ _wrap_gdk_rectangle__set_height(PyGBoxed *self, PyObject *value, void *closure)
 
     val = PyInt_AsLong(value);
     if (PyErr_Occurred())
-	return -1;
+        return -1;
     pyg_boxed_get(self, GdkRectangle)->height = val;
     return 0;
 }
@@ -2345,19 +2345,19 @@ _wrap_gdk_rectangle_intersect(PyGObject *self, PyObject *args)
     GdkRectangle dest;
     
     if (!PyArg_ParseTuple(args, "O:GdkRectangle.intersect",
-			  &py_src)) {
-	return NULL;
+                          &py_src)) {
+        return NULL;
     }
     
     if (!pyg_boxed_check(py_src, GDK_TYPE_RECTANGLE)) {
-	PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
+        return NULL;
     }
 
     gdk_rectangle_intersect(pyg_boxed_get(self, GdkRectangle),
-			    pyg_boxed_get(py_src, GdkRectangle),
-			    &dest);
-			    
+                            pyg_boxed_get(py_src, GdkRectangle),
+                            &dest);
+                            
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
 }
 %%
@@ -2369,26 +2369,26 @@ _wrap_gdk_rectangle_union(PyGObject *self, PyObject *args)
     GdkRectangle dest;
     
     if (!PyArg_ParseTuple(args, "O:GdkRectangle.union",
-			  &py_src)) {
-	return NULL;
+                          &py_src)) {
+        return NULL;
     }
     
     if (!pyg_boxed_check(py_src, GDK_TYPE_RECTANGLE)) {
-	PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
-	return NULL;
+        PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
+        return NULL;
     }
 
     gdk_rectangle_union(pyg_boxed_get(self, GdkRectangle),
-		        pyg_boxed_get(py_src, GdkRectangle),
-		        &dest);
-			    
+                        pyg_boxed_get(py_src, GdkRectangle),
+                        &dest);
+                            
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
 }
 %%
 override gdk_pixbuf_new_from_xpm_data kwargs
 static PyObject *
 _wrap_gdk_pixbuf_new_from_xpm_data(PyObject *self, PyObject *args,
-				   PyObject *kwargs)
+                                   PyObject *kwargs)
 {
     static char *kwlist[] = { "data", NULL };
     PyObject *py_data, *ret;
@@ -2397,25 +2397,25 @@ _wrap_gdk_pixbuf_new_from_xpm_data(PyObject *self, PyObject *args,
     GdkPixbuf *pixbuf;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!:pixbuf_new_from_xpm_data", kwlist,
-				     &PyList_Type, &py_data))
-	return NULL;
+                                     "O!:pixbuf_new_from_xpm_data", kwlist,
+                                     &PyList_Type, &py_data))
+        return NULL;
     len = PyList_Size(py_data);
     data = g_new(gchar *, len);
     for (i = 0; i < len; i ++) {
-	PyObject *item = PyList_GetItem(py_data, i);
-	if (!PyString_Check(item)) {
-	    PyErr_SetString(PyExc_TypeError, "data items must be strings");
-	    g_free(data);
-	    return NULL;
-	}
-	data[i] = PyString_AsString(item);
+        PyObject *item = PyList_GetItem(py_data, i);
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError, "data items must be strings");
+            g_free(data);
+            return NULL;
+        }
+        data[i] = PyString_AsString(item);
     }
     pixbuf = gdk_pixbuf_new_from_xpm_data((const char**)data);
     g_free(data);
     if (pixbuf == NULL) {
-	PyErr_SetString(PyExc_IOError, "can't load pixbuf");
-	return NULL;
+        PyErr_SetString(PyExc_IOError, "can't load pixbuf");
+        return NULL;
     }
     ret = pygobject_new((GObject *)pixbuf);
     g_object_unref(pixbuf);
@@ -2481,4 +2481,70 @@ _wrap_gdk_drawable__get_xid(PyGObject *self, void *closure)
     PyErr_SetString(PyExc_AttributeError, "xid attribute not supported");
     return NULL;
 #endif
+}
+%%
+override gdk_pixbuf_loader_new_with_type kwargs
+static int
+_wrap_gdk_pixbuf_loader_new_with_type(PyGObject *self,
+                                      PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "image_type", NULL };
+    char *image_type = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|s:GdkPixbufLoader.__init__",
+				     kwlist, &image_type))
+        return -1;
+
+    if (image_type == NULL) {
+	self->obj = (GObject *)gdk_pixbuf_loader_new();
+    } else {
+	GError *error = NULL;
+	self->obj = (GObject *)gdk_pixbuf_loader_new_with_type(image_type,
+							       &error);
+	if (pyg_error_check(&error))
+	    return -1;
+    }
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GdkPixbufLoader object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gdk_pixbuf_loader_write kwargs
+static PyObject *
+_wrap_gdk_pixbuf_loader_write(PyGObject *self,
+                              PyObject *args,
+                              PyObject *kwargs)
+{
+    static char *kwlist[] = { "buf", "count", NULL };
+    int buf_len = -1, count, ret;
+    PyObject *py_ret;
+    guchar *buf;
+    GError *error = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "s#|#i:GdkPixbufLoader.write",
+                                     kwlist, &buf, &buf_len, &count))
+        return NULL;
+
+    if (buf_len != -1) {
+        count = buf_len;
+    }
+    
+    ret = gdk_pixbuf_loader_write(GDK_PIXBUF_LOADER(self->obj),
+                                  buf, count, &error);
+    
+    if (pyg_error_check(&error))
+        return NULL;
+    
+    py_ret = ret ? Py_True : Py_False;
+    
+    Py_INCREF(py_ret);
+    return py_ret;
 }
