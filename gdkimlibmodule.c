@@ -780,17 +780,19 @@ static PyObject *_wrap_gdk_imlib_create_image_from_array(PyObject *self, PyObjec
     h = ap_data->dimensions[0];
     w = ap_data->dimensions[1];
 
-    if (ap_data != NULL && (!PyArray_ISCONTIGUOUS(ap_alpha) ||
-			    ap_alpha->descr->type_num != PyArray_UBYTE ||
-			    ap_alpha->nd != 2 ||
-			    ap_alpha->dimensions[0] != h ||
-			    ap_alpha->dimensions[1] != w)) {
-	PyErr_SetString(PyExc_TypeError,
-		"alpha channel array must be 2D contiguous byte array");
-	return NULL;
-    }
-    if (ap_alpha != NULL)
+    if (ap_alpha != NULL) {
+	if (!PyArray_ISCONTIGUOUS(ap_alpha) ||
+	    ap_alpha->descr->type_num != PyArray_UBYTE ||
+	    ap_alpha->nd != 2 ||
+	    ap_alpha->dimensions[0] != h ||
+	    ap_alpha->dimensions[1] != w) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "alpha channel array must be 2D contiguous byte array");
+	    return NULL;
+	}
+
 	alpha = (unsigned char *)ap_alpha->data;
+    }
     return PyGdkImlibImage_New(gdk_imlib_create_image_from_data(
 						data, alpha, w, h));
 }
@@ -875,7 +877,7 @@ static PyMethodDef _gdkimlibMethods[] = {
     { "gdk_imlib_get_render_type", _wrap_gdk_imlib_get_render_type, 1 },
     { "gdk_imlib_init", _wrap_gdk_imlib_init, 1 },
 #ifdef HAVE_NUMPY
-    { "gdk_imlib_create_image_from_array", _wrap_gdk_imlib_create_image_from_data, 1 },
+    { "gdk_imlib_create_image_from_array", _wrap_gdk_imlib_create_image_from_array, 1 },
     { "gdk_imlib_image_get_array", _wrap_gdk_imlib_image_get_array, 1 },
 #endif
     { NULL, NULL }
