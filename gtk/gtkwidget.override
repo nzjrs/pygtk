@@ -368,3 +368,24 @@ _wrap_gtk_widget_new(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     return PyGObject_Type.tp_init(self, args, kwargs);
 }
+%%
+override gtk_menu_get_for_attach_widget noargs
+static PyObject *
+_wrap_gtk_menu_get_for_attach_widget(PyGObject *self)
+{
+    GList *menus;
+    gint len, i;
+    PyObject *pymenus;
+
+    menus = gtk_menu_get_for_attach_widget(GTK_WIDGET(self->obj));
+    len = g_list_length(menus);
+    if ((pymenus = PyTuple_New(len)) == NULL)
+        return NULL;
+
+    for (i = 0; i < len; i++) {
+        GtkMenu *menu = GTK_MENU(g_list_nth_data(menus, i));
+        PyObject *pymenu = pygobject_new((GObject *)menu);
+        PyTuple_SET_ITEM(pymenus, i, pymenu);
+    }
+    return pymenus;
+}
