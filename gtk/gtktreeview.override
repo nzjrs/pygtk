@@ -805,7 +805,9 @@ _wrap_gtk_tree_model_rows_reordered(PyGObject *self, PyObject *args,
 				     &py_path, &py_iter, &py_new_order))
         return NULL;
 
-    if (py_path == Py_None)
+    if (py_path == Py_None ||
+        (PyTuple_Check(py_path) && PyTuple_Size(py_path) == 0) ||
+        (PyString_Check(py_path) && PyString_Size(py_path) == 0))
         path = gtk_tree_path_new();
     else
         path = pygtk_tree_path_from_pyobject(py_path);
