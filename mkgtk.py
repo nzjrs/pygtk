@@ -17,3 +17,9 @@ p = generate.FilteringParser(input='generate/gtkgl.defs',
 			     typeprefix='&')
 p.addExcludeFile('generate/gtkgl.ignore')
 p.startParsing()
+
+p = generate.FilteringParser(input='generate/libglade.defs',
+			     prefix='libglade',
+			     typeprefix='&')
+p.addExcludeFile('generate/libglade.ignore')
+p.startParsing()

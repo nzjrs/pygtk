@@ -271,7 +271,7 @@ def radiobutton_new(node):
 def optionmenu_new(node):
 	omenu = GtkOptionMenu()
 	menu = GtkMenu()
-	for item in string.split(node.get_string('items', ''), '\n'):
+	for item in string.split(node.get('items', ''), '\n'):
 		mi = GtkMenuItem(item)
 		menu.append(mi)
 		mi.show()
