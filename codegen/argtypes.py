@@ -408,7 +408,7 @@ class ObjectArg(ArgType):
         info.varlist.add(ptype, '*ret')
         if ownsreturn:
             info.varlist.add('PyObject', '*py_ret')
-            info.codeafter.append('    py_ret = pygobject_new((GObject *)ret;\n'
+            info.codeafter.append('    py_ret = pygobject_new((GObject *)ret);\n'
                                   '    g_object_unref(ret);\n'
                                   '    return py_ret;')
         else:
