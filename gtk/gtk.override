@@ -3978,7 +3978,7 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
     PyObject *item;
     GtkRadioActionEntry entry;
     GtkRadioAction *action, *first_action = NULL;
-    PyObject *callback = Py_None, *py_action;
+    PyObject *callback = Py_None;
     GClosure *closure;
     GSList * group = NULL;
     gint value = 0;
@@ -4017,28 +4017,30 @@ _wrap_gtk_action_group_add_radio_actions (PyGObject *self, PyObject *args,
 	    return NULL;
 	}
 
-	if (i == 0)
-	    first_action = action;
-
 	gtk_radio_action_set_group(action, group);
 	group = gtk_radio_action_get_group(action);
 
 	if (value == entry.value)
 	    gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(action), TRUE);
 
-	py_action = pygobject_new((GObject *)action);
 	gtk_action_group_add_action_with_accel (GTK_ACTION_GROUP(self->obj),
 						GTK_ACTION(action),
 						entry.accelerator);
 	
-	g_object_unref (action);
-	
+	if (i == 0)
+	    first_action = action;
+	else
+	    g_object_unref (action);
     }
 
-    if (callback != Py_None && PyCallable_Check(callback)) {
+    if (first_action && callback != Py_None && PyCallable_Check(callback)) {
+	PyObject *py_action;
+
 	closure = pyg_closure_new(callback, NULL, NULL);
 	g_signal_connect_closure(first_action, "changed", closure, FALSE);
+	py_action = pygobject_new((GObject *)first_action);
 	pygobject_watch_closure(py_action, closure);
+	g_object_unref(first_action);
     }
 	
     Py_INCREF(Py_None);
