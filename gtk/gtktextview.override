@@ -383,13 +383,13 @@ _wrap_gtk_text_iter_forward_search(PyGBoxed *self, PyObject *args,
 {
     static char *kwlist[] = { "str", "flags", "limit", NULL };
     gchar *str;
-    PyObject *py_limit = Py_None;
+    PyObject *py_flags, *py_limit = Py_None;
     GtkTextIter match_start, match_end, *limit = NULL;
     GtkTextSearchFlags flags;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "si|O:GtkTextIter.forward_search",
-                                     kwlist, &str, &flags, &py_limit))
+                                     "sO|O:GtkTextIter.forward_search",
+                                     kwlist, &str, &py_flags, &py_limit))
         return NULL;
     if (pyg_boxed_check(py_limit, GTK_TYPE_TEXT_ITER))
         limit = pyg_boxed_get(py_limit, GtkTextIter);
@@ -397,6 +397,9 @@ _wrap_gtk_text_iter_forward_search(PyGBoxed *self, PyObject *args,
         PyErr_SetString(PyExc_TypeError,"limit must be a GtkTextIter or None");
         return NULL;
     }
+    if (pyg_flags_get_value(GTK_TYPE_TEXT_SEARCH_FLAGS, py_flags,
+                            (gint *)&flags))
+        return NULL;
     if (gtk_text_iter_forward_search(pyg_boxed_get(self, GtkTextIter), str,
                                      flags, &match_start, &match_end, limit))
         return Py_BuildValue("(NN)",
@@ -415,13 +418,13 @@ _wrap_gtk_text_iter_backward_search(PyGBoxed *self, PyObject *args,
 {
     static char *kwlist[] = { "str", "flags", "limit", NULL };
     gchar *str;
-    PyObject *py_limit = Py_None;
+    PyObject *py_flags, *py_limit = Py_None;
     GtkTextIter match_start, match_end, *limit = NULL;
     GtkTextSearchFlags flags;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "si|O:GtkTextIter.backward_search",
-                                     kwlist, &str, &flags, &py_limit))
+                                     "sO|O:GtkTextIter.backward_search",
+                                     kwlist, &str, &py_flags, &py_limit))
         return NULL;
     if (pyg_boxed_check(py_limit, GTK_TYPE_TEXT_ITER))
         limit = pyg_boxed_get(py_limit, GtkTextIter);
@@ -429,6 +432,9 @@ _wrap_gtk_text_iter_backward_search(PyGBoxed *self, PyObject *args,
         PyErr_SetString(PyExc_TypeError,"limit must be a GtkTextIter or None");
         return NULL;
     }
+    if (pyg_flags_get_value(GTK_TYPE_TEXT_SEARCH_FLAGS, py_flags,
+                            (gint *)&flags))
+        return NULL;
     if (gtk_text_iter_backward_search(pyg_boxed_get(self, GtkTextIter), str,
                                       flags, &match_start, &match_end, limit))
         return Py_BuildValue("(NN)",

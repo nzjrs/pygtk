@@ -2623,7 +2623,7 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
 {
     gchar *title = NULL;
     PyGObject *py_window = NULL;
-    PyObject *py_buttons = Py_None;
+    PyObject *py_flags = NULL, *py_buttons = Py_None;
     GtkDialogFlags flags = 0;
     int len, i;
     GtkWindow *parent;
@@ -2631,8 +2631,8 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "title", "parent", "flags", "buttons", NULL };
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "|sOiO!:GtkDialog.__init__", kwlist,
-                                     &title, &py_window, &flags,
+                                     "|sOOO!:GtkDialog.__init__", kwlist,
+                                     &title, &py_window, &py_flags,
                                      &PyTuple_Type, &py_buttons))
         return -1;
 
@@ -2645,6 +2645,8 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
         return -1;
     }
 
+    if (pyg_flags_get_value(GTK_TYPE_DIALOG_FLAGS, py_flags, (gint *)&flags))
+        return -1;
     if (py_buttons != Py_None)
         len = PyTuple_Size(py_buttons);
     else
@@ -2785,7 +2787,7 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_TypeError, "parent should be a GtkWindow or None");
         return -1;
     }
-    if (pyg_enum_get_value(GTK_TYPE_DIALOG_FLAGS, py_flags, (gint *)&flags))
+    if (pyg_flags_get_value(GTK_TYPE_DIALOG_FLAGS, py_flags, (gint *)&flags))
         return -1;
     if (pyg_enum_get_value(GTK_TYPE_MESSAGE_TYPE, py_type, (gint *)&type))
         return -1;
