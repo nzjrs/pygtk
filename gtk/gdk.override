@@ -391,10 +391,11 @@ _wrap_gdk_color_new(PyGBoxed *self,
                     PyObject *kwargs)
 {
     static char *kwlist[] = {"red", "green", "blue", "pixel", NULL };
-    int red = 0, green = 0, blue = 0, pixel = 0;
+    int red = 0, green = 0, blue = 0;
+    unsigned int pixel = 0;
     GdkColor colour;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiii:gdk.Color", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiik:gdk.Color", kwlist,
                                      &red, &green, &blue, &pixel)) {
         return -1;
     }
