@@ -118,11 +118,25 @@ class Image:
 				 _gdkimlib.gdk_imlib_make_pixmap(self._im))
 	def get_pixmap(self):
 		return _gdkimlib.gdk_imlib_get_pixmap(self._im)
+	if hasattr(_gdkimlib, 'gdk_imlib_image_get_array'):
+		def get_array(self):
+			return _gdkimlib.gdk_imlib_image_get_array(self._im)
 
 def create_image_from_data(data, alpha, width, height):
 	# alpha can be None
 	return Image(_obj=_gdkimlib.gdk_imlib_create_image_from_data(
 		data, alpha, width, height))
+
+if hasattr(_gdkimlib, 'gdk_imlib_create_image_from_array'):
+	def create_image_from_array(data, alpha=None):
+		if alpha:
+			return Image(_obj=
+				_gdkimlib.gdk_imlib_create_image_from_array(
+					data, alpha))
+		else:
+			return Image(_obj=
+				_gdkimlib.gdk_imlib_create_image_from_array(
+					data))
 
 def create_image_from_drawable(drawable, mask, x, y, width, height):
 	return Image(_obj=_gdkimlib.gdk_imlib_create_image_from_drawable(

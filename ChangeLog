@@ -1,3 +1,18 @@
+1999-07-31  James Henstridge  <james@daa.com.au>
+
+	* gtkmodule.c: put in Paul Fisher's enhancements to the threading
+	code.  It should now work better with multiple threads calling
+	GTK+ routines (remember to use threads_enter/threads_leave), and
+	doesn't reintroduce the global interpreter lock problems that
+	Duncan's original code worked around.
+
+	* configure.in: added a check for the numpy header.
+	
+	* GdkImlib.py: added wrappers for the numpy routines.
+
+	* gdkimlibmodule.c: added Travis Oliphant's Numeric python stuff to
+	the imlib module.
+
 1999-07-20  Matt Wilson  <msw@redhat.com>
 
 	* gtk.py (gdk_flush): new wrapper

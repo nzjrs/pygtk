@@ -596,7 +596,7 @@ class GtkToggleButton(GtkButton):
 		_gtk.gtk_toggle_button_set_active(self._o, active)
 	def get_active(self):
 		return _gtk.gtk_toggle_button_get_active(self._o)
-	def toggled(self, obj):
+	def toggled(self, obj=None):
 		_gtk.gtk_toggle_button_toggled(self._o)
 
 class GtkCheckButton(GtkToggleButton):

@@ -16,6 +16,12 @@ AM_CONDITIONAL(BUILD_IMLIB, $build_imlib)
 AM_PATH_GTKGL(build_gtkgl=true, build_gtkgl=false)
 AM_CONDITIONAL(BUILD_GTKGL, $build_gtkgl)
 
+dnl checks to see if Numeric Python is installed.
+save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
+AC_CHECK_HEADER(arrayobject.h, AC_DEFINE(HAVE_NUMPY))
+CPPFLAGS="$save_CPPFLAGS"
+
 AC_OUTPUT(Makefile generate/Makefile pyglade/Makefile)
 
 

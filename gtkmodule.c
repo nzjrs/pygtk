@@ -26,25 +26,58 @@
 #include "pygtk.h"
 
 /* The threading hacks are based on ones supplied by Duncan Grisby
- * of AT&T Labs Cambridge */
-#ifdef WITH_THREAD
-/* this code may need to be updated if python is changed.  It should work
- * for python 1.4 and 1.5.x.  Check ceval.h for changes. */
-static PyThreadState *_save;
-static int _blockcount = 1;
+ * of AT&T Labs Cambridge.  Since then they have been modified a bit. */
 
-/* recusive versions of thread block and unblock routines */
-#  define PyGTK_BLOCK_THREADS \
-    if (_blockcount == 0) {   \
-      Py_BLOCK_THREADS;       \
-    }                         \
-    _blockcount++;
-#  define PyGTK_UNBLOCK_THREADS \
-    _blockcount--;              \
-    if (_blockcount == 0) {     \
-      Py_UNBLOCK_THREADS;       \
-    }                           \
-    g_assert(_blockcount >= 0);
+/* The threading code has been enhanced to be a little better with multiple
+ * threads accessing GTK+.  Here are some notes on the changes by
+ * Paul Fisher:
+ *
+ * If threading is enabled, we create a recursive version of Python's
+ * global interpreter mutex using TSD.  This scheme makes it possible,
+ * although rather hackish, for any thread to make a call into PyGTK,
+ * as long as the GDK lock is held (that is, Python code is wrapped
+ * around a threads_{enter,leave} pair).
+ *
+ * A viable alternative would be to wrap each and every GTK call, at
+ * the Python/C level, with Py_{BEGIN,END}_ALLOW_THREADS.  However,
+ * given the nature of Python threading, this option is not
+ * particularly appealing.
+ */
+
+
+#ifdef WITH_THREAD
+static GStaticPrivate pythreadstate_key = G_STATIC_PRIVATE_INIT;
+static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
+
+/* The global Python lock will be grabbed by Python when entering a
+ * Python/C function; thus, the initial lock count will always be one.
+ */
+#  define INITIAL_LOCK_COUNT 1
+#  define PyGTK_BLOCK_THREADS                                              \
+   {                                                                       \
+     gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));   \
+     if (counter == -INITIAL_LOCK_COUNT) {                                 \
+       PyThreadState *_save;                                               \
+       _save = g_static_private_get(&pythreadstate_key);                   \
+       Py_BLOCK_THREADS;                                                   \
+     }                                                                     \
+     counter++;                                                            \
+     g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);   \
+   }
+
+#  define PyGTK_UNBLOCK_THREADS                                            \
+   {                                                                       \
+     gint counter = GPOINTER_TO_INT(g_static_private_get(&counter_key));   \
+     counter--;                                                            \
+     if (counter == -INITIAL_LOCK_COUNT) {                                 \
+       PyThreadState *_save;                                               \
+       Py_UNBLOCK_THREADS;                                                 \
+       g_static_private_set(&pythreadstate_key, _save, NULL);              \
+     }                                                                     \
+     g_static_private_set(&counter_key, GINT_TO_POINTER(counter), NULL);   \
+   }
+
+
 #else /* !WITH_THREADS */
 #  define PyGTK_BLOCK_THREADS
 #  define PyGTK_UNBLOCK_THREADS
@@ -3165,10 +3198,6 @@ static PyObject *_wrap_gtk_main(PyObject *self, PyObject *args) {
     PyGTK_UNBLOCK_THREADS
     gtk_main();
     PyGTK_BLOCK_THREADS
-#ifdef WITH_THREAD
-    g_assert(_blockcount == 1);
-    _blockcount = 1;
-#endif
 
     if (PyErr_Occurred())
         return NULL;
@@ -3184,10 +3213,6 @@ static PyObject *_wrap_gtk_main_iteration(PyObject *self, PyObject *args) {
     PyGTK_UNBLOCK_THREADS
     ret = gtk_main_iteration_do(block);
     PyGTK_BLOCK_THREADS
-#ifdef WITH_THREAD    
-    g_assert(_blockcount == 1);
-    _blockcount = 1;
-#endif
     return PyInt_FromLong(ret);
 }
 
@@ -3195,9 +3220,7 @@ static PyObject *_wrap_gtk_events_pending(PyObject *self, PyObject *args) {
     int ret;
     if (!PyArg_ParseTuple(args, ":gtk_events_pending"))
         return NULL;
-    PyGTK_UNBLOCK_THREADS
     ret = gtk_events_pending();
-    PyGTK_BLOCK_THREADS
     return PyInt_FromLong(ret);
 }
 

@@ -22,6 +22,10 @@
 #include <gtk/gtk.h>
 #include <gdk_imlib.h>
 
+#ifdef HAVE_NUMPY
+#include <arrayobject.h>
+#endif
+
 #include "pygtk.h"
 
 #define _INSIDE_PYGDKIMLIB_
@@ -718,6 +722,68 @@ static PyObject *_wrap_gdk_imlib_pop_visual(PyObject *self, PyObject *args) {
     return Py_None;
 }
 
+#ifdef HAVE_NUMPY
+static PyObject *_wrap_gdk_imlib_create_image_from_array(PyObject *self, PyObject *args) {
+    PyArrayObject *ap_data, *ap_alpha=NULL;
+    unsigned char *data, *alpha = NULL;
+    int w, h;
+    if (!PyArg_ParseTuple(args, "O!|O!:gdk_imlib_create_image_from_array",
+			  &PyArray_Type, &ap_data, &PyArray_Type, &ap_alpha))
+	return NULL;
+    if (!PyArray_ISCONTIGUOUS(ap_data) ||
+	ap_data->descr->type_num != PyArray_UBYTE ||
+	ap_data->nd != 3 ||
+	ap_data->dimensions[2] != 3) {
+	PyErr_SetString(PyExc_TypeError,
+		"image array must be MxNx3 contiguous unsigned byte array");
+	return NULL;
+    }
+    data = (unsigned char *)ap_data->data;
+    h = ap_data->dimensions[0];
+    w = ap_data->dimensions[1];
+
+    if (ap_data != NULL && (!PyArray_ISCONTIGUOUS(ap_alpha) ||
+			    ap_alpha->descr->type_num != PyArray_UBYTE ||
+			    ap_alpha->nd != 2 ||
+			    ap_alpha->dimensions[0] != h ||
+			    ap_alpha->dimensions[1] != w)) {
+	PyErr_SetString(PyExc_TypeError,
+		"alpha channel array must be 2D contiguous byte array");
+	return NULL;
+    }
+    if (ap_alpha != NULL)
+	alpha = (unsigned char *)ap_alpha->data;
+    return PyGdkImlibImage_New(gdk_imlib_create_image_from_data(
+						data, alpha, w, h));
+}
+
+static PyObject *_wrap_gdk_imlib_image_get_array(PyObject *self, PyObject *args) {
+    PyObject *image;
+    GdkImlibImage *obj;
+    PyArrayObject *ap_data;
+    int dims[3] = {0, 0, 3};
+
+    if (!PyArg_ParseTuple(args, "O!:gdk_imlib_image_get_array",
+			  &PyGdkImlibImage_Type, &image))
+	return NULL;
+    obj = PyGdkImlibImage_Get(image);
+    dims[0] = (int)obj->rgb_width;
+    dims[1] = (int)obj->rgb_height;
+
+    ap_data = (PyArrayObject *)PyArray_FromDimsAndData(3, dims, PyArray_UBYTE,
+						       (char *)obj->rgb_data);
+    if (ap_data == NULL)
+	return NULL;
+    /* this is necessary if you want to manipulate the rgb data after
+     * destroying the image.  It causes a reference imbalance, and
+     * I don't see when you would want to do this (you can always copy
+     * the array).
+     */
+    /* Py_INCREF(image); */
+    return PyArray_Return(ap_data);
+}
+#endif
+
 static PyMethodDef _gdkimlibMethods[] = {
     { "gdk_imlib_push_visual", _wrap_gdk_imlib_push_visual, 1 },
     { "gdk_imlib_pop_visual", _wrap_gdk_imlib_pop_visual, 1 },
@@ -770,6 +836,10 @@ static PyMethodDef _gdkimlibMethods[] = {
     { "gdk_imlib_set_render_type", _wrap_gdk_imlib_set_render_type, 1 },
     { "gdk_imlib_get_render_type", _wrap_gdk_imlib_get_render_type, 1 },
     { "gdk_imlib_init", _wrap_gdk_imlib_init, 1 },
+#ifdef HAVE_NUMPY
+    { "gdk_imlib_create_image_from_array", _wrap_gdk_imlib_create_image_from_data, 1 },
+    { "gdk_imlib_image_get_array", _wrap_gdk_imlib_image_get_array, 1 },
+#endif
     { NULL, NULL }
 };
 
@@ -782,6 +852,10 @@ void init_gdkimlib() {
 
     m = Py_InitModule("_gdkimlib", _gdkimlibMethods);
     d = PyModule_GetDict(m);
+
+#ifdef HAVE_NUMPY
+    import_array();
+#endif
     
     PyDict_SetItemString(d, "GdkImlibImageType",
 			 (PyObject *)&PyGdkImlibImage_Type);
