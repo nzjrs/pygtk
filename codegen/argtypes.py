@@ -647,14 +647,28 @@ class GtkTreePathArg(ArgType):
                                   '    return Py_None;')
 						       
 class GdkRectanglePtrArg(ArgType):
-    null = ('    if (!pygdk_rectangle_from_pyobject(py_%(name)s, &%(name)s))\n'
-            '        return NULL;\n')
+    normal = ('    if (!pygdk_rectangle_from_pyobject(py_%(name)s, &%(name)s))\n'
+              '        return NULL;\n')
+    null =   ('    if (py_%(name)s == Py_None)\n'
+              '        %(name)s = NULL;\n'
+              '    else if (pygdk_rectangle_from_pyobject(py_%(name)s, &%(name)s_rect))\n'
+              '        %(name)s = &%(name)s_rect;\n'
+              '    else\n'
+              '            return NULL;\n')
     def write_param(self, ptype, pname, pdflt, pnull, info):
-        info.varlist.add('GdkRectangle', pname + ' = { 0, 0, 0, 0 }')
-        info.varlist.add('PyObject', '*py_' + pname + ' = Py_None')
-        info.add_parselist('O', ['&py_' + pname], [pname])
-	info.arglist.append('&' + pname)
-	info.codebefore.append(self.null % {'name':  pname})
+        if pnull:
+            info.varlist.add('GdkRectangle', pname + '_rect = { 0, 0, 0, 0 }')
+            info.varlist.add('GdkRectangle', '*' + pname)
+            info.varlist.add('PyObject', '*py_' + pname + ' = Py_None')
+            info.add_parselist('O', ['&py_' + pname], [pname])
+            info.arglist.append(pname)
+            info.codebefore.append(self.null % {'name':  pname})
+        else:
+            info.varlist.add('GdkRectangle', pname + ' = { 0, 0, 0, 0 }')
+            info.varlist.add('PyObject', '*py_' + pname)
+            info.add_parselist('O', ['&py_' + pname], [pname])
+            info.arglist.append('&' + pname)
+            info.codebefore.append(self.normal % {'name':  pname})
 
 class GdkRectangleArg(ArgType):
     def write_return(self, ptype, ownsreturn, info):

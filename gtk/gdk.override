@@ -1757,6 +1757,61 @@ _wrap_gdk_pixbuf_get_pixels(PyGObject *self)
     return PyString_FromStringAndSize(pixels, rowstride*height);
 }
 %%
+override gdk_pixbuf_save kwargs
+static PyObject *
+_wrap_gdk_pixbuf_save(PyGObject *self, PyObject *args,
+		      PyObject *kwargs)
+{
+    static char *kwlist[] = {"filename", "type", "options", NULL};
+    gchar *filename, *type, **option_keys = NULL, **option_values = NULL;
+    PyObject *py_options = NULL;
+    GError *error = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "ss|O!:GdkPixbuf.save", kwlist,
+				     &filename, &type,
+				     &PyDict_Type, &py_options))
+	return NULL;
+
+    if (py_options != NULL) {
+	guint len;
+	gint pos = 0, i = 0;
+	PyObject *key, *value;
+	
+	len = PyDict_Size(py_options);
+	option_keys = g_new(gchar *, len + 1);
+	option_values = g_new(gchar *, len + 1);
+
+	while (PyDict_Next(py_options, &pos, &key, &value)) {
+	    if (!PyString_Check(key) || !PyString_Check(value)) {
+		g_free(option_keys);
+		g_free(option_values);
+		PyErr_SetString(PyExc_TypeError,
+				"keys and values must be strings");
+		return NULL;
+	    }
+
+	    option_keys[i]   = PyString_AsString(key);
+	    option_values[i] = PyString_AsString(value);
+	    i++;
+	}
+	
+	option_keys[len] = NULL;
+	option_values[len] = NULL;
+    }
+    gdk_pixbuf_savev(GDK_PIXBUF(self->obj), filename, type,
+		     option_keys, option_values, &error);
+	
+    g_free(option_keys);
+    g_free(option_values);
+ 
+    if (pyg_error_check(&error))
+	return NULL;
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gdk_colormap_alloc_color kwargs
 static PyObject *
 _wrap_gdk_colormap_alloc_color(PyGObject *self, PyObject *args,
