@@ -53,7 +53,6 @@ gtk-types.c:
 	@:
 
 gtk_overrides = \
-  gdk.override \
   gtk.override \
   gtkclist.override \
   gtkwidget.override \
@@ -75,7 +74,7 @@ defs_DATA += 			\
 	gdk.defs 		\
 	gdk-types.defs
 
-EXTRA_DIST += $(gtk_overrides)
+EXTRA_DIST += gdk.override $(gtk_overrides)
 
 # libglade module
 if BUILD_LIBGLADE

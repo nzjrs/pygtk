@@ -3145,3 +3145,125 @@ _wrap_gdk_window_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
+%%
+override gdk_display_list_devices noargs
+static PyObject *
+_wrap_gdk_display_list_devices(PyGObject *self)
+{
+    GList * devlist,  *tmp;
+    PyObject *list;
+
+    devlist = gdk_display_list_devices(GDK_DISPLAY_OBJECT(self->obj));
+    list = PyList_New(0);
+    for (tmp = devlist; tmp != NULL; tmp = tmp->next) {
+        PyObject *item = pygobject_new((GObject *)tmp->data);
+        PyList_Append(list, item);
+        Py_DECREF(item);
+    }
+
+    return list;
+}
+%%
+override gdk_display_get_pointer noargs
+static PyObject *
+_wrap_gdk_display_get_pointer(PyGObject *self)
+{
+    GdkScreen *screen = NULL;
+    gint x, y;
+    GdkModifierType mask;
+
+    gdk_display_get_pointer(GDK_DISPLAY_OBJECT(self->obj), &screen, &x, &y, &mask);
+    return Py_BuildValue("(Niii)", pygobject_new((GObject *)screen),
+			 x, y, (gint)mask);
+}
+%%
+override gdk_display_manager_list_displays noargs
+static PyObject *
+_wrap_gdk_display_manager_list_displays(PyGObject *self)
+{
+    GSList *list, *tmp;
+    PyObject *py_list;
+
+    list = gdk_display_manager_list_displays(GDK_DISPLAY_MANAGER(self->obj));
+    py_list = PyList_New(0);
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+        PyObject *item = pygobject_new((GObject *)tmp->data);
+        PyList_Append(py_list, item);
+        Py_DECREF(item);
+    }
+    g_slist_free(list);
+
+    return py_list;
+}
+%%
+override gdk_screen_list_visuals noargs
+static PyObject *
+_wrap_gdk_screen_list_visuals(PyGObject *self)
+{
+    GList *visl;
+    guint nvisl;
+    int i;
+    PyObject *list;
+
+    visl = gdk_screen_list_visuals(GDK_SCREEN(self->obj));
+    nvisl = g_list_length(visl);
+
+    if ((list = PyList_New(nvisl)) == NULL)
+	return NULL;
+
+    for (i = 0; i < nvisl; i++) {
+	PyObject *item;
+
+	item = pygobject_new((GObject *)g_list_nth_data(visl, i));
+	PyList_SetItem(list, i, item);
+    }
+
+    g_list_free(visl);
+
+    return list;
+}
+%%
+override gdk_screen_get_toplevel_windows noargs
+static PyObject *
+_wrap_gdk_screen_get_toplevel_windows(PyGObject *self)
+{
+    GList *topl;
+    guint ntopl;
+    int i;
+    PyObject *list;
+
+    topl = gdk_screen_get_toplevel_windows(GDK_SCREEN(self->obj));
+    ntopl = g_list_length(topl);
+
+    if ((list = PyList_New(ntopl)) == NULL)
+	return NULL;
+
+    for (i = 0; i < ntopl; i++) {
+	PyObject *item;
+
+	item = pygobject_new((GObject *)g_list_nth_data(topl, i));
+	PyList_SetItem(list, i, item);
+    }
+
+    g_list_free(topl);
+
+    return list;
+}
+%%
+override gdk_screen_get_monitor_geometry kwargs
+static PyObject *
+_wrap_gdk_screen_get_monitor_geometry(PyGObject *self, PyObject *args,
+				      PyObject *kwargs)
+{
+    static char *kwlist[] = { "monitor_num", NULL };
+    int monitor_num;
+    GdkRectangle dest = { 0, 0, 0, 0 };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+"i:GdkScreen.get_monitor_geometry", kwlist, &monitor_num))
+        return NULL;
+
+    gdk_screen_get_monitor_geometry(GDK_SCREEN(self->obj), monitor_num, &dest);
+
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
+}
