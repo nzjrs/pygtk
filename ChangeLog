@@ -1,5 +1,17 @@
 2004-09-27  John Ehresman <jpe@wingide.com>
 
+	* gobject/gobjectmodule.c: New functions exposed through
+	_PyGObject_Functions to work around bugs in the PyGILState
+	api's
+	* gobject/pygobject.h: idem
+	* gobject/pygobject-private.h: idem
+	* gtk/gtk.override (_wrap_gtk_main): add pyg_enable_threads()
+	call to ensure thread state for thread invoking this function
+	is remembered.  Only call pyg_enable_threads() here if threads
+	were previously enabled
+	
+2004-09-27  John Ehresman <jpe@wingide.com>
+
 	* tests/common.py: catch ImportError if glade is not found
 	and set glade to None
 

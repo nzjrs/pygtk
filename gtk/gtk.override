@@ -859,6 +859,10 @@ override gtk_main noargs
 static PyObject *
 _wrap_gtk_main(PyObject *self)
 {
+    // Call enable_threads again to ensure that the thread state is recorded
+    if (_PyGObject_API->threads_enabled)
+	pyg_enable_threads();
+
     pyg_begin_allow_threads;
     gtk_main();
     pyg_end_allow_threads;
