@@ -27,16 +27,30 @@ except ImportError:
     pass
 
 # TRUE and FALSE constants ...
-FALSE = 0
-TRUE  = 1
+try:
+    FALSE = False
+    TRUE  = True
+except NameError:
+    FALSE = 0
+    TRUE  = 1
 
-import gobject
-del gobject
+import gobject as _gobject
 
 # load the required modules:
 import keysyms
 from _gtk import *
 import gdk # this is created by the _gtk import
+
+threads_init = gdk.threads_init
+threads_enter = gdk.threads_leave
+threads_leave = gdk.threads_leave
+
+idle_add       = _gobject.idle_add
+idle_remove    = _gobject.source_remove
+timeout_add    = _gobject.timeout_add
+timeout_remove = _gobject.source_remove
+input_add      = _gobject.io_add_watch
+input_remove   = _gobject.source_remove
 
 # old names compatibility ...
 mainloop = main
@@ -49,9 +63,3 @@ load_fontset = gdk.fontset_load
 create_pixmap = gdk.Pixmap
 create_pixmap_from_xpm = gdk.pixmap_create_from_xpm
 create_pixmap_from_xpm_d = gdk.pixmap_create_from_xpm_d
-
-threads_init = gdk.threads_init
-threads_enter = gdk.threads_leave
-threads_leave = gdk.threads_leave
-
-input_add = input_add_full

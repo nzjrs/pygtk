@@ -1,3 +1,25 @@
+2002-11-19  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtkobject-support.c: get rid of pyg_handler_marshal and
+	pyg_input_marshal, which were the last bits of code using the old
+	GtkArg APIs in gtk.
+
+	* gtk/gtk.override: remove wrappers for gtk_idle_add,
+	gtk_timeout_add and gtk_input_add.
+	(_wrap_gtk_quit_add): change so that it doesn't use
+	pyg_handler_marshal.
+
+	* gtk/__init__.py: set the TRUE and FALSE constants to True and
+	False if possible.  Fall back to 0/1 otherwise.
+	(*): bind idle, timeout and input functions to gobject equivalents.
+
+	* gobjectmodule.c (get_handler_priority): helper function to get
+	priority value as a keyword argument.
+	(pyg_idle_add): convert priority arg to an optional keyword
+	argument.
+	(pyg_timeout_add): and here.
+	(pyg_io_add_watch): and here.
+
 2002-11-18  James Henstridge  <james@daa.com.au>
 
 	* gobjectmodule.c (pyg_idle_add): add a wrapper for g_idle_add.
