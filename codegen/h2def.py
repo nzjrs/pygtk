@@ -263,7 +263,7 @@ def clean_func(buf):
 
     #associate *, &, and [] with type instead of variable
     #pat=re.compile(r'\s+([*|&]+)\s*(\w+)')
-    pat=re.compile(r' \s+ ([*|&]+) \s* (\w+)',re.VERBOSE)
+    pat=re.compile(r' \s* ([*|&]+) \s* (\w+)',re.VERBOSE)
     buf=pat.sub(r'\1 \2', buf)
     pat=re.compile(r'\s+ (\w+) \[ \s* \]',re.VERBOSE)
     buf=pat.sub(r'[] \1', buf)
