@@ -1,4 +1,4 @@
-/* -*- Mode: C; c-basic-offset: 4 -*- */
+* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
 #ifdef HAVE_CONFIG_H
@@ -433,6 +433,58 @@ _wrap_gdk_draw_gray_image(PyGObject *self, PyObject *args, PyObject *kwargs)
 ignore
   gdk_color_copy gdk_color_free
   gdk_color_hash gdk_color_equal
+%%
+override gdk_color_new kwargs
+static int
+_wrap_gdk_color_new(PyGBoxed *self,
+		    PyObject *args,
+		    PyObject *kwargs)
+{
+    static char *kwlist[] = {"red", "green", "blue", "pixel", NULL };
+    GdkColor colour = {0, 0, 0, 0};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiii:gdk.Color", kwlist,
+				     &(colour.red), &(colour.green),
+				     &(colour.blue), &(colour.pixel))) {
+	return -1;
+    }
+    
+    self->boxed =  g_boxed_copy(GDK_TYPE_COLOR, &colour);
+    self->free_on_dealloc = TRUE;
+    self->gtype = GDK_TYPE_COLOR;
+    
+    return 0;
+}
+%%
+override-slot GdkColor.tp_setattr
+static int
+_wrap_gdk_color_tp_setattr(PyGBoxed *self, char *attr, PyObject *value)
+{
+    if (value == NULL) {
+	PyErr_SetString(PyExc_TypeError, "can't delete attributes");
+	return -1;
+    }
+
+    if (PyInt_Check(value)) {
+	int i = PyInt_AsLong(value);
+	if (!strcmp(attr, "red")) {
+	    pyg_boxed_get(self, GdkColor)->red = i;
+	    return 0;
+	} else if (!strcmp(attr, "green")) {
+	    pyg_boxed_get(self, GdkColor)->green = i;	    
+	    return 0;
+	} else if (!strcmp(attr, "blue")) {
+	    pyg_boxed_get(self, GdkColor)->blue = i;
+	    return 0;
+	} else if (!strcmp(attr, "pixel")) {
+	    pyg_boxed_get(self, GdkColor)->pixel = i;
+	    return 0;
+	} 
+    }
+
+    PyErr_SetString(PyExc_AttributeError, "could not write attribute");
+    return -1;
+}
 %%
 override gdk_color_parse kwargs
 static PyObject *
