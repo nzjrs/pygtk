@@ -7916,6 +7916,122 @@ _wrap_gtk_widget_get_size_request(PyGObject *self)
     return Py_BuildValue("(ii)", width, height);
 }
 %%
+override gtk_window_set_icon_list args
+static PyObject *
+_wrap_gtk_window_set_icon_list(PyGObject *self, PyObject *args)
+{
+    GList *icon_list = NULL;
+    PyObject *pyicon;
+    gint len, i;
+
+    len = PyTuple_Size(args);
+    for (i = 0; i < len; i++) {
+	pyicon = PyTuple_GetItem(args, i);
+	if (!pygobject_check(pyicon, &PyGdkPixbuf_Type)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "icons must be GdkPixbufs");
+	    g_list_free(icon_list);
+            return NULL;
+        }
+	icon_list = g_list_prepend(icon_list, pygobject_get(pyicon));
+    }
+    gtk_window_set_icon_list(GTK_WINDOW(self->obj), icon_list);
+    g_list_free(icon_list);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_window_get_icon_list noargs
+static PyObject *
+_wrap_gtk_window_get_icon_list(PyGObject *self)
+{
+    GList *icon_list = NULL;
+    PyObject *pyicon;
+
+    if ((icon_list = gtk_window_get_icon_list(GTK_WINDOW(self->obj)))) {
+        PyObject *py_list;
+        GList *tmp;
+
+        if ((py_list = PyList_New(0)) == NULL) {
+            g_list_free(icon_list);
+            return NULL;
+        }
+        for (tmp = icon_list; tmp != NULL; tmp = tmp->next) {
+            pyicon = pygobject_new(G_OBJECT(tmp->data));
+
+            if (pyicon == NULL) {
+                g_list_free(icon_list);
+                Py_DECREF(py_list);
+                return NULL;
+            }
+            PyList_Append(py_list, pyicon);
+            Py_DECREF(pyicon);
+        }
+        g_list_free(icon_list);
+        return py_list;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_window_set_default_icon_list args
+static PyObject *
+_wrap_gtk_window_set_default_icon_list(PyGObject *self, PyObject *args)
+{
+    GList *icon_list = NULL;
+    PyObject *pyicon;
+    gint len, i;
+
+    len = PyTuple_Size(args);
+    for (i = 0; i < len; i++) {
+	pyicon = PyTuple_GetItem(args, i);
+	if (!pygobject_check(pyicon, &PyGdkPixbuf_Type)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "icons must be GdkPixbufs");
+	    g_list_free(icon_list);
+            return NULL;
+        }
+	icon_list = g_list_prepend(icon_list, pygobject_get(pyicon));
+    }
+    gtk_window_set_default_icon_list(icon_list);
+    g_list_free(icon_list);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_window_get_default_icon_list noargs
+static PyObject *
+_wrap_gtk_window_get_default_icon_list(PyGObject *self)
+{
+    GList *icon_list = NULL;
+    PyObject *pyicon;
+
+    if ((icon_list = gtk_window_get_default_icon_list())) {
+        PyObject *py_list;
+        GList *tmp;
+
+        if ((py_list = PyList_New(0)) == NULL) {
+            g_list_free(icon_list);
+            return NULL;
+        }
+        for (tmp = icon_list; tmp != NULL; tmp = tmp->next) {
+            pyicon = pygobject_new(G_OBJECT(tmp->data));
+
+            if (pyicon == NULL) {
+                g_list_free(icon_list);
+                Py_DECREF(py_list);
+                return NULL;
+            }
+            PyList_Append(py_list, pyicon);
+            Py_DECREF(pyicon);
+        }
+        g_list_free(icon_list);
+        return py_list;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 ignore-win32
         GTK_TYPE_PLUG
         GTK_TYPE_SOCKET
