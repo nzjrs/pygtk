@@ -2408,3 +2408,137 @@ _wrap_gtk_tree_view_map_expanded_rows(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_tree_model_filter_set_visible_func kwargs
+static gboolean
+pygtk_tree_model_filter_visible_cb(GtkTreeModel *model, GtkTreeIter *iter,
+				   gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *py_model, *py_iter, *retobj;
+    gboolean ret = FALSE;
+
+    g_assert(cunote->func);
+
+    pyg_block_threads();
+
+    py_model = pygobject_new((GObject *)model);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NNO)", py_model,
+                                     py_iter, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(NN)", py_model,
+                                     py_iter);
+    }
+    if (retobj)
+        ret = retobj == Py_True ? TRUE : FALSE;
+    if (PyErr_Occurred()) {
+        PyErr_Print();
+    }
+    Py_XDECREF(retobj);
+
+    pyg_unblock_threads();
+    return ret;    
+}
+static PyObject *
+_wrap_gtk_tree_model_filter_set_visible_func(PyGObject *self, PyObject *args,
+					     PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|O:GtkTreeModelFilter.set_visible_func",
+				     kwlist, &pyfunc, &pyarg))
+        return NULL;
+
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new(PyGtkCustomNotify, 1);
+    Py_INCREF(pyfunc);
+    cunote->func = pyfunc;
+    Py_XINCREF(pyarg);
+    cunote->data = pyarg;
+
+    gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(self->obj),
+					   pygtk_tree_model_filter_visible_cb,
+					   (gpointer)cunote,
+					   pygtk_custom_destroy_notify);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_model_filter_convert_child_iter_to_iter kwargs
+static PyObject *
+_wrap_gtk_tree_model_filter_convert_child_iter_to_iter(PyGObject *self,
+						     PyObject *args,
+						     PyObject *kwargs)
+{
+    static char *kwlist[] = { "child_iter", NULL };
+    PyObject *py_child_iter;
+    GtkTreeIter iter, *child_iter;
+    GtkTreePath *child_path, *path;
+    GtkTreeModel *child_model;
+    GtkTreeModelFilter *filter = GTK_TREE_MODEL_FILTER(self->obj);
+
+    if (!PyArg_ParseTupleAndKeywords(
+	args, kwargs, "O:GtkTreeModelFilter.convert_child_iter_to_iter",
+	kwlist, &py_child_iter))
+        return NULL;
+    if (pyg_boxed_check(py_child_iter, GTK_TYPE_TREE_ITER))
+        child_iter = pyg_boxed_get(py_child_iter, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "child_iter should be a GtkTreeIter");
+        return NULL;
+    }
+
+    child_model = gtk_tree_model_filter_get_model(filter);
+    child_path = gtk_tree_model_get_path(child_model, child_iter);
+    if (child_path == NULL) {
+        PyErr_SetString(PyExc_ValueError, "child_iter invalid");
+        return NULL;
+    }
+	
+    path = gtk_tree_model_filter_convert_child_path_to_path(filter,
+							    child_path);
+    gtk_tree_path_free (child_path);
+    if (path == NULL) {
+        PyErr_SetString(PyExc_RuntimeError, "couldn't convert child_iter");
+        return NULL;
+    }
+    
+    gtk_tree_model_filter_convert_child_iter_to_iter(
+	GTK_TREE_MODEL_FILTER(self->obj), &iter, child_iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+}
+%%
+override gtk_tree_model_filter_convert_iter_to_child_iter kwargs
+static PyObject *
+_wrap_gtk_tree_model_filter_convert_iter_to_child_iter(PyGObject *self,
+						     PyObject *args,
+						     PyObject *kwargs)
+{
+    static char *kwlist[] = { "filter_iter", NULL };
+    PyObject *py_filter_iter;
+    GtkTreeIter iter, *filter_iter;
+
+    if (!PyArg_ParseTupleAndKeywords(
+	args, kwargs, "O:GtkTreeModelFilter.convert_iter_to_child_iter",
+	kwlist, &py_filter_iter))
+        return NULL;
+    if (pyg_boxed_check(py_filter_iter, GTK_TYPE_TREE_ITER))
+        filter_iter = pyg_boxed_get(py_filter_iter, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError,
+			"filter_iter should be a GtkTreeIter");
+        return NULL;
+    }
+    gtk_tree_model_filter_convert_iter_to_child_iter(
+	GTK_TREE_MODEL_FILTER(self->obj), &iter, filter_iter);
+    return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+}
