@@ -428,12 +428,15 @@ class DocbookDocWriter(DocWriter):
         # fall through through
         return '<literal>' + match.group(1) + '</literal>'
     
-    def reformat_text(self, text):
+    def reformat_text(self, text, singleline=0):
         # replace special strings ...
         text = self.__function_pat.sub(self.__format_function, text)
         text = self.__parameter_pat.sub(self.__format_param, text)
         text = self.__constant_pat.sub(self.__format_const, text)
         text = self.__symbol_pat.sub(self.__format_symbol, text)
+
+        # don't bother with <para> expansion for single line text.
+        if singleline: return text
         
         lines = string.split(string.strip(text), '\n')
         for index in range(len(lines)):
@@ -620,7 +623,7 @@ class DocbookDocWriter(DocWriter):
             fp.write('    <varlistentry>\n')
             fp.write('      <term><parameter>%s</parameter></term>\n' % name)
             fp.write('      <listitem>%s</listitem>\n' %
-                     self.reformat_text(descr))
+                     self.reformat_text(descr, singleline=1))
             fp.write('    </varlistentry>\n')
         if ret and ret != 'none':
             if func_doc and func_doc.ret:
@@ -630,7 +633,7 @@ class DocbookDocWriter(DocWriter):
             fp.write('    <varlistentry>\n')
             fp.write('      <term><emphasis>Returns:</emphasis></term>\n')
             fp.write('      <listitem>%s</listitem>\n' %
-                     self.reformat_text(descr))
+                     self.reformat_text(descr, singleline=1))
             fp.write('    </varlistentry>\n')
         fp.write('  </variablelist>\n')
 

@@ -91,7 +91,7 @@
       <xsl:choose>
         <xsl:when test="$anchor">
           <xsl:call-template name="href.target">
-            <xsl:with-param name="object" select="$anchro"/>
+            <xsl:with-param name="object" select="$anchor"/>
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
