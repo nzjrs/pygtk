@@ -179,6 +179,8 @@ boxedconsttmpl = 'static int\n' + \
 boxedgetattrtmpl = 'static PyObject *\n' + \
                    '%(getattr)s(PyObject *self, char *attr)\n' + \
                    '{\n' + \
+                   '    if (!strcmp(attr, "__members__"))\n' + \
+                   '        return Py_BuildValue(%(members)s);\n' + \
                    '%(attrchecks)s' + \
                    '    PyErr_SetString(PyExc_AttributeError, attr);\n' + \
                    '    return NULL;\n' + \
@@ -596,6 +598,7 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
     if not boxedobj.fields:
         return '0'
     attrchecks = ''
+    attrs = []
     for ftype, fname in boxedobj.fields:
         attrname = boxedobj.c_name + '.' + fname
         if overrides.attr_is_overriden(attrname):
@@ -604,6 +607,7 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
             attrchecks = attrchecks + attrchecktmpl % { 'attr': fixname(fname),
                                                         'varlist': '',
                                                         'code': code }
+            attrs.append(fname)
             continue
         try:
             varlist = argtypes.VarList()
@@ -616,12 +620,17 @@ def write_boxed_getattr(parser, boxedobj, overrides, fp=sys.stdout):
             attrchecks = attrchecks + attrchecktmpl % { 'attr': fixname(fname),
                                                         'varlist': varlist,
                                                         'code': code }
+            attrs.append(fname)            
         except:
             sys.stderr.write("couldn't write check for " + boxedobj.c_name +
                              '.' + fname + '\n')
 	    #traceback.print_exc()
     funcname = '_wrap_' + string.lower(uline) + '_getattr'
+    members = '"[%s]"' % ('s' * len(attrs))
+    for fname in attrs:
+        members = '%s, "%s"' % (members, fname)
     fp.write(boxedgetattrtmpl % {'getattr':    funcname,
+                                 'members':    members,
                                  'attrchecks': attrchecks })
     return funcname
 
