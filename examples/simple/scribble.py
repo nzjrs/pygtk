@@ -24,7 +24,7 @@ def expose_event(widget, event):
 	return gtk.FALSE
 
 def draw_brush(widget, x, y):
-	rect = (x-5, y-5, 10, 10)
+        x, y = int(x), int(y)
 	pixmap.draw_rectangle(widget.get_style().black_gc, gtk.TRUE,
 			      x-5, y-5, 10, 10)
 	widget.queue_draw()
@@ -47,7 +47,7 @@ def motion_notify_event(widget, event):
 def main():
 	win = gtk.Window()
 	win.set_name("Test Input")
-	win.connect("destroy", gtk.mainquit)
+        win.connect("destroy", lambda w: gtk.main_quit())
 	win.set_border_width(5)
 
 	vbox = gtk.VBox(spacing=3)
