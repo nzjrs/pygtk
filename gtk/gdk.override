@@ -2018,3 +2018,51 @@ _wrap_gdk_rectangle__set_height(PyGBoxed *self, PyObject *value, void *closure)
     pyg_boxed_get(self, GdkRectangle)->height = val;
     return 0;
 }
+%%
+override gdk_rectangle_intersect args
+static PyObject *
+_wrap_gdk_rectangle_intersect(PyGObject *self, PyObject *args)
+{
+    PyObject *py_src;
+    GdkRectangle dest;
+    
+    if (!PyArg_ParseTuple(args, "O:GdkRectangle.intersect",
+			  &py_src)) {
+	return NULL;
+    }
+    
+    if (!pyg_boxed_check(py_src, GDK_TYPE_RECTANGLE)) {
+	PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
+	return NULL;
+    }
+
+    gdk_rectangle_intersect(pyg_boxed_get(self, GdkRectangle),
+			    pyg_boxed_get(py_src, GdkRectangle),
+			    &dest);
+			    
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
+}
+%%
+override gdk_rectangle_union args
+static PyObject *
+_wrap_gdk_rectangle_union(PyGObject *self, PyObject *args)
+{
+    PyObject *py_src;
+    GdkRectangle dest;
+    
+    if (!PyArg_ParseTuple(args, "O:GdkRectangle.union",
+			  &py_src)) {
+	return NULL;
+    }
+    
+    if (!pyg_boxed_check(py_src, GDK_TYPE_RECTANGLE)) {
+	PyErr_SetString(PyExc_TypeError, "src1 must be a GdkRectangle");
+	return NULL;
+    }
+
+    gdk_rectangle_union(pyg_boxed_get(self, GdkRectangle),
+		        pyg_boxed_get(py_src, GdkRectangle),
+		        &dest);
+			    
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
+}
