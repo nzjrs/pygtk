@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = 1.4a
+AUTOMAKE_OPTIONS = 1.5
 
 SUBDIRS = generate pyglade
 

@@ -70,7 +70,7 @@
 #ifdef ENABLE_PYGTK_THREADING
 static GStaticPrivate pythreadstate_key = G_STATIC_PRIVATE_INIT;
 static GStaticPrivate counter_key = G_STATIC_PRIVATE_INIT;
-static int disable_threads;
+static gboolean disable_threads = FALSE;
 
 /* The global Python lock will be grabbed by Python when entering a
  * Python/C function; thus, the initial lock count will always be one.
@@ -6840,7 +6840,21 @@ static PyObject *_wrap_gdk_window_new(PyObject *self, PyObject *args) {
     return pygdk_win;
 }
 
+static PyObject *
+_wrap__disable_gdk_threading(PyObject *self, PyObject *args)
+{
+  if (!PyArg_ParseTuple(args, ":_disable_gdk_threading"))
+    return NULL;
+#if ENABLE_PYGTK_THREADING
+  disable_threads = TRUE;
+  gdk_threads_mutex = NULL;
+#endif
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyMethodDef _gtkmoduleMethods[] = {
+    { "_disable_gdk_threading", _wrap__disable_gdk_threading, 1 },
     { "gtk_signal_connect", _wrap_gtk_signal_connect, 1 },
     { "gtk_signal_connect_after", _wrap_gtk_signal_connect_after, 1 },
     { "gtk_signal_connect_object", _wrap_gtk_signal_connect_object, 1 },
@@ -7164,11 +7178,12 @@ void init_gtk() {
 	 Py_DECREF(d);
      }
 
-#ifdef WITH_THREAD
-     /* it is required that this function be called to enable the thread
-      * safety functions */
-     disable_threads = getenv("PYGTK_NO_THREADS") != NULL ? 1 : 0;
-     if ( !g_threads_got_initialized && !disable_threads )
+#ifdef ENABLE_PYGTK_THREADING
+     /* it is required that this function be called to enable the
+      * thread safety functions.  The _gtk._disable_gdk_threading()
+      * function can be used to set the GDK thread lock mutex back to
+      * NULL, if threaded behaviour is not desired. */
+     if ( !g_threads_got_initialized)
          g_thread_init(NULL);
 #endif
 

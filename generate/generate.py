@@ -245,11 +245,13 @@ class FunctionDefsParser(TypesParser):
 			# this is needed so we can free result string
 			varDefs.add('gchar', '*ret')
 			varDefs.add('PyObject', '*py_ret')
-		if retType == 'static_string':
+		elif retType == 'static_string':
 			varDefs.add('gchar', '*ret')
-		if retType in objects.keys():
+		elif retType in objects.keys():
 			varDefs.add('GtkObject', '*ret')
-		if retType in boxed.keys():
+		elif retType == 'GdkAtom':
+			varDefs.add('GdkAtom', 'ret')
+		elif retType in boxed.keys():
 			varDefs.add(retType, '*ret')
 		for arg in args:
 			argType = arg[0]

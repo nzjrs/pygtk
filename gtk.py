@@ -2880,3 +2880,4 @@ def _window_new(parent, attribs):
 	
 	return _gtk.gdk_window_new(parent, attribs)
 
+_disable_gdk_threading = _gtk._disable_gdk_threading

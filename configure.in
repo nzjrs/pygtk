@@ -1,12 +1,16 @@
-AC_INIT(gtkmodule.c)
+-*- mode: m4 -*-
+AC_PREREQ(2.52)
+AC_INIT(pygtk, 0.6.8,
+	[http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-python&component=pygtk])
+AC_CONFIG_SRCDIR([gtkmodule.c])
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(pygtk, 0.6.8)
+AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 
 AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
 
-AM_PATH_PYTHON_JH(1.5.2)
+AM_PATH_PYTHON(1.5.2)
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 AC_ARG_ENABLE(thread,
@@ -54,15 +58,15 @@ if test "x$enable_numpy" != xno; then
        AC_DEFINE(HAVE_EXTENSIONS_ARRAYOBJECT_H)],
       [AC_CHECK_HEADER(Numeric/arrayobject.h,
         [AC_DEFINE(HAVE_NUMPY)
-         AC_DEFINE(HAVE_NUMERIC_ARRAYOBJECT_H)])])])
+         AC_DEFINE(HAVE_NUMERIC_ARRAYOBJECT_H)],[])])])
   CPPFLAGS="$save_CPPFLAGS"
 fi
 
-AC_OUTPUT(
-Makefile
+AC_CONFIG_FILES([Makefile
 generate/Makefile
 generate/pygtk-codegen-1.2
 pyglade/Makefile
-)
+])
+AC_OUTPUT
 
 
