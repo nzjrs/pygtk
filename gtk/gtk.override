@@ -96,6 +96,7 @@ ignore
   gtk_check_button_new_with_mnemonic
   gtk_check_menu_item_new_with_label
   gtk_check_menu_item_new_with_mnemonic
+  gtk_color_button_new_with_color
   gtk_container_class_find_child_property
   gtk_container_class_list_child_properties
   gtk_dialog_new
@@ -4084,4 +4085,35 @@ _wrap_gtk_accel_group_connect_by_path(PyGObject *self, PyObject *args, PyObject 
 				    closure);
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_color_button_new kwargs
+static int
+_wrap_gtk_color_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "color", NULL };
+    GdkColor *color = NULL;
+    PyObject *pycolor = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|O:GtkColorButton.__init__",
+                                     kwlist, &pycolor))
+        return -1;
+    if (pycolor) {
+ 	if (!pyg_boxed_check(pycolor, GDK_TYPE_COLOR)) {
+	    PyErr_SetString(PyExc_TypeError,
+			    "color should be a gtk.gdk.Color");
+ 		return -1;
+	    }
+        color = pyg_boxed_get(pycolor, GdkColor);
+        self->obj = (GObject *)gtk_color_button_new_with_color(color);
+    } else {
+        self->obj = (GObject *)gtk_color_button_new();
+    }
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkColorButton object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
