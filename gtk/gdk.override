@@ -37,6 +37,10 @@ headers
 #include <gdk/gdkwin32.h>
 #endif
 
+/* make GDK_DISPLAY() the case macro */
+#undef GDK_DISPLAY
+#define GDK_DISPLAY(object) (GDK_DISPLAY_OBJECT(object))
+
 #ifdef HAVE_NUMPY
 #  include <Numeric/arrayobject.h>
 #endif
