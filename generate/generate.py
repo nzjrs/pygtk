@@ -8,6 +8,9 @@ except ImportError:
 # for fnmatchcase -- filename globbing
 import fnmatch
 
+TRUE  = 1
+FALSE = 0
+
 funcDefTmpl = '    { "%s", _wrap_%s, 1 },\n'
 funcLeadTmpl = 'static PyObject *_wrap_%s(PyObject *self, PyObject *args) {\n'
 enumCodeTmpl = '''    if (PyGtkEnum_get_value(%s, %s, (gint *)&%s))
@@ -21,6 +24,20 @@ getTypeTmpl = '''static PyObject *_wrap_%s(PyObject *self, PyObject *args) {
         return NULL;
     return PyInt_FromLong(%s());
 }\n\n'''
+
+nullokTmpl = '''    if (PyGtk_Check(py_%s))
+        %s = %s(PyGtk_Get(py_%s));
+    else if (py_%s != Py_None) {
+        PyErr_SetString(PyExc_TypeError, "%s argument must be a %s or None");
+	return NULL;
+    }\n'''
+
+nullokBoxedTmpl = '''    if (Py%s_Check(py_%s))
+        %s = %s(py_%s);
+    else if (py_%s != Py_None) {
+        PyErr_SetString(PyExc_TypeError, "%s argument must be a %s or None");
+	return NULL;
+    }\n'''
 
 convSpecialCases = {
 	'GtkCList': '_GTK_CLIST',
@@ -219,15 +236,22 @@ class FunctionDefsParser(TypesParser):
 				       'while', 'for', 'do', 'case', 'select'):
 				argName = '_' + argName
 			default = ''
+			nullok = FALSE
 			if len(arg) > 2:
 				for a in arg[2:]:
-					if a[0] == '=':
+					if type(a) == type(()) and a[0] == '=':
 						default = ' = ' + a[1]
 						if '|' not in parseStr:
 							parseStr = parseStr+'|'
+					elif type(a) == type(()) and \
+					     a[0] == 'null-ok':
+						nullok = TRUE
 			if argType == 'string':
 				varDefs.add('char', '*' + argName + default)
-				parseStr = parseStr + 's'
+				if nullok:
+					parseStr = parseStr + 'z'
+				else:
+					parseStr = parseStr + 's'
 				parseList.append('&' + argName)
 				argList.append(argName)
 			elif argType in ('char', 'uchar'):
@@ -283,9 +307,22 @@ class FunctionDefsParser(TypesParser):
 						  'py_' + argName,
 						  argName))
 			elif argType in objects.keys():
-				parseStr = parseStr + 'O!'
-				parseList.append(self.tp + 'PyGtk_Type')
-				if default:
+				if nullok:
+					parseStr = parseStr + 'O'
+					parseList.append('&py_' + argName)
+					varDefs.add('PyObject', '*py_' +
+						    argName + ' = Py_None')
+					varDefs.add(argType, '*' + argName +
+						    ' = NULL')
+					extraCode.append(nullokTmpl %
+							 (argName, argName,
+							  objects[argType],
+							  argName, argName,
+							  argName, argType))
+					argList.append(argName)
+				elif default:
+					parseStr = parseStr + 'O!'
+					parseList.append(self.tp +'PyGtk_Type')
 					varDefs.add('PyObject', '*py_' +
 						    argName + ' = NULL')
 					varDefs.add(argType, '*' + argName +
@@ -298,6 +335,8 @@ class FunctionDefsParser(TypesParser):
 							  argName + '))'))
 					argList.append(argName)
 				else:
+					parseStr = parseStr + 'O!'
+					parseList.append(self.tp +'PyGtk_Type')
 					varDefs.add('PyObject', '*' + argName)
 					parseList.append('&' + argName)
 					argList.append(objects[argType] +
@@ -305,11 +344,25 @@ class FunctionDefsParser(TypesParser):
 						       argName + '))')
 			elif argType in boxed.keys():
 				tp, get, new = boxed[argType]
-				varDefs.add('PyObject', '*' + argName)
-				parseStr = parseStr + 'O!'
-				parseList.append(self.tp + tp)
-				parseList.append('&' + argName)
-				argList.append(get + '(' + argName + ')')
+				if nullok:
+					varDefs.add('PyObject', '*py_' +
+						    argName + ' = Py_None')
+					varDefs.add(argType, '*' + argName +
+						    ' = NULL')
+					parseStr = parseStr + 'O'
+					parseList.append('&py_' + argName)
+					extraCode.append(nullokBoxedTmpl %
+							 (argType, argName,
+							  argName, get,
+							  argName, argName,
+							  argName, argType))
+					argList.append(argName)
+				else:
+					varDefs.add('PyObject', '*' + argName)
+					parseStr = parseStr + 'O!'
+					parseList.append(self.tp + tp)
+					parseList.append('&' + argName)
+					argList.append(get + '('+argName+')')
 			else:
 				print "%s: unknown arg type '%s'" % (name,
 								     argType)

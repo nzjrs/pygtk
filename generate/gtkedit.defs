@@ -123,7 +123,7 @@
 
 (define-func gtk_spin_button_new   
   GtkWidget
-  ((GtkAdjustment adjustment)
+  ((GtkAdjustment adjustment (null-ok))
    (float climb_rate)
    (uint digits)))
 
@@ -198,8 +198,8 @@
 
 (define-func gtk_text_new
   GtkWidget
-  ((GtkAdjustment hadj (= "NULL"))
-   (GtkAdjustment vadj (= "NULL"))))
+  ((GtkAdjustment hadj (null-ok) (= "NULL"))
+   (GtkAdjustment vadj (null-ok) (= "NULL"))))
 
 (define-func gtk_text_set_editable
   none
@@ -219,8 +219,8 @@
 (define-func gtk_text_set_adjustments
   none
   ((GtkText text)
-   (GtkAdjustment hadj)
-   (GtkAdjustment vadj)))
+   (GtkAdjustment hadj (null-ok))
+   (GtkAdjustment vadj (null-ok))))
 
 (define-func gtk_text_set_point
   none

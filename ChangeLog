@@ -1,3 +1,35 @@
+1999-02-19  James Henstridge  <james@daa.com.au>
+
+	* gtk.py: added __getattr__ and __setattr__ methods to GtkObject so
+	that you can set data on a GtkObject directly in a persistent way
+	(reference counting problems prevent pygtk from always passing the
+	same python object to a callback).  These functions ignore attributes
+	starting with an underscore.
+	Also modified all the other __getattr__ methods to call their
+	parent class's __getattr__ method when they fail instead of
+	raising an exception.
+	
+	* gtk.py: some changes to make use of the new null-ok flags.
+	
+	* generate/*.defs: added some null-ok tags where appropriate.
+	
+	* gtkmodule.c: removed gtk_frame_new, as the null-ok change in
+	generate.py makes it unnecessary.  Also gtk_spin_button_new_no_adj
+	has been removed because it is no longer necessary.
+	
+	* generate/generate.py (FunctionDefsParser.define_func): altered the
+	code generation routines so that they recognise the (null-ok) tag in
+	the .defs file.  This should give a lot more flexibility to the
+	generator, and allow me to move some of the special case code in
+	gtkmodule.c back to the .defs files.  The null-ok tag is currently
+	only recognised for string, object and boxed type arguments.
+
+	* gtkmodule.c: fixes to the gtk_window_set_geometry_hints function to
+	throw an exception for bad aspect values.  Also let it understand
+	integers for aspect values.
+	Also fixed up gtk_menu_popup so that you could give None for a few
+	more arguments.
+
 1999-02-16  James Henstridge  <james@daa.com.au>
 
 	* description.py: added documentation about GtkStyle changes to this

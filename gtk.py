@@ -53,6 +53,25 @@ class GtkObject:
 			return cmp(self._o, other._o)
 		else:
 			return cmp(id(self), id(other))
+	def __getattr__(self, attr):
+		# this function allows setting attributes on an object so that
+		# they will always be available with the object.  Due to
+		# reference counting problems, we can't always pass the
+		# same GtkObject instance to a callback.
+		if attr[0] == '_': raise AttributeError, attr
+		dict = self.get_data('Python-Attributes')
+		if dict and dict.has_key(attr):
+			return dict[attr]
+		raise AttributeError, attr
+	def __setattr__(self, attr, value):
+		if attr[0] == '_':
+			self.__dict__[attr] = value
+		dict = self.get_data('Python-Attributes')
+		if not dict:
+			dict = {}
+			self.set_data('Python-Attributes', dict)
+		dict[attr] = value
+			
 	def flags(self, mask=None):
 		if mask:
 			return _gtk.GTK_OBJECT_FLAGS(self._o) & mask
@@ -133,7 +152,7 @@ class GtkAdjustment(GtkData):
 		}
 		if attr in attrs.keys():
 			return attrs[attr](self._o)
-		raise AttributeError, attr
+		return GtkData.__getattr__(self, attr)
 	def set_value(self, value):
 		_gtk.gtk_adjustment_set_value(self._o, value)
 	def clamp_page(self, lower, upper):
@@ -529,7 +548,7 @@ class GtkToggleButton(GtkButton):
 	    }
 	    if attrs.has_key(attr):
 		    return attrs[attr](self._o)
-	    raise AttributeError, attr
+	    return GtkButton.__getattr__(self, attr)
 	def set_mode(self, di):
 		_gtk.gtk_toggle_button_set_mode(self._o, di)
 	def set_active(self, active):
@@ -650,7 +669,7 @@ class GtkCheckMenuItem(GtkMenuItem):
 		}
 		if attrs.has_key(attr):
 			return attrs[attr](self._o)
-		raise AttributeError, attr
+		return GtkMenuItem.__getattr__(self, attr)
 	def set_show_toggle(self, always):
 		_gtk.gtk_check_menu_item_set_show_toggle(self._o, always)
 	def set_active(self, active):
@@ -719,10 +738,9 @@ class GtkViewport(GtkBin):
 	get_type = _gtk.gtk_viewport_get_type
 	def __init__(self, ha=None, va=None, _obj=None):
 		if _obj: self._o = _obj; return
-		if ha or va:
-			self._o = _gtk.gtk_viewport_new(ha._o, va._o)
-		else:
-			self._o = _gtk.gtk_viewport_new()
+		if ha: ha = ha._o
+		if va: va = va._o
+		self._o = _gtk.gtk_viewport_new(ha, va)
 	def get_hadjustment(self):
 		return _obj2inst(_gtk.gtk_viewport_get_hadjustment(self._o))
 	def get_vdjustment(self):
@@ -801,7 +819,7 @@ class GtkColorSelectionDialog(GtkWindow):
 		}
 		if attrs.has_key(attr):
 			return _obj2inst(attrs[attr](self._o))
-		raise AttributeError, attr
+		return GtkWindow.__getattr__(self, attr)
 
 class GtkDialog(GtkWindow):
 	get_type = _gtk.gtk_dialog_get_type
@@ -815,7 +833,7 @@ class GtkDialog(GtkWindow):
 		}
 		if attrs.has_key(attr):
 			return _obj2inst(attrs[attr](self._o))
-		raise AttributeError, attr
+		return GtkWindow.__getattr__(self, attr)
 
 class GtkFileSelection(GtkWindow):
 	get_type = _gtk.gtk_file_selection_get_type
@@ -834,8 +852,9 @@ class GtkFileSelection(GtkWindow):
 		'selection_entry': _gtk.gtk_file_selection_get_selection_entry,
 		'selection_text':  _gtk.gtk_file_selection_get_selection_text
 		}
-		if not attrs.has_key(attr): raise AttributeError, attr
-		return _obj2inst(attrs[attr](self._o))
+		if attrs.has_key(attr):
+			return _obj2inst(attrs[attr](self._o))
+		return GtkWindow.__getattr__(self, attr)
 	def set_filename(self, filename):
 		_gtk.gtk_file_selection_set_filename(self._o, filename)
 	def get_filename(self):
@@ -859,7 +878,7 @@ class GtkInputDialog(GtkWindow):
 		}
 		if attrs.has_key(attr):
 			return _obj2inst(attrs[attr](self._o))
-		raise AttributeError, attr
+		return GtkWindow.__getattr__(self, attr)
 
 class GtkFontSelectionDialog(GtkWindow):
 	get_type = _gtk.gtk_font_selection_dialog_get_type
@@ -876,8 +895,9 @@ class GtkFontSelectionDialog(GtkWindow):
 		"cancel_button":
 		        _gtk.gtk_font_selection_dialog_get_cancel_button
 		}
-		if not attrs.has_key(attr): raise AttributeError, attr
-		return _obj2inst(attrs[attr](self._o))
+		if attrs.has_key(attr):
+			return _obj2inst(attrs[attr](self._o))
+		return GtkWindow.__getattr__(self, attr)
 	def get_font_name(self):
 		return _gtk.gtk_font_selection_dialog_get_font_name(self._o)
 	def get_font(self):
@@ -950,7 +970,7 @@ class GtkCombo(GtkHBox):
 	        }
 		if attrs.has_key(attr):
 			return _obj2inst(attrs[attr](self._o))
-		raise AttributeError, attr
+		return GtkHBox.__getattr__(self, attr)
 
 class GtkStatusbar(GtkHBox):
 	get_type = _gtk.gtk_statusbar_get_type
@@ -1002,7 +1022,7 @@ class GtkGammaCurve(GtkVBox):
 		}
 		if attrs.has_key(attr):
 			return _obj2inst(attrs[attr](self._o))
-		raise AttributeError, attr
+		return GtkVBox.__getattr__(self, attr)
 
 class GtkButtonBox(GtkBox):
 	get_type = _gtk.gtk_button_box_get_type
@@ -1076,8 +1096,7 @@ class GtkCList(GtkContainer):
 		}
 		if attrs.has_key(attr):
 			return attrs[attr](self._o)
-		else:
-			raise AttributeError, attr
+		return GtkContainer.__getattr__(self, attr)
 	def append(self, values):
 		return _gtk.gtk_clist_append(self._o, values)
 	def clear(self, obj=None):
@@ -1239,8 +1258,7 @@ class GtkCTree(GtkCList):
 		}
 		if attrs.has_key(attr):
 			return attrs[attr](self._o)
-		else:
-			return GtkCList.__getattr__(self, attr)
+		return GtkCList.__getattr__(self, attr)
 	def base_nodes(self):
 		# this returns a list of the base nodes.  Useful for recursion
 		return _gtk.gtk_ctree_base_nodes(self._o)
@@ -1505,7 +1523,9 @@ class GtkMenu(GtkMenuShell):
 	def insert(self, child, pos):
 		_gtk.gtk_menu_insert(self._o, child._o, pos)
 	def popup(self, pms, pmi, func, button, time):
-		_gtk.gtk_menu_popup(self._o, pms._o, pmi._o, func,button,time)
+		if pms: pms = pms._o
+		if pmi: pmi = pmi._o
+		_gtk.gtk_menu_popup(self._o, pms, pmi, func, button, time)
 	def reposition(self):
 		_gtk.gtk_menu_reposition(self._o)
 	def popdown(self, obj=None):
@@ -1710,10 +1730,9 @@ class GtkScrolledWindow(GtkBin):
 	get_type = _gtk.gtk_scrolled_window_get_type
 	def __init__(self, hadj=None, vadj=None, _obj=None):
 		if _obj: self._o = _obj; return
-		if not (vadj or hadj):
-			self._o = _gtk.gtk_scrolled_window_new()
-		else:
-			self._o = _gtk.gtk_scrolled_window_new(hadj._o, vadj._o)
+		if hadj: hadj = hadj._o
+		if vadj: vadj = vadj._o
+		self._o = _gtk.gtk_scrolled_window_new(hadj, vadj)
 	def get_hadjustment(self):
 		return _obj2inst(_gtk.gtk_scrolled_window_get_hadjustment(
 			self._o))
@@ -1969,11 +1988,8 @@ class GtkSpinButton(GtkEntry):
 	def __init__(self, adj=None, climb_rate=1, digits=1, _obj=None):
 		if _obj: self._o = _obj; return
 		if adj:
-			self._o = _gtk.gtk_spin_button_new(adj._o, climb_rate,
-							   digits)
-		else:
-			self._o = _gtk.gtk_spin_button_new_no_adj(climb_rate,
-								  digits)
+			adj = adj._o
+		self._o = _gtk.gtk_spin_button_new(adj, climb_rate, digits)
 	def set_adjustment(self, adj):
 		_gtk.gtk_spin_button_set_adjustment(self._o, adj._o)
 	def get_adjustment(self):
@@ -2006,10 +2022,9 @@ class GtkText(GtkEditable):
 	get_type = _gtk.gtk_text_get_type
 	def __init__(self, hadj=None, vadj=None, _obj=None):
 		if _obj: self._o = _obj; return
-		if not (hadj or vadj):
-			self._o = _gtk.gtk_text_new()
-		else:
-			self._o = _gtk.gtk_text_new(hadj._o, vadj._o)
+		if hadj: hadj = hadj._o
+		if vadj: vadj = vadj._o
+		self._o = _gtk.gtk_text_new(hadj, vadj)
 	def set_editable(self, editable):
 		_gtk.gtk_text_set_editable(self._o, editable)
 	def set_word_wrap(self, word_wrap):
@@ -2259,19 +2274,15 @@ class GtkHScale(GtkScale):
 	get_type = _gtk.gtk_hscale_get_type
 	def __init__(self, adj=None, _obj=None):
 		if _obj: self._o = _obj; return
-		if adj:
-			self._o = _gtk.gtk_hscale_new(adj._o)
-		else:
-			self._o = _gtk.gtk_hscale_new()
+		if adj: adj = adj._o
+		self._o = _gtk.gtk_hscale_new(adj)
 
 class GtkVScale(GtkScale):
 	get_type = _gtk.gtk_vscale_get_type
 	def __init__(self, adj=None, _obj=None):
 		if _obj: self._o = _obj; return
-		if adj:
-			self._o = _gtk.gtk_vscale_new(adj._o)
-		else:
-			self._o = _gtk.gtk_vscale_new()
+		if adj: adj = adj._o
+		self._o = _gtk.gtk_vscale_new(adj)
 
 class GtkScrollbar(GtkRange):
 	get_type = _gtk.gtk_scrollbar_get_type
@@ -2282,19 +2293,15 @@ class GtkHScrollbar(GtkScrollbar):
 	get_type = _gtk.gtk_hscrollbar_get_type
 	def __init__(self, adj=None, _obj=None):
 		if _obj: self._o = _obj; return
-		if adj:
-			self._o = _gtk.gtk_hscrollbar_new(adj._o)
-		else:
-			self._o = _gtk.gtk_hscrollbar_new()
+		if adj: adj = adj._o
+		self._o = _gtk.gtk_hscrollbar_new(adj)
 
 class GtkVScrollbar(GtkScrollbar):
 	get_type = _gtk.gtk_vscrollbar_get_type
 	def __init__(self, adj=None, _obj=None):
 		if _obj: self._o = _obj; return
-		if adj:
-			self._o = _gtk.gtk_vscrollbar_new(adj._o)
-		else:
-			self._o = _gtk.gtk_vscrollbar_new()
+		if adj: adj = adj._o
+		self._o = _gtk.gtk_vscrollbar_new(adj)
 
 class GtkRuler(GtkWidget):
 	get_type = _gtk.gtk_ruler_get_type

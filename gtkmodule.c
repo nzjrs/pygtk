@@ -4018,14 +4018,6 @@ static PyObject *_wrap_gtk_editable_insert_text(PyObject *self, PyObject *args) 
     return PyInt_FromLong(pos);
 }
 
-static PyObject *_wrap_gtk_frame_new(PyObject *self, PyObject *args) {
-    char *label;
-
-    if (!PyArg_ParseTuple(args, "z:gtk_frame_new", &label))
-        return NULL;
-    return PyGtk_New((GtkObject *)gtk_frame_new(label));
-}
-
 static void PyGtk_item_factory_cb(PyObject *callback, guint action,
 				  GtkWidget *widget) {
   PyObject *ret;
@@ -4108,20 +4100,38 @@ static void PyGtk_MenuPosition(GtkMenu *menu, int *x, int *y, PyObject *func) {
         Py_DECREF(ret);
 }
 static PyObject *_wrap_gtk_menu_popup(PyObject *self, PyObject *args) {
-    PyGtk_Object *m, *pms, *pmi;
+    PyObject *m, *py_pms, *py_pmi;
+    GtkWidget *pms = NULL, *pmi = NULL;
     PyObject *func;
     int button, time;
-    if (!PyArg_ParseTuple(args, "O!O!O!Oii:gtk_menu_item", &PyGtk_Type, &m,
-            &PyGtk_Type, &pms, &PyGtk_Type, &pmi, &func, &button, &time))
+    if (!PyArg_ParseTuple(args, "O!OOOii:gtk_menu_item", &PyGtk_Type, &m,
+            &py_pms, &py_pmi, &func, &button, &time))
         return NULL;
-    if (!PyCallable_Check(func)) {
+    if (PyGtk_Check(py_pms))
+        pms = GTK_WIDGET(PyGtk_Get(py_pms));
+    else if (py_pms != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+			"second argument must be a GtkWidget or None");
+        return NULL;
+    }
+    if (PyGtk_Check(py_pmi))
+        pmi = GTK_WIDGET(PyGtk_Get(py_pmi));
+    else if (py_pmi != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+			"third argument must be a GtkWidget or None");
+        return NULL;
+    }
+    if (!PyCallable_Check(func) && func != Py_None) {
         PyErr_SetString(PyExc_TypeError, "forth argument not callable");
         return NULL;
     }
-    Py_INCREF(func);
-    gtk_menu_popup(GTK_MENU(PyGtk_Get(m)), GTK_WIDGET(PyGtk_Get(pms)),
-        GTK_WIDGET(PyGtk_Get(pmi)), (GtkMenuPositionFunc)PyGtk_MenuPosition,
-        func, button, time);
+    if (func) {
+      Py_INCREF(func);
+      gtk_menu_popup(GTK_MENU(PyGtk_Get(m)), pms, pmi,
+		     (GtkMenuPositionFunc)PyGtk_MenuPosition,
+		     func, button, time);
+    } else
+      gtk_menu_popup(GTK_MENU(PyGtk_Get(m)), pms, pmi, NULL,NULL, button,time);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -4322,17 +4332,21 @@ static PyObject *_wrap_gtk_drag_dest_set(PyObject *self, PyObject *args) {
   GtkTargetEntry *targets;
   gint n_targets, i;
 
-  if (!PyArg_ParseTuple(args, "O!OO!O:gtk_drag_dest_set", &PyGtk_Type, &widget,
-			&py_flags, &PyList_Type, &py_list, &py_actions))
+  if (!PyArg_ParseTuple(args, "O!OOO:gtk_drag_dest_set", &PyGtk_Type, &widget,
+			&py_flags, &py_list, &py_actions))
     return NULL;
   if (PyGtkFlag_get_value(GTK_TYPE_DEST_DEFAULTS, py_flags, (gint *)&flags))
     return NULL;
   if (PyGtkFlag_get_value(GTK_TYPE_GDK_DRAG_ACTION,py_actions,(gint*)&actions))
     return NULL;
-  n_targets = PyList_Size(py_list);
+  if (!PySequence_Check(py_list)) {
+    PyErr_SetString(PyExc_TypeError, "third argument must be a sequence");
+    return NULL;
+  }
+  n_targets = PySequence_Length(py_list);
   targets = g_new(GtkTargetEntry, n_targets);
   for (i = 0; i < n_targets; i++) {
-    PyObject *item = PyList_GetItem(py_list, i);
+    PyObject *item = PySequence_GetItem(py_list, i);
     if (!PyArg_ParseTuple(item, "zii", &(targets[i].target),
 			  &(targets[i].flags), &(targets[i].info))) {
       PyErr_Clear();
@@ -4355,17 +4369,21 @@ static PyObject *_wrap_gtk_drag_source_set(PyObject *self, PyObject *args) {
   gint n_targets, i;
   GdkDragAction actions;
 
-  if (!PyArg_ParseTuple(args, "O!OO!O:gtk_drag_source_set", &PyGtk_Type,
-			&widget, &py_bmask, &PyList_Type,&py_list,&py_actions))
+  if (!PyArg_ParseTuple(args, "O!OOO:gtk_drag_source_set", &PyGtk_Type,
+			&widget, &py_bmask, &py_list, &py_actions))
     return NULL;
   if (PyGtkFlag_get_value(GTK_TYPE_GDK_MODIFIER_TYPE, py_bmask, (gint*)&bmask))
     return NULL;
   if (PyGtkFlag_get_value(GTK_TYPE_GDK_DRAG_ACTION,py_actions,(gint*)&actions))
     return NULL;
-  n_targets = PyList_Size(py_list);
+  if (!PySequence_Check(py_list)) {
+    PyErr_SetString(PyExc_TypeError, "third argument must be a sequence");
+    return NULL;
+  }
+  n_targets = PySequence_Length(py_list);
   targets = g_new(GtkTargetEntry, n_targets);
   for (i = 0; i < n_targets; i++) {
-    PyObject *item = PyList_GetItem(py_list, i);
+    PyObject *item = PySequence_GetItem(py_list, i);
     if (!PyArg_ParseTuple(item, "zii", &(targets[i].target),
 			  &(targets[i].flags), &(targets[i].info))) {
       PyErr_Clear();
@@ -4389,16 +4407,20 @@ PyObject *_wrap_gtk_drag_begin(PyObject *self, PyObject *args) {
   GtkTargetList *list;
   GdkDragContext *context;
 
-  if (!PyArg_ParseTuple(args, "O!O!OiO!:gtk_drag_begin", &PyGtk_Type, &widget,
-			&PyList_Type, &py_list, &py_actions, &button,
+  if (!PyArg_ParseTuple(args, "O!OOiO!:gtk_drag_begin", &PyGtk_Type, &widget,
+			&py_list, &py_actions, &button,
 			&PyGdkEvent_Type, &event))
     return NULL;
   if (PyGtkFlag_get_value(GTK_TYPE_GDK_DRAG_ACTION,py_actions,(gint*)&actions))
     return NULL;
-  n_targets = PyList_Size(py_list);
+  if (!PySequence_Check(py_list)) {
+    PyErr_SetString(PyExc_TypeError, "third argument must be a sequence");
+    return NULL;
+  }
+  n_targets = PySequence_Length(py_list);
   targets = g_new(GtkTargetEntry, n_targets);
   for (i = 0; i < n_targets; i++) {
-    PyObject *item = PyList_GetItem(py_list, i);
+    PyObject *item = PySequence_GetItem(py_list, i);
     if (!PyArg_ParseTuple(item, "zii", &(targets[i].target),
 			  &(targets[i].flags), &(targets[i].info))) {
       PyErr_Clear();
@@ -4778,7 +4800,7 @@ static PyObject *_wrap_gtk_color_selection_get_color(PyObject *self, PyObject *a
     if (GTK_COLOR_SELECTION(PyGtk_Get(colorsel))->use_opacity)
         return Py_BuildValue("(dddd)", value[0],value[1],value[2],value[3]);
     else
-        return Py_BuildValue("(dddd)", value[0], value[1], value[2]);
+        return Py_BuildValue("(ddd)", value[0], value[1], value[2]);
 }
     
 static PyObject *_wrap_gtk_color_selection_set_color(PyObject *self, PyObject *args) {
@@ -4914,16 +4936,6 @@ static PyObject *_wrap_gtk_tree_get_selection(PyObject *self, PyObject *args) {
     for (; tmp; tmp = tmp->next)
         PyList_Append(ret, PyGtk_New(tmp->data));
     return ret;
-}
-
-static PyObject *_wrap_gtk_spin_button_new_no_adj(PyObject *self, PyObject *args) {
-    double climb_rate;
-    int digits;
-
-    if (!PyArg_ParseTuple(args, "di:gtk_spin_button_new_no_adj",
-			  &climb_rate, &digits))
-        return NULL;
-    return PyGtk_New((GtkObject *)gtk_spin_button_new(NULL,climb_rate,digits));
 }
 
 static PyObject *_wrap_gtk_calendar_get_date(PyObject *self, PyObject *args) {
@@ -5355,7 +5367,6 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_curve_get_vector", _wrap_gtk_curve_get_vector, 1 },
     { "gtk_curve_set_vector", _wrap_gtk_curve_set_vector, 1 },
     { "gtk_editable_insert_text", _wrap_gtk_editable_insert_text, 1 },
-    { "gtk_frame_new", _wrap_gtk_frame_new, 1 },
     { "gtk_item_factory_create_items", _wrap_gtk_item_factory_create_items,1 },
     { "gtk_item_factory_get_widget", _wrap_gtk_item_factory_get_widget, 1 },
     { "gtk_item_factory_get_widget_by_action", _wrap_gtk_item_factory_get_widget_by_action, 1 },
@@ -5381,7 +5392,6 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_list_get_selection", _wrap_gtk_list_get_selection, 1 },
     { "gtk_tree_remove_items", _wrap_gtk_tree_remove_items, 1 },
     { "gtk_tree_get_selection", _wrap_gtk_tree_get_selection, 1 },
-    { "gtk_spin_button_new_no_adj", _wrap_gtk_spin_button_new_no_adj, 1 },
     { "gtk_calendar_get_date", _wrap_gtk_calendar_get_date, 1 },
     { "gtk_notebook_query_tab_label_packing", _wrap_gtk_notebook_query_tab_label_packing, 1 },
     { "gtk_drag_dest_set", _wrap_gtk_drag_dest_set, 1 },
