@@ -188,6 +188,14 @@
 	<methodname><link linkend="method-gtkfilechooser--list-shortcut-folder-uris">list_shortcut_folder_uris</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--set-show-hidden">set_show_hidden</link></methodname>
+	<methodparam><parameter role="keyword">show_hidden</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--get-show-hidden">get_show_hidden</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -210,7 +218,8 @@
 performing - one of: <literal>gtk.FILE_CHOOSER_ACTION_OPEN</literal>,
 <literal>gtk.FILE_CHOOSER_ACTION_SAVE</literal>,
 <literal>gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER</literal> or
-<literal>gtk.FILE_CHOOSER_ACTION_CREATE_FOLDER</literal>.</entry>
+<literal>gtk.FILE_CHOOSER_ACTION_CREATE_FOLDER</literal>. Default value:
+<literal>gtk.FILE_CHOOSER_ACTION_OPEN</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -222,7 +231,8 @@ performing - one of: <literal>gtk.FILE_CHOOSER_ACTION_OPEN</literal>,
 	    <row valign="top">
 	      <entry>"file-system-backend"</entry>
 	      <entry>Write-Construct</entry>
-	      <entry>The name of the file system backend to use.</entry>
+	      <entry>The name of the file system backend to use.
+Default value: <literal>None</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -238,7 +248,7 @@ for selecting which files are displayed.</entry>
 	      <entry>Read-Write</entry>
 
 	      <entry>If <literal>TRUE</literal>, the selected file(s) should
-be limited to local file: URLs.</entry>
+be limited to local file: URLs. Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -252,7 +262,8 @@ previews.</entry>
 	      <entry>"preview-widget-active"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the application supplied
-widget for custom previews should be shown.</entry>
+widget for custom previews should be shown. Default value:
+<literal>TRUE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -261,21 +272,22 @@ widget for custom previews should be shown.</entry>
 	      <entry>If <literal>TRUE</literal>, allow multiple files to be
 	      selected except if
 	      <literal>gtk.FILE_CHOOSER_ACTION_SAVE</literal> is set as the
-	      "action" property.</entry>
+	      "action" property. Default value:
+<literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"show-hidden"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, hidden files and folders
-should be displayed.</entry>
+should be displayed. Default value: <literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"use-preview-label"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, display a stock label with
-the name of the previewed file.</entry>
+the name of the previewed file. Default value: <literal>TRUE</literal></entry>
 	    </row>
 
 	  </tbody>
@@ -390,7 +402,7 @@ current folder in alphabetical order with last modified time.</simpara>
       </listitem>
    </itemizedlist>
 
-    <refsect2>
+    <refsect2 id="AddingAPreviewWidget">
       <title>Adding A Preview Widget</title>
 
       <para>You can add a custom preview widget to a file chooser and get
@@ -406,7 +418,8 @@ method to see what needs previewing. Once you have generated the preview for
 the corresponding file, you must call the <link
 linkend="method-gtkfilechooser--set-preview-widget-active"><methodname>set_preview_widget_active</methodname>()</link>
 method with a boolean flag that indicates whether your callback could
-successfully generate a preview. An example use of a custom preview is:</para>
+successfully generate a preview. An example use of a custom preview
+is:</para>
 
     <programlisting>
     ...
@@ -452,6 +465,129 @@ chooser, you can use a container such as a <link
 linkend="class-gtkvbox"><classname>gtk.VBox</classname></link> or a <link
 linkend="class-gtktable"><classname>gtk.Table</classname></link> to hold
 your widgets; then set the container as the whole extra widget.</para>
+
+    </refsect2>
+
+    <refsect2>
+      <title>Key Bindings</title>
+
+      <para>The <link
+linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
+uses the private <classname>GtkFileChooserDefaultClass</classname> that has
+several key bindings and their associated signals. This section describes
+the available key binding signals.</para>
+
+      <para>The default keys that activate the key-binding signals in GtkFileChooserDefaultClass are as follows:</para>
+
+      <informaltable pgwide="1" frame="none">
+        <tgroup cols="2">
+          <colspec column="1" colwidth="2in"/>
+          <colspec column="2" colwidth="2in"/>
+          <thead>
+            <row>
+              <entry>Signal name</entry>
+              <entry>Key</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>location-popup</entry>
+              <entry>Control-L</entry>
+            </row>
+            <row>
+              <entry>up-folder</entry>
+              <entry>Alt-Up</entry>
+            </row>
+            <row>
+              <entry>down-folder</entry>
+              <entry>Alt-Down</entry>
+            </row>
+            <row>
+              <entry>home-folder</entry>
+              <entry>Alt-Home</entry>
+            </row>
+          </tbody>
+          </tgroup>
+      </informaltable>
+
+      <para>To change these defaults to something else, you could include
+the following fragment in your <filename>.gtkrc-2.0</filename> file:</para>
+
+      <programlisting>
+  binding "my-own-gtkfilechooser-bindings" {
+	bind "&lt;Alt&gt;&lt;Shift&gt;l" {
+		"location-popup" ()
+	}
+	bind "&lt;Alt&gt;&lt;Shift&gt;Up" {
+		"up-folder" ()
+	}
+	bind "&lt;Alt&gt;&lt;Shift&gt;Down" {
+		"down-folder" ()
+	}
+	bind "&lt;Alt&gt;&lt;Shift&gt;Home" {
+		"home-folder-folder" ()
+	}
+  }
+
+  class "GtkFileChooserDefault" binding "my-own-gtkfilechooser-bindings"
+</programlisting>
+
+      <para>The "GtkFileChooserDefault::location-popup" signal is used to
+make the file chooser show a "Location" dialog which the user can use to
+manually type the name of the file he wishes to select. By default this is
+bound to
+<keycombo><keycap>Control</keycap><keycap>L</keycap></keycombo>.</para>
+
+      <programlisting>
+  def location_popup_cb(filechooser, user_data):
+</programlisting>
+
+      <para>where <parameter>filechooser</parameter> is the <link
+linkend="class-gtkfilechooser"><classname>gtk.FileChooser</classname></link>
+that received the signal, <parameter>user_data</parameter> is user data set
+when the signal handler was connected.</para>
+
+      <para>The "GtkFileChooserDefault::up-folder" signal is used to make
+the file chooser go to the parent of the current folder in the file
+hierarchy. By default this is bound to
+<keycombo><keycap>Alt</keycap><keycap>Up</keycap></keycombo>.</para>
+
+      <programlisting>
+  def up_folder_cb(filechooser, user_data):
+</programlisting>
+
+      <para>where <parameter>filechooser</parameter> is the object that
+received the signal and <parameter>user_data</parameter> is the user data
+set when the signal handler was connected.</para>
+
+      <para>The "GtkFileChooserDefault::down-folder" signal is used to make
+the file chooser go to a child of the current folder in the file
+hierarchy. The subfolder that will be used is displayed in the path bar
+widget of the file chooser. For example, if the path bar is showing
+"/foo/bar/baz", then this will cause the file chooser to switch to the "baz"
+subfolder. By default this is bound to
+<keycombo><keycap>Alt</keycap><keycap>Down</keycap> </keycombo>.</para>
+
+      <programlisting>
+  def down_folder_cb(filechooser, user_data):
+</programlisting>
+
+      <para>where <parameter>filechooser</parameter> is the object that
+received the signal and <parameter>user_data</parameter> is the user data
+set when the signal handler was connected.</para>
+
+      <para>The "GtkFileChooserDefault::home-folder" signal is used to make
+the file chooser show the user's home folder in the file list. By default
+this is bound to <keycombo><keycap>Alt</keycap><keycap>Home</keycap>
+</keycombo>.</para>
+
+      <programlisting>
+  def home_folder_cb(filechooser, user_data):
+</programlisting>
+	
+      <para>where <parameter>filechooser</parameter> is the object that
+received the signal and <parameter>user_data</parameter> is the user data
+set when the signal handler was connected.</para>
 
     </refsect2>
 
@@ -1805,6 +1941,58 @@ URIs.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkfilechooser--set-show-hidden">
+      <title>gtk.FileChooser.set_show_hidden</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_show_hidden</methodname>
+	  <methodparam><parameter role="keyword">show_hidden</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">show_hidden</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> hidden files and
+folders should be displayed.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_show_hidden</methodname>() method sets the
+"show-hidden" property to the value of
+<parameter>show_hidden</parameter>. If <parameter>show_hidden</parameter> is
+<literal>TRUE</literal>, hidden files and folders should be displayed in the
+file selector.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooser--get-show-hidden">
+      <title>gtk.FileChooser.get_show_hidden</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_show_hidden</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if hidden files and
+folders are displayed.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_show_hidden</methodname>() method returns
+the value of the "show-hidden" property that indicates whether hidden files
+and folders should be displayed in the file selector. See the <link
+linkend="method-gtkfilechooser--set-show-hidden"><methodname>set_show_hidden()</methodname></link>
+method for more information.</para>
+
+    </refsect2>
 
   </refsect1>
 
@@ -1846,7 +2034,9 @@ any)</simpara></listitem>
       </note>
 
       <para>The "current-folder-changed" signal is emitted when the current
-folder displayed in <parameter>filechooser</parameter> is changed.</para>
+folder displayed in <parameter>filechooser</parameter> is changed. Normally
+you do not need to connect to this signal, unless you need to keep track of
+which folder a file chooser is showing.</para>
 
     </refsect2>
 
@@ -1885,7 +2075,11 @@ any)</simpara></listitem>
       </note>
 
       <para>The "file-activated" signal is emitted when the user
-double-clicks on a file (not a folder).</para>
+double-clicks on a file (not a folder) or presses
+<keycap>Enter</keycap>. Normally you do not need to connect to this
+signal. It is used internally by <link
+linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
+to know when to activate the default button in the dialog.</para>
 
     </refsect2>
 
@@ -1925,7 +2119,10 @@ any)</simpara></listitem>
 
       <para>The "selection-changed" signal is emitted when the file
 selection in <parameter>filechooser</parameter> is changed either by
-clicking on a filename or by changing the current folder.</para>
+clicking on a filename or by changing the current folder. Normally you do
+not need to connect to this signal, as it is easier to wait for the file
+chooser to finish running, and then to get the list of selected files using
+the functions mentioned below.</para>
 
     </refsect2>
 
@@ -1963,8 +2160,38 @@ any)</simpara></listitem>
 	<para>This signal is available in PyGTK 2.4 and above.</para>
       </note>
 
-      <para>The "update-preview" signal is emitted when the preview needs to
-be changed because a new file has been selected.</para>
+      <para>The "update-preview" signal is emitted when the preview when a
+file chooser should be regenerated. For example, this can happen when the
+currently selected file changes. You should use this signal if you want your
+file chooser to have a preview widget.</para>
+
+      <para>Once you have installed a preview widget with the <link
+linkend="method-gtkfilechooser--set-preview-widget"><methodname>set_preview_widget</methodname>()</link>
+method, you should update it when this signal is emitted. You can use the
+methods <link
+linkend="method-gtkfilechooser--get-preview-filename"><methodname>get_preview_filename</methodname>()</link>
+or <link
+linkend="method-gtkfilechooser--get-preview-uri"><methodname>get_preview_uri</methodname>()</link>
+to get the name of the file to preview. Your widget may not be able to
+preview all kinds of files so your callback must call the <link
+linkend="method-gtkfilechooser--set-preview-widget-active"><methodname>set_preview_widget_active</methodname>()</link>
+to inform the file chooser if the preview was generated successfully or
+not.</para>
+
+      <para>Please see the example code in the section called <link
+linkend="AddingAPreviewWidget">Adding a Preview Widget</link>.</para>
+
+      <para>Also see the <link
+linkend="method-gtkfilechooser--set-preview-widget"><methodname>set_preview_widget</methodname>()</link>,
+<link
+linkend="method-gtkfilechooser--set-preview-widget-active"><methodname>set_preview_widget_active</methodname>()</link>,
+<link
+linkend="method-gtkfilechooser--set-use-preview-label"><methodname>set_use_preview_label</methodname>()</link>,
+<link
+linkend="method-gtkfilechooser--get-preview-filename"><methodname>get_preview_filename</methodname>()</link>
+and <link
+linkend="method-gtkfilechooser--get-preview-uri"><methodname>get_preview_uri</methodname>()</link>
+methods for more information</para>
 
     </refsect2>
 
