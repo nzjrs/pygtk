@@ -1,3 +1,19 @@
+2000-10-26  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pyg_boxed_register): new function for
+	registering functions to marshal boxed GValues to/from their
+	python wrappers.
+	(pyg_value_from_pyobject): add boxed support.
+	(pyg_value_as_pyobject): add boxed support.
+	(pyg_closure_new): new function to create a python GClosure.
+	(pyg_closure_destroy): cleanup function for a PyGClosure.
+	(pyg_closure_marshal): marshaler for PyGClosure.
+	(pyg_value_as_pyobject): add const to GValue argument.
+
+	* pygobject.h: export a pyg_boxed_register function to register
+	new boxed types for use with pyg_value_from_pyobject and
+	pyg_value_as_pyobject.
+
 2000-10-25  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtkmodule.c (init_gtk): set the default python character
