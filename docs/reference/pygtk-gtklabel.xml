@@ -190,6 +190,28 @@ linkend="method-gtklabel--set-single-line-mode">set_single_line_mode</link></met
 linkend="method-gtklabel--get-single-line-mode">get_single_line_mode</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--get-single-line-mode">get_max_width_chars</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--set-single-line-mode">set_max_width_chars</link></methodname>
+	<methodparam><parameter
+		       role="keyword">n_chars</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--get-single-line-mode">get_angle</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtklabel--set-single-line-mode">set_angle</link></methodname>
+	<methodparam><parameter
+		       role="keyword">angle</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -216,6 +238,16 @@ linkend="method-gtklabel--get-single-line-mode">get_single_line_mode</link></met
 	  <colspec column="2" colwidth="1in"/>
 	  <colspec column="3" colwidth="4in"/>
 	  <tbody>
+
+	    <row valign="top">
+	      <entry>"angle"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The angle that the baseline of the label makes with the
+horizontal, in degrees, measured counterclockwise. An angle of 90 reads from
+from bottom to top, an angle of 270, from top to bottom. Ignored if the label
+is selectable, wrapped, or ellipsized. Allowed values: [0,360]
+Default value: 0. Available in GTK+ 2.6 and above.</entry>
+	    </row>
 
 	    <row valign="top">
 	      <entry>"attributes"</entry>
@@ -268,6 +300,17 @@ allocation. Default value: <literal>gtk.JUSTIFY_LEFT</literal></entry>
 	      <entry>Read-Write</entry>
 	      <entry>The text of the label. Default value:
 <literal>None</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"max-width-chars"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The desired maximum width of the label, in characters.
+If this property is set to -1, the width will be calculated automatically,
+otherwise the label will request space for no more than the requested number
+of characters. If the "width-chars" property is set to a positive value, then
+the "max-width-chars" property is ignored. Allowed values: >= -1.
+Default value: -1. Available in GTK+ 2.6 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -1416,6 +1459,110 @@ actual text, it is always set to ascent + descent of the font.</para>
       <para>The <methodname>get_single_line_mode</methodname>() method
 returns the value of the "single-line-mode" property. See the <link
 linkend="method-gtklabel--set-single-line-mode"><methodname>set_single_line_mode</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--set-max-width-chars">
+      <title>gtk.Label.set_max_width_chars</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_max_width_chars</methodname>
+	  <methodparam><parameter
+			 role="keyword">n_chars</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">n_chars</parameter>&nbsp;:</term>
+	  <listitem><simpara> the new desired maximum width, in
+characters.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_max_width_chars</methodname>() method sets
+the "max-width-chars" property to the value of
+<parameter>n_chars</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--get-max-width-chars">
+      <title>gtk.Label.get_max_width_chars</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_max_width_chars</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_max_width_chars</methodname>() method
+returns the value of the "max-width-chars" property which is the desired
+maximum width of the label in characters.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--set-angle">
+      <title>gtk.Label.set_angle</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_angle</methodname>
+	  <methodparam><parameter
+			 role="keyword">angle</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">angle</parameter>&nbsp;:</term>
+	  <listitem><simpara> the angle that the baseline of the label makes
+with the horizontal, in degrees, measured counterclockwise</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_angle</methodname>() method sets the "angle"
+property to the value of
+<parameter>angle</parameter>. <parameter>angle</parameter> is the angle of
+rotation for the label. An angle of 90 reads from from bottom to top, an
+angle of 270, from top to bottom. The angle setting for the label is ignored
+if the label is selectable, wrapped, or ellipsized.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--get-angle">
+      <title>gtk.Label.get_angle</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_angle</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_angle</methodname>() method returns the
+value of the "angle" property. See the <link
+linkend="method-gtklabel--set-angle"><methodname>set_angle</methodname>()</link>
 method for more information.</para>
 
     </refsect2>

@@ -640,6 +640,12 @@ linkend="function-gtk--quit-remove">gtk.quit_remove</link></methodname>
 			 role="keyword">quit_handler_id</parameter></methodparam>
 	</methodsynopsis><methodsynopsis language="python">
 	  <methodname><link
+linkend="function-gtk--get-current-event">gtk.get_current_event</link></methodname>
+	</methodsynopsis><methodsynopsis language="python">
+	  <methodname><link
+linkend="function-gtk--get-current-event-state">gtk.get_current_event_state</link></methodname>
+	</methodsynopsis><methodsynopsis language="python">
+	  <methodname><link
 linkend="function-gtk--get-current-event-time">gtk.get_current_event_time</link></methodname>
 	</methodsynopsis></programlisting>
 
@@ -926,8 +932,8 @@ be determined the event is thrown away unless it belongs to a
 	</listitem>
 	<listitem>
 	  <simpara>Then the event is passed on a stack so you can query the
-currently handled event with
-<function>gtk_get_current_event</function>().</simpara>
+currently handled event with <link
+linkend="function-gtk--get-current-event"><function>gtk.get_current_event</function>()</link>.</simpara>
 	</listitem>
 	<listitem>
 	  <simpara>The event is sent to a widget. If a grab is active all
@@ -1180,6 +1186,61 @@ role="keyword">quit_handler_id</parameter>&nbsp;:</term>
       <para>The <function>gtk.quit_remove</function>() function removes the
 quit handler specified by <parameter>quit_handler_id</parameter> from the
 list of quit handlers.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--get-current-event">
+      <title>gtk.get_current_event</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.get_current_event</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a copy of the current event or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.get_current_event</function>() function
+returns a copy of the event currently being processed by GTK+. For example,
+if you get a "clicked" signal from <link
+linkend="class-gtkbutton"><classname>gtk.Button</classname></link>, the
+current event will be the GdkEventButton that triggered the "clicked"
+signal. If there is no current event, the function returns
+<literal>None</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--get-current-event-state">
+      <title>gtk.get_current_event_state</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.get_current_event_state</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the state of the current event if any or
+<literal>None</literal> if there is no current event or
+state</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.get_current_event_state</function>() function
+returns the state of the current event or <literal>None</literal> if there
+is no current event or state.</para>
 
     </refsect2>
 
