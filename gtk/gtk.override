@@ -2900,7 +2900,7 @@ static PyObject *
 _wrap_gtk_tree_view_insert_column_with_attributes(PyGObject *self, PyObject *args,
 						  PyObject *kwargs)
 {
-    gint position, real_position;
+    gint position, columns, real_position;
     GtkTreeViewColumn *column;
     GtkCellRenderer *cell;
     PyObject *py_cell, *key, *item;
@@ -2914,12 +2914,19 @@ _wrap_gtk_tree_view_insert_column_with_attributes(PyGObject *self, PyObject *arg
 
     cell = GTK_CELL_RENDERER(pygobject_get(py_cell));
 
-    real_position =
+    columns =
 	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW(self->obj),
 						     position, title, cell,
 						     NULL);
+    if (position == -1) {
+	real_position = columns - 1;
+    } else {
+	real_position = position;
+    }
+    
     column = gtk_tree_view_get_column (GTK_TREE_VIEW(self->obj),
 				       real_position);
+    
     if (kwargs) {
 	while (PyDict_Next(kwargs, &i, &key, &item)) {
 	    gchar *attr = PyString_AsString(key);
