@@ -450,15 +450,8 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     fp.write('    ExtensionClassImported;\n')
     fp.write(overrides.get_init() + '\n')
     for interface in parser.interfaces:
-        if interface.parent != (None, None):
-            fp.write('    PyExtensionClass_ExportSubclassSingle(d, "' +
-                     interface.c_name + '", Py' + interface.c_name +
-                     '_Type, Py' + interface.parent[1] + interface.parent[0] +
-                     '_Type);\n')
-        else:
-            fp.write('    PyExtensionClass_Export(d, "' +
-                     interface.c_name + '", Py' + interface.c_name +
-                     '_Type);\n')
+        fp.write('    PyExtensionClass_Export(d, "' + interface.c_name +
+                 '", Py' + interface.c_name + '_Type);\n')
     for obj in parser.objects:
         bases = []
         if obj.parent != (None, None):

@@ -67,29 +67,18 @@ class InterfaceDef(Definition):
 	self.name = name
 	self.module = None
 	self.c_name = None
-	self.parent = (None, None)
 	self.fields = []
 	for arg in args:
 	    if type(arg) != type(()) or len(arg) < 2:
 		continue
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
-	    elif arg[0] == 'parent':
-		if len(arg) > 2:
-		    self.parent = (arg[1], arg[2][0])
-		else:
-		    self.parent = (arg[1], None)
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
     def write_defs(self, fp=sys.stdout):
 	fp.write('(interface ' + self.name + '\n')
 	if self.module:
 	    fp.write('  (in-module ' + self.module + ')\n')
-	if self.parent != (None, None):	
-	    fp.write('  (parent ' + self.parent[0])
-	    if self.parent[1]:
-		fp.write(' (' + self.parent[1] + ')')
-	    fp.write(')\n')
 	if self.c_name:
 	    fp.write('  (c-name ' + self.c_name + ')\n')
 	fp.write(')\n\n')
