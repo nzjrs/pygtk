@@ -7906,6 +7906,16 @@ _wrap_gtk_window_get_frame_dimensions(PyGObject *self)
     return Py_BuildValue("(iiii)", left, top, right, bottom);
 }
 %%
+override gtk_widget_get_size_request  noargs
+static PyObject *
+_wrap_gtk_widget_get_size_request(PyGObject *self)
+{
+    int width, height;
+
+    gtk_widget_get_size_request(GTK_WIDGET(self->obj), &width, &height);
+    return Py_BuildValue("(ii)", width, height);
+}
+%%
 ignore-win32
         GTK_TYPE_PLUG
         GTK_TYPE_SOCKET
