@@ -1610,3 +1610,68 @@ _wrap_pango_font_face_list_sizes(PyGObject *self)
 
     return py_sizes;
 }
+%%
+override pango_fontset_foreach kwargs
+static gboolean
+pypango_fontset_foreach_cb(PangoFontset *fontset, PangoFont *font,
+				 gpointer data)
+{
+    PyGtkCustomNotify *cunote = data;
+    PyObject *retobj, *py_font, *py_fontset;
+    gboolean ret = FALSE;
+    
+
+    pyg_block_threads();
+
+    py_fontset = pygobject_new((GObject *)fontset);
+    py_font = pygobject_new((GObject *)font);
+
+    if (cunote->data)
+	retobj = PyObject_CallFunction(cunote->func, "NNO", py_fontset,
+				       py_font, cunote->data);
+    else
+	retobj = PyObject_CallFunction(cunote->func, "NN", py_fontset,
+				       py_font);
+
+    if (retobj != NULL) {
+	ret = PyObject_IsTrue(retobj);
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+    }
+
+    pyg_unblock_threads();
+    return ret;
+}
+static PyObject *
+_wrap_pango_fontset_foreach(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL };
+    PyObject *py_func, *py_data = NULL;
+    PyGtkCustomNotify cunote;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|O:pango.Fontset.fforeach",
+				     kwlist, &py_func, &py_data))
+	return NULL;
+
+    if (!PyCallable_Check(py_func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be callable");
+        return NULL;
+    }
+
+    cunote.func = py_func;
+    cunote.data = py_data;
+    Py_INCREF(cunote.func);
+    Py_XINCREF(cunote.data);
+
+    pango_fontset_foreach(PANGO_FONTSET(self->obj),
+			  pypango_fontset_foreach_cb,
+			  (gpointer)&cunote);
+
+    Py_DECREF(cunote.func);
+    Py_XDECREF(cunote.data);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
