@@ -24,6 +24,9 @@ from dsextras import getoutput, have_pkgconfig, list_files, \
      GLOBAL_INC, GLOBAL_MACROS, InstallLib, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
 
+if sys.platform != "win32":
+    raise SystemExit, "Building PyGTK through distutils is not supported on Linux, please use configure to build PyGTK."
+
 MAJOR_VERSION = 2
 MINOR_VERSION = 3
 MICRO_VERSION = 97
