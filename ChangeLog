@@ -1,5 +1,20 @@
 2001-06-27  James Henstridge  <james@daa.com.au>
 
+	* codegen/argtypes.py (arg): don't register a boxed handler for
+	GtkTextIter here.
+
+	* gtk/gtk.override: add overrides for various GtkTextIter methods.
+
+	* codegen/argtypes.py (BoxedArg.write_param): fix up variable type.
+
+	* gtk/gtk.override (_wrap_gtk_text_iter_copy): implement text iter
+	copy function, and ignore the gtk_text_iter_free function (it
+	could cause troubles).
+	(*): replace function calls using the old GtkTextIter wrapper.
+
+	* gtk/gtk.defs: update defs for GtkTextIter.
+	(TextIter): add text iter boxed type here.
+
 	* examples/pygtk-demo/demos/toolbar.py (main): fix up toolbar
 	constructor.
 

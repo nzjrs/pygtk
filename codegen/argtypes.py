@@ -371,7 +371,7 @@ class BoxedArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
 		    extracode, arglist):
 	if pnull:
-            varlist.add(ptype[:-1], '*' + pname + ' = NULL')
+            varlist.add(self.typename, '*' + pname + ' = NULL')
 	    varlist.add('PyObject', '*py_' + pname + ' = Py_None')
 	    parselist.append('&py_' + pname)
 	    extracode.append(self.null % {'name':  pname,
@@ -380,7 +380,7 @@ class BoxedArg(ArgType):
 	    arglist.append(pname)
 	    return 'O'
 	else:
-            varlist.add(ptype[:-1], '*' + pname + ' = NULL')
+            varlist.add(self.typename, '*' + pname + ' = NULL')
 	    varlist.add('PyObject', '*py_' + pname)
 	    parselist.append('&py_' + pname)
 	    extracode.append(self.check % {'name':  pname,
@@ -596,9 +596,6 @@ matcher.register_custom_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
                               'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
 matcher.register_custom_boxed('GdkDevice', 'PyGdkDevice_Type',
                               'PyGdkDevice_Get', 'PyGdkDevice_New')
-matcher.register_custom_boxed('GtkTextIter', 'PyGtkTextIter_Type',
-                              'PyGtkTextIter_Get', 'PyGtkTextIter_New')
-matcher.register('const-GtkTextIter*', matcher.get('GtkTextIter*'))
 
 matcher.register('GdkAtom', AtomArg())
 
