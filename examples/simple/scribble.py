@@ -69,7 +69,7 @@ def main():
 				gtk.gdk.POINTER_MOTION_MASK |
 				gtk.gdk.POINTER_MOTION_HINT_MASK)
 
-	button = gtk.Button(stock=stock=gtk.STOCK_QUIT)
+	button = gtk.Button(stock=gtk.STOCK_QUIT)
 	vbox.pack_start(button, expand=gtk.FALSE, fill=gtk.FALSE)
 	button.connect("clicked", lambda widget, win=win: win.destroy())
 	button.show()
