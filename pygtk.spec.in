@@ -1,8 +1,7 @@
-# you may want to remove some of the sub packages depending on what you
-# have installed on your system when building this package.
+%define buildglade %(pkg-config libglade-2.0 && echo 1 || echo 0)
 
 Summary: Python bindings for the GTK+ widget set.
-Name: pygtk
+Name: pygtk2
 Version: @VERSION@
 Release: 1
 Copyright: LGPL
@@ -37,8 +36,15 @@ Requires: pygtk = %{ver}
 This package contains files required to build wrappers for GTK+ addon
 libraries so that they interoperate with pygtk.
 
+%changelog
+* Thu Oct 11 2001 Matt Wilson <msw@redhat.com>
+- fixed typo in devel filelist
+- added macro that tests to see if we have libglade2, make the
+  filelist a condition of that
+- changed name to 'pygtk2' to avoid name conflict with pygtk
+
 %prep
-%setup
+%setup -n pygtk-%{version}
 ./configure --prefix=%{_prefix}
 
 %build
@@ -60,14 +66,16 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %doc AUTHORS NEWS README MAPPING ChangeLog description.py
 %doc examples
 
+%if {buildglade}
 %files libglade
 %{_prefix}/lib/python?.?/site-packages/gtk/glademodule.so
+%endif
 
 %files devel
 %{_prefix}/bin/pygtk-codegen-2.0
 %dir %{_prefix}/include/pygtk
 %{_prefix}/include/pygtk/*.h
-%{_prerix}/lib/pkgconfig/pygtk-2.0.pc
+%{_prefix}/lib/pkgconfig/pygtk-2.0.pc
 %dir %{_prefix}/share/pygtk
 %dir %{_prefix}/share/pygtk/2.0
 %dir %{_prefix}/share/pygtk/2.0/codegen
