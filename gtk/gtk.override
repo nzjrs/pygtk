@@ -4733,3 +4733,34 @@ _wrap_gtk_action_get_proxies(PyGObject *self)
     g_slist_free(slist);
     return py_list;
 }
+%%
+override gtk_clipboard_wait_for_targets noargs
+static PyObject *
+_wrap_gtk_clipboard_wait_for_targets(PyGObject *self)
+{
+    GtkSelectionData *data;
+
+    /* have to work around GTK+ bug #139883 */
+    data = gtk_clipboard_wait_for_contents(GTK_CLIPBOARD(self->obj),
+					   gdk_atom_intern("TARGETS", FALSE));
+
+    if (data) {
+	gint n_targets = 0;
+	GdkAtom *targets = NULL;
+    
+	if (gtk_selection_data_get_targets(data, &targets, &n_targets)) {
+	    PyObject *ret;
+	    int i;
+
+	    ret = PyTuple_New(n_targets);
+	    for (i = 0; i < n_targets; i++)
+		PyTuple_SetItem(ret, i, PyGdkAtom_New(targets[i]));
+	    g_free(targets);
+	    gtk_selection_data_free(data);
+	    return ret;
+	}
+	gtk_selection_data_free(data);
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
