@@ -351,6 +351,18 @@ linkend="method-gdkpixbuf--composite-color-simple">composite_color_simple</link>
 	<methodname><link linkend="method-gdkpixbuf--get-pixels-array">get_pixels_array</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gdkpixbuf--subpixbuf">subpixbuf</link></methodname>
+	<methodparam><parameter
+		       role="keyword">src_x</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">src_y</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">width</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">height</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -840,7 +852,7 @@ colormap; however, pixmaps only have colormap by default if they were
 created with a window argument.specifying a <link
 linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>.
 Otherwise a colormap must be set on them with the <link
-linkend="method-gdkdrawable--set-colormap"><methodname>gtk/gdk.Drawable.set_colormap</methodname>()</link> 
+linkend="method-gdkdrawable--set-colormap"><methodname>gtk.gdk.Drawable.set_colormap</methodname>()</link> 
 method. On older X servers, rendering pixbufs with an alpha channel involves
 round trips to the X server, and may be somewhat slow.</para>
 
@@ -2129,8 +2141,10 @@ unusably ugly).  The default <parameter>interp_type</parameter> should be
 speed.</para>
 
       <para>You can scale a sub-portion of <parameter>src</parameter> by
-creating a sub-pixbuf pointing into <parameter>src</parameter>; see
-<function>gdk_pixbuf_new_subpixbuf()</function>.</para>
+creating a sub-pixbuf pointing into <parameter>src</parameter>; see the
+<link
+linkend="method-gdkpixbuf--subpixbuf"><methodname>subpixbuf</methodname>()</link>
+method for more information.</para>
 
       <para>For more complicated scaling/compositing see the <link
 linkend="method-gdkpixbuf--scale"><methodname>scale</methodname>()</link>
@@ -2294,6 +2308,51 @@ method to be available.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gdkpixbuf--subpixbuf">
+      <title>gtk.gdk.Pixbuf.subpixbuf</title>
+      
+      <programlisting><methodsynopsis language="python">
+          <methodname>subpixbuf</methodname>
+          <methodparam><parameter role="keyword">src_x</parameter></methodparam>
+          <methodparam><parameter role="keyword">src_y</parameter></methodparam>
+          <methodparam><parameter role="keyword">width</parameter></methodparam>
+          <methodparam><parameter role="keyword">height</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">src_x</parameter>&nbsp;:</term>
+          <listitem><simpara>X coord in the pixbuf</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">src_y</parameter>&nbsp;:</term>
+          <listitem><simpara>Y coord in the pixbuf</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">width</parameter>&nbsp;:</term>
+          <listitem><simpara>width of region in the pixbuf</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">height</parameter>&nbsp;:</term>
+          <listitem><simpara>height of region in the pixbuf</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a new <link
+          linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>subpixbuf</methodname>() method creates a new
+<link linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+that represents a sub-region of the pixbuf. The new pixbuf shares its pixels
+with the original pixbuf, so writing to one affects both.</para>
+
+    </refsect2>
+    
   </refsect1>
 
   <refsect1>
