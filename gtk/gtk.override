@@ -125,6 +125,7 @@ ignore
   gtk_color_button_new_with_color
   gtk_color_selection_set_color
   gtk_color_selection_get_color
+  gtk_combo_box_get_row_separator_func
   gtk_dialog_new
   gtk_drag_dest_handle_event
   gtk_drag_source_handle_event
@@ -6254,6 +6255,76 @@ _wrap_gtk_clipboard_set_can_store(PyGObject *self, PyObject *args,
     }
     gtk_clipboard_set_can_store(GTK_CLIPBOARD(self->obj), targets, n_targets);
     g_free(targets);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_combo_box_set_row_separator_func args
+static gboolean
+pygtk_combo_box_row_separator_func_cb(GtkTreeModel *model,
+				      GtkTreeIter *iter,
+				      gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_model, *py_iter;
+    gboolean ret = FALSE;
+    PyObject *retobj;
+ 
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+ 
+    py_model = pygobject_new((GObject *)model);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NNO)", py_model,
+                                     py_iter, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(NN)", py_model, py_iter);
+    }
+
+    if (retobj != NULL) {
+	ret = PyObject_IsTrue(retobj);
+        Py_DECREF(retobj);
+    } else {
+	PyErr_Print();
+    }
+ 
+    pyg_gil_state_release(state);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_combo_box_set_row_separator_func(PyGObject *self, PyObject *args)
+{
+    PyObject *pyfunc = NULL, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+ 
+    if (!PyArg_ParseTuple(args,
+                          "|OO:GtkComboBox.set_row_separator_func",
+                          &pyfunc, &pyarg))
+        return NULL;
+
+    if (pyfunc == NULL || pyfunc == Py_None) {
+        gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(self->obj),
+                                             NULL, NULL, NULL);
+    } else if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    } else {
+        cunote = g_new0(PyGtkCustomNotify, 1);
+        cunote->func = pyfunc;
+        cunote->data = pyarg;
+        Py_INCREF(cunote->func);
+        Py_XINCREF(cunote->data);
+
+        gtk_combo_box_set_row_separator_func(
+            GTK_COMBO_BOX(self->obj),
+            pygtk_combo_box_row_separator_func_cb,
+            cunote,
+            pygtk_custom_destroy_notify);
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }
