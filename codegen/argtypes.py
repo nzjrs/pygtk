@@ -604,12 +604,6 @@ class GtkTreePathArg(ArgType):
             '            return NULL;\n'
             '        }\n'
             '    }\n')
-    null = ('    if (PyTuple_Check(py_%(name)s))\n'
-            '        %(name)s = pygtk_tree_path_from_pyobject(py_%(name)s);\n'
-            '    else if (py_%(name)s != Py_None) {\n'
-            '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a GtkTreePath or None");\n'
-            '        return NULL;\n'
-            '    }\n')
     freepath = ('    if (%(name)s)\n'
                 '        gtk_tree_path_free(%(name)s);\n')
     def __init__(self):
