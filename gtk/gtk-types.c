@@ -814,7 +814,7 @@ PyTypeObject PyGdkColor_Type = {
 };
 
 PyObject *
-PyGkEvent_New(GdkEvent *obj)
+PyGdkEvent_New(GdkEvent *obj)
 {
     PyGdkEvent_Object *self;
     PyObject *v;

@@ -8,6 +8,9 @@ del ltihooks
 import ExtensionClass
 del ExtensionClass
 
+import gobject
+del gobject
+
 # load the required modules:
 from GTK import *
 import GDK

@@ -693,7 +693,9 @@ ignore-glob
   gtk_timeout_add_*
   gtk_idle_add_*
   gtk_accelerator_*
- gtk_target_list_*
+  gtk_target_list_*
+  gtk_pattern_*
+  gtk_binding_*
 %%
 ignore
   gtk_init
@@ -1599,20 +1601,28 @@ _wrap_gtk_pixmap_get(PyGObject *self, PyObject *args)
 }
 
 %%
-ignore gtk_button_new_with_label
+ignore gtk_button_new_with_label gtk_button_new_stock gtk_button_new_accel
 %%
 override gtk_button_new kwargs
 static PyObject *
 _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "label", NULL };
+    static char *kwlist[] = { "label", "accel_group", NULL };
     gchar *text = NULL;
+    PyObject *pyaccel = Py_None;
+    GtkAccelGroup *accel = NULL;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|z:GtkButton.__init__",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|zO:GtkButton.__init__",
 				     kwlist, &text))
 	return NULL;
+    if (PyGtkAccelGroup_Check(pyaccel))
+	accel = PyGtkAccelGroup_Get(pyaccel);
+    else if (pyaccel != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "accel_group must be a GtkAccelGroup or None");
+	return NULL;
+    }
     if (text)
-	self->obj = (GObject *)gtk_button_new_with_label(text);
+	self->obj = (GObject *)gtk_button_new_stock(text, accel);
     else
 	self->obj = (GObject *)gtk_button_new();
     if (!self->obj) {

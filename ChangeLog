@@ -1,5 +1,23 @@
 2000-10-25  James Henstridge  <james@daa.com.au>
 
+	* gtk/gtk.defs (Bin): add a field just to test pygobject_getattro.
+	It isn't working quite properly at the moment though :(
+
+	* gobjectmodule.c (check_bases): class->bases is a tuple -- not a
+	list.
+	(check_bases): check if class->bases != NULL before using it :(
+
+	* gtk/gtk.defs: comment out new tree widget stuff at hp and owen's
+	suggestion.
+
+	* gtk/__init__.py: import gobject here as well to prevent weirdness.
+
+	* gtk/gtk.defs: more updates, adding (is-constructor-of ...) and
+	(default "...") clauses.
+
+	* gtk/gtk.override (_wrap_gtk_button_new): handle the accel_group
+	argument, and try to create a stock button if possible.
+
 	* gtk/gtk.defs, gtk/gdk.defs: various small fixes.
 
 	* gtk/gtk.override: fix lots of overrides to work with gtk 2.0

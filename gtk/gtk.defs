@@ -123,23 +123,23 @@
   (c-name GtkTooltips)
 )
 
-(object TreeSelection
-  (in-module Gtk)
-  (parent Object (Gtk))
-  (c-name GtkTreeSelection)
-)
+; (object TreeSelection
+;   (in-module Gtk)
+;   (parent Object (Gtk))
+;   (c-name GtkTreeSelection)
+; )
 
-(object TreeStore
-  (in-module Gtk)
-  (parent Object (Gtk))
-  (c-name GtkTreeStore)
-)
+; (object TreeStore
+;   (in-module Gtk)
+;   (parent Object (Gtk))
+;   (c-name GtkTreeStore)
+; )
 
-(object TreeViewColumn
-  (in-module Gtk)
-  (parent Object (Gtk))
-  (c-name GtkTreeViewColumn)
-)
+; (object TreeViewColumn
+;   (in-module Gtk)
+;   (parent Object (Gtk))
+;   (c-name GtkTreeViewColumn)
+; )
 
 (object Widget
   (in-module Gtk)
@@ -327,11 +327,11 @@
   (c-name GtkContainer)
 )
 
-(object TreeView
-  (in-module Gtk)
-  (parent Container (Gtk))
-  (c-name GtkTreeView)
-)
+; (object TreeView
+;   (in-module Gtk)
+;   (parent Container (Gtk))
+;   (c-name GtkTreeView)
+; )
 
 (object Tree
   (in-module Gtk)
@@ -433,6 +433,7 @@
   (in-module Gtk)
   (parent Container (Gtk))
   (c-name GtkBin)
+  (field (type-and-name GtkWidget* child))
 )
 
 (object Viewport
@@ -1897,7 +1898,7 @@
   (c-name gtk_aspect_frame_new)
   (is-constructor-of GtkAspectFrame)
   (return-type GtkWidget*)
-  (parameter (type-and-name const-gchar* label))
+  (parameter (type-and-name const-gchar* label) (null-ok))
   (parameter (type-and-name gfloat xalign))
   (parameter (type-and-name gfloat yalign))
   (parameter (type-and-name gfloat ratio) (default "1"))
@@ -2168,9 +2169,9 @@
   (c-name gtk_box_pack_start)
   (return-type none)
   (parameter (type-and-name GtkWidget* child))
-  (parameter (type-and-name gboolean expand))
-  (parameter (type-and-name gboolean fill))
-  (parameter (type-and-name guint padding))
+  (parameter (type-and-name gboolean expand) (default "TRUE"))
+  (parameter (type-and-name gboolean fill) (default "TRUE"))
+  (parameter (type-and-name guint padding) (default "0"))
 )
 
 (method pack_end
@@ -2178,9 +2179,9 @@
   (c-name gtk_box_pack_end)
   (return-type none)
   (parameter (type-and-name GtkWidget* child))
-  (parameter (type-and-name gboolean expand))
-  (parameter (type-and-name gboolean fill))
-  (parameter (type-and-name guint padding))
+  (parameter (type-and-name gboolean expand) (default "TRUE"))
+  (parameter (type-and-name gboolean fill) (default "TRUE"))
+  (parameter (type-and-name guint padding) (default "0"))
 )
 
 (method pack_start_defaults
@@ -2252,17 +2253,20 @@
 
 (function gtk_button_new
   (c-name gtk_button_new)
+  (is-constructor-of GtkButton)
   (return-type GtkWidget*)
 )
 
 (function gtk_button_new_with_label
   (c-name gtk_button_new_with_label)
+  (is-constructor-of GtkButton)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* label))
 )
 
 (function gtk_button_new_stock
   (c-name gtk_button_new_stock)
+  (is-constructor-of GtkButton)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* stock_id))
   (parameter (type-and-name GtkAccelGroup* accel_group))
@@ -2270,6 +2274,7 @@
 
 (function gtk_button_new_accel
   (c-name gtk_button_new_accel)
+  (is-constructor-of GtkButton)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* uline_label))
   (parameter (type-and-name GtkAccelGroup* accel_group))
@@ -2329,6 +2334,7 @@
 
 (function gtk_calendar_new
   (c-name gtk_calendar_new)
+  (is-constructor-of GtkCalendar)
   (return-type GtkWidget*)
 )
 
@@ -2448,6 +2454,7 @@
 
 (function gtk_cell_renderer_pixbuf_new
   (c-name gtk_cell_renderer_pixbuf_new)
+  (is-constructor-of GtkCellRendererPixbuf)
   (return-type GtkCellRenderer*)
 )
 
@@ -2462,6 +2469,7 @@
 
 (function gtk_cell_renderer_text_new
   (c-name gtk_cell_renderer_text_new)
+  (is-constructor-of GtkCellRendererText)
   (return-type GtkCellRenderer*)
 )
 
@@ -2476,6 +2484,7 @@
 
 (function gtk_cell_renderer_text_pixbuf_new
   (c-name gtk_cell_renderer_text_pixbuf_new)
+  (is-constructor-of GtkCellRendererTextPixbuf)
   (return-type GtkCellRenderer*)
 )
 
@@ -2490,6 +2499,7 @@
 
 (function gtk_cell_renderer_toggle_new
   (c-name gtk_cell_renderer_toggle_new)
+  (is-constructor-of GtkCellRendererToggle)
   (return-type GtkCellRenderer*)
 )
 
@@ -2511,11 +2521,13 @@
 
 (function gtk_check_button_new
   (c-name gtk_check_button_new)
+  (is-constructor-of GtkCheckButton)
   (return-type GtkWidget*)
 )
 
 (function gtk_check_button_new_with_label
   (c-name gtk_check_button_new_with_label)
+  (is-constructor-of GtkCheckButton)
   (return-type GtkWidget*)
   (parameter (type-and-name const-gchar* label))
 )
@@ -12212,711 +12224,711 @@
 
 
 
-;; From /opt/pango/include/gtk-2.0/gtk/gtktreemodel.h
-
-(function gtk_tree_model_get_type
-  (c-name gtk_tree_model_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_tree_path_new
-  (c-name gtk_tree_path_new)
-  (return-type GtkTreePath*)
-)
-
-(function gtk_tree_path_new_from_string
-  (c-name gtk_tree_path_new_from_string)
-  (return-type GtkTreePath*)
-  (parameter (type-and-name gchar* path))
-)
-
-(method to_string
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_to_string)
-  (return-type gchar*)
-)
-
-(function gtk_tree_path_new_root
-  (c-name gtk_tree_path_new_root)
-  (return-type GtkTreePath*)
-)
-
-(method append_index
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_append_index)
-  (return-type none)
-  (parameter (type-and-name gint index))
-)
-
-(method prepend_index
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_prepend_index)
-  (return-type none)
-  (parameter (type-and-name gint index))
-)
-
-(method get_depth
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_get_depth)
-  (return-type gint)
-)
-
-(method get_indices
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_get_indices)
-  (return-type gint*)
-)
-
-(method free
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_free)
-  (return-type none)
-)
-
-(method copy
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_copy)
-  (return-type GtkTreePath*)
-)
-
-(method compare
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_compare)
-  (return-type gint)
-  (parameter (type-and-name const-GtkTreePath* b))
-)
-
-(method next
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_next)
-  (return-type none)
-)
-
-(method prev
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_prev)
-  (return-type gint)
-)
-
-(method up
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_up)
-  (return-type gint)
-)
-
-(method down
-  (of-object TreePath (Gtk))
-  (c-name gtk_tree_path_down)
-  (return-type none)
-)
-
-(method get_n_columns
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_get_n_columns)
-  (return-type gint)
-)
-
-(method get_node
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_get_node)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreePath* path))
-)
-
-(method get_path
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_get_path)
-  (return-type GtkTreePath*)
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_get_value
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_node_get_value)
-  (return-type none)
-  (parameter (type-and-name GtkTreeNode node))
-  (parameter (type-and-name gint column))
-  (parameter (type-and-name GValue* value))
-)
-
-(method node_next
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_node_next)
-  (return-type gboolean)
-  (parameter (type-and-name GtkTreeNode* node))
-)
-
-(method node_children
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_node_children)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_has_child
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_node_has_child)
-  (return-type gboolean)
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_n_children
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_node_n_children)
-  (return-type gint)
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_nth_child
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_node_nth_child)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode node))
-  (parameter (type-and-name gint n))
-)
-
-(method node_parent
-  (of-object TreeModel (Gtk))
-  (c-name gtk_tree_model_node_parent)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtktreeselection.h
-
-(function gtk_tree_selection_get_type
-  (c-name gtk_tree_selection_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_tree_selection_new
-  (c-name gtk_tree_selection_new)
-  (return-type GtkObject*)
-)
-
-(method set_type
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_set_type)
-  (return-type none)
-  (parameter (type-and-name GtkTreeSelectionType type))
-)
-
-(method set_select_function
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_set_select_function)
-  (return-type none)
-  (parameter (type-and-name GtkTreeSelectionFunc func))
-  (parameter (type-and-name gpointer data))
-)
-
-(method get_user_data
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_get_user_data)
-  (return-type gpointer)
-)
-
-(method get_selected
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_get_selected)
-  (return-type GtkTreeNode)
-)
-
-(method selected_foreach
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_selected_foreach)
-  (return-type none)
-  (parameter (type-and-name GtkTreeSelectionForeachFunc func))
-  (parameter (type-and-name gpointer data))
-)
-
-(method select_path
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_select_path)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* path))
-)
-
-(method unselect_path
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_unselect_path)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* path))
-)
-
-(method select_node
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_select_node)
-  (return-type none)
-  (parameter (type-and-name GtkTreeNode tree_node))
-)
-
-(method unselect_node
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_unselect_node)
-  (return-type none)
-  (parameter (type-and-name GtkTreeNode tree_node))
-)
-
-(method select_all
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_select_all)
-  (return-type none)
-)
-
-(method unselect_all
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_unselect_all)
-  (return-type none)
-)
-
-(method select_range
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_select_range)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* start_path))
-  (parameter (type-and-name GtkTreePath* end_path))
-)
-
-(function gtk_tree_selection_new_with_tree_view
-  (c-name gtk_tree_selection_new_with_tree_view)
-  (return-type GtkObject*)
-  (parameter (type-and-name GtkTreeView* tree_view))
-)
-
-(method set_tree_view
-  (of-object TreeSelection (Gtk))
-  (c-name gtk_tree_selection_set_tree_view)
-  (return-type none)
-  (parameter (type-and-name GtkTreeView* tree_view))
-)
-
-
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtktreestore.h
-
-(function gtk_tree_store_get_type
-  (c-name gtk_tree_store_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_tree_store_new
-  (c-name gtk_tree_store_new)
-  (return-type GtkObject*)
-)
-
-(function gtk_tree_store_new_with_values
-  (c-name gtk_tree_store_new_with_values)
-  (return-type GtkObject*)
-  (parameter (type-and-name gint n_columns))
-  (varargs t)
-)
-
-(method set_n_columns
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_set_n_columns)
-  (return-type none)
-  (parameter (type-and-name gint n_columns))
-)
-
-(method set_column_type
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_set_column_type)
-  (return-type none)
-  (parameter (type-and-name gint column))
-  (parameter (type-and-name GType type))
-)
-
-(function gtk_tree_store_node_new
-  (c-name gtk_tree_store_node_new)
-  (return-type GtkTreeNode)
-)
-
-(method node_set_cell
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_set_cell)
-  (return-type none)
-  (parameter (type-and-name GtkTreeNode node))
-  (parameter (type-and-name gint column))
-  (parameter (type-and-name GValue* value))
-)
-
-(method node_remove
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_remove)
-  (return-type none)
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_insert
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_insert)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode parent))
-  (parameter (type-and-name gint position))
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_insert_before
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_insert_before)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode parent))
-  (parameter (type-and-name GtkTreeNode sibling))
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_insert_after
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_insert_after)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode parent))
-  (parameter (type-and-name GtkTreeNode sibling))
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_prepend
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_prepend)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode parent))
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_append
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_append)
-  (return-type GtkTreeNode)
-  (parameter (type-and-name GtkTreeNode parent))
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-(method node_get_root
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_get_root)
-  (return-type GtkTreeNode)
-)
-
-(method node_is_ancestor
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_is_ancestor)
-  (return-type gboolean)
-  (parameter (type-and-name GtkTreeNode node))
-  (parameter (type-and-name GtkTreeNode descendant))
-)
-
-(method node_depth
-  (of-object TreeStore (Gtk))
-  (c-name gtk_tree_store_node_depth)
-  (return-type gint)
-  (parameter (type-and-name GtkTreeNode node))
-)
-
-
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtktreeview.h
-
-(function gtk_tree_view_get_type
-  (c-name gtk_tree_view_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_tree_view_new
-  (c-name gtk_tree_view_new)
-  (return-type GtkWidget*)
-)
-
-(function gtk_tree_view_new_with_model
-  (c-name gtk_tree_view_new_with_model)
-  (return-type GtkWidget*)
-  (parameter (type-and-name GtkTreeModel* model))
-)
-
-(method get_model
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_get_model)
-  (return-type GtkTreeModel*)
-)
-
-(method set_model
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_set_model)
-  (return-type none)
-  (parameter (type-and-name GtkTreeModel* tree_model))
-)
-
-(method get_selection
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_get_selection)
-  (return-type GtkTreeSelection*)
-)
-
-(method get_hadjustment
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_get_hadjustment)
-  (return-type GtkAdjustment*)
-)
-
-(method set_hadjustment
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_set_hadjustment)
-  (return-type none)
-  (parameter (type-and-name GtkAdjustment* adjustment))
-)
-
-(method get_vadjustment
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_get_vadjustment)
-  (return-type GtkAdjustment*)
-)
-
-(method set_vadjustment
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_set_vadjustment)
-  (return-type none)
-  (parameter (type-and-name GtkAdjustment* adjustment))
-)
-
-(method get_headers_visible
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_get_headers_visible)
-  (return-type gboolean)
-)
-
-(method set_headers_visible
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_set_headers_visible)
-  (return-type none)
-  (parameter (type-and-name gboolean headers_visible))
-)
-
-(method columns_autosize
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_columns_autosize)
-  (return-type none)
-)
-
-(method set_headers_active
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_set_headers_active)
-  (return-type none)
-  (parameter (type-and-name gboolean active))
-)
-
-(method append_column
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_append_column)
-  (return-type gint)
-  (parameter (type-and-name GtkTreeViewColumn* column))
-)
-
-(method remove_column
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_remove_column)
-  (return-type gint)
-  (parameter (type-and-name GtkTreeViewColumn* column))
-)
-
-(method insert_column
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_insert_column)
-  (return-type gint)
-  (parameter (type-and-name GtkTreeViewColumn* column))
-  (parameter (type-and-name gint position))
-)
-
-(method get_column
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_get_column)
-  (return-type GtkTreeViewColumn*)
-  (parameter (type-and-name gint n))
-)
-
-(method move_to
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_move_to)
-  (return-type none)
-  (parameter (type-and-name GtkTreePath* path))
-  (parameter (type-and-name GtkTreeViewColumn* column))
-  (parameter (type-and-name gfloat row_align))
-  (parameter (type-and-name gfloat col_align))
-)
-
-(method expand_all
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_expand_all)
-  (return-type none)
-)
-
-(method collapse_all
-  (of-object TreeView (Gtk))
-  (c-name gtk_tree_view_collapse_all)
-  (return-type none)
-)
-
-
-
-;; From /opt/pango/include/gtk-2.0/gtk/gtktreeviewcolumn.h
-
-(function gtk_tree_view_column_get_type
-  (c-name gtk_tree_view_column_get_type)
-  (return-type GtkType)
-)
-
-(function gtk_tree_view_column_new
-  (c-name gtk_tree_view_column_new)
-  (return-type GtkObject*)
-)
-
-(function gtk_tree_view_column_new_with_attributes
-  (c-name gtk_tree_view_column_new_with_attributes)
-  (return-type GtkObject*)
-  (parameter (type-and-name gchar* title))
-  (parameter (type-and-name GtkCellRenderer* cell))
-  (varargs t)
-)
-
-(method set_cell_renderer
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_cell_renderer)
-  (return-type none)
-  (parameter (type-and-name GtkCellRenderer* cell))
-)
-
-(method add_attribute
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_add_attribute)
-  (return-type none)
-  (parameter (type-and-name gchar* attribute))
-  (parameter (type-and-name gint column))
-)
-
-(method set_attributes
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_attributes)
-  (return-type none)
-  (varargs t)
-)
-
-(method set_cell_data
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_cell_data)
-  (return-type none)
-  (parameter (type-and-name GtkTreeModel* tree_model))
-  (parameter (type-and-name GtkTreeNode tree_node))
-)
-
-(method set_visible
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_visible)
-  (return-type none)
-  (parameter (type-and-name gboolean visible))
-)
-
-(method get_visible
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_visible)
-  (return-type gboolean)
-)
-
-(method set_col_type
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_col_type)
-  (return-type none)
-  (parameter (type-and-name GtkTreeViewColumnType type))
-)
-
-(method get_col_type
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_col_type)
-  (return-type gint)
-)
-
-(method get_size
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_size)
-  (return-type gint)
-)
-
-(method set_size
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_size)
-  (return-type none)
-  (parameter (type-and-name gint width))
-)
-
-(method set_min_width
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_min_width)
-  (return-type none)
-  (parameter (type-and-name gint min_width))
-)
-
-(method get_min_width
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_min_width)
-  (return-type gint)
-)
-
-(method set_max_width
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_max_width)
-  (return-type none)
-  (parameter (type-and-name gint max_width))
-)
-
-(method get_max_width
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_max_width)
-  (return-type gint)
-)
-
-(method set_title
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_title)
-  (return-type none)
-  (parameter (type-and-name gchar* title))
-)
-
-(method get_title
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_title)
-  (return-type gchar*)
-)
-
-(method set_header_active
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_header_active)
-  (return-type none)
-  (parameter (type-and-name gboolean active))
-)
-
-(method set_widget
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_widget)
-  (return-type none)
-  (parameter (type-and-name GtkWidget* widget))
-)
-
-(method get_widget
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_widget)
-  (return-type GtkWidget*)
-)
-
-(method set_justification
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_set_justification)
-  (return-type none)
-  (parameter (type-and-name GtkJustification justification))
-)
-
-(method get_justification
-  (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_justification)
-  (return-type GtkJustification)
-)
+; ;; From /opt/pango/include/gtk-2.0/gtk/gtktreemodel.h
+
+; (function gtk_tree_model_get_type
+;   (c-name gtk_tree_model_get_type)
+;   (return-type GtkType)
+; )
+
+; (function gtk_tree_path_new
+;   (c-name gtk_tree_path_new)
+;   (return-type GtkTreePath*)
+; )
+
+; (function gtk_tree_path_new_from_string
+;   (c-name gtk_tree_path_new_from_string)
+;   (return-type GtkTreePath*)
+;   (parameter (type-and-name gchar* path))
+; )
+
+; (method to_string
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_to_string)
+;   (return-type gchar*)
+; )
+
+; (function gtk_tree_path_new_root
+;   (c-name gtk_tree_path_new_root)
+;   (return-type GtkTreePath*)
+; )
+
+; (method append_index
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_append_index)
+;   (return-type none)
+;   (parameter (type-and-name gint index))
+; )
+
+; (method prepend_index
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_prepend_index)
+;   (return-type none)
+;   (parameter (type-and-name gint index))
+; )
+
+; (method get_depth
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_get_depth)
+;   (return-type gint)
+; )
+
+; (method get_indices
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_get_indices)
+;   (return-type gint*)
+; )
+
+; (method free
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_free)
+;   (return-type none)
+; )
+
+; (method copy
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_copy)
+;   (return-type GtkTreePath*)
+; )
+
+; (method compare
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_compare)
+;   (return-type gint)
+;   (parameter (type-and-name const-GtkTreePath* b))
+; )
+
+; (method next
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_next)
+;   (return-type none)
+; )
+
+; (method prev
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_prev)
+;   (return-type gint)
+; )
+
+; (method up
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_up)
+;   (return-type gint)
+; )
+
+; (method down
+;   (of-object TreePath (Gtk))
+;   (c-name gtk_tree_path_down)
+;   (return-type none)
+; )
+
+; (method get_n_columns
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_get_n_columns)
+;   (return-type gint)
+; )
+
+; (method get_node
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_get_node)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreePath* path))
+; )
+
+; (method get_path
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_get_path)
+;   (return-type GtkTreePath*)
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_get_value
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_node_get_value)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeNode node))
+;   (parameter (type-and-name gint column))
+;   (parameter (type-and-name GValue* value))
+; )
+
+; (method node_next
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_node_next)
+;   (return-type gboolean)
+;   (parameter (type-and-name GtkTreeNode* node))
+; )
+
+; (method node_children
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_node_children)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_has_child
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_node_has_child)
+;   (return-type gboolean)
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_n_children
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_node_n_children)
+;   (return-type gint)
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_nth_child
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_node_nth_child)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode node))
+;   (parameter (type-and-name gint n))
+; )
+
+; (method node_parent
+;   (of-object TreeModel (Gtk))
+;   (c-name gtk_tree_model_node_parent)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+
+
+; ;; From /opt/pango/include/gtk-2.0/gtk/gtktreeselection.h
+
+; (function gtk_tree_selection_get_type
+;   (c-name gtk_tree_selection_get_type)
+;   (return-type GtkType)
+; )
+
+; (function gtk_tree_selection_new
+;   (c-name gtk_tree_selection_new)
+;   (return-type GtkObject*)
+; )
+
+; (method set_type
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_set_type)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeSelectionType type))
+; )
+
+; (method set_select_function
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_set_select_function)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeSelectionFunc func))
+;   (parameter (type-and-name gpointer data))
+; )
+
+; (method get_user_data
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_get_user_data)
+;   (return-type gpointer)
+; )
+
+; (method get_selected
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_get_selected)
+;   (return-type GtkTreeNode)
+; )
+
+; (method selected_foreach
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_selected_foreach)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeSelectionForeachFunc func))
+;   (parameter (type-and-name gpointer data))
+; )
+
+; (method select_path
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_select_path)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* path))
+; )
+
+; (method unselect_path
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_unselect_path)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* path))
+; )
+
+; (method select_node
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_select_node)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeNode tree_node))
+; )
+
+; (method unselect_node
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_unselect_node)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeNode tree_node))
+; )
+
+; (method select_all
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_select_all)
+;   (return-type none)
+; )
+
+; (method unselect_all
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_unselect_all)
+;   (return-type none)
+; )
+
+; (method select_range
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_select_range)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* start_path))
+;   (parameter (type-and-name GtkTreePath* end_path))
+; )
+
+; (function gtk_tree_selection_new_with_tree_view
+;   (c-name gtk_tree_selection_new_with_tree_view)
+;   (return-type GtkObject*)
+;   (parameter (type-and-name GtkTreeView* tree_view))
+; )
+
+; (method set_tree_view
+;   (of-object TreeSelection (Gtk))
+;   (c-name gtk_tree_selection_set_tree_view)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeView* tree_view))
+; )
+
+
+
+; ;; From /opt/pango/include/gtk-2.0/gtk/gtktreestore.h
+
+; (function gtk_tree_store_get_type
+;   (c-name gtk_tree_store_get_type)
+;   (return-type GtkType)
+; )
+
+; (function gtk_tree_store_new
+;   (c-name gtk_tree_store_new)
+;   (return-type GtkObject*)
+; )
+
+; (function gtk_tree_store_new_with_values
+;   (c-name gtk_tree_store_new_with_values)
+;   (return-type GtkObject*)
+;   (parameter (type-and-name gint n_columns))
+;   (varargs t)
+; )
+
+; (method set_n_columns
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_set_n_columns)
+;   (return-type none)
+;   (parameter (type-and-name gint n_columns))
+; )
+
+; (method set_column_type
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_set_column_type)
+;   (return-type none)
+;   (parameter (type-and-name gint column))
+;   (parameter (type-and-name GType type))
+; )
+
+; (function gtk_tree_store_node_new
+;   (c-name gtk_tree_store_node_new)
+;   (return-type GtkTreeNode)
+; )
+
+; (method node_set_cell
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_set_cell)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeNode node))
+;   (parameter (type-and-name gint column))
+;   (parameter (type-and-name GValue* value))
+; )
+
+; (method node_remove
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_remove)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_insert
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_insert)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode parent))
+;   (parameter (type-and-name gint position))
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_insert_before
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_insert_before)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode parent))
+;   (parameter (type-and-name GtkTreeNode sibling))
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_insert_after
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_insert_after)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode parent))
+;   (parameter (type-and-name GtkTreeNode sibling))
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_prepend
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_prepend)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode parent))
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_append
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_append)
+;   (return-type GtkTreeNode)
+;   (parameter (type-and-name GtkTreeNode parent))
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+; (method node_get_root
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_get_root)
+;   (return-type GtkTreeNode)
+; )
+
+; (method node_is_ancestor
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_is_ancestor)
+;   (return-type gboolean)
+;   (parameter (type-and-name GtkTreeNode node))
+;   (parameter (type-and-name GtkTreeNode descendant))
+; )
+
+; (method node_depth
+;   (of-object TreeStore (Gtk))
+;   (c-name gtk_tree_store_node_depth)
+;   (return-type gint)
+;   (parameter (type-and-name GtkTreeNode node))
+; )
+
+
+
+; ;; From /opt/pango/include/gtk-2.0/gtk/gtktreeview.h
+
+; (function gtk_tree_view_get_type
+;   (c-name gtk_tree_view_get_type)
+;   (return-type GtkType)
+; )
+
+; (function gtk_tree_view_new
+;   (c-name gtk_tree_view_new)
+;   (return-type GtkWidget*)
+; )
+
+; (function gtk_tree_view_new_with_model
+;   (c-name gtk_tree_view_new_with_model)
+;   (return-type GtkWidget*)
+;   (parameter (type-and-name GtkTreeModel* model))
+; )
+
+; (method get_model
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_get_model)
+;   (return-type GtkTreeModel*)
+; )
+
+; (method set_model
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_set_model)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeModel* tree_model))
+; )
+
+; (method get_selection
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_get_selection)
+;   (return-type GtkTreeSelection*)
+; )
+
+; (method get_hadjustment
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_get_hadjustment)
+;   (return-type GtkAdjustment*)
+; )
+
+; (method set_hadjustment
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_set_hadjustment)
+;   (return-type none)
+;   (parameter (type-and-name GtkAdjustment* adjustment))
+; )
+
+; (method get_vadjustment
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_get_vadjustment)
+;   (return-type GtkAdjustment*)
+; )
+
+; (method set_vadjustment
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_set_vadjustment)
+;   (return-type none)
+;   (parameter (type-and-name GtkAdjustment* adjustment))
+; )
+
+; (method get_headers_visible
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_get_headers_visible)
+;   (return-type gboolean)
+; )
+
+; (method set_headers_visible
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_set_headers_visible)
+;   (return-type none)
+;   (parameter (type-and-name gboolean headers_visible))
+; )
+
+; (method columns_autosize
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_columns_autosize)
+;   (return-type none)
+; )
+
+; (method set_headers_active
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_set_headers_active)
+;   (return-type none)
+;   (parameter (type-and-name gboolean active))
+; )
+
+; (method append_column
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_append_column)
+;   (return-type gint)
+;   (parameter (type-and-name GtkTreeViewColumn* column))
+; )
+
+; (method remove_column
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_remove_column)
+;   (return-type gint)
+;   (parameter (type-and-name GtkTreeViewColumn* column))
+; )
+
+; (method insert_column
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_insert_column)
+;   (return-type gint)
+;   (parameter (type-and-name GtkTreeViewColumn* column))
+;   (parameter (type-and-name gint position))
+; )
+
+; (method get_column
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_get_column)
+;   (return-type GtkTreeViewColumn*)
+;   (parameter (type-and-name gint n))
+; )
+
+; (method move_to
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_move_to)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreePath* path))
+;   (parameter (type-and-name GtkTreeViewColumn* column))
+;   (parameter (type-and-name gfloat row_align))
+;   (parameter (type-and-name gfloat col_align))
+; )
+
+; (method expand_all
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_expand_all)
+;   (return-type none)
+; )
+
+; (method collapse_all
+;   (of-object TreeView (Gtk))
+;   (c-name gtk_tree_view_collapse_all)
+;   (return-type none)
+; )
+
+
+
+; ;; From /opt/pango/include/gtk-2.0/gtk/gtktreeviewcolumn.h
+
+; (function gtk_tree_view_column_get_type
+;   (c-name gtk_tree_view_column_get_type)
+;   (return-type GtkType)
+; )
+
+; (function gtk_tree_view_column_new
+;   (c-name gtk_tree_view_column_new)
+;   (return-type GtkObject*)
+; )
+
+; (function gtk_tree_view_column_new_with_attributes
+;   (c-name gtk_tree_view_column_new_with_attributes)
+;   (return-type GtkObject*)
+;   (parameter (type-and-name gchar* title))
+;   (parameter (type-and-name GtkCellRenderer* cell))
+;   (varargs t)
+; )
+
+; (method set_cell_renderer
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_cell_renderer)
+;   (return-type none)
+;   (parameter (type-and-name GtkCellRenderer* cell))
+; )
+
+; (method add_attribute
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_add_attribute)
+;   (return-type none)
+;   (parameter (type-and-name gchar* attribute))
+;   (parameter (type-and-name gint column))
+; )
+
+; (method set_attributes
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_attributes)
+;   (return-type none)
+;   (varargs t)
+; )
+
+; (method set_cell_data
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_cell_data)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeModel* tree_model))
+;   (parameter (type-and-name GtkTreeNode tree_node))
+; )
+
+; (method set_visible
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_visible)
+;   (return-type none)
+;   (parameter (type-and-name gboolean visible))
+; )
+
+; (method get_visible
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_visible)
+;   (return-type gboolean)
+; )
+
+; (method set_col_type
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_col_type)
+;   (return-type none)
+;   (parameter (type-and-name GtkTreeViewColumnType type))
+; )
+
+; (method get_col_type
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_col_type)
+;   (return-type gint)
+; )
+
+; (method get_size
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_size)
+;   (return-type gint)
+; )
+
+; (method set_size
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_size)
+;   (return-type none)
+;   (parameter (type-and-name gint width))
+; )
+
+; (method set_min_width
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_min_width)
+;   (return-type none)
+;   (parameter (type-and-name gint min_width))
+; )
+
+; (method get_min_width
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_min_width)
+;   (return-type gint)
+; )
+
+; (method set_max_width
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_max_width)
+;   (return-type none)
+;   (parameter (type-and-name gint max_width))
+; )
+
+; (method get_max_width
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_max_width)
+;   (return-type gint)
+; )
+
+; (method set_title
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_title)
+;   (return-type none)
+;   (parameter (type-and-name gchar* title))
+; )
+
+; (method get_title
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_title)
+;   (return-type gchar*)
+; )
+
+; (method set_header_active
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_header_active)
+;   (return-type none)
+;   (parameter (type-and-name gboolean active))
+; )
+
+; (method set_widget
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_widget)
+;   (return-type none)
+;   (parameter (type-and-name GtkWidget* widget))
+; )
+
+; (method get_widget
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_widget)
+;   (return-type GtkWidget*)
+; )
+
+; (method set_justification
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_set_justification)
+;   (return-type none)
+;   (parameter (type-and-name GtkJustification justification))
+; )
+
+; (method get_justification
+;   (of-object TreeViewColumn (Gtk))
+;   (c-name gtk_tree_view_column_get_justification)
+;   (return-type GtkJustification)
+; )
 
 
 
