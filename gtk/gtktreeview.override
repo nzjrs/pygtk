@@ -115,7 +115,7 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
                 g_snprintf(err, sizeof(err),
                            "%s must be an integer column number", attr);
                 PyErr_SetString(PyExc_TypeError, err);
-                g_object_unref(G_OBJECT(tvc));
+                g_object_unref(tvc);
                 return -1;
             }
             gtk_tree_view_column_add_attribute(tvc, cell, attr,

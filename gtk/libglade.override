@@ -132,7 +132,7 @@ pyglade_xml_new (char * fname, char * root, char *domain, PyObject *dict)
      */
     self->typedict = dict;
     if (!glade_xml_construct(GLADE_XML(self), fname, root, domain)) {
-	g_object_unref(G_OBJECT(self));
+	g_object_unref(self);
 	return NULL;
     }
       /* the reference is borrowed, and we don't need anymore */
