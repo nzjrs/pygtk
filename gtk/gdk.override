@@ -535,7 +535,7 @@ _wrap_gdk_color_parse(PyObject *self, PyObject *args, PyObject *kwargs)
         return NULL;
 
     if (!gdk_color_parse(spec, &colour)) {
-        PyErr_SetString(PyExc_TypeError,
+        PyErr_SetString(PyExc_ValueError,
                         "unable to parse colour specification");
         return NULL;
     }
@@ -2866,7 +2866,7 @@ _wrap_gdk_colormap_alloc_color(PyGObject *self, PyObject *args,
 	    }
 	    
  	    if (!gdk_color_parse(color_name, &colour)) {
- 		PyErr_SetString(PyExc_TypeError,
+ 		PyErr_SetString(PyExc_ValueError,
  				"unable to parse colour specification");
  		return NULL;
 	    }
