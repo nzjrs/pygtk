@@ -683,15 +683,12 @@ static PyObject *
 _wrap_gtk_accel_group_new(PyGObject *self, PyObject *args)
 {
     GtkAccelGroup *accel_group;
-    PyObject *ret;
 
     if (!PyArg_ParseTuple(args, ":GtkAccelGroup.__init__"))
 	return NULL;
 
     accel_group = gtk_accel_group_new();
-    ret = PyGtkAccelGroup_New(accel_group);
-    gtk_accel_group_unref(accel_group);
-    return ret;
+    return pyg_boxed_new(GTK_TYPE_ACCEL_GROUP, accel_group, FALSE, TRUE);
 }
 %%
 override gtk_box_query_child_packing kwargs
@@ -1647,20 +1644,10 @@ _wrap_gtk_list_store_new(PyGObject *self, PyObject *args)
     gtk_list_store_set_n_columns(ls, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
-	gint type;
+	GType type;
 
-	if (PyString_Check(item)) {
-	    type = g_type_from_name(PyString_AsString(item));
-	    if (type == 0) {
-		PyErr_SetString(PyExc_TypeError, "GtkListStore.__init__ arguments must be valid type codes");
-		g_object_unref(G_OBJECT(ls));
-		return NULL;
-	    }
-	} else
-	    type = PyInt_AsLong(item);
-	if (PyErr_Occurred()) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError, "GtkListStore.__init__ arguments must be valid type codes");
+	type = pyg_type_from_object(item);
+	if (type == 0) {
 	    g_object_unref(G_OBJECT(ls));
 	    return NULL;
 	}
@@ -1794,20 +1781,10 @@ _wrap_gtk_tree_store_new(PyGObject *self, PyObject *args)
     gtk_tree_store_set_n_columns(ts, len);
     for (i = 0; i < len; i++) {
 	PyObject *item = PyTuple_GetItem(args, i);
-	gint type;
+	GType type;
 
-	if (PyString_Check(item)) {
-	    type = g_type_from_name(PyString_AsString(item));
-	    if (type == 0) {
-		PyErr_SetString(PyExc_TypeError, "GtkTreeStore.__init__ arguments must be valid type codes");
-		g_object_unref(G_OBJECT(ts));
-		return NULL;
-	    }
-	} else
-	    type = PyInt_AsLong(item);
-	if (PyErr_Occurred()) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError, "GtkTreeStore.__init__ arguments must be valid type codes");
+	type = pyg_type_from_object(item);
+	if (type == 0) {
 	    g_object_unref(G_OBJECT(ts));
 	    return NULL;
 	}

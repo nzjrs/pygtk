@@ -117,9 +117,11 @@ def main():
     notebook = gtk.GtkNotebook()
     vbox.pack_start(notebook, expand=gtk.TRUE)
     scrolled_window, info_buffer = create_text(gtk.FALSE)
-    notebook.append_page(scrolled_window, gtk.GtkLabel('_Info'))
+    l = gtk.GtkLabel('') ; l.set_text_with_mnemonic('_Info')
+    notebook.append_page(scrolled_window, l)
     scrolled_window, source_buffer = create_text(gtk.TRUE)
-    notebook.append_page(scrolled_window, gtk.GtkLabel('_Source'))
+    l = gtk.GtkLabel('') ; l.set_text_with_mnemonic('_Source')
+    notebook.append_page(scrolled_window, l)
 
     tag = info_buffer.create_tag('title')
     tag.set_property('font', 'Sans 18')

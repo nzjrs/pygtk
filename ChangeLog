@@ -1,3 +1,23 @@
+2001-06-23  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c (pyg_signal_new): more fixups to use
+	pyg_type_from_object.
+
+	* gtk/gtk.override (_wrap_gtk_accel_group_new): don't use
+	PyGtkAccelGroup_New (not sure why I am fixing this -- will change
+	soon anyway).
+	(_wrap_gtk_tree_store_set_value): use pyg_type_from_object here.
+	(_wrap_gtk_list_store_set_value): same here.
+
+	* codegen/argtypes.py (CustomBoxedArg): rename from BoxedArg.
+	(BoxedArg): new code for standardised PyGBoxed handling.
+	(ArgMatcher.register_custom_boxed): rename from register_boxed
+	(ArgMatcher.register_boxed): new function for PyGBoxed types.
+	(arg): use ArgMatcher.register_boxed to register GtkAccelGroup.
+
+	* pygobject.h (pyg_boxed_check): change macro to check against the
+	typecode, rather than python wrapper type.
+
 2001-06-22  James Henstridge  <james@daa.com.au>
 
 	* codegen/argtypes.py (GTypeArg.write_param): new arg type for

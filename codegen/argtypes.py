@@ -348,10 +348,51 @@ class ObjectArg(ArgType):
 		arglist.append('%s(%s->obj)' % (self.cast, pname))
 	    return 'O'
     def write_return(self, ptype, varlist):
-	return '    /* PyGtk_New handles NULL checking */\n' + \
+	return '    /* pygobject_new handles NULL checking */\n' + \
 	       '    return pygobject_new((GObject *)%(func)s);'
 
 class BoxedArg(ArgType):
+    # haven't done support for default args.  Is it needed?
+    check = '    if (pyg_boxed_check(py_%(name)s, %(typecode)s))\n' + \
+           '        %(name)s = pyg_boxed_get(py_%(name)s, %(typename)s);\n' + \
+	   '    else {\n' + \
+	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s");\n' + \
+	   '        return NULL;\n' + \
+	   '    }\n'
+    null = '    if (pyg_boxed_check(py_%(name)s, %(typecode)s))\n' + \
+           '        %(name)s = pyg_boxed_get(py_%(name)s, %(typename)s);\n' + \
+	   '    else if (py_%(name)s != Py_None) {\n' + \
+	   '        PyErr_SetString(PyExc_TypeError, "%(name)s should be a %(typename)s");\n' + \
+	   '        return NULL;\n' + \
+	   '    }\n'
+    def __init__(self, ptype):
+	self.typename = ptype
+	self.typecode = _enum_name(ptype)
+    def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
+		    extracode, arglist):
+	if pnull:
+            varlist.add(ptype[:-1], '*' + pname + ' = NULL')
+	    varlist.add('PyObject', '*py_' + pname + ' = Py_None')
+	    parselist.append('&py_' + pname)
+	    extracode.append(self.null % {'name':  pname,
+                                          'typename': self.typename,
+                                          'typecode': self.typecode})
+	    arglist.append(pname)
+	    return 'O'
+	else:
+            varlist.add(ptype[:-1], '*' + pname + ' = NULL')
+	    varlist.add('PyObject', '*py_' + pname)
+	    parselist.append('&py_' + pname)
+	    extracode.append(self.check % {'name':  pname,
+                                           'typename': self.typename,
+                                           'typecode': self.typecode})
+	    arglist.append(pname)
+	    return 'O'
+    def write_return(self, ptype, varlist):
+	return '    /* pyg_boxed_new handles NULL checking */\n' + \
+	       '    return pyg_boxed_new(' + self.typecode + ', %(func)s, TRUE, TRUE);'
+
+class CustomBoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
     null = '    if (%(check)s(py_%(name)s))\n' + \
 	   '        %(name)s = %(get)s(py_%(name)s);\n' + \
@@ -473,8 +514,10 @@ class ArgMatcher:
             # hack to handle GdkBitmap synonym.
             self.register('GdkBitmap', oa)
             self.register('GdkBitmap*', oa)
-    def register_boxed(self, ptype, pytype, getter, new):
-	self.register(ptype+'*', BoxedArg(ptype, pytype, getter, new))
+    def register_boxed(self, ptype):
+	self.register(ptype+'*', BoxedArg(ptype))
+    def register_custom_boxed(self, ptype, pytype, getter, new):
+	self.register(ptype+'*', CustomBoxedArg(ptype, pytype, getter, new))
 
     def get(self, ptype):
 	return self.argtypes[ptype]
@@ -538,29 +581,29 @@ matcher.register('FILE*', arg)
 
 # enums, flags, objects
 
-matcher.register_boxed('GtkAccelGroup', 'PyGtkAccelGroup_Type',
-		       'PyGtkAccelGroup_Get', 'PyGtkAccelGroup_New')
-matcher.register_boxed('GdkFont', 'PyGdkFont_Type',
-		       'PyGdkFont_Get', 'PyGdkFont_New')
-matcher.register_boxed('GdkColor', 'PyGdkColor_Type',
-		       'PyGdkColor_Get', 'PyGdkColor_New')
-matcher.register_boxed('GdkEvent', 'PyGdkEvent_Type',
-		       'PyGdkEvent_Get', 'PyGdkEvent_New')
-matcher.register_boxed('GdkVisual', 'PyGdkVisual_Type',
-                       'PyGdkVisual_Get', 'PyGdkVisual_New')
-matcher.register_boxed('GtkSelectionData', 'PyGtkSelectionData_Type',
-		       'PyGtkSelectionData_Get', 'PyGtkSelectionData_New')
-matcher.register_boxed('GdkCursor', 'PyGdkCursor_Type',
-		       'PyGdkCursor_Get', 'PyGdkCursor_New')
-matcher.register_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
-		       'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
-matcher.register_boxed('GdkDevice', 'PyGdkDevice_Type',
-		       'PyGdkDevice_Get', 'PyGdkDevice_New')
-matcher.register_boxed('GtkTextIter', 'PyGtkTextIter_Type',
-		       'PyGtkTextIter_Get', 'PyGtkTextIter_New')
+matcher.register_boxed('GtkAccelGroup')
+matcher.register_custom_boxed('GdkFont', 'PyGdkFont_Type',
+                              'PyGdkFont_Get', 'PyGdkFont_New')
+matcher.register_custom_boxed('GdkColor', 'PyGdkColor_Type',
+                              'PyGdkColor_Get', 'PyGdkColor_New')
+matcher.register_custom_boxed('GdkEvent', 'PyGdkEvent_Type',
+                              'PyGdkEvent_Get', 'PyGdkEvent_New')
+matcher.register_custom_boxed('GdkVisual', 'PyGdkVisual_Type',
+                              'PyGdkVisual_Get', 'PyGdkVisual_New')
+matcher.register_custom_boxed('GtkSelectionData', 'PyGtkSelectionData_Type',
+                              'PyGtkSelectionData_Get',
+                              'PyGtkSelectionData_New')
+matcher.register_custom_boxed('GdkCursor', 'PyGdkCursor_Type',
+                              'PyGdkCursor_Get', 'PyGdkCursor_New')
+matcher.register_custom_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
+                              'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
+matcher.register_custom_boxed('GdkDevice', 'PyGdkDevice_Type',
+                              'PyGdkDevice_Get', 'PyGdkDevice_New')
+matcher.register_custom_boxed('GtkTextIter', 'PyGtkTextIter_Type',
+                              'PyGtkTextIter_Get', 'PyGtkTextIter_New')
 matcher.register('const-GtkTextIter*', matcher.get('GtkTextIter*'))
-matcher.register_boxed('GtkTreeIter', 'PyGtkTreeIter_Type',
-		       'PyGtkTreeIter_Get', 'PyGtkTreeIter_New')
+matcher.register_custom_boxed('GtkTreeIter', 'PyGtkTreeIter_Type',
+                              'PyGtkTreeIter_Get', 'PyGtkTreeIter_New')
 matcher.register('const-GtkTreeIter*', matcher.get('GtkTreeIter*'))
 
 matcher.register('GdkAtom', AtomArg())

@@ -22,10 +22,10 @@ def create_bbox(horizontal=gtk.TRUE, title=None, spacing=0,
     bbox.set_spacing(spacing)
     frame.add(bbox)
 
-    button = gtk.GtkButton(stock='gtk-button-ok')
+    button = gtk.GtkButton(stock='gtk-ok')
     bbox.add(button)
 
-    button = gtk.GtkButton(stock='gtk-button-cancel')
+    button = gtk.GtkButton(stock='gtk-cancel')
     bbox.add(button)
 
     button = gtk.GtkButton(stock='gtk-help')

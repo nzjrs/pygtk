@@ -214,12 +214,7 @@ pygtk_arg_from_pyobject(GtkArg *arg, PyObject *obj)
 	    return -1;
 	break;
     case GTK_TYPE_BOXED:
-	if (arg->type == GTK_TYPE_ACCEL_GROUP) {
-	    if (PyGtkAccelGroup_Check(obj))
-		GTK_VALUE_BOXED(*arg) = PyGtkAccelGroup_Get(obj);
-	    else
-		return -1;
-	} else if (arg->type == GDK_TYPE_EVENT) {
+	if (arg->type == GDK_TYPE_EVENT) {
 	    if (PyGdkEvent_Check(obj))
 		GTK_VALUE_BOXED(*arg) = PyGdkEvent_Get(obj);
 	    else
@@ -315,9 +310,7 @@ pygtk_arg_as_pyobject(GtkArg *arg)
     case GTK_TYPE_POINTER:
 	return PyCObject_FromVoidPtr(GTK_VALUE_POINTER(*arg), NULL);
     case GTK_TYPE_BOXED:
-	if (arg->type == GTK_TYPE_ACCEL_GROUP)
-	    return PyGtkAccelGroup_New(GTK_VALUE_BOXED(*arg));
-	else if (arg->type == GDK_TYPE_EVENT)
+	if (arg->type == GDK_TYPE_EVENT)
 	    return PyGdkEvent_New(GTK_VALUE_BOXED(*arg));
 	else if (arg->type == GDK_TYPE_FONT)
 	    return PyGdkFont_New(GTK_VALUE_BOXED(*arg));
@@ -451,12 +444,7 @@ pygtk_ret_from_pyobject(GtkArg *ret, PyObject *py_ret)
 	    *GTK_RETLOC_OBJECT(*ret) = NULL;
 	break;
     case GTK_TYPE_BOXED:
-	if (ret->type == GTK_TYPE_ACCEL_GROUP) {
-	    if (PyGtkAccelGroup_Check(py_ret))
-		*GTK_RETLOC_BOXED(*ret) = PyGtkAccelGroup_Get(py_ret);
-	    else
-		*GTK_RETLOC_BOXED(*ret) = NULL;
-	} else if (ret->type == GDK_TYPE_EVENT) {
+	if (ret->type == GDK_TYPE_EVENT) {
 	    if (PyGdkEvent_Check(py_ret))
 		*GTK_RETLOC_BOXED(*ret) = PyGdkEvent_Get(py_ret);
 	    else
@@ -545,9 +533,7 @@ pygtk_ret_as_pyobject(GtkArg *arg)
     case GTK_TYPE_POINTER:
 	return PyCObject_FromVoidPtr(*GTK_RETLOC_POINTER(*arg), NULL);
     case GTK_TYPE_BOXED:
-	if (arg->type == GTK_TYPE_ACCEL_GROUP)
-	    return PyGtkAccelGroup_New(*GTK_RETLOC_BOXED(*arg));
-	else if (arg->type == GDK_TYPE_EVENT)
+	if (arg->type == GDK_TYPE_EVENT)
 	    return PyGdkEvent_New(*GTK_RETLOC_BOXED(*arg));
 	else if (arg->type == GDK_TYPE_FONT)
 	    return PyGdkFont_New(*GTK_RETLOC_BOXED(*arg));

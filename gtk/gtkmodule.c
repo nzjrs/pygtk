@@ -34,7 +34,6 @@ static struct _PyGtk_FunctionStruct functions = {
 
     pygtk_register_boxed,
 
-    &PyGtkAccelGroup_Type, NULL,
     &PyGdkFont_Type,  PyGdkFont_New,
     &PyGdkColor_Type,  PyGdkColor_New,
     &PyGdkEvent_Type,  PyGdkEvent_New,
