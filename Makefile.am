@@ -71,6 +71,8 @@ EXTRA_DIST += \
   MAPPING \
   THREADS \
   build-docs.py \
+  config.h.win32 \
+  makefile.msc \
   examples/atk/atk-demo.py \
   examples/gobject/signal.py \
   examples/gobject/properties.py \

@@ -8,6 +8,8 @@ defs_DATA =
 EXTRA_DIST = $(defs_DATA)
 CLEANFILES =
 
+EXTRA_DIST += makefile.msc gtk-fake-win32.c
+
 pkgincludedir = $(includedir)/pygtk-2.0/pygtk
 pkginclude_HEADERS = pygtk.h
 
