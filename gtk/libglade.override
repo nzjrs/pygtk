@@ -98,13 +98,15 @@ connect_many(const gchar *handler_name, GObject *obj,
     PyObject *tuple, *self;
     GClosure *closure = NULL;
 
-    tuple = PyDict_GetItemString(handler_dict, (gchar *)handler_name);
+    tuple = PyMapping_GetItemString(handler_dict, (gchar *)handler_name);
     if (!tuple) {
-	PyErr_Clear();
-	g_warning("could not find handler `%s'", handler_name);
-	return;
+        tuple = PyObject_GetAttrString(handler_dict, (gchar *)handler_name);
+        if (!tuple) {
+            PyErr_Clear();
+            return;
+        }
     }
-
+    
     if (PyTuple_Check(tuple)) {
 	PyObject *callback = PyTuple_GetItem(tuple, 0);
 	PyObject *extra = PySequence_GetSlice(tuple, 1, PyTuple_Size(tuple));
@@ -139,13 +141,16 @@ _wrap_glade_xml_signal_autoconnect(PyGObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
     static char *kwlist[] = { "dict", NULL };
-    PyObject *dict;
+    PyObject *object;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!:GladeXML.signal_autoconnect", kwlist,
-				     &PyDict_Type, &dict))
+				     "O:GladeXML.signal_autoconnect", kwlist,
+				     &object))
 	return NULL;
-    glade_xml_signal_autoconnect_full(GLADE_XML(self->obj), connect_many,dict);
+
+    glade_xml_signal_autoconnect_full(GLADE_XML(self->obj),
+				      connect_many,
+				      object);
     Py_INCREF(Py_None);
     return Py_None;
 }
