@@ -1426,9 +1426,9 @@ class GtkCTree(GtkCList):
 	def node_get_row_style(self, node):
 		return _gtk.gtk_ctree_node_get_row_style(self._o, node)
 	def node_set_cell_style(self, node, col, style):
-		_gtk.gtk_ctree_node_set_row_style(self._o, node, col, style)
+		_gtk.gtk_ctree_node_set_cell_style(self._o, node, col, style)
 	def node_get_cell_style(self, node, col):
-		return _gtk.gtk_ctree_node_get_row_style(self._o, node, col)
+		return _gtk.gtk_ctree_node_get_cell_style(self._o, node, col)
 	def node_set_foreground(self, node, color):
 		_gtk.gtk_ctree_node_set_foreground(self._o, node, color)
 	def node_set_background(self, node, color):
