@@ -86,6 +86,7 @@ init_gtk(void)
     d = PyModule_GetDict(m);
 
     pygdk_register_classes(d);
+    pyg_flags_add_constants(m, GDK_TYPE_EVENT_MASK, "GDK_");
 
     if (PyErr_Occurred())
 	Py_FatalError("can't initialise module _gtk");
