@@ -3000,71 +3000,20 @@ _wrap_gtk_tree_view_tree_to_widget_coords(PyGObject *self, PyObject *args)
     return Py_BuildValue("(ii)", wx, wy);
 }
 %%
-override gtk_tree_view_get_cursor args
+override gtk_tree_view_get_cursor noargs
 static PyObject *
-_wrap_gtk_tree_view_get_cursor(PyGObject *self, PyObject *args)
+_wrap_gtk_tree_view_get_cursor(PyGObject *self)
 {
-    int arg_len;
-    PyObject *py_path = PyTuple_GetItem(args, 0);
+    PyObject *py_path;
     PyObject *py_column;
     GtkTreePath *path;
     GtkTreeViewColumn *column;
     
-    arg_len = PyTuple_Size(args);
-
-    if (!arg_len) {
-	PyErr_SetString(PyExc_TypeError,
-			"GtkTreeView.get_cursor requires at least one argument");
-	return NULL;
-    } else if (arg_len > 2) {
-	PyErr_SetString(PyExc_TypeError,
-			"GtkTreeView.get_cursor requires at maximum two arguments");
-	return NULL;
-    }
-
-    path = pygtk_tree_path_from_pyobject(py_path);
-    if (!path && py_path != Py_None) {
-	PyErr_SetString(PyExc_TypeError,
-			"first argument must be a tree path or None");
-	return NULL;
-    } else if (py_path == Py_None) {
-	path = NULL;
-    }
-    
-    if (arg_len == 2) {
-	py_column = PyTuple_GetItem(args, 1);
-	if (!pygobject_check(py_column, &PyGtkTreeViewColumn_Type) &&
-	    py_column != Py_None) {
-	    PyErr_SetString(PyExc_TypeError,
-			    "second argument must be a GtkTreeViewColumn or None");
-	    return NULL;
-	} else if (py_column == Py_None) {
-	    column = NULL;
-	}
-    } else {
-	column = NULL;
-    }
-    
-    if (path == NULL && column == NULL) {
-	    PyErr_SetString(PyExc_TypeError,
-			    "need at least one argument that's not None");
-	    return NULL;	
-    }
-    
     gtk_tree_view_get_cursor(GTK_TREE_VIEW(self->obj),
-			     path ? &path : NULL,
-			     column ? &column : NULL);
+			     &path, &column);
 
-    if (path == NULL && column == NULL) {
-	Py_INCREF(Py_None);
-	return Py_None;
-    }
-    
     if (path != NULL) {
 	py_path = pygtk_tree_path_to_pyobject(path);
-	if (column == NULL) {
-	    return py_path;
-	}
     } else {
 	Py_INCREF(Py_None);
 	py_path = Py_None;
@@ -3072,9 +3021,6 @@ _wrap_gtk_tree_view_get_cursor(PyGObject *self, PyObject *args)
     
     if (column != NULL) {
 	py_column = pygobject_new((GObject*)column);
-	if (path == NULL) {
-	    return py_path;
-	}
     } else {
 	Py_INCREF(Py_None);
 	py_column = Py_None;
