@@ -2583,7 +2583,7 @@ _wrap_gdk_pixbuf_loader_write(PyGObject *self,
                               PyObject *kwargs)
 {
     static char *kwlist[] = { "buf", "count", NULL };
-    int buf_len = -1, count, ret;
+    int buf_len, count = -1, ret;
     PyObject *py_ret;
     guchar *buf;
     GError *error = NULL;
@@ -2593,7 +2593,7 @@ _wrap_gdk_pixbuf_loader_write(PyGObject *self,
                                      kwlist, &buf, &buf_len, &count))
         return NULL;
 
-    if (buf_len != -1) {
+    if (count < 0 || count > buf_len) {
         count = buf_len;
     }
     
