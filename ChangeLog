@@ -1,5 +1,12 @@
 2001-09-29  James Henstridge  <james@daa.com.au>
 
+	* gobjectmodule.c (pyg_param_spec_new): add a wrapper for a
+	GParamSpec.  Currently it only exposes the base parameter info;
+	none of the extra info provided by derived param specs.
+	(pyg_object_class_list_properties): return a list of GParamSpec
+	objects, rather than just strings.
+	(pyg_value_as_pyobject): catch NULL strings.
+
 	* configure.in (minver): require 2.2a4.
 
 	* gtk/pygtktreemodel.c (pygtk_tree_model_get_column_type): use
