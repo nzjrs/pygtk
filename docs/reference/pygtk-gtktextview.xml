@@ -237,7 +237,8 @@ linkend="method-gtktextview--set-wrap-mode">set_wrap_mode</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextview--get-wrap-mode">get_wrap_mode</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextview--set-editable">set_editable</link></methodname>
@@ -247,7 +248,28 @@ linkend="method-gtktextview--set-editable">set_editable</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextview--get-editable">get_editable</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextview--set-overwrite">set_overwrite</link></methodname>
+	<methodparam><parameter
+		       role="keyword">overwrite</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextview--get-overwrite">get_overwrite</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextview--set-accepts-tab">set_accepts_tab</link></methodname>
+	<methodparam><parameter
+		       role="keyword">accepts_tab</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktextview--get-accepts-tab">get_accepts_tab</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextview--set-pixels-above-lines">set_pixels_above_lines</link></methodname>
@@ -360,6 +382,67 @@ linkend="method-gtktextview--get-default-attributes">get_default_attributes</lin
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"accepts-tab"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>TRUE</literal>, pressing
+<keycap>Tab</keycap> will result in a tab character being entered; otherwise
+the focus will be moved. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"buffer"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The buffer that is displayed. Available in GTK+ 2.4 and
+above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"cursor-visible"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the insertion cursor is
+shown</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"editable"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the text can be modified by
+the user by default</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"indent"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The default amount to indent the paragraph, in
+pixels</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"justification"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The default text justification:
+<literal>gtk.JUSTIFY_LEFT</literal>, <literal>gtk.JUSTIFY_RIGHT</literal>,
+<literal>gtk.JUSTIFY_CENTER</literal> or
+<literal>gtk.JUSTIFY_FILL</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"left-margin"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The default width of the left margin in pixels</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"overwrite"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>TRUE</literal>, the entered text overwrites
+	      existing contents. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"pixels-above-lines"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The default number of pixels of blank space above
@@ -381,10 +464,15 @@ wrapped lines in a paragraph</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"editable"</entry>
+	      <entry>"right-margin"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the text can be modified by
-the user by default</entry>
+	      <entry>The default width of the right margin in pixels</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"tabs"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The default custom tabs</entry>
 	    </row>
 
 	    <row valign="top">
@@ -395,45 +483,32 @@ the user by default</entry>
 <literal>gtk.WRAP_WORD</literal></entry>
 	    </row>
 
-	    <row valign="top">
-	      <entry>"justification"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The default text justification:
-<literal>gtk.JUSTIFY_LEFT</literal>, <literal>gtk.JUSTIFY_RIGHT</literal>,
-<literal>gtk.JUSTIFY_CENTER</literal> or
-<literal>gtk.JUSTIFY_FILL</literal></entry>
-	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Style Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
 
 	    <row valign="top">
-	      <entry>"left-margin"</entry>
+	      <entry>"error-underline-color"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The default width of the left margin in pixels</entry>
-	    </row>
 
-	    <row valign="top">
-	      <entry>"right-margin"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The default width of the right margin in pixels</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"indent"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The default amount to indent the paragraph, in
-pixels</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"tabs"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The default custom tabs</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"cursor-visible"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the insertion cursor is
-shown</entry>
+	      <entry>The <link
+linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link> with
+which to draw error-indication underlines. Available in GTK+ 2.4 and
+above.</entry>
 	    </row>
 
 	  </tbody>
@@ -515,6 +590,18 @@ shown</entry>
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term>"<link linkend="signal-gtktextview--move-viewport">move-viewport</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>textview</parameter></methodparam>
+            <methodparam><parameter>scrollstep</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>"<link linkend="signal-gtktextview--page-horizontally">page-horizontally</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
@@ -542,6 +629,17 @@ shown</entry>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>textview</parameter></methodparam>
             <methodparam><parameter>menu</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtktextview--select-all">select-all</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>textview</parameter></methodparam>
+            <methodparam><parameter>select</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -1924,7 +2022,8 @@ sets its "editable" attribute.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>get_editable</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -1940,6 +2039,118 @@ linkend="class-gtktextview"><classname>gtk.TextView</classname></link> text
 that is not influenced by a <link
 linkend="class-gtktexttag"><classname>gtk.TextTag</classname></link> that
 sets its "editable" attribute.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextview--set-overwrite">
+      <title>gtk.TextView.set_overwrite</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_overwrite</methodname>
+	  <methodparam><parameter role="keyword">overwrite</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">overwrite</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> turn on overwrite
+	  mode; if <literal>FALSE</literal> turn it off</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_overwrite</methodname>() method sets the
+"overwrite" property to the value of <parameter>overwrite</parameter>. If
+<parameter>overwrite</parameter> is <literal>TRUE</literal>, inserted text
+overwrites the existing text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextview--get-overwrite">
+      <title>gtk.TextView.get_overwrite</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_overwrite</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the textview is in
+	  overwrite mode</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_overwrite</methodname>() method returns the
+value of the "overwrite" property. see the <link
+linkend="method-gtktextview--set-overwrite"><methodname>set_overwrite</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextview--set-accepts-tab">
+      <title>gtk.TextView.set_accepts_tab</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_accepts_tab</methodname>
+	  <methodparam><parameter role="keyword">accepts_tab</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">accepts_tab</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> pressing the
+	  <keycap>Tab</keycap> key should insert a tab character; if
+	  <literal>FALSE</literal>, pressing the <keycap>Tab</keycap> key
+	  should move the keyboard focus.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_accepts_tab</methodname>() method sets the
+"accepts_tab" property to the value of
+<parameter>accepts_tab</parameter>. If <parameter>accepts_tab</parameter> is
+<literal>TRUE</literal> a tab character is inserted. If
+<parameter>accepts_tab</parameter> is <literal>FALSE</literal> the keyboard
+focus is moved to the next widget in the focus chain.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextview--get-accepts-tab">
+      <title>gtk.TextView.get_accepts_tab</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_accepts_tab</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if pressing the
+	  <keycap>Tab</keycap> key inserts a tab character,
+	  <literal>FALSE</literal> if pressing the <keycap>Tab</keycap> key
+	  moves the keyboard focus.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_accepts_tab</methodname>() emthod returns
+the value of the "accepts_tab" property. See the <link
+linkend="method-gtktextview--set-accepts-tab"><methodname>set_accepts_tab()</methodname></link>
+method for more information.</para>
 
     </refsect2>
 
@@ -2720,6 +2931,63 @@ any)</simpara></listitem>
 
     </refsect2>
 
+    <refsect2 id="signal-gtktextview--move-viewport">
+      <title>The "move-viewport" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>textview</parameter></methodparam>
+	  <methodparam><parameter>scrollstep</parameter></methodparam>
+	  <methodparam><parameter>count</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>textview</parameter>&nbsp;:</term>
+	  <listitem><simpara>the textview that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>scrollstep</parameter>&nbsp;:</term>
+	  <listitem><simpara>the size of the scroll step:
+	  <literal>gtk.SCROLL_STEPS</literal>,
+	  <literal>gtk.SCROLL_PAGES</literal>,
+	  <literal>gtk.SCROLL_ENDS</literal>,
+	  <literal>gtk.SCROLL_HORIZONTAL_STEPS</literal>,
+	  <literal>gtk.SCROLL_HORIZONTAL_PAGES</literal> or
+	  <literal>gtk.SCROLL_HORIZONTAL_ENDS</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>count</parameter>&nbsp;:</term>
+	  <listitem><simpara>the number of scroll steps of size
+	  <parameter>scrollstep</parameter> to take</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in GTK+ 2.4 and above.</para>
+      </note>
+
+      <para>The "move-viewport" signal is emitted when the viewport is being
+moved usually as the result of user action in moving the cursor or using
+the scrollbars.</para>
+
+    </refsect2>
+
     <refsect2 id="signal-gtktextview--page-horizontally">
       <title>The "page-horizontally" Signal</title>
 
@@ -2767,7 +3035,7 @@ horizontal paging by pressing one of the key combinations:</para>
 
       <variablelist>
 	<varlistentry>
-	  <term><keycombo><keycap>Control</keycap>
+	  <term><keycombo action="simul"><keycap>Control</keycap>
 	      <keycap>Page&nbsp;Up</keycap>
 	    </keycombo></term>
 	  <listitem>
@@ -2777,7 +3045,7 @@ horizontal paging by pressing one of the key combinations:</para>
 	  </listitem>
 	</varlistentry>
 	<varlistentry>
-	  <term><keycombo><keycap>Shift</keycap>
+	  <term><keycombo action="simul"><keycap>Shift</keycap>
 	      <keycap>Control</keycap>
 	      <keycap>Page&nbsp;Up</keycap>
 	    </keycombo></term>
@@ -2866,6 +3134,70 @@ any)</simpara></listitem>
       <para>The "populate-popup" signal is emitted when the popup menu
 (specified by <parameter>menu</parameter>) associated with
 <parameter>textview</parameter> needs to be populated.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtktextview--select-all">
+      <title>The "select-all" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>textview</parameter></methodparam>
+	  <methodparam><parameter>select</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>textview</parameter>&nbsp;:</term>
+	  <listitem><simpara>the textview that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>select</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> select the buffer
+	  contents; otherwise deselect the buffer
+	  contents</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+
+      <note>
+	<para>This signal is available in GTK+ 2.2 and above.</para>
+      </note>
+
+      <para>The "select-all" signal is emitted when the user presses one
+of:</para>
+
+    <itemizedlist>
+      <listitem>
+	<simpara><keycombo
+action='simul'><keycap>Control</keycap><keycap>a</keycap></keycombo> or
+<keycombo
+action='simul'><keycap>Control</keycap><keycap>/</keycap></keycombo> to
+select all text in a buffer</simpara>
+      </listitem>
+      <listitem>
+	<simpara><keycombo
+action='simul'><keycap>Control</keycap><keycap>\</keycap></keycombo> to
+deselect all text in a buffer</simpara>
+      </listitem>
+   </itemizedlist>
+      
+    <para></para>
 
     </refsect2>
 
