@@ -3994,11 +3994,13 @@ override gdk_window_get_user_data noargs
 static PyObject *
 _wrap_gdk_window_get_user_data(PyGObject *self)
 {
-
-    gpointer *user_data;
-    gdk_window_get_user_data(GDK_WINDOW(self->obj), &user_data);
-    if (pygobject_check(user_data, &PyGObject_Type))
-	return pygobject_new((GObject *)user_data);
+    gpointer *user_data = NULL;
+    gdk_window_get_user_data(GDK_WINDOW(self->obj), user_data);
+    if (user_data == NULL) {
+	PyErr_SetString(PyExc_ValueError, "there is no user data to convert");
+	return NULL;
+    } else if (G_IS_OBJECT(user_data)) {
+	return pygobject_new(G_OBJECT(user_data));
     } else {
 	PyErr_SetString(PyExc_ValueError, "could not convert the user data");
 	return NULL;
