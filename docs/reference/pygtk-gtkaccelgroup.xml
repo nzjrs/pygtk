@@ -110,6 +110,11 @@ linkend="function-gtk--accelerator-set-default-mod-mask">gtk.accelerator_set_def
 linkend="function-gtk--accelerator-get-default-mod-mask">gtk.accelerator_get_default_mod_mask</link></methodname>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
+linkend="function-gtk--accelerator-get-label">gtk.accelerator_get_label</link></methodname>
+	<methodparam><parameter role="keyword">accelerator_key</parameter></methodparam>
+	<methodparam><parameter role="keyword">accelerator_mods</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
 linkend="function-gtk--accel-map-add-entry">gtk.accel_map_add_entry</link></methodname>
 	<methodparam><parameter role="keyword">accel_path</parameter></methodparam>
 	<methodparam><parameter role="keyword">accel_key</parameter></methodparam>
@@ -354,115 +359,9 @@ activated, the function (or method) specified by
 modifier key match those specified by <parameter>accel_key</parameter> and
 <parameter>accel_mods</parameter>.</para>
 
-      <para>The
-value of <parameter>modifier</parameter> is a combination of:</para>
-
-      <variablelist>
-        <varlistentry>
-          <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
-          <listitem>
-            <simpara>The Shift key.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.LOCK_MASK</literal></term>
-          <listitem>
-            <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be CapsLock or ShiftLock).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
-          <listitem>
-            <simpara>The Control key. </simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD1_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this modifier, but
-normally it is the Alt key).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD2_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD3_MASK</literal></term>
-          <listitem>
-            <simpara>The sixth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD4_MASK</literal></term>
-          <listitem>
-            <simpara>The seventh modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD5_MASK</literal></term>
-          <listitem>
-            <simpara>The eighth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
-          <listitem>
-            <simpara>The first mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
-          <listitem>
-            <simpara>The second mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
-          <listitem>
-            <simpara>The third mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
-          <listitem>
-            <simpara>Differentiates between (keyval, modifiers) pairs from
-key press and release events.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
-          <listitem>
-            <simpara>all of the above</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-
-      <para> <parameter>accel_flags</parameter> is a combination of
+      <para>The value of <parameter>modifier</parameter> is a combination of
+the <link linkend="gdk-modifier-constants">Modifier
+Constants</link>. <parameter>accel_flags</parameter> is a combination of
 <literal>gtk.ACCEL_VISIBLE</literal> and
 <literal>gtk.ACCEL_LOCKED</literal>.</para>
 
@@ -674,117 +573,11 @@ returns <literal>TRUE</literal> if the specified
 <parameter>keyval</parameter> and <parameter>modifiers</parameter>
 constitute a valid keyboard accelerator. For example, the
 <literal>ord('a')</literal> keyval plus
-<literal>gtk.gdk.CONTROL_MASK</literal> is valid - this is a
-<keycombo action="simul"><keycap>Control</keycap><keycap>a</keycap>
-	</keycombo> accelerator. The value of
-<parameter>modifiers</parameter> is a combination of:</para>
-
-      <variablelist>
-        <varlistentry>
-          <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
-          <listitem>
-            <simpara>The Shift key.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.LOCK_MASK</literal></term>
-          <listitem>
-            <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be CapsLock or ShiftLock).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
-          <listitem>
-            <simpara>The Control key. </simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD1_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this modifier, but
-normally it is the Alt key).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD2_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD3_MASK</literal></term>
-          <listitem>
-            <simpara>The sixth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD4_MASK</literal></term>
-          <listitem>
-            <simpara>The seventh modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD5_MASK</literal></term>
-          <listitem>
-            <simpara>The eighth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
-          <listitem>
-            <simpara>The first mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
-          <listitem>
-            <simpara>The second mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
-          <listitem>
-            <simpara>The third mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
-          <listitem>
-            <simpara>Differentiates between (keyval, modifiers) pairs from
-key press and release events.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
-          <listitem>
-            <simpara>all of the above</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-
-      <para></para>
+<literal>gtk.gdk.CONTROL_MASK</literal> is valid - this is a <keycombo
+action="simul"><keycap>Control</keycap><keycap>a</keycap> </keycombo>
+accelerator. The value of <parameter>modifiers</parameter> is a combination
+of the <link linkend="gdk-modifier-constants">Modifier
+Constants</link>.</para>
 
     </refsect2>
 
@@ -891,116 +684,10 @@ linkend="class-gtkaccelgroup"><classname>gtk.AccelGroup</classname></link>.
 You must include at least the three default modifiers in any value you pass
 to this function. The default mod mask should be changed on application
 startup, before using any accelerator groups. The value of
-<parameter>default_mod_mask</parameter> is a combination of:</para>
+<parameter>default_mod_mask</parameter> is a combination of the <link
+linkend="gdk-modifier-constants">Modifier Constants</link>.</para>
 
-      <variablelist>
-        <varlistentry>
-          <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
-          <listitem>
-            <simpara>The Shift key.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.LOCK_MASK</literal></term>
-          <listitem>
-            <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be CapsLock or ShiftLock).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
-          <listitem>
-            <simpara>The Control key. </simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD1_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this modifier, but
-normally it is the Alt key).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD2_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD3_MASK</literal></term>
-          <listitem>
-            <simpara>The sixth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD4_MASK</literal></term>
-          <listitem>
-            <simpara>The seventh modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MOD5_MASK</literal></term>
-          <listitem>
-            <simpara>The eighth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
-          <listitem>
-            <simpara>The first mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
-          <listitem>
-            <simpara>The second mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
-          <listitem>
-            <simpara>The third mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
-          <listitem>
-            <simpara>The fourth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
-          <listitem>
-            <simpara>The fifth mouse button.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
-          <listitem>
-            <simpara>Differentiates between (keyval, modifiers) pairs from
-key press and release events.</simpara>
-          </listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
-          <listitem>
-            <simpara>all of the above</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-
-      <para></para>
-
-    </refsect2>
+   </refsect2>
 
     <refsect2 id="function-gtk--accelerator-get-default-mod-mask">
       <title>gtk.accelerator_get_default_mod_mask</title>
@@ -1022,6 +709,46 @@ linkend="function-gtk--accelerator-set-default-mod-mask"><function>gtk.accelerat
 function. See the <link
 linkend="function-gtk--accelerator-set-default-mod-mask"><function>gtk.accelerator_set_default_mod_mask</function>()</link> 
 function for more detail on modifier masks.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--accelerator-get-label">
+      <title>gtk.accelerator_get_label</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.accelerator_get_label</methodname>
+	  <methodparam><parameter
+			 role="keyword">accelerator_key</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">accelerator_mods</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">accelerator_key</parameter>&nbsp;:</term>
+	  <listitem><simpara>a key value</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">accelerator_mods</parameter>&nbsp;:</term>
+	  <listitem><simpara>a modifier mask</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a string representing the
+accelerator</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gtk.accelerator_get_label</function>() function
+converts the accelerator keyval and modifier mask specified by
+<parameter>accelerator_key</parameter> and
+<parameter>accelerator_mods</parameter> respectively into a string which can
+be used to represent the accelerator to the user. The value of
+<parameter>accelerator_mods</parameter> is a combination of the <link
+linkend="gdk-modifier-constants">Modifier Constants</link>.</para>
 
     </refsect2>
 
