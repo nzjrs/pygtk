@@ -29,7 +29,7 @@
 #ifdef HAVE_NUMPY
 #  if defined(HAVE_ARRAYOBJECT_H)
 #    include <arrayobject.h>
-#  elif defined(HAVE_EXTESNSIONS_ARRAYOBJECT_H)
+#  elif defined(HAVE_EXTENSIONS_ARRAYOBJECT_H)
 #    include <Extensions/arrayobject.h>
 #  elif defined(HAVE_NUMERIC_ARRAYOBJECT_H)
 #    include <Numeric/arrayobject.h>
