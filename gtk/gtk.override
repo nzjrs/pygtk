@@ -271,6 +271,32 @@ _wrap_gtk_label_get_layout_offsets(PyGObject *self, PyObject *args)
     return Py_BuildValue("(ii)", x, y);
 }
 %%
+override gtk_spin_button_get_increments
+static PyObject *
+_wrap_gtk_spin_button_get_increments(PyGObject *self, PyObject *args)
+{
+    gdouble step;
+    gdouble page;
+
+    if (!PyArg_ParseTuple(args,":GtkSpinButton.get_increments"))
+        return NULL;
+    gtk_spin_button_get_increments(GTK_SPIN_BUTTON(self->obj), &step, &page);
+    return Py_BuildValue("(dd)", step, page);
+}
+%%
+override gtk_spin_button_get_range
+static PyObject *
+_wrap_gtk_spin_button_get_range(PyGObject *self, PyObject *args)
+{
+    gdouble min;
+    gdouble max;
+
+    if (!PyArg_ParseTuple(args,":GtkSpinButton.get_range"))
+        return NULL;
+    gtk_spin_button_get_range(GTK_SPIN_BUTTON(self->obj), &min, &max);
+    return Py_BuildValue("(dd)", min, max);
+}
+%%
 override gtk_window_set_geometry_hints kwargs
 static PyObject *
 _wrap_gtk_window_set_geometry_hints(PyGObject *self, PyObject *args,
@@ -1810,6 +1836,7 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "entries", NULL };
     PyObject *list, *cb;
     GtkItemFactoryEntry ent;
+    PyObject *extra_data = NULL;
     GtkItemFactory *ifact;
     int i, len;
 
@@ -1822,14 +1849,29 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
     for (i = 0; i < len; i++) {
 	PyObject *item = PyList_GetItem(list, i);
 
-	if (!PyArg_ParseTuple(item, "zzOiz", &(ent.path), &(ent.accelerator),
-			      &cb, &(ent.callback_action), &(ent.item_type)))
+	if (!PyArg_ParseTuple(item, "zzOiz|O", &(ent.path), &(ent.accelerator),
+			      &cb, &(ent.callback_action), &(ent.item_type),
+			      ent.extra_data)) {
 	    return NULL;
-	if (cb == Py_None)
+	}
+	
+	if (cb == Py_None) {
 	    ent.callback = NULL;
-	else {
+	} else {
 	    Py_INCREF(cb);
 	    ent.callback = (GtkItemFactoryCallback)pygtk_item_factory_cb;
+	}
+	
+	if(extra_data != NULL) {
+	     if(PyString_Check(extra_data)) {
+	          ent.extra_data = PyString_AsString(extra_data);
+	     } else if(pygobject_check(dest, &PyGdkPixbuf_Type)) {
+	          ent.extra_data = GDK_PIXBUF(self->obj)
+	     } else {
+                  PyErr_SetString(PyExc_TypeError, 
+                        "last argument must be a GdkPixBuf or a string");
+		  return NULL;
+	     }
 	}
 	gtk_item_factory_create_item(ifact, &ent, cb, 1);
     }
