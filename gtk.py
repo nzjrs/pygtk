@@ -1856,6 +1856,8 @@ class GtkTable(GtkContainer):
 		_gtk.gtk_table_set_col_spacings(self._o, s)
 	def set_homogeneous(self, homogeneous):
 	        _gtk.gtk_table_set_homogeneous(self._o, homogeneous)
+	def resize(self, rows, cols):
+		_gtk.gtk_table_resize(self._o, rows, cols)
 
 class GtkTree(GtkContainer):
 	get_type = _gtk.gtk_tree_get_type
