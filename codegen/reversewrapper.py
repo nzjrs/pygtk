@@ -151,9 +151,9 @@ class ReverseWrapper(object):
         '''Generate the code into a CodeSink object'''
         assert isinstance(sink, CodeSink)
 
-        self.add_declaration("PyGILState_STATE state;")
-        self.write_code(code="state = pyg_gil_state_ensure();",
-                        cleanup="pyg_gil_state_release(state);")
+        self.add_declaration("PyGILState_STATE __py_state;")
+        self.write_code(code="__py_state = pyg_gil_state_ensure();",
+                        cleanup="pyg_gil_state_release(__py_state);")
 
         for param in self.parameters:
             param.convert_c2py()
