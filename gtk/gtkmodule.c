@@ -190,6 +190,26 @@ init_gtk(void)
 
     pygdk_register_classes(d);
     pygdk_add_constants(m, "GDK_");
+      /* Add predefined atoms */
+#define add_atom(name) PyModule_AddObject(m, #name, PyGdkAtom_New(GDK_##name))
+
+    add_atom(SELECTION_PRIMARY);
+    add_atom(SELECTION_SECONDARY);
+    add_atom(SELECTION_CLIPBOARD);
+    add_atom(TARGET_BITMAP);
+    add_atom(TARGET_COLORMAP);
+    add_atom(TARGET_DRAWABLE);
+    add_atom(TARGET_PIXMAP);
+    add_atom(TARGET_STRING);
+    add_atom(SELECTION_TYPE_ATOM);
+    add_atom(SELECTION_TYPE_BITMAP);
+    add_atom(SELECTION_TYPE_COLORMAP);
+    add_atom(SELECTION_TYPE_DRAWABLE);
+    add_atom(SELECTION_TYPE_INTEGER);
+    add_atom(SELECTION_TYPE_PIXMAP);
+    add_atom(SELECTION_TYPE_WINDOW);
+    add_atom(SELECTION_TYPE_STRING);
+#undef add_atom
 
     gtk_timeout_add(100, python_do_pending_calls, NULL);
 }
