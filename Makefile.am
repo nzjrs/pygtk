@@ -19,7 +19,7 @@ gtkgl_mods =
 endif
 if BUILD_LIBGLADE
 libglade_libs = _libglademodule$(SO)
-libglade_mods = 
+libglade_mods = libglade.py
 else
 libglade_libs =
 libglade_mods =

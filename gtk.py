@@ -132,6 +132,18 @@ class GtkObject:
 		return _gtk.gtk_signal_connect_after(self._o, name,
 						     callback.__call__, extra)
 	signal_connect_after = connect_after
+	def connect_object(self, name, f, obj, *extra):
+		callback = self.__cnv(f)
+		return _gtk.gtk_signal_connect_object(self._o, name,
+						      callback.__call__,
+						      obj._o, extra)
+	signal_connect_object = connect_object
+	def connect_object_after(self, name, f, obj, *extra):
+		callback = self.__cnv(f)
+		return _gtk.gtk_signal_connect_object_after(self._o, name,
+							    callback.__call__,
+							    obj._o, extra)
+	signal_connect_after = connect_after
 	def disconnect(self, id):
 		_gtk.gtk_signal_disconnect(self._o, id)
 	def signal_handler_block(self, id):

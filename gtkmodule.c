@@ -2755,49 +2755,57 @@ static int GtkArgs_FromSequence(GtkArg *args, int nparams, PyObject *seq) {
 /* generic callback marshal */
 static void PyGtk_CallbackMarshal(GtkObject *o, gpointer data, guint nargs,
 				  GtkArg *args) {
-  PyObject *func = data, *ret, *a, *params;
+    PyObject *tuple = data, *func, *extra=NULL, *obj=NULL, *ret, *a, *params;
 
-  PyGTK_BLOCK_THREADS
-  a = GtkArgs_AsTuple(nargs, args);
-  if (a == NULL) {
-    PyErr_Clear();
-    fprintf(stderr, "can't decode params -- callback not run\n");
-    PyGTK_UNBLOCK_THREADS
-    return;
-  }
-  if (o == NULL)
-    params = a;
-  else {
-    /* prepend object to argument list */
-    ret = PyTuple_New(1);
-    PyTuple_SetItem(ret, 0, PyGtk_New(o));
-    params = PySequence_Concat(ret, a);
-    Py_DECREF(ret); Py_DECREF(a);
-  }
-  if (PyTuple_Check(func)) {
-    a = PyTuple_GetItem(func, 1);
-    func = PyTuple_GetItem(func, 0);
-    if (PyTuple_Check(a)) {
-      ret = params;
-      params = PySequence_Concat(ret, a);
-      Py_DECREF(ret);
+    PyGTK_BLOCK_THREADS
+    a = GtkArgs_AsTuple(nargs, args);
+    if (a == NULL) {
+	PyErr_Clear();
+	fprintf(stderr, "can't decode params -- callback not run\n");
+	PyGTK_UNBLOCK_THREADS
+	return;
     }
-  }
-  ret = PyObject_CallObject(func, params);
-  Py_DECREF(params);
-  if (ret == NULL) {
-    if (PyGtk_FatalExceptions)
-      gtk_main_quit();
-    else {
-      PyErr_Print();
-      PyErr_Clear();
+
+    if (PyTuple_Check(tuple)) {
+	func = PyTuple_GetItem(tuple, 0);
+	extra = PyTuple_GetItem(tuple, 1);
+	if (PyTuple_Size(tuple) > 2) {
+	    obj = PyTuple_GetItem(tuple, 2);
+	    Py_INCREF(obj);
+	}
+    } else
+	func = tuple;
+    if (!obj && o != NULL)
+	obj = PyGtk_New(o);
+
+    if (obj) {
+	tuple = PyTuple_New(1);
+	PyTuple_SetItem(tuple, 0, obj);
+	params = PySequence_Concat(tuple, a);
+	Py_DECREF(tuple); Py_DECREF(a);
+    } else
+	params = a;
+
+    if (extra) {
+	tuple = params;
+	params = PySequence_Concat(tuple, extra);
+	Py_DECREF(tuple);
     }
+    ret = PyObject_CallObject(func, params);
+    Py_DECREF(params);
+    if (ret == NULL) {
+	if (PyGtk_FatalExceptions)
+	    gtk_main_quit();
+	else {
+	    PyErr_Print();
+	    PyErr_Clear();
+	}
+	PyGTK_UNBLOCK_THREADS
+	return;
+    }
+    GtkRet_FromPyObject(&args[nargs], ret);
+    Py_DECREF(ret);
     PyGTK_UNBLOCK_THREADS
-    return;
-  }
-  GtkRet_FromPyObject(&args[nargs], ret);
-  Py_DECREF(ret);
-  PyGTK_UNBLOCK_THREADS
 }
 
 
@@ -3019,7 +3027,7 @@ static GtkArg *PyDict_AsContainerArgs(PyObject *dict,GtkType type,gint *nargs){
 static PyObject *_wrap_gtk_signal_connect(PyObject *self, PyObject *args) {
     PyGtk_Object *obj;
     char *name;
-    PyObject *func, *extra = NULL;
+    PyObject *func, *extra = NULL, *data;
     int signum;
 
     if (!PyArg_ParseTuple(args, "O!sO|O!:gtk_signal_connect", &PyGtk_Type,
@@ -3030,24 +3038,21 @@ static PyObject *_wrap_gtk_signal_connect(PyObject *self, PyObject *args) {
         return NULL;
     }
     Py_INCREF(func);
-    if (extra) {
-      PyObject *tmp;
-      tmp = PyTuple_New(2);
-      PyTuple_SetItem(tmp, 0, func);
-      Py_INCREF(extra);
-      PyTuple_SetItem(tmp, 1, extra);
-      func = tmp;
-    }
+    if (extra)
+	Py_INCREF(extra);
+    else
+	extra = PyTuple_New(0);
+    data = Py_BuildValue("(OO)", func, extra);
     signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
 				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
-				     func, PyGtk_DestroyNotify, FALSE, FALSE);
+				     data, PyGtk_DestroyNotify, FALSE, FALSE);
     return PyInt_FromLong(signum);
 }
 
 static PyObject *_wrap_gtk_signal_connect_after(PyObject *self, PyObject *args) {
     PyGtk_Object *obj;
     char *name;
-    PyObject *func, *extra = NULL;
+    PyObject *func, *extra = NULL, *data;
     int signum;
 
     if (!PyArg_ParseTuple(args, "O!sO|O!:gtk_signal_connect_after",
@@ -3058,17 +3063,68 @@ static PyObject *_wrap_gtk_signal_connect_after(PyObject *self, PyObject *args) 
         return NULL;
     }
     Py_INCREF(func);
-    if (extra) {
-      PyObject *tmp;
-      tmp = PyTuple_New(2);
-      PyTuple_SetItem(tmp, 0, func);
-      Py_INCREF(extra);
-      PyTuple_SetItem(tmp, 1, extra);
-      func = tmp;
-    }
+    if (extra)
+	Py_INCREF(extra);
+    else
+	extra = PyTuple_New(0);
+    data = Py_BuildValue("(OO)", func, extra);
     signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
 				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
-				     func, PyGtk_DestroyNotify, FALSE, TRUE);
+				     data, PyGtk_DestroyNotify, FALSE, TRUE);
+    return PyInt_FromLong(signum);
+}
+
+static PyObject *_wrap_gtk_signal_connect_object(PyObject *self, PyObject *args) {
+    PyGtk_Object *obj;
+    char *name;
+    PyObject *func, *extra = NULL, *other, *data;
+    int signum;
+
+    if (!PyArg_ParseTuple(args, "O!sOO!|O!:gtk_signal_connect_object",
+			  &PyGtk_Type, &obj, &name, &func, &PyGtk_Type, &other,
+			  &PyTuple_Type, &extra))
+        return NULL;
+    if (!PyCallable_Check(func)) {
+        PyErr_SetString(PyExc_TypeError, "third argument must be callable");
+        return NULL;
+    }
+    Py_INCREF(func);
+    if (extra)
+	Py_INCREF(extra);
+    else
+	extra = PyTuple_New(0);
+    Py_INCREF(other);
+    data = Py_BuildValue("(OOO)", func, extra, other);
+    signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
+				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
+				     data, PyGtk_DestroyNotify, FALSE, FALSE);
+    return PyInt_FromLong(signum);
+}
+
+static PyObject *_wrap_gtk_signal_connect_object_after(PyObject *self, PyObject *args) {
+    PyGtk_Object *obj;
+    char *name;
+    PyObject *func, *extra = NULL, *other, *data;
+    int signum;
+
+    if (!PyArg_ParseTuple(args, "O!sOO!|O!:gtk_signal_connect_object_after",
+			  &PyGtk_Type, &obj, &name, &func, &PyGtk_Type, &other,
+			  &PyTuple_Type, &extra))
+        return NULL;
+    if (!PyCallable_Check(func)) {
+        PyErr_SetString(PyExc_TypeError, "third argument must be callable");
+        return NULL;
+    }
+    Py_INCREF(func);
+    if (extra)
+	Py_INCREF(extra);
+    else
+	extra = PyTuple_New(0);
+    Py_INCREF(other);
+    data = Py_BuildValue("(OOO)", func, extra, other);
+    signum = gtk_signal_connect_full(PyGtk_Get(obj), name, NULL,
+				     (GtkCallbackMarshal)PyGtk_CallbackMarshal,
+				     data, PyGtk_DestroyNotify, FALSE, TRUE);
     return PyInt_FromLong(signum);
 }
 
@@ -5572,6 +5628,8 @@ static PyObject *_wrap_gdk_threads_leave(PyObject *self, PyObject *args) {
 static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_signal_connect", _wrap_gtk_signal_connect, 1 },
     { "gtk_signal_connect_after", _wrap_gtk_signal_connect_after, 1 },
+    { "gtk_signal_connect_object", _wrap_gtk_signal_connect_object, 1 },
+    { "gtk_signal_connect_object_after", _wrap_gtk_signal_connect_object_after, 1 },
     { "gtk_signal_disconnect_by_data", _wrap_gtk_signal_disconnect_by_data, 1 },
     { "gtk_signal_handler_block_by_data", _wrap_gtk_signal_handler_block_by_data, 1 },
     { "gtk_signal_handler_unblock_by_data", _wrap_gtk_signal_handler_unblock_by_data, 1 },

@@ -32,9 +32,22 @@ static void connect_one(const gchar *handler_name, GtkObject *obj,
 			gpointer user_data) {
     PyObject *callback = user_data;
 
-    if (connect_object)
-	g_warning("connect object not supported -- doing normal connect");
-    Py_INCREF(callback);
+    if (connect_object) {
+	PyObject *func, *extra, *other;
+
+	other = PyGtk_New(connect_object);
+	if (PyTuple_Check(callback)) {
+	    func = PyTuple_GetItem(callback, 0);
+	    extra = PyTuple_GetItem(callback, 1);
+	    Py_INCREF(func);
+	    Py_INCREF(extra);
+	    callback = Py_BuildValue("(OOO)", func, extra, other);
+	} else {
+	    Py_INCREF(callback);
+	    callback = Py_BuildValue("(O()O)", callback, other);
+	}
+    } else
+	Py_INCREF(callback);
 
     gtk_signal_connect_full(obj, signal_name, NULL,
 			    (GtkCallbackMarshal)PyGtk_CallbackMarshal,
@@ -56,9 +69,22 @@ static void connect_many(const gchar *handler_name, GtkObject *obj,
     if (!PyCallable_Check(callback))
 	return;
 
-    if (connect_object)
-	g_warning("connect object not supported -- doing normal connect");
-    Py_INCREF(callback);
+    if (connect_object) {
+	PyObject *func, *extra, *other;
+
+	other = PyGtk_New(connect_object);
+	if (PyTuple_Check(callback)) {
+	    func = PyTuple_GetItem(callback, 0);
+	    extra = PyTuple_GetItem(callback, 1);
+	    Py_INCREF(func);
+	    Py_INCREF(extra);
+	    callback = Py_BuildValue("(OOO)", func, extra, other);
+	} else {
+	    Py_INCREF(callback);
+	    callback = Py_BuildValue("(O()O)", callback, other);
+	}
+    } else
+	Py_INCREF(callback);
 
     gtk_signal_connect_full(obj, signal_name, NULL,
 			    (GtkCallbackMarshal)PyGtk_CallbackMarshal,
