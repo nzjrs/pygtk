@@ -34,6 +34,16 @@ linkend="constructor-gtkmessagedialog">gtk.MessageDialog</link></methodname>
 	<methodparam><parameter
 		       role="keyword">str</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmessagedialog--format-secondary-text">format_secondary_text</link></methodname>
+	<methodparam><parameter
+		       role="keyword">message_format</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmessagedialog--format-secondary-markup">format_secondary_markup</link></methodname>
+	<methodparam><parameter
+		       role="keyword">message_format</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -65,22 +75,26 @@ linkend="constructor-gtkmessagedialog">gtk.MessageDialog</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"message-type"</entry>
-	      <entry>Read-Write-Construct</entry>
-	      <entry>The type of message:
-<literal>gtk.MESSAGE_INFO</literal>, <literal>gtk.MESSAGE_WARNING</literal>,
-<literal>gtk.MESSAGE_QUESTION</literal> or
-<literal>gtk.MESSAGE_ERROR</literal></entry>
-	    </row>
-
-	    <row valign="top">
 	      <entry>"buttons"</entry>
 	      <entry>Write-Construct</entry>
-	      <entry>The buttons shown in the message dialog:
+	      <entry>The buttons shown in the message dialog. One of the
+<link linkend="gtk-buttons-type-constants">Buttons Type Constants</link>:
 <literal>gtk.BUTTONS_NONE</literal>, <literal>gtk.BUTTONS_OK</literal>,
 <literal>gtk.BUTTONS_CLOSE</literal>, <literal>gtk.BUTTONS_CANCEL</literal>,
 <literal>gtk.BUTTONS_YES_NO</literal>,
-<literal>gtk.BUTTONS_OK_CANCEL</literal></entry>
+<literal>gtk.BUTTONS_OK_CANCEL</literal>. Default value:
+<literal>gtk.BUTTONS_NONE</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"message-type"</entry>
+	      <entry>Read-Write-Construct</entry>
+	      <entry>The type of message. One of the
+<link linkend="gtk-message-type-constants">Message Type Constants</link>:
+<literal>gtk.MESSAGE_INFO</literal>, <literal>gtk.MESSAGE_WARNING</literal>,
+<literal>gtk.MESSAGE_QUESTION</literal> or
+<literal>gtk.MESSAGE_ERROR</literal>. Default value:
+<literal>gtk.MESSAGE_INFO</literal></entry>
 	    </row>
 
 	  </tbody>
@@ -105,7 +119,7 @@ linkend="constructor-gtkmessagedialog">gtk.MessageDialog</link></methodname>
 	      <entry>"message-border"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The width of border around the label and image in the
-message dialog.</entry>
+message dialog. Allowed values: >= 0. Default value: 12.</entry>
 	    </row>
 
 	  </tbody>
@@ -163,77 +177,13 @@ linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link>
 saves time.</para>
 
     <para>The <link
-linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link> 
-types are:</para>
-
-    <variablelist>
-      <varlistentry>
-        <term><literal>gtk.MESSAGE_INFO</literal></term>
-        <listitem>
-	  <simpara>Informational message</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.MESSAGE_WARNING</literal></term>
-        <listitem>
-	  <simpara>Nonfatal warning message</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.MESSAGE_QUESTION</literal></term>
-        <listitem>
-	  <simpara>Question requiring a choice</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.MESSAGE_ERROR</literal></term>
-        <listitem>
-	  <simpara>Fatal error message</simpara>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link>
+types are listed in the <link linkend="gtk-message-type-constants">Message
+Type Constants</link>.</para>
 
     <para>A selection of predefined button sets is available for use in a
-message dialog:</para>
-
-    <variablelist>
-      <varlistentry>
-        <term><literal>gtk.BUTTONS_NONE</literal></term>
-        <listitem>
-	  <simpara>no buttons at all</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.BUTTONS_OK</literal></term>
-        <listitem>
-	  <simpara>an OK button</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.BUTTONS_CLOSE</literal></term>
-        <listitem>
-	  <simpara>a Close button</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.BUTTONS_CANCEL</literal></term>
-        <listitem>
-	  <simpara>a Cancel button</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.BUTTONS_YES_NO</literal></term>
-        <listitem>
-	  <simpara>Yes and No buttons</simpara>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><literal>gtk.BUTTONS_OK_CANCEL</literal></term>
-        <listitem>
-	  <simpara>OK and Cancel buttons</simpara>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+message dialog. See the <link linkend="gtk-buttons-type-constants">Buttons
+Type Constants</link>.</para>
 
     <para>See the <link
 linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> reference
@@ -351,6 +301,60 @@ linkend="pango-markup-language">Pango text markup language</link> it will be
 displayed with those attributes. Note the '&lt;', '&gt;' and '&amp;'
 characters must be replaced with '&amp;lt;', '&amp;gt;' and '&amp;amp;'
 respectively to be displayed literally.</para>
+
+    </refsect2>
+
+  <refsect2 id="method-gtkmessagedialog--format-secondary-text">
+    <title>gtk.MessageDialog.format_secondary_text</title>
+
+<programlisting><methodsynopsis language="python">
+    <methodname>format_secondary_text</methodname>
+    <methodparam><parameter role="keyword">message_format</parameter></methodparam>
+  </methodsynopsis></programlisting>
+  <variablelist>
+    <varlistentry>
+          <term><parameter role="keyword">message_format</parameter>&nbsp;:</term>
+          <listitem><simpara>The text to be displayed as the secondary text
+or <literal>None</literal></simpara>.</listitem>
+    </varlistentry>
+  </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>format_secondary_text</methodname>() method sets
+the secondary text of the message dialog to the text specified by
+<parameter>message_format</parameter>. Note that setting a secondary text
+makes the primary text bold, unless you have provided explicit
+markup.</para>
+
+    </refsect2>
+
+  <refsect2 id="method-gtkmessagedialog--format-secondary-markup">
+    <title>gtk.MessageDialog.format_secondary_markup</title>
+
+<programlisting><methodsynopsis language="python">
+    <methodname>format_secondary_markup</methodname>
+    <methodparam><parameter role="keyword">message_format</parameter></methodparam>
+  </methodsynopsis></programlisting>
+  <variablelist>
+    <varlistentry>
+      <term><parameter role="keyword">message_format</parameter>&nbsp;:</term>
+      <listitem><simpara>A string containing the pango markup to use as
+secondary text.</simpara></listitem>
+    </varlistentry>
+  </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>format_secondary_markup</methodname>() method
+sets the secondary text to the markup text specified by
+<parameter>message_format</parameter>. Note that setting a secondary text
+makes the primary text become bold, unless you have provided explicit
+markup.</para>
 
     </refsect2>
 
