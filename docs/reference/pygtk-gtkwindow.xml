@@ -366,7 +366,13 @@ linkend="method-gtkwindow--parse-geometry">parse_geometry</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkwindow--reshow-with-initial-size">reshow_with_initial_size</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--tooltips-get-info-from-tip-window">tooltips_get_info_from_tip_window</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -2937,11 +2943,44 @@ causes most window managers to honor the geometry.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>reshow_with_initial_size</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
 
       <para>The <methodname>reshow_with_initial_size</methodname>() method
 hides the window, then reshows it, resetting the default size and position
 of the window. Used by GUI builders only.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--tooltips-get-info-from-tip-window">
+      <title>gtk.Window.tooltips_get_info_from_tip_window</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>tooltips_get_info_from_tip_window</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing the <link
+	  linkend="class-gtktooltips"><classname>gtk.Tooltips</classname></link>
+	  and <link
+	  linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+	  displayed in the window or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>tooltips_get_info_from_tip_window</methodname>()
+method returns a 2-tuple containing the <link
+linkend="class-gtktooltips"><classname>gtk.Tooltips</classname></link> and
+<link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+displayed in the window. If the window is not displaying tooltips this
+method returns None. This method is mostly intended for use by accessibility
+technologies - applications should have little use for it.</para>
 
     </refsect2>
 
