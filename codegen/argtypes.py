@@ -452,10 +452,11 @@ class BoxedArg(ArgType):
         else:
             info.varlist.add(self.typename, 'ret')
             ret = '&ret'
+            ownsreturn = 0 # of course it can't own a ref to a local var ...
         info.codeafter.append(self.ret_tmpl %
                               { 'typecode': self.typecode,
                                 'ret': ret,
-                                'copy': ownsreturn and 'TRUE' or 'FALSE'})
+                                'copy': ownsreturn and 'FALSE' or 'TRUE'})
 
 class CustomBoxedArg(ArgType):
     # haven't done support for default args.  Is it needed?
