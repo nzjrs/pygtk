@@ -1,0 +1,355 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+
+<refentry id="class-gtkselectiondata">
+  <refnamediv>
+    <refname>gtk.SelectionData</refname>
+    <refpurpose>an object that stores information about a
+selection</refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>Synopsis</title>
+
+    <classsynopsis language="python">
+      <ooclass><classname>gtk.SelectionData</classname></ooclass>
+      <ooclass><classname>gobject.GBoxed</classname></ooclass>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--set">set</link></methodname>
+	<methodparam><parameter
+		       role="keyword">type</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">format</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">data</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--set-text">set_text</link></methodname>
+	<methodparam><parameter role="keyword">str</parameter></methodparam>
+	<methodparam><parameter role="keyword">len</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--get-text">get_text</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--get-targets">get_targets</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--targets-include-text">targets_include_text</link></methodname>
+	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--tree-set-row-drag-data">tree_set_row_drag_data</link></methodname>
+	<methodparam><parameter
+		       role="keyword">tree_model</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">path</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkselectiondata--tree-get-row-drag-data">tree_get_row_drag_data</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+    </classsynopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Attributes</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	<?dbhtml cellpadding="30"?>
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"selection"</entry>
+	      <entry>Read</entry>
+	      <entry>A <link linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> indicating the selection type (e.g. "PRIMARY").</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"target"</entry>
+	      <entry>Read</entry>
+	      <entry>A <link linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> indicating the selection target type (e.g. "TARGETS").</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"type"</entry>
+	      <entry>Read</entry>
+	      <entry>A <link linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> indicating the selection data type (e.g. "STRING").</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"format"</entry>
+	      <entry>Read</entry>
+	      <entry>The unit length of the data in bits (e.g. 8 for a
+string or 32 of an integer).</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"data"</entry>
+	      <entry>Read</entry>
+	      <entry>The data as a string.</entry>
+	    </row>
+
+	</tbody>
+      </tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>A <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link> 
+object is used to store information about a chunk of data associated with a
+selection. In PyGTK the selection data is always a string so the application
+will have to provide functions to convert the data to and from a string to
+support data types other than strings and targets. The string and targets
+types are directly supported using the <link
+linkend="method-gtkselectiondata--set-text"><methodname>set_text</methodname>()</link>, 
+<link
+linkend="method-gtkselectiondata--get-text"><methodname>get_text</methodname>()</link> 
+and <link
+linkend="method-gtkselectiondata--get-targets"><methodname>get_targets</methodname>()</link> 
+methods.</para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Methods</title>
+
+    <refsect2 id="method-gtkselectiondata--set">
+      <title>gtk.SelectionData.set</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set</methodname>
+	  <methodparam><parameter
+			 role="keyword">type</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">format</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">data</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> or string
+that specifies a <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">format</parameter>&nbsp;:</term>
+	  <listitem><simpara>the number of bits in a
+unit</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string containing the
+data</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set</methodname>() method sets the data for a
+selection in the gtkSelectionData object. <parameter>data</parameter> is a
+string contaiining the data to be set; <parameter>format</parameter> is the
+number of bits in a unit of the data (e.g. integer data has a format of 32
+on most systems; string data format is 8); and, <parameter>type</parameter>
+is a <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link> or a
+string that specifies a <link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--set-text">
+      <title>gtk.SelectionData.set_text</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_text</methodname>
+	  <methodparam><parameter
+			 role="keyword">str</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">len</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">str</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">len</parameter>&nbsp;:</term>
+	  <listitem><simpara>the length of <parameter>str</parameter>, or -1
+if <parameter>str</parameter> for the full length.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal>, if the selection was
+successfully set; otherwise, <literal>FALSE</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set_text</methodname>() method sets the contents
+of the selection from the string specified by <parameter>str</parameter>.
+The string is converted to the form specified by the
+<literal>selection_data.target</literal> attribute. This method returns TRUE
+if the selection data was successfully set.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--get-text">
+      <title>gtk.SelectionData.get_text</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_text</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a string containing the converted text, or
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_text</methodname>() method returns the
+contents of the selection data as a string.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--get-targets">
+      <title>gtk.SelectionData.get_targets</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_targets</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a tuple containing a list of targets (<link
+linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>s) or
+<literal>None</literal> if no valid targets are
+available.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_targets</methodname>() method returns a
+tuple containing a list of valid targets for the selection as a list of
+<link linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>s or
+None if there are no valid targets.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--targets-include-text">
+      <title>gtk.SelectionData.targets_include_text</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>targets_include_text</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the selection data
+holds a list of targets, and a suitable target for text is
+included.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>targets_include_text</methodname>() method
+returns <literal>TRUE</literal> if any of the selection data targets can be
+used to provide text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--tree-set-row-drag-data">
+      <title>gtk.SelectionData.tree_set_row_drag_data</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>tree_set_row_drag_data</methodname>
+	  <methodparam><parameter
+			 role="keyword">tree_model</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">path</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">tree_model</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+	  <listitem><simpara>a row in
+<parameter>tree_model</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link> 
+had the proper target type to allow us to set a tree
+row</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>tree_set_row_drag_data</methodname>() method
+sets the selection data of target type <literal>GTK_TREE_MODEL_ROW</literal>
+for the row (specified by <parameter>path</parameter>) in the <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+(specified by tree_model). Normally used in a "<link
+linkend="signal-gtkwidget--drag-data-get">drag-data-get</link>" signal
+handler.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--tree-get-row-drag-data">
+      <title>gtk.SelectionData.tree_get_row_drag_data</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>tree_get_row_drag_data</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a tuple containing a <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> and
+one of its rows.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <methodname>tree_get_row_drag_data</methodname>() method
+returns a tuple containing a <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> and
+a row from that <link
+linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+from selection data of target type <literal>GTK_TREE_MODEL_ROW</literal>.
+Normally called from a "<link
+linkend="signal-gtkwidget--drag-data-received">drag-data-received</link>"
+signal handler. This method can only be used if the selection data
+originates from the same process that's calling this method, because a
+pointer to the tree model is being passed around. In the "<link
+linkend="signal-gtkwidget--drag-data-received">drag-data-received</link>"
+signal handler, you can assume that selection data of type
+<literal>"GTK_TREE_MODEL_ROW"</literal> is from the current process.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+</refentry>

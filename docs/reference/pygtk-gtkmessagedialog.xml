@@ -1,0 +1,321 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+
+<refentry id="class-gtkmessagedialog">
+  <refnamediv>
+    <refname>gtk.MessageDialog</refname>
+    <refpurpose>a convenient message window</refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>Synopsis</title>
+
+    <classsynopsis language="python">
+      <ooclass><classname>gtk.MessageDialog</classname></ooclass>
+      <ooclass><classname><link
+linkend="class-gtkdialog">gtk.Dialog</link></classname></ooclass>
+      <constructorsynopsis language="python">
+	<methodname><link
+linkend="constructor-gtkmessagedialog">gtk.MessageDialog</link></methodname>
+	<methodparam><parameter
+		       role="keyword">parent</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">flags</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">type</parameter><initializer><literal>gtk.MESSAGE_INFO</literal></initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">buttons</parameter><initializer><literal>gtk.BUTTONS_NONE</literal></initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">message_format</parameter><initializer>None</initializer></methodparam>
+      </constructorsynopsis>
+    </classsynopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Ancestry</title>
+
+<synopsis>+-- <link linkend="class-gobject">gobject.GObject</link>
+  +-- <link linkend="class-gtkobject">gtk.Object</link>
+    +-- <link linkend="class-gtkwidget">gtk.Widget</link>
+      +-- <link linkend="class-gtkcontainer">gtk.Container</link>
+        +-- <link linkend="class-gtkbin">gtk.Bin</link>
+          +-- <link linkend="class-gtkwindow">gtk.Window</link>
+            +-- <link linkend="class-gtkdialog">gtk.Dialog</link>
+              +-- <link linkend="class-gtkmessagedialog">gtk.MessageDialog</link>
+</synopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"message-type"</entry>
+	      <entry>Read-Write-Construct</entry>
+	      <entry>The type of message:
+<literal>gtk.MESSAGE_INFO</literal>, <literal>gtk.MESSAGE_WARNING</literal>,
+<literal>gtk.MESSAGE_QUESTION</literal> or
+<literal>gtk.MESSAGE_ERROR</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"buttons"</entry>
+	      <entry>Write-Construct</entry>
+	      <entry>The buttons shown in the message dialog:
+<literal>gtk.BUTTONS_NONE</literal>, <literal>gtk.BUTTONS_OK</literal>,
+<literal>gtk.BUTTONS_CLOSE</literal>, <literal>gtk.BUTTONS_CANCEL</literal>,
+<literal>gtk.BUTTONS_YES_NO</literal>,
+<literal>gtk.BUTTONS_OK_CANCEL</literal></entry>
+	    </row>
+
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Style Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"message-border"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The width of border around the label and image in the
+message dialog.</entry>
+	    </row>
+
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Attributes</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	<?dbhtml cellpadding="30"?>
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"image"</entry>
+	      <entry>Read</entry>
+	      <entry>The stock ID image</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"label"</entry>
+	      <entry>Read</entry>
+	      <entry>The label widget that contains the message
+text.</entry>
+	    </row>
+
+	</tbody>
+      </tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>The <link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link> 
+presents a dialog with an image representing the type of message (Error,
+Question, etc.) alongside some message text. It's simply a convenience
+widget; you could construct the equivalent of <link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link> 
+from <link
+linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> without
+too much effort, but <link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link> 
+saves time.</para>
+
+    <para>The <link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link> 
+types are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><literal>gtk.MESSAGE_INFO</literal></term>
+        <listitem>
+	  <simpara>Informational message</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.MESSAGE_WARNING</literal></term>
+        <listitem>
+	  <simpara>Nonfatal warning message</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.MESSAGE_QUESTION</literal></term>
+        <listitem>
+	  <simpara>Question requiring a choice</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.MESSAGE_ERROR</literal></term>
+        <listitem>
+	  <simpara>Fatal error message</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>A selection of predefined button sets is available for use in a
+message dialog:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><literal>gtk.BUTTONS_NONE</literal></term>
+        <listitem>
+	  <simpara>no buttons at all</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.BUTTONS_OK</literal></term>
+        <listitem>
+	  <simpara>an OK button</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.BUTTONS_CLOSE</literal></term>
+        <listitem>
+	  <simpara>a Close button</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.BUTTONS_CANCEL</literal></term>
+        <listitem>
+	  <simpara>a Cancel button</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.BUTTONS_YES_NO</literal></term>
+        <listitem>
+	  <simpara>Yes and No buttons</simpara>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><literal>gtk.BUTTONS_OK_CANCEL</literal></term>
+        <listitem>
+	  <simpara>OK and Cancel buttons</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>See the <link
+linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> reference
+page for additional methods to be used with the <link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link>.</para>
+
+  </refsect1>
+
+  <refsect1 id="constructor-gtkmessagedialog">
+    <title>Constructor</title>
+
+    <programlisting><constructorsynopsis language="python">
+	<methodname>gtk.MessageDialog</methodname>
+	<methodparam><parameter
+		       role="keyword">parent</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">flags</parameter><initializer>0</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">type</parameter><initializer><literal>gtk.MESSAGE_INFO</literal></initializer></methodparam>
+    <methodparam><parameter
+		   role="keyword">buttons</parameter><initializer><literal>gtk.BUTTONS_NONE</literal></initializer></methodparam>
+    <methodparam><parameter
+		   role="keyword">message_format</parameter><initializer>None</initializer></methodparam> 
+</constructorsynopsis></programlisting>
+    <variablelist>
+      <varlistentry>
+	<term><parameter role="keyword">parent</parameter>&nbsp;:</term>
+	<listitem><simpara>the transient parent, or None if
+none</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter role="keyword">flags</parameter>&nbsp;:</term>
+	<listitem><simpara>the dialog flags - a combination of:
+<literal>gtk.DIALOG_MODAL</literal>,
+<literal>gtk.DIALOG_DESTROY_WITH_PARENT</literal>,
+<literal>gtk.DIALOG_NO_SEPARATOR</literal> or 0 for no
+flags</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	<listitem><simpara>the type of message:
+<literal>gtk.MESSAGE_INFO</literal>, <literal>gtk.MESSAGE_WARNING</literal>,
+<literal>gtk.MESSAGE_QUESTION</literal> or
+<literal>gtk.MESSAGE_ERROR</literal>.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter role="keyword">buttons</parameter>&nbsp;:</term>
+	<listitem><simpara>the predefined set of buttons to use:
+<literal>gtk.BUTTONS_NONE</literal>, <literal>gtk.BUTTONS_OK</literal>,
+<literal>gtk.BUTTONS_CLOSE</literal>, <literal>gtk.BUTTONS_CANCEL</literal>,
+<literal>gtk.BUTTONS_YES_NO</literal>,
+<literal>gtk.BUTTONS_OK_CANCEL</literal></simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter
+role="keyword">message_format</parameter>&nbsp;:</term>
+	<listitem><simpara>a string containing the message text or
+None</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara>a new <link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link> 
+widget</simpara></listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Creates a new <link
+linkend="class-gtkmessagedialog"><classname>gtk.MessageDialog</classname></link>, 
+which is a simple dialog with an icon indicating the dialog type (error,
+warning, etc.) specified by <parameter>type</parameter> and some text
+(<parameter>message_format</parameter>) the user may want to see.
+<parameter>parent</parameter> if specified indicates the transient parent of
+the dialog. The <parameter>flags</parameter> allow the specification special
+dialog characteristics: make the dialog modal
+(<literal>gtk.DIALOG_MODAL</literal>), destroy the dialog when the parent is
+destroyed (<literal>gtk.DIALG_DESTROY_WITH_PARENT</literal>) and remove the
+separator bar (<literal>gtk.DIALOG_NO_SEPARATOR</literal>). When the user
+clicks a button a "response" signal is emitted with response IDs.
+<parameter>buttons</parameter> specifies the set of predefined buttons to
+use: <literal>gtk.BUTTONS_NONE</literal>, <literal>gtk.BUTTONS_OK</literal>,
+<literal>gtk.BUTTONS_CLOSE</literal>, <literal>gtk.BUTTONS_CANCEL</literal>,
+<literal>gtk.BUTTONS_YES_NO</literal>,
+<literal>gtk.BUTTONS_OK_CANCEL</literal>. See <link
+linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> for more
+details.</para>
+
+  </refsect1>
+
+</refentry>
