@@ -6188,3 +6188,29 @@ _wrap_gtk_cell_view_get_cell_renderers(PyGObject *self)
     g_list_free(cell_list);
     return py_cell_list;
 }
+%%
+override gtk_cell_view_get_size_of_row kwargs
+static PyObject *
+_wrap_gtk_cell_view_get_size_of_row(PyGObject *self, PyObject *args,
+                                    PyObject *kwargs)
+{
+    static char *kwlist[] = { "path", NULL };
+    PyObject *py_path;
+    GtkTreePath *path;
+    GtkRequisition requisition;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:GtkCellView.get_size_of_row",
+                                     kwlist, &py_path))
+        return NULL;
+    path = pygtk_tree_path_from_pyobject(py_path);
+    if (!path) {
+        PyErr_SetString(PyExc_TypeError,
+                        "could not convert path to a GtkTreePath");
+        return NULL;
+    }
+    gtk_cell_view_get_size_of_row(GTK_CELL_VIEW(self->obj), path,
+                                  &requisition);
+    gtk_tree_path_free(path);
+    return pyg_boxed_new(GTK_TYPE_REQUISITION, &requisition, TRUE, TRUE);
+}
