@@ -2049,7 +2049,8 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
 		g_object_unref(G_OBJECT(tvc));
 		return NULL;
 	    }
-	    gtk_tree_view_column_add_attribute(tvc, attr, PyInt_AsLong(item));
+	    gtk_tree_view_column_add_attribute(tvc, cell, attr,
+					       PyInt_AsLong(item));
 	}
     }
     self->obj = (GObject *)tvc;

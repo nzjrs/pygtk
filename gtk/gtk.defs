@@ -11883,14 +11883,6 @@
   (parameter (type-and-name const-gchar* tip_private))
 )
 
-(method set_colors
-  (of-object Tooltips (Gtk))
-  (c-name gtk_tooltips_set_colors)
-  (return-type none)
-  (parameter (type-and-name GdkColor* background))
-  (parameter (type-and-name GdkColor* foreground))
-)
-
 (function gtk_tooltips_data_get
   (c-name gtk_tooltips_data_get)
   (return-type GtkTooltipsData*)
@@ -13028,16 +13020,43 @@
   (parameter (type-and-name GtkCellRenderer* cell))
 )
 
-(method get_cell_renderer
+(method pack_start_cell_renderer
   (of-object TreeViewColumn (Gtk))
-  (c-name gtk_tree_view_column_get_cell_renderer)
-  (return-type GtkCellRenderer*)
+  (c-name gtk_tree_view_column_pack_start_cell_renderer)
+  (return-type none)
+  (parameter (type-and-name GtkCellRenderer* cell))
+  (parameter (type-and-name gboolean expand))
+  (parameter (type-and-name gboolean fill))
+  (parameter (type-and-name guint padding))
+)
+
+(method pack_end_cell_renderer
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_pack_end_cell_renderer)
+  (return-type none)
+  (parameter (type-and-name GtkCellRenderer* cell))
+  (parameter (type-and-name gboolean expand))
+  (parameter (type-and-name gboolean fill))
+  (parameter (type-and-name guint padding))
+)
+
+(method clear_cell_renderers
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_clear_cell_renderers)
+  (return-type none)
+)
+
+(method get_cell_renderers
+  (of-object TreeViewColumn (Gtk))
+  (c-name gtk_tree_view_column_get_cell_renderers)
+  (return-type GList*)
 )
 
 (method add_attribute
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_add_attribute)
   (return-type none)
+  (parameter (type-and-name GtkCellRenderer* cell_renderer))
   (parameter (type-and-name gchar* attribute))
   (parameter (type-and-name gint column))
 )
@@ -13046,6 +13065,7 @@
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_set_attributes)
   (return-type none)
+  (parameter (type-and-name GtkCellRenderer* cell_renderer))
   (varargs t)
 )
 
@@ -13053,6 +13073,7 @@
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_set_cell_data_func)
   (return-type none)
+  (parameter (type-and-name GtkCellRenderer* cell_renderer))
   (parameter (type-and-name GtkCellDataFunc func))
   (parameter (type-and-name gpointer func_data))
   (parameter (type-and-name GtkDestroyNotify destroy))
@@ -13062,6 +13083,7 @@
   (of-object TreeViewColumn (Gtk))
   (c-name gtk_tree_view_column_clear_attributes)
   (return-type none)
+  (parameter (type-and-name GtkCellRenderer* cell_renderer))
 )
 
 (method set_visible
@@ -14294,16 +14316,16 @@
   (parameter (type-and-name gboolean setting))
 )
 
-(method set_resizeable
+(method set_resizable
   (of-object Window (Gtk))
-  (c-name gtk_window_set_resizeable)
+  (c-name gtk_window_set_resizable)
   (return-type none)
   (parameter (type-and-name gboolean setting))
 )
 
-(method get_resizeable
+(method get_resizable
   (of-object Window (Gtk))
-  (c-name gtk_window_get_resizeable)
+  (c-name gtk_window_get_resizable)
   (return-type gboolean)
 )
 
