@@ -3186,84 +3186,113 @@
   (parameter (type-and-name GtkUpdateType policy))
 )
 
-(method get_use_opacity
+(method get_has_opacity_control
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_get_use_opacity)
+  (c-name gtk_color_selection_get_has_opacity_control)
   (return-type gboolean)
 )
 
-(method set_use_opacity
+(method set_has_opacity_control
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_set_use_opacity)
+  (c-name gtk_color_selection_set_has_opacity_control)
   (return-type none)
   (parameter (type-and-name gboolean use_opacity))
 )
 
-(method get_use_palette
+(method get_has_palette
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_get_use_palette)
+  (c-name gtk_color_selection_get_has_palette)
   (return-type gboolean)
 )
 
-(method set_use_palette
+(method set_has_palette
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_set_use_palette)
+  (c-name gtk_color_selection_set_has_palette)
   (return-type none)
   (parameter (type-and-name gboolean use_palette))
 )
 
-(method set_color
+(method set_current_color
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_set_color)
+  (c-name gtk_color_selection_set_current_color)
   (return-type none)
-  (parameter (type-and-name gdouble* color))
+  (parameter (type-and-name GdkColor* color))
 )
 
-(method get_color
+(method set_current_alpha
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_get_color)
+  (c-name gtk_color_selection_set_current_alpha)
   (return-type none)
-  (parameter (type-and-name gdouble* color))
+  (parameter (type-and-name guint16 alpha))
 )
 
-(method set_old_color
+(method get_current_color
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_set_old_color)
+  (c-name gtk_color_selection_get_current_color)
   (return-type none)
-  (parameter (type-and-name gdouble* color))
+  (parameter (type-and-name GdkColor* color))
 )
 
-(method get_old_color
+(method get_current_alpha
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_get_old_color)
-  (return-type none)
-  (parameter (type-and-name gdouble* color))
+  (c-name gtk_color_selection_get_current_alpha)
+  (return-type guint16)
 )
 
-(method set_palette_color
+(method set_previous_color
   (of-object ColorSelection (Gtk))
-  (c-name gtk_color_selection_set_palette_color)
+  (c-name gtk_color_selection_set_previous_color)
   (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gdouble* color))
+  (parameter (type-and-name GdkColor* color))
+)
+
+(method set_previous_alpha
+  (of-object ColorSelection (Gtk))
+  (c-name gtk_color_selection_set_previous_alpha)
+  (return-type none)
+  (parameter (type-and-name guint16 alpha))
+)
+
+(method get_previous_color
+  (of-object ColorSelection (Gtk))
+  (c-name gtk_color_selection_get_previous_color)
+  (return-type none)
+  (parameter (type-and-name GdkColor* color))
+)
+
+(method get_previous_alpha
+  (of-object ColorSelection (Gtk))
+  (c-name gtk_color_selection_get_previous_alpha)
+  (return-type guint16)
+)
+
+(method get_palette_size
+  (of-object ColorSelection (Gtk))
+  (c-name gtk_color_selection_get_palette_size)
+  (return-type gint)
 )
 
 (method get_palette_color
   (of-object ColorSelection (Gtk))
   (c-name gtk_color_selection_get_palette_color)
   (return-type gboolean)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
-  (parameter (type-and-name gdouble* color))
+  (parameter (type-and-name gint index))
+  (parameter (type-and-name GdkColor* color))
+)
+
+(method set_palette_color
+  (of-object ColorSelection (Gtk))
+  (c-name gtk_color_selection_set_palette_color)
+  (return-type none)
+  (parameter (type-and-name gint index))
+  (parameter (type-and-name GdkColor* color))
 )
 
 (method unset_palette_color
   (of-object ColorSelection (Gtk))
   (c-name gtk_color_selection_unset_palette_color)
   (return-type none)
-  (parameter (type-and-name gint x))
-  (parameter (type-and-name gint y))
+  (parameter (type-and-name gint index))
 )
 
 (method is_adjusting
@@ -6919,13 +6948,6 @@
   (return-type none)
   (parameter (type-and-name GtkWidget* child))
   (parameter (type-and-name gint position))
-)
-
-(method set_shadow_type
-  (of-object MenuBar (Gtk))
-  (c-name gtk_menu_bar_set_shadow_type)
-  (return-type none)
-  (parameter (type-and-name GtkShadowType type))
 )
 
 
@@ -11505,38 +11527,11 @@
   (parameter (type-and-name GtkToolbarStyle style))
 )
 
-(method set_space_size
-  (of-object Toolbar (Gtk))
-  (c-name gtk_toolbar_set_space_size)
-  (return-type none)
-  (parameter (type-and-name gint space_size))
-)
-
-(method set_space_style
-  (of-object Toolbar (Gtk))
-  (c-name gtk_toolbar_set_space_style)
-  (return-type none)
-  (parameter (type-and-name GtkToolbarSpaceStyle space_style))
-)
-
 (method set_tooltips
   (of-object Toolbar (Gtk))
   (c-name gtk_toolbar_set_tooltips)
   (return-type none)
   (parameter (type-and-name gint enable))
-)
-
-(method set_button_relief
-  (of-object Toolbar (Gtk))
-  (c-name gtk_toolbar_set_button_relief)
-  (return-type none)
-  (parameter (type-and-name GtkReliefStyle relief))
-)
-
-(method get_button_relief
-  (of-object Toolbar (Gtk))
-  (c-name gtk_toolbar_get_button_relief)
-  (return-type GtkReliefStyle)
 )
 
 

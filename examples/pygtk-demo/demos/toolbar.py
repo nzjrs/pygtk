@@ -39,8 +39,6 @@ def set_orient_cb(button, toolbar, orient):
     toolbar.set_orientation(orient)
 def set_style_cb(button, toolbar, style):
     toolbar.set_style(style)
-def set_space_cb(button, toolbar, space):
-    toolbar.set_space_size(space)
 def set_tooltips_cb(button, toolbar, enable):
     toolbar.set_tooltips(enable)
 
@@ -87,16 +85,6 @@ def main():
 
     entry = gtk.GtkEntry()
     toolbar.append_widget(entry, None, None)
-
-    toolbar.append_space()
-
-    button = toolbar.append_item("Small", "Use small spaces",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
-    button.connect("clicked", set_space_cb, toolbar, 5)
-
-    button = toolbar.append_item("Big", "Use big spaces",
-				 None, gtk.GtkPixmap(pix, mask), None, None)
-    button.connect("clicked", set_space_cb, toolbar, 10)
 
     toolbar.append_space()
 

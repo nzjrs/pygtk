@@ -2244,7 +2244,6 @@ ignore
   gtk_radio_menu_item_set_group
   gtk_radio_button_group
   gtk_radio_button_set_group
-  gtk_entry_new
 %%
 ignore gtk_object_new gtk_object_newv gtk_object_query_args
   gtk_object_add_arg_type gtk_object_args_collect gtk_object_arg_get_info
@@ -3640,38 +3639,50 @@ _wrap_gtk_list_remove_items(PyGObject *self, PyObject *args,
 %%
 ignore gtk_list_remove_items_no_unref
 %%
-override gtk_color_selection_set_color kwargs
+override gtk_color_selection_get_current_color
 static PyObject *
-_wrap_gtk_color_selection_set_color(PyGObject *self, PyObject *args,
-				    PyObject *kwargs)
+_wrap_gtk_color_selection_get_current_color(PyGObject *self, PyObject *args)
 {
-    static char *kwlist[] = { "red", "green", "blue", "alpha", NULL };
-    double value[4];
+    GdkColor colour = { 0, };
 
-    value[3] = 1.0;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "ddd|d:GtkColorSelection.set_color",
-				     kwlist, &value[0], &value[1], &value[2],
-				     &value[3]))
-	return NULL;
-    gtk_color_selection_set_color(GTK_COLOR_SELECTION(self->obj), value);
-    Py_INCREF(Py_None);
-    return Py_None;
+    if (!PyArg_ParseTuple(args, ":GtkColorSelection.get_current_color"))
+        return NULL;
+    gtk_color_selection_get_current_color(GTK_COLOR_SELECTION(self->obj),
+					  &colour);
+    return PyGdkColor_New(&colour);
 }
 %%
-override gtk_color_selection_get_color
+override gtk_color_selection_get_previous_color
 static PyObject *
-_wrap_gtk_color_selection_get_color(PyGObject *self, PyObject *args)
+_wrap_gtk_color_selection_get_previous_color(PyGObject *self, PyObject *args)
 {
-    double value[4];
+    GdkColor colour = { 0, };
 
-    if (!PyArg_ParseTuple(args, ":GtkColorSelection.get_color"))
+    if (!PyArg_ParseTuple(args, ":GtkColorSelection.get_previous_color"))
         return NULL;
-    gtk_color_selection_get_color(GTK_COLOR_SELECTION(self->obj), value);
-    if (gtk_color_selection_get_use_opacity(GTK_COLOR_SELECTION(self->obj)))
-        return Py_BuildValue("(dddd)", value[0],value[1],value[2],value[3]);
-    else
-        return Py_BuildValue("(ddd)", value[0], value[1], value[2]);
+    gtk_color_selection_get_previous_color(GTK_COLOR_SELECTION(self->obj),
+					   &colour);
+    return PyGdkColor_New(&colour);
+}
+%%
+override gtk_color_selection_get_palette_color kwargs
+static PyObject *
+_wrap_gtk_color_selection_get_palette_color(PyGObject *self, PyObject *args,
+					    PyObject *kwargs)
+{
+    static char *kwlist[] = { "index", NULL };
+    gint index;
+    GdkColor colour = { 0, };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:GdkColorSelection.get_palette_color",
+				     kwlist, &index))
+	return NULL;
+    if (gtk_color_selection_get_palette_color(GTK_COLOR_SELECTION(self->obj),
+					      index, &colour))
+	return PyGdkColor_New(&colour);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 %%
 override gtk_calendar_get_date
