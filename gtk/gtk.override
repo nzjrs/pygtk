@@ -3722,6 +3722,7 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"block", NULL};
     int block = 1, ret;
+    PyObject *py_ret;
 
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration", kwlist,
 				    &block)) 
@@ -3729,7 +3730,10 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
     pyg_unblock_threads();
     ret = gtk_main_iteration_do(block);
     pyg_block_threads();
-    return PyInt_FromLong(ret);
+
+    py_ret = ret ? Py_True : Py_False;
+    Py_INCREF(py_ret);
+    return py_ret;
 }
 %%
 override gtk_main_iteration_do kwargs
@@ -3738,6 +3742,7 @@ _wrap_gtk_main_iteration_do(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"block", NULL};
     int block = 1, ret;
+    PyObject *py_ret;
 
     if(!PyArg_ParseTupleAndKeywords(args, kwargs, "|i:main_iteration_do",
 				    kwlist, &block)) 
@@ -3745,7 +3750,10 @@ _wrap_gtk_main_iteration_do(PyObject *self, PyObject *args, PyObject *kwargs)
     pyg_unblock_threads();
     ret = gtk_main_iteration_do(block);
     pyg_block_threads();
-    return PyInt_FromLong(ret);
+
+    py_ret = ret ? Py_True : Py_False;
+    Py_INCREF(py_ret);
+    return py_ret;
 }
 %%
 override gtk_quit_add
@@ -7048,6 +7056,7 @@ _wrap_gtk_im_context_filter_keypress(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "key", NULL };
     PyObject *key;
+    PyObject *ret;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "O:GtkIMContext.filter_keypress", kwlist,
@@ -7059,9 +7068,11 @@ _wrap_gtk_im_context_filter_keypress(PyGObject *self, PyObject *args,
 	return NULL;
     }
 
-    return PyInt_FromLong(gtk_im_context_filter_keypress
-			    (GTK_IM_CONTEXT(self->obj),
-			     pyg_boxed_get(key, GdkEventKey)));
+    ret = gtk_im_context_filter_keypress(GTK_IM_CONTEXT(self->obj),
+					 pyg_boxed_get(key, GdkEventKey))
+	? Py_True : Py_False;
+    Py_INCREF(ret);
+    return ret;
 }
 %%
 override gtk_im_context_get_surrounding noargs
@@ -7459,20 +7470,24 @@ override-attr GtkTextAttributes.strikethrough
 static PyObject *
 _wrap_gtk_text_attributes__get_strikethrough(PyObject *self, void *closure)
 {
-    int ret;
+    PyObject *ret;
 
-    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.strikethrough;
-    return PyInt_FromLong(ret);
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.strikethrough
+	? Py_True : Py_False;
+    Py_INCREF(ret);
+    return ret;
 }
 %%
 override-attr GtkTextAttributes.draw_bg
 static PyObject *
 _wrap_gtk_text_attributes__get_draw_bg(PyObject *self, void *closure)
 {
-    int ret;
+    PyObject *ret;
 
-    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.draw_bg;
-    return PyInt_FromLong(ret);
+    ret = pyg_boxed_get(self, GtkTextAttributes)->appearance.draw_bg
+	? Py_True : Py_False;
+    Py_INCREF(ret);
+    return ret;
 }
 %%
 ignore-win32 
