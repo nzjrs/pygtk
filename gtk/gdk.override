@@ -11,6 +11,12 @@ headers
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
 
+#if defined(GDK_WINDOWING_X11)
+#include <gdk/gdkx.h>
+#elif defined(GDK_WINDOWING_WIN32)
+#include <gdk/gdkwin32.h>
+#endif
+
 #ifdef HAVE_NUMPY
 #  include <Numeric/arrayobject.h>
 #endif
@@ -2449,4 +2455,30 @@ _wrap_gdk_devices_list(PyObject *self)
     }
 
     return list;
+}
+%%
+override-attr GdkDrawable.handle
+static PyObject *
+_wrap_gdk_drawable__get_handle(PyGObject *self, void *closure)
+{
+#if defined(GDK_WINDOWING_WIN32)
+    GdkDrawable *drawable = GDK_DRAWABLE(self->obj);
+    return PyLong_FromVoidPtr(GDK_DRAWABLE_HANDLE(drawable));
+#else
+    PyErr_SetString(PyExc_AttributeError, "handle attribute not supported");
+    return NULL;
+#endif
+}
+%%
+override-attr GdkDrawable.xid
+static PyObject *
+_wrap_gdk_drawable__get_xid(PyGObject *self, void *closure)
+{
+#if defined(GDK_WINDOWING_X11)
+    GdkDrawable *drawable = GDK_DRAWABLE(self->obj);
+    return PyLong_FromUnsignedLong(GDK_DRAWABLE_XID(drawable));
+#else
+    PyErr_SetString(PyExc_AttributeError, "xid attribute not supported");
+    return NULL;
+#endif
 }
