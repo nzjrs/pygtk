@@ -534,7 +534,11 @@ _wrap_gdk_color_parse(PyObject *self, PyObject *args, PyObject *kwargs)
                                      &spec))
         return NULL;
 
-    gdk_color_parse (spec, &colour);
+    if (!gdk_color_parse(spec, &colour)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "unable to parse colour specification");
+        return NULL;
+    }
     
     /* pyg_boxed_new handles NULL checking */    
     return pyg_boxed_new (GDK_TYPE_COLOR, &colour, TRUE, TRUE);
