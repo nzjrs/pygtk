@@ -2102,6 +2102,149 @@ _wrap_gtk_tree_selection_get_selected(PyGObject *self, PyObject *args)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_binding_entry_add_signal
+
+static PyObject *
+_wrap_gtk_binding_entry_add_signal(PyGObject *self, PyObject *args)
+{
+    PyObject *first;
+    gint len, i;
+    PyObject *class;
+    guint keyval, modifiers;
+    gchar *signal_name;
+    GType class_type;
+    GtkBindingSet *bset = NULL;
+    GSList *slist = NULL;
+    gchar *errmsg;
+
+    len = PyTuple_Size(args);
+    if (len < 4) {
+	PyErr_SetString(PyExc_TypeError, "binding_entry_add_signal requires at"
+			" least 4 arguments");
+	return NULL;
+    }
+    first = PySequence_GetSlice(args, 0, 4);
+    if (!PyArg_ParseTuple(first, "Oiis:binding_entry_add_signal", &class,
+			  &keyval, &modifiers, &signal_name)) {
+	Py_DECREF(first);
+	return NULL;
+    }
+    Py_DECREF(first);
+
+    class_type = pyg_type_from_object(class);
+    if (class_type == 0)
+	return NULL;
+
+    bset = gtk_binding_set_by_class(gtk_type_class(class_type));
+
+    /* extra args */
+    if ((len-4)%2) {
+	PyErr_SetString(PyExc_ValueError,
+			"GtkBindingSet.add_signal requires an even number"
+			" of parameter pairs following the first four args");
+	return NULL;
+    }
+    for (i=4; i < len; i+=2) {
+	PyObject *item;
+	GType arg_type;
+	GtkBindingArg *arg = NULL;
+
+	item = PyTuple_GET_ITEM(args, i);
+	arg_type = pyg_type_from_object(item);
+	if (!arg_type) {
+	    PyErr_Clear();
+	    PyErr_SetString(PyExc_TypeError,
+			    "GtkBindingSet.add_signal parameter types"
+			    " must be int");
+	    goto arg_error;
+	}
+	arg = g_new0 (GtkBindingArg, 1);
+	slist = g_slist_prepend(slist, arg);
+    
+	arg->arg_type = arg_type;
+	switch (GTK_FUNDAMENTAL_TYPE(arg->arg_type)) {
+	case GTK_TYPE_CHAR:
+	case GTK_TYPE_UCHAR:
+	case GTK_TYPE_INT:
+	case GTK_TYPE_UINT:
+	case GTK_TYPE_BOOL:
+	case GTK_TYPE_ENUM:
+	case GTK_TYPE_FLAGS:
+	case GTK_TYPE_LONG:
+	case GTK_TYPE_ULONG:
+	    arg->arg_type = GTK_TYPE_LONG;
+	    item = PyTuple_GET_ITEM(args, i+1);
+	    if (!PyInt_Check(item)) {
+		errmsg = g_strdup_printf("GtkBindingSet.add_signal "
+					 "arg[%u] must be int", i+1);
+		PyErr_SetString(PyExc_TypeError, errmsg);
+		g_free(errmsg);
+		goto arg_error;
+	    }
+	    arg->d.long_data = (glong)PyInt_AsLong(item);
+	    break;
+	case GTK_TYPE_FLOAT:
+	case GTK_TYPE_DOUBLE:
+	    arg->arg_type = GTK_TYPE_DOUBLE;
+	    item = PyTuple_GET_ITEM(args, i+1);
+	    if (!PyFloat_Check(item)) {
+		errmsg = g_strdup_printf("GtkBindingSet.add_signal "
+					 "arg[%u] must be float", i+1);
+		PyErr_SetString(PyExc_TypeError, errmsg);
+		g_free(errmsg);
+		goto arg_error;
+	    }
+	    arg->d.long_data = (gdouble)PyFloat_AsDouble(item);
+	    break;
+	case GTK_TYPE_STRING:
+	    arg->arg_type = GTK_TYPE_STRING;
+	    if (arg->arg_type != GTK_TYPE_IDENTIFIER)
+		arg->arg_type = GTK_TYPE_STRING;
+	    item = PyTuple_GET_ITEM(args, i+1);
+	    if (!PyString_Check(item)) {
+		errmsg = g_strdup_printf("GtkBindingSet.add_signal arg[%u] "
+					 "must be non-empty string", i+1);
+		PyErr_SetString(PyExc_TypeError, errmsg);
+		g_free(errmsg);
+		goto arg_error;
+	    }
+	    arg->d.string_data = (gchar*)PyString_AsString(item);
+	    if (!arg->d.string_data) {
+		errmsg = g_strdup_printf("GtkBindingSet.add_signal arg[%u] "
+					 "must be non-empty string", i+1);
+		PyErr_SetString(PyExc_TypeError, errmsg);
+		g_free(errmsg);
+		goto arg_error;
+	    }
+	    break;
+	default:
+	    errmsg = g_strdup_printf("GtkBindingSet.add_signal unsupported "
+				     "type %10s for arg[%u]",
+				     gtk_type_name(arg->arg_type), i+1);
+	    PyErr_SetString(PyExc_TypeError, errmsg);
+	    g_free(errmsg);
+	    goto arg_error;
+	} /* switch */
+    }
+
+    slist = g_slist_reverse (slist);
+    gtk_binding_entry_add_signall (bset, keyval,modifiers, signal_name, slist);
+
+    g_slist_foreach(slist, (GFunc)g_free, NULL);
+    g_slist_free(slist);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+arg_error:
+    if (slist) {
+	g_slist_foreach(slist, (GFunc)g_free, NULL);
+	g_slist_free(slist);
+    }
+    return NULL;
+}
+
 /* -------------- haven't updated stuff below this line -------------- */
 %%
 ignore-glob
@@ -2121,12 +2264,15 @@ ignore-glob
   gtk_accelerator_*
   gtk_target_list_*
   gtk_pattern_*
-  gtk_binding_*
   gtk_gc_*
   gtk_signal_*
   gtk_tree_path_*
 %%
 ignore
+  gtk_binding_set_new
+  gtk_binding_set_by_class
+  gtk_binding_set_find
+  gtk_binding_set_clear
   gtk_init
   gtk_init_check
   gtk_exit
