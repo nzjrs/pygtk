@@ -3668,7 +3668,6 @@ ignore
   gtk_range_trough_click
   gtk_range_default_htrough_click
   gtk_range_default_vtrough_click
-  gtk_tooltips_data_get
   gtk_type_check_object_cast
   gtk_type_check_class_cast
   gtk_type_register_enum
@@ -7866,6 +7865,33 @@ _wrap_gtk_text_view_set_border_window_size(PyGObject *self, PyObject *args,
 	
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_tooltips_data_get kwargs
+static PyObject *
+_wrap_gtk_tooltips_data_get(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "widget", NULL };
+    PyGObject *widget;
+    GtkTooltipsData *data;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O!:GtkTooltips.data_get",
+				     kwlist, &PyGtkWidget_Type, &widget))
+        return NULL;
+
+    data = gtk_tooltips_data_get(GTK_WIDGET(widget->obj));
+
+    if (!data) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+
+    return Py_BuildValue("OOss",
+			 pygobject_new((GObject *)data->tooltips),
+			 pygobject_new((GObject *)data->widget),
+			 data->tip_text,
+			 data->tip_private);
 }
 %%
 ignore-win32
