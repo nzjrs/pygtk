@@ -112,6 +112,7 @@ ignore
   gtk_file_system_error_quark
   gtk_file_paths_copy
   gtk_file_paths_free
+  gtk_font_button_new_with_font
   gtk_gc_get
   gtk_gc_release
   gtk_get_current_event
@@ -4646,4 +4647,29 @@ _wrap_gtk_file_filter_add_custom(PyGObject *self, PyObject *args)
 
     Py_INCREF(Py_None);
     return Py_None;
+}
+%%
+override gtk_font_button_new kwargs
+static int
+_wrap_gtk_font_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "fontname", NULL };
+    gchar * fontname = NULL;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|z:GtkFontButton.__init__",
+				     kwlist, &fontname))
+        return -1;
+
+    if (fontname == NULL)
+	self->obj = (GObject *)gtk_font_button_new();
+    else
+	self->obj = (GObject *)gtk_font_button_new_with_font(fontname);
+ 
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+			"could not create GtkFontButton object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
