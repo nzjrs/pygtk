@@ -834,6 +834,24 @@ _wrap_gtk_main_iteration(PyObject *self, PyObject *args, PyObject *kwargs)
     return py_ret;
 }
 %%
+override gtk_main_quit args
+static PyObject *
+_wrap_gtk_main_quit(PyObject *self, PyObject *args)
+{
+    /* args is just ignored, so obj.connect(signal, func) always works */
+
+    /* Sanity check to make sure we're in a mainloop */
+    if (gtk_main_level() == 0) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"called outside of a mainloop");
+	return NULL;
+    }
+	
+    gtk_main_quit();
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_main_iteration_do kwargs
 static PyObject *
 _wrap_gtk_main_iteration_do(PyObject *self, PyObject *args, PyObject *kwargs)
