@@ -55,7 +55,7 @@ box3.set_border_width(10)
 box1.pack_start(box3)
 box3.show()
 
-button = gtk.Button(label='close')
+button = gtk.Button(stock=gtk.STOCK_CLOSE)
 box3.pack_start(button)
 button.connect('clicked', destroy)
 button.show()

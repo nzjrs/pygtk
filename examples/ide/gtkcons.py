@@ -153,7 +153,7 @@ class Console(gtk.VBox):
         self.inputbox.pack_start(self.prompt, fill=False, expand=False)
         self.prompt.show()
 
-        self.closer = gtk.Button("Close")
+        self.closer = gtk.Button(stock=gtk.STOCK_CLOSE)
         self.closer.connect("clicked", self.quit)
         self.inputbox.pack_end(self.closer, fill=False, expand=False)
         self.closer.show()

@@ -6,7 +6,7 @@ import atk
 win = gtk.Window()
 win.connect('destroy', lambda win: gtk.main_quit())
 
-button = gtk.Button('Quit')
+button = gtk.Button(stock=gtk.STOCK_QUIT)
 button.connect('pressed', lambda button: gtk.main_quit())
 atk_button = button.get_accessible()
 atk_button.set_description('Be careful, clicking this button will exit')

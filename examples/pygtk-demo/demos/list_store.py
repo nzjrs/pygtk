@@ -107,7 +107,7 @@ class ListStoreDemo(gtk.Window):
         renderer = gtk.CellRendererToggle()
         renderer.connect('toggled', self.fixed_toggled, model)
 
-        column = gtk.TreeViewColumn('Fixed?', renderer, active=COLUMN_FIXED)
+        column = gtk.TreeViewColumn('Fixed', renderer, active=COLUMN_FIXED)
 
         # set this column to a fixed sizing(of 50 pixels)
         column.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)

@@ -4,7 +4,8 @@ import gobject, gtk
 # string taken from pango examples directory and converted from utf8
 # to python unicode string escapes
 hellos = u'''\u03A0\u03B1\u03BD\u8A9E
-This is a list of ways to say hello in various languages. Its purpose is to illustrate a number of scripts.
+This is a list of ways to say hello in various languages. 
+The purpose of it is to illustrate a number of scripts.
 
 (Converted into UTF-8)
 

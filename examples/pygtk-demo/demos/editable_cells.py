@@ -63,11 +63,11 @@ class EditableCellsDemo(gtk.Window):
         hbox = gtk.HBox(True, 4)
         vbox.pack_start(hbox, False, False)
 
-        button = gtk.Button("Add item")
+        button = gtk.Button(stock=gtk.STOCK_ADD)
         button.connect("clicked", self.on_add_item_clicked, model)
         hbox.pack_start(button)
 
-        button = gtk.Button("Remove item")
+        button = gtk.Button(stock=gtk.STOCK_REMOVE)
         button.connect("clicked", self.on_remove_item_clicked, treeview)
         hbox.pack_start(button)
 

@@ -55,7 +55,7 @@ class DragAndDropDemo(gtk.Window):
         self.trashcan_closed, self.trashcan_closed_mask = \
             create_pixmap(self, trashcan_closed_xpm)
 
-        label = gtk.Label('Drop Here!\n')
+        label = gtk.Label('Drop to Trashcan!\n')
         label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
                 gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
         label.connect('drag_data_received', self.label_drag_data_received)
@@ -77,7 +77,7 @@ class DragAndDropDemo(gtk.Window):
         image.connect('drag_drop', self.target_drag_drop)
         image.connect('drag_data_received', self.target_drag_data_received)
 
-        b = gtk.Button('Drag Here\n')
+        b = gtk.Button('Drag from Here\n')
         b.drag_source_set(gtk.gdk.BUTTON1_MASK | gtk.gdk.BUTTON3_MASK,
                   target, gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
         b.drag_source_set_icon(self.get_colormap(), self.drag_icon, self.drag_mask)

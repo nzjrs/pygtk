@@ -146,7 +146,7 @@ def main():
     drag_icon = gtk.gdk.pixbuf_new_from_xpm_data(drag_icon_xpm)
     trashcan_open = gtk.gdk.pixbuf_new_from_xpm_data(trashcan_open_xpm)
     trashcan_closed = gtk.gdk.pixbuf_new_from_xpm_data(trashcan_closed_xpm)
-    label = gtk.Label('Drop Here!\n')
+    label = gtk.Label('Drop on Trashcan!\n')
     label.drag_dest_set(gtk.DEST_DEFAULT_ALL, target[:-1],
                         gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
     label.connect('drag_data_received', label_drag_data_received)
@@ -168,7 +168,7 @@ def main():
     image.connect('drag_drop', target_drag_drop)
     image.connect('drag_data_received', target_drag_data_received)
 
-    b = gtk.Button('Drag Here\n')
+    b = gtk.Button('Drag from Here\n')
     b.drag_source_set(gtk.gdk.BUTTON1_MASK|gtk.gdk.BUTTON3_MASK, target,
                       gtk.gdk.ACTION_COPY|gtk.gdk.ACTION_MOVE)
     b.drag_source_set_icon_pixbuf(drag_icon)

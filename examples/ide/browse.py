@@ -101,7 +101,7 @@ class BrowseWindow(gtk.Window):
         box2.set_border_width(10)
         box.pack_start(box2, expand=False)
         box2.show()
-        button = gtk.Button("Close")
+        button = gtk.Button(stock=gtk.STOCK_CLOSE)
         box2.pack_start(button)
         button.set_flags(gtk.CAN_DEFAULT)
         button.grab_default()
