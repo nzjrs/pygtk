@@ -2747,28 +2747,18 @@ _wrap_gtk_dialog_add_buttons(PyGObject *self, PyObject *args)
 			"must pass an even number of arguments");
 	return NULL;
     }
+    
     for (i = 0; i < len; i+= 2) {
-	PyObject *py_text = PyTuple_GetItem(args, i);
-	PyObject *py_resp = PyTuple_GetItem(args, i + 1);
+	PyObject *curr_args = PyTuple_GetSlice(args, i, i + 2);
 	gchar *text;
-	gint resp;
-
-	text = PyString_AsString(py_text);
-	if (!text) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "button texts must be strings");
+	gint response_id;
+	
+	if (!PyArg_ParseTuple(curr_args, "si", &text, &response_id))
 	    return NULL;
-	}
-	resp = PyInt_AsLong(py_resp);
-	if (!resp) {
-	    PyErr_Clear();
-	    PyErr_SetString(PyExc_TypeError,
-			    "button response codes must be integers");
-	    return NULL;
-	}
-	gtk_dialog_add_button(dialog, text, resp);
+	
+	gtk_dialog_add_button(dialog, text, response_id);
     }
+    
     Py_INCREF(Py_None);
     return Py_None;
 }
