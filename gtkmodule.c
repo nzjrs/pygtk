@@ -1892,7 +1892,7 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key)
 	    gdk_window_get_deskrelative_origin(win, &x, &y);
 	    return Py_BuildValue("(ii)", x, y);
 	}
-	if (!strcmp(key, "origin")) {
+	if (!strcmp(key, "root_origin")) {
 	    gint x, y;
 	    gdk_window_get_root_origin(win, &x, &y);
 	    return Py_BuildValue("(ii)", x, y);
@@ -5927,12 +5927,18 @@ static PyObject *_wrap_gdk_color_alloc(PyObject *self, PyObject *args) {
 }
 
 static PyObject *_wrap_gdk_color_new(PyObject *self, PyObject *args) {
+    glong red, blue, green;
     GdkColor gdk_color;
     
-    if (!PyArg_ParseTuple(args, "hhhl:gdk_color_new", 
-			  &(gdk_color.red), &(gdk_color.green),
-			  &(gdk_color.blue), &(gdk_color.pixel)))
-      return NULL;
+    if (!PyArg_ParseTuple(args, "llll:gdk_color_new", 
+			  &red, &green, blue, &(gdk_color.pixel)))
+	return NULL;
+
+    g_warning("you should be using GdkColormap.alloc() to allocate colours");
+
+    gdk_color.red = red;
+    gdk_color.blue = blue;
+    gdk_color.green = green;
 
     return PyGdkColor_New(&gdk_color);
 }
@@ -5940,11 +5946,18 @@ static PyObject *_wrap_gdk_color_new(PyObject *self, PyObject *args) {
 #ifdef WITH_XSTUFF
 static PyObject *_wrap_gdk_window_foreign_new(PyObject *self, PyObject *args) {
     guint32 winid;
+    GdkWindow *window;
 
     if (!PyArg_ParseTuple(args, "i:gdk_window_foreign_new", &winid))
 	return NULL;
-    return PyGdkWindow_New(gdk_window_foreign_new(winid));
+
+    window = gdk_window_foreign_new(winid);
+    if (window)
+	return PyGdkWindow_New(window);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
+
 static PyObject *_wrap_gdk_get_root_win(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args, ":gdk_get_root_win"))
 	return NULL;

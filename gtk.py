@@ -1209,6 +1209,7 @@ class GtkCList(GtkContainer):
 			'focus_row':_gtk.gtk_clist_get_focus_row,
 			'columns': _gtk.gtk_clist_get_columns,
 			'rows':_gtk.gtk_clist_get_rows,
+			'row_height':_gtk.gtk_clist_get_row_height,
 		}
 		if attrs.has_key(attr):
 			return attrs[attr](self._o)

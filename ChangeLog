@@ -1,3 +1,18 @@
+2001-12-23  James Henstridge  <james@daa.com.au>
+
+	* gtkmodule.c (PyGdkWindow_GetAttr): s/origin/root_origin/ typo
+	(from bug #62026).
+	(_wrap_gdk_color_new): fix up short/int handling for color values.
+	Also added a warning that people should be using
+	GdkColormap.alloc() instead.  (fixes bug #62464).
+	(_wrap_gdk_window_foreign_new): check for NULL return from
+	gdk_window_foreign_new(). (fixes bug #65906).
+
+	* gtk.py (GtkCList.__getattr__): add row_height handler here.
+
+	* generate/gtklists.defs (GtkCList): add row_height field (from
+	bug #60691).
+
 2001-11-28  James Henstridge  <james@daa.com.au>
 
 	* generate/generate.py (FunctionDefsParser.define_func): special
