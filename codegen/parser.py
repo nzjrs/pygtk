@@ -66,6 +66,13 @@ class DefsParser(IncludeParser):
 	for func in self.functions:
 	    func.write_defs(fp)
 
+    def find_object(self, c_name):
+        for obj in self.objects:
+            if obj.c_name == c_name:
+                return obj
+        else:
+            raise ValueError, 'object not found'
+
     def find_constructor(self, obj, overrides):
         for func in self.functions:
             if isinstance(func, FunctionDef) and \
