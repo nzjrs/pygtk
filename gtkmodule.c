@@ -1946,7 +1946,7 @@ PyGdkAtom_Repr(PyGdkAtom_Object *self) {
   char buf[256];
   if (!self->name) self->name = gdk_atom_name(self->atom);
   g_snprintf(buf, 256, "<GdkAtom 0x%lx = '%s'>", (unsigned long)self->atom,
-	     self->name);
+	     self->name?self->name:"(null)");
   return PyString_FromString(buf);
 }
 
@@ -1968,9 +1968,11 @@ PyGdkAtom_Coerce(PyObject **self, PyObject **other) {
   } else if (PyString_Check(*other)) {
     if (!old->name)
       old->name = gdk_atom_name(old->atom);
-    *self = PyString_FromString(old->name);
-    Py_INCREF(*other);
-    return 0;
+    if (old->name) {
+      *self = PyString_FromString(old->name);
+      Py_INCREF(*other);
+      return 0;
+    }
   }
   return 1;  /* don't know how to convert */
 }
@@ -2008,7 +2010,10 @@ PyGdkAtom_Hex(PyGdkAtom_Object *self) {
 static PyObject *
 PyGdkAtom_Str(PyGdkAtom_Object *self) {
   if (!self->name) self->name = gdk_atom_name(self->atom);
-  return PyString_FromString(self->name);
+  if (self->name)
+    return PyString_FromString(self->name);
+  Py_INCREF(Py_None);
+  return Py_None;
 }
 
 static PyNumberMethods PyGdkAtom_Number = {
@@ -3296,13 +3301,27 @@ static PyObject *_wrap_gtk_main_iteration(PyObject *self, PyObject *args) {
 
     if(!PyArg_ParseTuple(args,"|i:gtk_main_iteration", &block)) 
         return NULL;
+    GDK_THREADS_LEAVE();
     PyGTK_UNBLOCK_THREADS
     ret = gtk_main_iteration_do(block);
     PyGTK_BLOCK_THREADS
+    GDK_THREADS_ENTER();
 #ifdef WITH_THREAD    
     g_assert(_blockcount == 1);
     _blockcount = 1;
 #endif
+    return PyInt_FromLong(ret);
+}
+
+static PyObject *_wrap_gtk_events_pending(PyObject *self, PyObject *args) {
+    int ret;
+    if (!PyArg_ParseTuple(args, ":gtk_events_pending"))
+        return NULL;
+    GDK_THREADS_LEAVE();
+    PyGTK_UNBLOCK_THREADS
+    ret = gtk_events_pending();
+    PyGTK_BLOCK_THREADS
+    GDK_THREADS_ENTER();
     return PyInt_FromLong(ret);
 }
 
@@ -5592,6 +5611,7 @@ static PyMethodDef _gtkmoduleMethods[] = {
     { "gtk_init", _wrap_gtk_init, 1 },
     { "gtk_main", _wrap_gtk_main, 1 },
     { "gtk_main_iteration", _wrap_gtk_main_iteration, 1 },
+    { "gtk_events_pending", _wrap_gtk_events_pending, 1 },
     { "gtk_timeout_add", _wrap_gtk_timeout_add, 1 },
     { "gtk_idle_add", _wrap_gtk_idle_add, 1 },
     { "gtk_idle_add_priority", _wrap_gtk_idle_add_priority, 1 },

@@ -1,3 +1,20 @@
+1999-07-12  James Henstridge  <james@daa.com.au>
+
+	* gtk.py: fixed a few bugs reported by Ville Lauriki.
+
+	* generate/gtkmenus.defs (gtk_item_factory_add_foreign): fix a typo.
+
+	* gtkmodule.c: fixed problems if gdk_atom_name returns NULL.
+	
+	(_wrap_gtk_main_iteration, _wrap_gtk_events_pending): added
+	GDK_THREADS_LEAVE() and GDK_THREADS_ENTER() calls round these
+	functions.  Without this, it deadlocks if threads are enabled.
+
+	* generate/gtklists.defs (GtkTreeItem): added wrapper for
+	treeitem->subtree attribute.
+
+	* pyglade/build.py (text_new): small fix.
+
 1999-05-19  James Henstridge  <james@daa.com.au>
 
 	* NEWS: added news about changes in this version.

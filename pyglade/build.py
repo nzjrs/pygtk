@@ -237,8 +237,7 @@ def entry_new(node):
 	return ent
 def text_new(node):
 	text = GtkText()
-	if not node.get_bool('editable', TRUE):
-		text.get_editable(FALSE)
+	text.set_editable(node.get_bool('editable', FALSE))
 	t = node.get('text', '')
 	if t:
 		text.insert_text(t)

@@ -47,6 +47,10 @@ class GtkObject:
 	def __setitem__(self, key, v):
 		if hasattr(v, '_o') and type(v._o) == _gtk.GtkObjectType:
 			v = v._o
+		elif hasattr(v, '_ag') and type(v._ag)==_gtk.GtkAccelGroupType:
+			v = v._ag
+		elif hasattr(v, '_im'):
+			v = v._im
 		_gtk.gtk_object_set(self._o, {key: v});
 	def __cmp__(self, other):
 	        if hasattr(other, '_o'):
@@ -110,9 +114,13 @@ class GtkObject:
 			for i in range(len(args)):
 				if type(args[i]) == _gtk.GtkObjectType:
 					a[i] = _obj2inst(args[i])
+				elif type(args[i]) == _gtk.GtkAccelGroupType:
+					a[i] = GtkAccelGroup(_obj=args[i])
 			a = tuple(a)
 			ret = apply(self.func, a)
 			if hasattr(ret, '_o'): ret = ret._o
+			elif hasattr(ret, '_ag'): ret = ret._ag
+			elif hasattr(ret, '_im'): ret = ret._im
 			return ret
 	def connect(self, name, f, *extra):
 		callback = self.__cnv(f)
@@ -137,6 +145,7 @@ class GtkObject:
 		for i in args:
 			if hasattr(i, '_o'): params.append(i._o)
 			elif hasattr(i, '_ag'): params.append(i._ag)
+			elif hasattr(i, '_im'): params.append(i._im)
 			else: params.append(i)
 		return _gtk.gtk_signal_emitv_by_name(self._o,signal,params)
 	def emit_stop_by_name(self, sig):
@@ -165,7 +174,7 @@ class GtkAdjustment(GtkData):
 		'page_increment': _gtk.gtk_adjustment_get_page_increment,
 		'page_size': _gtk.gtk_adjustment_get_page_size
 		}
-		if attr in attrs.keys():
+		if attrs.has_key(attr):
 			return attrs[attr](self._o)
 		return GtkData.__getattr__(self, attr)
 	def set_value(self, value):
@@ -752,6 +761,13 @@ class GtkTreeItem(GtkItem):
 			self._o = _gtk.gtk_tree_item_new()
 		else:
 			self._o = _gtk.gtk_tree_item_new_with_label(label)
+	def __getattr__(self, attr):
+		attrs = {
+			'subtree': _gtk.gtk_tree_item_get_subtree,
+			}
+		if attrs.has_key(attrs):
+			return attrs[attr](self._o)
+		return GtkItem.__getattr__(self, attr)
 	def set_subtree(self, subtree):
 		_gtk.gtk_tree_item_set_subtree(self._o, subtree._o)
 	def select(self, obj=None):
@@ -774,7 +790,7 @@ class GtkViewport(GtkBin):
 		self._o = _gtk.gtk_viewport_new(ha, va)
 	def get_hadjustment(self):
 		return _obj2inst(_gtk.gtk_viewport_get_hadjustment(self._o))
-	def get_vdjustment(self):
+	def get_vadjustment(self):
 		return _obj2inst(_gtk.gtk_viewport_get_vadjustment(self._o))
 	def set_hadjustment(self, ha):
 		_gtk.gtk_viewport_set_hadjustment(self._o, ha._o)
@@ -962,8 +978,6 @@ class GtkBox(GtkContainer):
 	def set_child_packing(self, child, expand, fill, padding, pack_type):
 		_gtk.gtk_box_set_child_packing(self._o, child._o, expand, fill,
 					       padding, pack_type)
-	def reorder_child(self, child, pos):
-		_gtk.gtk_box_reorder_child(self._o, child._o, pos)
 
 class GtkHBox(GtkBox):
 	get_type = _gtk.gtk_hbox_get_type
