@@ -3267,3 +3267,20 @@ _wrap_gtk_tooltips_data_get(PyGObject *self, PyObject *args, PyObject *kwargs)
 			 data->tip_private);
 }
 %%
+override gtk_accelerator_parse kwargs
+static PyObject *
+_wrap_gtk_accelerator_parse(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "accelerator", NULL };
+    gchar *accel;
+    guint keyval;
+    GdkModifierType modifier;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:Gtk.accelerator_parse",
+				     kwlist, &accel))
+        return NULL;
+
+    gtk_accelerator_parse((const gchar *)accel, &keyval, &modifier);
+
+    return Py_BuildValue("ii", keyval, modifier);
+}
