@@ -14,7 +14,7 @@ PYD_POSTFIX = _d
 EXTRACFLAGS = -I$(PYTHON)\include
 MODULE_EXT = pyd
 
-MODULES = _gtk # libglade gtkgl
+MODULES = _gtk # libglade
 
 sub-all: 
 	for %d in ($(MODULES)) do nmake -nologo -f makefile.msc sub-one THIS=%d
@@ -33,7 +33,6 @@ all : \
 gtk.c : gtk.defs gtk.override
 gdk.c : gdk.defs gdk.override
 libglade.c : libglade.defs libglade.override
-gtkgl.c : gtkgl.defs gtkgl.override
 
 .defs.c :
 	 $(PYTHON)\python ../codegen/codegen.py \
@@ -91,4 +90,3 @@ extra-clean:
 	del gtk.c
 	del gdk.c
 	del libglade.c
-	del gtkgl.c
