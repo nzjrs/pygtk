@@ -11,9 +11,26 @@
 /* define this to print out debug messages */
 #undef DEBUG_TREE_MODEL
 
+#ifndef _
+#  define _(s) (s)
+#endif
+
+enum {
+    PROP_LEAK_REFERENCES = 1
+};
+
 static void pygtk_generic_tree_model_class_init(PyGtkGenericTreeModelClass *klass);
 static void pygtk_generic_tree_model_init(PyGtkGenericTreeModel *self);
 static void pygtk_generic_tree_model_iface_init(GtkTreeModelIface *iface);
+static void pygtk_generic_tree_model_set_property (GObject *object,
+						   guint property_id,
+						   const GValue *value,
+						   GParamSpec *pspec);
+static void pygtk_generic_tree_model_get_property (GObject *object,
+						   guint property_id,
+						   GValue *value,
+						   GParamSpec *pspec);
+
 
 GType
 pygtk_generic_tree_model_get_type(void)
@@ -51,6 +68,21 @@ pygtk_generic_tree_model_get_type(void)
 static void
 pygtk_generic_tree_model_class_init(PyGtkGenericTreeModelClass *klass)
 {
+    GObjectClass *object_class = (GObjectClass*) klass;
+
+    object_class->get_property = pygtk_generic_tree_model_get_property;
+    object_class->set_property = pygtk_generic_tree_model_set_property;
+ 
+    g_object_class_install_property (object_class,
+				     PROP_LEAK_REFERENCES,
+				     g_param_spec_boolean ("leak_references",
+					_("Leak references"),
+					_("Enable referencing iterator "
+	"objects (this will cause a memory leak or at least a reference "
+	"counting leak). You might need it though, if you return newly "
+	"created objects."),
+					TRUE,
+					G_PARAM_READWRITE));
 }
 
 static guint pygtk_generic_tree_model_get_flags(GtkTreeModel *tree_model);
@@ -102,7 +134,38 @@ pygtk_generic_tree_model_iface_init(GtkTreeModelIface *iface)
 static void
 pygtk_generic_tree_model_init(PyGtkGenericTreeModel *self)
 {
+    self->leak_references = TRUE;
 }
+
+static void
+pygtk_generic_tree_model_set_property (GObject *object, guint property_id,
+				       const GValue *value, GParamSpec *pspec)
+{
+    switch (property_id) {
+    case PROP_LEAK_REFERENCES:
+	PYGTK_GENERIC_TREE_MODEL (object)->leak_references = g_value_get_boolean (value);
+	break;
+    default:
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	break;
+    }
+ }
+ 
+static void
+pygtk_generic_tree_model_get_property (GObject *object, guint property_id,
+				       GValue *value, GParamSpec *pspec)
+{
+    switch (property_id) {
+    case PROP_LEAK_REFERENCES:
+	g_value_set_boolean (value,
+			    PYGTK_GENERIC_TREE_MODEL (object)->leak_references);
+	break;
+    default:
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	break;
+    }
+}
+
 
 PyGtkGenericTreeModel *
 pygtk_generic_tree_model_new(void)
@@ -224,6 +287,8 @@ pygtk_generic_tree_model_get_iter(GtkTreeModel *tree_model,
     if (py_ret) {
 	if (py_ret != Py_None) {
 	    iter->user_data = py_ret;
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+		Py_DECREF((PyObject *)iter->user_data);
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -280,6 +345,7 @@ pygtk_generic_tree_model_get_value(GtkTreeModel*tree_model, GtkTreeIter *iter,
 
 #ifdef DEBUG_TREE_MODEL
     g_message("get_value(%p, %d)", iter, column);
+    _PyObject_Dump (iter->user_data);
 #endif
     /* init value to column type */
     g_value_init(value, pygtk_generic_tree_model_get_column_type(tree_model, column));
@@ -316,6 +382,8 @@ pygtk_generic_tree_model_iter_next(GtkTreeModel *tree_model, GtkTreeIter *iter)
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+		Py_DECREF((PyObject *)iter->user_data);
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -345,13 +413,16 @@ pygtk_generic_tree_model_iter_children(GtkTreeModel *tree_model, GtkTreeIter *it
 #ifdef DEBUG_TREE_MODEL
     g_message("iter_children(%p, %p)", iter, parent);
 #endif
-    if (parent) py_parent = (PyObject *)parent->user_data;
+    if (parent && parent->user_data != NULL)
+	py_parent = (PyObject *)parent->user_data;
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_children",
 				 "(O)", py_parent);
     if (py_ret) {
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+		Py_DECREF((PyObject *)iter->user_data);
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -437,13 +508,16 @@ pygtk_generic_tree_model_iter_nth_child(GtkTreeModel *tree_model, GtkTreeIter  *
 #ifdef DEBUG_TREE_MODEL
     g_message("iter_nth_child(%p, %p, %d)", iter, parent, n);
 #endif
-    if (parent) py_parent = (PyObject *)parent->user_data;
+    if (parent && parent->user_data != NULL)
+	py_parent = (PyObject *)parent->user_data;
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_nth_child",
 				 "(Oi)", py_parent, n);
     if (py_ret) {
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+		Py_DECREF((PyObject *)iter->user_data);
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;
@@ -473,13 +547,16 @@ pygtk_generic_tree_model_iter_parent(GtkTreeModel *tree_model, GtkTreeIter *iter
 #ifdef DEBUG_TREE_MODEL
     g_message("iter_parent(%p, %p)", iter, child);
 #endif
-    if (child) py_child = (PyObject *)child->user_data;
+    if (child && child->user_data != NULL)
+	py_child = (PyObject *)child->user_data;
     py_ret = PyObject_CallMethod(self, METHOD_PREFIX "iter_parent",
 				 "(O)", py_child);
     if (py_ret) {
 	if (py_ret != Py_None) {
 	    /* XXXX handle reference counting here */
 	    iter->user_data = py_ret;
+	    if (!PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+		Py_DECREF((PyObject *)iter->user_data);
 	    return TRUE;
 	} else {
 	    iter->user_data = NULL;

@@ -13,6 +13,8 @@ typedef struct _PyGtkGenericTreeModelClass PyGtkGenericTreeModelClass;
 
 struct _PyGtkGenericTreeModel {
     GObject parent_instance;
+
+    gboolean leak_references;
 };
 
 struct _PyGtkGenericTreeModelClass {
