@@ -26,7 +26,7 @@ static struct _PyGtk_FunctionStruct functions = {
 DL_EXPORT(void)
 init_gtk(void)
 {
-    PyObject *m, *d, *tuple;
+    PyObject *m, *d, *tuple, *o;
     PyObject *av;
     int argc, i;
     char **argv;
@@ -83,8 +83,9 @@ init_gtk(void)
     
     /* for addon libraries ... */
     PyDict_SetItemString(d, "_PyGtk_API",
-			 PyCObject_FromVoidPtr(&functions, NULL));
-
+			 o=PyCObject_FromVoidPtr(&functions, NULL));
+    Py_DECREF(o);
+	
     stock_ids = gtk_stock_list_ids();
     strcpy(buf, "STOCK_");
     for (cur = stock_ids; cur; cur = stock_ids) {
