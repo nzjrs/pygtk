@@ -68,9 +68,11 @@ connect to:</para>
     <itemizedlist>
       <listitem>
 	<para>Mouse and button press signals to respond to input from the
-user. (Use <link
-linkend="method-gtkwidget--add-events"><methodname>gtk.Widget.add_events</methodname>()</link> 
-to enable events you wish to receive.)</para>
+user. Use the <link
+linkend="method-gtkwidget--add-events"><methodname>gtk.Widget.add_events</methodname>()</link>
+method to enable events you wish to receive. To receive keyboard events, you
+will need to set the <literal>gtk.CAN_FOCUS</literal> flag on the drawing
+area</para>
       </listitem>
 
       <listitem>
@@ -85,7 +87,12 @@ when the widget changes size.</para>
 
       <listitem>
 	<para>The "expose_event" signal to handle redrawing the contents of
-the widget.</para>
+the widget when a drawing area first comes onscreen, or when it's covered by
+another window and then uncovered (exposed). You can also force an expose
+event by adding to the "damage region" of the drawing area's window using
+the <link
+linkend="method-gtkwidget--queue-draw-area"><methodname>gtk.Widget.queue_draw_area</methodname>()</link>
+method.</para>
       </listitem>
     </itemizedlist>
 
@@ -93,6 +100,19 @@ the widget.</para>
 url="../pygtk2tutorial/ch-DrawingArea.html">Drawing
 Area</ulink> chapter in the tutorial for more information on using a <link
 linkend="class-gtkdrawingarea"><classname>gtk.DrawingArea</classname></link>.</para>
+
+    <para>Sometimes a <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> is a useful
+alternative to a drawing area. You can put a <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> in
+the <link linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+and draw to the <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>,
+calling the <link
+linkend="method-gtkwidget--queue-draw"><methodname>gtk.Widget.queue_draw</methodname>()</link>
+method on the <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> when you
+want to refresh to the screen.</para>
 
   </refsect1>
 
