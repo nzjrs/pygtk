@@ -1950,13 +1950,41 @@ _wrap_gtk_tree_model_get_iter_first(PyGObject *self)
     }
 }
 %%
+override gtk_tree_model_iter_next kwargs
+static PyObject *
+_wrap_gtk_tree_model_iter_next(PyGObject *self, PyObject *args,
+			       PyObject *kwargs)
+{
+    static char *kwlist[] = { "iter", NULL };
+    PyObject *py_iter;
+    GtkTreeIter iter;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkTreeModel.iter_next", kwlist,
+				     &py_iter))
+        return NULL;
+    if (pyg_boxed_check(py_iter, GTK_TYPE_TREE_ITER))
+        iter = *pyg_boxed_get(py_iter, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTreeIter");
+        return NULL;
+    }
+
+    if (gtk_tree_model_iter_next(GTK_TREE_MODEL(self->obj), &iter))
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    else {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+}
+%%
 override gtk_tree_model_iter_children kwargs
 static PyObject *
 _wrap_gtk_tree_model_iter_children(PyGObject *self, PyObject *args,
 				   PyObject *kwargs)
 {
-    PyObject *py_parent;
     static char *kwlist[] = { "parent", NULL };
+    PyObject *py_parent;
     GtkTreeIter iter, *parent = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -1972,6 +2000,65 @@ _wrap_gtk_tree_model_iter_children(PyGObject *self, PyObject *args,
 
     if (gtk_tree_model_iter_children(GTK_TREE_MODEL(self->obj),
 				     &iter, parent))
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    else {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+}
+%%
+override gtk_tree_model_iter_nth_child kwargs
+static PyObject *
+_wrap_gtk_tree_model_iter_nth_child(PyGObject *self, PyObject *args,
+				    PyObject *kwargs)
+{
+    static char *kwlist[] = { "parent", "n", NULL };
+    PyObject *py_parent;
+    gint n;
+    GtkTreeIter iter, *parent = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "Oi:GtkTreeModel.iter_nth_child", kwlist,
+				     &py_parent, &n))
+        return NULL;
+    if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
+        parent = pyg_boxed_get(py_parent, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "parent should be a GtkTreeIter");
+        return NULL;
+    }
+
+    if (gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(self->obj),
+				     &iter, parent, n))
+	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
+    else {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+}
+%%
+override gtk_tree_model_iter_parent kwargs
+static PyObject *
+_wrap_gtk_tree_model_iter_parent(PyGObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    static char *kwlist[] = { "child", NULL };
+    PyObject *py_child;
+    GtkTreeIter iter, *child = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:GtkTreeModel.iter_parent", kwlist,
+				     &py_child))
+        return NULL;
+    if (pyg_boxed_check(py_child, GTK_TYPE_TREE_ITER))
+        child = pyg_boxed_get(py_child, GtkTreeIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "child should be a GtkTreeIter");
+        return NULL;
+    }
+
+    if (gtk_tree_model_iter_parent(GTK_TREE_MODEL(self->obj),
+				   &iter, child))
 	return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
     else {
 	Py_INCREF(Py_None);
