@@ -111,11 +111,13 @@ EXTRA_DIST += \
   examples/pygtk-demo/demos/dialogs.py \
   examples/pygtk-demo/demos/dndpixmap.py \
   examples/pygtk-demo/demos/dnd.py \
+  examples/pygtk-demo/demos/editable_cells.py \
   examples/pygtk-demo/demos/itemfactory.py \
   examples/pygtk-demo/demos/list_store.py \
   examples/pygtk-demo/demos/menu.py \
   examples/pygtk-demo/demos/panes.py \
   examples/pygtk-demo/demos/sizegroup.py \
+  examples/pygtk-demo/demos/stock_browser.py \
   examples/pygtk-demo/demos/toolbar.py \
   examples/pygtk-demo/demos/treemodel.py \
   examples/ide/gtkcons.py \
