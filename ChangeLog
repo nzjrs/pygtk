@@ -1,3 +1,16 @@
+2004-11-04  Johan Dahlin  <johan@gnome.org>
+
+	* tests/Makefile.am:
+	* tests/gtype.py:
+	* tests/test-thread.c:
+	* tests/test-thread.h:
+	* tests/test-unknown.c:
+	* tests/test-unknown.h:
+	* tests/test_unknown.py:
+	* tests/testhelpermodule.c:
+
+	Add tests for dynamic/unknown objects and interfaces.
+	
 2004-10-28  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gtk.defs (gtk_combo_box_set_model)
@@ -27,7 +40,11 @@
 2004-10-05  Johan Dahlin  <johan@gnome.org>
 
 	* gtk/libglade.override (pyglade_xml_lookup_type): Fix silly silly
-	bug. I wonder why nobody tried this before? Sigh. At least it's my
+	bug. When using typedict for a glade.XML object, AttributeErrors
+	set when calling PyMapping_GetItemString on a dictionary isn't
+	reset.
+	
+	I wonder why nobody tried this before? Sigh. At least it's my
 	fault, so I have no one else to blame, even though I'm trying hard
 
 2004-10-03  John Finlay  <finlay@moeraki.com>
