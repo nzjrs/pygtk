@@ -284,8 +284,9 @@ def write_func(fp, name, ret, args):
                     fp.write('  (parameters\n')
                     for arg in args[1:]:
                         if arg != '...':
-                            fp.write('    \'("%s" "%s")\n' %
-                                     tuple(string.split(arg)))
+                            tupleArg = tuple(string.split(arg))
+                            if len(tupleArg) == 2:
+                                fp.write('    \'("%s" "%s")\n' % tupleArg)
                     fp.write('  )\n')
                 if is_varargs:
                     fp.write('  (varargs #t)\n')
@@ -311,7 +312,9 @@ def write_func(fp, name, ret, args):
         fp.write('  (parameters\n')
         for arg in args:
             if arg != '...':
-                fp.write('    \'("%s" "%s")\n' % tuple(string.split(arg)))
+                tupleArg = tuple(string.split(arg))
+                if len(tupleArg) == 2:
+                    fp.write('    \'("%s" "%s")\n' % tupleArg)
         fp.write('  )\n')
     if is_varargs:
         fp.write('  (varargs #t)\n')
