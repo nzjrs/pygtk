@@ -2545,7 +2545,7 @@ _wrap_gtk_tree_store_reorder(PyGObject *self, PyObject *args, PyObject *kwargs)
 	return NULL;
 
     if (pyparent != Py_None) {
-	if (!pyg_boxed_check(pyparent, GTK_TYPE_TREE_ITER)) {
+	if (pyg_boxed_check(pyparent, GTK_TYPE_TREE_ITER)) {
 	    parent = pyg_boxed_get(pyparent, GtkTreeIter);
 	} else {
 	    PyErr_SetString(PyExc_TypeError,
