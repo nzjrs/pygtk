@@ -681,7 +681,17 @@ open.</simpara>
 
       <para>Additional arguments to pass to <parameter>callback</parameter>
 can be specified after <parameter>callback</parameter>. The idle priority
-may be specified as a keyword-value pair with the keyword "priority".</para>
+may be specified as a keyword-value pair with the keyword "priority". The signature of the callback function is:</para>
+
+      <programlisting>
+  def callback(source, cb_condition, ...)
+</programlisting>
+
+      <para>where <parameter>source</parameter> is
+<parameter>fd</parameter>, the file descriptor;
+<parameter>cb_condition</parameter> is the condition that triggered the
+signal; and, <parameter>...</parameter> are the zero or more arguments that
+were passed to the <methodname>io_add_watch</methodname>() method.</para>
 
     </refsect2>
 
