@@ -1,3 +1,12 @@
+1999-07-13  James Henstridge  <james@daa.com.au>
+
+	* gtkmodule.c (_wrap_gdk_threads_enter): unblock threads when waiting
+	for the GDK lock.  This allows other threads to unlock it, and should
+	prevent some deadlocks.
+
+	* gtkmodule.c (gtk_main_iteration, gtk_events_pending): removed code
+	to unlock gtk thread -- Owen fixed this properly in gtk.
+
 1999-07-12  James Henstridge  <james@daa.com.au>
 
 	* gtk.py: fixed a few bugs reported by Ville Lauriki.

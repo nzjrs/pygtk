@@ -3301,11 +3301,9 @@ static PyObject *_wrap_gtk_main_iteration(PyObject *self, PyObject *args) {
 
     if(!PyArg_ParseTuple(args,"|i:gtk_main_iteration", &block)) 
         return NULL;
-    GDK_THREADS_LEAVE();
     PyGTK_UNBLOCK_THREADS
     ret = gtk_main_iteration_do(block);
     PyGTK_BLOCK_THREADS
-    GDK_THREADS_ENTER();
 #ifdef WITH_THREAD    
     g_assert(_blockcount == 1);
     _blockcount = 1;
@@ -3317,11 +3315,9 @@ static PyObject *_wrap_gtk_events_pending(PyObject *self, PyObject *args) {
     int ret;
     if (!PyArg_ParseTuple(args, ":gtk_events_pending"))
         return NULL;
-    GDK_THREADS_LEAVE();
     PyGTK_UNBLOCK_THREADS
     ret = gtk_events_pending();
     PyGTK_BLOCK_THREADS
-    GDK_THREADS_ENTER();
     return PyInt_FromLong(ret);
 }
 
@@ -5588,7 +5584,9 @@ static PyObject *_wrap_gtk_ctree_base_nodes(PyObject *self, PyObject *args) {
 static PyObject *_wrap_gdk_threads_enter(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, ":gdk_threads_enter"))
     return NULL;
+  PyGTK_UNBLOCK_THREADS
   gdk_threads_enter();
+  PyGTK_BLOCK_THREADS
   Py_INCREF(Py_None);
   return Py_None;
 }
