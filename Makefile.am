@@ -20,6 +20,8 @@ gobjectmodule_la_SOURCES = \
 	pygobject.h
 gobjectmodule_la_LIBADD = $(GLIB_LIBS)
 
+pkginclude_HEADERS = pygobject.h
+
 noinst_PYTHON = ltihooks.py
 
 EXTRA_DIST = \

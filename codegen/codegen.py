@@ -452,7 +452,20 @@ def write_source(parser, overrides, prefix, fp=sys.stdout):
     for interface in parser.interfaces:
         fp.write('    PyExtensionClass_Export(d, "' + interface.c_name +
                  '", Py' + interface.c_name + '_Type);\n')
-    for obj in parser.objects:
+    objects = parser.objects[:]
+    pos = 0
+    while pos < len(objects):
+        parent = None
+        if objects[pos].parent != (None, None):
+            parent = objects[pos].parent[1] + objects[pos].parent[0]
+        for i in range(pos+1, len(objects)):
+            if objects[i].c_name == parent:
+                objects.insert(i+1, objects[pos])
+                del objects[pos]
+                break
+        else:
+            pos = pos + 1
+    for obj in objects:
         bases = []
         if obj.parent != (None, None):
             bases.append(obj.parent[1] + obj.parent[0])
@@ -478,11 +491,7 @@ def register_types(parser):
         else:
             argtypes.matcher.register_object(obj.c_name, None)
     for obj in parser.interfaces:
-        if obj.parent != (None, None):
-            argtypes.matcher.register_object(obj.c_name,
-                                             obj.parent[1] + obj.parent[0])
-        else:
-            argtypes.matcher.register_object(obj.c_name, None)
+        argtypes.matcher.register_object(obj.c_name, None)
     for enum in parser.enums:
 	if enum.deftype == 'flags':
 	    argtypes.matcher.register_flag(enum.c_name)

@@ -64,6 +64,12 @@
   (c-name GdkPixbufAnimation)
 )
 
+(object PixbufAnimationIter
+  (in-module Gdk)
+  (parent Object (G))
+  (c-name GdkPixbufAnimationIter)
+)
+
 ;; Enumerations and flags ...
 
 (enum ColorContextMode
@@ -1837,62 +1843,54 @@
   (return-type int)
 )
 
-(method get_frames
+(method is_static_image
   (of-object PixbufAnimation (Gdk))
-  (c-name gdk_pixbuf_animation_get_frames)
-  (return-type GList*)
+  (c-name gdk_pixbuf_animation_is_static_image)
+  (return-type gboolean)
 )
 
-(method get_num_frames
+(method get_static_image
   (of-object PixbufAnimation (Gdk))
-  (c-name gdk_pixbuf_animation_get_num_frames)
+  (c-name gdk_pixbuf_animation_get_static_image)
+  (return-type GdkPixbuf*)
+)
+
+(method get_iter
+  (of-object PixbufAnimation (Gdk))
+  (c-name gdk_pixbuf_animation_get_iter)
+  (return-type GdkPixbufAnimationIter*)
+  (parameter (type-and-name const-GTimeVal* start_time))
+)
+
+(function pixbuf_animation_iter_get_type
+  (c-name gdk_pixbuf_animation_iter_get_type)
+  (return-type GType)
+)
+
+(method get_delay_time
+  (of-object PixbufAnimationIter (Gdk))
+  (c-name gdk_pixbuf_animation_iter_get_delay_time)
   (return-type int)
 )
 
 (method get_pixbuf
-  (of-object PixbufFrame (Gdk))
-  (c-name gdk_pixbuf_frame_get_pixbuf)
+  (of-object PixbufAnimationIter (Gdk))
+  (c-name gdk_pixbuf_animation_iter_get_pixbuf)
   (return-type GdkPixbuf*)
 )
 
-(method get_x_offset
-  (of-object PixbufFrame (Gdk))
-  (c-name gdk_pixbuf_frame_get_x_offset)
-  (return-type int)
+(method on_currently_loading_frame
+  (of-object PixbufAnimationIter (Gdk))
+  (c-name gdk_pixbuf_animation_iter_on_currently_loading_frame)
+  (return-type gboolean)
 )
 
-(method get_y_offset
-  (of-object PixbufFrame (Gdk))
-  (c-name gdk_pixbuf_frame_get_y_offset)
-  (return-type int)
+(method advance
+  (of-object PixbufAnimationIter (Gdk))
+  (c-name gdk_pixbuf_animation_iter_advance)
+  (return-type gboolean)
+  (parameter (type-and-name const-GTimeVal* current_time))
 )
-
-(method get_delay_time
-  (of-object PixbufFrame (Gdk))
-  (c-name gdk_pixbuf_frame_get_delay_time)
-  (return-type int)
-)
-
-(method get_action
-  (of-object PixbufFrame (Gdk))
-  (c-name gdk_pixbuf_frame_get_action)
-  (return-type GdkPixbufFrameAction)
-)
-
-(function gdk_pixbuf_preinit
-  (c-name gdk_pixbuf_preinit)
-  (return-type none)
-  (parameter (type-and-name gpointer app))
-  (parameter (type-and-name gpointer modinfo))
-)
-
-(function gdk_pixbuf_postinit
-  (c-name gdk_pixbuf_postinit)
-  (return-type none)
-  (parameter (type-and-name gpointer app))
-  (parameter (type-and-name gpointer modinfo))
-)
-
 
 ;; From /opt/pango/include/gtk-2.0/gdk/gdkpixbuf.h
 

@@ -2,18 +2,11 @@
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) $(LIBGLADE_CFLAGS) $(GTKGL_CFLAGS) -Wall
 
-#if BUILD_LIBGLADE
-#libglademodule = libglademodule.la
-#endif
-#if BUILD_GTKGL
-#glmodule = glmodule.la
-#endif
-
 pygtkdir = $(pythondir)/gtk
 pygtk_PYTHON = __init__.py GTK.py GDK.py
 
 pygtkexecdir = $(pyexecdir)/gtk
-pygtkexec_LTLIBRARIES = _gtkmodule.la #$(libglademodule) $(glmodule)
+pygtkexec_LTLIBRARIES = _gtkmodule.la
 
 _gtkmodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtk
 _gtkmodule_la_LIBADD = $(GTK_LIBS)
@@ -27,17 +20,7 @@ _gtkmodule_la_SOURCES = \
 	pygtktreemodel.c \
 	gtk.c
 
-#libglademodule_la_LDFLAGS = -module -avoid-version
-#libglademodule_la_LIBADD = $(LIBGLADE_LIBS)
-#libglademodule_la_SOURCES = \
-#	libglademodule.c \
-#	libglade.c
-
-#glmodule_la_LDFLAGS = -module -avoid-version
-#glmodule_la_LIBADD = $(GTKGL_LIBS) $(GTK_LIBS)
-#glmodule_la_SOURCES = \
-#	gtkglmodule.c \
-#	gtkgl.c
+pkginclude_HEADERS = pygtk.h
 
 # chmod hack here is because automake guys decided distdir should be
 # read only for the next version :(

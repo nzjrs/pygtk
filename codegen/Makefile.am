@@ -1,5 +1,7 @@
 
-noinst_PYTHON = \
+codegendir = $(pkgdatadir)/2.0/codegen
+
+codegen_PYTHON = \
 	__init__.py \
 	argtypes.py \
 	codegen.py \
