@@ -52,7 +52,48 @@ class FileOutput:
         self.setline(self.lineno + 1, self.filename)
 
 class Wrapper:
-    type_tmpl = None
+    type_tmpl = \
+        'PyTypeObject Py%(typename)s_Type = {\n' \
+        '    PyObject_HEAD_INIT(NULL)\n' \
+        '    0,					/* ob_size */\n' \
+        '    "%(classname)s",			/* tp_name */\n' \
+        '    sizeof(%(tp_basicsize)s),	        /* tp_basicsize */\n' \
+        '    0,					/* tp_itemsize */\n' \
+        '    /* methods */\n' \
+        '    (destructor)0,			/* tp_dealloc */\n' \
+        '    (printfunc)0,			/* tp_print */\n' \
+        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
+        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
+        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
+        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
+        '    %(tp_as_number)s,			/* tp_as_number */\n' \
+        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
+        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
+        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
+        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
+        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
+        '    (getattrofunc)0,			/* tp_getattro */\n' \
+        '    (setattrofunc)0,			/* tp_setattro */\n' \
+        '    0,					/* tp_as_buffer */\n' \
+        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
+        '    NULL, 				/* Documentation string */\n' \
+        '    (traverseproc)0,			/* tp_traverse */\n' \
+        '    (inquiry)0,			/* tp_clear */\n' \
+        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
+        '    %(tp_weaklistoffset)s,             /* tp_weaklistoffset */\n' \
+        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
+        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
+        '    %(tp_methods)s,			/* tp_methods */\n' \
+        '    0,					/* tp_members */\n' \
+        '    %(tp_getset)s,		       	/* tp_getset */\n' \
+        '    NULL,				/* tp_base */\n' \
+        '    NULL,				/* tp_dict */\n' \
+        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
+        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
+        '    %(tp_dictoffset)s,                 /* tp_dictoffset */\n' \
+        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
+        '};\n\n'
+
     slots_list = ['tp_getattr', 'tp_setattr', 'tp_compare', 'tp_repr',
                   'tp_as_number', 'tp_as_sequence', 'tp_as_mapping', 'tp_hash',
                   'tp_call', 'tp_str', 'tp_richcompare', 'tp_iter',
@@ -397,48 +438,6 @@ class Wrapper:
         self.fp.write('};\n\n')
 
 class GObjectWrapper(Wrapper):
-    type_tmpl = \
-        'PyTypeObject Py%(typename)s_Type = {\n' \
-        '    PyObject_HEAD_INIT(NULL)\n' \
-        '    0,					/* ob_size */\n' \
-        '    "%(classname)s",			/* tp_name */\n' \
-        '    sizeof(PyGObject),			/* tp_basicsize */\n' \
-        '    0,					/* tp_itemsize */\n' \
-        '    /* methods */\n' \
-        '    (destructor)0,			/* tp_dealloc */\n' \
-        '    (printfunc)0,			/* tp_print */\n' \
-        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
-        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
-        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
-        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
-        '    %(tp_as_number)s,			/* tp_as_number */\n' \
-        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
-        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
-        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
-        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
-        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
-        '    (getattrofunc)0,			/* tp_getattro */\n' \
-        '    (setattrofunc)0,			/* tp_setattro */\n' \
-        '    0,					/* tp_as_buffer */\n' \
-        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
-        '    NULL, 				/* Documentation string */\n' \
-        '    (traverseproc)0,			/* tp_traverse */\n' \
-        '    (inquiry)0,			/* tp_clear */\n' \
-        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
-        '    offsetof(PyGObject, weakreflist),	/* tp_weaklistoffset */\n' \
-        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
-        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
-        '    %(tp_methods)s,			/* tp_methods */\n' \
-        '    0,					/* tp_members */\n' \
-        '    %(tp_getset)s,		       	/* tp_getset */\n' \
-        '    NULL,				/* tp_base */\n' \
-        '    NULL,				/* tp_dict */\n' \
-        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
-        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
-        '    offsetof(PyGObject, inst_dict),	/* tp_dictoffset */\n' \
-        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
-        '};\n\n'
-
     constructor_tmpl = \
         'static int\n' \
         '_wrap_%(cname)s(PyGObject *self%(extraparams)s)\n' \
@@ -473,6 +472,11 @@ class GObjectWrapper(Wrapper):
             self.castmacro = string.replace(self.objinfo.typecode,
                                             '_TYPE_', '_', 1)
 
+    def get_initial_class_substdict(self):
+        return { 'tp_basicsize'      : 'PyGObject',
+                 'tp_weaklistoffset' : 'offsetof(PyGObject, weakreflist)',
+                 'tp_dictoffset'     : 'offsetof(PyGObject, inst_dict)' }
+    
     def get_field_accessor(self, fieldname):
         castmacro = string.replace(self.objinfo.typecode, '_TYPE_', '_', 1)
         return '%s(pygobject_get(self))->%s' % (castmacro, fieldname)
@@ -493,47 +497,10 @@ class GObjectWrapper(Wrapper):
         return substdict
 
 class GInterfaceWrapper(GObjectWrapper):
-    type_tmpl = \
-        'PyTypeObject Py%(typename)s_Type = {\n' \
-        '    PyObject_HEAD_INIT(NULL)\n' \
-        '    0,					/* ob_size */\n' \
-        '    "%(classname)s",			/* tp_name */\n' \
-        '    sizeof(PyObject),			/* tp_basicsize */\n' \
-        '    0,					/* tp_itemsize */\n' \
-        '    /* methods */\n' \
-        '    (destructor)0,			/* tp_dealloc */\n' \
-        '    (printfunc)0,			/* tp_print */\n' \
-        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
-        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
-        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
-        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
-        '    %(tp_as_number)s,			/* tp_as_number */\n' \
-        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
-        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
-        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
-        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
-        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
-        '    (getattrofunc)0,			/* tp_getattro */\n' \
-        '    (setattrofunc)0,			/* tp_setattro */\n' \
-        '    0,					/* tp_as_buffer */\n' \
-        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
-        '    NULL, 				/* Documentation string */\n' \
-        '    (traverseproc)0,			/* tp_traverse */\n' \
-        '    (inquiry)0,			/* tp_clear */\n' \
-        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
-        '    0,					/* tp_weaklistoffset */\n' \
-        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
-        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
-        '    %(tp_methods)s,			/* tp_methods */\n' \
-        '    0,					/* tp_members */\n' \
-        '    %(tp_getset)s,		       	/* tp_getset */\n' \
-        '    NULL,				/* tp_base */\n' \
-        '    NULL,				/* tp_dict */\n' \
-        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
-        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
-        '    0,					/* tp_dictoffset */\n' \
-        '    (initproc)0,			/* tp_init */\n' \
-        '};\n\n'
+    def get_initial_class_substdict(self):
+        return { 'tp_basicsize'      : 'PyGObject',
+                 'tp_weaklistoffset' : '0',
+                 'tp_dictoffset'     : '0'}
 
     def write_constructor(self):
         # interfaces have no constructors ...
@@ -543,48 +510,6 @@ class GInterfaceWrapper(GObjectWrapper):
         return '0'
 
 class GBoxedWrapper(Wrapper):
-    type_tmpl = \
-        'PyTypeObject Py%(typename)s_Type = {\n' \
-        '    PyObject_HEAD_INIT(NULL)\n' \
-        '    0,					/* ob_size */\n' \
-        '    "%(classname)s",			/* tp_name */\n' \
-        '    sizeof(PyGBoxed),			/* tp_basicsize */\n' \
-        '    0,					/* tp_itemsize */\n' \
-        '    /* methods */\n' \
-        '    (destructor)0,			/* tp_dealloc */\n' \
-        '    (printfunc)0,			/* tp_print */\n' \
-        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
-        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
-        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
-        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
-        '    %(tp_as_number)s,			/* tp_as_number */\n' \
-        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
-        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
-        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
-        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
-        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
-        '    (getattrofunc)0,			/* tp_getattro */\n' \
-        '    (setattrofunc)0,			/* tp_setattro */\n' \
-        '    0,					/* tp_as_buffer */\n' \
-        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
-        '    NULL, 				/* Documentation string */\n' \
-        '    (traverseproc)0,			/* tp_traverse */\n' \
-        '    (inquiry)0,			/* tp_clear */\n' \
-        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
-        '    0,					/* tp_weaklistoffset */\n' \
-        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
-        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
-        '    %(tp_methods)s,			/* tp_methods */\n' \
-        '    0,					/* tp_members */\n' \
-        '    %(tp_getset)s,		       	/* tp_getset */\n' \
-        '    NULL,				/* tp_base */\n' \
-        '    NULL,				/* tp_dict */\n' \
-        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
-        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
-        '    0,					/* tp_dictoffset */\n' \
-        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
-        '};\n\n'
-
     constructor_tmpl = \
         'static int\n' \
         '_wrap_%(cname)s(PyGBoxed *self%(extraparams)s)\n' \
@@ -615,6 +540,11 @@ class GBoxedWrapper(Wrapper):
         '%(codeafter)s\n' \
         '}\n\n'
 
+    def get_initial_class_substdict(self):
+        return { 'tp_basicsize'      : 'PyGBoxed',
+                 'tp_weaklistoffset' : '0',
+                 'tp_dictoffset'     : '0' }
+
     def get_field_accessor(self, fieldname):
         return 'pyg_boxed_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)
 
@@ -624,48 +554,6 @@ class GBoxedWrapper(Wrapper):
         return substdict
 
 class GPointerWrapper(GBoxedWrapper):
-    type_tmpl = \
-        'PyTypeObject Py%(typename)s_Type = {\n' \
-        '    PyObject_HEAD_INIT(NULL)\n' \
-        '    0,					/* ob_size */\n' \
-        '    "%(classname)s",			/* tp_name */\n' \
-        '    sizeof(PyGPointer),		/* tp_basicsize */\n' \
-        '    0,					/* tp_itemsize */\n' \
-        '    /* methods */\n' \
-        '    (destructor)0,			/* tp_dealloc */\n' \
-        '    (printfunc)0,			/* tp_print */\n' \
-        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
-        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
-        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
-        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
-        '    %(tp_as_number)s,			/* tp_as_number */\n' \
-        '    %(tp_as_sequence)s,		/* tp_as_sequence */\n' \
-        '    %(tp_as_mapping)s,			/* tp_as_mapping */\n' \
-        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
-        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
-        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
-        '    (getattrofunc)0,			/* tp_getattro */\n' \
-        '    (setattrofunc)0,			/* tp_setattro */\n' \
-        '    0,					/* tp_as_buffer */\n' \
-        '    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */\n' \
-        '    NULL, 				/* Documentation string */\n' \
-        '    (traverseproc)0,			/* tp_traverse */\n' \
-        '    (inquiry)0,			/* tp_clear */\n' \
-        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
-        '    0,					/* tp_weaklistoffset */\n' \
-        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
-        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
-        '    %(tp_methods)s,			/* tp_methods */\n' \
-        '    0,					/* tp_members */\n' \
-        '    %(tp_getset)s,		       	/* tp_getset */\n' \
-        '    NULL,				/* tp_base */\n' \
-        '    NULL,				/* tp_dict */\n' \
-        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
-        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
-        '    0,					/* tp_dictoffset */\n' \
-        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
-        '};\n\n'
-
     constructor_tmpl = \
         'static int\n' \
         '_wrap_%(cname)s(PyGPointer *self%(extraparams)s)\n' \
@@ -693,6 +581,11 @@ class GPointerWrapper(GBoxedWrapper):
         '    %(setreturn)s%(cname)s(pyg_pointer_get(self, %(typename)s)%(arglist)s);\n' \
         '%(codeafter)s\n' \
         '}\n\n'
+
+    def get_initial_class_substdict(self):
+        return { 'tp_basicsize'      : 'PyGPointer',
+                 'tp_weaklistoffset' : '0',
+                 'tp_dictoffset'     : '0' }
 
     def get_field_accessor(self, fieldname):
         return 'pyg_pointer_get(self, %s)->%s' % (self.objinfo.c_name, fieldname)
