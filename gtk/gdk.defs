@@ -51,6 +51,17 @@
 
 ;; Enumerations and flags ...
 
+(enum ColorContextMode
+  (in-module Gdk)
+  (c-name GdkColorContextMode)
+  (value (name undefined) (c-name GDK_CC_MODE_UNDEFINED))
+  (value (name bw) (c-name GDK_CC_MODE_BW))
+  (value (name std-cmap) (c-name GDK_CC_MODE_STD_CMAP))
+  (value (name true) (c-name GDK_CC_MODE_TRUE))
+  (value (name my-gray) (c-name GDK_CC_MODE_MY_GRAY))
+  (value (name palette) (c-name GDK_CC_MODE_PALETTE))
+)
+
 (enum CursorType
   (in-module Gdk)
   (c-name GdkCursorType)
@@ -341,7 +352,6 @@
   (value (name normal) (c-name GDK_IMAGE_NORMAL))
   (value (name shared) (c-name GDK_IMAGE_SHARED))
   (value (name fastest) (c-name GDK_IMAGE_FASTEST))
-  (value (name shared-pixmap) (c-name GDK_IMAGE_SHARED_PIXMAP))
 )
 
 (enum ExtensionMode
@@ -378,14 +388,14 @@
   (value (name pressure) (c-name GDK_AXIS_PRESSURE))
   (value (name xtilt) (c-name GDK_AXIS_XTILT))
   (value (name ytilt) (c-name GDK_AXIS_YTILT))
+  (value (name wheel) (c-name GDK_AXIS_WHEEL))
   (value (name last) (c-name GDK_AXIS_LAST))
 )
 
-(enum PixbufAlphaMode
+(flags ColorInfoFlags
   (in-module Gdk)
-  (c-name GdkPixbufAlphaMode)
-  (value (name bilevel) (c-name GDK_PIXBUF_ALPHA_BILEVEL))
-  (value (name full) (c-name GDK_PIXBUF_ALPHA_FULL))
+  (c-name GdkColorInfoFlags)
+  (value (name writable) (c-name GDK_COLOR_WRITABLE))
 )
 
 (enum PropMode
@@ -494,6 +504,16 @@
   (value (name error-mem) (c-name GDK_ERROR_MEM))
 )
 
+(enum GrabStatus
+  (in-module Gdk)
+  (c-name GdkGrabStatus)
+  (value (name success) (c-name GDK_GRAB_SUCCESS))
+  (value (name already-grabbed) (c-name GDK_GRAB_ALREADY_GRABBED))
+  (value (name invalid-time) (c-name GDK_GRAB_INVALID_TIME))
+  (value (name not-viewable) (c-name GDK_GRAB_NOT_VIEWABLE))
+  (value (name frozen) (c-name GDK_GRAB_FROZEN))
+)
+
 (enum VisualType
   (in-module Gdk)
   (c-name GdkVisualType)
@@ -545,6 +565,7 @@
   (value (name base-size) (c-name GDK_HINT_BASE_SIZE))
   (value (name aspect) (c-name GDK_HINT_ASPECT))
   (value (name resize-inc) (c-name GDK_HINT_RESIZE_INC))
+  (value (name win-gravity) (c-name GDK_HINT_WIN_GRAVITY))
 )
 
 (flags WMDecoration
@@ -570,10 +591,43 @@
   (value (name close) (c-name GDK_FUNC_CLOSE))
 )
 
+(enum Gravity
+  (in-module Gdk)
+  (c-name GdkGravity)
+  (value (name north-west) (c-name GDK_GRAVITY_NORTH_WEST))
+  (value (name north) (c-name GDK_GRAVITY_NORTH))
+  (value (name north-east) (c-name GDK_GRAVITY_NORTH_EAST))
+  (value (name west) (c-name GDK_GRAVITY_WEST))
+  (value (name center) (c-name GDK_GRAVITY_CENTER))
+  (value (name east) (c-name GDK_GRAVITY_EAST))
+  (value (name south-west) (c-name GDK_GRAVITY_SOUTH_WEST))
+  (value (name south) (c-name GDK_GRAVITY_SOUTH))
+  (value (name south-east) (c-name GDK_GRAVITY_SOUTH_EAST))
+  (value (name static) (c-name GDK_GRAVITY_STATIC))
+)
+
+(enum PixbufAlphaMode
+  (in-module Gdk)
+  (c-name GdkPixbufAlphaMode)
+  (value (name bilevel) (c-name GDK_PIXBUF_ALPHA_BILEVEL))
+  (value (name full) (c-name GDK_PIXBUF_ALPHA_FULL))
+)
+
 (enum Colorspace
   (in-module Gdk)
   (c-name GdkColorspace)
   (value (name rgb) (c-name GDK_COLORSPACE_RGB))
+)
+
+(enum PixbufError
+  (in-module Gdk)
+  (c-name GdkPixbufError)
+  (value (name corrupt-image) (c-name GDK_PIXBUF_ERROR_CORRUPT_IMAGE))
+  (value (name insufficient-memory) (c-name GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY))
+  (value (name bad-option-value) (c-name GDK_PIXBUF_ERROR_BAD_OPTION_VALUE))
+  (value (name unknown-type) (c-name GDK_PIXBUF_ERROR_UNKNOWN_TYPE))
+  (value (name unsupported-operation) (c-name GDK_PIXBUF_ERROR_UNSUPPORTED_OPERATION))
+  (value (name failed) (c-name GDK_PIXBUF_ERROR_FAILED))
 )
 
 (enum InterpType
@@ -593,15 +647,8 @@
   (value (name revert) (c-name GDK_PIXBUF_FRAME_REVERT))
 )
 
-(enum PixbufAlphaMode
-  (in-module Gdk)
-  (c-name GdkPixbufAlphaMode)
-  (value (name bilevel) (c-name GDK_PIXBUF_ALPHA_BILEVEL))
-  (value (name full) (c-name GDK_PIXBUF_ALPHA_FULL))
-)
 
-
-;; From /opt/pango/include/gdk/gdkcolor.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkcolor.h
 
 (function gdk_colormap_get_type
   (c-name gdk_colormap_get_type)
@@ -685,7 +732,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkcursor.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkcursor.h
 
 (function gdk_cursor_new
   (c-name gdk_cursor_new)
@@ -706,7 +753,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkdnd.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkdnd.h
 
 (function gdk_drag_context_get_type
   (c-name gdk_drag_context_get_type)
@@ -815,7 +862,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkdrawable.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkdrawable.h
 
 (function gdk_drawable_get_type
   (c-name gdk_drawable_get_type)
@@ -1062,7 +1109,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkevents.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkevents.h
 
 (method get_time
   (of-object Event (Gdk))
@@ -1084,7 +1131,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkfont.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkfont.h
 
 (function gdk_font_load
   (c-name gdk_font_load)
@@ -1229,8 +1276,15 @@
   (parameter (type-and-name gint* descent))
 )
 
+(method full_name_get
+  (of-object Font (Gdk))
+  (c-name gdk_font_full_name_get)
+  (return-type gchar*)
+)
 
-;; From /opt/pango/include/gdk/gdkgc.h
+
+
+;; From /opt/pango/include/gtk-2.0/gdk/gdkgc.h
 
 (function gdk_gc_get_type
   (c-name gdk_gc_get_type)
@@ -1392,9 +1446,35 @@
   (parameter (type-and-name GdkGC* src_gc))
 )
 
+(method set_colormap
+  (of-object GC (Gdk))
+  (c-name gdk_gc_set_colormap)
+  (return-type none)
+  (parameter (type-and-name GdkColormap* colormap))
+)
+
+(method get_colormap
+  (of-object GC (Gdk))
+  (c-name gdk_gc_get_colormap)
+  (return-type GdkColormap*)
+)
+
+(method set_rgb_fg_color
+  (of-object GC (Gdk))
+  (c-name gdk_gc_set_rgb_fg_color)
+  (return-type none)
+  (parameter (type-and-name GdkColor* color))
+)
+
+(method set_rgb_bg_color
+  (of-object GC (Gdk))
+  (c-name gdk_gc_set_rgb_bg_color)
+  (return-type none)
+  (parameter (type-and-name GdkColor* color))
+)
 
 
-;; From /opt/pango/include/gdk/gdkim.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkim.h
 
 (function im_ready
   (c-name gdk_im_ready)
@@ -1479,7 +1559,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkimage.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkimage.h
 
 (function gdk_image_get_type
   (c-name gdk_image_get_type)
@@ -1534,7 +1614,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkinput.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkinput.h
 
 (function input_list_devices
   (c-name gdk_input_list_devices)
@@ -1549,13 +1629,6 @@
   (parameter (type-and-name GdkExtensionMode mode))
 )
 
-(function input_set_source
-  (c-name gdk_input_set_source)
-  (return-type none)
-  (parameter (type-and-name guint32 deviceid))
-  (parameter (type-and-name GdkInputSource source))
-)
-
 (function input_set_mode
   (c-name gdk_input_set_mode)
   (return-type gboolean)
@@ -1568,15 +1641,6 @@
   (return-type none)
   (parameter (type-and-name guint32 deviceid))
   (parameter (type-and-name GdkAxisUse* axes))
-)
-
-(function input_set_key
-  (c-name gdk_input_set_key)
-  (return-type none)
-  (parameter (type-and-name guint32 deviceid))
-  (parameter (type-and-name guint index))
-  (parameter (type-and-name guint keyval))
-  (parameter (type-and-name GdkModifierType modifiers))
 )
 
 (method input_window_get_pointer
@@ -1603,7 +1667,7 @@
 )
 
 
-;; From /opt/pango/include/gdk-pixbuf/gdk-pixbuf.h
+;; From /opt/pango/include/gtk-2.0/gdk-pixbuf/gdk-pixbuf.h
 
 (method get_colorspace
   (of-object Pixbuf (Gdk))
@@ -1675,6 +1739,7 @@
   (c-name gdk_pixbuf_new_from_file)
   (return-type GdkPixbuf*)
   (parameter (type-and-name const-char* filename))
+  (parameter (type-and-name GError** error))
 )
 
 (function pixbuf_new_from_data
@@ -1695,6 +1760,36 @@
   (c-name gdk_pixbuf_new_from_xpm_data)
   (return-type GdkPixbuf*)
   (parameter (type-and-name const-char** data))
+)
+
+(function gdk_pixbuf_new_from_inline
+  (c-name gdk_pixbuf_new_from_inline)
+  (return-type GdkPixbuf*)
+  (parameter (type-and-name const-guchar* inline_pixbuf))
+  (parameter (type-and-name gboolean copy_pixels))
+  (parameter (type-and-name int length))
+  (parameter (type-and-name GError** error))
+)
+
+(method save
+  (of-object Pixbuf (Gdk))
+  (c-name gdk_pixbuf_save)
+  (return-type gboolean)
+  (parameter (type-and-name const-char* filename))
+  (parameter (type-and-name const-char* type))
+  (parameter (type-and-name GError** error))
+  (varargs t)
+)
+
+(method savev
+  (of-object Pixbuf (Gdk))
+  (c-name gdk_pixbuf_savev)
+  (return-type gboolean)
+  (parameter (type-and-name const-char* filename))
+  (parameter (type-and-name const-char* type))
+  (parameter (type-and-name char** option_keys))
+  (parameter (type-and-name char** option_values))
+  (parameter (type-and-name GError** error))
 )
 
 (method add_alpha
@@ -1718,6 +1813,15 @@
   (parameter (type-and-name GdkPixbuf* dest_pixbuf))
   (parameter (type-and-name int dest_x))
   (parameter (type-and-name int dest_y))
+)
+
+(method saturate_and_pixelate
+  (of-object Pixbuf (Gdk))
+  (c-name gdk_pixbuf_saturate_and_pixelate)
+  (return-type none)
+  (parameter (type-and-name GdkPixbuf* dest))
+  (parameter (type-and-name gfloat saturation))
+  (parameter (type-and-name gboolean pixelate))
 )
 
 (method scale
@@ -1807,6 +1911,7 @@
   (c-name gdk_pixbuf_animation_new_from_file)
   (return-type GdkPixbufAnimation*)
   (parameter (type-and-name const-char* filename))
+  (parameter (type-and-name GError** error))
 )
 
 (method get_width
@@ -1863,8 +1968,26 @@
   (return-type GdkPixbufFrameAction)
 )
 
+(function gdk_pixbuf_preinit
+  (c-name gdk_pixbuf_preinit)
+  (return-type none)
+  (parameter (type-and-name gpointer app))
+  (parameter (type-and-name gpointer modinfo))
+)
 
-;; From /opt/pango/include/gdk/gdkpixbuf.h
+(function gdk_pixbuf_postinit
+  (c-name gdk_pixbuf_postinit)
+  (return-type none)
+  (parameter (type-and-name gpointer app))
+  (parameter (type-and-name gpointer modinfo))
+)
+
+(function gdk_pixbuf_init
+  (c-name gdk_pixbuf_init)
+  (return-type none)
+)
+
+;; From /opt/pango/include/gtk-2.0/gdk/gdkpixbuf.h
 
 (method render_to_drawable
   (of-object Pixbuf (Gdk))
@@ -1926,7 +2049,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkpixmap.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkpixmap.h
 
 (function gdk_pixmap_get_type
   (c-name gdk_pixmap_get_type)
@@ -2004,7 +2127,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkproperty.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkproperty.h
 
 (method name
   (of-object Atom (Gdk))
@@ -2047,7 +2170,7 @@
 )
 
 
-;; From /opt/pango/include/gdk/gdkrgb.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkrgb.h
 
 (function gdk_rgb_xpixel_from_rgb
   (c-name gdk_rgb_xpixel_from_rgb)
@@ -2184,7 +2307,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkselection.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkselection.h
 
 (function selection_owner_get
   (c-name gdk_selection_owner_get)
@@ -2222,7 +2345,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkvisual.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkvisual.h
 
 (function visual_get_best_depth
   (c-name gdk_visual_get_best_depth)
@@ -2285,7 +2408,7 @@
 
 
 
-;; From /opt/pango/include/gdk/gdkwindow.h
+;; From /opt/pango/include/gtk-2.0/gdk/gdkwindow.h
 
 (function gdk_window_object_get_type
   (c-name gdk_window_object_get_type)

@@ -1,6 +1,6 @@
 
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) $(GTK_CFLAGS) \
-	$(GDK_IMLIB_CFLAGS) $(LIBGLADE_CFLAGS) $(GTKGL_CFLAGS)
+	$(GDK_IMLIB_CFLAGS) $(LIBGLADE_CFLAGS) $(GTKGL_CFLAGS) -Wall
 
 #if BUILD_IMLIB
 #imlibmodule = imlibmodule.la

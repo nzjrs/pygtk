@@ -1,3 +1,21 @@
+2000-10-24  James Henstridge  <james@daa.com.au>
+
+	* gtk/gtk-types.c: add support for GdkDevice and convert function
+	names to lowercase.
+
+	* gtk/gtkmodule.c: add GdkDevice stuff to PyGtk_API.
+
+	* gtk/pygtk.h, gtk/pygtk-private.h: add GdkDevice to list of boxed
+	types.
+
+2000-10-23  James Henstridge  <james@daa.com.au>
+
+	* gobjectmodule.c: don't set the getattr method on objects if it
+	isn't already set.  Also, install a getattro handler that will
+	perform the usual method/attribute lookup and then call the
+	getattr method for all base classes to allow specifying of class
+	specific attributes
+
 2000-07-03  James Henstridge  <james@daa.com.au>
 
 	* gtk/gtkmodule.c (init_gtk): actually initialise the gobject stuff

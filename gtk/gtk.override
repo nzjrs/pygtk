@@ -229,6 +229,20 @@ ignore
   gdk_color_hash gdk_color_equal
   gdk_color_parse
 %%
+override gdk_font_full_name_get
+_wrap_gdk_font_full_name_get(PyGObject *self, PyObject *args)
+{
+    gchar *name;
+    PyObject *ret;
+
+    if (!PyArg_ParseTuple(args, ":GdkFont.full_name_get"))
+	return NULL;
+    name = gdk_font_full_name_get(GDK_FONT(self->obj));
+    ret = PyString_FromString(name);
+    gdk_font_full_name_free(name);
+    return ret;
+}
+%%
 override gdk_pixmap_create_from_xpm kwargs
 static PyObject *
 _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,

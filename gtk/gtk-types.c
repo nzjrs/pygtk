@@ -196,6 +196,19 @@ PyGtkCTreeNode_New(GtkCTreeNode *node)
     return (PyObject *)self;
 }
 
+PyObject *
+PyGdkDevice_New(GdkDevice *device)
+{
+    PyGdkDevice_Object *self;
+
+    self = (PyGdkDevice_Object *)PyObject_NEW(PyGdkDevice_Object,
+					      &PyGdkDevice_Type);
+    if (self == NULL)
+	return NULL;
+    self->obj = device;
+    return (PyObject *)self;
+}
+
 static void
 pygtk_accel_group_dealloc(PyGtkAccelGroup_Object *self)
 {
@@ -609,14 +622,14 @@ PyTypeObject PyGtkStyle_Type = {
 #endif
 
 static void
-PyGdkFont_Dealloc(PyGdkFont_Object *self)
+pygdk_font_dealloc(PyGdkFont_Object *self)
 {
     gdk_font_unref(self->obj);
     PyMem_DEL(self);
 }
 
 static PyObject *
-PyGdkFont_Width(PyGdkFont_Object *self, PyObject *args)
+pygdk_font_width(PyGdkFont_Object *self, PyObject *args)
 {
     char *text;
     int length;
@@ -627,7 +640,7 @@ PyGdkFont_Width(PyGdkFont_Object *self, PyObject *args)
 }
 
 static PyObject *
-PyGdkFont_Measure(PyGdkFont_Object *self, PyObject *args)
+pygdk_font_measure(PyGdkFont_Object *self, PyObject *args)
 {
     char *text;
     int length;
@@ -638,7 +651,7 @@ PyGdkFont_Measure(PyGdkFont_Object *self, PyObject *args)
 }
 
 static PyObject *
-PyGdkFont_Height(PyGdkFont_Object *self, PyObject *args)
+pygdk_font_height(PyGdkFont_Object *self, PyObject *args)
 {
     char *text;
     int length;
@@ -649,7 +662,7 @@ PyGdkFont_Height(PyGdkFont_Object *self, PyObject *args)
 }
 
 static PyObject *
-PyGdkFont_Extents(PyGdkFont_Object *self, PyObject *args)
+pygdk_font_extents(PyGdkFont_Object *self, PyObject *args)
 {
     char *text;
     int length, lbearing, rbearing, width, ascent, descent;
@@ -661,15 +674,15 @@ PyGdkFont_Extents(PyGdkFont_Object *self, PyObject *args)
 }
 
 static PyMethodDef PyGdkFont_methods[] = {
-    {"width",   (PyCFunction)PyGdkFont_Width,   METH_VARARGS, NULL},
-    {"measure", (PyCFunction)PyGdkFont_Measure, METH_VARARGS, NULL},
-    {"height",  (PyCFunction)PyGdkFont_Height,  METH_VARARGS, NULL},
-    {"extents", (PyCFunction)PyGdkFont_Extents, METH_VARARGS, NULL},
+    {"width",   (PyCFunction)pygdk_font_width,   METH_VARARGS, NULL},
+    {"measure", (PyCFunction)pygdk_font_measure, METH_VARARGS, NULL},
+    {"height",  (PyCFunction)pygdk_font_height,  METH_VARARGS, NULL},
+    {"extents", (PyCFunction)pygdk_font_extents, METH_VARARGS, NULL},
     {NULL, 0, 0, NULL}
 };
 
 static PyObject *
-PyGdkFont_GetAttr(PyGdkFont_Object *self, char *key)
+pygdk_font_getattr(PyGdkFont_Object *self, char *key)
 {
     if (!strcmp(key, "__members__"))
 	return Py_BuildValue("[sss]", "ascent", "descent", "type");
@@ -683,7 +696,7 @@ PyGdkFont_GetAttr(PyGdkFont_Object *self, char *key)
 }
 
 static int
-PyGdkFont_Compare(PyGdkFont_Object *self, PyGdkFont_Object *v)
+pygdk_font_compare(PyGdkFont_Object *self, PyGdkFont_Object *v)
 {
     if (self->obj == v->obj) return 0;
     if (self->obj > v->obj) return -1;
@@ -691,7 +704,7 @@ PyGdkFont_Compare(PyGdkFont_Object *self, PyGdkFont_Object *v)
 }
 
 static long
-PyGdkFont_Hash(PyGdkFont_Object *self)
+pygdk_font_hash(PyGdkFont_Object *self)
 {
     return (long)self->obj;
 }
@@ -702,16 +715,16 @@ PyTypeObject PyGdkFont_Type = {
     "GdkFont",
     sizeof(PyGdkFont_Object),
     0,
-    (destructor)PyGdkFont_Dealloc,
+    (destructor)pygdk_font_dealloc,
     (printfunc)0,
-    (getattrfunc)PyGdkFont_GetAttr,
+    (getattrfunc)pygdk_font_getattr,
     (setattrfunc)0,
-    (cmpfunc)PyGdkFont_Compare,
+    (cmpfunc)pygdk_font_compare,
     (reprfunc)0,
     0,
     0,
     0,
-    (hashfunc)PyGdkFont_Hash,
+    (hashfunc)pygdk_font_hash,
     (ternaryfunc)0,
     (reprfunc)0,
     0L,0L,0L,0L,
@@ -719,13 +732,13 @@ PyTypeObject PyGdkFont_Type = {
 };
 
 static void
-PyGdkColor_Dealloc(PyGdkColor_Object *self)
+pygdk_color_dealloc(PyGdkColor_Object *self)
 {
     PyMem_DEL(self);
 }
 
 static PyObject *
-PyGdkColor_GetAttr(PyGdkColor_Object *self, char *key)
+pygdk_color_getattr(PyGdkColor_Object *self, char *key)
 {
     if (!strcmp(key, "red"))
 	return PyInt_FromLong(self->obj.red);
@@ -740,7 +753,7 @@ PyGdkColor_GetAttr(PyGdkColor_Object *self, char *key)
 }
 
 static PyObject *
-PyGdkColor_SetAttr(PyGdkColor_Object *self, char *key, PyObject * val)
+pygdk_color_setattr(PyGdkColor_Object *self, char *key, PyObject * val)
 {
     if (!strcmp(key, "red"))
 	self->obj.red = PyInt_AsLong(val);
@@ -755,7 +768,7 @@ PyGdkColor_SetAttr(PyGdkColor_Object *self, char *key, PyObject * val)
 }
 
 static int
-PyGdkColor_Compare(PyGdkColor_Object *self, PyGdkColor_Object *v)
+pygdk_color_compare(PyGdkColor_Object *self, PyGdkColor_Object *v)
 {
     if (self->obj.pixel == v->obj.pixel) return 0;
     if (self->obj.pixel > v->obj.pixel) return -1;
@@ -763,13 +776,13 @@ PyGdkColor_Compare(PyGdkColor_Object *self, PyGdkColor_Object *v)
 }
 
 static long
-PyGdkColor_Hash(PyGdkColor_Object *self)
+pygdk_color_hash(PyGdkColor_Object *self)
 {
     return (long)self->obj.pixel;
 }
 
 static PyObject *
-PyGdkColor_Repr(PyGdkColor_Object *self)
+pygdk_color_repr(PyGdkColor_Object *self)
 {
     char buf[80];
 
@@ -784,16 +797,16 @@ PyTypeObject PyGdkColor_Type = {
     "GdkColor",
     sizeof(PyGdkColor_Object),
     0,
-    (destructor)PyGdkColor_Dealloc,
+    (destructor)pygdk_color_dealloc,
     (printfunc)0,
-    (getattrfunc)PyGdkColor_GetAttr,
-    (setattrfunc)PyGdkColor_SetAttr,
-    (cmpfunc)PyGdkColor_Compare,
-    (reprfunc)PyGdkColor_Repr,
+    (getattrfunc)pygdk_color_getattr,
+    (setattrfunc)pygdk_color_setattr,
+    (cmpfunc)pygdk_color_compare,
+    (reprfunc)pygdk_color_repr,
     0,
     0,
     0,
-    (hashfunc)PyGdkColor_Hash,
+    (hashfunc)pygdk_color_hash,
     (ternaryfunc)0,
     (reprfunc)0,
     0L,0L,0L,0L,
@@ -801,10 +814,11 @@ PyTypeObject PyGdkColor_Type = {
 };
 
 PyObject *
-PyGdkEvent_New(GdkEvent *obj)
+PyGkEvent_New(GdkEvent *obj)
 {
     PyGdkEvent_Object *self;
     PyObject *v;
+    guint i;
 
     if (obj == NULL) {
 	Py_INCREF(Py_None);
@@ -863,17 +877,11 @@ PyGdkEvent_New(GdkEvent *obj)
 	    return NULL;
 	PyDict_SetItemString(self->attrs,"y", v);
 	Py_DECREF(v);
-	if ((v = PyFloat_FromDouble(obj->motion.pressure)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "pressure", v);
-	Py_DECREF(v);
-	if ((v = PyFloat_FromDouble(obj->motion.xtilt)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "xtilt", v);
-	Py_DECREF(v);
-	if ((v = PyFloat_FromDouble(obj->motion.ytilt)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "ytilt", v);
+	v = PyTuple_New(obj->motion.device->num_axes);
+	if (!v) return NULL;
+	for (i = 0; i < obj->motion.device->num_axes; i++)
+	    PyTuple_SetItem(v, i, PyFloat_FromDouble(obj->motion.axes[i]));
+	PyDict_SetItemString(self->attrs,"axes", v);
 	Py_DECREF(v);
 	if ((v = PyInt_FromLong(obj->motion.state)) == NULL)
 	    return NULL;
@@ -883,13 +891,9 @@ PyGdkEvent_New(GdkEvent *obj)
 	    return NULL;
 	PyDict_SetItemString(self->attrs, "is_hint", v);
 	Py_DECREF(v);
-	if ((v = PyInt_FromLong(obj->motion.source)) == NULL)
+	if ((v = PyGdkDevice_New(obj->motion.device)) == NULL)
 	    return NULL;
-	PyDict_SetItemString(self->attrs, "source", v);
-	Py_DECREF(v);
-	if ((v = PyInt_FromLong(obj->motion.deviceid)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "deviceid", v);
+	PyDict_SetItemString(self->attrs, "device", v);
 	Py_DECREF(v);
 	if ((v = PyFloat_FromDouble(obj->motion.x_root)) == NULL)
 	    return NULL;
@@ -916,17 +920,11 @@ PyGdkEvent_New(GdkEvent *obj)
 	    return NULL;
 	PyDict_SetItemString(self->attrs,"y", v);
 	Py_DECREF(v);
-	if ((v = PyFloat_FromDouble(obj->button.pressure)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "pressure", v);
-	Py_DECREF(v);
-	if ((v = PyFloat_FromDouble(obj->button.xtilt)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "xtilt", v);
-	Py_DECREF(v);
-	if ((v = PyFloat_FromDouble(obj->button.ytilt)) == NULL)
-	    return NULL; 
-	PyDict_SetItemString(self->attrs, "ytilt", v);
+	v = PyTuple_New(obj->motion.device->num_axes);
+	if (!v) return NULL;
+	for (i = 0; i < obj->motion.device->num_axes; i++)
+	    PyTuple_SetItem(v, i, PyFloat_FromDouble(obj->motion.axes[i]));
+	PyDict_SetItemString(self->attrs,"axes", v);
 	Py_DECREF(v);
 	if ((v = PyInt_FromLong(obj->button.state)) == NULL)
 	    return NULL;
@@ -936,13 +934,9 @@ PyGdkEvent_New(GdkEvent *obj)
 	    return NULL;
 	PyDict_SetItemString(self->attrs, "button", v);
 	Py_DECREF(v);
-	if ((v = PyInt_FromLong(obj->button.source)) == NULL)
+	if ((v = PyGdkDevice_New(obj->button.device)) == NULL)
 	    return NULL;
-	PyDict_SetItemString(self->attrs, "source", v);
-	Py_DECREF(v);
-	if ((v = PyInt_FromLong(obj->button.deviceid)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "deviceid", v);
+	PyDict_SetItemString(self->attrs, "device", v);
 	Py_DECREF(v);
 	if ((v = PyFloat_FromDouble(obj->button.x_root)) == NULL)
 	    return NULL;
@@ -1089,13 +1083,9 @@ PyGdkEvent_New(GdkEvent *obj)
 	    return NULL;
 	PyDict_SetItemString(self->attrs, "time", v);
 	Py_DECREF(v);
-	if ((v = PyInt_FromLong(obj->proximity.source)) == NULL)
+	if ((v = PyGdkDevice_New(obj->proximity.device)) == NULL)
 	    return NULL;
-	PyDict_SetItemString(self->attrs, "source", v);
-	Py_DECREF(v);
-	if ((v = PyInt_FromLong(obj->proximity.deviceid)) == NULL)
-	    return NULL;
-	PyDict_SetItemString(self->attrs, "deviceid", v);
+	PyDict_SetItemString(self->attrs, "device", v);
 	Py_DECREF(v);
 	break;
     case GDK_DRAG_ENTER:        /*GdkEventDND               dnd*/
@@ -1150,14 +1140,14 @@ PyGdkEvent_New(GdkEvent *obj)
 }
 
 static void
-PyGdkEvent_Dealloc(PyGdkEvent_Object *self)
+pygdk_event_dealloc(PyGdkEvent_Object *self)
 {
     Py_XDECREF(self->attrs);
     PyMem_DEL(self);
 }
 
 static PyObject *
-PyGdkEvent_GetAttr(PyGdkEvent_Object *self, char *attr)
+pygdk_event_getattr(PyGdkEvent_Object *self, char *attr)
 {
     PyObject *ret;
     ret = PyDict_GetItemString(self->attrs, attr);
@@ -1170,7 +1160,7 @@ PyGdkEvent_GetAttr(PyGdkEvent_Object *self, char *attr)
 }
 
 static int
-PyGdkEvent_Compare(PyGdkEvent_Object *self, PyGdkEvent_Object *v)
+pygdk_event_compare(PyGdkEvent_Object *self, PyGdkEvent_Object *v)
 {
     if (self->obj == v->obj) return 0;
     if (self->obj > v->obj) return -1;
@@ -1178,7 +1168,7 @@ PyGdkEvent_Compare(PyGdkEvent_Object *self, PyGdkEvent_Object *v)
 }
 
 static long
-PyGdkEvent_Hash(PyGdkEvent_Object *self)
+pygdk_event_hash(PyGdkEvent_Object *self)
 {
     return (long)self->obj;
 }
@@ -1189,16 +1179,16 @@ PyTypeObject PyGdkEvent_Type = {
     "GdkEvent",
     sizeof(PyGdkEvent_Object),
     0,
-    (destructor)PyGdkEvent_Dealloc,
+    (destructor)pygdk_event_dealloc,
     (printfunc)0,
-    (getattrfunc)PyGdkEvent_GetAttr,
+    (getattrfunc)pygdk_event_getattr,
     (setattrfunc)0,
-    (cmpfunc)PyGdkEvent_Compare,
+    (cmpfunc)pygdk_event_compare,
     (reprfunc)0,
     0,
     0,
     0,
-    (hashfunc)PyGdkEvent_Hash,
+    (hashfunc)pygdk_event_hash,
     (ternaryfunc)0,
     (reprfunc)0,
     0L,0L,0L,0L,
@@ -2193,14 +2183,14 @@ PyTypeObject PyGdkDragContext_Type = {
 #endif
 
 static void
-PyGtkSelectionData_Dealloc(PyGtkSelectionData_Object *self)
+pygtk_selection_data_dealloc(PyGtkSelectionData_Object *self)
 {
     PyMem_DEL(self);
 }
 
 static int
-PyGtkSelectionData_Compare(PyGtkSelectionData_Object *self,
-			   PyGtkSelectionData_Object *v)
+pygtk_selection_data_compare(PyGtkSelectionData_Object *self,
+			     PyGtkSelectionData_Object *v)
 {
     if (self->obj == v->obj) return 0;
     if (self->obj > v->obj) return -1;
@@ -2208,13 +2198,13 @@ PyGtkSelectionData_Compare(PyGtkSelectionData_Object *self,
 }
 
 static long
-PyGtkSelectionData_Hash(PyGtkSelectionData_Object *self)
+pygtk_selection_data_hash(PyGtkSelectionData_Object *self)
 {
     return (long)self->obj;
 }
 
 static PyObject *
-PyGtkSelectionData_Set(PyGtkSelectionData_Object *self, PyObject *args)
+pygtk_selection_data_set(PyGtkSelectionData_Object *self, PyObject *args)
 {
     GdkAtom type;
     int format, length;
@@ -2228,13 +2218,13 @@ PyGtkSelectionData_Set(PyGtkSelectionData_Object *self, PyObject *args)
     return Py_None;
 }
 
-static PyMethodDef PyGtkSelectionData_methods[] = {
-    {"set", (PyCFunction)PyGtkSelectionData_Set, METH_VARARGS, NULL},
+static PyMethodDef pygtk_selection_data_methods[] = {
+    {"set", (PyCFunction)pygtk_selection_data_set, METH_VARARGS, NULL},
     {NULL, 0, 0, NULL}
 };
 
 static PyObject *
-PyGtkSelectionData_GetAttr(PyGtkSelectionData_Object *self, char *key)
+pygtk_selection_data_getattr(PyGtkSelectionData_Object *self, char *key)
 {
     if (!strcmp(key, "__members__"))
 	return Py_BuildValue("[sssss]", "data", "format", "selection",
@@ -2260,7 +2250,7 @@ PyGtkSelectionData_GetAttr(PyGtkSelectionData_Object *self, char *key)
 	}
     }
 
-    return Py_FindMethod(PyGtkSelectionData_methods, (PyObject *)self, key);
+    return Py_FindMethod(pygtk_selection_data_methods, (PyObject *)self, key);
 }
 
 PyTypeObject PyGtkSelectionData_Type = {
@@ -2269,16 +2259,16 @@ PyTypeObject PyGtkSelectionData_Type = {
     "GtkSelectionData",
     sizeof(PyGtkSelectionData_Object),
     0,
-    (destructor)PyGtkSelectionData_Dealloc,
+    (destructor)pygtk_selection_data_dealloc,
     (printfunc)0,
-    (getattrfunc)PyGtkSelectionData_GetAttr,
+    (getattrfunc)pygtk_selection_data_getattr,
     (setattrfunc)0,
-    (cmpfunc)PyGtkSelectionData_Compare,
+    (cmpfunc)pygtk_selection_data_compare,
     (reprfunc)0,
     0,
     0,
     0,
-    (hashfunc)PyGtkSelectionData_Hash,
+    (hashfunc)pygtk_selection_data_hash,
     (ternaryfunc)0,
     (reprfunc)0,
     0L,0L,0L,0L,
@@ -2286,14 +2276,14 @@ PyTypeObject PyGtkSelectionData_Type = {
 };
 
 static void
-PyGdkAtom_Dealloc(PyGdkAtom_Object *self)
+pygdk_atom_dealloc(PyGdkAtom_Object *self)
 {
     if (self->name) g_free(self->name);
     PyMem_DEL(self);
 }
 
 static int
-PyGdkAtom_Compare(PyGdkAtom_Object *self, PyGdkAtom_Object *v)
+pygdk_atom_compare(PyGdkAtom_Object *self, PyGdkAtom_Object *v)
 {
     if (self->atom == v->atom) return 0;
     if (self->atom > v->atom) return -1;
@@ -2301,13 +2291,13 @@ PyGdkAtom_Compare(PyGdkAtom_Object *self, PyGdkAtom_Object *v)
 }
 
 static long
-PyGdkAtom_Hash(PyGdkAtom_Object *self)
+pygdk_atom_hash(PyGdkAtom_Object *self)
 {
     return (long)self->atom;
 }
 
 static PyObject *
-PyGdkAtom_Repr(PyGdkAtom_Object *self)
+pygdk_atom_repr(PyGdkAtom_Object *self)
 {
     char buf[256];
     if (!self->name) self->name = gdk_atom_name(self->atom);
@@ -2317,7 +2307,7 @@ PyGdkAtom_Repr(PyGdkAtom_Object *self)
 }
 
 static int
-PyGdkAtom_Coerce(PyObject **self, PyObject **other)
+pygdk_atom_coerce(PyObject **self, PyObject **other)
 {
     PyGdkAtom_Object *old = (PyGdkAtom_Object *)*self;
     if (PyInt_Check(*other)) {
@@ -2345,25 +2335,25 @@ PyGdkAtom_Coerce(PyObject **self, PyObject **other)
 }
 
 static PyObject *
-PyGdkAtom_Int(PyGdkAtom_Object *self)
+pygdk_atom_int(PyGdkAtom_Object *self)
 {
     return PyInt_FromLong(self->atom);
 }
 
 static PyObject *
-PyGdkAtom_Long(PyGdkAtom_Object *self)
+pygdk_atom_long(PyGdkAtom_Object *self)
 {
     return PyLong_FromUnsignedLong(self->atom);
 }
 
 static PyObject *
-PyGdkAtom_Float(PyGdkAtom_Object *self)
+pygdk_atom_float(PyGdkAtom_Object *self)
 {
     return PyFloat_FromDouble(self->atom);
 }
 
 static PyObject *
-PyGdkAtom_Oct(PyGdkAtom_Object *self)
+pygdk_atom_oct(PyGdkAtom_Object *self)
 {
     char buf[100];
     if (self->atom == 0) return PyString_FromString("0");
@@ -2372,7 +2362,7 @@ PyGdkAtom_Oct(PyGdkAtom_Object *self)
 }
 
 static PyObject *
-PyGdkAtom_Hex(PyGdkAtom_Object *self)
+pygdk_atom_hex(PyGdkAtom_Object *self)
 {
     char buf[100];
     g_snprintf(buf, 100, "0x%lx", self->atom);
@@ -2380,7 +2370,7 @@ PyGdkAtom_Hex(PyGdkAtom_Object *self)
 }
 
 static PyObject *
-PyGdkAtom_Str(PyGdkAtom_Object *self)
+pygdk_atom_str(PyGdkAtom_Object *self)
 {
     if (!self->name) self->name = gdk_atom_name(self->atom);
     if (self->name)
@@ -2389,7 +2379,7 @@ PyGdkAtom_Str(PyGdkAtom_Object *self)
     return Py_None;
 }
 
-static PyNumberMethods PyGdkAtom_Number = {
+static PyNumberMethods pygdk_atom_number = {
     (binaryfunc)0,
     (binaryfunc)0,
     (binaryfunc)0,
@@ -2407,12 +2397,12 @@ static PyNumberMethods PyGdkAtom_Number = {
     (binaryfunc)0,
     (binaryfunc)0,
     (binaryfunc)0,
-    (coercion)PyGdkAtom_Coerce,
-    (unaryfunc)PyGdkAtom_Int,
-    (unaryfunc)PyGdkAtom_Long,
-    (unaryfunc)PyGdkAtom_Float,
-    (unaryfunc)PyGdkAtom_Oct,
-    (unaryfunc)PyGdkAtom_Hex
+    (coercion)pygdk_atom_coerce,
+    (unaryfunc)pygdk_atom_int,
+    (unaryfunc)pygdk_atom_long,
+    (unaryfunc)pygdk_atom_float,
+    (unaryfunc)pygdk_atom_oct,
+    (unaryfunc)pygdk_atom_hex
 };
 
 PyTypeObject PyGdkAtom_Type = {
@@ -2421,31 +2411,31 @@ PyTypeObject PyGdkAtom_Type = {
     "GdkAtom",
     sizeof(PyGdkAtom_Object),
     0,
-    (destructor)PyGdkAtom_Dealloc,
+    (destructor)pygdk_atom_dealloc,
     (printfunc)0,
     (getattrfunc)0,
     (setattrfunc)0,
-    (cmpfunc)PyGdkAtom_Compare,
-    (reprfunc)PyGdkAtom_Repr,
-    &PyGdkAtom_Number,
+    (cmpfunc)pygdk_atom_compare,
+    (reprfunc)pygdk_atom_repr,
+    &pygdk_atom_number,
     0,
     0,
-    (hashfunc)PyGdkAtom_Hash,
+    (hashfunc)pygdk_atom_hash,
     (ternaryfunc)0,
-    (reprfunc)PyGdkAtom_Str,
+    (reprfunc)pygdk_atom_str,
     0L,0L,0L,0L,
     NULL
 };
 
 static void
-PyGdkCursor_Dealloc(PyGdkCursor_Object *self)
+pygdk_cursor_dealloc(PyGdkCursor_Object *self)
 {
     gdk_cursor_destroy(self->obj);
     PyMem_DEL(self);
 }
 
 static int
-PyGdkCursor_Compare(PyGdkCursor_Object *self, PyGdkCursor_Object *v)
+pygdk_cursor_compare(PyGdkCursor_Object *self, PyGdkCursor_Object *v)
 {
     if (self->obj == v->obj) return 0;
     if (self->obj > v->obj) return -1;
@@ -2453,13 +2443,13 @@ PyGdkCursor_Compare(PyGdkCursor_Object *self, PyGdkCursor_Object *v)
 }
 
 static long
-PyGdkCursor_Hash(PyGdkCursor_Object *self)
+pygdk_cursor_hash(PyGdkCursor_Object *self)
 {
     return (long)self->obj;
 }
 
 static PyObject *
-PyGdkCursor_Repr(PyGdkCursor_Object *self)
+pygdk_cursor_repr(PyGdkCursor_Object *self)
 {
     char buf[256], *cname = NULL;
 
@@ -2477,7 +2467,8 @@ PyGdkCursor_Repr(PyGdkCursor_Object *self)
     return PyString_FromString(buf);
 }
 
-static PyObject *PyGdkCursor_GetAttr(PyGdkCursor_Object *self, char *attr)
+static PyObject *
+pygdk_cursor_getattr(PyGdkCursor_Object *self, char *attr)
 {
     if (!strcmp(attr, "type"))
 	return PyInt_FromLong(self->obj->type);
@@ -2499,16 +2490,16 @@ PyTypeObject PyGdkCursor_Type = {
     "GdkCursor",
     sizeof(PyGdkCursor_Object),
     0,
-    (destructor)PyGdkCursor_Dealloc,
+    (destructor)pygdk_cursor_dealloc,
     (printfunc)0,
-    (getattrfunc)PyGdkCursor_GetAttr,
+    (getattrfunc)pygdk_cursor_getattr,
     (setattrfunc)0,
-    (cmpfunc)PyGdkCursor_Compare,
-    (reprfunc)PyGdkCursor_Repr,
+    (cmpfunc)pygdk_cursor_compare,
+    (reprfunc)pygdk_cursor_repr,
     0,
     0,
     0,
-    (hashfunc)PyGdkCursor_Hash,
+    (hashfunc)pygdk_cursor_hash,
     (ternaryfunc)0,
     (reprfunc)0,
     0L,0L,0L,0L,
@@ -2516,13 +2507,13 @@ PyTypeObject PyGdkCursor_Type = {
 };
 
 static void
-PyGtkCTreeNode_Dealloc(PyGtkCTreeNode_Object *self)
+pygtk_ctree_node_dealloc(PyGtkCTreeNode_Object *self)
 {
     PyMem_DEL(self);
 }
 
 static int
-PyGtkCTreeNode_Compare(PyGtkCTreeNode_Object *self, PyGtkCTreeNode_Object *v)
+pygtk_ctree_node_compare(PyGtkCTreeNode_Object *self, PyGtkCTreeNode_Object *v)
 {
     if (self->node == v->node) return 0;
     if (self->node > v->node) return -1;
@@ -2530,13 +2521,13 @@ PyGtkCTreeNode_Compare(PyGtkCTreeNode_Object *self, PyGtkCTreeNode_Object *v)
 }
 
 static long
-PyGtkCTreeNode_Hash(PyGtkCTreeNode_Object *self)
+pygtk_ctree_node_hash(PyGtkCTreeNode_Object *self)
 {
     return (long)self->node;
 }
 
 static PyObject *
-PyGtkCTreeNode_GetAttr(PyGtkCTreeNode_Object *self, char *key)
+pygtk_ctree_node_getattr(PyGtkCTreeNode_Object *self, char *key)
 {
     if (!strcmp(key, "__members__"))
 	return Py_BuildValue("[ssssss]", "children", "expanded", "is_leaf",
@@ -2585,16 +2576,257 @@ PyTypeObject PyGtkCTreeNode_Type = {
     "GtkCTreeNode",
     sizeof(PyGtkCTreeNode_Object),
     0,
-    (destructor)PyGtkCTreeNode_Dealloc,
+    (destructor)pygtk_ctree_node_dealloc,
     (printfunc)0,
-    (getattrfunc)PyGtkCTreeNode_GetAttr,
+    (getattrfunc)pygtk_ctree_node_getattr,
     (setattrfunc)0,
-    (cmpfunc)PyGtkCTreeNode_Compare,
+    (cmpfunc)pygtk_ctree_node_compare,
     (reprfunc)0,
     0,
     0,
     0,
-    (hashfunc)PyGtkCTreeNode_Hash,
+    (hashfunc)pygtk_ctree_node_hash,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    0L,0L,0L,0L,
+    NULL
+};
+
+static void
+pygdk_device_dealloc(PyGdkDevice_Object *self)
+{
+    PyMem_DEL(self);
+}
+
+static int
+pygdk_device_compare(PyGdkDevice_Object *self, PyGdkDevice_Object *v)
+{
+    if (self->obj == v->obj) return 0;
+    if (self->obj > v->obj) return -1;
+    return 1;
+}
+
+static long
+pygdk_device_hash(PyGdkDevice_Object *self)
+{
+    return (long)self->obj;
+}
+
+static PyObject *
+pygdk_device_set_source(PyGdkDevice_Object *self, PyObject *args)
+{
+    GdkInputSource source;
+
+    if (!PyArg_ParseTuple(args, "i:GdkDevice.set_source", &source))
+	return NULL;
+    gdk_device_set_source(self->obj, source);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygdk_device_set_mode(PyGdkDevice_Object *self, PyObject *args)
+{
+    GdkInputMode mode;
+
+    if (!PyArg_ParseTuple(args, "i:GdkDevice.set_mode", &mode))
+	return NULL;
+    gdk_device_set_mode(self->obj, mode);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygdk_device_set_key(PyGdkDevice_Object *self, PyObject *args)
+{
+    guint index, keyval;
+    GdkModifierType modifiers;
+
+    if (!PyArg_ParseTuple(args, "iii:GdkDevice.set_key", &index, &keyval,
+			  &modifiers))
+	return NULL;
+    gdk_device_set_key(self->obj, index, keyval, modifiers);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygdk_device_set_axis_use(PyGdkDevice_Object *self, PyObject *args)
+{
+    guint index;
+    GdkAxisUse use;
+
+    if (!PyArg_ParseTuple(args, "ii:GdkDevice.set_axis_use", &index, &use))
+	return NULL;
+    gdk_device_set_axis_use(self->obj, index, use);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *
+pygdk_device_get_state(PyGdkDevice_Object *self, PyObject *args)
+{
+    PyGObject *window;
+    gdouble *axes;
+    GdkModifierType mask;
+    PyObject *pyaxes;
+    guint i;
+
+    if (!PyArg_ParseTuple(args, "O:GdkDevice.get_state", &window))
+	return NULL;
+#if 0
+    if (!pygobject_check(window, &PyGdkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
+	return NULL;
+    }
+#endif
+    axes = g_new0(gdouble, self->obj->num_axes);
+    gdk_device_get_state(self->obj, GDK_WINDOW(window->obj), axes, &mask);
+    pyaxes = PyTuple_New(self->obj->num_axes);
+    for (i = 0; i < self->obj->num_axes; i++)
+	PyTuple_SetItem(pyaxes, i, PyFloat_FromDouble(axes[i]));
+    g_free(axes);
+    return Py_BuildValue("(Ni)", pyaxes, mask);
+}
+
+static PyObject *
+pygdk_device_get_history(PyGdkDevice_Object *self, PyObject *args)
+{
+    PyGObject *window;
+    guint start, stop;
+    GdkTimeCoord **events;
+    gint n_events;
+    PyObject *pyevents;
+    guint i;
+
+    if (!PyArg_ParseTuple(args, "Oii:GdkDevice.get_history", &window,
+			  &start, &stop))
+	return NULL;
+#if 0
+    if (!pygobject_check(window, &PyGdkWindow_Type)) {
+	PyErr_SetString(PyExc_TypeError, "window should be a GdkWindow");
+	return NULL;
+    }
+#endif
+    gdk_device_get_history(self->obj, GDK_WINDOW(window->obj), start, stop,
+			   &events, &n_events);
+    pyevents = PyTuple_New(n_events);
+    for (i = 0; i < n_events; i++) {
+	PyObject *axes;
+	gint j;
+
+	axes = PyTuple_New(self->obj->num_axes);
+	for (j = 0; j < self->obj->num_axes; j++)
+	    PyTuple_SetItem(axes, j, PyFloat_FromDouble(events[i]->axes[j]));
+	PyTuple_SetItem(pyevents, i, Py_BuildValue("(iN)", events[i]->time,
+						 axes));
+    }
+    gdk_device_free_history(events, n_events);
+    return pyevents;
+}
+
+static PyObject *
+pygdk_device_get_axis(PyGdkDevice_Object *self, PyObject *args)
+{
+    PyObject *pyaxes;
+    gdouble *axes, value;
+    GdkAxisUse use;
+    gboolean ret;
+    gint i;
+
+    if (!PyArg_ParseTuple(args, "Oi:GdkDevice.get_axis", &pyaxes, &use))
+	return NULL;
+    if (!PySequence_Check(pyaxes)) {
+	PyErr_SetString(PyExc_TypeError, "axes must be a sequence");
+	return NULL;
+    }
+    if (PySequence_Length(pyaxes) != self->obj->num_axes) {
+	PyErr_SetString(PyExc_TypeError, "axes has the wrong length");
+	return NULL;
+    }
+    axes = g_new(gdouble, self->obj->num_axes);
+    for (i = 0; i < self->obj->num_axes; i++) {
+	PyObject *item = PySequence_GetItem(pyaxes, i);
+
+	axes[i] = PyFloat_AsDouble(item);
+	Py_DECREF(item);
+	if (PyErr_Occurred()) {
+	    g_free(axes);
+	    return NULL;
+	}
+    }
+    ret = gdk_device_get_axis(self->obj, axes, use, &value);
+    g_free(axes);
+    if (ret)
+	return PyFloat_FromDouble(value);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef pygdk_device_methods[] = {
+    { "set_source", (PyCFunction)pygdk_device_set_source, METH_VARARGS },
+    { "set_mode", (PyCFunction)pygdk_device_set_mode, METH_VARARGS },
+    { "set_key", (PyCFunction)pygdk_device_set_key, METH_VARARGS },
+    { "set_axis_use", (PyCFunction)pygdk_device_set_axis_use, METH_VARARGS },
+    { "get_state", (PyCFunction)pygdk_device_get_state, METH_VARARGS },
+    { "get_history", (PyCFunction)pygdk_device_get_history, METH_VARARGS },
+    { "get_axis", (PyCFunction)pygdk_device_get_axis, METH_VARARGS },
+    { NULL, NULL, 0 }
+};
+
+static PyObject *
+pygdk_device_getattr(PyGdkDevice_Object *self, char *attr)
+{
+    if (!strcmp(attr, "__members__"))
+	return Py_BuildValue("[ssssss]", "axes", "has_cursor", "keys",
+			     "mode", "name", "source");
+    else if (!strcmp(attr, "name"))
+	return PyString_FromString(self->obj->name);
+    else if (!strcmp(attr, "source"))
+	return PyInt_FromLong(self->obj->source);
+    else if (!strcmp(attr, "mode"))
+	return PyInt_FromLong(self->obj->mode);
+    else if (!strcmp(attr, "axes")) {
+	PyObject *ret;
+	gint i;
+
+	ret = PyTuple_New(self->obj->num_axes);
+	for (i = 0; i < self->obj->num_axes; i++)
+	    PyTuple_SetItem(ret, i, Py_BuildValue("(idd)",
+						  self->obj->axes[i].use,
+						  self->obj->axes[i].min,
+						  self->obj->axes[i].max));
+	return ret;
+    } else if (!strcmp(attr, "keys")) {
+	PyObject *ret;
+	gint i;
+
+	ret = PyTuple_New(self->obj->num_keys);
+	for (i = 0; i < self->obj->num_keys; i++)
+	    PyTuple_SetItem(ret, i, Py_BuildValue("(ii)",
+						self->obj->keys[i].keyval,
+						self->obj->keys[i].modifiers));
+	return ret;
+    }
+    return Py_FindMethod(pygdk_device_methods, (PyObject *)self, attr);
+}
+
+PyTypeObject PyGdkDevice_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "GdkDevice",
+    sizeof(PyGdkDevice_Object),
+    0,
+    (destructor)pygdk_device_dealloc,
+    (printfunc)0,
+    (getattrfunc)pygdk_device_getattr,
+    (setattrfunc)0,
+    (cmpfunc)pygdk_device_compare,
+    (reprfunc)0,
+    0,
+    0,
+    0,
+    (hashfunc)pygdk_device_hash,
     (ternaryfunc)0,
     (reprfunc)0,
     0L,0L,0L,0L,
@@ -2632,4 +2864,5 @@ _pygtk_register_boxed_types(PyObject *moddict)
     register_tp(GdkAtom);
     register_tp(GdkCursor);
     register_tp(GtkCTreeNode);
+    register_tp(GdkDevice);
 }

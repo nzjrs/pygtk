@@ -393,6 +393,13 @@ class AtomArg(IntArg):
     def write_return(self, ptype, varlist):
         return '    return PyGdkAtom_New(%(func)s);'
 
+# simple GError handler.
+# XXXX - must get codegen to handle real GError stuff
+class GErrorArg(ArgType):
+    def write_param(self, ptype, pname, pdflt, pnull, varlist, parselist,
+		    extracode, arglist):
+	    arglist.append('NULL')
+
 class ArgMatcher:
     def __init__(self):
 	self.argtypes = {}
@@ -484,5 +491,6 @@ matcher.register_boxed('GdkCursor', 'PyGdkCursor_Type',
 matcher.register_boxed('GtkCTreeNode', 'PyGtkCTreeNode_Type',
 		       'PyGtkCTreeNode_Get', 'PyGtkCTreeNode_New')
 matcher.register('GdkAtom', AtomArg())
+matcher.register('GError**', GErrorArg())
 
 del arg
