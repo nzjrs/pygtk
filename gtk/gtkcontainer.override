@@ -32,7 +32,6 @@ ignore
   gtk_container_child_set_valist
   gtk_container_child_get_valist
   gtk_container_class_find_child_property
-  gtk_container_class_list_child_properties
 %%
 override gtk_container_children noargs
 static PyObject *
@@ -552,4 +551,55 @@ static PyObject *
 _wrap_gtk_container_forall(PyGObject *self, PyObject *args)
 {
     return pygtk_container_for_common(self, args, PYGTK_CONTAINER_FORALL);
+}
+%%
+override gtk_container_class_list_child_properties kwargs
+static PyObject *
+_wrap_gtk_container_class_list_child_properties (PyObject *self, PyObject *args,
+					      PyObject*kwargs)
+{
+    static char *kwlist[] = { "widget", NULL };
+    GParamSpec **specs;
+    PyObject *py_itype, *list;
+    GType itype;
+    GtkWidgetClass *class;
+    guint nprops;
+    guint i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:gtk.container_class_list_child_properties", kwlist,
+				     &py_itype))
+	return NULL;
+    
+    if ((itype = pyg_type_from_object(py_itype)) == 0)
+	return NULL;
+
+    if (!g_type_is_a(itype, G_TYPE_OBJECT)) {
+	PyErr_SetString(PyExc_TypeError, "type must be derived from GObject");
+	return NULL;
+    }
+
+    class = g_type_class_ref(itype);
+    if (!class) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not get a reference to type class");
+	return NULL;
+    }
+
+    specs = gtk_container_class_list_child_properties(class, &nprops);
+    list = PyTuple_New(nprops);
+    if (list == NULL) {
+	g_free(specs);
+	g_type_class_unref(class);
+	return NULL;
+    }
+    
+    for (i = 0; i < nprops; i++) {
+	PyTuple_SetItem(list, i, pyg_param_spec_new(specs[i]));
+    }
+    
+    g_free(specs);
+    g_type_class_unref(class);
+
+    return list;
 }
