@@ -400,6 +400,7 @@ static PyObject *_wrap_gdk_imlib_set_image_red_curve(PyObject *self, PyObject *a
     }
     for (i = 0; i < 256; i++) {
         item = PySequence_GetItem(list, i);
+        Py_DECREF(item);
         if (!PyInt_Check(item)) {
 	    PyErr_SetString(PyExc_TypeError,"item of sequence not an integer");
 	    return NULL;
@@ -425,6 +426,7 @@ static PyObject *_wrap_gdk_imlib_set_image_green_curve(PyObject *self, PyObject 
     }
     for (i = 0; i < 256; i++) {
         item = PySequence_GetItem(list, i);
+        Py_DECREF(item);
         if (!PyInt_Check(item)) {
 	    PyErr_SetString(PyExc_TypeError,"item of sequence not an integer");
 	    return NULL;
@@ -450,6 +452,7 @@ static PyObject *_wrap_gdk_imlib_set_image_blue_curve(PyObject *self, PyObject *
     }
     for (i = 0; i < 256; i++) {
         item = PySequence_GetItem(list, i);
+        Py_DECREF(item);
         if (!PyInt_Check(item)) {
 	    PyErr_SetString(PyExc_TypeError,"item of sequence not an integer");
 	    return NULL;

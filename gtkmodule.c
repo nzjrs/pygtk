@@ -1440,7 +1440,9 @@ static PyObject *PyGdkWindow_PropertyChange(PyGdkWindow_Object *self,
 	    data16 = g_new(guint16, nelements);
 	    data = (guchar *)data;
 	    for (i = 0; i < nelements; i++) {
-		PyObject *item = PyNumber_Int(PySequence_GetItem(pdata, i));
+		PyObject *item = PySequence_GetItem(pdata, i);
+		Py_DECREF(item);
+		item = PyNumber_Int(item);
 		if (!item) {
 		    g_free(data16);
 		    PyErr_Clear();
@@ -1465,7 +1467,9 @@ static PyObject *PyGdkWindow_PropertyChange(PyGdkWindow_Object *self,
 	    data32 = g_new(guint32, nelements);
 	    data = (guchar *)data;
 	    for (i = 0; i < nelements; i++) {
-		PyObject *item = PyNumber_Int(PySequence_GetItem(pdata, i));
+		PyObject *item = PySequence_GetItem(pdata, i);
+		Py_DECREF(item);
+		item = PyNumber_Int(item);
 		if (!item) {
 		    g_free(data32);
 		    PyErr_Clear();
@@ -1662,6 +1666,7 @@ static PyObject *PyGdkGC_set_dashes(PyGdkGC_Object *self, PyObject *args) {
   dash_list = g_new(char, n);
   for (i = 0; i < n; i++) {
     PyObject *item = PySequence_GetItem(list, i);
+    Py_DECREF(item);
 
     if (!PyInt_Check(item)) {
       PyErr_SetString(PyExc_TypeError, "sequence member must be an int");
@@ -2975,6 +2980,7 @@ static int GtkArgs_FromSequence(GtkArg *args, int nparams, PyObject *seq) {
     return -1;
   for (i = 0; i < nparams; i++) {
     item = PySequence_GetItem(seq, i);
+    Py_DECREF(item);
     if (GtkArg_FromPyObject(&args[i], item)) {
       gchar buf[512];
       if (args[i].name == NULL)
@@ -4149,6 +4155,7 @@ static PyObject *_wrap_gtk_clist_new_with_titles(PyObject *self, PyObject *args)
 	list = malloc(sizeof(char *)*c);
 	for (i = 0; i < c; i++) {
 		item = PySequence_GetItem(l, i);
+		Py_DECREF(item);
 		if (!PyString_Check(item)) {
 			PyErr_SetString(PyExc_TypeError,
 				 "sequence item not a string");
@@ -4246,6 +4253,7 @@ static PyObject *_wrap_gtk_clist_prepend(PyObject *self, PyObject *args) {
 	list = g_new(gchar *, col);
 	for (i = 0; i < col; i++) {
 		item = PySequence_GetItem(l, i);
+		Py_DECREF(item);
 		if (!PyString_Check(item)) {
 			PyErr_SetString(PyExc_TypeError,
 				"sequence item not a string");
@@ -4279,6 +4287,7 @@ static PyObject *_wrap_gtk_clist_append(PyObject *self, PyObject *args) {
 	list = g_new(gchar *, col);
 	for (i = 0; i < col; i++) {
 		item = PySequence_GetItem(l, i);
+		Py_DECREF(item);
 		if (!PyString_Check(item)) {
 			PyErr_SetString(PyExc_TypeError,
 				"sequence item not a string");
@@ -4312,6 +4321,7 @@ static PyObject *_wrap_gtk_clist_insert(PyObject *self, PyObject *args) {
 	list = g_new(gchar *, col);
 	for (i = 0; i < col; i++) {
 		item = PySequence_GetItem(l, i);
+		Py_DECREF(item);
 		if (!PyString_Check(item)) {
 			PyErr_SetString(PyExc_TypeError,
 				"sequence item not a string");
@@ -4401,6 +4411,7 @@ _wrap_gtk_combo_set_popdown_strings(PyObject *self, PyObject *args) {
   len = PySequence_Length(list);
   for (i = 0; i < len; i++) {
     item = PySequence_GetItem(list, i);
+    Py_DECREF(item);
     if (!PyString_Check(item)) {
       PyErr_SetString(PyExc_TypeError, "sequence item not a string");
       g_list_free(glist);
@@ -4448,7 +4459,9 @@ static PyObject *_wrap_gtk_curve_set_vector(PyObject *self, PyObject *args) {
   size = PySequence_Length(seq);
   vector = g_new(gfloat, size);
   for (i = 0; i < size; i++) {
-    item = PyNumber_Float(PySequence_GetItem(seq, i));
+    item = PySequence_GetItem(seq, i);
+    Py_DECREF(item);
+    item = PyNumber_Float(item);
     if (item == NULL) {
       g_free(vector);
       return NULL;
@@ -4819,6 +4832,7 @@ static PyObject *_wrap_gtk_drag_dest_set(PyObject *self, PyObject *args) {
   targets = g_new(GtkTargetEntry, n_targets);
   for (i = 0; i < n_targets; i++) {
     PyObject *item = PySequence_GetItem(py_list, i);
+    Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "zii", &(targets[i].target),
 			  &(targets[i].flags), &(targets[i].info))) {
       PyErr_Clear();
@@ -4856,6 +4870,7 @@ static PyObject *_wrap_gtk_drag_source_set(PyObject *self, PyObject *args) {
   targets = g_new(GtkTargetEntry, n_targets);
   for (i = 0; i < n_targets; i++) {
     PyObject *item = PySequence_GetItem(py_list, i);
+    Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "zii", &(targets[i].target),
 			  &(targets[i].flags), &(targets[i].info))) {
       PyErr_Clear();
@@ -4893,6 +4908,7 @@ PyObject *_wrap_gtk_drag_begin(PyObject *self, PyObject *args) {
   targets = g_new(GtkTargetEntry, n_targets);
   for (i = 0; i < n_targets; i++) {
     PyObject *item = PySequence_GetItem(py_list, i);
+    Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "zii", &(targets[i].target),
 			  &(targets[i].flags), &(targets[i].info))) {
       PyErr_Clear();
@@ -5194,6 +5210,7 @@ static PyObject *_wrap_gdk_draw_polygon(PyObject *self, PyObject *args) {
   points = g_new(GdkPoint, npoints);
   for (i = 0; i < npoints; i++) {
     item = PySequence_GetItem(seq, i);
+    Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "hh", &(points[i].x), &(points[i].y))) {
       PyErr_Clear();
       PyErr_SetString(PyExc_TypeError, "sequence member not a 2-tuple");
@@ -5235,6 +5252,7 @@ static PyObject *_wrap_gdk_draw_points(PyObject *self, PyObject *args) {
   points = g_new(GdkPoint, npoints);
   for (i = 0; i < npoints; i++) {
     item = PySequence_GetItem(seq, i);
+    Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "hh", &(points[i].x), &(points[i].y))) {
       PyErr_Clear();
       PyErr_SetString(PyExc_TypeError, "sequence member not a 2-tuple");
@@ -5263,6 +5281,7 @@ static PyObject *_wrap_gdk_draw_segments(PyObject *self, PyObject *args) {
   segs = g_new(GdkSegment, nsegs);
   for (i = 0; i < nsegs; i++) {
     item = PySequence_GetItem(seq, i);
+    Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "hhhh", &(segs[i].x1), &(segs[i].y1),
 			  &(segs[i].x2), &(segs[i].y2))) {
       PyErr_Clear();
@@ -5292,6 +5311,7 @@ static PyObject *_wrap_gdk_draw_lines(PyObject *self, PyObject *args) {
   points = g_new(GdkPoint, npoints);
   for (i = 0; i < npoints; i++) {
     item = PySequence_GetItem(seq, i);
+    Py_DECREF(item);
     if (!PyArg_ParseTuple(item, "hh", &(points[i].x), &(points[i].y))) {
       PyErr_Clear();
       PyErr_SetString(PyExc_TypeError, "sequence member not a 2-tuple");
@@ -5557,6 +5577,7 @@ static PyObject *_wrap_gtk_ctree_new_with_titles(PyObject *self, PyObject *args)
   list = malloc(sizeof(char *)*c);
   for (i = 0; i < c; i++) {
     item = PySequence_GetItem(l, i);
+    Py_DECREF(item);
     if (!PyString_Check(item)) {
       PyErr_SetString(PyExc_TypeError,
 		      "sequence item not a string");
@@ -5652,6 +5673,7 @@ static PyObject *_wrap_gtk_ctree_insert_node(PyObject *self, PyObject *args) {
   text = g_new(gchar *, col);
   for (i = 0; i < col; i++) {
     PyObject *item = PySequence_GetItem(py_text, i);
+    Py_DECREF(item);
     if (!PyString_Check(item)) {
       PyErr_SetString(PyExc_TypeError, "sequence item not a string");
       g_free(text);

@@ -59,6 +59,7 @@ static PyObject *_wrap_gtk_gl_area_new(PyObject *self, PyObject *args) {
     attrList = g_new(int, len+1);
     for (i = 0; i < len; i++) {
 	PyObject *item = PySequence_GetItem(seq, i);
+        Py_DECREF(item);
 	if (!PyInt_Check(item)) {
 	    g_free(attrList);
 	    PyErr_SetString(PyExc_TypeError, "sequence member must be an int");
@@ -89,6 +90,7 @@ static PyObject *_wrap_gtk_gl_area_share_new(PyObject *self, PyObject *args) {
     attrList = g_new(int, len+1);
     for (i = 0; i < len; i++) {
 	PyObject *item = PySequence_GetItem(seq, i);
+        Py_DECREF(item);
 	if (!PyInt_Check(item)) {
 	    g_free(attrList);
 	    PyErr_SetString(PyExc_TypeError, "sequence member must be an int");
