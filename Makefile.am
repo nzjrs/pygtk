@@ -105,4 +105,3 @@ EXTRA_DIST += \
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
-
