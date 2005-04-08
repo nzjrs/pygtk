@@ -442,7 +442,7 @@ keyboard, the <keysym>plus</keysym> symbol is shifted, so when comparing a key p
   ALL_ACCELS_MASK = (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK
                      | gtk.gdk.MOD1_MASK)
   keyval, egroup, level, consumed = keymap.translate_keyboard_state(
-                   keymap, event.hardware_keycode, event.state, event.group)
+                   event.hardware_keycode, event.state, event.group)
   if (keyval == ord('+') and 
       (event.state &amp; ~consumed &amp; ALL_ACCELS_MASK) == gtk.gdk.CONTROL_MASK):
     # Control was pressed
