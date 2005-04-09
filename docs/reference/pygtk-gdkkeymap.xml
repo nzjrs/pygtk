@@ -429,9 +429,10 @@ key press and release events.</simpara>
       <refsect3>
 	<title>Consumed Modifiers</title>
 
-	<para>The consumed_modifiers are modifiers that should be masked out
-from state when comparing this key press to a hot key. For instance, on a US
-keyboard, the <keysym>plus</keysym> symbol is shifted, so when comparing a key press to a
+	<para>The consumed modifiers are modifiers that should be masked out
+from <parameter>state</parameter> when comparing this key press to a hot
+key. For instance, on a US keyboard, the <keysym>plus</keysym> symbol is
+shifted, so when comparing a key press to a
 <keycombo>
 	    <keycap>Control</keycap><keysym>plus</keysym></keycombo>
 	    accelerator <keycap>Shift</keycap> should be masked out. For
@@ -443,10 +444,16 @@ keyboard, the <keysym>plus</keysym> symbol is shifted, so when comparing a key p
                      | gtk.gdk.MOD1_MASK)
   keyval, egroup, level, consumed = keymap.translate_keyboard_state(
                    event.hardware_keycode, event.state, event.group)
-  if (keyval == ord('+') and 
+  if (keyval == gtk.keysyms.plus and 
       (event.state &amp; ~consumed &amp; ALL_ACCELS_MASK) == gtk.gdk.CONTROL_MASK):
     # Control was pressed
 </programlisting>
+
+        <para>Note that most keys that are affected by the
+<keycap>Shift</keycap> key will have <literal>gtk.gdk.SHIFT_MASK</literal>
+part of the consumed modifiers (e.g. <keycombo>
+<keycap>Control</keycap><keycap>Shift</keycap><keycap>Tab</keycap>
+</keycombo>).</para>
 
 	<para>All single modifier combinations that could affect the key for
 any combination of modifiers will be returned in consumed_modifiers.
