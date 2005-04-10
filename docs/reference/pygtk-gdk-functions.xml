@@ -933,7 +933,7 @@ is called the GIL is released and other threads may use the Python
 interpreter. When <literal>PyGTK</literal> signal handlers are invoked in
 the main thread the GIL is reacquired so that the Python interpreter can run
 the handler code.</para>
-
+<!--
       <para>The assumptions behind <literal>PyGTK</literal> thread support
 were originally:</para>
 
@@ -969,26 +969,26 @@ automatically.</simpara>
       </itemizedlist>
 
       <para>The <link
-linkend="function-gdk--threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
+linkend="function-gdk- -threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
 and <link
-linkend="function-gdk--threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
+linkend="function-gdk- -threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
 functions use the <literal>GDK</literal> global lock (GGL) to manage access
 to the <literal>GTK</literal> and <literal>GDK</literal> libraries. The
 intention is to allow only one thread to execute within the
 <literal>GTK</literal> and <literal>GDK</literal> code at a time.
 Theoretically any time a thread calls a <literal>PyGTK</literal> method or
 function it should bracket the call with the <link
-linkend="function-gdk--threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
+linkend="function-gdk- -threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
 and <link
-linkend="function-gdk--threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
+linkend="function-gdk- -threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
 functions. If your application only uses Python threads then this is not
 necessary since only the main thread can safely call
 <literal>PyGTK</literal> methods or functions. However if your application
 has foreign threads that call <literal>GTK</literal> or
 <literal>GDK</literal> functions you should use the <link
-linkend="function-gdk--threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
+linkend="function-gdk- -threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
 and <link
-linkend="function-gdk--threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
+linkend="function-gdk- -threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
 functions to serialize access.</para>
 
       <note>
@@ -996,15 +996,15 @@ functions to serialize access.</para>
 <function>gdk_threads_enter</function>() and
 <function>gdk_threads_leave</function>() function pair by
 <literal>GTK</literal> so the <link
-linkend="function-gdk--threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
+linkend="function-gdk- -threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
 and <link
-linkend="function-gdk--threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
+linkend="function-gdk- -threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
 functions should not be called within a Python signal handler or the
 application will deadlock. However, idle, timeout and input handlers are
 executed outside the GGL so these should use the <link
-linkend="function-gdk--threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
+linkend="function-gdk- -threads-enter"><function>gtk.gdk.threads_enter</function>()</link> 
 and <link
-linkend="function-gdk--threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
+linkend="function-gdk- -threads-leave"><function>gtk.gdk.threads_leave</function>()</link> 
 functions if <literal>PyGTK</literal> methods or functions are
 called.</para>
       </note>
@@ -1013,7 +1013,7 @@ called.</para>
 <literal>PyGTK</literal> methods and functions from the main Python thread
 and use idle or timeout handlers (which run in the main thread) to invoke
 <literal>PyGTK</literal> calls from other threads.</para>
-
+-->
     </refsect2>
 
     <refsect2 id="function-gdk--rgb-ditherable">
