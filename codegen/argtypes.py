@@ -3,6 +3,7 @@ import sys
 import string
 import traceback
 import keyword
+import struct
 
 class VarList:
     """Nicely format a C variable list"""
@@ -172,6 +173,78 @@ class IntArg(ArgType):
     def write_return(self, ptype, ownsreturn, info):
         info.varlist.add('int', 'ret')
         info.codeafter.append('    return PyInt_FromLong(ret);')
+
+class UIntArg(ArgType):
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pdflt:
+	    info.varlist.add(ptype, pname + ' = ' + pdflt)
+	else:
+	    info.varlist.add(ptype, pname)
+	info.arglist.append(pname)
+        info.add_parselist('I', ['&' + pname], [pname])
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add(ptype, 'ret')
+        info.codeafter.append('    return PyLong_FromUnsignedLong(ret);\n')
+
+class SizeArg(ArgType):
+
+    if struct.calcsize('P') <= struct.calcsize('l'):
+        llp64 = True
+    else:
+        llp64 = False
+    
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pdflt:
+	    info.varlist.add(ptype, pname + ' = ' + pdflt)
+	else:
+	    info.varlist.add(ptype, pname)
+	info.arglist.append(pname)
+        if self.llp64:
+            info.add_parselist('k', ['&' + pname], [pname])
+        else:
+            info.add_parselist('K', ['&' + pname], [pname])
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add(ptype, 'ret')
+        if self.llp64:
+            info.codeafter.append('    return PyLong_FromUnsignedLongLong(ret);\n')
+        else:
+            info.codeafter.append('    return PyLong_FromUnsignedLong(ret);\n')
+
+class SSizeArg(ArgType):
+
+    if struct.calcsize('P') <= struct.calcsize('l'):
+        llp64 = True
+    else:
+        llp64 = False
+    
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pdflt:
+	    info.varlist.add(ptype, pname + ' = ' + pdflt)
+	else:
+	    info.varlist.add(ptype, pname)
+	info.arglist.append(pname)
+        if self.llp64:
+            info.add_parselist('l', ['&' + pname], [pname])
+        else:
+            info.add_parselist('L', ['&' + pname], [pname])
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add(ptype, 'ret')
+        if self.llp64:
+            info.codeafter.append('    return PyLong_FromLongLong(ret);\n')
+        else:
+            info.codeafter.append('    return PyLong_FromLong(ret);\n')
+
+class LongArg(ArgType):
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+	if pdflt:
+	    info.varlist.add(ptype, pname + ' = ' + pdflt)
+	else:
+	    info.varlist.add(ptype, pname)
+	info.arglist.append(pname)
+        info.add_parselist('l', ['&' + pname], [pname])
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add(ptype, 'ret')
+        info.codeafter.append('    return PyInt_FromLong(ret);\n')
 
 class BoolArg(IntArg):
     def write_return(self, ptype, ownsreturn, info):
@@ -803,20 +876,24 @@ matcher.register('gunichar', arg)
 arg = IntArg()
 matcher.register('int', arg)
 matcher.register('gint', arg)
-matcher.register('guint', arg)
 matcher.register('short', arg)
 matcher.register('gshort', arg)
 matcher.register('gushort', arg)
-matcher.register('long', arg)
-matcher.register('glong', arg)
-matcher.register('gsize', arg)
-matcher.register('gssize', arg)
+matcher.register('gsize', SizeArg())
+matcher.register('gssize', SSizeArg())
 matcher.register('guint8', arg)
 matcher.register('gint8', arg)
 matcher.register('guint16', arg)
 matcher.register('gint16', arg)
 matcher.register('gint32', arg)
 matcher.register('GTime', arg)
+
+arg = LongArg()
+matcher.register('long', arg)
+matcher.register('glong', arg)
+
+arg = UIntArg()
+matcher.register('guint', arg)
 
 arg = BoolArg()
 matcher.register('gboolean', arg)
