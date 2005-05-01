@@ -78,6 +78,54 @@ PyGTK 2.6)</refpurpose>
     <methodparam></methodparam>
   </methodsynopsis>
 <methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-columns">set_columns</link></methodname>
+    <methodparam><parameter role="keyword">columns</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-columns">get_columns</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-columns">set_item_width</link></methodname>
+    <methodparam><parameter role="keyword">item_width</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-columns">get_item_width</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-columns">set_spacing</link></methodname>
+    <methodparam><parameter role="keyword">spacing</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-columns">get_spacing</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-columns">set_row_spacing</link></methodname>
+    <methodparam><parameter role="keyword">row_spacing</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-columns">get_row_spacing</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-columns">set_column_spacing</link></methodname>
+    <methodparam><parameter role="keyword">column_spacing</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-columns">get_column_spacing</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-columns">set_margin</link></methodname>
+    <methodparam><parameter role="keyword">margin</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-columns">get_margin</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
     <methodname><link linkend="method-gtkiconview--select-path">select_path</link></methodname>
     <methodparam><parameter role="keyword">path</parameter></methodparam>
   </methodsynopsis>
@@ -132,6 +180,43 @@ PyGTK 2.6)</refpurpose>
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"column-spacing"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The space (in pixels) inserted between grid
+columns. Allowed values: >= 0. Default value: 6.
+Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"columns"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The number of columns in a row. If it is -1, the number
+of columns will be chosen automatically to fill the available width.
+Allowed values: >= -1. Default value: -1.
+Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"item-width"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The width used for each item. If it is -1 the width the
+largest item is used. Allowed values: >= -1. Default value: -1.
+Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"margin"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The space (in pixels) inserted at the edges of the
+icon view. Allowed values: >= 0. Default value: 6.
+Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"markup-column"</entry>
 	      <entry>Read-Write</entry>
 
@@ -170,6 +255,15 @@ above.</entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"row-spacing"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The space (in pixels) inserted between grid rows.
+Allowed values: >= 0. Default value: 6.
+Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"selection-mode"</entry>
 	      <entry>Read-Write</entry>
 
@@ -178,6 +272,15 @@ above.</entry>
 for the other modes, only keyboard selection is possible. Default value:
 <literal>gtk.SELECTION_SINGLE</literal>. Available in GTK+ 2.6 and
 above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"spacing"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The space (in pixels) inserted between cells of an item.
+Allowed values: >= 0. Default value: 0.
+Available in GTK+ 2.6 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -801,6 +904,328 @@ text.</simpara></listitem>
 the value of the "orientation" property that indicates the relative position
 between the icon and text. See the <link
 linkend="method-gtkiconview--set-orientation"><methodname>set_orientation</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-columns">
+      <title>gtk.IconView.set_columns</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_columns</methodname>
+	  <methodparam><parameter
+			 role="keyword">columns</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">columns</parameter>&nbsp;:</term>
+	  <listitem><simpara>the number of columns in a row.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_columns</methodname>() method sets the
+"columns" property to the value of
+<parameter>columns</parameter>. <parameter>columns</parameter> should
+contain the number of columns to be displayed in each row or -1 to fit as
+many columns as possible per row.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-columns">
+      <title>gtk.IconView.get_columns</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_columns</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the number of columns per row or
+-1.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_columns</methodname>() method returns the
+value of the "columns" property that indicates the number of columns per
+row. See the <link
+linkend="method-gtkiconview--set-columns"><methodname>set_columns</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-item-width">
+      <title>gtk.IconView.set_item_width</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_item_width</methodname>
+	  <methodparam><parameter
+			 role="keyword">item_width</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">item_width</parameter>&nbsp;:</term>
+	  <listitem><simpara>The space used to display an item or -1 to use
+the width of the largest item.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_item_width</methodname>() method sets the
+"item-width" property to the value of
+<parameter>item_width</parameter>. <parameter>item_width</parameter> should
+contain the maximum space (in pixels) to use to display an item in the icon
+view or -1 to use the width of the largest item.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-item-width">
+      <title>gtk.IconView.get_item_width</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_item_width</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the space available for displaying an
+item or -1.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_item_width</methodname>() method returns the
+value of the "item-width" property that contains the space available for
+displaying an item. See the <link
+linkend="method-gtkiconview--set-item-width"><methodname>set_item_width</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-spacing">
+      <title>gtk.IconView.set_spacing</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_spacing</methodname>
+	  <methodparam><parameter
+			 role="keyword">spacing</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">spacing</parameter>&nbsp;:</term>
+	  <listitem><simpara>The space between the cells of an item in the
+icon view</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_spacing</methodname>() method sets the
+"spacing" property to the value of
+<parameter>spacing</parameter>. <parameter>spacing</parameter> should
+contain the space in pixels that is inserted between the cells of an item in
+the icon view.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-spacing">
+      <title>gtk.IconView.get_spacing</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_spacing</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the space in pixels that is inserted between
+cells in the icon view.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_spacing</methodname>() method returns the
+value of the "spacing" property that contains the space in pixels that is
+inserted between the cells of an item in the icon view. See the <link
+linkend="method-gtkiconview--set-spacing"><methodname>set_spacing</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-row-spacing">
+      <title>gtk.IconView.set_row_spacing</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_row_spacing</methodname>
+	  <methodparam><parameter
+			 role="keyword">row_spacing</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">row_spacing</parameter>&nbsp;:</term>
+	  <listitem><simpara>the space between rows in the icon
+view.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_row_spacing</methodname>() method sets the
+"row-spacing" property to the value of
+<parameter>row_spacing</parameter>. <parameter>row_spacing</parameter>
+should contain the space in pixels to be inserted between rows in the icon
+view..</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-row-spacing">
+      <title>gtk.IconView.get_row_spacing</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_row_spacing</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the space between rows in the icon
+view.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_row_spacing</methodname>() method returns
+the value of the "row-spacing" property that contains the space in pixels
+inserted between the rows in the icon view. See the <link
+linkend="method-gtkiconview--set-row-spacing"><methodname>set_row_spacing</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-column-spacing">
+      <title>gtk.IconView.set_column_spacing</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_column_spacing</methodname>
+	  <methodparam><parameter
+			 role="keyword">column_spacing</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">column_spacing</parameter>&nbsp;:</term>
+	  <listitem><simpara>The space inserted between columns in the icon
+view</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_column_spacing</methodname>() method sets
+the "column-spacing" property to the value of
+<parameter>column_spacing</parameter>. <parameter>column_spacing</parameter>
+should contain the space in pixels to be inserted between columns in the
+icon view.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-column-spacing">
+      <title>gtk.IconView.get_column_spacing</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_column_spacing</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the space between columns in the icon
+view.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_column_spacing</methodname>() method returns
+the value of the "column-spacing" property that contains the space in pixels
+between the columns in the icon view. See the <link
+linkend="method-gtkiconview--set-column-spacing"><methodname>set_column_spacing</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-margin">
+      <title>gtk.IconView.set_margin</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_margin</methodname>
+	  <methodparam><parameter
+			 role="keyword">margin</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">margin</parameter>&nbsp;:</term>
+	  <listitem><simpara>the space inserted at the edges of the icon
+view.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_margin</methodname>() method sets the
+"margin" property to the value of
+<parameter>margin</parameter>. <parameter>margin</parameter> should contain
+the space in pixels to be inserted at the edges of the icon view.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-margin">
+      <title>gtk.IconView.get_margin</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_margin</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the space inserted at the edges of the icon
+view.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_margin</methodname>() method returns the
+value of the "margin" property that continas the space in pixels inserted at
+the edges of the icon view. See the <link
+linkend="method-gtkiconview--set-margin"><methodname>set_margin</methodname>()</link>
 method for more information.</para>
 
     </refsect2>
