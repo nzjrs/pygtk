@@ -1,3 +1,13 @@
+2005-05-03  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gdk.override (_wrap_gdk_event_tp_setattr): Fix setter for
+	"window" attribute: don't unblock threads around g_bject_ref;
+	g_object_unref previous event.window.  Fixes #302622.
+
+	* tests/Makefile.am (tests): Add test_gdkevent.py.
+	
+	* tests/test_gdkevent.py: Add a test for gtk.gdk.Event.window setter.
+
 2005-04-12  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
 	* tests/runtests.py (program): Fix indentation and a "name

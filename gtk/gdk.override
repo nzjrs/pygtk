@@ -865,10 +865,9 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    PyErr_SetString(PyExc_TypeError, "window must be a GdkWindow");
 	    return -1;
 	}
-	/* FIXME: Is this even remotely correct ? */
-	pyg_begin_allow_threads;
+	if (event->any.window)
+            g_object_unref(event->any.window);
 	event->any.window = g_object_ref(GDK_WINDOW(((PyGObject*)value)->obj));
-	pyg_end_allow_threads;
 	return 0;
     } else if (attr[0] == 's' && !strcmp(attr, "send_event")) {
 	INT_CHECK();
