@@ -1,3 +1,19 @@
+2005-05-09  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #303573 - "exceptions raised in a child watch
+	handler are silently swallowed"
+
+	* gobject/gobjectmodule.c:
+	(child_watch_func),
+	(_pyg_spawn_async_callback): if PyObject_CallFunction()
+	returns NULL, print a traceback of the exception.
+	
+	* tests/test_mainloop.py: add testcase.
+	
+	* tests/Makefile.am: add test_mainloop.py
+
+	Reviewed by Johan Dahlin <johan@gnome.org>
+
 2005-05-03  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
 	* gtk/gdk.override (_wrap_gdk_event_tp_setattr): Fix setter for
