@@ -1241,6 +1241,12 @@
   )
 )
 
+(define-method get_font_description
+  (of-object "PangoLayout")
+  (c-name "pango_layout_get_font_description")
+  (return-type "const-PangoFontDescription*")
+)
+
 (define-method set_width
   (of-object "PangoLayout")
   (c-name "pango_layout_set_width")
@@ -1374,6 +1380,21 @@
   (of-object "PangoLayout")
   (c-name "pango_layout_get_single_paragraph_mode")
   (return-type "gboolean")
+)
+
+(define-method set_ellipsize
+  (of-object "PangoLayout")
+  (c-name "pango_layout_set_ellipsize")
+  (return-type "none")
+  (parameters
+    '("PangoEllipsizeMode" "ellipsize")
+  )
+)
+
+(define-method get_ellipsize
+  (of-object "PangoLayout")
+  (c-name "pango_layout_get_ellipsize")
+  (return-type "PangoEllipsizeMode")
 )
 
 (define-method context_changed
