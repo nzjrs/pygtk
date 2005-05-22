@@ -535,6 +535,27 @@ linkend="function-gdk--selection-send-notify">gtk.gdk.selection_send_notify</lin
 linkend="function-gdk--set-sm-client-id">gtk.gdk.set_sm_client_id</link></methodname>
 	<methodparam><parameter
 		       role="keyword">sm_client_id</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--notify-startup-complete">gtk.gdk.notify_startup_complete</link></methodname>
+	<methodparam></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--get-program-class">gtk.gdk.get_program_class</link></methodname>
+	<methodparam></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--set-program-class">gtk.gdk.set_program_class</link></methodname>
+	<methodparam><parameter
+		       role="keyword">program_class</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--get-display">gtk.gdk.get_display</link></methodname>
+	<methodparam></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--get-display-arg-name">gtk.gdk.get_display_arg_name</link></methodname>
+	<methodparam></methodparam>
   </methodsynopsis></programlisting>
 
     </refsect2>
@@ -1272,6 +1293,135 @@ Management Library documentation for more information on session management
 and the Inter-Client Communication Conventions Manual (ICCCM) for
 information on the <literal>WM_CLIENT_LEADER</literal> property. (Both
 documents are part of the X Window System distribution.)</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--notify-startup-complete">
+      <title>gtk.gdk.notify_startup_complete</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.notify_startup_complete</methodname>
+	</methodsynopsis></programlisting>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above</para>
+      </note>
+
+      <para>The <function>gtk.gdk.notify_startup_complete</function>()
+function indicates to the GUI environment that the application has finished
+loading. If the applications opens windows, this function is normally called
+after opening the application's initial set of windows.</para>
+
+      <para>GTK+ will call this function automatically after opening the
+first <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link> unless
+the <link
+linkend="function-gtk--window-set-auto-startup-notification"><function>gtk.window_set_auto_startup_notification</function>()</link>
+function is called to disable that feature.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--get-program-class">
+      <title>gtk.gdk.get_program_class</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.get_program_class</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the program class</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above</para>
+      </note>
+
+      <para>The <function>gtk.gdk.get_program_class</function>() function
+returns the program class. Unless the program class has explicitly been set
+with the <link
+linkend="function-gdk--set-program-class"><function>gtk.gdk.set_program_class</function>()</link>
+function or with the <option>--class</option> commandline option, the
+default value is the program name with the first character converted to
+uppercase.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--set-program-class">
+      <title>gtk.gdk.set_program_class</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.set_program_class</methodname>
+	  <methodparam><parameter
+			 role="keyword">program_class</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">program_class</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string containing the program
+class</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above</para>
+      </note>
+
+      <para>The <function>gtk.gdk.set_program_class</function>() function
+sets the program class to the string contained in
+<parameter>program_class</parameter>. The <literal>X11</literal> backend
+uses the program class to set the class name part of the
+<literal>WM_CLASS</literal> property on toplevel windows.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--get-display">
+      <title>gtk.gdk.get_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.get_display</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the name of the display</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above</para>
+      </note>
+
+      <para>The <function>gtk.gdk.get_display</function>() function returns
+the name of the display, which is usually derived from the
+<envar>DISPLAY</envar> environment variable or the
+<option>--display</option> command line option.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--get-display-arg-name">
+      <title>gtk.gdk.get_display_arg_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.get_display_arg_name</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara> the display name, if specified explicitly, or
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.6 and above</para>
+      </note>
+
+      <para>The <function>gtk.gdk.get_display_arg_name</function>() function
+returns the display name specified in the command line arguments, if any or
+<literal>None</literal> if the display name was not explicitly set.</para>
 
     </refsect2>
 
