@@ -1,5 +1,28 @@
 2005-05-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* tests/test_signal.py: Update tests to deal with automatic
+	registration.
+
+	* examples/gobject/signal.py: Update example to not call
+	gobject.type_register anymore.
+
+	* gobject/pygobject.c: Add PyGObject_MetaType impl.
+	(pygobject_register_class): Set the metaclass of new types to
+	&PyGObject_MetaType.
+
+	* gobject/gobjectmodule.c (pyg_type_register): split in two
+	functions; one (pyg_type_register) that does all the work and
+	return 0 on success or -1 on error; the other one
+	( _wrap_pyg_type_register ) does the python argument parsing and
+	calls the first one.
+	(initgobject): Register the new PyGObject_MetaType type, which is
+	a metaclass that automatically registers user defined GObject
+	subclasses.
+
+	Fixes #128765: GObject metaclass.
+
+2005-05-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
 	* gobject/gobjectmodule.c: Wrap g_markup_escape_text. Fixes #164665.
 
 	* gtk/gtk.defs: Add gtk.EntryCompletion.get_text_column.
