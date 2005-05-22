@@ -2782,6 +2782,95 @@ _wrap_gdk_pixbuf_save(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+
+%%
+override gdk_pixbuf_save_to_callback kwargs
+
+typedef struct {
+    PyObject *callback;
+    PyObject *user_data;
+} py_pixbuf_save_callback_data_t;
+
+static gboolean
+pixbuf_save_func(const gchar *buf,
+                 gsize count,
+                 GError **error,
+                 py_pixbuf_save_callback_data_t *data)
+{
+    PyObject *ret;
+
+    if (data->user_data)
+        ret = PyObject_CallFunction(data->callback, "s#O", buf, (int) count, data->user_data);
+
+    else
+        ret = PyObject_CallFunction(data->callback, "s#", buf, (int) count);
+    
+    if (ret == NULL) {
+        PyErr_Print();
+        return FALSE;
+    }
+    return TRUE;
+}
+
+static PyObject *
+_wrap_gdk_pixbuf_save_to_callback(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = {"save_func", "type", "options", "user_data", NULL};
+    gchar *type, **option_keys = NULL, **option_values = NULL;
+    PyObject *py_options = NULL;
+    GError *error = NULL;
+    py_pixbuf_save_callback_data_t data = { NULL, NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "Os|O!O:GdkPixbuf.save", kwlist,
+                                     &data.callback, &type,
+                                     &PyDict_Type, &py_options, &data.user_data))
+        return NULL;
+
+    if (!PyCallable_Check(data.callback)) {
+        PyErr_SetString(PyExc_TypeError, "first argument must be callable");
+        return NULL;
+    }
+
+    if (py_options != NULL) {
+        guint len;
+        gint pos = 0, i = 0;
+        PyObject *key, *value;
+        
+        len = PyDict_Size(py_options);
+        option_keys = g_new(gchar *, len + 1);
+        option_values = g_new(gchar *, len + 1);
+
+        while (PyDict_Next(py_options, &pos, &key, &value)) {
+            if (!PyString_Check(key) || !PyString_Check(value)) {
+                g_free(option_keys);
+                g_free(option_values);
+                PyErr_SetString(PyExc_TypeError,
+                                "keys and values must be strings");
+                return NULL;
+            }
+
+            option_keys[i]   = PyString_AsString(key);
+            option_values[i] = PyString_AsString(value);
+            i++;
+        }
+        
+        option_keys[len] = NULL;
+        option_values[len] = NULL;
+    }
+    gdk_pixbuf_save_to_callbackv(GDK_PIXBUF(self->obj),
+                                 (GdkPixbufSaveFunc) pixbuf_save_func, &data,
+                                 type, option_keys, option_values, &error);
+    g_free(option_keys);
+    g_free(option_values);
+ 
+    if (pyg_error_check(&error))
+        return NULL;
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 %%
 override gdk_colormap_alloc_color kwargs
 static PyObject *
