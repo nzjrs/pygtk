@@ -198,6 +198,20 @@ END NOT IMPLEMENTED -->
 
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gdkpixbuf--save-to-callback">save_to_callback</link></methodname>
+	<methodparam><parameter
+		       role="keyword">save_func</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">type</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">options</parameter>
+	  <initializer>None</initializer></methodparam>
+	<methodparam><parameter
+                       role="keyword">user_data</parameter>
+	  <initializer>None</initializer></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gdkpixbuf--add-alpha">add_alpha</link></methodname>
 	<methodparam><parameter
 		       role="keyword">substitute_color</parameter></methodparam>
@@ -1371,10 +1385,12 @@ string pairs that modify the save parameters. For example:</para>
       <para>Currently only a few parameters exist. JPEG images can be saved
 with a "quality" parameter; its value should be in the range [0,100]. Text
 chunks can be attached to PNG images by specifying parameters of the form
-"tEXt::key", where key is an ASCII string of length 1-79. The values are
-UTF-8 encoded strings. Note however that PNG text chunks are stored in
-ISO-8859-1 encoding, so you can only set texts that can be represented in
-this encoding.</para>
+"tEXt::key", where key is an ASCII string of length 1-79. Note however that
+PNG text chunks are stored in ISO-8859-1 encoding, so you can only set texts
+that can be represented in this encoding. The values are UTF-8 encoded
+strings. ICO images can be saved in depth 16, 24, or 32, by using the
+"depth" parameter. When the ICO saver is given "x_hot" and "y_hot"
+parameters, it produces a CUR instead of an ICO.</para>
 
       <para>This method raises the GError exception if an error occurs
 during the save operation.</para>
@@ -1425,6 +1441,85 @@ If <parameter>error</parameter> is set, <literal>FALSE</literal> will be returne
 details.
 </para>  </refsect2>
 END NOT IMPLEMENTED -->
+
+    <refsect2 id="method-gdkpixbuf--save-to-callback">
+      <title>gtk.gdk.Pixbuf.save_to_callback</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>save_to_callback</methodname>
+	  <methodparam><parameter
+			 role="keyword">save_func</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">type</parameter></methodparam>
+	  <methodparam><parameter
+                         role="keyword">options</parameter>
+            <initializer>None</initializer></methodparam>
+	  <methodparam><parameter
+                         role="keyword">user_data</parameter>
+            <initializer>None</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">save_func</parameter>&nbsp;:</term>
+	  <listitem><simpara> a function that is called to save each block
+of data that the save routine generates.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of the file
+format.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">options</parameter>&nbsp;:</term>
+	  <listitem><simpara>a Python dict containing key-value string pairs
+or <literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>user-specified data passed to
+<literal>save_func</literal> or <literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method was available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>save_to_callback</methodname>() method saves the
+pixbuf in the format specified by <parameter>type</parameter> by feeding the
+pixbuf data to the callback function specified by
+<parameter>save_func</parameter>. <parameter>type</parameter> may be "jpeg",
+"png" or "ico" or other installed formats. If <parameter>options</parameter>
+is not <literal>None</literal> it should be a Python dict containing
+key-value string pairs that modify the save parameters. For example:</para>
+
+<informalexample><programlisting>
+        pixbuf.save_to_callback(func, "jpeg", {"quality":"100"})
+</programlisting></informalexample>
+
+      <para>See the <link
+linkend="method-gdkpixbuf--save"><methodname>save</methodname>()</link>
+method for more information on formats. If <parameter>user_data</parameter>
+is not None it is passed to <parameter>save_func</parameter> with each
+invocation.</para>
+
+      <para>This method raises a GError exception or exceptions raised by
+<parameter>save_func</parameter> if an error occurs during the save
+operation.</para>
+
+      <para>The signature of <parameter>save_func</parameter> is:</para>
+
+      <programlisting>
+def pixbuf_save_func(buf, data=None):
+</programlisting>
+
+      <para>where <parameter>buf</parameter> is a Python string containing
+the pixbuf data and <parameter>data</parameter> is
+<parameter>user_data</parameter>. <parameter>pixbuf_save_func</parameter>
+returns <literal>True</literal> if successful or <literal>False</literal> on
+failure.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gdkpixbuf--add-alpha">
       <title>gtk.gdk.Pixbuf.add_alpha</title>
