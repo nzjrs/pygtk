@@ -28,7 +28,6 @@ class PyGtkWidget(gtk.Widget):
                                          
     def do_realize(self):
         self.set_flags(self.flags() | gtk.REALIZED)
-
         self.window = gdk.Window(self.get_parent_window(),
                                  width=self.allocation.width,
                                  height=self.allocation.height,
@@ -42,6 +41,7 @@ class PyGtkWidget(gtk.Widget):
 	self.window.set_user_data(self)
         self.style.attach(self.window)
         self.style.set_background(self.window, gtk.STATE_NORMAL)
+        self.window.move_resize(*self.allocation)
 
     def do_size_request(self, requisition):
 	width, height = self.layout.get_size()
@@ -58,7 +58,7 @@ class PyGtkWidget(gtk.Widget):
 
         x, y, w, h = self.allocation
         self.window.draw_rectangle(self.draw_gc, False,
-                                   x + BORDER_WIDTH, y + BORDER_WIDTH,
+                                   BORDER_WIDTH, BORDER_WIDTH,
                                    w - BORDER_WIDTH * 2, h - BORDER_WIDTH * 2)
         fontw, fonth = self.layout.get_pixel_size()
         self.style.paint_layout(self.window, self.state, False,
@@ -72,8 +72,11 @@ win = gtk.Window()
 win.set_title(TEXT)
 win.connect('delete-event', gtk.main_quit)
 
+frame = gtk.Frame("Show me a bug")
+win.add(frame)
+
 w = PyGtkWidget()
-win.add(w)
+frame.add(w)
 
 win.show_all()
 
