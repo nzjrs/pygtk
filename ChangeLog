@@ -1,3 +1,31 @@
+2005-05-28  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/pygpointer.c (pyg_register_pointer): change quark name
+	from pointer_type_id to pygpointer_class_key, for consistency;
+	assume it to be already registered.
+
+	* gobject/pygenum.c (pyg_enum_add): pygenum_class_id is already
+	registered.
+
+	* gobject/pygtype.c (pyg_register_boxed_custom):
+	pyg_boxed_marshal_key is already registered.
+
+	* gobject/pygobject.c (pygobject_register_class):
+	pygobject_class_key is already registered.
+	(pygobject_register_wrapper): pygobject_wrapper_key is already
+	registered.
+	(pygobject_new_with_interfaces): idem.
+	(pygobject_new): pygobject_wrapper_key is already registered.
+
+	* gobject/pygboxed.c (pyg_register_boxed): Don't register
+	boxed_type_id, use pygboxed_type_key instead, which is assumed to
+	be already registered.
+
+	* gobject/gobjectmodule.c (initgobject): Register all the gquarks.
+	(global): Remove the *_id static const strings, they are redundant now.
+
+	* gobject/pygobject-private.h: Declare all the global gquarks.
+
 2005-05-25  Manish Singh  <yosh@gimp.org>
 
 	* gobject/pygiochannel.c: Pass gsize to GIOChannel functions that
