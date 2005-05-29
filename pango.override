@@ -31,6 +31,21 @@ typedef struct {
     PyObject *func, *data;
 } PyGtkCustomNotify;
 
+#ifndef PANGO_TYPE_LAYOUT_LINE
+#define PANGO_TYPE_LAYOUT_LINE pypango_layout_line_get_type()
+static GType
+pypango_layout_line_get_type(void)
+{
+    static GType our_type = 0;
+  
+    if (our_type == 0)
+        our_type = g_boxed_type_register_static("PangoLayoutLine",
+                                                (GBoxedCopyFunc)pango_layout_line_ref,
+                                                (GBoxedFreeFunc)pango_layout_line_unref);
+    return our_type;
+}
+#endif
+
 /* ------------- PangoAttribute ------------- */
 
 typedef struct {
@@ -1806,3 +1821,74 @@ _wrap_pango_layout_iter_get_line_yrange(PyGObject *self)
                                       &start, &end);
     return Py_BuildValue("(ii)", start, end);
 }
+%%
+override pango_layout_line_x_to_index kwargs
+static PyObject *
+_wrap_pango_layout_line_x_to_index(PyObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    static char *kwlist[] = { "x_pos", NULL };
+    gboolean inside;
+    int x_pos, index, trailing;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "i:PangoLayoutLine.x_to_index",
+				     kwlist, &x_pos))
+	return NULL;
+
+    inside = pango_layout_line_x_to_index(pyg_boxed_get(self, PangoLayoutLine),
+                                          x_pos, &index, &trailing);
+    return Py_BuildValue("Nii", PyBool_FromLong(inside), index, trailing);
+}
+%%
+override pango_layout_line_index_to_x kwargs
+static PyObject *
+_wrap_pango_layout_line_index_to_x(PyObject *self, PyObject *args,
+				   PyObject *kwargs)
+{
+    static char *kwlist[] = { "x_pos", "trailing", NULL };
+    int x_pos, index;
+    PyObject *trailing;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:PangoLayoutLine.index_to_x",
+				     kwlist, &index, &trailing))
+	return NULL;
+    pango_layout_line_index_to_x(pyg_boxed_get(self, PangoLayoutLine),
+                                 index, PyObject_IsTrue(trailing),
+                                 &x_pos);
+    return PyInt_FromLong(x_pos);
+}
+%%
+override pango_layout_line_get_extents noargs
+static PyObject *
+_wrap_pango_layout_line_get_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_line_get_extents(pyg_boxed_get(self, PangoLayoutLine),
+                                  &ink_rect, &logical_rect);
+
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+%%
+override pango_layout_line_get_pixel_extents noargs
+static PyObject *
+_wrap_pango_layout_line_get_pixel_extents(PyGObject *self)
+{
+    PangoRectangle ink_rect, logical_rect;
+
+    pango_layout_line_get_pixel_extents(pyg_boxed_get(self, PangoLayoutLine),
+                                        &ink_rect, &logical_rect);
+
+    return Py_BuildValue("((iiii)(iiii))",
+			 ink_rect.x, ink_rect.y,
+			 ink_rect.width, ink_rect.height,
+			 logical_rect.x, logical_rect.y,
+			 logical_rect.width, logical_rect.height);
+}
+

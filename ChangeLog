@@ -1,5 +1,22 @@
 2005-05-29  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* pango.override (_wrap_pango_layout_line_x_to_index) 
+	(_wrap_pango_layout_line_index_to_x) 
+	(_wrap_pango_layout_line_get_extents) 
+	(_wrap_pango_layout_line_get_pixel_extents): Impl.
+
+	* gtk/gdk.override (_wrap_gdk_threads_init): Ignore
+	gdk_draw_layout_line and gdk_draw_layout_line_with_colors, at
+	least for now.
+
+	* pango-types.defs (LayoutLine): Declare LayoutLine as boxed type.
+
+	* pango.defs: pango_layout_line_ref and unref should not be
+	exposed as python API.
+
+	* pango.override (PANGO_TYPE_LAYOUT_LINE): Register boxed type for
+	PangoLayoutLine, unless it's already defined.
+
 	* pango.defs: Add defs for
 	pango_font_metrics_get_underline_thickness,
 	pango_font_metrics_get_underline_position,
