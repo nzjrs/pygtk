@@ -476,8 +476,8 @@ you don't need it.</para>
       <variablelist>
 	<varlistentry>
 	  <term><parameter>buttons</parameter>&nbsp;:</term>
-	  <listitem><simpara>a tuple containing 2-tuples each containing
-button text (or stock ID) and a response id</simpara></listitem>
+	  <listitem><simpara>a tuple containing one or more pairs of button
+specifiers: button text (or stock ID) and a response id</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -486,9 +486,17 @@ buttons to the <link
 linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> using the
 data specified in <parameter>buttons</parameter>. This method is the same as
 calling the <link
-linkend="method-gtkdialog--add-button"><methodname>gtk.Dialog.add_button</methodname>()</link> 
-repeatedly. buttons is a tuple containing 2-tuples specifying the data for
-one button - button text and a response ID integer.</para>
+linkend="method-gtkdialog--add-button"><methodname>gtk.Dialog.add_button</methodname>()</link>
+repeatedly. <parameter>buttons</parameter> is a tuple containing button data
+pairs - button text (or stock ID) and a response ID integer. For
+example:</para>
+
+      <programlisting>
+  dialog.add_buttons((gtk.STOCK_OPEN, 42, "Close", gtk.RESPONSE_CLOSE))
+</programlisting>
+
+      <para>will add "Open" and "Close" buttons to
+<parameter>dialog</parameter></para>.
 
     </refsect2>
 
