@@ -33,6 +33,14 @@ typedef struct {
 
 #ifndef PANGO_TYPE_LAYOUT_LINE
 #define PANGO_TYPE_LAYOUT_LINE pypango_layout_line_get_type()
+
+static PangoLayoutLine *
+_layout_line_boxed_copy(PangoLayoutLine *line)
+{
+    pango_layout_line_ref(line);
+    return line;
+}
+
 static GType
 pypango_layout_line_get_type(void)
 {
@@ -40,7 +48,7 @@ pypango_layout_line_get_type(void)
   
     if (our_type == 0)
         our_type = g_boxed_type_register_static("PangoLayoutLine",
-                                                (GBoxedCopyFunc)pango_layout_line_ref,
+                                                (GBoxedCopyFunc)_layout_line_boxed_copy,
                                                 (GBoxedFreeFunc)pango_layout_line_unref);
     return our_type;
 }
