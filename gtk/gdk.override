@@ -4703,3 +4703,47 @@ _wrap_gdk_display_store_clipboard(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gdk_pixbuf_get_from_drawable2 kwargs
+static PyObject *
+_wrap_gdk_pixbuf_get_from_drawable2(PyObject *self,
+				    PyObject *args,
+				    PyObject *kwargs)
+{
+    static char *kwlist[] = { "pixbuf", "src", "cmap",
+			      "src_x", "src_y",
+			      "dest_x", "dest_y",
+			      "width", "height", NULL };
+    PyGObject *py_pixbuf, *src, *cmap;
+    int src_x, src_y, dest_x, dest_y, width, height;
+    GdkPixbuf *pixbuf = NULL, *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OO!O!iiiiii:pixbuf_get_from_drawable",
+				     kwlist,
+				     &py_pixbuf,
+				     &PyGdkDrawable_Type, &src,
+				     &PyGdkColormap_Type, &cmap,
+				     &src_x, &src_y,
+				     &dest_x, &dest_y,
+				     &width, &height))
+        return NULL;
+    
+    if (py_pixbuf && pygobject_check(py_pixbuf, &PyGdkPixbuf_Type))
+        pixbuf = GDK_PIXBUF(py_pixbuf->obj);
+    else if ((PyObject *)py_pixbuf != Py_None) {
+        PyErr_SetString(PyExc_TypeError,
+			"pixbuf should be a GdkPixbuf or None");
+        return NULL;
+    }
+    
+    ret = gdk_pixbuf_get_from_drawable(pixbuf,
+				       GDK_DRAWABLE(src->obj),
+				       GDK_COLORMAP(cmap->obj),
+				       src_x, src_y,
+				       dest_x, dest_y,
+				       width, height);
+    
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
