@@ -32,7 +32,7 @@ typedef struct {
 } PyGtkCustomNotify;
 
 #ifndef PANGO_TYPE_LAYOUT_LINE
-#define PANGO_TYPE_LAYOUT_LINE pypango_layout_line_get_type()
+# define PANGO_TYPE_LAYOUT_LINE pypango_layout_line_get_type()
 
 static PangoLayoutLine *
 _layout_line_boxed_copy(PangoLayoutLine *line)
@@ -52,7 +52,23 @@ pypango_layout_line_get_type(void)
                                                 (GBoxedFreeFunc)pango_layout_line_unref);
     return our_type;
 }
-#endif
+#endif /* #ifndef PANGO_TYPE_LAYOUT_LINE */
+
+#ifndef PANGO_TYPE_ITEM
+# define PANGO_TYPE_ITEM (pypango_item_get_type ())
+
+static GType
+pypango_item_get_type (void)
+{
+  static GType our_type = 0;
+  
+  if (our_type == 0)
+    our_type = g_boxed_type_register_static ("PangoItem",
+                                             (GBoxedCopyFunc) pango_item_copy,
+                                             (GBoxedFreeFunc) pango_item_free);
+  return our_type;
+}
+#endif /* #ifndef PANGO_TYPE_ITEM */
 
 /* ------------- PangoAttribute ------------- */
 
@@ -1900,3 +1916,28 @@ _wrap_pango_layout_line_get_pixel_extents(PyGObject *self)
 			 logical_rect.width, logical_rect.height);
 }
 
+%%
+override-attr PangoLayoutLine.runs
+
+static inline PyObject *
+pypango_glyph_item_new(PangoGlyphItem *gitem)
+{
+    return Py_BuildValue("NN", pyg_boxed_new(PANGO_TYPE_ITEM, gitem->item, TRUE, TRUE),
+                         pyg_boxed_new(PANGO_TYPE_GLYPH_STRING, gitem->glyphs, TRUE, TRUE));
+}
+
+static PyObject *
+_wrap_pango_layout_line__get_runs(PyGObject *self, void *closure)
+{
+    PangoLayoutLine *line = pyg_boxed_get(self, PangoLayoutLine);
+    PyObject *list, *item;
+    GSList *l;
+
+    list = PyList_New(0);
+    for (l = line->runs; l; l = l->next) {
+        item = pypango_glyph_item_new((PangoGlyphItem *) l->data);
+        PyList_Append(list, item);
+        Py_DECREF(item);
+    }
+    return list;
+}

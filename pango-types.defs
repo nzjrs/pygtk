@@ -120,6 +120,31 @@
   (in-module "Pango")
   (c-name "PangoLayoutLine")
   (gtype-id "PANGO_TYPE_LAYOUT_LINE")
+  (fields
+   ; '("PangoLayout*" "layout") ;; omitted for fear of creating reference cycles
+   '("gint" "start_index")
+   '("gint" "length")
+   '("GSList*" "runs")
+   '("guint" "is_paragraph_start")
+   '("guint" "resolved_dir")
+   )
+)
+
+(define-boxed Item
+  (in-module "Pango")
+  (c-name "PangoItem")
+  (fields
+   '("gint" "offset")
+   '("gint" "length")
+   '("gint" "num_chars")
+   '("PangoEngineShape*" "analysis.shape_engine")
+   '("PangoEngineLang*" "analysis.lang_engine")
+   '("PangoFont*" "analysis.font")
+   '("guint8" "analysis.level")
+   '("PangoLanguage*" "analysis.language")
+   '("GSList*" "analysis.extra_attrs")
+  )
+  (gtype-id "PANGO_TYPE_ITEM")
 )
 
 (define-boxed LayoutIter
