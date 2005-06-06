@@ -580,7 +580,8 @@ class Wrapper:
         if not self.objinfo.fields:
             return '0'
         getsets = []
-        for ftype, fname in self.objinfo.fields:
+        for ftype, cfname in self.objinfo.fields:
+            fname = cfname.replace('.', '_')
             gettername = '0'
             settername = '0'
             attrname = self.objinfo.c_name + '.' + fname
@@ -601,7 +602,7 @@ class Wrapper:
                     self.fp.write(self.getter_tmpl %
                                   { 'funcname': funcname,
                                     'varlist': info.varlist,
-                                    'field': self.get_field_accessor(fname),
+                                    'field': self.get_field_accessor(cfname),
                                     'codeafter': info.get_codeafter() })
                     gettername = funcname
                 except:
