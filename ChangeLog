@@ -1,5 +1,34 @@
 2005-06-06  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* examples/gtk/widget.py: Render the sample widget with cairo, if
+	possible.
+
+	* examples/pango/pangocairo-simple.py: cairosimple.c example
+	ported to python.
+
+	* examples/Makefile.am (EXTRA_DIST): Add pango/pangocairo-simple.py.
+
+	* codegen/argtypes.py (CairoArg.write_return): Add cairo_t* argtype.
+
+	* gtk/Makefile.am (EXTRA_DIST): Add gdkcairo.override.
+
+	* gtk/gdk.defs: Optionally define method cairo_create of
+	gtk.gdk.Drawable.
+
+	* gtk/gdk.override (_wrap_gdk_cairo_create): Wrap gdk_cairo_create
+	as method cairo_create of gtk.gdk.Drawable.
+
+	* gtk/gdkcairo.override: If pycairo is available, define type
+	gtk.gdk.CairoContext as a subclass of pangocairo.CairoContext with
+	some additional methods.
+
+	* configure.in: Check for libraries to build pangocairo module.
+	Check for dependencies to optionally build gtk module with cairo
+	support.
+
+	* Makefile.am, pangocairomodule.c, pangocairo.defs,
+	* pangocairo.override: Python bindings for the new libpangocairo.
+
 	* codegen/codegen.py (Wrapper.write_getsets): Add support for
 	structured fields.  For example, a field 'bar' inside a structure
 	'foo' is declared in the defs as "foo.bar" and mapped as "foo_bar"

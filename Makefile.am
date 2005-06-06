@@ -19,7 +19,7 @@ defs_DATA =
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = \
 	pygobject-$(PLATFORM_VERSION).pc
-	
+
 if BUILD_GTK
 pkgconfig_DATA += pygtk-$(PLATFORM_VERSION).pc
 endif
@@ -80,6 +80,20 @@ nodist_pango_la_SOURCES = pango.c
 pango.c: $(COMMONDEFS) pango.override
 CLEANFILES += pango.c
 EXTRA_DIST += pango.override
+
+# pangocairo module
+if BUILD_PANGOCAIRO
+ pkgpyexec_LTLIBRARIES += pangocairo.la
+ defs_DATA += pangocairo.defs
+endif
+pangocairo_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpangocairo
+pangocairo_la_LIBADD = $(PANGOCAIRO_LIBS)
+pangocairo_la_CFLAGS = $(PANGOCAIRO_CFLAGS)
+pangocairo_la_SOURCES = pangocairomodule.c
+nodist_pangocairo_la_SOURCES = pangocairo.c
+pangocairo.c: $(COMMONDEFS) pangocairo.override
+CLEANFILES += pangocairo.c
+EXTRA_DIST += pangocairo.override
 
 # atk module
 atk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initatk

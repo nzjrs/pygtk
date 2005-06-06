@@ -48,6 +48,16 @@ static int have_numpy(void);
 
 extern PyTypeObject PyGtkWidget_Type;
 
+#ifdef HAVE_PYCAIRO
+# include <pycairo.h>
+extern Pycairo_CAPI_t *Pycairo_CAPI;
+extern PyTypeObject PyGdkCairoContext_Type;
+#endif
+
+%%
+include
+  gdkcairo.override
+
 %%
 modulename gtk.gdk
 %%
@@ -4747,3 +4757,15 @@ _wrap_gdk_pixbuf_get_from_drawable2(PyObject *self,
     /* pygobject_new handles NULL checking */
     return pygobject_new((GObject *)ret);
 }
+
+%%
+override gdk_cairo_create noargs
+static PyObject *
+_wrap_gdk_cairo_create(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    cairo_t *ret;
+
+    ret = gdk_cairo_create(GDK_DRAWABLE(self->obj));
+    return PycairoContext_FromContext(ret, &PyGdkCairoContext_Type, NULL);
+}
+

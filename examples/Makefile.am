@@ -54,6 +54,7 @@ EXTRA_DIST = \
 	neil/notebook.py	\
 	neil/question.xpm	\
 	pango/utf8-demo.py	\
+	pango/pangocairo-simple.py \
 	simple/README		\
 	simple/dnd.py		\
 	simple/dndpixmap.py	\

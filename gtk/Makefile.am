@@ -77,11 +77,11 @@ gtk_overrides = \
   gtktextview.override \
   gtktreeview.override
 
-gdk.c: $(srcdir)/gdk.defs $(COMMONDEFS) $(srcdir)/gdk.override
+gdk.c: $(srcdir)/gdk.defs $(COMMONDEFS) $(srcdir)/gdk.override $(srcdir)/gdkcairo.override
 gtk.c: $(srcdir)/gtk.defs $(COMMONDEFS) $(gtk_overrides) $(srcdir)/gtk-extrafuncs.defs
 CLEANFILES += gtk.c gdk.c
 
-EXTRA_DIST += gdk.override $(gtk_overrides)
+EXTRA_DIST += gdk.override gdkcairo.override $(gtk_overrides)
 
 # libglade module
 if BUILD_LIBGLADE

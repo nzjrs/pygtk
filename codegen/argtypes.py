@@ -753,6 +753,20 @@ class PyObjectArg(ArgType):
                                   '    Py_INCREF(ret);\n'
                                   '    return ret;')
 
+class CairoArg(ArgType):
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+        info.varlist.add('PycairoContext', '*' + pname)
+        info.add_parselist('O!', ['&PycairoContext_Type', '&' + pname], [pname])
+        info.arglist.append('%s->ctx' % pname)
+    def write_return(self, ptype, ownsreturn, info):
+        info.varlist.add("cairo_t", "*ret")
+        if ownsreturn:
+            info.codeafter.append('    return PycairoContext_FromContext(ret, NULL, NULL);')
+        else:
+            info.codeafter.append('    cairo_reference(ret);\n'
+                                  '    return PycairoContext_FromContext(ret, NULL, NULL);')
+
+
 class ArgMatcher:
     def __init__(self):
 	self.argtypes = {}
@@ -948,3 +962,5 @@ matcher.register('GdkNativeWindow', ULongArg())
 matcher.register_object('GObject', None, 'G_TYPE_OBJECT')
 
 del arg
+
+matcher.register('cairo_t*', CairoArg())

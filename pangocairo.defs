@@ -1,0 +1,47 @@
+;; From /opt/gnome-devel/include/pango-1.0/pango/pangocairo.h
+
+; (define-function cairo_font_map_get_type
+;   (c-name "pango_cairo_font_map_get_type")
+;   (return-type "GType")
+; )
+
+(define-object CairoFontMap
+  (in-module "pango")
+  (parent "PangoFontMap")
+  (c-name "PangoCairoFontMap")
+  (gtype-id "PANGO_TYPE_CAIRO_FONT_MAP")
+)
+
+(define-function cairo_font_map_new
+  (c-name "pango_cairo_font_map_new")
+  (is-constructor-of "PangoCairoFontMap")
+  (return-type "PangoCairoFontMap*")
+)
+
+(define-function cairo_font_map_get_default
+  (c-name "pango_cairo_font_map_get_default")
+  (return-type "PangoFontMap*")
+)
+
+(define-method set_resolution
+  (of-object "PangoCairoFontMap")
+  (c-name "pango_cairo_font_map_set_resolution")
+  (return-type "none")
+  (parameters
+    '("double" "dpi")
+  )
+)
+
+(define-method get_resolution
+  (of-object "PangoCairoFontMap")
+  (c-name "pango_cairo_font_map_get_resolution")
+  (return-type "double")
+)
+
+(define-method create_context
+  (of-object "PangoCairoFontMap")
+  (c-name "pango_cairo_font_map_create_context")
+  (return-type "PangoContext*")
+)
+
+

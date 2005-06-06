@@ -31,6 +31,11 @@
 #include "pygtk-private.h"
 #include <pyerrors.h>
 
+#ifdef HAVE_PYCAIRO
+# include <pycairo.h>
+Pycairo_CAPI_t *Pycairo_CAPI;
+#endif
+
 void _pygtk_register_boxed_types(PyObject *moddict);
 void pygtk_register_classes(PyObject *d);
 void pygdk_register_classes(PyObject *d);
@@ -42,6 +47,7 @@ extern PyMethodDef pygdk_functions[];
 
 PyObject *PyGtkDeprecationWarning;
 PyObject *PyGtkWarning;
+
 
 static struct _PyGtk_FunctionStruct functions = {
     VERSION,
@@ -118,7 +124,10 @@ init_gtk(void)
     char **argv;
     GSList *stock_ids, *cur;
     char buf[128];
- 
+
+#ifdef HAVE_PYCAIRO
+    Pycairo_IMPORT;
+#endif
     /* initialise gobject */
     init_pygobject();
     g_assert(pygobject_register_class != NULL);

@@ -5,6 +5,10 @@ import gobject
 import pango
 import gtk
 from gtk import gdk
+try:
+    import cairo
+except ImportError:
+    pass
 
 if gtk.pygtk_version < (2,3,93):
     print "PyGtk 2.3.93 or later required for this example"
@@ -21,7 +25,6 @@ class PyGtkWidget(gtk.Widget):
 		     }
     def __init__(self):
         gtk.Widget.__init__(self)
-
         self.draw_gc = None
         self.layout = self.create_pango_layout(TEXT)
         self.layout.set_font_description(pango.FontDescription("sans serif 16"))
@@ -34,10 +37,11 @@ class PyGtkWidget(gtk.Widget):
                                  window_type=gdk.WINDOW_CHILD,
                                  wclass=gdk.INPUT_OUTPUT,
                                  event_mask=self.get_events() | gdk.EXPOSURE_MASK)
-        self.draw_gc = gdk.GC(self.window,
-                              line_width=5,
-                              line_style=gdk.SOLID,
-                              join_style=gdk.JOIN_ROUND)
+        if not hasattr(self.window, "cairo_create"):
+            self.draw_gc = gdk.GC(self.window,
+                                  line_width=5,
+                                  line_style=gdk.SOLID,
+                                  join_style=gdk.JOIN_ROUND)
 	self.window.set_user_data(self)
         self.style.attach(self.window)
         self.style.set_background(self.window, gtk.STATE_NORMAL)
@@ -53,9 +57,7 @@ class PyGtkWidget(gtk.Widget):
         if self.flags() & gtk.REALIZED:
             self.window.move_resize(*allocation)
 
-    def do_expose_event(self, event):
-        self.chain(event)
-
+    def _expose_gdk(self, event):
         x, y, w, h = self.allocation
         self.window.draw_rectangle(self.draw_gc, False,
                                    BORDER_WIDTH, BORDER_WIDTH,
@@ -65,14 +67,34 @@ class PyGtkWidget(gtk.Widget):
                                 event.area, self, "label",
                                 (w - fontw) / 2, (h - fonth) / 2,
                                 self.layout)
-            
-gobject.type_register(PyGtkWidget)
+
+    def _expose_cairo(self, event, cr):
+        x, y, w, h = self.allocation
+        cr.set_source_color(self.style.fg[self.state])
+        cr.rectangle(BORDER_WIDTH, BORDER_WIDTH,
+                     w - 2*BORDER_WIDTH, h - 2*BORDER_WIDTH)
+        cr.set_line_width(5.0)
+        cr.set_line_join(cairo.LINE_JOIN_ROUND)
+        cr.stroke()
+        fontw, fonth = self.layout.get_pixel_size()
+        cr.move_to((w - fontw)/2, (h - fonth)/2)
+        cr.update_layout(self.layout)
+        cr.show_layout(self.layout)
+
+    def do_expose_event(self, event):
+        self.chain(event)
+        try:
+            cr = self.window.cairo_create()
+        except AttributeError:
+            return self._expose_gdk(event)
+        return self._expose_cairo(event, cr)
+    
 
 win = gtk.Window()
 win.set_title(TEXT)
 win.connect('delete-event', gtk.main_quit)
 
-frame = gtk.Frame("Show me a bug")
+frame = gtk.Frame("Example frame")
 win.add(frame)
 
 w = PyGtkWidget()

@@ -4413,3 +4413,10 @@
   (return-type "GdkRectangle")
 )
 
+;; From /opt/gnome-devel/include/gtk-2.0/gdk/gdkcairo.h
+
+(ifdef HAVE_PYCAIRO
+       (define-method cairo_create
+         (of-object "GdkDrawable")
+         (c-name "gdk_cairo_create")
+         (return-type "cairo_t*")))

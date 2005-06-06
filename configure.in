@@ -13,6 +13,7 @@ m4_define(pango_required_version,    1.8.0)
 m4_define(atk_required_version,      1.8.0)
 m4_define(gtk_required_version,      2.6.0)
 m4_define(libglade_required_version, 2.4.0)
+m4_define(pycairo_required_version,  0.5.0)
 
 AC_INIT(pygtk, pygtk_version,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=pygtk])
@@ -116,28 +117,40 @@ if test -n "$export_dynamic"; then
   PANGO_LIBS=`echo $PANGO_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
-dnl gtk+
-AM_PATH_GTK_2_0(gtk_required_version,
-	         build_gtk=true, build_gtk=false)
+dnl pangocairo
+PKG_CHECK_MODULES(PANGOCAIRO, [pangocairo >= pango_required_version
+                               pycairo >= pycairo_required_version],
+	build_pangocairo=true, build_pangocairo=false)
+AM_CONDITIONAL(BUILD_PANGOCAIRO, $build_pangocairo)
+if test -n "$export_dynamic"; then
+  PANGOCAIRO_LIBS=`echo $PANGOCAIRO_LIBS | sed -e "s/$export_dynamic//"`
+fi
+
+dnl gtk+; first try to find gtk+ and pycairo, if that fails look for gtk+ alone
+PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= 2.7,
+                        pycairo >= pycairo_required_version],
+        [build_gtk=true
+         have_pycairo=true],
+        dnl no pycairo
+        [have_pycairo=false
+         PKG_CHECK_MODULES(GTK, [gtk+-2.0 >= gtk_required_version],
+	          build_gtk=true, [build_gtk=false])]
+                 )
 AM_CONDITIONAL(BUILD_GTK, $build_gtk)
 if test -n "$export_dynamic"; then
   GTK_LIBS=`echo $GTK_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
-dnl Check for newer gtk+ versions, for conditional compiling of new features
 PYGTK_CODEGEN_DEFINES=""
-AC_SUBST(PYGTK_CODEGEN_DEFINES)
-
-AC_MSG_CHECKING([for GTK+ 2.4])
-if version=$(pkg-config --modversion "gtk+-2.0 >= 2.3.4" 2> /dev/null); then
-	PYGTK_CODEGEN_DEFINES="-DHAVE_GTK24";
-	AC_MSG_RESULT([found (version $version)])
-else
-	AC_MSG_RESULT([not found])
+AC_SUBST([PYGTK_CODEGEN_DEFINES])
+if $have_pycairo; then
+	PYGTK_CODEGEN_DEFINES="-DHAVE_PYCAIRO $PYGTK_CODEGEN_DEFINES";
+        AC_DEFINE([HAVE_PYCAIRO], [1], [Define to 1 if pycairo is available])
 fi
 
+
 dnl libglade
-PKG_CHECK_MODULES(LIBGLADE, libglade-2.0 >= libglade_required_version,
+PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= libglade_required_version],
 	build_libglade=true, build_libglade=false)
 AC_SUBST(LIBGLADE_CFLAGS)
 AC_SUBST(LIBGLADE_LIBS)
@@ -187,16 +200,22 @@ echo
 true                     && echo     gobject
 $build_atk               && echo     atk
 $build_pango             && echo     pango
-$build_gtk               && echo     gtk
+$build_pangocairo        && echo     pangocairo
+(test $build_gtk &&
+  $have_pycairo)         && echo     gtk "(with cairo)"
+(test $build_gtk && 
+  ! $have_pycairo)       && echo     gtk "(without cairo)"
 $build_libglade          && echo     gtk.glade
 echo
 
 if test ! $build_atk || ! $build_pango || \
-        ! $build_gtk || ! $build_libglade; then
+        ! $build_gtk || ! $build_libglade ||\
+        ! $build_pangocairo ; then
   echo "The following modules will NOT be built:"
   echo
   $build_atk               || echo     atk
   $build_pango             || echo     pango
+  $build_pangocairo        || echo     pangocairo
   $build_gtk               || echo     gtk
   $build_libglade          || echo     gtk.glade
 fi
