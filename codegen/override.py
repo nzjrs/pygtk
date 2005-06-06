@@ -34,6 +34,7 @@ class Overrides:
         self.override_attrs = {}
         self.override_slots = {}
         self.headers = ''
+        self.body = ''
         self.init = ''
         self.imports = []
         self.defines = {}
@@ -121,6 +122,10 @@ class Overrides:
             "headers"
             self.headers = '%s\n#line %d "%s"\n%s' % \
                            (self.headers, startline + 1, filename, rest)
+        elif command == 'body':
+            "body"
+            self.body = '%s\n#line %d "%s"\n%s' % \
+                           (self.body, startline + 1, filename, rest)
         elif command == 'init':
             "init"
             self.init = '%s\n#line %d "%s"\n%s' % \
@@ -209,6 +214,9 @@ class Overrides:
     
     def get_headers(self):
         return self.headers
+
+    def get_body(self):
+        return self.body
     
     def get_init(self):
         return self.init

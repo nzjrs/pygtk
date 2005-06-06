@@ -988,6 +988,11 @@ def write_headers(data, fp):
     fp.resetline()
     fp.write('\n\n')
     
+def write_body(data, fp):
+    fp.write(data)
+    fp.resetline()
+    fp.write('\n\n')
+
 def write_imports(overrides, fp):
     fp.write('/* ---------- types from other modules ---------- */\n')
     for module, pyname, cname in overrides.get_imports():
@@ -1116,6 +1121,7 @@ def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
     write_headers(overrides.get_headers(), fp)
     write_imports(overrides, fp)
     write_type_declarations(parser, fp)
+    write_body(overrides.get_body(), fp)
     write_classes(parser, overrides, fp)
 
     wrapper = Wrapper(parser, None, overrides, fp)
