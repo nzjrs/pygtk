@@ -56,7 +56,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
 
 
 /* a function to initialise the pygtk functions */
-#define init_pygtk() { \
+#define init_pygtk() G_STMT_START { \
     PyObject *pygtk = PyImport_ImportModule("gtk._gtk"); \
     if (pygtk != NULL) { \
 	PyObject *module_dict = PyModule_GetDict(pygtk); \
@@ -74,7 +74,7 @@ struct _PyGtk_FunctionStruct *_PyGtk_API;
                         "could not import gtk._gtk"); \
         return; \
     } \
-}
+} G_STMT_END
 
 #endif
 
