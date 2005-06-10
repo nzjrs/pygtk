@@ -52,6 +52,7 @@ GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
 if sys.platform == 'win32':
     GLOBAL_MACROS.append(('VERSION', '\\\"%s\\\"' % VERSION))
     GLOBAL_MACROS.append(('PLATFORM_WIN32',1))
+    GLOBAL_MACROS.append(('HAVE_BIND_TEXTDOMAIN_CODESET',1))
 else:
     GLOBAL_MACROS.append(('VERSION', '"%s"' % VERSION))
 
