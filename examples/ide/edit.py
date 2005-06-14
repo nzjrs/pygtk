@@ -8,6 +8,7 @@ import gtk
 import sys, os, dialogs
 
 BLOCK_SIZE = 2048
+RESPONSE_FORWARD = 1
 
 class EditWindow(gtk.Window):
     def __init__(self, quit_cb=None):
@@ -38,6 +39,8 @@ class EditWindow(gtk.Window):
         self.text.grab_focus()
         self.clipboard = gtk.Clipboard(selection='CLIPBOARD')
         self.dirname = None
+        self.search_string = None
+        self.last_search_iter = None
         return
     def load_file(self, fname):
         try:
@@ -113,7 +116,7 @@ class EditWindow(gtk.Window):
             ('EditClear', gtk.STOCK_REMOVE, 'C_lear', None, None,
              self.edit_clear),
             ('EditFind', gtk.STOCK_FIND, None, None, None, self.edit_find),
-            ('EditFindNext', None, 'Find _Next', None, None,
+            ('EditFindNext', None, 'Find _Next', "F3", None,
              self.edit_find_next),
             ('HelpMenu', gtk.STOCK_HELP),
             ('HelpAbout', None, 'A_bout', None, None, self.help_about),
@@ -213,9 +216,48 @@ class EditWindow(gtk.Window):
     def edit_clear(self, mi):
         self.buffer.delete_selection(True, True)
         return
-    # I'll implement these later
-    def edit_find(self, mi): pass
-    def edit_find_next(self, mi): pass
+    def _search(self, search_string, iter = None):
+        if iter is None:
+            start = self.buffer.get_start_iter()
+        else:
+            start = iter
+        i = 0
+        if search_string:
+            self.search_string = search_string
+            res = start.forward_search(search_string, gtk.TEXT_SEARCH_TEXT_ONLY)
+            if res:
+                match_start, match_end = res
+                self.buffer.place_cursor(match_start)
+                self.buffer.select_range(match_start, match_end)
+                self.text.scroll_to_iter(match_start, 0.0)
+                self.last_search_iter = match_end
+                
+            else:
+                self.search_string = None
+                self.last_search_iter = None
+    
+    def edit_find(self, mi): 
+        def dialog_response_callback(dialog, response_id):
+            if response_id == gtk.RESPONSE_CLOSE:
+                dialog.destroy()
+                return
+            self._search(search_text.get_text(), self.last_search_iter)
+        search_text = gtk.Entry()
+        s = self.buffer.get_selection_bounds()
+        if len(s) > 0:
+            search_text.set_text(self.buffer.get_slice(s[0], s[1]))
+        dialog = gtk.Dialog("Search", self,
+                            gtk.DIALOG_DESTROY_WITH_PARENT,
+                            (gtk.STOCK_FIND, RESPONSE_FORWARD,
+                             gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+        dialog.vbox.pack_end(search_text, True, True, 0)
+        dialog.connect("response", dialog_response_callback)
+        search_text.show()
+        search_text.grab_focus()
+        dialog.show_all()
+        response_id = dialog.run()
+    def edit_find_next(self, mi):
+        self._search(self.search_string, self.last_search_iter)    
     def help_about(self, mi):
         dlg = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
