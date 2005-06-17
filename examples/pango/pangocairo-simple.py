@@ -41,7 +41,7 @@ def draw_text(cr):
 
 def main(argv):
     if len(argv) != 2:
-        print >> sys.stderr, "Usage: cairosimple OUTPUT_FILENAME.png\n"
+        print >> sys.stderr, "Usage: cairosimple OUTPUT_BASENAME\n"
         return 1
 
     filename = argv[1]
@@ -52,7 +52,15 @@ def main(argv):
     cr.fill()
     draw_text(cr)
 
-    surface.write_to_png(filename)
+    surface.write_to_png(filename + ".png")
+
+    ## output also a PDF file
+    surface = cairo.PDFSurface(filename + ".pdf", 2*RADIUS, 2*RADIUS)
+    cr = pangocairo.CairoContext(cairo.Context(surface))
+    draw_text(cr)
+    cr.show_page()
+    surface.finish()
+    
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
