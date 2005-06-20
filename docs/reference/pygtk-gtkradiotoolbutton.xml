@@ -148,7 +148,7 @@ will contain an icon and label from the stock item specified by
 	<varlistentry>
 	  <term><parameter role="keyword">group</parameter>&nbsp;:</term>
 	  <listitem><simpara>an existing <link
-	  linkend="class-gtkradiotoolbutton"><classname>gtk.RadioToolButton</classname></link></simpara></listitem>
+	  linkend="class-gtkradiotoolbutton"><classname>gtk.RadioToolButton</classname> or <literal>None</literal>.</link></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -159,7 +159,11 @@ will contain an icon and label from the stock item specified by
       <para>The <methodname>set_group</methodname>() method adds the radio
 tool button to the same group as the <link
 linkend="class-gtkradiotoolbutton"><classname>gtk.RadioToolButton</classname></link>
-specified by <parameter>group</parameter></para>
+specified by <parameter>group</parameter>.</para>
+
+      <para>In PyGTK 2.6.2 and above, if <parameter>group</parameter> is
+<literal>None</literal> the radiotoolbutton will be removed from its current
+group.</para>
 
     </refsect2>
 
@@ -175,7 +179,7 @@ specified by <parameter>group</parameter></para>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem><simpara>a list containing the <link
 	  linkend="class-gtkradiotoolbutton"><classname>gtk.RadioToolButton</classname></link>s
-	  in the group</simpara></listitem>
+	  in the group</simpara> or <parameter> None</parameter></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -186,7 +190,8 @@ specified by <parameter>group</parameter></para>
       <para>The <methodname>get_group</methodname>() method returns a list
 containing the <link
 linkend="class-gtkradiobutton"><classname>gtk.RadioButton</classname></link>
-objects that are in the same group as the radio tool button.</para>
+objects that are in the same group as the radio tool button or
+<literal>None</literal> if the radiotoolbutton is not in a group.</para>
 
     </refsect2>
 

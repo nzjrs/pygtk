@@ -205,7 +205,7 @@ linkend="method-gtkactiongroup--add-action-with-accel"><methodname>gtk.ActionGro
 	<varlistentry>
 	  <term><parameter role="keyword">group</parameter>&nbsp;:</term>
 	  <listitem><simpara>another <link
-	  linkend="class-gtkradioaction"><classname>gtk.RadioAction</classname></link></simpara></listitem>
+	  linkend="class-gtkradioaction"><classname>gtk.RadioAction</classname></link> or <literal>None</literal></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -217,6 +217,10 @@ linkend="method-gtkactiongroup--add-action-with-accel"><methodname>gtk.ActionGro
 group for the radio action to the same group as the <link
 linkend="class-gtkradioaction"><classname>gtk.RadioAction</classname></link>
 specified by <parameter>group</parameter> i.e. the radio action joins the
+group.</para>
+
+      <para>In PyGTK 2.6.2 and above, if <parameter>group</parameter> is
+<literal>None</literal> the radio action is removed from its current
 group.</para>
 
     </refsect2>
@@ -231,7 +235,7 @@ group.</para>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem><simpara>a list containing the radio actions in the
-	  group</simpara></listitem>
+	  group or <parameter>None</parameter></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -240,7 +244,8 @@ group.</para>
       </note>
 
       <para>The <methodname>get_group</methodname>() method returns a list
-containing the group that the radio action belongs to.</para>
+containing the group that the radio action belongs to or
+<literal>None</literal> if the radio action is not part of a group.</para>
 
     </refsect2>
 

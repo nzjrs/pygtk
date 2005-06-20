@@ -213,12 +213,13 @@ label text will not be parsed for mnemonic characters.</para>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem><simpara>the list of radiobuttons in the same group that
-contains the radiobutton</simpara></listitem>
+contains the radiobutton or <literal>None</literal></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
       <para>The <methodname>get_group</methodname>() method returns the list
-of radiobuttons that are in the same group as the radiobutton.</para>
+of radiobuttons that are in the same group as the radiobutton or
+<literal>None</literal> if the radiobutton is not in a group.</para>
 
     </refsect2>
 
@@ -235,13 +236,18 @@ of radiobuttons that are in the same group as the radiobutton.</para>
 	  <term><parameter role="keyword">group</parameter>&nbsp;:</term>
 	  <listitem><simpara>a <link
 	  linkend="class-gtkradiobutton"><classname>gtk.RadioButton</classname></link>
-	  whose group the radiobutton will be added to</simpara></listitem>
+	  whose group the radiobutton will be added to or
+<literal>None</literal></simpara></listitem>
 	</varlistentry>
       </variablelist>
 
       <para>The <methodname>set_group</methodname>() method adds the
 radiobutton to the group of the radiobutton specified by
 <parameter>group</parameter>.</para>
+
+      <para>In PyGTK 2.6.2 and above, if <parameter>group</parameter> is
+<literal>None</literal> the radiobutton is removed from its current
+group.</para>
 
     </refsect2>
 

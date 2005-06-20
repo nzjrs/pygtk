@@ -155,14 +155,16 @@ label text will not be parsed for mnemonic characters.</para>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem><simpara>the list of radiomenuitems in the same group
-that contains the radiomenuitem</simpara></listitem>
+that contains the radiomenuitem</simpara> or
+            <literal> None</literal></listitem>
 	</varlistentry>
       </variablelist>
 
       <para>The <methodname>get_group</methodname>() method returns the list
 of <link
-linkend="class-gtkradiomenuitem"><classname>gtk.RadioMenuItem</classname></link>s 
-that are in the same group as the radiomenuitem.</para>
+linkend="class-gtkradiomenuitem"><classname>gtk.RadioMenuItem</classname></link>s
+that are in the same group as the radiomenuitem or <literal>None</literal>
+if the radiomenuitem is not in a group.</para>
 
     </refsect2>
 
@@ -179,7 +181,8 @@ that are in the same group as the radiomenuitem.</para>
 	  <term><parameter role="keyword">group</parameter>&nbsp;:</term>
 	  <listitem><simpara>a <link
 linkend="class-gtkradiomenuitem"><classname>gtk.RadioMenuItem</classname></link> 
-whose group the radiomenuitem will be added to</simpara></listitem>
+whose group the radiomenuitem will be added to or
+<literal>None</literal>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -187,6 +190,10 @@ whose group the radiomenuitem will be added to</simpara></listitem>
 radiomenuitem to the group of the <link
 linkend="class-gtkradiomenuitem"><classname>gtk.RadioMenuItem</classname></link> 
 specified by <parameter>group</parameter>.</para>
+
+      <para>In PyGTK 2.6.2 and above, if <parameter>group</parameter> is
+<literal>None</literal> the radiomenuitem will be removed from its current
+group.</para>
 
     </refsect2>
 
