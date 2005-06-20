@@ -264,22 +264,30 @@ class TimeTArg(ArgType):
         info.codeafter.append('    return PyInt_FromLong(ret);')
 
 class ULongArg(ArgType):
-    dflt = '    if (py_%(name)s)\n' \
-           '        %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
-    before = '    %(name)s = PyLong_AsUnsignedLong(py_%(name)s);\n'
     def write_param(self, ptype, pname, pdflt, pnull, info):
-        if pdflt:
-            info.varlist.add('gulong', pname + ' = ' + pdflt)
-            info.codebefore.append(self.dflt % {'name':pname})            
-        else:
-            info.varlist.add('gulong', pname)
-            info.codebefore.append(self.before % {'name':pname})            
-        info.varlist.add('PyObject', "*py_" + pname + ' = NULL')
-        info.arglist.append(pname)
-        info.add_parselist('O!', ['&PyLong_Type', '&py_' + pname], [pname])
+	if pdflt:
+	    info.varlist.add('unsigned long', pname + ' = ' + pdflt)
+	else:
+	    info.varlist.add('unsigned long', pname)
+	info.arglist.append(pname)
+        info.add_parselist('k', ['&' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
-        info.varlist.add('gulong', 'ret')
-        info.codeafter.append('    return PyLong_FromUnsignedLong(ret);')
+        info.varlist.add(ptype, 'ret')
+        info.codeafter.append('    return PyLong_FromUnsignedLong(ret);\n')
+
+class UInt32Arg(ULongArg):
+    def write_param(self, ptype, pname, pdflt, pnull, info):
+        ULongArg.write_param(self, ptype, pname, pdflt, pnull, info)
+        ## if sizeof(unsigned long) > sizeof(unsigned int), we need to
+        ## check the value is within guint32 range
+        if struct.calcsize('L') > struct.calcsize('I'):
+            info.codebefore.append((
+                '    if (%(pname)s > G_MAXUINT32) {\n'
+                '        PyErr_SetString(PyExc_ValueError,\n'
+                '                        "Value out of range in conversion of"\n'
+                '                        " %(pname)s parameter to unsigned 32 bit integer");\n'
+                '        return NULL;\n'
+                '    }\n') % vars())
 
 class Int64Arg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
@@ -915,13 +923,7 @@ matcher.register('gboolean', arg)
 arg = TimeTArg()
 matcher.register('time_t', arg)
 
-# If the system maxint is smaller than unsigned int, we need to use
-# Long objects with PyLong_AsUnsignedLong
-if sys.maxint >= (1L << 32):
-    matcher.register('guint32', arg)
-else:
-    arg = ULongArg()
-    matcher.register('guint32', arg)
+matcher.register('guint32', UInt32Arg())
 
 arg = ULongArg()
 matcher.register('gulong', arg)

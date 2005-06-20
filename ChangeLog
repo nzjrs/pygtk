@@ -1,3 +1,14 @@
+2005-06-20  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* codegen/argtypes.py (ULongArg): Use the new (python 2.3) 'k'
+	template char to convert unsigned long, so that parsing of ULong
+	parameters accepts both int and long python values.  Add new
+	UInt32Arg argtype for guint32, subclassing ULongArg and adding
+	range checking on platforms that require it.  As a side effect,
+	guint32 return values are now always translated to python longs
+	( before they would be longs on 32-bit systems, or ints on 64-bit
+	systems ).
+
 2005-06-20  Mark McLoughlin  <mark@skynet.ie>
 
 	Fixes bug #308384
