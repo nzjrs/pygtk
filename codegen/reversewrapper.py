@@ -601,6 +601,7 @@ class GdkRectanglePtrParam(Parameter):
         self.wrapper.add_pyargv_item("py_%s" % self.name)
 
 argtypes.matcher.register_reverse("GdkRectangle*", GdkRectanglePtrParam)
+argtypes.matcher.register_reverse('GtkAllocation*', GdkRectanglePtrParam)
 
 
 class PyGObjectMethodParam(Parameter):
