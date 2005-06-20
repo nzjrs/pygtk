@@ -4092,7 +4092,8 @@ _wrap_gdk_window_set_user_data(PyGObject *self, PyObject *args, PyObject *kwargs
 				     kwlist, &user_data))
         return NULL;
 
-    if (!pygobject_check(user_data, &PyGtkWidget_Type)) {
+    if ((PyObject *)user_data != Py_None &&
+	!pygobject_check(user_data, &PyGtkWidget_Type)) {
 	PyErr_SetString(PyExc_TypeError, "Only GtkWidgets are allowed as user data."
                         " Maybe you want to use GObject.set_data()");
 	return NULL;
@@ -4103,10 +4104,15 @@ _wrap_gdk_window_set_user_data(PyGObject *self, PyObject *args, PyObject *kwargs
         g_object_weak_unref(old_user_data, __gdk_window_set_user_data_widget_destroyed, self->obj);
         g_object_weak_unref(self->obj, __gdk_window_set_user_data_window_destroyed, old_user_data);
     }
-      /* Add new weak references */
-    gdk_window_set_user_data(GDK_WINDOW(self->obj), GTK_WIDGET(user_data->obj));
-    g_object_weak_ref(user_data->obj, __gdk_window_set_user_data_widget_destroyed, self->obj);
-    g_object_weak_ref(self->obj, __gdk_window_set_user_data_window_destroyed, user_data->obj);
+
+    if ((PyObject *)user_data != Py_None) {
+	  /* Add new weak references */
+	gdk_window_set_user_data(GDK_WINDOW(self->obj), GTK_WIDGET(user_data->obj));
+	g_object_weak_ref(user_data->obj, __gdk_window_set_user_data_widget_destroyed, self->obj);
+	g_object_weak_ref(self->obj, __gdk_window_set_user_data_window_destroyed, user_data->obj);
+    } else {
+	gdk_window_set_user_data(GDK_WINDOW(self->obj), NULL);
+    }
 
     Py_INCREF(Py_None);
     return Py_None;
