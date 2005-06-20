@@ -1,5 +1,23 @@
 2005-06-20  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* gobject/gobjectmodule.c (add_signals): Return a new dictionary
+	to replace __gsignals__, whith signal names canonicalized
+	(s/-/_/), for the signals that are being overridden, so that the
+	class_init functions can safely check for them.
+
+	* codegen/codegen.py (Wrapper.write_virtuals): Before overriding
+	virtual method, check if the corresponding signal is already being
+	overridden.
+
+	* gobject/gobjectmodule.c (pyg_type_register): Instead of deleting
+	__gsignals__, replace it with a dict containing only overridden
+	signals, as returned by add_signals().  This is so that class init
+	functions can inspect the signals that are being overridden.
+	__gsignals__ then get's deleted only after running
+	pyg_run_class_init.
+
+	Fixes Bug 308097: Overriden realize gets called twice.
+
 	* codegen/reversewrapper.py: Register GtkAllocation* as an alias
 	for GdkRectangle*.  Fixes #Bug 308099: No GtkWidget proxy handler
 	for do_size_allocate.

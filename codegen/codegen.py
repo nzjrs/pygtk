@@ -556,6 +556,7 @@ class Wrapper:
                 self.fp.write('    PyObject *o;\n')
                 self.fp.write(
                     '    %(klass)sClass *klass = %(class_cast_macro)s(gclass);\n'
+                    '    PyObject *gsignals = PyDict_GetItemString(pyclass->tp_dict, "__gsignals__");\n'
                     % vars())
                 
             for name, cname in virtuals:
@@ -566,7 +567,8 @@ class Wrapper:
                 else:
                     self.fp.write('''
     if ((o = PyDict_GetItemString(pyclass->tp_dict, "%(do_name)s"))
-        && !PyObject_TypeCheck(o, &PyCFunction_Type))
+        && !PyObject_TypeCheck(o, &PyCFunction_Type)
+        && !(gsignals && PyDict_GetItemString(gsignals, "%(name)s")))
         klass->%(name)s = %(cname)s;\n''' % vars())
             self.fp.write('    return 0;\n}\n')
     
