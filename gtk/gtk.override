@@ -2665,7 +2665,7 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
         return -1;
     if (py_buttons == Py_None)
         len = 0;
-    else if (pygobject_check(py_buttons, &PyTuple_Type))
+    else if (PyTuple_Check(py_buttons))
         len = PyTuple_Size(py_buttons);
     else {
         PyErr_SetString(PyExc_TypeError, "buttons must be a tuple containing text/response pairs or None");
@@ -3917,7 +3917,7 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
         return -1;
     if (py_buttons == Py_None)
         len = 0;
-    else if (pygobject_check(py_buttons, &PyTuple_Type))
+    else if (PyTuple_Check(py_buttons))
         len = PyTuple_Size(py_buttons);
     else {
         PyErr_SetString(PyExc_TypeError, "buttons must be a tuple containing text/response pairs or None");
