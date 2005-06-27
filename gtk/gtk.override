@@ -2647,9 +2647,9 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "title", "parent", "flags", "buttons", NULL };
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "|sOOO!:GtkDialog.__init__", kwlist,
+                                     "|zOOO:GtkDialog.__init__", kwlist,
                                      &title, &py_window, &py_flags,
-                                     &PyTuple_Type, &py_buttons))
+                                     &py_buttons))
         return -1;
 
     if (py_window == NULL || (PyObject*)py_window == Py_None)
@@ -2663,10 +2663,14 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
 
     if (pyg_flags_get_value(GTK_TYPE_DIALOG_FLAGS, py_flags, (gint *)&flags))
         return -1;
-    if (py_buttons != Py_None)
-        len = PyTuple_Size(py_buttons);
-    else
+    if (py_buttons == Py_None)
         len = 0;
+    else if (pygobject_check(py_buttons, &PyTuple_Type))
+        len = PyTuple_Size(py_buttons);
+    else {
+        PyErr_SetString(PyExc_TypeError, "buttons must be a tuple containing text/response pairs or None");
+        return -1;
+    }
 
     if (len % 2) {
         PyErr_SetString(PyExc_RuntimeError,
@@ -3886,15 +3890,16 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
     gchar *title = NULL;
     PyGObject *py_window = NULL;
     PyObject *py_buttons = Py_None;
+    PyObject *py_action = NULL;
     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
     GtkWindow *parent = NULL;
     gchar *backend = NULL;
     int len, i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "|sOiO!s:GtkFileChooserDialog.__init__", kwlist,
-                                     &title, &py_window, &action,
-                                     &PyTuple_Type, &py_buttons,
+                                     "|zOOOz:GtkFileChooserDialog.__init__", kwlist,
+                                     &title, &py_window, &py_action,
+                                     &py_buttons,
 				     &backend))
         return -1;
 
@@ -3907,10 +3912,17 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
         return -1;
     }
 
-    if (py_buttons != Py_None)
-        len = PyTuple_Size(py_buttons);
-    else
+    if (pyg_enum_get_value(GTK_TYPE_FILE_CHOOSER_ACTION, py_action,
+                           (gint *)&action))
+        return -1;
+    if (py_buttons == Py_None)
         len = 0;
+    else if (pygobject_check(py_buttons, &PyTuple_Type))
+        len = PyTuple_Size(py_buttons);
+    else {
+        PyErr_SetString(PyExc_TypeError, "buttons must be a tuple containing text/response pairs or None");
+        return -1;
+    }
 
     if (len % 2) {
         PyErr_SetString(PyExc_RuntimeError,
