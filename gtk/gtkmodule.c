@@ -127,6 +127,8 @@ init_gtk(void)
 
 #ifdef HAVE_PYCAIRO
     Pycairo_IMPORT;
+    if (Pycairo_CAPI == NULL)
+        return;
 #endif
     /* initialise gobject */
     init_pygobject();

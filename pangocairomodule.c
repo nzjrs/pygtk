@@ -51,6 +51,9 @@ initpangocairo(void)
     d = PyModule_GetDict(m);
 
     Pycairo_IMPORT;
+    if (Pycairo_CAPI == NULL)
+        return;
+
     PyPangoCairoContext_Type.tp_base = &PycairoContext_Type;
     if (PyType_Ready(&PyPangoCairoContext_Type) < 0)
         g_return_if_reached();
