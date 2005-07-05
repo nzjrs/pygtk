@@ -43,16 +43,6 @@ EXTRA_DIST = \
 	ide/run.xpm		\
 	ide/step.xpm		\
 	ide/dialogs.py		\
-	neil/README		\
-	neil/TAppli.py		\
-	neil/TAppli2.py		\
-	neil/TAppli3.py		\
-	neil/TAppli4.py		\
-	neil/TAppli5.py		\
-	neil/bomb.xpm		\
-	neil/gtk-logo.xpm	\
-	neil/notebook.py	\
-	neil/question.xpm	\
 	pango/utf8-demo.py	\
 	pango/pangocairo-simple.py \
 	simple/README		\
