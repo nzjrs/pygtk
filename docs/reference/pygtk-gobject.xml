@@ -134,18 +134,6 @@ linkend="method-gobject--chain">chain</link></methodname>
   </refsect1>
 
   <refsect1>
-    <title>Description</title>
-    <para>The GObject class is the base class providing the common
-attributes and methods for the PyGTK classes. The GObject class is not a
-user interface widget class.</para>
-
-    <para>The GObject class provides the signal management methods, the
-object property access methods and the object data management
-methods.</para>
-
-  </refsect1>
-
-  <refsect1>
     <title>Attributes</title>
 
     <blockquote role="properties">
@@ -184,6 +172,37 @@ methods.</para>
       </tgroup>
       </informaltable>
     </blockquote>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Signal Prototypes</title>
+
+    <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gobject--notify">notify</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>gobject</parameter></methodparam>
+            <methodparam><parameter>property_spec</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Description</title>
+    <para>The GObject class is the base class providing the common
+attributes and methods for the PyGTK classes. The GObject class is not a
+user interface widget class.</para>
+
+    <para>The GObject class provides the signal management methods, the
+object property access methods and the object data management
+methods.</para>
 
   </refsect1>
 
@@ -780,6 +799,61 @@ still to be run will not be invoked.</para>
       </variablelist>
 
       <para>The chain() method does something.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Signals</title>
+
+    <refsect2 id="signal-gobject--notify">
+      <title>The GObject "notify" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>gobject</parameter></methodparam>
+	  <methodparam><parameter>property_spec</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>gobject</parameter>&nbsp;:</term>
+	  <listitem><simpara>the gobject that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>property_spec</parameter>&nbsp;:</term>
+          <listitem><simpara>the <link linkend="class-gobjectgparamspec"><classname>gobject.GParamSpec</classname></link> of the property that was
+changed</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The "notify" signal is emitted on a gobject when one of its
+properties has been changed. Note that getting this signal doesn't guarantee
+that the value of the property has actually changed, it may also be emitted
+when the setter for the property is called to reinstate the previous
+value. For example to be notified of the change of the title of a <link
+linkend="class-gtkwindow"><classname>gtk.Window</classname></link> you could
+connect to the "notify" signal similar to:</para>
+
+      <programlisting>
+  window.connect("notify::title", callback)
+</programlisting>
 
     </refsect2>
 
