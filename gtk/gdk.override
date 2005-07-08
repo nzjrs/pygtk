@@ -65,6 +65,7 @@ import gobject.GObject as PyGObject_Type
 import pango.Context as PyPangoContext_Type
 import pango.Font as PyPangoFont_Type
 import pango.Layout as PyPangoLayout_Type
+import pango.Renderer as PyPangoRenderer_Type
 %%
 ignore-glob
   *_get_type
@@ -1233,6 +1234,36 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    return 0;
 	}
 	break;
+    case GDK_OWNER_CHANGE:
+        if (!strcmp(attr, "owner")) {
+	    INT_CHECK();
+	    event->owner_change.owner = PyInt_AsLong(value);
+	} else if (!strcmp(attr, "reason")) {
+	    INT_CHECK();
+	    event->owner_change.reason = PyInt_AsLong(value);
+	} else if (!strcmp(attr, "selection")) {
+	    PyErr_SetString(PyExc_TypeError, "selection is not writable");
+	    return -1;
+	} else if (!strcmp(attr, "time")) {
+	    INT_CHECK();
+	    event->owner_change.time = PyInt_AsLong(value);
+	} else if (!strcmp(attr, "selection_time")) {
+	    INT_CHECK();
+	    event->owner_change.selection_time = PyInt_AsLong(value);
+	}
+	break;
+    case GDK_GRAB_BROKEN:
+        if (!strcmp(attr, "keyboard")) {
+	    INT_CHECK();
+	    event->grab_broken.keyboard = PyInt_AsLong(value);
+	} else if (!strcmp(attr, "implicit")) {
+	    INT_CHECK();
+	    event->grab_broken.keyboard = PyInt_AsLong(value);
+	} else if (!strcmp(attr, "grab_window")) {
+	    PyErr_SetString(PyExc_TypeError, "grab_window is not writable");
+	    return -1;
+	}
+        break;
     default:
 	break;
     }
@@ -1553,6 +1584,39 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "name"))
             return PyString_FromString(event->setting.name);
         break;
+    /* New in 2.8 */
+    case GDK_OWNER_CHANGE:
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[sssssss]",
+                                 "type", "window", "send_event",
+                                 "owner", "reason", "time", "selection_time");
+        if (!strcmp(attr, "owner"))
+            return PyInt_FromLong(event->owner_change.owner);
+        if (!strcmp(attr, "reason"))
+            return pyg_enum_from_gtype(GDK_TYPE_OWNER_CHANGE,
+				       event->owner_change.reason);
+        if (!strcmp(attr, "selection"))
+            return PyString_FromString(
+                gdk_atom_name(event->owner_change.selection));
+        if (!strcmp(attr, "time"))
+            return PyInt_FromLong(event->owner_change.time);
+        if (!strcmp(attr, "selection_time"))
+            return PyInt_FromLong(event->owner_change.selection_time);
+	break;
+    case GDK_GRAB_BROKEN:
+        if (!strcmp(attr, "__members__"))
+            return Py_BuildValue("[ssssss]",
+                                 "type", "window", "send_event",
+                                 "keyboard", "implicit",
+				 "grab_window");
+        if (!strcmp(attr, "keyboard"))
+            return PyBool_FromLong(event->grab_broken.keyboard);
+        if (!strcmp(attr, "implicit"))
+            return PyBool_FromLong(event->grab_broken.implicit);
+        if (!strcmp(attr, "grab_window"))
+            return pygobject_new((GObject *)event->grab_broken.grab_window);
+        break;
+	
     default:
         break;
     }

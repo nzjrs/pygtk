@@ -19,8 +19,11 @@ pkgincludedir = $(includedir)/pygtk-$(PLATFORM_VERSION)/pygtk
 pkginclude_HEADERS = pygtk.h
 
 INCLUDES = -I$(top_srcdir)/gobject $(PYTHON_INCLUDES) 
-COMMONDEFS = $(srcdir)/gtk-types.defs $(srcdir)/gdk-types.defs \
-  $(top_srcdir)/atk-types.defs $(top_srcdir)/pango-types.defs
+COMMONDEFS = \
+	$(srcdir)/gtk-types.defs \
+	$(srcdir)/gdk-types.defs \
+	$(top_srcdir)/atk-types.defs \
+	$(top_srcdir)/pango-types.defs
 
 common_ldflags = -module -avoid-version
 if PLATFORM_WIN32
