@@ -1,4 +1,4 @@
-/* -*- Mode: C; c-basic-offset: 4 -*-
+g/* -*- Mode: C; c-basic-offset: 4 -*-
  * pygtk- Python bindings for the GTK toolkit.
  * Copyright (C) 1998-2003  James Henstridge
  *
@@ -660,3 +660,89 @@ _wrap_gtk_container_class_install_child_property (PyObject *self,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override-slot GtkContainer.tp_iter
+
+typedef struct {
+    PyObject_HEAD
+    GList *list;
+} PyGContainerIter;
+
+static void
+pyg_container_iter_dealloc(PyGContainerIter *self)
+{
+    g_list_free(self->list);
+    PyObject_Del((PyObject*) self);
+}
+
+static PyObject*
+pygobject_container_iter_next(PyGContainerIter *iter)
+{
+    PyObject *child;
+    
+    if (!iter->list) {
+        PyErr_SetNone(PyExc_StopIteration);
+        return NULL;
+    }
+	
+    child = pygobject_new((GObject*)iter->list->data);
+    iter->list = g_list_next(iter->list);
+    return child;
+}
+
+PyTypeObject PyGContainerIter_Type = {
+	PyObject_HEAD_INIT(NULL)
+	0,					/* ob_size */
+	"gobject.GContainerIter",		/* tp_name */
+	sizeof(PyGContainerIter),		/* tp_basicsize */
+	0,					/* tp_itemsize */
+	(destructor)pyg_container_iter_dealloc,	/* tp_dealloc */
+	0,					/* tp_print */
+	0,					/* tp_getattr */
+	0,					/* tp_setattr */
+	0,					/* tp_compare */
+	0,					/* tp_repr */
+	0,					/* tp_as_number */
+	0,					/* tp_as_sequence */
+	0,		       			/* tp_as_mapping */
+	0,					/* tp_hash */
+	0,					/* tp_call */
+	0,					/* tp_str */
+	0,					/* tp_getattro */
+	0,					/* tp_setattro */
+	0,					/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT,			/* tp_flags */
+ 	"GtkContainer child iterator",		/* tp_doc */
+	0,					/* tp_traverse */
+ 	0,					/* tp_clear */
+	0,					/* tp_richcompare */
+	0,					/* tp_weaklistoffset */
+	0,					/* tp_iter */
+	(iternextfunc)pygobject_container_iter_next, /* tp_iternext */
+};
+
+static PyObject*
+_wrap_gtk_container_tp_iter(PyGObject *self)
+{
+    PyGContainerIter *iter;
+    iter = PyObject_NEW(PyGContainerIter, &PyGContainerIter_Type);
+    iter->list = gtk_container_get_children(GTK_CONTAINER(self->obj));
+    return (PyObject *) iter;
+}
+%%
+override-slot GtkContainer.tp_as_sequence
+static int
+_wrap_gtk_container_sq_length(PyGObject *self)
+{
+    return g_list_length(gtk_container_get_children(GTK_CONTAINER(self->obj)));
+}
+
+static PySequenceMethods _wrap_gtk_container_tp_as_sequence = {
+    (inquiry)_wrap_gtk_container_sq_length,
+    (binaryfunc)0,
+    (intargfunc)0,
+    (intargfunc)0,
+    (intintargfunc)0,
+    (intobjargproc)0,
+    (intintobjargproc)0
+};
