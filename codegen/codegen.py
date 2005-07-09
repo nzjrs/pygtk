@@ -738,11 +738,13 @@ class GObjectWrapper(Wrapper):
         return '0'
 
     def write_property_based_constructor(self, constructor):
+        self.objinfo.has_new_constructor_api = True
         out = self.fp
         print >> out, "static int"
         print >> out, '_wrap_%s(PyGObject *self, PyObject *args,'\
               ' PyObject *kwargs)\n{' % constructor.c_name
-        print >> out, "    GType obj_type = pyg_type_from_object((PyObject *) self);"
+        if constructor.params:
+            print >> out, "    GType obj_type = pyg_type_from_object((PyObject *) self);"
 
         def py_str_list_to_c(arg):
             if arg:
@@ -788,7 +790,7 @@ class GObjectWrapper(Wrapper):
             print >> out, "    if (!pyg_parse_constructor_args(obj_type, arg_names, prop_names,"
             print >> out, "                                    params, &nparams, parsed_args))"
             print >> out, "        return -1;"
-            print >> out, "    self->obj = g_object_newv(obj_type, nparams, params);"
+            print >> out, "    pygobject_constructv(self, nparams, params);\n"
             print >> out, "    for (i = 0; i < nparams; ++i)"
             print >> out, "        g_value_unset(&params[i].value);"
         else:
@@ -802,7 +804,7 @@ class GObjectWrapper(Wrapper):
             print >> out, '    if (!PyArg_ParseTupleAndKeywords(args, kwargs, ":%s.__init__", kwlist))' % classname
             print >> out, "        return -1;"
             print >> out
-            print >> out, "    self->obj = g_object_newv(obj_type, 0, NULL);"
+            print >> out, "    pygobject_constructv(self, 0, NULL);\n"
 
         print >> out, \
               '    if (!self->obj) {\n' \
@@ -814,7 +816,6 @@ class GObjectWrapper(Wrapper):
             print >> out, "    g_object_ref(self->obj);\n"
 
         print >> out, \
-              '    pygobject_register_wrapper((PyObject *)self);\n' \
               '    return 0;\n' \
               '}\n\n' % { 'typename': classname }
         return "_wrap_%s" % constructor.c_name
@@ -1115,6 +1116,8 @@ def write_registers(parser, fp):
             fp.write('    pygobject_register_class(d, "' + obj.c_name +
                      '", ' + obj.typecode + ', &Py' + obj.c_name +
                      '_Type, NULL);\n')
+        if obj.has_new_constructor_api:
+            fp.write('    pyg_set_object_has_new_constructor(%s);\n' % obj.typecode)
         if obj.class_init_func is not None:
             fp.write('    pyg_register_class_init(%s, %s);\n' %
                      (obj.typecode, obj.class_init_func))

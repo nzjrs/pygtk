@@ -69,6 +69,7 @@ class ObjectDef(Definition):
 	self.fields = []
         self.implements = []
         self.class_init_func = None
+        self.has_new_constructor_api = False
 	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
