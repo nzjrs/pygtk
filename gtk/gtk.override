@@ -77,6 +77,7 @@ include
   gtkclist.override
   gtkcontainer.override
   gtkctree.override
+  gtkiconview.override
   gtkstyle.override
   gtktextview.override
   gtktreeview.override
@@ -173,7 +174,6 @@ ignore
   gtk_idle_add_priority
   gtk_idle_remove
   gtk_idle_remove_by_data
-  gtk_icon_view_new_with_model
   gtk_image_item_menu_new_with_label
   gtk_image_menu_item_new_from_stock
   gtk_image_menu_item_new_with_mnemonic
@@ -6505,107 +6505,6 @@ _wrap_gtk_icon_theme_get_icon_sizes(PyGObject *self, PyObject *args,
 
     g_free(sizes);
     return py_sizes;
-}
-%%
-override gtk_icon_view_new kwargs
-static int
-_wrap_gtk_icon_view_new(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "model", NULL };
-    PyGObject *pymodel = NULL;
- 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkIconView.__init__",
-				     kwlist, &pymodel))
-        return -1;
-    if (pymodel == NULL || (PyObject *)pymodel == Py_None)
-        pygobject_construct(self, NULL);
-    else if (pygobject_check(pymodel, &PyGtkTreeModel_Type))
-        pygobject_construct(self, "model", GTK_TREE_MODEL(pymodel->obj), NULL);
-    else {
-	PyErr_SetString(PyExc_TypeError,
-			"model must be a gtk.TreeModel or None");
-	return -1;
-    }
- 
-    if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError,
-			"could not create GtkIconView object");
-        return -1;
-    }
-    return 0;
-}
-%%
-init
-    pyg_set_object_has_new_constructor(GTK_TYPE_ICON_VIEW);
-%%
-override gtk_icon_view_get_selected_items noargs
-static PyObject *
-_wrap_gtk_icon_view_get_selected_items(PyGObject *self)
-{
-    GList *paths;
-    PyObject *py_paths;
-    int plen, i;
-
-    paths = gtk_icon_view_get_selected_items(GTK_ICON_VIEW(self->obj));
-
-    plen = g_list_length(paths);
-    if ((py_paths = PyList_New(plen)) == NULL)
-        return NULL;
-    for (i = 0; i < plen; i++) {
-        GtkTreePath *path = (GtkTreePath *)g_list_nth_data(paths, i);
-        PyObject *pypath = pygtk_tree_path_to_pyobject(path);
-        PyList_SET_ITEM(py_paths, i, pypath);
-    }
-    g_list_foreach(paths, (GFunc)gtk_tree_path_free, NULL);
-    g_list_free(paths);
-    return py_paths;
-}
-%%
-override gtk_icon_view_selected_foreach kwargs
-static void
-pygtk_icon_view_selected_foreach_cb(GtkIconView *iconview,
-                                    GtkTreePath *path,
-                                    gpointer user_data)
-{
-    PyGILState_STATE state;
-    PyObject *callback, *args, *ret;
- 
-    state = pyg_gil_state_ensure();
-    callback = PyTuple_GetItem((PyObject *)user_data, 0);
-    args = Py_BuildValue("(NNO)",
-                         pygobject_new((GObject *)iconview),
-                         pygtk_tree_path_to_pyobject(path),
-                         PyTuple_GetItem((PyObject *)user_data, 1));
-    ret = PyObject_CallObject(callback, args);
-    if (!ret)
-        PyErr_Print();
-    Py_XDECREF(ret);
-    pyg_gil_state_release(state);
-}
-static PyObject *
-_wrap_gtk_icon_view_selected_foreach(PyGObject *self, PyObject *args,
-                                     PyObject *kwargs)
-{
-    static char *kwlist[] = { "func", "data",  NULL };
-    PyObject *func, *data, *py_data = Py_None;
- 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "O|O:GtkIconView.foreach",
-                                     kwlist, &func, &py_data)) {
-        return NULL;
-    }
-    if (!PyCallable_Check(func)) {
-        PyErr_SetString(PyExc_TypeError, "func must be callable");
-        return NULL;
-    }
- 
-    data = Py_BuildValue("(OO)", func, py_data);
-     
-    gtk_icon_view_selected_foreach(GTK_ICON_VIEW(self->obj),
-                                   pygtk_icon_view_selected_foreach_cb,
-                                   (gpointer)data);
-    Py_INCREF(Py_None);
-    return Py_None;
 }
 %%
 override gtk_image_get_icon_name noargs

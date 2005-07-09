@@ -72,13 +72,14 @@ gtk-types.c:
 gtk_overrides = \
   gtk.override \
   gtkclist.override \
-  gtkwidget.override \
   gtkcontainer.override \
-  gtkstyle.override \
-  gtkwindow.override \
   gtkctree.override \
+  gtkiconview.override \
+  gtkstyle.override \
   gtktextview.override \
-  gtktreeview.override
+  gtktreeview.override \
+  gtkwidget.override \
+  gtkwindow.override
 
 gdk.c: $(srcdir)/gdk.defs $(COMMONDEFS) $(srcdir)/gdk.override $(srcdir)/gdkcairo.override
 gtk.c: $(srcdir)/gtk.defs $(COMMONDEFS) $(gtk_overrides) $(srcdir)/gtk-extrafuncs.defs
