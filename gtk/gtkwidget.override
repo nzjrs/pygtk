@@ -389,25 +389,3 @@ _wrap_gtk_menu_get_for_attach_widget(PyGObject *self)
     }
     return pymenus;
 }
-%%
-override gtk_widget_list_accel_closures noargs
-static PyObject *
-_wrap_gtk_widget_list_accel_closures(PyGObject *self)
-{
-    int i;
-    GList *ret, *tmp;
-    PyObject *pyret;
-
-    ret = gtk_widget_list_accel_closures(GTK_WIDGET(self->obj));
-
-    pyret = PyList_New(g_list_length(ret));
-    for (tmp = ret, i = 0; tmp; tmp = tmp->next, i++) {
-        PyObject *item = pygobject_new((GObject *)tmp->data);
-	PyList_SetItem(pyret, i, item);
-        Py_DECREF(item);
-    }
-    
-    g_list_free(ret);
-    return pyret;
-}
-
