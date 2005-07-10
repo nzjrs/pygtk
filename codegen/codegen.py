@@ -375,11 +375,18 @@ class Wrapper:
 
     def get_methflags(self, funcname):
         if self.overrides.wants_kwargs(funcname):
-            return 'METH_VARARGS|METH_KEYWORDS'
+            flags = 'METH_VARARGS|METH_KEYWORDS'
         elif self.overrides.wants_noargs(funcname):
-            return 'METH_NOARGS'
+            flags = 'METH_NOARGS'
+        elif self.overrides.wants_onearg(funcname):
+            flags = 'METH_O'
         else:
-            return 'METH_VARARGS'
+            flags = 'METH_VARARGS'
+        if self.overrides.is_staticmethod(funcname):
+            flags += '|METH_STATIC'
+        elif self.overrides.is_classmethod(funcname):
+            flags += '|METH_CLASS'
+        return flags
 
     def write_function(self, funcname, data):
         lineno, filename = self.overrides.getstartline(funcname)
