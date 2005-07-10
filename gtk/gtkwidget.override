@@ -389,3 +389,68 @@ _wrap_gtk_menu_get_for_attach_widget(PyGObject *self)
     }
     return pymenus;
 }
+%%
+define GtkWidget.set_activate_signal kwargs classmethod
+static PyObject *
+_wrap_gtk_widget_set_activate_signal(PyObject *cls,
+				     PyObject *args,
+                                     PyObject *kwargs)
+{
+    static char *kwlist[] = { "signal_name", NULL };
+    gchar *signal_name;
+    guint signal_id;
+    GType gtype;
+    GtkWidgetClass *klass;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s:gtk.Widget.set_activate_signal",
+				     kwlist,
+				     &signal_name))
+	return NULL;
+
+     if ((gtype = pyg_type_from_object(cls)) == 0)
+         return NULL;
+     signal_id = g_signal_lookup(signal_name, gtype);
+     if (signal_id == 0) {
+         PyErr_Format(PyExc_ValueError, "class has no signal named '%s'",
+		      signal_name);
+         return NULL;
+     }
+     klass = (GtkWidgetClass *) g_type_class_ref(gtype);
+     klass->activate_signal = signal_id;
+     g_type_class_unref(klass);
+     Py_INCREF(Py_None);
+     return Py_None;
+}
+%%
+define GtkWidget.set_set_scroll_adjustments_signal kwargs classmethod
+static PyObject *
+_wrap_gtk_widget_set_set_scroll_adjustments_signal(PyObject *cls,
+						   PyObject *args,
+                                                   PyObject *kwargs)
+{
+    static char *kwlist[] = { "signal_name", NULL };
+    gchar *signal_name;
+    guint signal_id;
+    GType gtype;
+    GtkWidgetClass *klass;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "s:gtk.Widget.set_set_scroll_adjustments_signal", kwlist,
+				     &signal_name))
+	return NULL;
+
+     if ((gtype = pyg_type_from_object(cls)) == 0)
+         return NULL;
+     signal_id = g_signal_lookup(signal_name, gtype);
+     if (signal_id == 0) {
+         PyErr_Format(PyExc_ValueError,
+		      "class has no signal named '%s'", signal_name);
+         return NULL;
+     }
+     klass = (GtkWidgetClass *) g_type_class_ref(gtype);
+     klass->set_scroll_adjustments_signal = signal_id;
+     g_type_class_unref(klass);
+     Py_INCREF(Py_None);
+     return Py_None;
+}
