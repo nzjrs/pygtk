@@ -1,5 +1,17 @@
 2005-07-17  Johan Dahlin  <johan@gnome.org>
 
+	* gobject/pygobject.c: (pygobject_new_full), (pygobject_dealloc),
+	(pygobject_clear):
+	* gtk/gdk.override:
+	* gtk/gtk-types.c: (_pygtk_style_helper_new),
+	(pygtk_style_helper_dealloc), (pygtk_style_helper_setitem),
+	(pygtk_tree_model_row_dealloc),
+	(pygtk_tree_model_row_iter_dealloc):
+	* gtk/gtk.override:
+	* gtk/gtkwidget.override:
+	We have atomic ref counting in glib now, remove block/unblocking
+	around reference counting.	
+
 	* gobject/pygobject.h: 
 	* gobject/gobjectmodule.c (pyg_gil_state_ensure_py23) 
 	(pyg_gil_state_release_py23): Remove pre python 2.3.5 compatibility.

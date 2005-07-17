@@ -4111,9 +4111,7 @@ _wrap_gdk_window_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
 
 #ifdef PLATFORM_WIN32
-    pyg_begin_allow_threads;
     g_object_ref(self->obj);
-    pyg_end_allow_threads;
 #endif /* PLATFORM_WIN32 */
     
     pygobject_register_wrapper((PyObject *)self);
@@ -4446,11 +4444,9 @@ _wrap_gdk_window_add_filter(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(cunote->func);
     Py_XINCREF(cunote->data);
 
-    pyg_begin_allow_threads;
     g_object_weak_ref(G_OBJECT(self->obj),
 		      (GWeakNotify) pygtk_custom_destroy_notify,
 		      cunote);
-    pyg_end_allow_threads;
     
     gdk_window_add_filter (GDK_WINDOW(self->obj),
 			   (GdkFilterFunc)pygdk_filter_func_marshal,

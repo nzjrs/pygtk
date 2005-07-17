@@ -2655,7 +2655,6 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
     GtkDialogFlags flags = 0;
     int len, i;
     GtkWindow *parent;
-    PyGILState_STATE state;
     
     static char *kwlist[] = { "title", "parent", "flags", "buttons", NULL };
 
@@ -2735,9 +2734,7 @@ _wrap_gtk_dialog_new_with_buttons(PyGObject *self, PyObject *args,
                               PyInt_AsLong(id));
     }
     
-    state = pyg_gil_state_ensure();
-    g_object_ref(self->obj); /* we don't own the first reference of windows */
-    pyg_gil_state_release(state);
+    g_object_ref(self->obj);
 
     return 0;
 }
@@ -2800,7 +2797,6 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     GtkMessageType type = GTK_MESSAGE_INFO;
     PyGObject *py_parent = NULL;
     char *message_format = NULL;
-    PyGILState_STATE state;
     
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOOz:GtkMessageDialog.__init__", kwlist, &py_parent, &py_flags, &py_type, &py_buttons, &message_format))
         return -1;
@@ -2835,9 +2831,8 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
                         "could not create GtkMessageDialog object");
         return -1;
     }
-    state = pyg_gil_state_ensure();
+    
     g_object_ref(self->obj); /* we don't own the first reference of windows */
-    pyg_gil_state_release(state);
 
     if (pyg_type_from_object((PyObject *) self) != GTK_TYPE_MESSAGE_DIALOG) {
         PyErr_SetString(PyExc_RuntimeError, "__gobject_init__ must be used "
@@ -3981,9 +3976,8 @@ _wrap_gtk_file_chooser_dialog_new(PyGObject *self,
         gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
                               PyInt_AsLong(id));
     }
-    pyg_begin_allow_threads;
     g_object_ref(self->obj); /* we don't own the first reference of windows */
-    pyg_end_allow_threads;
+    
     return 0;
 }
 %%
