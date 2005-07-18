@@ -374,9 +374,9 @@ linkend="method-gtkwidget--set-accel-path">set_accel_path</link></methodname>
       </methodsynopsis>
 
 <!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtkwidget- -list-accel-closures">list_accel_closures</link></methodname>
-    <methodparam></methodparam>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget- -list-accel-closures">list_accel_closures</link></methodname>
+        <methodparam></methodparam>
       </methodsynopsis>
 END NOT IMPLEMENTED -->
 
@@ -824,7 +824,8 @@ linkend="method-gtkwidget--class-path">class_path</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkwidget--list-mnemonic-labels">list_mnemonic_labels</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkwidget--add-mnemonic-label">add_mnemonic_label</link></methodname>
 	<methodparam><parameter>label</parameter></methodparam>
@@ -837,6 +838,18 @@ linkend="method-gtkwidget--class-path">class_path</link></methodname>
 	<methodname><link
 linkend="method-gtkwidget--menu-get-for-attach-widget">menu_get_for_attach_widget</link></methodname>
 	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwidget--set-activate-signal">set_activate_signal</link></methodname>
+	<methodparam><parameter
+		       role="keyword">signal_name</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwidget--set-activate-signal">set_scroll_adjustments_signal</link></methodname>
+	<methodparam><parameter
+		       role="keyword">signal_name</parameter></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -3561,25 +3574,32 @@ and all its ancestors mapped.</para>
 
 <!-- NOT IMPLEMENTED
     <refsect2 id="method-gtkwidget- -list-accel-closures">
-    <title>gtk.Widget.list_accel_closures</title>
+      <title>gtk.Widget.list_accel_closures</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>list_accel_closures</methodname>
-    <methodparam></methodparam>
-      </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>a GList*</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Lists the closures used by the widget for accelerator group connections
-with <link linkend="method-gtkaccelgroup- -connect-by-path"><function>gtk.AccelGroup.connect_by_path()</function></link> or <link linkend="method-gtkaccelgroup- -connect"><function>gtk.AccelGroup.connect()</function></link>.
-The closures can be used to monitor accelerator changes on the widget,
-by connecting to the ::accel_changed signal of the <link linkend="class-gtkaccelgroup"><classname>gtk.AccelGroup</classname></link> of a 
-closure which can be found out with <function>accel_group_from_accel_closure()</function>.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+          <methodname>list_accel_closures</methodname>
+          <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a </simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The <methodname>list_accel_closures</methodname>() method
+returns a lists of the closures used by the widget for accelerator group
+connections with <link linkend="method-gtkaccelgroup-
+-connect-by-path"><function>gtk.AccelGroup.connect_by_path()</function></link>
+or <link linkend="method-gtkaccelgroup-
+-connect"><function>gtk.AccelGroup.connect()</function></link>.  The
+closures can be used to monitor accelerator changes on the widget, by
+connecting to the ::accel_changed signal of the <link
+linkend="class-gtkaccelgroup"><classname>gtk.AccelGroup</classname></link>
+of a closure which can be found out with
+<function>accel_group_from_accel_closure()</function>.</para>
+
+    </refsect2>
 END NOT IMPLEMENTED -->
 
     <refsect2 id="method-gtkwidget--mnemonic-activate">
@@ -5937,7 +5957,60 @@ returns a list of the menus that are attached to this widget.</para>
 
     </refsect2>
 
-  </refsect1>
+    <refsect2 id="method-gtkwidget--set-activate-signal">
+      <title>gtk.Widget.set_activate_signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_activate_signal</methodname>
+	  <methodparam><parameter role="keyword">signal_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>signal_name</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a signal name</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_activate_signal</methodname>() method sets
+the signal specified by <parameter>signal_name</parameter> as the signal to
+be emitted when the widget is activated for example by a call to the <link
+linkend="method-gtkwidget--activate"><methodname>activate</methodname>()</link>
+method.</para>
+
+    </refsect2>
+
+     <refsect2 id="method-gtkwidget--set-scroll-adjustments-signal">
+      <title>gtk.Widget.set_scroll_adjustments_signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_scroll_adjustments_signal</methodname>
+	  <methodparam><parameter role="keyword">signal_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>signal_name</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a signal name</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_scroll_adjustments_signal</methodname>()
+method sets the signal specified by <parameter>signal_name</parameter> as
+the signal to be emitted when the widget has its scroll adjustments set for
+example by a call to the <link
+linkend="method-gtkwidget--set-scroll-adjustments"><methodname>set_scroll_adjustments</methodname>()</link>
+method.</para>
+
+    </refsect2>
+
+ </refsect1>
 
   <refsect1>
     <title>Functions</title>
