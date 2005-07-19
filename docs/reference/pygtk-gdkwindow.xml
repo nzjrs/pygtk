@@ -858,72 +858,14 @@ the type and class specified by <parameter>window_type</parameter> and
 <parameter>width</parameter> and <parameter>height</parameter>.
 <parameter>event_mask</parameter> is a bitfield specifying the events that
 the window will receive - see the <link
-linkend="method-gdkwindow--set-events"><methodname>set_events</methodname>()</link> 
+linkend="method-gdkwindow--set-events"><methodname>set_events</methodname>()</link>
 method for more information. The value of <parameter>window_type</parameter>
-must be one of:</para>
+must be one of the <xref linkend="gdk-window-type-constants"
+endterm="gdk-window-type-constants-title"></xref>.</para>
 
-    <variablelist>
-      <varlistentry>
-	<term><literal>gtk.gdk.WINDOW_ROOT</literal></term>
-	<listitem>
-	  <simpara>The root window; this window has no parent, covers the
-entire screen, and is created by the window system.</simpara>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>gtk.gdk.WINDOW_TOPLEVEL</literal></term>
-	<listitem>
-	  <simpara>A toplevel window (used to implement <link
-linkend="class-gtkwindow"><classname>gtk.Window</classname></link>).</simpara>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>gtk.gdk.WINDOW_CHILD</literal></term>
-	<listitem>
-	  <simpara>A child window (used to implement widgets e.g. <link
-linkend="class-gtkentry"><classname>gtk.Entry</classname></link>).</simpara>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>gtk.gdk.WINDOW_DIALOG</literal></term>
-	<listitem>
-	  <simpara>A useless/deprecated compatibility type.</simpara>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>gtk.gdk.WINDOW_TEMP</literal></term>
-	<listitem>
-	  <simpara>An override redirect temporary window (used to implement
-<link
-linkend="class-gtkmenu"><classname>gtk.Menu</classname></link>).</simpara>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>gtk.gdk.WINDOW_FOREIGN</literal></term>
-	<listitem>
-	  <simpara>A foreign window (see the <link
-linkend="function-gdk--window-foreign-new"><function>gtk.gdk.window_foreign_new</function>()</link> 
-function).</simpara>
-	</listitem>
-      </varlistentry>
-    </variablelist>
-
-    <para>The value of <parameter>wclass</parameter> must be one of:</para>
-
-    <variablelist>
-      <varlistentry>
-	<term><literal>gtk.gdk.INPUT_OUTPUT</literal></term>
-	<listitem>
-	  <simpara>A window for graphics and events.</simpara>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>gtk.gdk.INPUT_ONLY</literal></term>
-	<listitem>
-	  <simpara>A window for events only.</simpara>
-	</listitem>
-      </varlistentry>
-    </variablelist>
+     <para>The value of <parameter>wclass</parameter> must be one of the
+<xref linkend="gdk-window-class-constants"
+endterm="gdk-window-class-constants-title"></xref>.</para>
 
     <para>If the optional parameters are not specified the corresponding
 attribute values will have default values:</para>
@@ -1038,31 +980,9 @@ receive</simpara></listitem>
 enables or disables the extension events specified by
 <parameter>mode</parameter> for the window when using the event mask
 specified by <parameter>mask</parameter>. The value of
-<parameter>mode</parameter> must be one of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.EXTENSION_EVENTS_NONE</literal></term>
-	  <listitem>
-	    <simpara>no extension events are desired.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.EXTENSION_EVENTS_ALL</literal></term>
-	  <listitem>
-	    <simpara>all extension events are desired.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.EXTENSION_EVENTS_CURSOR</literal></term>
-	  <listitem>
-	    <simpara>extension events are desired only if a cursor will be
-displayed for the device.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+<parameter>mode</parameter> must be one of the <xref
+linkend="gdk-extension-mode-constants"
+endterm="gdk-extension-mode-constants-title">.</xref></para>
 
     </refsect2>
 
@@ -1167,35 +1087,13 @@ combined with the current data.</simpara></listitem>
 the contents of the specified <parameter>property</parameter> to the
 specified <parameter>data</parameter> with the specified
 <parameter>type</parameter> and <parameter>format</parameter>. The value of
-<parameter>mode</parameter> must be one of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.PROP_MODE_REPLACE</literal></term>
-	  <listitem>
-	    <simpara>The new data replaces the existing data.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.PROP_MODE_PREPEND</literal></term>
-	  <listitem>
-	    <simpara>The new data is prepended to the existing data.
-</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.PROP_MODE_APPEND</literal></term>
-	  <listitem>
-	    <simpara>The new data is appended to the existing
-data.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para>which describes how the new data is to be combined with the
-existing property data.The value of <parameter>format</parameter> must be 8,
-16 or 32. <parameter>property</parameter> and <parameter>type</parameter>
-must be a string or a <link
+<parameter>mode</parameter> must be one of the <xref
+linkend="gdk-property-mode-constants"
+endterm="gdk-property-mode-constants-title"></xref> which describes how the
+new data is to be combined with the existing property data.The value of
+<parameter>format</parameter> must be 8, 16 or
+32. <parameter>property</parameter> and <parameter>type</parameter> must be
+a string or a <link
 linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link>.</para>
 
     </refsect2>
@@ -1385,55 +1283,9 @@ count reaches 0.</para>
       </variablelist>
 
       <para>The <methodname>get_window_type</methodname>() method returns
-the type of the window:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_ROOT</literal></term>
-	  <listitem>
-	    <simpara>the root window; this window has no parent, covers the
-entire screen, and is created by the window system</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_TOPLEVEL</literal></term>
-	  <listitem>
-	    <simpara>a toplevel window (used to implement <link
-linkend="class-gtkwindow"><classname>gtk.Window</classname></link>)</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_CHILD</literal></term>
-	  <listitem>
-	    <simpara>a child window (used to implement e.g. <link
-linkend="class-gtkbutton"><classname>gtk.Button</classname></link>)</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_DIALOG</literal></term>
-	  <listitem>
-	    <simpara>a useless and deprecated compatibility type</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_TEMP</literal></term>
-	  <listitem>
-	    <simpara>an override redirect temporary window (used to
-implement <link
-linkend="class-gtkmenu"><classname>gtk.Menu</classname></link>)</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_FOREIGN</literal></term>
-	  <listitem>
-	    <simpara>a foreign window (see the <link
-linkend="function-gdk--window-foreign-new"><function>gtk.gdk.window_foreign_new</function>()</link> 
-function)</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+the type of the window which is one of the <xref
+linkend="gdk-window-type-constants"
+endterm="gdk-window-type-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -1976,31 +1828,9 @@ linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> and
 <parameter>function</parameter>.</para>
 
       <para><parameter>function</parameter> should return one of the
-following values:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FILTER_CONTINUE</literal></term>
-	  <listitem>
-	    <simpara>the event was not handled, continue processing.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FILTER_TRANSLATE</literal></term>
-	  <listitem>
-	    <simpara>the native event was translated into a GDK event and
-stored in the event that was passed in.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FILTER_REMOVE</literal></term>
-	  <listitem>
-	    <simpara>the event was handled, terminate processing.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+following values which is on of the <xref
+linkend="gdk-filter-return-constants"
+endterm="gdk-filter-return-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -2212,58 +2042,9 @@ parents, not to the root window.)</para>
       </variablelist>
 
       <para>The <methodname>get_state</methodname>() method returns the
-bitwise <literal>OR</literal> of the currently active window state
-flags:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_STATE_WITHDRAWN</literal></term>
-	  <listitem>
-	    <simpara>The window is not shown.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_STATE_ICONIFIED</literal></term>
-	  <listitem>
-	    <simpara>The window is minimized.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_STATE_MAXIMIZED</literal></term>
-	  <listitem>
-	    <simpara>The window is maximized.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_STATE_STICKY</literal></term>
-	  <listitem>
-	    <simpara>The window is sticky.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>GDK_WINDOW_STATE_FULLSCREEN</literal></term>
-	  <listitem>
-	    <simpara>the window is maximized without decorations. Available
-in PyGTK 2.2 and above.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>GDK_WINDOW_STATE_ABOVE</literal></term>
-	  <listitem>
-	    <simpara>the window is kept above other windows. Available
-in PyGTK 2.4 and above.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>GDK_WINDOW_STATE_BELOW</literal></term>
-	  <listitem>
-	    <simpara>the window is kept below other windows. Available
-in PyGTK 2.4 and above.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+bitwise <literal>OR</literal> of the currently active <xref
+linkend="gdk-window-state-constants"
+endterm="gdk-window-state-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -2318,36 +2099,9 @@ have</simpara></listitem>
 specified <parameter>hint</parameter> to the window manager about the
 functionality of a window. The window manager can use this information when
 determining the decoration and behavior of the window. The hint must be set
-before the window is mapped. The value of hint must be one of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_TYPE_HINT_NORMAL</literal></term>
-	  <listitem>
-	    <simpara>A normal toplevel window.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_TYPE_HINT_DIALOG</literal></term>
-	  <listitem>
-	    <simpara>A dialog window.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_TYPE_HINT_MENU</literal></term>
-	  <listitem>
-	    <simpara>A window used to implement a menu.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_TYPE_HINT_TOOLBAR</literal></term>
-	  <listitem>
-	    <simpara>A window used to implement a toolbar. </simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+before the window is mapped. The value of hint must be one of the <xref
+linkend="gdk-window-type-hint-constants"
+endterm="gdk-window-type-hint-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -3004,115 +2758,9 @@ the mouse pointer and the modifier mask</simpara></listitem>
 
       <para>The <methodname>get_pointer</methodname>() method returns a
 3-tuple containing the coordinates of the mouse pointer location relative to
-the window and the modifier state. The modifier state is a combination of the
-following:</para>
-
-      <variablelist>
-	<varlistentry>
-          <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
-	  <listitem>
-            <simpara>The Shift key.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.LOCK_MASK</literal></term>
-	  <listitem>
-            <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be CapsLock or ShiftLock).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
-	  <listitem>
-            <simpara>The Control key. </simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.MOD1_MASK</literal></term>
-	  <listitem>
-            <simpara>The fourth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this modifier, but
-normally it is the Alt key).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.MOD2_MASK</literal></term>
-	  <listitem>
-            <simpara>The fifth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.MOD3_MASK</literal></term>
-	  <listitem>
-            <simpara>The sixth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.MOD4_MASK</literal></term>
-	  <listitem>
-            <simpara>The seventh modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.MOD5_MASK</literal></term>
-	  <listitem>
-            <simpara>The eighth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
-	  <listitem>
-            <simpara>The first mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
-	  <listitem>
-            <simpara>The second mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
-	  <listitem>
-            <simpara>The third mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
-	  <listitem>
-            <simpara>The fourth mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
-	  <listitem>
-            <simpara>The fifth mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
-	  <listitem>
-            <simpara>Differentiates between (keyval, modifiers) pairs from
-key press and release events.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-          <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
-	  <listitem>
-            <simpara>all of the above</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+the window and the modifier state. The modifier state is a combination of
+the <xref linkend="gdk-modifier-constants"
+endterm="gdk-modifier-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -3232,79 +2880,8 @@ mask to the value specified by event_mask for the window. The event mask
 determines which events will be reported for the window. For example, an
 event mask including <literal>gtk.gdk.BUTTON_PRESS_MASK</literal> means the
 window should report button press events. The event mask is the bitwise OR
-of the following:</para>
-
-      <itemizedlist>
-        <listitem>
-          <simpara><literal>gtk.gdk.EXPOSURE_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.POINTER_MOTION_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.POINTER_MOTION_HINT_MASK</literal></simpara> 
-	</listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.BUTTON_MOTION_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.BUTTON1_MOTION_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.BUTTON2_MOTION_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.BUTTON3_MOTION_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.BUTTON_PRESS_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.BUTTON_RELEASE_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.KEY_PRESS_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.KEY_RELEASE_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.ENTER_NOTIFY_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.LEAVE_NOTIFY_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.FOCUS_CHANGE_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.STRUCTURE_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.PROPERTY_CHANGE_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.VISIBILITY_NOTIFY_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.PROXIMITY_IN_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.PROXIMITY_OUT_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.SUBSTRUCTURE_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.SCROLL_MASK</literal></simpara>
-        </listitem>
-        <listitem>
-          <simpara><literal>gtk.gdk.ALL_EVENTS_MASK</literal></simpara>
-        </listitem>
-      </itemizedlist>
-
-      <para><literal>gtk.gdk.ALL_EVENTS_MASK</literal> is a combination of
-all the event masks.</para>
+of the <xref linkend="gdk-event-mask-constants"
+endterm="gdk-event-mask-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -3501,65 +3078,13 @@ linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>. This
 method sets the traditional Motif window manager hints that tell the window
 manager which decorations you would like your window to have. Usually you
 should use the <link
-linkend="method-gtkwindow--set-decorated"><methodname>gtk.Window.set_decorated</methodname>()</link> 
+linkend="method-gtkwindow--set-decorated"><methodname>gtk.Window.set_decorated</methodname>()</link>
 method on a <link
 linkend="class-gtkwindow"><classname>gtk.Window</classname></link> instead
 of using this method directly. The value of
-<parameter>decorations</parameter> is the logical OR of the
-following:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.DECOR_ALL</literal></term>
-	  <listitem>
-	    <simpara>All decorations should be applied.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.DECOR_BORDER</literal></term>
-	  <listitem>
-	    <simpara>A frame should be drawn around the window.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.DECOR_RESIZEH</literal></term>
-	  <listitem>
-	    <simpara>The frame should have resize handles.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.DECOR_TITLE</literal></term>
-	  <listitem>
-	    <simpara>A titlebar should be placed above the window.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.DECOR_MENU</literal></term>
-	  <listitem>
-	    <simpara>A button for opening a menu should be
-included.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.DECOR_MINIMIZE</literal></term>
-	  <listitem>
-	    <simpara>A minimize button should be included.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.DECOR_MAXIMIZE</literal></term>
-	  <listitem>
-	    <simpara>A maximize button should be included.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para>If <literal>gtk.gdk.DECOR_ALL</literal> is included in the mask,
-the other bits indicate which decorations should be turned off. If
-<literal>gtk.gdk.DECOR_ALL</literal> is not included, then the other bits
-indicate which decorations should be turned on. Most window managers honor a
-decorations hint of 0 to disable all decorations, but very few honor all
-possible combinations of bits.</para>
+<parameter>decorations</parameter> is the logical OR of the <xref
+linkend="gdk-wm-decoration-constants"
+endterm="gdk-wm-decoration-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -3601,56 +3126,13 @@ window</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The set_functions() method sets the traditional Motif window
-manager hint for which operations the window manager should allow on a
-toplevel window. However, few window managers do anything reliable or
-interesting with this hint. Many ignore it entirely. The
-<parameter>functions</parameter> argument is the logical OR of the
-following:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FUNC_ALL</literal></term>
-	  <listitem>
-	    <simpara>All functions should be offered.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FUNC_RESIZE</literal></term>
-	  <listitem>
-	    <simpara>The window should be resizable.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FUNC_MOVE</literal></term>
-	  <listitem>
-	    <simpara>The window should be movable.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FUNC_MINIMIZE</literal></term>
-	  <listitem>
-	    <simpara>The window should be minimizable.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FUNC_MAXIMIZE</literal></term>
-	  <listitem>
-	    <simpara>The window should be maximizable.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.FUNC_CLOSE</literal></term>
-	  <listitem>
-	    <simpara>The window should be closeable.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para>If the bitmask includes <literal>gtk.gdk.FUNC_ALL</literal>,
-then the other bits indicate which functions to disable; if it doesn't
-include <literal>gtk.gdk.FUNC_ALL</literal>, it indicates which functions to
-enable.</para>
+      <para>The <methodname>set_functions</methodname>() method sets the
+traditional Motif window manager hint for which operations the window
+manager should allow on a toplevel window. However, few window managers do
+anything reliable or interesting with this hint. Many ignore it
+entirely. The <parameter>functions</parameter> argument is the logical OR of
+the <xref linkend="gdk-wm-function-constants"
+endterm="gdk-wm-function-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -3883,65 +3365,15 @@ linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>) from
 the specified <parameter>edge</parameter> using the specified
 <parameter>button</parameter> starting at the location specified by
 <parameter>root_x</parameter> and <parameter>root_y</parameter>. The value
-of edge must be one of:</para>
+of edge must be one of the <xref linkend="gdk-window-edge-constants"
+endterm="gdk-window-edge-constants-title"></xref>.</para>
 
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_NORTH_WEST</literal></term>
-	  <listitem>
-	    <simpara>The top left corner.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_NORTH</literal></term>
-	  <listitem>
-	    <simpara>The top edge.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_NORTH_EAST</literal></term>
-	  <listitem>
-	    <simpara>The top right corner.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_WEST</literal></term>
-	  <listitem>
-	    <simpara>The left edge.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_EAST</literal></term>
-	  <listitem>
-	    <simpara>The right edge.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_SOUTH_WEST</literal></term>
-	  <listitem>
-	    <simpara>The lower left corner.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_SOUTH</literal></term>
-	  <listitem>
-	    <simpara>The lower edge.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.WINDOW_EDGE_SOUTH_EAST</literal></term>
-	  <listitem>
-	    <simpara>The lower right corner.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para>You might use this method to implement a "window resize grip,"
-for example; in fact the <link
+      <para>You might use this
+method to implement a "window resize grip," for example; in fact the <link
 linkend="class-gtkstatusbar"><classname>gtk.Statusbar</classname></link>
 uses it. The method works best with window managers that support the
 Extended Window Manager Hints spec (see <ulink
-linkend="http://www.freedesktop.org">http://www.freedesktop.org</ulink>),
+url="http://www.freedesktop.org">http://www.freedesktop.org</ulink>),
 but has a fallback implementation for other window managers.</para>
 
     </refsect2>
@@ -3991,7 +3423,7 @@ window move operation (for a toplevel window) using the specified
 use this method to implement a "window move grip," for example. The method
 works best with window managers that support the Extended Window Manager
 Hints spec (see <ulink
-linkend="http://www.freedesktop.org">http://www.freedesktop.org</ulink>),
+url="http://www.freedesktop.org">http://www.freedesktop.org</ulink>),
 but has a fallback implementation for other window managers.</para>
 
     </refsect2>
