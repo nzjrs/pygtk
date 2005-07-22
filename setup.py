@@ -173,8 +173,6 @@ gtk = TemplateExtension(name='gtk', pkc_name='gtk+-2.0',
                         override='gtk/gtk.override',
                         defs='gtk/gtk.defs')
 gtk.templates.append(gdk_template)
-if sys.platform == 'win32':
-    gtk.sources.append('gtk/gtk-fake-win32.c')
 
 # Libglade
 libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',

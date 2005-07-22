@@ -19,7 +19,7 @@ defs_DATA =				\
 EXTRA_DIST = $(defs_DATA)
 CLEANFILES =
 
-EXTRA_DIST += makefile.msc gtk-fake-win32.c
+EXTRA_DIST += makefile.msc
 
 pkgincludedir = $(includedir)/pygtk-$(PLATFORM_VERSION)/pygtk
 pkginclude_HEADERS = pygtk.h
@@ -59,7 +59,6 @@ _gtk_la_SOURCES = \
 nodist__gtk_la_SOURCES = gtk.c gdk.c
 
 if PLATFORM_WIN32
-_gtk_la_SOURCES += gtk-fake-win32.c
 _gtk_la_CFLAGS  += -DPLATFORM_WIN32
 endif
 
