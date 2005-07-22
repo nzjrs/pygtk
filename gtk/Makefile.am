@@ -9,7 +9,13 @@ pygtk_PYTHON = __init__.py keysyms.py compat.py
 pygtkexecdir = $(pkgpyexecdir)/gtk
 
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
-defs_DATA =
+defs_DATA =				\
+	gdk.defs 			\
+	gdk-types.defs		\
+	gtk.defs 			\
+	gtk-types.defs 		\
+	gtk-extrafuncs.defs
+
 EXTRA_DIST = $(defs_DATA)
 CLEANFILES =
 
@@ -19,11 +25,11 @@ pkgincludedir = $(includedir)/pygtk-$(PLATFORM_VERSION)/pygtk
 pkginclude_HEADERS = pygtk.h
 
 INCLUDES = -I$(top_srcdir)/gobject $(PYTHON_INCLUDES) 
-COMMONDEFS = \
-	$(srcdir)/gtk-types.defs \
-	$(srcdir)/gdk-types.defs \
-	$(top_srcdir)/atk-types.defs \
-	$(top_srcdir)/pango-types.defs
+COMMONDEFS = 						\
+	$(top_srcdir)/atk-types.defs 	\
+	$(top_srcdir)/pango-types.defs	\
+	$(srcdir)/gdk-types.defs		\
+	$(srcdir)/gtk-types.defs
 
 common_ldflags = -module -avoid-version
 if PLATFORM_WIN32
@@ -35,12 +41,6 @@ pygtkexec_LTLIBRARIES =
 # gtk module
 if BUILD_GTK
 pygtkexec_LTLIBRARIES += _gtk.la
-defs_DATA += 			\
-	gtk.defs 		\
-	gtk-types.defs 		\
-	gtk-extrafuncs.defs	\
-	gdk.defs 		\
-	gdk-types.defs
 endif
 
 _gtk_la_CFLAGS = $(GTK_CFLAGS)
