@@ -1916,6 +1916,15 @@ selected.</para>
 signal</simpara></listitem>
 	</varlistentry>
 	<varlistentry>
+	  <term><parameter>page</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new current page</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>page_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>the index of the new current
+page</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
 	  <term><parameter>user_param1</parameter>&nbsp;:</term>
           <listitem><simpara>the first user parameter (if any) specified
 with the <link
@@ -1930,7 +1939,11 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "switch-page" signal is emitted when the notebook page is
-changed.</para>
+changed. Note the <parameter>page</parameter> parameter is a GPointer and
+not usable within PyGTK. Use the <parameter>page_num</parameter> parameter
+to retrieve the new current page using the <link
+linkend="method-gtknotebook--get-nth-page"><methodname>get_nth_page</methodname>()</link>
+method.</para>
 
     </refsect2>
 
