@@ -5,6 +5,14 @@
 
 2005-07-30  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* gtk/gtk.override (_wrap_gtk_icon_source_free)
+	(_wrap_gtk_requisition_free, _wrap_gtk_tree_iter_free)
+	(_wrap_gtk_tree_row_reference_free, _wrap_gtk_border_free):
+	Override free() methods of boxed types to make them do nothing and
+	issue a deprecation warning.
+	Fixes Bug 306095: In pygtk 2.6.x calling free() on GtkIconInfo
+	                  object causes a double free or corruption error.
+
 	* tests/test_subtype.py (TestSubType.testMassiveGtkSubclassing):
 	Add new test that attempts to subclass every possible class in the
 	gtk module, minus a couple of deprecated ones.
