@@ -4872,3 +4872,13 @@ _wrap_cairo_surface_create_for_pixbuf(PyObject *self, PyObject *args)
     return PycairoSurface_FromSurface (surface, &PycairoImageSurface_Type,
 				       (PyObject *)py_pixbuf);
 }
+%%
+override gdk_event_free noargs
+static PyObject *
+_wrap_gdk_event_free(PyObject *self)
+{
+    if (PyErr_Warn(PyExc_DeprecationWarning, "gtk.gdk.Event.free should not be used") < 0)
+        return NULL;
+    Py_INCREF(Py_None);
+    return Py_None;
+}
