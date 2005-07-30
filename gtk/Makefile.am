@@ -11,7 +11,7 @@ pygtkexecdir = $(pkgpyexecdir)/gtk
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
-EXTRA_DIST = $(defs_DATA)
+EXTRA_DIST = 
 CLEANFILES =
 
 EXTRA_DIST += makefile.msc
@@ -20,10 +20,10 @@ pkgincludedir = $(includedir)/pygtk-$(PLATFORM_VERSION)/pygtk
 pkginclude_HEADERS = pygtk.h
 
 INCLUDES = -I$(top_srcdir)/gobject $(PYTHON_INCLUDES) 
-COMMONDEFS = 						\
+COMMONDEFS = 				\
 	$(top_srcdir)/atk-types.defs 	\
 	$(top_srcdir)/pango-types.defs	\
-	$(srcdir)/gdk-types.defs		\
+	$(srcdir)/gdk-types.defs	\
 	$(srcdir)/gtk-types.defs
 
 common_ldflags = -module -avoid-version
@@ -36,10 +36,10 @@ pygtkexec_LTLIBRARIES =
 # gtk module
 if BUILD_GTK
 pygtkexec_LTLIBRARIES += _gtk.la
-defs_DATA +=
-	gdk.defs 			\
+defs_DATA += 			\
+	gdk.defs		\
 	gdk-types.defs		\
-	gtk.defs 			\
+	gtk.defs 		\
 	gtk-types.defs 		\
 	gtk-extrafuncs.defs
 endif
@@ -100,6 +100,8 @@ nodist_glade_la_SOURCES = libglade.c
 libglade.c: $(COMMONDEFS) libglade.override
 CLEANFILES += libglade.c
 EXTRA_DIST += libglade.override
+
+EXTRA_DIST += $(defs_DATA)
 
 .defs.c:
 	(cd $(srcdir) \
