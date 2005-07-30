@@ -1,3 +1,44 @@
+2005-07-30  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* tests/test_subtype.py (TestSubType.testMassiveGtkSubclassing):
+	Add new test that attempts to subclass every possible class in the
+	gtk module, minus a couple of deprecated ones.
+
+	* codegen/codegen.py (write_registers): Warn here about
+	constructors that need to be updated.
+
+	* gobject/gobjectmodule.c (pyg_type_register): Don't warn about
+	needing to update a constructor to new API.  Warn in the code
+	generator instead.
+
+	* gtk/gtk.override: Use the new new-constructor override command
+	to declare custom constructors conforming to the new API, instead
+	of init commands.
+
+	* codegen/codegen.py (Wrapper.write_constructor): When writing an
+	overridden constructor, check if it is declared to support the new
+	API, in which case set self.objinfo.has_new_constructor_api to True.
+	(GObjectWrapper.write_default_constructor): For GObjects with no
+	constructor (abstract objects), inherit
+	objinfo.has_new_constructor_api from the parent type, since
+	tp_init is also inheritted (hence the need to reorder the classes).
+
+	* codegen/override.py (Overrides.__parse_override): Add override
+	command "new-constructor GType" to declare that a constructor
+	conforms to the new API.
+
+	* codegen/codegen.py (write_classes): Reorder classes to put
+	parent types before their children.
+
+	* gtk/gtkwidget.override, gtk/gtk.override: Don't override
+	GtkMisc.tp_init, GtkBin.tp_init, GtkItem.tp_init, GtkBox.tp_init,
+	GtkButtonBox.tp_init, and GtkWidget.tp_init just to chain to
+	parent tp_init.  At some point in pygtk 2.6 development this
+	became redundant.  Ignore gtk_widget_new so that a
+	pygobject_no_constructor tp_init isn't generated for it.
+
+	Fixes Bug 311309: subclassing gtk.Bin reports....
+
 2005-07-30  Johan Dahlin  <jdahlin@async.com.br>
 
 	* Makefile.am:

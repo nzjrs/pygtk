@@ -336,6 +336,8 @@ class Wrapper:
                 if self.overrides.is_overriden(funcname):
                     data = self.overrides.override(funcname)
                     self.write_function(funcname, data)
+                    self.objinfo.has_new_constructor_api = (
+                        self.objinfo.typecode in self.overrides.newstyle_constructors)
                 else:
                     # ok, a hack to determine if we should use new-style constructores :P
                     if getattr(self, 'write_property_based_constructor', None) is not None:
@@ -742,6 +744,15 @@ class GObjectWrapper(Wrapper):
         return substdict
 
     def write_default_constructor(self):
+        try:
+            parent = self.parser.find_object(self.objinfo.parent)
+        except ValueError:
+            parent = None
+        if parent is not None:
+            ## just like the constructor is inheritted, we should inherit the new API compatibility flag
+            self.objinfo.has_new_constructor_api = parent.has_new_constructor_api
+        elif self.objinfo.parent == 'GObject':
+            self.objinfo.has_new_constructor_api = True
         return '0'
 
     def write_property_based_constructor(self, constructor):
@@ -1021,10 +1032,39 @@ def write_type_declarations(parser, fp):
         fp.write('PyTypeObject Py' + interface.c_name + '_Type;\n')
     fp.write('\n')
 
+
+def sort_parent_children(objects):
+    objects = list(objects)
+    modified = True
+    while modified:
+        modified = False
+        parent_index = None
+        child_index = None
+        for i, obj in enumerate(objects):
+            if obj.parent == 'GObject':
+                continue
+            if obj.parent not in [info.c_name for info in objects[:i]]:
+                for j, info in enumerate(objects[i+1:]):
+                    if info.c_name == obj.parent:
+                        parent_index = i + 1 + j
+                        child_index = i
+                        break
+                else:
+                    continue
+                break
+        if child_index is not None and parent_index is not None:
+            if child_index != parent_index:
+                objects.insert(child_index, objects.pop(parent_index))
+                modified = True
+    return objects
+
 def write_classes(parser, overrides, fp):
+    ## Sort the objects, so that we generate code for the parent types
+    ## before their children.
+    objects = sort_parent_children(parser.objects)
     for klass, items in ((GBoxedWrapper, parser.boxes),
                          (GPointerWrapper, parser.pointers),
-                         (GObjectWrapper, parser.objects),
+                         (GObjectWrapper, objects),
                          (GInterfaceWrapper, parser.interfaces)):
         for item in items:
             instance = klass(parser, item, overrides, fp)
@@ -1125,6 +1165,10 @@ def write_registers(parser, fp):
                      '_Type, NULL);\n')
         if obj.has_new_constructor_api:
             fp.write('    pyg_set_object_has_new_constructor(%s);\n' % obj.typecode)
+        else:
+            print >> sys.stderr, ("Warning: Constructor for %s needs to be updated to new API\n"
+                                  "         See http://live.gnome.org/PyGTK_2fWhatsNew28"
+                                  "#update-constructors") % obj.c_name
         if obj.class_init_func is not None:
             fp.write('    pyg_register_class_init(%s, %s);\n' %
                      (obj.typecode, obj.class_init_func))

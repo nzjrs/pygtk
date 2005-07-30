@@ -42,6 +42,7 @@ class Overrides:
         self.imports = []
         self.defines = {}
         self.functions = {}
+        self.newstyle_constructors = {}
 	if filename:
             self.handle_file(filename)
 
@@ -183,6 +184,11 @@ class Overrides:
 		self.classmethod[func] = True
 
             self.startlines[func] = (startline + 1, filename)
+
+        elif command == 'new-constructor':
+            "new-constructor GType"
+            gtype, = words[1:]
+            self.newstyle_constructors[gtype] = True
             
     def is_ignored(self, name):
 	if self.ignores.has_key(name):
