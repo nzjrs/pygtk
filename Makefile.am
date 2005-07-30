@@ -14,12 +14,7 @@ EXTRA_DIST = $(defs_DATA)
 pyexec_LTLIBRARIES =
 
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
-defs_DATA = 				\
-	$(top_srcdir)/atk.defs		\
-	$(top_srcdir)/atk-types.defs 	\
-	$(top_srcdir)/pango.defs	\
-	$(top_srcdir)/pango-types.defs	\
-	$(top_srcdir)/pangocairo.defs
+defs_DATA =
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = \
@@ -35,13 +30,6 @@ INCLUDES = 			\
 	$(PANGO_CFLAGS) 	\
 	$(ATK_CFLAGS) 		\
 	-I$(top_srcdir)/gobject
-
-COMMONDEFS = 					\
-	$(top_srcdir)/atk-types.defs 		\
-	$(top_srcdir)/pango-types.defs 		\
-	$(top_srcdir)/pangocairo.defs 		\
-	$(top_srcdir)/gtk/gdk-types.defs 	\
-	$(top_srcdir)/gtk/gtk-types.defs
 
 pkgpythondir = $(pyexecdir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
@@ -65,12 +53,15 @@ pkgpython_PYTHON = dsextras.py
 
 if BUILD_ATK
 pkgpyexec_LTLIBRARIES += atk.la
+defs_DATA += atk.defs atk-types.defs
 endif
 if BUILD_PANGO
 pkgpyexec_LTLIBRARIES += pango.la
+defs_DATA += pango.defs pango-types.defs
 endif
 if BUILD_PANGOCAIRO
 pkgpyexec_LTLIBRARIES += pangocairo.la
+defs_DATA += pangocairo.defs
 endif
 
 common_ldflags = -module -avoid-version
@@ -83,7 +74,7 @@ atk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initatk
 atk_la_LIBADD = $(ATK_LIBS)
 atk_la_SOURCES = atkmodule.c
 nodist_atk_la_SOURCES = atk.c
-atk.c: $(COMMONDEFS) atk.override
+atk.c: atk.defs atk-types.defs atk.override
 CLEANFILES += atk.c
 EXTRA_DIST += atk.override
 
@@ -92,7 +83,7 @@ pango_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpango
 pango_la_LIBADD = $(PANGO_LIBS)
 pango_la_SOURCES = pangomodule.c
 nodist_pango_la_SOURCES = pango.c
-pango.c: $(COMMONDEFS) pango.override
+pango.c: pango.defs pango-types.defs pango.override
 CLEANFILES += pango.c
 EXTRA_DIST += pango.override
 
@@ -102,7 +93,7 @@ pangocairo_la_LIBADD = $(PANGOCAIRO_LIBS)
 pangocairo_la_CFLAGS = $(PANGOCAIRO_CFLAGS)
 pangocairo_la_SOURCES = pangocairomodule.c
 nodist_pangocairo_la_SOURCES = pangocairo.c
-pangocairo.c: $(COMMONDEFS) pangocairo.override
+pangocairo.c: pangocairo.defs pangocairo.override
 CLEANFILES += pangocairo.c
 EXTRA_DIST += pangocairo.override
 

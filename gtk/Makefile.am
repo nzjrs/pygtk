@@ -9,12 +9,7 @@ pygtk_PYTHON = __init__.py keysyms.py compat.py
 pygtkexecdir = $(pkgpyexecdir)/gtk
 
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
-defs_DATA =				\
-	gdk.defs 			\
-	gdk-types.defs		\
-	gtk.defs 			\
-	gtk-types.defs 		\
-	gtk-extrafuncs.defs
+defs_DATA =
 
 EXTRA_DIST = $(defs_DATA)
 CLEANFILES =
@@ -41,6 +36,12 @@ pygtkexec_LTLIBRARIES =
 # gtk module
 if BUILD_GTK
 pygtkexec_LTLIBRARIES += _gtk.la
+defs_DATA +=
+	gdk.defs 			\
+	gdk-types.defs		\
+	gtk.defs 			\
+	gtk-types.defs 		\
+	gtk-extrafuncs.defs
 endif
 
 _gtk_la_CFLAGS = $(GTK_CFLAGS)
