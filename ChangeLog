@@ -1,3 +1,21 @@
+2005-07-31  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/gobjectmodule.c (pyg_object_new): Call
+	pygobject_new_full instead of pygobject_new to disable sinking.
+	Instead, call pygobject_sink after g_object_unref, so that the
+	sink functions run with the expected reference count and do their
+	work accordingly.
+	
+	* gobject/pygobject-private.h: New internal API pygobject_sink.
+
+	* gobject/pygobject.c (pygobject_sink),
+	(pygobject_register_wrapper, pygobject_new_full): sink_object
+	renamed to pygobject_sink and made internal API.
+	
+	* tests/test_subtype.py: Add tests to check reference count of
+	windows, with or without subclassing, from gobject.new or from
+	constructor.
+
 2005-07-30  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
 	* gtk/gdk.override (_wrap_gdk_event_free): Deprecate
