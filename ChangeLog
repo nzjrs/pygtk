@@ -1,3 +1,16 @@
+2005-08-01  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygobject-private.h
+	* gobject/pygmaincontext.c: Add a convenience function 
+	(pyg_main_context_new) to create a PyGMainContext from a
+	GMainContext. Takes care of refing the supplied GMainContext
+	as well.
+
+	* gobject/gobjectmodule.c (pyg_main_context_default)
+	* gobject/pygmainloop.c (_wrap_g_main_loop_get_context)
+	* gobject/pygsource.c (pyg_source_get_context): use the new
+	convenience function here. This fixes bug #312259.
+
 2005-07-31  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
 	* gobject/gobjectmodule.c (pyg_object_new): Call
