@@ -112,9 +112,10 @@ class ReverseWrapper(object):
             self.pyargv_items.append(variable)
 
     def write_code(self, code,
-                 cleanup=None,
-                 failure_expression=None,
-                 failure_cleanup=None):
+                   cleanup=None,
+                   failure_expression=None,
+                   failure_cleanup=None,
+                   failure_exception=None):
         '''Add a chunk of code with cleanup and error handling
 
         This method is to be used by TypeHandlers when generating code
@@ -127,16 +128,23 @@ class ReverseWrapper(object):
                               if anything failed (default None)
         failure_cleanup -- code to cleanup any dynamic resources
                            created by @code in case of failure (default None)
+        failure_exception -- code to raise an exception in case of
+                             failure (which will be immediately
+                             printed and cleared), (default None)
         '''
         if code is not None:
             self.body.writeln(code)
         if failure_expression is not None:
             self.body.writeln("if (%s) {" % failure_expression)
             self.body.indent()
-            self.body.writeln("if (PyErr_Occurred())")
-            self.body.indent()
-            self.body.writeln("PyErr_Print();")
-            self.body.unindent()
+            if failure_exception is None:
+                self.body.writeln("if (PyErr_Occurred())")
+                self.body.indent()
+                self.body.writeln("PyErr_Print();")
+                self.body.unindent()
+            else:
+                self.body.writeln(failure_exception)
+                self.body.writeln("PyErr_Print();")
             if failure_cleanup is not None:
                 self.body.writeln(failure_cleanup)
             for cleanup_action in self.cleanup_actions:
@@ -401,6 +409,10 @@ class GObjectReturn(ReturnType):
         self.wrapper.write_code("return NULL;")
 
     def write_conversion(self):
+        self.wrapper.write_code(
+            code=None,
+            failure_expression="!PyObject_TypeCheck(py_retval, &PyGObject_Type)",
+            failure_exception='PyErr_SetString(PyExc_TypeError, "retval should be a GObject");')
         self.wrapper.write_code("retval = (%s) pygobject_get(py_retval);"
                                 % self.get_c_type())
         self.wrapper.write_code("g_object_ref((GObject *) retval);")
