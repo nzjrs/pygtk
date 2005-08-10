@@ -4836,43 +4836,6 @@ _wrap_gdk_cairo_create(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 
 %%
-override cairo_surface_create_for_pixbuf varargs
-static PyObject *
-_wrap_cairo_surface_create_for_pixbuf(PyObject *self, PyObject *args)
-{
-    PyGObject *py_pixbuf;
-    GdkPixbuf *gdk_pixbuf;
-    cairo_surface_t *surface;
-
-    if (!PyArg_ParseTuple(args, "O!:cairo_surface_create_for_pixbuf",
-			  &PyGdkPixbuf_Type, &py_pixbuf))
-	return NULL;
-
-    gdk_pixbuf = GDK_PIXBUF(py_pixbuf->obj);
-
-    /* this is the only format that matches cairo's image format.
-     * GdkPixbuf uses RGBA, while Cairo uses ARGB, so we can't handle
-     * pixbufs with alpha. */
-    if (gdk_pixbuf_get_colorspace(gdk_pixbuf) != GDK_COLORSPACE_RGB ||
-	gdk_pixbuf_get_bits_per_sample(gdk_pixbuf) != 8 ||
-	gdk_pixbuf_get_n_channels(gdk_pixbuf) != 4) {
-	PyErr_SetString(PyExc_ValueError,
-			"can only create a surface from a 24-bit RGB pixbuf "
-			"(ie. no alpha)");
-	return NULL;
-    }
-    surface = cairo_image_surface_create_for_data
-	(gdk_pixbuf_get_pixels(gdk_pixbuf),
-	 CAIRO_FORMAT_RGB24,
-	 gdk_pixbuf_get_width(gdk_pixbuf),
-	 gdk_pixbuf_get_height(gdk_pixbuf),
-	 gdk_pixbuf_get_rowstride(gdk_pixbuf));
-    if (!surface)
-	return PyErr_NoMemory();
-    return PycairoSurface_FromSurface (surface, &PycairoImageSurface_Type,
-				       (PyObject *)py_pixbuf);
-}
-%%
 override gdk_event_free noargs
 static PyObject *
 _wrap_gdk_event_free(PyObject *self)
