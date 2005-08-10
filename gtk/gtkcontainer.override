@@ -746,3 +746,25 @@ static PySequenceMethods _wrap_gtk_container_tp_as_sequence = {
     (intobjargproc)0,
     (intintobjargproc)0
 };
+%%
+override-slot GtkContainer.tp_as_number
+static int
+_wrap_gtk_container_nb_nonzero(PyGObject *self)
+{
+    return 1;
+}
+
+static PyNumberMethods _wrap_gtk_container_tp_as_number = {
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (binaryfunc)0,
+    (ternaryfunc)0,
+    (unaryfunc)0,
+    (unaryfunc)0,
+    (unaryfunc)0,
+    (inquiry)_wrap_gtk_container_nb_nonzero
+};
+
