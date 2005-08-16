@@ -768,3 +768,62 @@ static PyNumberMethods _wrap_gtk_container_tp_as_number = {
     (inquiry)_wrap_gtk_container_nb_nonzero
 };
 
+%%
+override GtkContainer__proxy_do_forall
+
+typedef struct {
+    GtkCallback    func;
+    gpointer       func_data;
+} PyGtkContainerDataFuncData;
+
+
+static PyObject *
+_wrap_GtkContainerDataFunc(PyObject *self, PyObject *args)
+{
+    PyObject *py_widget;
+    PyObject *py_data;
+    PyGtkContainerDataFuncData *data;
+
+    if (!PyArg_ParseTuple(args, "O!O!",
+			  &PyGtkWidget_Type, &py_widget,
+                          &PyCObject_Type, &py_data))
+        return NULL;
+    
+    data = PyCObject_AsVoidPtr(py_data);
+    data->func(GTK_WIDGET(pygobject_get(py_widget)), data->func_data);
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static void
+_wrap_GtkContainer__proxy_do_forall (GtkContainer *container,
+				     gboolean      include_internals,
+				     GtkCallback   callback,
+				     gpointer      callback_data)
+{
+    PyGILState_STATE state;
+    PyObject *self, *py_func, *py_func_data;
+    PyMethodDef pyfunc_def = { "GtkContainer.do_forall callback",
+			       (PyCFunction)_wrap_GtkContainerDataFunc,
+                               METH_VARARGS|METH_KEYWORDS };
+    PyGtkContainerDataFuncData *data;
+
+    state = pyg_gil_state_ensure();
+    
+    self = pygobject_new((GObject *)container);
+    py_func = PyCFunction_NewEx(&pyfunc_def, NULL, NULL);
+    
+    data = g_new(PyGtkContainerDataFuncData, 1);
+    data->func = callback;
+    data->func_data = callback_data;
+    PyObject_Repr(self);
+    PyObject_Repr(py_func);
+    py_func_data = PyCObject_FromVoidPtr(data, NULL);
+    if (!PyObject_CallMethod(self, "do_forall", "ONN", 
+			     include_internals ? Py_True : Py_False, py_func,
+			     py_func_data))
+	PyErr_Print();
+    
+    pyg_gil_state_release(state);
+}
