@@ -46,7 +46,7 @@ linkend="method-gtkdialog--add-button">add_button</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkdialog--add-buttons">add_buttons</link></methodname>
-	<methodparam><parameter>buttons</parameter></methodparam>
+	<methodparam><parameter>...</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -471,12 +471,12 @@ you don't need it.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>add_buttons</methodname>
-	  <methodparam><parameter>buttons</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
-	  <term><parameter>buttons</parameter>&nbsp;:</term>
-	  <listitem><simpara>a tuple containing one or more pairs of button
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>one or more pairs of button
 specifiers: button text (or stock ID) and a response id</simpara></listitem>
 	</varlistentry>
       </variablelist>
@@ -484,19 +484,18 @@ specifiers: button text (or stock ID) and a response id</simpara></listitem>
       <para>The <methodname>add_buttons</methodname>() method adds several
 buttons to the <link
 linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> using the
-data specified in <parameter>buttons</parameter>. This method is the same as
+button data passed as arguments to the method. This method is the same as
 calling the <link
 linkend="method-gtkdialog--add-button"><methodname>gtk.Dialog.add_button</methodname>()</link>
-repeatedly. <parameter>buttons</parameter> is a tuple containing button data
-pairs - button text (or stock ID) and a response ID integer. For
-example:</para>
+repeatedly. The button data pairs - button text (or stock ID) and a response
+ID integer are passed individually. For example:</para>
 
       <programlisting>
-  dialog.add_buttons((gtk.STOCK_OPEN, 42, "Close", gtk.RESPONSE_CLOSE))
+  dialog.add_buttons(gtk.STOCK_OPEN, 42, "Close", gtk.RESPONSE_CLOSE)
 </programlisting>
 
       <para>will add "Open" and "Close" buttons to
-<parameter>dialog</parameter></para>.
+<parameter>dialog</parameter>.</para>
 
     </refsect2>
 
