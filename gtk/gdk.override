@@ -1281,6 +1281,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
 {
     GdkEvent *event = pyg_boxed_get(self, GdkEvent);
     guint i;
+    gchar *name;
+    PyObject *ret;
 
     switch(event->type) {
     case GDK_NOTHING: break;
@@ -1457,8 +1459,12 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
             return Py_BuildValue("[ssssss]",
                                  "type", "window", "send_event",
                                  "atom", "time", "state");
-        if (!strcmp(attr, "atom"))
-            return PyString_FromString(gdk_atom_name(event->property.atom));
+        if (!strcmp(attr, "atom")) {
+            name = gdk_atom_name(event->property.atom);
+            ret = PyString_FromString(name);
+            g_free(name);
+            return ret;
+        }
         if (!strcmp(attr, "time"))
             return PyInt_FromLong(event->property.time);
         if (!strcmp(attr, "state"))
@@ -1472,14 +1478,24 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
                                  "type", "window", "send_event",
                                  "selection", "target", "property",
                                  "requestor", "time");
-        if (!strcmp(attr, "selection"))
-            return PyString_FromString(
-                gdk_atom_name(event->selection.selection));
-        if (!strcmp(attr, "target"))
-            return PyString_FromString(gdk_atom_name(event->selection.target));
-        if (!strcmp(attr, "property"))
-            return PyString_FromString(
-                gdk_atom_name(event->selection.property));
+        if (!strcmp(attr, "selection")) {
+            name = gdk_atom_name(event->selection.selection);
+            ret = PyString_FromString(name);
+            g_free(name);
+            return ret;
+        }
+        if (!strcmp(attr, "target")) {
+            name = gdk_atom_name(event->selection.target);
+            ret = PyString_FromString(name);
+            g_free(name);
+            return ret;
+        }
+        if (!strcmp(attr, "property")) {
+           name = gdk_atom_name(event->selection.property);
+            ret = PyString_FromString(name);
+            g_free(name);
+            return ret;
+        }
         if (!strcmp(attr, "requestor"))
             return PyInt_FromLong(event->selection.requestor);
         if (!strcmp(attr, "time"))
@@ -1520,9 +1536,12 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
             return Py_BuildValue("[ssssss]",
                                  "type", "window", "send_event",
                                  "message_type", "data_format", "data");
-        if (!strcmp(attr, "message_type"))
-            return PyString_FromString(
-                gdk_atom_name(event->client.message_type));
+        if (!strcmp(attr, "message_type")) {
+            name = gdk_atom_name(event->client.message_type);
+            ret = PyString_FromString(name);
+            g_free(name);
+            return ret;
+        }
         if (!strcmp(attr, "data_format"))
             return PyInt_FromLong(event->client.data_format);
         if (!strcmp(attr, "data"))
@@ -1595,9 +1614,12 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "reason"))
             return pyg_enum_from_gtype(GDK_TYPE_OWNER_CHANGE,
 				       event->owner_change.reason);
-        if (!strcmp(attr, "selection"))
-            return PyString_FromString(
-                gdk_atom_name(event->owner_change.selection));
+        if (!strcmp(attr, "selection")) {
+            name = gdk_atom_name(event->owner_change.selection);
+            ret = PyString_FromString(name);
+            g_free(name);
+            return ret;
+        }
         if (!strcmp(attr, "time"))
             return PyInt_FromLong(event->owner_change.time);
         if (!strcmp(attr, "selection_time"))
@@ -1884,12 +1906,16 @@ _wrap_gdk_drag_context__get_targets(PyGObject *self, void *closure)
     if (ret == NULL)
         return NULL;
     for (tmp = GDK_DRAG_CONTEXT(self->obj)->targets; tmp; tmp = tmp->next) {
-        if ((atom = PyString_FromString(
-                 gdk_atom_name(GDK_POINTER_TO_ATOM(tmp->data)))) == NULL) {
+        gchar *name;
+
+        name = gdk_atom_name(GDK_POINTER_TO_ATOM(tmp->data));
+        if ((atom = PyString_FromString(name)) == NULL) {
+            g_free(name);
             Py_DECREF(ret);
             return NULL;
         }
         PyList_Append(ret, atom);
+        g_free(name);
         Py_DECREF(atom);
     }
     return ret;
@@ -2309,6 +2335,9 @@ _wrap_gdk_property_get(PyGObject *self, PyObject *args, PyObject *kwargs)
         /* success */
         PyObject *pdata = NULL;
         gint nelements, i;
+        gchar *aname;
+        PyObject *ret;
+
         switch (aformat) {
         case 8:
             if ((pdata = PyString_FromStringAndSize(data, alength)) == NULL)
@@ -2339,10 +2368,11 @@ _wrap_gdk_property_get(PyGObject *self, PyObject *args, PyObject *kwargs)
                 nelements = alength / sizeof(GdkAtom);
                 if ((pdata = PyList_New(nelements)) == NULL)
                     return NULL;
-                for (i = 0; i < nelements; i++)
-                    PyList_SetItem(pdata, i,
-                                   PyString_FromString(
-                                       gdk_atom_name(data32[i])));
+                for (i = 0; i < nelements; i++) {
+                    aname = gdk_atom_name(data32[i]);
+                    PyList_SetItem(pdata, i, PyString_FromString(aname));
+                    g_free(aname);
+                }
             } else {
                 long *data32;
 
@@ -2360,9 +2390,11 @@ _wrap_gdk_property_get(PyGObject *self, PyObject *args, PyObject *kwargs)
             g_assert_not_reached();
         }
         g_free(data);
-        return Py_BuildValue("(NiN)",
-                             PyString_FromString(gdk_atom_name(atype)),
-                             aformat, pdata);
+        aname = gdk_atom_name(atype);
+        ret = Py_BuildValue("(NiN)", PyString_FromString(aname), aformat,
+                            pdata);
+        g_free(aname);
+        return ret;
     } else {
         Py_INCREF(Py_None);
         return Py_None;

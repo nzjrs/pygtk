@@ -1,3 +1,19 @@
+2005-08-18  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk.override (_wrap_gtk_selection_data_get_targets) 
+	(_wrap_gtk_drag_dest_get_target_list) 
+	(_wrap_gtk_drag_dest_set_target_list) 
+	(clipboard_request_contents_cb) 
+	(_wrap_gtk_clipboard_request_targets) 
+	(_wrap_gtk_drag_source_set_target_list) 
+	(_wrap_gtk_target_list_add_image_targets) 
+	(_wrap_gtk_target_list_add_uri_targets) :
+	* gtk/gdk.override (_wrap_gdk_event_tp_getattr) 
+	(_wrap_gdk_gc_new_with_values, _wrap_gdk_property_get) 
+	(_wrap_gdk_property_change): 
+	* gtk/gtkmodule.c (add_atom): Fix memory leak with gdk_atom_name()
+	Fixes #313861 (Christian Persch)
+
 2005-08-16  Stepan Kasal  <kasal@ucw.cz>
 
 	* pygobject-2.0.pc.in, pygtk-2.0.pc.in: Add datarootdir

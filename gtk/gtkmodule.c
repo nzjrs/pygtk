@@ -124,6 +124,7 @@ init_gtk(void)
     char **argv;
     GSList *stock_ids, *cur;
     char buf[128];
+    gchar * aname;
 
 #ifdef HAVE_PYCAIRO
     Pycairo_IMPORT;
@@ -261,7 +262,9 @@ init_gtk(void)
     pygdk_register_classes(d);
     pygdk_add_constants(m, "GDK_");
       /* Add predefined atoms */
-#define add_atom(name) PyModule_AddObject(m, #name, PyString_FromString(gdk_atom_name((GDK_##name))))
+#define add_atom(name) { aname = gdk_atom_name((GDK_##name)); \
+PyModule_AddObject(m, #name, PyString_FromString(aname)); \
+g_free(aname); }
 
     add_atom(SELECTION_PRIMARY);
     add_atom(SELECTION_SECONDARY);
