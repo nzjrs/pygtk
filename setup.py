@@ -24,7 +24,9 @@ from dsextras import get_m4_define, getoutput, have_pkgconfig, list_files, \
      GLOBAL_INC, GLOBAL_MACROS, InstallLib, InstallData, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
 
-if not '--yes-i-know-its-not-supported' in sys.argv:
+if '--yes-i-know-its-not-supported' in sys.argv:
+    sys.argv.remove('--yes-i-know-its-not-supported')
+else:
     print '*'*70
     print 'Building PyGTK using distutils is NOT SUPPORTED.'
     print "It's mainly included to be able to easily build win32 installers"
@@ -37,11 +39,9 @@ if not '--yes-i-know-its-not-supported' in sys.argv:
     if not input.startswith('y'):
         raise SystemExit
 
-str_version = sys.version[:3]
-version = tuple(map(int, str_version.split('.')))
-if version < (2, 3, 5):
+if sys.version_info[:3] < (2, 3, 5):
     raise SystemExit, \
-          "Python 2.3.5 or higher is required, %s found" % str_version
+          "Python 2.3.5 or higher is required, %d.%d.%d found" % sys.version_info[:3]
 
 MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
 MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
@@ -253,22 +253,39 @@ if libglade.can_build():
     ext_modules.append(libglade)
     data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
 
-if not '--disable-threading' in sys.argv:
+# Threading support
+if '--disable-threading' in sys.argv:
+    sys.argv.remove('--disable-threading')
+    enable_threading = False
+else:
+    if '--enable-threading' in sys.argv:
+        sys.argv.remove('--enable-threading')
     try:
         import thread
     except ImportError:
         print "Warning: Could not import thread module, disabling threading"
+        enable_threading = False
     else:
-        GLOBAL_MACROS.append(('ENABLE_PYGTK_THREADING', 1))
+        enable_threading = True
 
-        name = 'gthread-2.0'
-        for module in ext_modules:
-            raw = getoutput('pkg-config --libs-only-l %s' % name)
-            module.extra_link_args += raw.split()
-            raw = getoutput('pkg-config --cflags-only-I %s' % name)
-            module.extra_compile_args.append(raw)
+if enable_threading:
+    name = 'gthread-2.0'
+    for module in ext_modules:
+        raw = getoutput('pkg-config --libs-only-l %s' % name)
+        for arg in raw.split():
+            if arg.startswith('-l'):
+                module.libraries.append(arg[2:])
+            else:
+                module.extra_link_args.append(arg)
+        raw = getoutput('pkg-config --cflags-only-I %s' % name)
+        for arg in raw.split():
+            if arg.startswith('-I'):
+                module.include_dirs.append(arg[2:])
+            else:
+                module.extra_compile_args.append(arg)
 else:
-    sys.argv.remove('--disable-threading')
+    GLOBAL_MACROS.append(('DISABLE_THREADING', 1))
+
 
 doclines = __doc__.split("\n")
 
