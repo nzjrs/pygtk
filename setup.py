@@ -24,22 +24,37 @@ from dsextras import get_m4_define, getoutput, have_pkgconfig, list_files, \
      GLOBAL_INC, GLOBAL_MACROS, InstallLib, InstallData, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
 
-if sys.platform != "win32":
-    raise SystemExit, "Building PyGTK through distutils is not supported on Linux, please use configure to build PyGTK."
+if not '--yes-i-know-its-not-supported' in sys.argv:
+    print '*'*70
+    print 'Building PyGTK using distutils is NOT SUPPORTED.'
+    print "It's mainly included to be able to easily build win32 installers"
+    print "You may continue, but only if you agree to not ask any questions"
+    print "To build PyGTK in a supported way, read the INSTALL file"
+    print 
+    print "Build fixes are of course welcome and should be filed in bugzilla"
+    print '*'*70
+    input = raw_input('Not supported, ok [y/N]? ')
+    if not input.startswith('y'):
+        raise SystemExit
+
+str_version = sys.version[:3]
+version = tuple(map(int, str_version.split('.')))
+if version < (2, 3, 5):
+    raise SystemExit, \
+          "Python 2.3.5 or higher is required, %s found" % str_version
 
 MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
 MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
 MICRO_VERSION = int(get_m4_define('pygtk_micro_version'))
 
-VERSION = "%d.%d.%d" % (MAJOR_VERSION,
-                        MINOR_VERSION,
-                        MICRO_VERSION)
+VERSION = "%d.%d.%d" % (MAJOR_VERSION, MINOR_VERSION, MICRO_VERSION)
 
 GOBJECT_REQUIRED  = get_m4_define('glib_required_version')
 ATK_REQUIRED      = get_m4_define('atk_required_version')
 PANGO_REQUIRED    = get_m4_define('pango_required_version')
 GTK_REQUIRED      = get_m4_define('gtk_required_version')
 LIBGLADE_REQUIRED = get_m4_define('libglade_required_version')
+PYCAIRO_REQUIRED  = get_m4_define('pycairo_required_version')
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
@@ -59,12 +74,6 @@ else:
 DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
 CODEGEN_DIR = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'codegen')
 INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
-
-str_version = sys.version[:3]
-version = map(int, str_version.split('.'))
-if version < [2, 3]:
-    raise SystemExit, \
-          "Python 2.3 or higher is required, %s found" % str_version
 
 class PyGtkInstallLib(InstallLib):
     def run(self):
@@ -134,6 +143,8 @@ gobject = PkgConfigExtension(name='gobject', pkc_name='gobject-2.0',
                                       'gobject/pygparamspec.c',
                                       'gobject/pygpointer.c',
                                       'gobject/pygtype.c',
+                                      'gobject/pygsource.c',
+                                      'gobject/pygiochannel.c',
                                       ])
 
 # Atk
@@ -150,6 +161,16 @@ pango = TemplateExtension(name='pango', pkc_name='pango',
                           register=['pango-types.defs'],
                           override='pango.override',
                           defs='pango.defs')
+# Pangocairo
+pangocairo = TemplateExtension(name='pangocairo',
+                               pkc_name=('pycairo', 'pangocairo'),
+                               pkc_version=(PYCAIRO_REQUIRED,
+                                            PANGO_REQUIRED),
+                               sources=['pangocairo.c', 'pangocairomodule.c'],
+                               register=['pango-types.defs'],
+                               override='pangocairo.override',
+                               defs='pangocairo.defs')
+
 # Gdk (template only)
 gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
                         defs='gtk/gdk.defs', prefix='pygdk',
@@ -195,6 +216,7 @@ if not have_pkgconfig():
     raise SystemExit
 
 if gobject.can_build():
+    gobject.libraries.append('gthread-2.0')
     ext_modules.append(gobject)
     data_files.append((INCLUDE_DIR, ('gobject/pygobject.h',)))
     data_files.append((CODEGEN_DIR, list_files(os.path.join('codegen', '*.py'))))
@@ -208,6 +230,9 @@ if atk.can_build():
 if pango.can_build():
     ext_modules.append(pango)
     data_files.append((DEFS_DIR, ('pango.defs', 'pango-types.defs')))
+    if pangocairo.can_build():
+        ext_modules.append(pangocairo)
+        data_files.append((DEFS_DIR, ('pangocairo.defs',)))
 if gtk.can_build():
     if '--disable-numeric' in sys.argv:
         sys.argv.remove('--disable-numeric')
