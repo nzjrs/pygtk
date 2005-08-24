@@ -216,7 +216,6 @@ if not have_pkgconfig():
     raise SystemExit
 
 if gobject.can_build():
-    gobject.libraries.append('gthread-2.0')
     ext_modules.append(gobject)
     data_files.append((INCLUDE_DIR, ('gobject/pygobject.h',)))
     data_files.append((CODEGEN_DIR, list_files(os.path.join('codegen', '*.py'))))
@@ -249,12 +248,12 @@ if gtk.can_build():
                                   'gtk/gtk.defs', 'gtk/gtk-types.defs',
                                   'gtk/gtk-extrafuncs.defs')))
     py_modules += ['gtk.compat', 'gtk.keysyms']
+
 if libglade.can_build():
     ext_modules.append(libglade)
     data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
 
-if '--enable-threading' in sys.argv:
-    sys.argv.remove('--enable-threading')
+if not '--disable-threading' in sys.argv:
     try:
         import thread
     except ImportError:
@@ -268,6 +267,9 @@ if '--enable-threading' in sys.argv:
             module.extra_link_args += raw.split()
             raw = getoutput('pkg-config --cflags-only-I %s' % name)
             module.extra_compile_args.append(raw)
+else:
+    sys.argv.remove('--disable-threading')
+
 doclines = __doc__.split("\n")
 
 options = {"bdist_wininst": {"install_script": "pygtk_postinstall.py"}}
