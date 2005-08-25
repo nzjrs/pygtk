@@ -1,3 +1,16 @@
+2005-08-25  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/gobjectmodule.c (pyg_type_register): Don't g_free
+	type_name parameter, otherwise it will cause a double-free elsewhere.
+	
+	* gobject/pygobject-private.h: Add const to char * parameter of
+	pyg_type_register.
+
+	* gobject/pygobject.c (pygobject_new_with_interfaces): Py_INCREF
+	objects being added to a tuple in a couple of places, because
+	PyTuple_SetItem steals a reference.  Fix 'bases' and 'dict'
+	reference leaks.
+
 2005-08-24  John Ehresman  <jpe@wingide.com>
 
 	* gobject/pygobject.c: In the meta-class __init__ method,
