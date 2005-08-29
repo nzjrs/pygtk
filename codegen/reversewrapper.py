@@ -606,9 +606,8 @@ class GdkRectanglePtrParam(Parameter):
     def convert_c2py(self):
         self.wrapper.add_declaration("PyObject *py_%s;" % self.name)
         self.wrapper.write_code(
-            code=('py_%(name)s = Py_BuildValue("(ffff)", %(name)s->x, %(name)s->y,\n'
-                  '                            %(name)s->width, %(name)s->height);'
-                  % dict(name=self.name)),
+            code=('py_%s = pyg_boxed_new(GDK_TYPE_RECTANGLE, %s, TRUE, TRUE);' %
+                  (self.name, self.name)),
             cleanup=("Py_DECREF(py_%s);" % self.name))
         self.wrapper.add_pyargv_item("py_%s" % self.name)
 

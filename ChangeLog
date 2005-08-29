@@ -1,3 +1,12 @@
+2005-08-30  Tim Evans  <t.evans@aranz.com>
+
+	* codegen/reversewrapper.py (GdkRectanglePtrParam.convert_c2py):
+	This conversion always produced bogus values and possibly even
+	segfaults, due to 'f' formart char vs passing integer values.
+	Fixed to use pyg_boxed_new instead.
+	Fixes bug 314801: "bad conversion of GdkRectangle to PyObject in
+	reversewrapper.py"  Reviewed by Gustavo Carneiro.
+
 2005-08-29  John Ehresman  <jpe@wingide.com>
 
 	* gobject/pygobject.c (pygobjectmeta_register): Remove unneeded
