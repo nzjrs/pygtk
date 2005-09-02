@@ -23,7 +23,6 @@ linkend="constructor-gladexml">gtk.glade.XML</link></methodname>
          <methodparam><parameter role="keyword">fname</parameter></methodparam>
          <methodparam><parameter role="keyword">root</parameter><initializer><literal>""</literal></initializer></methodparam>
          <methodparam><parameter role="keyword">domain</parameter><initializer><literal>""</literal></initializer></methodparam>
-b
          <methodparam><parameter role="keyword">typedict</parameter><initializer><literal>{}</literal></initializer></methodparam>  </constructorsynopsis>
        <methodsynopsis language="python">
          <methodname><link linkend="method-gladexml--signal-connect">signal_connect</link></methodname>
@@ -60,21 +59,21 @@ b
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-glade--get-widget-tree">gtk.glade.get_widget_tree</link></methodname>
     <methodparam><parameter role="keyword">widget</parameter></methodparam>
-  </methodsynopsis><!-- NOT IMPLEMENTED<methodsynopsis language="python">
-    <methodname><link linkend="function-glade- -set-custom-handler">gtk.glade.set_custom_handler</link></methodname>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-glade--set-custom-handler">gtk.glade.set_custom_handler</link></methodname>
     <methodparam><parameter>handler</parameter></methodparam>
     <methodparam><parameter>user_data</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
-    <methodname><link linkend="function-glade- -bindtextdomain">gtk.glade.bindtextdomain</link></methodname>
+    <methodname><link linkend="function-glade--bindtextdomain">gtk.glade.bindtextdomain</link></methodname>
     <methodparam><parameter role="keyword">domainname</parameter></methodparam>
     <methodparam><parameter role="keyword">dirname</parameter><initializer><literal>""</literal></initializer></methodparam>
   </methodsynopsis><methodsynopsis language="python">
-    <methodname><link linkend="function-glade- -textdomain">gtk.glade.textdomain</link></methodname>
+    <methodname><link linkend="function-glade--textdomain">gtk.glade.textdomain</link></methodname>
     <methodparam><parameter role="keyword">domainname</parameter><initializer><literal>""</literal></initializer></methodparam>
   </methodsynopsis><methodsynopsis language="python">
-    <methodname><link linkend="function-glade- -set-custom-widget-callbacks">gtk.glade.set_custom_widget_callbacks</link></methodname>
+    <methodname><link linkend="function-glade--set-custom-widget-callbacks">gtk.glade.set_custom_widget_callbacks</link></methodname>
     <methodparam><parameter role="keyword">dict</parameter></methodparam>
-  </methodsynopsis>END NOT IMPLEMENTED--></programlisting>
+  </methodsynopsis></programlisting>
 </refsect1>
 
   <refsect1>
@@ -435,7 +434,103 @@ linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> specified
 by <parameter>widget</parameter>.</para>
 
     </refsect2>
+    
+<refsect2 id="function-glade--set-custom-handler">
+  <title>gtk.glade.set_custom_handler</title>
 
-  </refsect1>
+  <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.glade.set_custom_handler</methodname>
+      <methodparam><parameter role="keyword">handler</parameter></methodparam>
+      <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+  	</methodsynopsis></programlisting>
 
+    <variablelist>
+      <varlistentry>
+    	  <term><parameter role="keyword">handler</parameter>&nbsp;:</term>
+  	    <listitem><simpara>the custom widget handler.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+    	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+  	    <listitem><simpara>user data passed to the custom handler.</simpara></listitem>
+      </varlistentry>
+    </variablelist>
+  
+  <para>This <function>gtk.glade.set_custom_handler</function>() function 
+    allows you to override the default behaviour when a Custom widget is found in an interface.
+  </para>
+</refsect2>
+
+<refsect2 id="function-glade--bindtextdomain">
+  <title>gtk.glade.bindtextdomain</title>
+
+  <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.glade.bindtextdomain</methodname>
+      <methodparam><parameter role="keyword">domainname</parameter></methodparam>
+      <methodparam><parameter role="keyword">dirname</parameter></methodparam>
+  	</methodsynopsis></programlisting>
+
+    <variablelist>
+      <varlistentry>
+    	  <term><parameter role="keyword">domainname</parameter>&nbsp;:</term>
+  	    <listitem><simpara>the name of the application.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+    	  <term><parameter role="keyword">dirname</parameter>&nbsp;:</term>
+  	    <listitem><simpara>the directory where to find locales.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+    	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+    	  <listitem><simpara>the value of <parameter>dirname</parameter></simpara></listitem>
+      </varlistentry>
+    </variablelist>
+  
+  <para>This <function>gtk.glade.bindtextdomain</function>() function allows you to use internationalisation with glade.
+  </para>
+</refsect2>
+
+<refsect2 id="function-glade--textdomain">
+  <title>gtk.glade.textdomain</title>
+
+  <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.glade.textdomain</methodname>
+      <methodparam><parameter role="keyword">domainname</parameter></methodparam>
+  	</methodsynopsis></programlisting>
+
+    <variablelist>
+      <varlistentry>
+    	  <term><parameter role="keyword">domainname</parameter>&nbsp;:</term>
+  	    <listitem><simpara>the name of the application.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+    	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+    	  <listitem><simpara>the value of <parameter>domainname</parameter></simpara></listitem>
+      </varlistentry>
+    </variablelist>
+  
+  <para>This <function>gtk.glade.textdomain</function>() function allows you to use internationalisation with glade.
+  </para>
+</refsect2>
+
+<refsect2 id="function-glade--set-custom-widget-callbacks">
+  <title>gtk.glade.set_custom_widget_callbacks</title>
+
+  <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.glade.set_custom_widget_callbacks</methodname>
+      <methodparam><parameter role="keyword">dict</parameter></methodparam>
+  	</methodsynopsis></programlisting>
+
+    <variablelist>
+      <varlistentry>
+    	  <term><parameter role="keyword">dict</parameter>&nbsp;:</term>
+  	    <listitem><simpara>a dictionary of function names.</simpara></listitem>
+      </varlistentry>
+    </variablelist>
+  
+  <para>This <function>gtk.glade.set_custom_widget_callbacks</function>() function 
+  takes a dictionary of function names->functions, for an example see 
+  <ulink linkend="http://www.async.com.br/faq/pygtk/index.py">PyGTK FAQ 22.7</ulink>
+  for an example.
+  </para>
+</refsect2>
+</refsect1>
 </refentry>
