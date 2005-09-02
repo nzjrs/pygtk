@@ -14,7 +14,6 @@ EXTRA_DIST = 				\
 	ChangeLog.pre-2-6		\
 	config.h.win32 			\
 	dsextras.py 			\
-	makefile.msc 			\
 	MANIFEST.in 			\
 	MAPPING 			\
 	pygtk.spec 			\

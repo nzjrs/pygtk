@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = 1.7
 PLATFORM_VERSION = 2.0
 
 CLEANFILES =
-EXTRA_DIST = makefile.msc
+EXTRA_DIST = 
 INCLUDES = $(PYTHON_INCLUDES) -I$(top_srcdir)/gobject 
 
 # defs files
