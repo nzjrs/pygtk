@@ -1,14 +1,21 @@
 #!/bin/sh
 # Run this to generate all the initial makefiles, etc.
 
-#name of package
-PKG_NAME=${PKG_NAME:-PyGTK}
 srcdir=`dirname $0`
+test -z "$srcdir" && srcdir=.
+
+REQUIRED_AUTOMAKE_VERSION=1.8
+
+PKG_NAME="PyGTK"
 ACLOCAL_FLAGS="-I `pwd`/m4 $ACLOCAL_FLAGS"
+
+#name of package
+PKG_NAME=${PKG_NAME:-Package}
+srcdir=${srcdir:-.}
 
 # default version requirements ...
 REQUIRED_AUTOCONF_VERSION=${REQUIRED_AUTOCONF_VERSION:-2.53}
-REQUIRED_AUTOMAKE_VERSION=${REQUIRED_AUTOMAKE_VERSION:-1.7}
+REQUIRED_AUTOMAKE_VERSION=${REQUIRED_AUTOMAKE_VERSION:-1.4}
 REQUIRED_LIBTOOL_VERSION=${REQUIRED_LIBTOOL_VERSION:-1.4.3}
 REQUIRED_GETTEXT_VERSION=${REQUIRED_GETTEXT_VERSION:-0.10.40}
 REQUIRED_GLIB_GETTEXT_VERSION=${REQUIRED_GLIB_GETTEXT_VERSION:-2.2.0}
@@ -16,6 +23,7 @@ REQUIRED_INTLTOOL_VERSION=${REQUIRED_INTLTOOL_VERSION:-0.25}
 REQUIRED_PKG_CONFIG_VERSION=${REQUIRED_PKG_CONFIG_VERSION:-0.14.0}
 REQUIRED_GTK_DOC_VERSION=${REQUIRED_GTK_DOC_VERSION:-1.0}
 REQUIRED_DOC_COMMON_VERSION=${REQUIRED_DOC_COMMON_VERSION:-2.3.0}
+REQUIRED_GNOME_DOC_UTILS_VERSION=${REQUIRED_GNOME_DOC_UTILS_VERSION:-0.3.2}
 
 # a list of required m4 macros.  Package can set an initial value
 REQUIRED_M4MACROS=${REQUIRED_M4MACROS:-}
@@ -28,28 +36,6 @@ case `echo "testing\c"; echo 1,2,3`,`echo -n testing; echo 1,2,3` in
   *c*,*  ) ECHO_N=-n ;;
   *)       ECHO_N= ;;
 esac
-
-# if GNOME2_DIR or GNOME2_PATH is set, modify ACLOCAL_FLAGS ...
-# NOTE: GNOME2_DIR is deprecated (as of Jan 2004), but is left here for
-# backwards-compatibility. You should be using GNOME2_PATH, since that is also
-# understood by libraries such as libgnome.
-if [ -n "$GNOME2_DIR" ]; then
-    echo "Using GNOME2_DIR is deprecated in gnome-common."
-    echo "Please use GNOME2_PATH instead (for compatibility with other GNOME pieces)."
-    ACLOCAL_FLAGS="-I $GNOME2_DIR/share/aclocal $ACLOCAL_FLAGS"
-    LD_LIBRARY_PATH="$GNOME2_DIR/lib:$LD_LIBRARY_PATH"
-    PATH="$GNOME2_DIR/bin:$PATH"
-    export PATH
-    export LD_LIBRARY_PATH
-else
-    if [ -n "$GNOME2_PATH" ]; then
-        ACLOCAL_FLAGS="-I $GNOME2_PATH/share/aclocal $ACLOCAL_FLAGS"
-        LD_LIBRARY_PATH="$GNOME2_PATH/lib:$LD_LIBRARY_PATH"
-        PATH="$GNOME2_PATH/bin:$PATH"
-        export PATH
-        export LD_LIBRARY_PATH
-    fi
-fi
 
 # some terminal codes ...
 boldface="`tput bold 2>/dev/null`"
@@ -100,7 +86,12 @@ version_check() {
 	return 0
     fi
 
-    printbold "checking for $vc_package >= $vc_min_version..."
+    if test "x$vc_package" = "xautomake" -a "x$vc_min_version" = "x1.4"; then
+	vc_comparator="="
+    else
+	vc_comparator=">="
+    fi
+    printbold "checking for $vc_package $vc_comparator $vc_min_version..."
     for vc_checkprog in $vc_checkprogs; do
 	echo $ECHO_N "  testing $vc_checkprog... "
 	if $vc_checkprog --version < /dev/null > /dev/null 2>&1; then
@@ -108,8 +99,9 @@ version_check() {
                                sed 's/^.*[ 	]\([0-9.]*[a-z]*\).*$/\1/'`
 	    if compare_versions $vc_min_version $vc_actual_version; then
 		echo "found $vc_actual_version"
-		# set variable
-		eval "$vc_variable=$vc_checkprog"
+		# set variables
+		eval "$vc_variable=$vc_checkprog; \
+			${vc_variable}_VERSION=$vc_actual_version"
 		vc_status=0
 		break
 	    else
@@ -120,7 +112,7 @@ version_check() {
 	fi
     done
     if [ "$vc_status" != 0 ]; then
-	printerr "***Error***: You must have $vc_package >= $vc_min_version installed"
+	printerr "***Error***: You must have $vc_package $vc_comparator $vc_min_version installed"
 	printerr "  to build $PKG_NAME.  Download the appropriate package for"
 	printerr "  from your distribution or get the source tarball at"
         printerr "    $vc_source"
@@ -147,16 +139,42 @@ forbid_m4macro() {
 }
 
 # Usage:
+#     add_to_cm_macrodirs dirname
+# Adds the dir to $cm_macrodirs, if it's not there yet.
+add_to_cm_macrodirs() {
+    case $cm_macrodirs in
+    "$1 "* | *" $1 "* | *" $1") ;;
+    *) cm_macrodirs="$cm_macrodirs $1";;
+    esac
+}
+
+# Usage:
 #     check_m4macros
 # Checks that all the requested macro files are in the aclocal macro path
 # Uses REQUIRED_M4MACROS and ACLOCAL variables.
 check_m4macros() {
     # construct list of macro directories
-    cm_macrodirs="`$ACLOCAL --print-ac-dir`"
+    cm_macrodirs=`$ACLOCAL --print-ac-dir`
+    # aclocal also searches a version specific dir, eg. /usr/share/aclocal-1.9
+    # but it contains only Automake's own macros, so we can ignore it.
+
+    # Read the dirlist file, supported by Automake >= 1.7.
+    if compare_versions 1.7 $AUTOMAKE_VERSION && [ -s $cm_macrodirs/dirlist ]; then
+	cm_dirlist=`sed 's/[ 	]*#.*//;/^$/d' $cm_macrodirs/dirlist`
+	if [ -n "$cm_dirlist" ] ; then
+	    for cm_dir in $cm_dirlist; do
+		if [ -d $cm_dir ]; then
+		    add_to_cm_macrodirs $cm_dir
+		fi
+	    done
+	fi
+    fi
+
+    # Parse $ACLOCAL_FLAGS
     set - $ACLOCAL_FLAGS
     while [ $# -gt 0 ]; do
 	if [ "$1" = "-I" ]; then
-	    cm_macrodirs="$cm_macrodirs $2"
+	    add_to_cm_macrodirs "$2"
 	    shift
 	fi
 	shift
@@ -213,7 +231,7 @@ check_m4macros() {
 	printerr "***Error***: some autoconf macros required to build $PKG_NAME"
 	printerr "  were not found in your aclocal path, or some forbidden"
 	printerr "  macros were found.  Perhaps you need to adjust your"
-	printerr "  ACLOCAL_PATH?"
+	printerr "  ACLOCAL_FLAGS?"
 	printerr
     fi
     return $cm_status
@@ -228,10 +246,12 @@ want_glib_gettext=false
 want_intltool=false
 want_pkg_config=false
 want_gtk_doc=false
+want_gnome_doc_utils=false
 
 configure_files="`find $srcdir -name '{arch}' -prune -o -name configure.ac -print -o -name configure.in -print`"
 for configure_ac in $configure_files; do
-    if grep "^A[CM]_PROG_LIBTOOL" $configure_ac >/dev/null; then
+    if grep "^A[CM]_PROG_LIBTOOL" $configure_ac >/dev/null ||
+       grep "^LT_INIT" $configure_ac >/dev/null; then
 	want_libtool=true
     fi
     if grep "^AM_GNU_GETTEXT" $configure_ac >/dev/null; then
@@ -240,7 +260,8 @@ for configure_ac in $configure_files; do
     if grep "^AM_GLIB_GNU_GETTEXT" $configure_ac >/dev/null; then
 	want_glib_gettext=true
     fi
-    if grep "^AC_PROG_INTLTOOL" $configure_ac >/dev/null; then
+    if grep "^AC_PROG_INTLTOOL" $configure_ac >/dev/null ||
+       grep "^IT_PROG_INTLTOOL" $configure_ac >/dev/null; then
 	want_intltool=true
     fi
     if grep "^PKG_CHECK_MODULES" $configure_ac >/dev/null; then
@@ -248,6 +269,20 @@ for configure_ac in $configure_files; do
     fi
     if grep "^GTK_DOC_CHECK" $configure_ac >/dev/null; then
 	want_gtk_doc=true
+    fi
+    if grep "^GNOME_DOC_INIT" $configure_ac >/dev/null; then
+        want_gnome_doc_utils=true
+    fi
+
+    # check to make sure gnome-common macros can be found ...
+    if grep "^GNOME_COMMON_INIT" $configure_ac >/dev/null ||
+       grep "^GNOME_DEBUG_CHECK" $configure_ac >/dev/null ||
+       grep "^GNOME_MAINTAINER_MODE_DEFINES" $configure_ac >/dev/null; then
+        require_m4macro gnome-common.m4
+    fi
+    if grep "^GNOME_COMPILE_WARNINGS" $configure_ac >/dev/null ||
+       grep "^GNOME_CXX_WARNINGS" $configure_ac >/dev/null; then
+        require_m4macro gnome-compiler-flags.m4
     fi
 done
 
@@ -271,11 +306,6 @@ esac
 version_check automake AUTOMAKE "$automake_progs" $REQUIRED_AUTOMAKE_VERSION \
     "http://ftp.gnu.org/pub/gnu/automake/automake-$REQUIRED_AUTOMAKE_VERSION.tar.gz" || DIE=1
 ACLOCAL=`echo $AUTOMAKE | sed s/automake/aclocal/`
-
-# We need to do this for the craaaaaaazy mkinstalldirs usage of glib-gettext
-AUTOMAKE_VERSION=`echo $AUTOMAKE | sed s/automake-//`
-ACLOCAL_DIR=`$ACLOCAL --print-ac-dir`
-AUTOMAKE_DIR=`echo $ACLOCAL_DIR | sed s/aclocal/automake-$AUTOMAKE_VERSION/`
 
 if $want_libtool; then
     version_check libtool LIBTOOLIZE libtoolize $REQUIRED_LIBTOOL_VERSION \
@@ -313,6 +343,11 @@ if $want_gtk_doc; then
     require_m4macro gtk-doc.m4
 fi
 
+if $want_gnome_doc_utils; then
+    version_check gnome-doc-utils GNOME_DOC_PREPARE gnome-doc-prepare $REQUIRED_GNOME_DOC_UTILS_VERSION \
+        "http://ftp.gnome.org/pub/GNOME/sources/gnome-doc-utils/" || DIE=1
+fi
+
 if [ "x$USE_COMMON_DOC_BUILD" = "xyes" ]; then
     version_check gnome-common DOC_COMMON gnome-doc-common \
         $REQUIRED_DOC_COMMON_VERSION " " || DIE=1
@@ -324,7 +359,7 @@ if [ "$DIE" -eq 1 ]; then
   exit 1
 fi
 
-if test -z "$*"; then
+if [ "$#" = 0 ]; then
   printerr "**Warning**: I am going to run \`configure' with no arguments."
   printerr "If you wish to pass any to it, please specify them on the"
   printerr \`$0\'" command line."
@@ -335,8 +370,10 @@ topdir=`pwd`
 for configure_ac in $configure_files; do 
     dirname=`dirname $configure_ac`
     basename=`basename $configure_ac`
-    if test -f $dirname/NO-AUTO-GEN; then
+    if [ -f $dirname/NO-AUTO-GEN ]; then
 	echo skipping $dirname -- flagged as no auto-gen
+    elif [ ! -w $dirname ]; then
+        echo skipping $dirname -- directory is read only
     else
 	printbold "Processing $configure_ac"
 	cd $dirname
@@ -346,19 +383,15 @@ for configure_ac in $configure_files; do
         # details.
 
         # programs that might install new macros get run before aclocal
-	if grep "^A[CM]_PROG_LIBTOOL" $basename >/dev/null; then
+	if grep "^A[CM]_PROG_LIBTOOL" $basename >/dev/null ||
+	   grep "^LT_INIT" $basename >/dev/null; then
 	    printbold "Running $LIBTOOLIZE..."
-	    $LIBTOOLIZE --force || exit 1
+	    $LIBTOOLIZE --force --copy || exit 1
 	fi
 
 	if grep "^AM_GLIB_GNU_GETTEXT" $basename >/dev/null; then
 	    printbold "Running $GLIB_GETTEXTIZE... Ignore non-fatal messages."
 	    echo "no" | $GLIB_GETTEXTIZE --force --copy || exit 1
-	    # This is to copy in mkinstalldirs for glib-gettext
-	    if [ -x $AUTOMAKE_DIR/mkinstalldirs ]; then
-		echo "  copying mkinstalldirs... "
-		cp -f $AUTOMAKE_DIR/mkinstalldirs $dirname
-	    fi
 	elif grep "^AM_GNU_GETTEXT" $basename >/dev/null; then
 	   if grep "^AM_GNU_GETTEXT_VERSION" $basename > /dev/null; then
 	   	printbold "Running autopoint..."
@@ -369,24 +402,35 @@ for configure_ac in $configure_files; do
 	   fi
 	fi
 
-	if grep "^AC_PROG_INTLTOOL" $basename >/dev/null; then
+	if grep "^AC_PROG_INTLTOOL" $basename >/dev/null ||
+           grep "^IT_PROG_INTLTOOL" $basename >/dev/null; then
 	    printbold "Running $INTLTOOLIZE..."
-	    $INTLTOOLIZE --force --automake || exit 1
+	    $INTLTOOLIZE --force --copy --automake || exit 1
 	fi
 	if grep "^GTK_DOC_CHECK" $basename >/dev/null; then
 	    printbold "Running $GTKDOCIZE..."
-	    $GTKDOCIZE || exit 1
+	    $GTKDOCIZE --copy || exit 1
 	fi
 
 	if [ "x$USE_COMMON_DOC_BUILD" = "xyes" ]; then
 	    printbold "Running gnome-doc-common..."
 	    gnome-doc-common --copy || exit 1
 	fi
+	if grep "^GNOME_DOC_INIT" $basename >/dev/null; then
+	    printbold "Running $GNOME_DOC_PREPARE..."
+	    $GNOME_DOC_PREPARE --force --copy || exit 1
+	fi
 
         # Now run aclocal to pull in any additional macros needed
-	aclocalinclude="$ACLOCAL_FLAGS"
+
+	# if the AC_CONFIG_MACRO_DIR() macro is used, pass that
+	# directory to aclocal.
+	m4dir=`cat "$basename" | grep '^AC_CONFIG_MACRO_DIR' | sed -n -e 's/AC_CONFIG_MACRO_DIR(\([^()]*\))/\1/p' | sed -e 's/^\[\(.*\)\]$/\1/' | sed -e 1q`
+	if [ -n "$m4dir" ]; then
+	    m4dir="-I $m4dir"
+	fi
 	printbold "Running $ACLOCAL..."
-	$ACLOCAL $aclocalinclude || exit 1
+	$ACLOCAL $m4dir $ACLOCAL_FLAGS || exit 1
 
 	if grep "GNOME_AUTOGEN_OBSOLETE" aclocal.m4 >/dev/null; then
 	    printerr "*** obsolete gnome macros were used in $configure_ac"
@@ -406,7 +450,16 @@ for configure_ac in $configure_files; do
 
 	# Finally, run automake to create the makefiles ...
 	printbold "Running $AUTOMAKE..."
-	$AUTOMAKE --gnu --add-missing || exit 1
+        cp -pf COPYING COPYING.autogen_bak
+        cp -pf INSTALL INSTALL.autogen_bak
+	if [ $REQUIRED_AUTOMAKE_VERSION != 1.4 ]; then
+	    $AUTOMAKE --gnu --add-missing --force --copy || exit 1
+	else
+	    $AUTOMAKE --gnu --add-missing --copy || exit 1
+	fi
+        cmp COPYING COPYING.autogen_bak || cp -pf COPYING.autogen_bak COPYING
+        cmp INSTALL INSTALL.autogen_bak || cp -pf INSTALL.autogen_bak INSTALL
+        rm -f COPYING.autogen_bak INSTALL.autogen_bak
 
 	cd "$topdir"
     fi
