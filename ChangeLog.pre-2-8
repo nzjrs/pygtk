@@ -1,0 +1,912 @@
+=== PyGTK 2.8.0 ===
+2005-09-02  Johan Dahlin  <jdahlin@async.com.br>
+
+	* autogen.sh: Sync with gnome-common. Require automake 1.8.
+	Fixes #314128 and #311958
+
+	* Makefile.am:
+	* gobject/makefile.msc:
+	* gtk/Makefile.am:
+	* gtk/makefile.msc:
+	* makefile.msc:
+	Remove old .msc files, which are outdated and unused.
+
+2005-08-30  Tim Evans  <t.evans@aranz.com>
+
+	* gtk/gtk.defs: Fix the start_editing virtual of GtkCellRenderer.
+	Closes bug #314806.  Review by Gustavo Carneiro.
+
+	* codegen/reversewrapper.py (GdkRectanglePtrParam.convert_c2py):
+	This conversion always produced bogus values and possibly even
+	segfaults, due to 'f' formart char vs passing integer values.
+	Fixed to use pyg_boxed_new instead.
+	Fixes bug 314801: "bad conversion of GdkRectangle to PyObject in
+	reversewrapper.py"  Reviewed by Gustavo Carneiro.
+
+2005-08-29  John Ehresman  <jpe@wingide.com>
+
+	* gobject/pygobject.c (pygobjectmeta_register): Remove unneeded
+	g_strdup.
+
+2005-08-26  Johan Dahlin  <jdahlin@async.com.br>
+
+	* atk-types.defs (ImplementorIface): Make it a type on dynamically
+	created subclasses implementing the interface to possibly avoid
+	MRO issues.
+
+	* gobject/gobjectmodule.c (pyg_signal_list_ids): Refactor to
+	allow us to list signals on interfaces.
+
+	* tests/test_signal.py (TestList): Two new tests.
+
+2005-08-25  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/gobjectmodule.c (pyg_type_register): Don't g_free
+	type_name parameter, otherwise it will cause a double-free elsewhere.
+	
+	* gobject/pygobject-private.h: Add const to char * parameter of
+	pyg_type_register.
+
+	* gobject/pygobject.c (pygobject_new_with_interfaces): Py_INCREF
+	objects being added to a tuple in a couple of places, because
+	PyTuple_SetItem steals a reference.  Fix 'bases' and 'dict'
+	reference leaks.
+
+2005-08-24  John Ehresman  <jpe@wingide.com>
+
+	* gobject/pygobject.c: In the meta-class __init__ method,
+	register a class as a gtype iff __gsignals__, __gproperties__,
+	or __gtype_name__ is defined in the leaf class's tp_dict.  
+
+2005-08-24  Johan Dahlin  <jdahlin@async.com.br>
+
+	* configure.in: Post release version bump
+
+=== PyGTK 2.7.4 ===
+2005-08-24  Johan Dahlin  <jdahlin@async.com.br>
+
+	* NEWS: Update
+
+	* README: Update
+
+2005-08-24  John Ehresman  <jpe@wingide.com>
+
+	* setup.py: Added sources so gobject module will compile, fixed
+	enable/disable thread support, and changed default so thread 
+	support is enabled unless --disable-threading is specified
+	
+	* gobject/gobjectmodule.c, gobject/pygobject.c: Set 
+	PyGObject_MetaType.tp_base in module initialization to keep
+	VC++ happy
+
+2005-08-24  Johan Dahlin  <jdahlin@async.com.br>
+
+	* tests/test_conversion.py (Tests.testUIntArg): Add test for
+	Table.attach which takes uint arguments.
+
+	* codegen/argtypes.py (UIntArg.write_param): 
+	One more take on fixing #300012, this time unsigned int conversion,
+	patch by Gustavo.
+	
+2005-08-18  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk.override (_wrap_gtk_selection_data_get_targets) 
+	(_wrap_gtk_drag_dest_get_target_list) 
+	(_wrap_gtk_drag_dest_set_target_list) 
+	(clipboard_request_contents_cb) 
+	(_wrap_gtk_clipboard_request_targets) 
+	(_wrap_gtk_drag_source_set_target_list) 
+	(_wrap_gtk_target_list_add_image_targets) 
+	(_wrap_gtk_target_list_add_uri_targets) :
+	* gtk/gdk.override (_wrap_gdk_event_tp_getattr) 
+	(_wrap_gdk_gc_new_with_values, _wrap_gdk_property_get) 
+	(_wrap_gdk_property_change): 
+	* gtk/gtkmodule.c (add_atom): Fix memory leak with gdk_atom_name()
+	Fixes #313861 (Christian Persch)
+
+2005-08-16  Stepan Kasal  <kasal@ucw.cz>
+
+	* pygobject-2.0.pc.in, pygtk-2.0.pc.in: Add datarootdir
+	variable, for compatibility with future Autoconf releases.
+	* codegen/pygtk-codegen-2.0.in: Likewise.
+
+2005-08-16  Johan Dahlin  <johan@gnome.org>
+
+	* gtk/gtkcontainer.override: Override gtk.Container.do_forall.
+	* examples/gtk/bin.py: Simple example how it should work.
+
+2005-08-12  Christopher Aillon  <caillon@redhat.com>
+
+	* gtk/gtk.defs:
+	gtk.accelerator_get_default_mod_mask () returns a
+	GtkModifierType, not a guint.
+
+2005-08-12  Christopher Aillon  <caillon@redhat.com>
+
+	* gobject/pygtype.c:
+	pyg_flags_get_value () should accept longs as input
+
+2005-08-10  Johan Dahlin  <jdahlin@async.com.br>
+
+	* configure.in: Post release version bump
+	
+=== PyGTK 2.7.3 ===
+2005-08-10  Johan Dahlin  <jdahlin@async.com.br>
+
+	* NEWS: Update
+
+2005-08-10  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gdk.override, gtk/gdk.defs: It was discovered by pycairo
+	folks that cairo_surface_create_for_pixbuf doesn't work at all.
+
+2005-08-10  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gtk/gtkcontainer.override (_wrap_gtk_container_nb_nonzero): Always
+	return 1, so if hbox always returns true.
+
+2005-08-09  Andy Wingo  <wingo@pobox.com>
+
+	* gobject/pygobject.c (pygobject_new_with_interfaces): Use the
+	generic setattr protocol instead of getting the module's
+	dictionary and using setitem. Fixes bug #312999.
+
+2005-08-05  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* codegen/reversewrapper.py (GObjectReturn.write_conversion): Add
+	type checking: raise exception and return NULL if the returned
+	PyObject isn't a PyGObject.
+	(ReverseWrapper.write_code): Add support for code that raises an
+	exception in the failure code path.
+
+2005-08-02  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gtk/Makefile.am
+	* Makefile.am: Big makefile cleanup. Fix a couple of bugs
+	meanwhile, most noticable, always install include *.defs in
+	EXTRA_DIST and only install them when their target is built.
+	
+2005-08-02  Johan Dahlin  <jdahlin@async.com.br>
+
+	* configure.in: Post release version bump
+
+=== PyGTK 2.7.2 ===
+2005-07-30  Johan Dahlin  <jdahlin@async.com.br>
+
+	* NEWS: Updated
+	
+2005-08-02  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes bug #312337
+
+	* gobject/gobjectmodule.c: (_wrap_pyg_type_register):
+	Make the "already registered" warning a deprecation warning
+	with a more detailed hint on what it means.
+
+2005-08-01  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygobject-private.h
+	* gobject/pygmaincontext.c: Add a convenience function 
+	(pyg_main_context_new) to create a PyGMainContext from a
+	GMainContext. Takes care of refing the supplied GMainContext
+	as well.
+
+	* gobject/gobjectmodule.c (pyg_main_context_default)
+	* gobject/pygmainloop.c (_wrap_g_main_loop_get_context)
+	* gobject/pygsource.c (pyg_source_get_context): use the new
+	convenience function here. This fixes bug #312259.
+
+2005-07-31  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/gobjectmodule.c (pyg_object_new): Call
+	pygobject_new_full instead of pygobject_new to disable sinking.
+	Instead, call pygobject_sink after g_object_unref, so that the
+	sink functions run with the expected reference count and do their
+	work accordingly.
+	
+	* gobject/pygobject-private.h: New internal API pygobject_sink.
+
+	* gobject/pygobject.c (pygobject_sink),
+	(pygobject_register_wrapper, pygobject_new_full): sink_object
+	renamed to pygobject_sink and made internal API.
+	
+	* tests/test_subtype.py: Add tests to check reference count of
+	windows, with or without subclassing, from gobject.new or from
+	constructor.
+
+2005-07-30  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gdk.override (_wrap_gdk_event_free): Deprecate
+	gtk.gdk.Event.free and make it do nothing.
+
+	* gobject/gobjectmodule.c (_wrap_pyg_type_register): Fix test to
+	see if the class has already been registered.  Don't issue a
+	DeprecationWarning; instead, just issue a Warning when trying to
+	register a class that is already registered.
+
+2005-07-30  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c (initgobject): Don't register PyObject
+	unconditionally, fixes #303797 (Yevgen Muntyan)
+
+2005-07-30  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gtk.override (_wrap_gtk_icon_source_free)
+	(_wrap_gtk_requisition_free, _wrap_gtk_tree_iter_free)
+	(_wrap_gtk_tree_row_reference_free, _wrap_gtk_border_free):
+	Override free() methods of boxed types to make them do nothing and
+	issue a deprecation warning.
+	Fixes Bug 306095: In pygtk 2.6.x calling free() on GtkIconInfo
+	                  object causes a double free or corruption error.
+
+	* tests/test_subtype.py (TestSubType.testMassiveGtkSubclassing):
+	Add new test that attempts to subclass every possible class in the
+	gtk module, minus a couple of deprecated ones.
+
+	* codegen/codegen.py (write_registers): Warn here about
+	constructors that need to be updated.
+
+	* gobject/gobjectmodule.c (pyg_type_register): Don't warn about
+	needing to update a constructor to new API.  Warn in the code
+	generator instead.
+
+	* gtk/gtk.override: Use the new new-constructor override command
+	to declare custom constructors conforming to the new API, instead
+	of init commands.
+
+	* codegen/codegen.py (Wrapper.write_constructor): When writing an
+	overridden constructor, check if it is declared to support the new
+	API, in which case set self.objinfo.has_new_constructor_api to True.
+	(GObjectWrapper.write_default_constructor): For GObjects with no
+	constructor (abstract objects), inherit
+	objinfo.has_new_constructor_api from the parent type, since
+	tp_init is also inheritted (hence the need to reorder the classes).
+
+	* codegen/override.py (Overrides.__parse_override): Add override
+	command "new-constructor GType" to declare that a constructor
+	conforms to the new API.
+
+	* codegen/codegen.py (write_classes): Reorder classes to put
+	parent types before their children.
+
+	* gtk/gtkwidget.override, gtk/gtk.override: Don't override
+	GtkMisc.tp_init, GtkBin.tp_init, GtkItem.tp_init, GtkBox.tp_init,
+	GtkButtonBox.tp_init, and GtkWidget.tp_init just to chain to
+	parent tp_init.  At some point in pygtk 2.6 development this
+	became redundant.  Ignore gtk_widget_new so that a
+	pygobject_no_constructor tp_init isn't generated for it.
+
+	Fixes Bug 311309: subclassing gtk.Bin reports....
+
+2005-07-30  Johan Dahlin  <jdahlin@async.com.br>
+
+	* Makefile.am:
+	* gtk/Makefile.am:
+	Install defs files conditionally, fixes #312037
+
+2005-07-25  Johan Dahlin  <jdahlin@async.com.br>
+
+	* tests/test_subtype.py:
+	* tests/testhelpermodule.c: (test_type_get_type),
+	(_wrap_get_unknown), (_wrap_test_g_object_new), (inittesthelper):
+	Clean up tests, we don't need a C binding to access tp_basicsize,
+	clean up the C tests, quite a bit aswell.
+
+2005-07-22  Johan Dahlin  <johan@gnome.org>
+
+	* gtk/Makefile.am:
+	* gtk/gtk-fake-win32.c:
+	* gtk/gtk.override:
+	* setup.py:
+
+	GtkPlug & GtkSocket is now available on win32, so remove hacks.
+
+2005-07-22  Johan Dahlin  <jdahlin@async.com.br>
+
+	* configure.in: Post release version bump
+
+=== PyGTK 2.7.1 ===
+2005-07-22  Johan Dahlin  <jdahlin@async.com.br>
+
+	* NEWS: 
+	* README: 
+	* configure.in: Update requirements
+
+	* tests/test_radiobutton.py (RadioToolButtonTest): Re-enable
+
+	* tests/test_dialog.py (MessageDialogTest.testSubclass): Add tests, for
+	#311226.
+
+2005-07-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/pygobject.c (pygobjectmeta_register): Don't
+	automatically register gtype if neither one of __gtype_name__,
+	__properties__, or __gsignals__ is defined in the class
+	dictionary.  Fixes #311226.
+
+2005-07-17  Johan Dahlin  <johan@gnome.org>
+
+	* gobject/pygobject.c: (pygobject_new_full), (pygobject_dealloc),
+	(pygobject_clear):
+	* gtk/gdk.override:
+	* gtk/gtk-types.c: (_pygtk_style_helper_new),
+	(pygtk_style_helper_dealloc), (pygtk_style_helper_setitem),
+	(pygtk_tree_model_row_dealloc),
+	(pygtk_tree_model_row_iter_dealloc):
+	* gtk/gtk.override:
+	* gtk/gtkwidget.override:
+	We have atomic ref counting in glib now, remove block/unblocking
+	around reference counting.	
+
+	* gobject/pygobject.h: 
+	* gobject/gobjectmodule.c (pyg_gil_state_ensure_py23) 
+	(pyg_gil_state_release_py23): Remove pre python 2.3.5 compatibility.
+	Simplifies thread handling.
+	
+	* configure.in: Require glib/gtk+ 2.7.3
+
+	* gtk/gtk.defs (get_model, set_do_overwrite_confirmation) 
+	(get_do_overwrite_confirmation, queue_resize, get_visible_range): Add
+
+	* gtk/gtk-types.defs (FileChooserError): Add.
+
+2005-07-15  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (create_property):
+	Allow enums to be specified in the constructor
+	* gobject/pygparamspec.c: (pyg_param_spec_getattr):
+	Return flags or enum object for pspec.default_value
+	* tests/test_enum.py: Remove usage of assert statement,
+	add default_value test, both for flags and enum
+
+2005-07-10  Johan Dahlin  <johan@gnome.org>
+
+	* configure.in: Post release version bump
+
+=== PyGTK 2.7.0 ===
+2005-07-10  Johan Dahlin  <johan@gnome.org>
+
+	* configure.in: Bump glib/gtk+ requirements
+
+	* NEWS: Updated
+
+	* README: Updated
+
+2005-07-10  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/pygiochannel.c (py_io_channel_win32_poll)
+	(py_io_channel_win32_make_pollfd): Change to use the new PyGPollFD
+	type instead of tuples.
+
+	* gobject/pygsource.c (pyg_poll_fd_dealloc): Change DECREF to
+	XDECREF on self->fd_obj.  Moved PyGPollFD structure into
+	pygobject-private.h, to make it accessible from pygiochannel.c.
+
+2005-07-10  Johan Dahlin  <johan@gnome.org>
+
+	* gtk/gtkwidget.override (_wrap_gtk_widget_set_set_scroll_adjustments_signal) 
+	(_wrap_gtk_widget_set_set_scroll_adjustments_signal): Impl.
+	Patch by Gustavo, fixes #155679
+
+	* tests/test_signal.py (TestOldStyleOverride): 
+	Add unittests. Lazy Gustavo.
+	
+	* gtk/gtkwidget.override (_wrap_gtk_widget_list_accel_closures): 
+	Remove until we decide what we should return.
+
+	* gobject/pygobject.c: (PyGProps_setattro),
+	(pygobject_set_property):
+	* tests/test_properties.py:
+	Raise an exception if a construct only property is set after
+	construction time. Refactor property setting code and add some 
+	more tests.
+
+2005-07-10  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygobject-private.h
+	* gobject/gobjectmodule.c
+	* gobject/Makefile.am
+	* gobject/pygsource.c: GSource wrapper, allows for pure python
+	GSource implementations, as well as objectifying Idle and Timeout
+	sources.
+
+	* tests/Makefile.am
+	* tests/test_source.py: Add test for the above.
+
+	* gobject/gobjectmodule.c: timeout_add should take an explicit
+	unsigned value. Also wrap g_get_current_time and g_main_depth.
+
+	* gobject/pygiochannel.c (py_io_channel_write_chars): fix thread
+	unblock/block logic.
+
+2005-07-10  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gdk.defs,
+	* gtk/gdk.override (cairo_surface_create_for_pixbuf): Add utility
+	function cairo_surface_create_for_pixbuf, copy-pasted from
+	pycairo (cairo/cairogtkmodule.c).
+
+	* codegen/override.py (Overrides),
+	* codegen/codegen.py (Wrapper.get_methflags): Add support for
+	static/classmethod and METH_O overrides.
+
+2005-07-09  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gtk/gtkwidget.override (_wrap_gtk_widget_list_accel_closures): Impl.
+
+	* gtk/gtk.defs: Remove gtk_ prefix on a couple of (unwrapped) functions
+
+	* gtk/gtk-types.defs:
+	(IconViewDropPosition, PackDirection): Add.
+
+	* gtk/gtkiconview.override:
+	(_wrap_gtk_icon_view_enable_model_drag_dest)
+	(_wrap_gtk_icon_view_enable_model_drag_source)
+	(_wrap_gtk_icon_view_get_dest_item_at_pos)
+	(_wrap_gtk_icon_view_get_drag_dest_item)
+	(_wrap_gtk_icon_view_get_cursor)
+	(_wrap_gtk_icon_view_get_visible_range)
+	(_wrap_gtk_icon_view_get_item_at_pos): Impl.
+
+2005-07-09  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* codegen/codegen.py:
+	* codegen/definitions.py:
+	* gobject/gobjectmodule.c: (pygobject_init_wrapper_set),
+	(pygobject_init_wrapper_get), (pygobject__g_instance_init),
+	(pyg_type_register), (pyg_object_new), (pygobject_constructv),
+	(pygobject_construct), (pyg_set_object_has_new_constructor),
+	(initgobject):
+	* gobject/pygobject-private.h:
+	* gobject/pygobject.c: (pygobject_new_full), (pygobject_new),
+	(pygobject_init):
+	* gobject/pygobject.h:
+	* gtk/gtk.override:
+	* tests/Makefile.am:
+	* tests/runtests.py:
+	* tests/test_properties.py:
+	* tests/test_subtype.py:
+	* tests/testhelpermodule.c: (py_label_get_type),
+	(test_type_get_type), (_wrap_create_test_type),
+	(_wrap_test_g_object_new):
+	* tests/testmodule.py:
+	Bug 161177: Allow creation of python classes from g_object_new.
+
+2005-07-09  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gtk/gtkcontainer.override: Implement tp_iter and 
+	tp_as_sequence.sq_length. 
+
+2005-07-09  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/pygobject.c: Correct ob_size and tp_basicsize mixup in
+	PyGProps[Iter].
+
+2005-07-08  Johan Dahlin  <jdahlin@async.com.br>
+
+	* configure.in:
+	* gtk/Makefile.am:
+	* gtk/gdk-types.defs:
+	* gtk/gdk.defs:
+	* gtk/gdk.override:
+	* gtk/gtk.defs:
+	* pango-types.defs:
+	* pango.defs:
+	Merge new Gdk & Gtk API. pango.Renderer and functions/methods also 
+	added. Bump required glib,gtk & pango versions.
+
+2005-07-08  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (initgobject):
+	* gobject/pygobject-private.h:
+	* gobject/pygobject.c: (pyg_props_iter_dealloc),
+	(pygobject_props_iter_next), (PyGProps_dealloc),
+	(build_parameter_list), (PyGProps_getattro), (PyGProps_setattro),
+	(pygobject_props_traverse), (pygobject_props_get_iter),
+	(PyGProps_length), (pyg_props_descr_descr_get):
+	* tests/Makefile.am:
+	Add GObject support, patch mostly based on Iñaki and Gustavos work.
+	Unittests added, fixes #81879
+	
+2005-07-07  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (initgobject):
+	* gobject/pygobject-private.h:
+	* gobject/pygobject.h:
+	* gobject/pygtype.c: (pyg_type_lookup),
+	(pyg_register_gtype_custom), (pyg_value_from_pyobject),
+	(pyg_value_as_pyobject):
+	Rename pyg_register_boxed_custom to pyg_register_gtype_custom.
+	Add note about private fields in exported API structure.
+	Based on patch by Edward Hervey, fixes #309625
+
+2005-07-05  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (pyg_type_name), (pyg_type_from_name),
+	(pyg_type_parent), (pyg_type_is_a), (pyg_type_children),
+	(pyg_type_interfaces), (get_type_name_for_class), (initgobject):
+	* gobject/pygtype.c: (_wrap_g_type_is_a), (pyg_type_wrapper_init):
+	* tests/test_enum.py:
+	* tests/test_gtype.py:
+	* tests/test_unknown.py:
+	Add GType.is_a and deprecate gobject.type_*
+	Update tests
+	and make GType.is_a/gobject.type_is_a return a bool instead of int
+
+2005-07-05  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (_wrap_pyg_type_register),
+	(get_type_name_for_class), (pyg_type_register):
+	* gobject/pygobject-private.h:
+	* gobject/pygobject.c: (pygobjectmeta_register),
+	(pygobjectmeta_init):
+	* tests/test_gtype.py:
+	Add support for specifying name for a GObject subclass,
+	using __gtype_name__. Add a unittest. Fixes #169498
+
+2005-07-04  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (initgobject): Add GType to gobject
+	namespace
+	* gobject/pygtype.c: (_wrap_g_type_wrapper__get_pytype),
+	(_wrap_g_type_wrapper__get_name),
+	(_wrap_g_type_wrapper__get_parent),
+	(_wrap_g_type_wrapper__get_fundamental),
+	(_wrap_g_type_wrapper__get_children),
+	(_wrap_g_type_wrapper__get_interfaces),
+	(_wrap_g_type_wrapper__get_depth), (_wrap_g_type_is_interface),
+	(_wrap_g_type_is_classed), (_wrap_g_type_is_instantiatable),
+	(_wrap_g_type_is_derivable), (_wrap_g_type_is_deep_derivable),
+	(_wrap_g_type_is_abstract), (_wrap_g_type_is_value_abstract),
+	(_wrap_g_type_is_value_type), (_wrap_g_type_has_value_table),
+	(_wrap_g_type_from_name):
+	Wrap a number of GType utility functions
+
+2005-07-04  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (pyg_object_new):
+	* tests/test_conversion.py:
+	Use pyg_param_gvalue_from_pyobject in gobject.new, fixes
+	unichar parameters specified from the constructor.
+	Added unittests.
+
+2005-07-02  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gtkmodule.c (init_gtk): Check for cairo module import
+	failure.
+
+	* pangocairomodule.c (initpangocairo): Check for cairo module
+	import failure.
+
+Fri Jul  1 18:51:15 PDT 2005  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygmaincontext.c: unref the underlying GMainContext upon
+	object destruction. Some minor cleanups as well.
+
+2005-07-01  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/pygtype.c: Extend to add some new fields, add a getter
+	for GType.type, which points to the python registered type
+	of a PyGTypeWrapper.
+
+	* gobject/gobjectmodule.c (initgobject): And register PyGTypeWrapper,
+	a side effect is that dir(gtype) also works now.
+
+2005-06-27  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtk.override (_wrap_gtk_file_chooser_dialog_new)
+	(_wrap_gtk_dialog_new): Allow defaults to be specified explicitly to
+	the constructor. Fixes #309108 (Steve Chaplin)
+
+2005-06-21  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/pygparamspec.c: (pygenum_from_pspec),
+	(pygflags_from_pspec): Try to register unknown enums and flags on the fly.
+	Fixes #308536, patch by Edward Hervey
+	* gobject/pygflags.c: (pyg_flags_add): Make module optional.
+
+2005-06-20  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/gobjectmodule.c (add_signals): Return a new dictionary
+	to replace __gsignals__, whith signal names canonicalized
+	(s/-/_/), for the signals that are being overridden, so that the
+	class_init functions can safely check for them.
+
+	* codegen/codegen.py (Wrapper.write_virtuals): Before overriding
+	virtual method, check if the corresponding signal is already being
+	overridden.
+
+	* gobject/gobjectmodule.c (pyg_type_register): Instead of deleting
+	__gsignals__, replace it with a dict containing only overridden
+	signals, as returned by add_signals().  This is so that class init
+	functions can inspect the signals that are being overridden.
+	__gsignals__ then get's deleted only after running
+	pyg_run_class_init.
+
+	Fixes Bug 308097: Overriden realize gets called twice.
+
+	* codegen/reversewrapper.py: Register GtkAllocation* as an alias
+	for GdkRectangle*.  Fixes #Bug 308099: No GtkWidget proxy handler
+	for do_size_allocate.
+
+	* codegen/argtypes.py (ULongArg): Use the new (python 2.3) 'k'
+	template char to convert unsigned long, so that parsing of ULong
+	parameters accepts both int and long python values.  Add new
+	UInt32Arg argtype for guint32, subclassing ULongArg and adding
+	range checking on platforms that require it.  As a side effect,
+	guint32 return values are now always translated to python longs
+	( before they would be longs on 32-bit systems, or ints on 64-bit
+	systems ).
+
+2005-06-20  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes bug #308384
+
+	* gtk/gdk.override: make gtk.gdk.Window.set_user_data()
+	accept None
+
+2005-06-20  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/pygobject.c (pygobject_new_with_interfaces): Fix 
+	typo in documentation string. Fixes #171910 (Tuure Laurinolli
+	and Gian Mario Tagliaretti)
+
+2005-06-17  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* examples/pango/pangocairo-simple.py (main): Demonstrate how to
+	output PDF file from the same drawing subroutine.
+
+2005-06-14  Johan Dahlin  <jdahlin@async.com.br>
+
+	* examples/ide/edit.py: Improve demo, patch by 
+	Fernando San Martin Woerner, fixes #171148
+
+2005-06-09  Cedric Gustin  <cedric.gustin@swing.be>
+
+	* setup.py : Define HAVE_BIND_TEXTDOMAIN_CODESET on win32.
+
+2005-06-09  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygobject.h
+	* gtk/pygtk.h: Use G_STMT_START/END for init_ defines.
+
+2005-06-07  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* pango.override (pypango_item_get_type): Define boxed type for
+	PangoItem.
+	(_wrap_pango_layout_line__get_runs): Override/implement getter for
+	pango.LayoutLine.runs.
+
+	* pango-types.defs (LayoutLine): Add PangoLayoutLine fields.
+	(Item): Declare PangoItem as boxed type.
+
+2005-06-06  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* examples/gtk/widget.py: Render the sample widget with cairo, if
+	possible.
+
+	* examples/pango/pangocairo-simple.py: cairosimple.c example
+	ported to python.
+
+	* examples/Makefile.am (EXTRA_DIST): Add pango/pangocairo-simple.py.
+
+	* codegen/argtypes.py (CairoArg.write_return): Add cairo_t* argtype.
+
+	* gtk/Makefile.am (EXTRA_DIST): Add gdkcairo.override.
+
+	* gtk/gdk.defs: Optionally define method cairo_create of
+	gtk.gdk.Drawable.
+
+	* gtk/gdk.override (_wrap_gdk_cairo_create): Wrap gdk_cairo_create
+	as method cairo_create of gtk.gdk.Drawable.
+
+	* gtk/gdkcairo.override: If pycairo is available, define type
+	gtk.gdk.CairoContext as a subclass of pangocairo.CairoContext with
+	some additional methods.
+
+	* configure.in: Check for libraries to build pangocairo module.
+	Check for dependencies to optionally build gtk module with cairo
+	support.
+
+	* Makefile.am, pangocairomodule.c, pangocairo.defs,
+	* pangocairo.override: Python bindings for the new libpangocairo.
+
+	* codegen/codegen.py (Wrapper.write_getsets): Add support for
+	structured fields.  For example, a field 'bar' inside a structure
+	'foo' is declared in the defs as "foo.bar" and mapped as "foo_bar"
+	python attribute.
+	
+	* codegen/codegen.py, codegen/override.py: Add a 'body' override
+	section type, which includes code after headers, imports, and type
+	declarations.  Useful if you write code that depends on imported
+	or declared types.
+
+2005-05-30  Johan Dahlin  <johan@gnome.org>
+
+	* gtk/gdk.defs (pixbuf_get_from_drawable): Add. We can't remove
+	the old method.
+
+	* gtk/gdk.override (_wrap_gdk_pixbuf_get_from_drawable2): 
+	Rename it to ...2 and copy it to the override file since the code
+	generator can't handle two functions with the same name
+
+2005-05-31  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* pango.override (pypango_layout_line_get_type): Fix copy function.
+
+2005-05-29  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* pango.override (_wrap_pango_layout_line_x_to_index) 
+	(_wrap_pango_layout_line_index_to_x) 
+	(_wrap_pango_layout_line_get_extents) 
+	(_wrap_pango_layout_line_get_pixel_extents): Impl.
+
+	* gtk/gdk.override: Ignore gdk_draw_layout_line and
+	gdk_draw_layout_line_with_colors, at least for now.
+
+	* pango-types.defs (LayoutLine): Declare LayoutLine as boxed type.
+
+	* pango.defs: pango_layout_line_ref and unref should not be
+	exposed as python API.
+
+	* pango.override (PANGO_TYPE_LAYOUT_LINE): Register boxed type for
+	PangoLayoutLine, unless it's already defined.
+
+	* pango.defs: Add defs for
+	pango_font_metrics_get_underline_thickness,
+	pango_font_metrics_get_underline_position,
+	pango_font_metrics_get_strikethrough_thickness, and
+	pango_font_metrics_get_strikethrough_position.
+
+	* gobject/pygobject.c (pygobjectmeta_init): Don't register types
+	that are already registered (have a __gtype__ attribute).
+
+2005-05-28  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygiochannel.c (pyg_iowatch_marshal): Pass the GIOCondition
+	to PyObject_CallFunction.
+
+2005-05-28  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (initgobject):
+	* gobject/pygobject-private.h:
+	* gobject/pygtype.c: (pyg_register_boxed_custom):
+	Sort quark names. Rename pyg_boxed_marshal_key to pygboxed_marshal_key.
+	Don't set the keys twice
+
+2005-05-28  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/pygpointer.c (pyg_register_pointer): change quark name
+	from pointer_type_id to pygpointer_class_key, for consistency;
+	assume it to be already registered.
+
+	* gobject/pygenum.c (pyg_enum_add): pygenum_class_id is already
+	registered.
+
+	* gobject/pygtype.c (pyg_register_boxed_custom):
+	pyg_boxed_marshal_key is already registered.
+
+	* gobject/pygobject.c (pygobject_register_class):
+	pygobject_class_key is already registered.
+	(pygobject_register_wrapper): pygobject_wrapper_key is already
+	registered.
+	(pygobject_new_with_interfaces): idem.
+	(pygobject_new): pygobject_wrapper_key is already registered.
+
+	* gobject/pygboxed.c (pyg_register_boxed): Don't register
+	boxed_type_id, use pygboxed_type_key instead, which is assumed to
+	be already registered.
+
+	* gobject/gobjectmodule.c (initgobject): Register all the gquarks.
+	(global): Remove the *_id static const strings, they are redundant now.
+
+	* gobject/pygobject-private.h: Declare all the global gquarks.
+
+2005-05-25  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygiochannel.c: Pass gsize to GIOChannel functions that
+	expect them.
+
+2005-05-25  Gustavo J. A. M. Carneiro  <gjc@inescporto.pt>
+
+	* examples/gtk/widget.py (PyGtkWidget.do_realize): move_resize()
+	window here as well.
+	(PyGtkWidget.do_expose_event): Fix rectangle coordinates.
+	(frame): Put custom widget in a frame (Christian Kirbach).
+
+2005-05-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* tests/test_signal.py: Update tests to deal with automatic
+	registration.
+
+	* examples/gobject/signal.py: Update example to not call
+	gobject.type_register anymore.
+
+	* gobject/pygobject.c: Add PyGObject_MetaType impl.
+	(pygobject_register_class): Set the metaclass of new types to
+	&PyGObject_MetaType.
+
+	* gobject/gobjectmodule.c (pyg_type_register): split in two
+	functions; one (pyg_type_register) that does all the work and
+	return 0 on success or -1 on error; the other one
+	( _wrap_pyg_type_register ) does the python argument parsing and
+	calls the first one.
+	(initgobject): Register the new PyGObject_MetaType type, which is
+	a metaclass that automatically registers user defined GObject
+	subclasses.
+
+	Fixes #128765: GObject metaclass.
+
+2005-05-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gobject/gobjectmodule.c: Wrap g_markup_escape_text. Fixes #164665.
+
+	* gtk/gtk.defs: Add gtk.EntryCompletion.get_text_column.
+	Patch by Gian Mario Tagliaretti.
+
+	* gtk/gdk.defs (save_to_callback): Add.
+
+	* gtk/gdk.override (_wrap_gdk_pixbuf_save_to_callback): Wrap
+	gdk_pixbuf_save_to_callback.  Fixes #172445.
+
+	* gobject/pygiochannel.c: Add; implements GIOChannel wrappers.
+	Fixes #139176: GIOChannel wrapper.
+
+	* gobject/gobjectmodule.c (initgobject): Register IOChannel type
+	and some constants.
+
+	* gtk/gdk.defs: Add functions notify_startup_complete,
+	get_display_arg_name, get_program_class, set_program_class, and
+	get_display.  Fixes #167412.
+
+2005-05-22   Tim Evans  <t.evans@aranz.com>
+
+	* gtk/gtktreeview.override
+	(_wrap_gtk_tree_view_map_expanded_rows): Don't unref borrowed
+	reference data.user_data.  Reviewed by Gustavo Carneiro; Fixes
+	#165373 (crash due to extra Py_XDECREF in
+	gtk.TreeView.map_expanded_rows)
+
+2005-05-17  Manish Singh  <yosh@gimp.org>
+
+	* gobject/pygparamspec.c (pyg_param_spec_getattr): make it build
+	again (missing })
+
+2005-05-17  Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/pygparamspec.c: (pygenum_from_pspec),
+	(pygflags_from_pspec): Improve GParamSpec wrapping, fixes 
+	bug #170614
+
+2005-05-17  Benjamin Otte <in7y118@public.uni-hamburg.de>
+
+	reviewed by: Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c: (pyg_register_class_init),
+	(pyg_run_class_init): Allow multiple calls to 
+	pyg_register_class_init, fixes bug #304353
+
+2005-05-17  Benjamin Otte <in7y118@public.uni-hamburg.de>
+
+	reviewed by: Johan Dahlin  <jdahlin@async.com.br>
+
+	* gobject/gobjectmodule.c:
+	* gobject/pygobject-private.h:
+	* gobject/pygobject.h:
+	* gobject/pygtype.c: (pyg_closure_marshal),
+	(pyg_closure_set_exception_handler): Adds exception handling
+	support to closures, fixes bug #304357
+
+2005-05-17  Johan Dahlin  <jdahlin@async.com.br>
+
+	* configure.in: Bump version to 2.7.0
+
+	* pango-types.defs (EllipsizeMode): Remove commas
+
+	* pango.defs (get_font_description, get_ellipsize, set_ellipsize): 
+	Add
+
+2005-05-17  Johan Dahlin  <jdahlin@async.com.br>
+
+	* ChangeLog.pre-2-6: Rename old ChangeLog
+
