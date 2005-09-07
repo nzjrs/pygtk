@@ -2844,6 +2844,37 @@
   )
 )
 
+(define-method request_image
+  (of-object "GtkClipboard")
+  (c-name "gtk_clipboard_request_image")
+  (return-type "none")
+  (parameters
+    '("GtkClipboardImageReceivedFunc" "callback")
+    '("gpointer" "user_data")
+  )
+)
+
+(define-method wait_for_image
+  (of-object "GtkClipboard")
+  (c-name "gtk_clipboard_wait_for_image")
+  (return-type "GdkPixbuf*")
+)
+
+(define-method set_image
+  (of-object "GtkClipboard")
+  (c-name "gtk_clipboard_set_image")
+  (return-type "none")
+  (parameters
+    '("GdkPixbuf*" "pixbuf")
+  )
+)
+
+(define-method wait_is_image_available
+  (of-object "GtkClipboard")
+  (c-name "gtk_clipboard_wait_is_image_available")
+  (return-type "gboolean")
+)
+
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkclist.h
@@ -5464,6 +5495,14 @@
   )
 )
 
+(define-function alternative_dialog_button_order
+  (c-name "gtk_alternative_dialog_button_order")
+  (return-type "gboolean")
+  (parameters
+    '("GdkScreen*" "screen" (null-ok) (default "NULL"))
+  )
+)
+
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkdnd.h
 
@@ -5605,6 +5644,15 @@
   )
 )
 
+(define-method drag_source_set_icon_name
+  (of-object "GtkWidget")
+  (c-name "gtk_drag_source_set_icon_name")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "icon_name")
+  )
+)
+
 (define-method drag_source_get_target_list
   (of-object "GtkWidget")
   (c-name "gtk_drag_source_get_target_list")
@@ -5669,6 +5717,18 @@
   (return-type "none")
 )
 
+(define-method drag_source_add_image_targets
+  (of-object "GtkWidget")
+  (c-name "gtk_drag_source_add_image_targets")
+  (return-type "none")
+)
+
+(define-method drag_source_add_uri_targets
+  (of-object "GtkWidget")
+  (c-name "gtk_drag_source_add_uri_targets")
+  (return-type "none")
+)
+
 (define-function target_list_add_text_targets
   (c-name "gtk_target_list_add_text_targets")
   (return-type "none")
@@ -5706,12 +5766,13 @@
 )
 
 (define-function drag_source_set_icon_name
-  (c-name "gtk_drag_source_set_icon_name")
+  (c-name "gtk_drag_source_set_icon_name1")
   (return-type "none")
   (parameters
     '("GtkWidget*" "widget")
     '("const-gchar*" "icon_name")
   )
+  (deprecated "use GtkWidget.drag_source_set_icon_name")
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkdrawingarea.h
@@ -8580,7 +8641,7 @@
   (c-name "gtk_icon_source_set_icon_name")
   (return-type "none")
   (parameters
-    '("const-gchar*" "icon_name")
+    '("const-gchar*" "icon_name" (null-ok))
   )
 )
 
@@ -9297,7 +9358,7 @@
   (return-type "none")
   (parameters
     '("GtkTreePath*" "path")
-    '("GtkCellRenderer*" "cell")
+    '("GtkCellRenderer*" "cell" (null-ok))
     '("gboolean" "start_editing")
   )
 )
@@ -9379,7 +9440,7 @@
   (c-name "gtk_icon_view_set_drag_dest_item")
   (return-type "none")
   (parameters
-    '("GtkTreePath*" "path")
+    '("GtkTreePath*" "path" (null-ok))
     '("GtkIconViewDropPosition" "pos")
   )
 )
@@ -19780,7 +19841,7 @@
   (c-name "gtk_tool_button_set_icon_name")
   (return-type "none")
   (parameters
-    '("const-gchar*" "icon_name")
+    '("const-gchar*" "icon_name" (null-ok))
   )
 )
 
@@ -22152,6 +22213,16 @@
     '("GtkTreeViewRowSeparatorFunc" "func")
     '("gpointer" "data")
     '("GtkDestroyNotify" "destroy")
+  )
+)
+
+(define-method get_visible_range
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_visible_range")
+  (return-type "gboolean")
+  (parameters
+    '("GtkTreePath**" "start_path")
+    '("GtkTreePath**" "end_path")
   )
 )
 

@@ -7025,3 +7025,55 @@ _wrap_gtk_border_free(PyObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_clipboard_request_image kwargs
+static void
+clipboard_request_image_cb(GtkClipboard *clipboard,
+			  GdkPixbuf *pixbuf,
+			  gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyObject *callback, *args, *ret, *py_image;
+
+    if (pixbuf) {
+        py_image = pygobject_new((GObject *)pixbuf);
+    } else {
+        py_image = Py_None;
+        Py_INCREF(Py_None);
+    }
+
+    state = pyg_gil_state_ensure();
+    callback = PyTuple_GetItem((PyObject *)user_data, 0);
+    args = Py_BuildValue("(NNO)",
+			 pygobject_new((GObject *)clipboard),
+                         py_image,
+			 PyTuple_GetItem((PyObject *)user_data, 1));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    pyg_gil_state_release(state);
+}
+static PyObject *
+_wrap_gtk_clipboard_request_image(PyGObject *self, PyObject *args,
+				 PyObject *kwargs)
+{
+    static char *kwlist[] = { "callback", "user_data", NULL };
+    PyObject *callback, *data, *user_data = Py_None;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:GtkClipboard.request_image",
+				     kwlist, &callback, &user_data))
+        return NULL;
+    if (!PyCallable_Check(callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback must be callable");
+	return NULL;
+    }
+
+    data = Py_BuildValue("(OO)", callback, user_data);
+    gtk_clipboard_request_image(GTK_CLIPBOARD(self->obj),
+			       clipboard_request_image_cb,
+			       (gpointer)data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}

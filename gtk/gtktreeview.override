@@ -3141,3 +3141,24 @@ _wrap_gtk_tree_view_set_row_separator_func(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_tree_view_get_visible_range noargs
+static PyObject *
+_wrap_gtk_tree_view_get_visible_range(PyGObject *self)
+{
+    GtkTreePath *start_path, *end_path;
+    gboolean r;
+    
+    r = gtk_tree_view_get_visible_range(GTK_TREE_VIEW(self->obj),
+					&start_path, &end_path);
+    if (r) {
+        PyObject *py_start_path = pygtk_tree_path_to_pyobject(start_path);
+        PyObject *py_end_path = pygtk_tree_path_to_pyobject(end_path);
+        gtk_tree_path_free(start_path);
+        gtk_tree_path_free(end_path); 
+       return Py_BuildValue("(NN)", py_start_path, py_end_path);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}

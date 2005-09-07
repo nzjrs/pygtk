@@ -1234,3 +1234,23 @@ _wrap_gtk_text_iter_backward_find_char(PyGObject *self, PyObject *args,
 
     return PyBool_FromLong(ret);
 }
+%%
+override gtk_text_view_get_iter_at_position kwargs
+static PyObject *
+_wrap_gtk_text_view_get_iter_at_position(PyGObject *self, PyObject *args,
+                                         PyObject *kwargs)
+{
+    static char *kwlist[] = { "x", "y", NULL };
+    GtkTextIter iter;
+    gint x, y, trailing;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "ii:GtkTextView.get_iter_at_position",
+                                     kwlist, &x, &y))
+        return NULL;
+    gtk_text_view_get_iter_at_position(GTK_TEXT_VIEW(self->obj),
+                                       &iter, &trailing, x, y);
+    return Py_BuildValue("Oi",
+                          pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE),
+                          trailing);
+}
