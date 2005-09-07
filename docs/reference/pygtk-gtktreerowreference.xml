@@ -26,6 +26,10 @@ row (new in PyGTK 2.4)</refpurpose>
 	<methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktreerowreference--get-model">get_model</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link linkend="method-gtktreerowreference--valid">valid</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
@@ -115,7 +119,8 @@ will continue pointing to the node in spite of changes in
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>A current path, or <literal>NULL</literal>.</simpara></listitem>
+	  <listitem><simpara>A current path, or
+<literal>None</literal>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -126,6 +131,31 @@ will continue pointing to the node in spite of changes in
       <para>The <methodname>get_path</methodname>() method returns the path
 that the row reference currently points to, or <literal>None</literal> if
 the path pointed to is no longer valid.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreerowreference--get-model">
+      <title>gtk.TreeRowReference.get_model</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_model</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the model, or
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_model</methodname>() method returns the
+model that the row reference currently monitors, or <literal>None</literal>
+if the model is not set.</para>
 
     </refsect2>
 
@@ -188,6 +218,11 @@ tree row reference.</para>
       <note>
 	<para>This method is available in PyGTK 2.4 and above.</para>
       </note>
+
+      <warning>
+        <para>This method is deprecated and should not be used since it may
+crash your application.</para>
+      </warning>
 
       <para>The free() method frees the tree row reference. The row
 reference may be <literal>None</literal>.</para>

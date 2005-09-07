@@ -443,7 +443,24 @@ linkend="method-gtkwindow--set-icon-name">set_icon_name</link></methodname>
 linkend="method-gtkwindow--get-icon-name">get_icon_name</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
-    </classsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--set-urgency-hint">set_urgency_hint</link></methodname>
+	<methodparam><parameter
+		       role="keyword">urgency_hint</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--get-urgency-hint">get_urgency_hint</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwindow--present-with-time">present_with_time</link></methodname>
+	<methodparam><parameter
+		       role="keyword">timestamp</parameter></methodparam>
+      </methodsynopsis>
+     </classsynopsis>
 
     <programlisting>
 <emphasis role="bold">Functions</emphasis>
@@ -671,6 +688,14 @@ in the task bar. Default value: <literal>FALSE</literal>. Available in GTK+
 	      <entry>Hint to help the desktop environment understand what
 kind of window this is and how to treat it. Default value:
 <literal>gtk.gdk.WINDOW_TYPE_HINT_NORMAL</literal>. Available in GTK+ 2.2
+and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"urgency-hint"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If TRUE the window should be brought to the users
+attention. Default value: <literal>FALSE</literal>. Available in GTK+ 2.8
 and above.</entry>
 	    </row>
 
@@ -3473,7 +3498,7 @@ method for more information.</para>
       <variablelist>
 	<varlistentry>
 	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
-	  <listitem><simpara>he name of the themed icon or
+	  <listitem><simpara>the name of the themed icon or
 <literal>None</literal></simpara></listitem>
 	</varlistentry>
       </variablelist>
@@ -3483,10 +3508,10 @@ method for more information.</para>
       </note>
 
       <para>The <methodname>set_icon_name</methodname>() method sets the
-"icon-name" property to the value of <parameter>name</parameter>. If name is
-<literal>None</literal>, then the default themed icon will be used. The
-"icon-name" property contains the name of the icon used for the window. See
-the <link
+"icon-name" property to the value of <parameter>name</parameter>. If
+<parameter>name</parameter> is <literal>None</literal>, then the default
+themed icon will be used. The "icon-name" property contains the name of the
+icon used for the window. See the <link
 linkend="class-gtkicontheme"><classname>gtk.IconTheme</classname></link>
 reference for more information.</para>
 
@@ -3515,6 +3540,88 @@ window icon or <literal>None</literal> if no icon is set.</simpara></listitem>
 name of the themed icon for the window, see the <link
 linkend="method-gtkwindow--set-icon-name"><methodname>set_icon_name</methodname>()</link>
 method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--set-urgency-hint">
+      <title>gtk.Window.set_urgency_hint</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_urgency_hint</methodname>
+	  <methodparam><parameter
+			 role="keyword">urgency_hint</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">urgency_hint</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> mark this window
+as needing urgent attention.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_urgency_hint</methodname>() method sets the
+"urgency-hint" property to the value of
+<parameter>urgency_hint</parameter>. If the "urgency-hint" property is TRUE
+the window sets a hint to the desktop environment to draw the users
+attention to the window.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--get-urgency-hint">
+      <title>gtk.Window.get_urgency_hint</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_urgency_hint</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the window is marked
+as needing urgent user attention.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_urgency_hint</methodname>() method returns
+the value of the "urgency-hint" property. See the <link
+linkend="method-gtkwindow--set-urgency-hint"><methodname>set_urgency_hint</methodname>()</link>
+method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--present-with-time">
+      <title>gtk.gdk.Window.present_with_time</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>present_with_time</methodname>
+	  <methodparam><parameter role="keyword">timestamp</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">timestamp</parameter>&nbsp;:</term>
+	  <listitem><simpara>the timestamp of the user interaction (typically
+a button or key press event) which triggered this call</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>present_with_time</methodname>() method presents
+a window to the user in response to a user interaction. If you need to
+present a window without a timestamp, use the <link
+linkend="method-gtkwindow--present"><methodname>present</methodname>()</link>
+method.</para>
 
     </refsect2>
 

@@ -57,6 +57,20 @@ PyGTK 2.6)</refpurpose>
     <methodparam><parameter role="keyword">y</parameter></methodparam>
   </methodsynopsis>
 <methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-item-at-pos">get_item_at_pos</link></methodname>
+    <methodparam><parameter role="keyword">x</parameter></methodparam>
+    <methodparam><parameter role="keyword">y</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-cursor">set_cursor</link></methodname>
+    <methodparam><parameter role="keyword">path</parameter></methodparam>
+    <methodparam><parameter role="keyword">cell</parameter></methodparam>
+    <methodparam><parameter role="keyword">start_editing</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-cursor">get_cursor</link></methodname>
+  </methodsynopsis>
+<methodsynopsis language="python">
     <methodname><link linkend="method-gtkiconview--selected-foreach">selected_foreach</link></methodname>
     <methodparam><parameter role="keyword">func</parameter></methodparam>
     <methodparam><parameter role="keyword">data</parameter></methodparam>
@@ -151,6 +165,61 @@ PyGTK 2.6)</refpurpose>
   </methodsynopsis>
 <methodsynopsis language="python">
     <methodname><link linkend="method-gtkiconview--item-activated">item_activated</link></methodname>
+    <methodparam><parameter role="keyword">path</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--scroll-to-path">scroll_to_path</link></methodname>
+    <methodparam><parameter role="keyword">path</parameter></methodparam>
+    <methodparam><parameter role="keyword">use_align</parameter></methodparam>
+    <methodparam><parameter role="keyword">row_align</parameter></methodparam>
+    <methodparam><parameter role="keyword">col_align</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-visible-range">get_visible_range</link></methodname>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--enable-model-drag-source">enable_model_drag_source</link></methodname>
+    <methodparam><parameter role="keyword">start_button_mask</parameter></methodparam>
+    <methodparam><parameter role="keyword">targets</parameter></methodparam>
+    <methodparam><parameter role="keyword">actons</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--enable-model-drag-dest">enable_model_drag_dest</link></methodname>
+    <methodparam><parameter role="keyword">targets</parameter></methodparam>
+    <methodparam><parameter role="keyword">actions</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--unset-model-drag-source">unset_model_drag_source</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--unset-model-drag-dest">unset_model_drag_dest</link></methodname>
+    <methodparam><parameter role="keyword"></parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-reorderable">set_reorderable</link></methodname>
+    <methodparam><parameter role="keyword">reorderable</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-reorderable">get_reorderable</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--set-drag-dest-item">set_drag_dest_item</link></methodname>
+    <methodparam><parameter role="keyword">path</parameter></methodparam>
+    <methodparam><parameter role="keyword">pos</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-drag-dest-item">get_drag_dest_item</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--get-dest-item-at-pos">get_dest_item_at_pos</link></methodname>
+    <methodparam><parameter role="keyword">drag_x</parameter></methodparam>
+    <methodparam><parameter role="keyword">drag_y</parameter></methodparam>
+  </methodsynopsis>
+<methodsynopsis language="python">
+    <methodname><link linkend="method-gtkiconview--create-drag-icon">create_drag_icon</link></methodname>
     <methodparam><parameter role="keyword">path</parameter></methodparam>
   </methodsynopsis>
 </classsynopsis>
@@ -252,6 +321,15 @@ above.</entry>
 that are displayed. Setting this property to -1 turns off the display of
 pixbufs. Allowed values: >= -1. Default value: -1. Available in GTK+ 2.6 and
 above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"reorderable"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>TRUE</literal> the icon view is reorderable.
+Default value: <literal>FALSE</literal>.
+Available in GTK+ 2.8 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -751,8 +829,126 @@ retrieved.</para>
 
       <para>The <methodname>get_path_at_pos</methodname>() method returns
 the model path of the icon located at the coordinates specified by
-(<parameter>x</parameter>, <parameter>y</parameter>). This method return
-None if there is no icon at the specified location.</para>
+(<parameter>x</parameter>, <parameter>y</parameter>). This method returns
+<literal>None</literal> if there is no icon at the specified
+location.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-item-at-pos">
+      <title>gtk.IconView.get_item_at_pos</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_item_at_pos</methodname>
+	  <methodparam><parameter
+			 role="keyword">x</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the x coordinate</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the y coordinate</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a 2-tuple comtaining the path and the cell
+renderer at the specified point or <literal>None</literal> if the is no item
+at the position.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_item_at_pos</methodname>() method returns a
+2-tuple containing the model path and cell renderer of the icon located at
+the coordinates specified by (<parameter>x</parameter>,
+<parameter>y</parameter>). This method returns <literal>None</literal> if
+there is no item at the specified location.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-cursor">
+      <title>gtk.IconView.set_cursor</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_cursor</methodname>
+	  <methodparam><parameter
+			 role="keyword">path</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">cell</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">start_editing</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+	  <listitem><simpara>a tree path</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">cell</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+or <literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">start_editing</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> the specified cell
+should start being edited</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_cursor</methodname>() method sets the
+current keyboard focus to be at the location specified by
+<parameter>path</parameter>, and selects it. This is useful when you want to
+focus the user's attention on a particular item. If
+<parameter>cell</parameter> is not <literal>None</literal>, then focus is
+given to the specified cell. Additionally, if
+<parameter>start_editing</parameter> is <literal>TRUE</literal>, then
+editing should be started in the specified cell.</para>
+
+      <para>This method is often followed by <link
+ linkend="method-gtkwidget--grab-focus"><methodname>gtk.Widget.grab_focus</methodname>()</link>
+ in order to give keyboard focus to the icon view. Please note that editing
+ can only happen when the icon view is realized.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-cursor">
+      <title>gtk.IconView.get_cursor</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_cursor</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a 2-tuple containing the current cursor path
+and cell renderer or <literal>None</literal> if the cursor isn't
+set.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_cursor</methodname>() method returns a
+2-tuple containing the model path and <link
+linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+at the current cursor location. This method returns <literal>None</literal>
+if the cursor is not set. If no cell renderer has focus then
+<literal>None</literal> will be returned for the cell renderer value.</para>
 
     </refsect2>
 
@@ -1392,7 +1588,425 @@ the icon pointed to by the path specified by
 
     </refsect2>
 
-  </refsect1>
+    <refsect2 id="method-gtkiconview--scroll-to-path">
+      <title>gtk.IconView.scroll_to_path</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>scroll_to_path</methodname>
+	  <methodparam><parameter
+			 role="keyword">path</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">use_align</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">row_align</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">col_align</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+	  <listitem><simpara>the path of the item to move
+to.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">use_align</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> use the alignment
+arguments</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">row_align</parameter>&nbsp;:</term>
+	  <listitem><simpara>the vertical alignment of the item specified by
+<parameter>path</parameter>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">col_align</parameter>&nbsp;:</term>
+	  <listitem><simpara>The horizontal alignment of the item specified
+by <parameter>path</parameter>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>scroll_to_path</methodname>() method moves the
+ alignments of the icon view to the position specified by
+ <parameter>path</parameter>. <parameter>row_align</parameter> determines
+ where the row is placed, and <parameter>col_align</parameter> determines
+ where column is placed. Both are expected to be between 0.0 and 1.0. 0.0
+ means left/top alignment, 1.0 means right/bottom alignment, 0.5 means
+ center.</para>
+
+      <para>If <parameter>use_align</parameter> is <literal>FALSE</literal>,
+ then the alignment arguments are ignored, and the icon view does the
+ minimum amount of work to scroll the item onto the screen. This means that
+ the item will be scrolled to the edge closest to its current position. If
+ the item is currently visible on the screen, nothing is done.</para>
+
+      <para>This method only works if the model is set, and
+ <parameter>path</parameter> is a valid row on the model. If the model
+ changes before the icon view is realized, the centered path will be
+ modified to reflect this change.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-visible-range">
+      <title>gtk.IconView.get_visible_range</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_visible_range</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing the start and end paths of
+the visible region or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_visible_range</methodname>() method returns
+a 2-tuple containing the start and end paths for the visible region in the
+iconview. If no valid paths are available this method returns
+<literal>None</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--enable-model-drag-source">
+      <title>gtk.IconView.enable_model_drag_source</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>enable_model_drag_source</methodname>
+          <methodparam><parameter
+                         role="keyword">start_button_mask</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">targets</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">actions</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">start_button_mask</parameter>&nbsp;:</term>
+	  <listitem><simpara>the mask of buttons allowed to start drag</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a sequence of 3-tuples containing target
+information that the drag will support</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">actions</parameter>&nbsp;:</term>
+	  <listitem><simpara>the combination of possible <xref
+                linkend="gdk-drag-action-constants"
+                endterm="gdk-drag-action-constants-title"></xref> for a drag
+ from the iconview</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>enable_model_drag_source</methodname>() method
+ enables the iconview to be used as a drag source for automatic
+ DND. <parameter>start_button_mask</parameter> specifies a combination of
+ the <xref linkend="gdk-modifier-constants"
+ endterm="gdk-modifier-constants-title"></xref> that can start the
+ drag. <parameter>targets</parameter> is a sequence (tuple or list) of
+ 3-tuples each containing target information: a string representing the drag
+ type, target flags (a combination of <literal>gtk.TARGET_SAME_APP</literal>
+ and <literal>gtk.TARGET_SAME_WIDGET</literal> or neither) and an
+ application assigned integer ID used for identification
+ purposes. <parameter>actions</parameter> is a combination of the <xref
+ linkend="gdk-drag-action-constants"
+ endterm="gdk-drag-action-constants-title"></xref> supported by the
+ iconview.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--enable-model-drag-dest">
+      <title>gtk.IconView.enable_model_drag_dest</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>enable_model_drag_dest</methodname>
+          <methodparam><parameter
+                         role="keyword">targets</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">actions</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a sequence of 3-tuples containing target
+information that the iconview will support for a drag drop</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">actions</parameter>&nbsp;:</term>
+	  <listitem><simpara>the combination of possible <xref
+                linkend="gdk-drag-action-constants"
+                endterm="gdk-drag-action-constants-title"></xref> for a drag
+ drop onto to the iconview</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>enable_model_drag_dest</methodname>() method
+enables the iconview to be a destination for a drag
+drop. <parameter>targets</parameter> is a sequence (tuple or list) of
+3-tuples each containing target information: a string representing the drag
+type, target flags (a combination of <literal>gtk.TARGET_SAME_APP</literal>
+and <literal>gtk.TARGET_SAME_WIDGET</literal> or neither) and an application
+assigned integer ID used for identification
+purposes. <parameter>actions</parameter> is a combination of the <xref
+linkend="gdk-drag-action-constants"
+endterm="gdk-drag-action-constants-title"></xref> supported by the
+iconview.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--unset-model-drag-source">
+      <title>gtk.IconView.unset_model_drag_source</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>unset_model_drag_source</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>unset_model_drag_source</methodname>() method
+ undoes the effect of the <link
+ linkend="method-gtkiconview--enable-model-drag-source"><methodname>enable_model_drag_source</methodname>()</link>
+ method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--unset-model-drag-dest">
+      <title>gtk.IconView.unset_model_drag_dest</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>unset_model_drag_dest</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>unset_model_drag_dest</methodname>() method
+ undoes the effect of the <link
+ linkend="method-gtkiconview--enable-model-drag-dest"><methodname>enable_model_drag_dest</methodname>()</link>
+ method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-reorderable">
+      <title>gtk.IconView.set_reorderable</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_reorderable</methodname>
+	  <methodparam><parameter
+			 role="keyword">reorderable</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">reorderable</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> the items are
+reorderable.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_reorderable</methodname>() method sets the
+"reorderable" property to the value of
+<parameter>reorderable</parameter>. If <parameter>reorderable</parameter> is
+<literal>TRUE</literal> the user can reorder the model by dragging and
+dropping rows. The developer can listen to these changes by connecting to
+the model's "row_inserted" and "row_deleted" signals.</para>
+
+      <para>This method does not give you any degree of control over the
+ order -- any reordering is allowed. If more control is needed, you should
+ probably handle drag and drop manually.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-reorderable">
+      <title>gtk.IconView.get_reorderable</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_reorderable</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the iconview list
+can be reordered.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_reorderable</methodname>() method returns
+the value of the "reorderable" property. If "reorderable" is
+<literal>TRUE</literal> the user can reorder iconview using
+drag-and-drop.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-drag-dest-item">
+      <title>gtk.IconView.set_drag_dest_item</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_drag_dest_item</methodname>
+	  <methodparam><parameter
+			 role="keyword">path</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">pos</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+	  <listitem><simpara>the path of the item to highlight, or
+<literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pos</parameter>&nbsp;:</term>
+	  <listitem><simpara>specifies whether to drop, relative to the item</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_drag_dest_item</methodname>() method
+highlights for feedback the item specified by
+<parameter>path</parameter>. <literal>pos</literal> is one of the <xref
+linkend="gtk-iconview-drop-position-constants"
+endterm="gtk-iconview-drop-position-constants-title"></xref> that specifies
+where the drop is to take place relative to the receiving item.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-drag-dest-item">
+      <title>gtk.IconView.get_drag_dest_item</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_drag_dest_item</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing the path of the highlighted
+item and one of the <xref
+linkend="gtk-iconview-drop-position-constants"
+endterm="gtk-iconview-drop-position-constants-title"></xref> specifying the
+relative drop location or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_drag_dest_item</methodname>() method returns
+a 2-tuple containing the path of the highlighted item and one of the <xref
+linkend="gtk-iconview-drop-position-constants"
+endterm="gtk-iconview-drop-position-constants-title"></xref> specifying the
+drop location relative to the receiving item. If there is no highlighted
+item, this method returns <literal>None</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-dest-item-at-pos">
+      <title>gtk.IconView.get_dest_item_at_pos</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_dest_item_at_pos</methodname>
+	  <methodparam><parameter
+			 role="keyword">drag_x</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">drag_y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">drag_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the X position</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">drag_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the Y position</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing the path of the highlighted
+item and a relative drop location.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_dest_item_at_pos</methodname>() method
+returns a 2-tuple containing the path of the highlighted item at the
+location specified by <parameter>drag_x</parameter> and
+<parameter>drag_y</parameter> and the drop location relative to the
+receiving item. If there is no highlighted item, this method returns
+<literal>None</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--create-drag-icon">
+      <title>gtk.IconView.create_drag_icon</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>create_drag_icon</methodname>
+	  <methodparam><parameter
+			 role="keyword">path</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+	  <listitem><simpara>a path</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> of the
+drag icon.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>create_drag_icon</methodname>() method returns a
+<link linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>
+representation of the item at the location specified by
+<parameter>path</parameter>. The return image can be used for a drag
+icon.</para>
+
+    </refsect2>
+
+   </refsect1>
 
   <refsect1>
     <title>Signals</title>

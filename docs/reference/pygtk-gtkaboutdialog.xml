@@ -51,6 +51,12 @@ linkend="constructor-gtkaboutdialog">gtk.AboutDialog</link></methodname>
     <methodname><link linkend="method-gtkaboutdialog--set-license">set_license</link></methodname>
     <methodparam><parameter role="keyword">license</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="method-gtkaboutdialog--get-wrap-license">get_wrap_license</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="method-gtkaboutdialog--set-wrap-license">set_wrap_license</link></methodname>
+    <methodparam><parameter role="keyword">license</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="method-gtkaboutdialog--get-website">get_website</link></methodname>
     <methodparam></methodparam>
   </methodsynopsis><methodsynopsis language="python">
@@ -156,13 +162,14 @@ the program.</entry>
 	    <row valign="top">
 	      <entry>"comments"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>A string containing comments about the program.</entry>
+	      <entry>A string containing comments about the program.
+Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"copyright"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>A string containing copyright information for
-the program.</entry>
+the program. Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"documenters"</entry>
@@ -172,7 +179,8 @@ the program.</entry>
 	    <row valign="top">
 	      <entry>"license"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>A string containing the license of the program.</entry>
+	      <entry>A string containing the license of the program.
+Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"logo"</entry>
@@ -184,36 +192,45 @@ it defaults to the default window icon list..</entry>
 	      <entry>"logo-icon-name"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The name of an icon to use as the logo for the
-about box.</entry>
+about box. Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"name"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The name of the program. If this is not set, it
-defaults to g_get_application_name().</entry>
+defaults to g_get_application_name().
+Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"translator-credits"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Credits to the translators. This string should be
-marked as translatable.</entry>
+marked as translatable. Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"version"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>A string containing the version of the program.</entry>
+	      <entry>A string containing the version of the program.
+Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"website"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The URL for the link to the website of the
-program.</entry>
+program. Default value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"website-label"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The label for the link to the website of the program.
-If this is not set, it defaults to the URL.</entry>
+If this is not set, it defaults to the URL.
+Default value: <literal>None</literal>.</entry>
+	    </row>
+	    <row valign="top">
+	      <entry>"wrap-license"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the license text should be
+wrapped. Default value: <literal>FALSE</literal>.</entry>
 	    </row>
 
 	  </tbody>
@@ -543,6 +560,59 @@ string contained in the "license" property.</para>
 "license" property to the string contained in
 <parameter>license</parameter>. If <parameter>license</parameter> is
 <literal>None</literal> the license button is hidden.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaboutdialog--get-wrap-license">
+      <title>gtk.AboutDialog.get_wrap_license</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_wrap_license</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the license text
+should be wrapped</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_wrap_license</methodname>() method returns
+the value of the "wrap-license" property. If "wrap-license" is
+<literal>TRUE</literal> the license text should be automatically
+wrapped.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaboutdialog--set-wrap-license">
+      <title>gtk.AboutDialog.set_wrap_license</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_wrap_license</methodname>
+	  <methodparam><parameter
+			 role="keyword">wrap_license</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">wrap_license</parameter>&nbsp;:</term>
+	  <listitem><simpara></simpara></listitem>
+	</varlistentry>
+     </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_wrap_license</methodname>() method sets the
+"wrap-license" property to the value of
+<parameter>wrap_license</parameter>. If <parameter>wrap_license</parameter>
+is <literal>TRUE</literal> the license text should be automatically
+wrapped.</para>
 
     </refsect2>
 

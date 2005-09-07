@@ -152,7 +152,23 @@ linkend="method-gtkwidget--drag-source-set-icon-stock">drag_source_set_icon_stoc
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtkwidget--drag-source-set-icon-name">drag_source_set_icon_name</link></methodname>
+	<methodparam><parameter
+		       role="keyword">icon_name</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtkwidget--drag-source-add-text-targets">drag_source_add_text_targets</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwidget--drag-source-add-image-targets">drag_source_add_image_targets</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkwidget--drag-source-add-uri-targets">drag_source_add_uri_targets</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
@@ -2504,6 +2520,34 @@ stock icon specified by <parameter>stock_id</parameter>.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkwidget--drag-source-set-icon-name">
+      <title>gtk.Widget.drag_source_set_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>drag_source_set_icon_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">icon_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of a themed icon
+use</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+       <para>The <methodname>drag_source_set_icon_name</methodname>() method
+sets the icon that will be used for drags from a particular source using the
+themed icon specified by <parameter>icon_name</parameter>. See the <link
+linkend="class-gtkicontheme"><classname>gtk.IconTheme</classname></link>
+docs for more information.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkwidget--drag-source-get-target-list">
       <title>gtk.Widget.drag_source_get_target_list</title>
 
@@ -2582,11 +2626,63 @@ assigned integer ID used for identification purposes.</para>
         <para>This method is available in PyGTK 2.6 and above.</para>
       </note>
 
-      <para>The <methodname>drag_source_add_text_targets</methodname>() method
-adds the text targets supported by <link
+      <para>The <methodname>drag_source_add_text_targets</methodname>()
+method adds the text targets supported by <link
 linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
-to the target list of the widget's drag source using an info value of
-0.</para>
+to the target list of the widget's drag source using an info value of 0. If
+you need another value for info, use the <link
+linkend="function-gtk--target-list-add-text-targets"><function>gtk.target_list_add_text_targets</function>()</link>
+function and the <link
+linkend="method-gtkwidget--drag-source-set-target-list"><methodname>drag_source_set_target_list</methodname>()</link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwidget--drag-source-add-image-targets">
+      <title>gtk.Widget.drag_source_add_image_targets</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>drag_source_add_image_targets</methodname>
+	  <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>drag_source_add_image_targets</methodname>()
+method adds the image targets supported by <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
+to the target list of the widget's drag source using an info value of 0. If
+you need another value for info, use the <link
+linkend="function-gtk--target-list-add-image-targets"><function>gtk.target_list_add_image_targets</function>()</link>
+function and the <link
+linkend="method-gtkwidget--drag-source-set-target-list"><methodname>drag_source_set_target_list</methodname>()</link>
+method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwidget--drag-source-add-uri-targets">
+      <title>gtk.Widget.drag_source_add_uri_targets</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>drag_source_add_uri_targets</methodname>
+	  <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>drag_source_add_uri_targets</methodname>()
+method adds the URI targets supported by <link
+linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
+to the target list of the widget's drag source using an info value of 0. If
+you need another value for info, use the <link
+linkend="function-gtk--target-list-add-image-targets"><function>gtk.target_list_add_image_targets</function>()</link> function
+and the <link
+linkend="method-gtkwidget--drag-source-set-target-list"><methodname>drag_source_set_target_list</methodname>()</link>
+method.</para>
 
     </refsect2>
 

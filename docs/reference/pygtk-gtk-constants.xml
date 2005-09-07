@@ -30,11 +30,13 @@
 <xref linkend="gtk-direction-type-constants" endterm="gtk-direction-type-constants-title"></xref>
 <xref linkend="gtk-expander-style-constants" endterm="gtk-expander-style-constants-title"></xref>
 <xref linkend="gtk-filechooser-action-constants" endterm="gtk-filechooser-action-constants-title"></xref>
+<xref linkend="gtk-filechooser-confirmation-constants" endterm="gtk-filechooser-confirmation-constants-title"></xref>
 <xref linkend="gtk-filechooser-error-constants" endterm="gtk-filechooser-error-constants-title"></xref>
 <xref linkend="gtk-filefilter-flags-constants" endterm="gtk-filefilter-flags-constants-title"></xref>
 <xref linkend="gtk-icon-lookup-flags-constants" endterm="gtk-icon-lookup-flags-constants-title"></xref>
 <xref linkend="gtk-icon-size-constants" endterm="gtk-icon-size-constants-title"></xref>
 <xref linkend="gtk-icontheme-error-constants" endterm="gtk-icontheme-error-constants-title"></xref>
+<xref linkend="gtk-iconview-drop-position-constants" endterm="gtk-iconview-drop-position-constants-title"></xref>
 <xref linkend="gtk-im-preedit-style-constants" endterm="gtk-im-preedit-style-constants-title"></xref>
 <xref linkend="gtk-im-status-style-constants" endterm="gtk-im-status-style-constants-title"></xref>
 <xref linkend="gtk-image-type-constants" endterm="gtk-image-type-constants-title"></xref>
@@ -46,6 +48,7 @@
 <xref linkend="gtk-notebook-tab-constants" endterm="gtk-notebook-tab-constants-title"></xref>
 <xref linkend="gtk-object-flags-constants" endterm="gtk-object-flags-constants-title"></xref>
 <xref linkend="gtk-orientation-constants" endterm="gtk-orientation-constants-title"></xref>
+<xref linkend="gtk-pack-direction-constants" endterm="gtk-pack-direction-constants-title"></xref>
 <xref linkend="gtk-pack-type-constants" endterm="gtk-pack-type-constants-title"></xref>
 <xref linkend="gtk-path-priority-type-constants" endterm="gtk-path-priority-type-constants-title"></xref>
 <xref linkend="gtk-path-type-constants" endterm="gtk-path-type-constants-title"></xref>
@@ -916,6 +919,48 @@ possibly new file.</para>
 
     </refsect2>
 
+    <refsect2 id="gtk-filechooser-confirmation-constants">
+      <title id="gtk-filechooser-confirmation-constants-title">GTK FileChooser Confirmation Constants</title>
+
+      <note>
+        <para>These constants are available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The FileChooser Confirmation constants are used to specify the
+return value of a <link
+linkend="class-gtkfilechooser"><classname>gtk.FileChooser</classname></link>
+"<link
+linkend="signal-gtkfilechooser--confirm-overwrite">confirm-overwrite</link>"
+signal handler. This value determines whether the file chooser will present
+the stock confirmation dialog, accept the user's choice of a filename, or
+let the user choose another filename.</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.FILE_CHOOSER_CONFIRMATION_CONFIRM</literal></term>
+	  <listitem>
+	    <simpara>The file chooser will present its stock dialog to
+confirm overwriting an existing file.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME</literal></term>
+	  <listitem>
+	    <simpara>The file chooser will terminate and accept the user's
+choice of a file name.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN</literal></term>
+	  <listitem>
+	    <simpara>The file chooser will continue running, allowing
+the user to select another file name.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+    </refsect2>
+
     <refsect2 id="gtk-filechooser-error-constants">
       <title id="gtk-filechooser-error-constants-title">GTK FileChooser Error Constants</title>
 
@@ -1091,6 +1136,52 @@ operations.</para>
 	  <term><literal>gtk.ICON_THEME_FAILED</literal></term>
 	  <listitem>
 	    <simpara>An unspecified error occurred.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2 id="gtk-iconview-drop-position-constants">
+      <title id="gtk-iconview-drop-position-constants-title">GTK IconView Drop Position Constants</title>
+
+      <para>The IconView Drop Position constants specify the location relative to the receiving item where the drop should take place.</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.ICON_VIEW_NO_DROP</literal></term>
+	  <listitem>
+	    <simpara></simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.ICON_VIEW_DROP_INTO</literal></term>
+	  <listitem>
+	    <simpara></simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.ICON_VIEW_DROP_LEFT</literal></term>
+	  <listitem>
+	    <simpara></simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.ICON_VIEW_DROP_RIGHT</literal></term>
+	  <listitem>
+	    <simpara></simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.ICON_VIEW_DROP_ABOVE</literal></term>
+	  <listitem>
+	    <simpara></simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.ICON_VIEW_DROP_BELOW</literal></term>
+	  <listitem>
+	    <simpara></simpara>
 	  </listitem>
 	</varlistentry>
       </variablelist>
@@ -1498,6 +1589,45 @@ linkend="class-gtktoolbar"><classname>gtk.Toolbar</classname></link>.</para>
 
     </refsect2>
 
+    <refsect2 id="gtk-pack-direction-constants">
+      <title id="gtk-pack-direction-constants-title">GTK Pack Direction Constants</title>
+
+      <para>The Pack Direction constants specify the arrangement of <link
+linkend="class-gtkmenuitem"><classname>gtk.MenuItem</classname></link>s in a
+<link linkend="class-gtkmenubar"><classname>gtk.MenuBar</classname></link>
+or in a child <link
+linkend="class-gtkmenuitem"><classname>gtk.MenuItem</classname></link> of a
+menubar.</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>gtk.ACK_DIRECTION_LTR</literal></term>
+	  <listitem>
+	    <simpara>Pack left to right</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.PACK_DIRECTION_RTL</literal></term>
+	  <listitem>
+	    <simpara>Pack right to left</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.PACK_DIRECTION_TTB</literal></term>
+	  <listitem>
+	    <simpara>Pack top to bottom</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.PACK_DIRECTION_BTT</literal></term>
+	  <listitem>
+	    <simpara>Pack bottom to top</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+    </refsect2>
+
     <refsect2 id="gtk-pack-type-constants">
       <title id="gtk-pack-type-constants-title">GTK Pack Type Constants</title>
 
@@ -1511,8 +1641,7 @@ linkend="class-gtkbuttonbox"><classname>gtk.ButtonBox</classname></link>).</para
 	<varlistentry>
 	  <term><literal>gtk.PACK_START</literal></term>
 	  <listitem>
-	    <simpara>The child is packed into the start of the box
-	    </simpara>
+	    <simpara>The child is packed into the start of the box</simpara>
 	  </listitem>
 	</varlistentry>
 	<varlistentry>

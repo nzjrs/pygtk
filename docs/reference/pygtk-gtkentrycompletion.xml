@@ -100,6 +100,28 @@
 	linkend="method-gtkentrycompletion--get-popup-completion">get_popup_completion</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--set-popup-set-width">set_popup_set_width</link></methodname>
+	<methodparam><parameter
+	role="keyword">popup_set_width</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--get-popup-set-width">get_popup_set_width</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--set-popup-single-match">set_popup_single_match</link></methodname>
+	<methodparam><parameter
+	role="keyword">popup_single_match</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--get-popup-single-match">get_popup_single_match</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -136,7 +158,7 @@ in GTK+ 2.6 and above.</entry>
 	      <entry>"minimum-key-length"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>Minimum length of the search key in order to look up
-	      matches.</entry>
+	      matches. Allowed values >= 0. Default value: 1</entry>
 	    </row>
 
 	    <row valign="top">
@@ -153,6 +175,24 @@ find matches in.</entry>
 	      <entry>If <literal>TRUE</literal> the completions should be
 shown in a popup window. Default value: <literal>TRUE</literal>. Available
 in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"popup-set-width"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the completions popup window
+will be resized to the width of the entry.
+Default value: <literal>TRUE</literal>. Available in GTK+ 2.8 and
+above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"popup-single-match"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the completions popup window
+will be for a single possible completion.
+Default value: <literal>TRUE</literal>. Available in GTK+ 2.8 and
+above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -830,6 +870,113 @@ be displayed in a popup.</simpara></listitem>
 returns the value of the "popup-completion" property. If the value of
 "popup-completion" property is <literal>TRUE</literal> the completions
 should be presented in a popup window.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-popup-set-width">
+      <title>gtk.EntryCompletion.set_popup_set_width</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_popup_set_width</methodname>
+	  <methodparam><parameter role="keyword">popup_set_width</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">popup_set_width</parameter>&nbsp;:</term>
+	  <listitem><simpara>If <literal>TRUE</literal> the completions
+popup window will be resized to the width of the
+completion.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_popup_set_width</methodname>() method sets
+the "popup-set-width" property to the value of
+<parameter>popup_set_width</parameter>. If
+<parameter>popup_set_width</parameter> is <literal>TRUE</literal> the
+completions popup window will be resized to the width of the completion.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-popup-set-width">
+      <title>gtk.EntryCompletion.get_popup_set_width</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_popup_set_width</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the completions popup
+window will be resized to the width of the completion.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_popup_set_width</methodname>() method
+returns the value of the "popup-set-width" property. If the value of
+"popup-set-width" property is <literal>TRUE</literal> the completions popup
+window will be resized to the width of the completion.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--set-popup-single-match">
+      <title>gtk.EntryCompletion.set_popup_single_match</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_popup_single_match</methodname>
+	  <methodparam><parameter role="keyword">popup_single_match</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">popup_single_match</parameter>&nbsp;:</term>
+	  <listitem><simpara>If <literal>TRUE</literal> the completions popup
+window will appear even for a single match.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_popup_single_match</methodname>() method
+sets the "popup-single-match" property to the value of
+<parameter>popup_single_match</parameter>. If
+<parameter>popup_single_match</parameter> is <literal>TRUE</literal> the
+completions popup window will appear even for a single match.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-popup-single-match">
+      <title>gtk.EntryCompletion.get_popup_completion</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_popup_single_match</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the completions popup
+window should appear even for a single match.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_popup_single_match</methodname>() method
+returns the value of the "popup-single-match" property. If the value of
+"popup-single-match" property is <literal>TRUE</literal> the completions
+popup window should appear even for a single match.</para>
 
     </refsect2>
 

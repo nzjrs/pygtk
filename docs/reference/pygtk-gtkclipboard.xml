@@ -64,10 +64,12 @@
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--wait-for-text">wait_for_text</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--wait-is-text-available">wait_is_text_available</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--wait-for-targets">wait_for_targets</link></methodname>
       </methodsynopsis>
@@ -79,6 +81,23 @@
 	<methodparam><parameter role="keyword">targets</parameter></methodparam>  </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkclipboard--store">store</link></methodname>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkclipboard--request-image">request_image</link></methodname>
+	<methodparam><parameter role="keyword">callback</parameter></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkclipboard--wait-for-image">wait_for_image</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkclipboard--set-image">set_image</link></methodname>
+	<methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkclipboard--wait-is-image-available">wait_is_image_available</link></methodname>
+	<methodparam></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -853,6 +872,147 @@ clipboard data (as specified by the <link
 linkend="method-gtkclipboard--set-can-store"><methodname>set_can_store</methodname>()</link>
 method) somewhere so that it will stay around after the application has
 quit.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--request-image">
+      <title>gtk.Clipboard.request_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>request_image</methodname>
+	  <methodparam><parameter role="keyword">callback</parameter></methodparam>
+	  <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">callback</parameter>&nbsp;:</term>
+	  <listitem><simpara>a function to call when the image is received,
+or the retrieval fails. (It will always be called
+one way or the other.)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>user data to pass to
+<parameter>callback</parameter>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>request_image</methodname>() method requests the
+contents of the clipboard as a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+image. When the image is later received, it will be converted to a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link> and
+<parameter>callback</parameter> will be called with the data specified by
+<parameter>user_data</parameter>. The signature of
+<parameter>callback</parameter> is:</para>
+
+      <programlisting>
+  def callback(clipboard, pixbuf, data):
+</programlisting>
+
+      <para>where <parameter>clipboard</parameter> is the <link
+linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link>
+that <parameter>pixbuf</parameter> is retrieved from and
+<parameter>data</parameter> is <parameter>user_data</parameter>.
+<parameter>pixbuf</parameter> will contain the resulting image data if the
+request succeeded, or <literal>None</literal> if it failed. This could
+happen for various reasons, in particular if the clipboard was empty or if
+the contents of the clipboard could not be converted into an image.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--wait-for-image">
+      <title>gtk.Clipboard.wait_for_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>wait_for_image</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>,
+or <literal>None</literal> if retrieving the selection data failed.
+(This could happen for various reasons, in particular if the clipboard was
+empty or if the contents of the clipboard could not be converted into an
+image.)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>wait_for_image</methodname>() method requests
+the contents of the clipboard as an image and converts the result to a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>. This
+method waits for the data to be received using the main loop, so events,
+timeouts, etc, may be dispatched during the wait.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--set-image">
+      <title>gtk.Clipboard.set_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_image</methodname>
+	  <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">pixbuf</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_image</methodname>() method sets the
+contents of the clipboard to the <link
+linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+specified by <parameter>pixbuf</parameter>. GTK+ will take responsibility
+for responding for requests for the image, and for converting the image into
+the requested format.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkclipboard--wait-is-image-available">
+      <title>gtk.Clipboard.wait_is_image_available</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>wait_is_image_available</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> is there is an image
+available.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>wait_is_image_available</methodname>() method
+tests to see if there is an image available to be copied from the clipboard.
+This is done by requesting the "TARGETS" atom and checking if it contains
+any of the supported image targets. This method waits for the data to be
+received using the main loop, so events, timeouts, etc, may be dispatched
+during the wait.</para>
+
+      <para>This method is a little faster than calling the <link
+linkend="method-gtkclipboard--wait-for-image"><methodname>wait_for_image()</methodname></link>
+since it doesn't need to retrieve the actual image data.</para>
 
     </refsect2>
 

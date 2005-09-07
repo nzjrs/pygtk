@@ -89,8 +89,23 @@ linkend="method-gtkdialog--set-alternative-button-order">set_alternative_button_
 	<methodparam><parameter
 		       role="keyword">new_order</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkdialog--get-response-for-widget">get_response_for_widget</link></methodname>
+	<methodparam><parameter
+		       role="keyword">widget</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
-
+                                                                                
+    <programlisting>
+<emphasis role="bold">Functions</emphasis>
+                                                                                
+<methodsynopsis language="python">
+        <methodname><link
+linkend="function-gtk--alternative-dialog-button-order">gtk.alternative_dialog_button_order</link></methodname>
+        <methodparam><parameter role="keyword">screen</parameter><initializer>None</initializer></methodparam>
+  </methodsynopsis></programlisting>
+ 
   </refsect1>
 
   <refsect1>
@@ -144,16 +159,16 @@ above its buttons</entry>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"button-spacing"</entry>
-	      <entry>Read</entry>
-	      <entry>The spacing between buttons in pixels.</entry>
-	    </row>
-
-	    <row valign="top">
 	      <entry>"action-area-border"</entry>
 	      <entry>Read</entry>
 	      <entry>The width of the vborder around the button area in
 pixels.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"button-spacing"</entry>
+	      <entry>Read</entry>
+	      <entry>The spacing between buttons in pixels.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -717,6 +732,81 @@ as the following example shows:</para>
   dialog.set_alternative_button_order([gtk.RESPONSE_OK, gtk.RESPONSE_CANCEL,
                                        gtk.RESPONSE_HELP])
 </programlisting>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkdialog--get-response-for-widget">
+      <title>gtk.Dialog.get_response_for_widget</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_response_for_widget</methodname>
+	  <methodparam><parameter
+			 role="keyword">widget</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>a widget in the action area of the
+dialog</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara> the response id of <parameter>widget</parameter>,
+or gtk.RESPONSE_NONE if the widget doesn't have a response id
+set.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_response_for_widget</methodname>() method
+returns the response id of the widget specified by
+<parameter>widget</parameter> in the action area of the dialog.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gtk--alternative-dialog-button-order">
+      <title>gtk.alternative_dialog_button_order</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.alternative_dialog_button_order</methodname>
+	  <methodparam><parameter
+			 role="keyword">screen</parameter><initializer>None</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname> or
+<literal>None</literal> to use the default screen</link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the alternative button
+order should be used</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <function>gtk.alternative_dialog_button_order</function>()
+returns <literal>TRUE</literal> if the alternative button order should be
+used for the <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+specified by <parameter>screen</parameter>. If <parameter>screen</parameter>
+is <literal>None</literal> the default <link
+linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link> is
+used.</para>
 
     </refsect2>
 

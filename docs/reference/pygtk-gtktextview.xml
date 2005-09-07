@@ -100,8 +100,6 @@ linkend="method-gtktextview--get-iter-location">get_iter_location</link></method
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextview--get-iter-at-location">get_iter_at_location</link></methodname>
-	<methodparam><parameter
-		       role="keyword">iter</parameter></methodparam>
 	<methodparam><parameter role="keyword">x</parameter></methodparam>
 	<methodparam><parameter role="keyword">y</parameter></methodparam>
       </methodsynopsis>
@@ -349,11 +347,19 @@ linkend="method-gtktextview--set-tabs">set_tabs</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextview--get-tabs">get_tabs</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktextview--get-default-attributes">get_default_attributes</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtktextview--get-iter-at-position">get_iter_at_position</link></methodname>
+	<methodparam><parameter role="keyword">x</parameter></methodparam>
+	<methodparam><parameter role="keyword">y</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -1235,6 +1241,61 @@ portion.  Window coordinates from an event, must be converted to buffer
 coordinates with the <link
 linkend="method-gtktextview--window-to-buffer-coords"><methodname>window_to_buffer_coords</methodname>()</link> 
 method before using them with this method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextview--get-iter-at-position">
+      <title>gtk.TextView.get_iter_at_position</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_iter_at_position</methodname>
+	  <methodparam><parameter role="keyword">x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">x</parameter>&nbsp;:</term>
+	  <listitem><simpara>x position, in buffer
+coordinates</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">y</parameter>&nbsp;:</term>
+	  <listitem><simpara>y position, in buffer
+coordinates</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a 2-tuple containing a <link
+linkend="class-gtktextiter"><classname>gtk.TextIter</classname></link> and
+an integer indicating where in the grapheme the user clicked. It will either
+be zero, or the number of characters in the grapheme. 0 represents the
+trailing edge of the grapheme.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_iter_at_position</methodname>() method
+returns a 2-tuple containing a <link
+linkend="class-gtktextiter"><classname>gtk.TextIter</classname></link> that
+points at the location specified by the buffer coordinates
+<parameter>x</parameter> and <parameter>y</parameter> and an integer
+indicating where in the grapheme the user clicked. It will either be zero,
+or the number of characters in the grapheme. 0 represents the trailing edge
+of the grapheme.</para>
+
+      <para>Buffer coordinates are coordinates for the entire buffer, not
+just the currently-displayed portion.  Window coordinates from an event,
+must be converted to buffer coordinates with the <link
+linkend="method-gtktextview--window-to-buffer-coords"><methodname>window_to_buffer_coords</methodname>()</link>
+method before using them with this method.</para>
+
+      <para>Note that this method is different from the <link
+linkend="method-gtktextview--get-iter-at-location"><methodname>get_iter_at_location</methodname>()</link>
+method that returns cursor locations, i.e. positions between
+characters.</para>
 
     </refsect2>
 

@@ -21,11 +21,13 @@ linkend="constructor-gtkiconsource">gtk.IconSource</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--copy">copy</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--free">free</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--set-filename">set_filename</link></methodname>
@@ -41,11 +43,13 @@ linkend="method-gtkiconsource--set-pixbuf">set_pixbuf</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-filename">get_filename</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-pixbuf">get_pixbuf</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--set-direction-wildcarded">set_direction_wildcarded</link></methodname>
@@ -67,15 +71,18 @@ linkend="method-gtkiconsource--set-size-wildcarded">set_size_wildcarded</link></
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-size-wildcarded">get_size_wildcarded</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-state-wildcarded">get_state_wildcarded</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-direction-wildcarded">get_direction_wildcarded</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--set-direction">set_direction</link></methodname>
@@ -97,15 +104,29 @@ linkend="method-gtkiconsource--set-size">set_size</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-direction">get_direction</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-state">get_state</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkiconsource--get-size">get_size</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkiconsource--set-state">set_icon_name</link></methodname>
+	<methodparam><parameter
+		       role="keyword">icon_name</parameter></methodparam>
+      </methodsynopsis>
+     <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkiconsource--get-size">get_icon_name</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -228,6 +249,11 @@ icon source.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>free</methodname>
 	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <warning>
+        <para>This method is deprecated and should not be used. Use of this
+method may cause your application to crash.</para>
+      </warning>
 
       <para>The <methodname>free</methodname>() method frees a
 dynamically-allocated icon source, along with its filename, size, and pixbuf
@@ -639,6 +665,56 @@ matches.</simpara></listitem>
       <para>The <methodname>get_size</methodname>() method obtains the icon
 size this source applies to. The return value is only useful and meaningful
 if the icon size is <emphasis>not</emphasis> wildcarded.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconsource--set-icon-name">
+      <title>gtk.IconSource.set_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_icon_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">icon_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>an icon name
+to</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>set_icon_name</methodname>() method sets the
+anme of the icon to look up in the current icon theme to use as a base image
+when creating icon variants for <link
+linkend="class-gtkiconset"><classname>gtk.IconSet</classname></link>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconsource--get-icon-name">
+      <title>gtk.IconSource.get_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_icon_name</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the icon name or <literal>None</literal> if no
+name is set.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.4 and above.</para>
+      </note>
+
+      <para>The <methodname>get_icon</methodname>() method returns the
+ source icon name, or <literal>None</literal> if no name is set.</para>
 
     </refsect2>
 

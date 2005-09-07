@@ -106,7 +106,19 @@ linkend="method-gtkbutton--set-alignment">set_alignment</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkbutton--get-alignment">get_alignment</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkbutton--set-image">set_image</link></methodname>
+	<methodparam><parameter
+		       role="keyword">image</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkbutton--get-image">get_image</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -139,15 +151,24 @@ linkend="method-gtkbutton--get-alignment">get_alignment</link></methodname>
 	      <entry>"focus-on-click"</entry>
 	      <entry>Read/Write</entry>
 	      <entry>If <literal>TRUE</literal> the button grabs focus when
-	      it is clicked with the mouse. This property is available in GTK+
-2.4 and above.</entry>
+	      it is clicked with the mouse. Default value:
+<literal>TRUE</literal>. This property is available in GTK+ 2.4 and
+above.</entry>
+	  </row>
+
+	    <row valign="top">
+	      <entry>"image"</entry>
+	      <entry>Read/Write</entry>
+          <entry>The child widget to appear next to the button text. Default
+value: <literal>None</literal>.
+This property is available in GTK+ 2.6 and above.</entry>
 	  </row>
 
 	    <row valign="top">
 	      <entry>"label"</entry>
 	      <entry>Read/Write</entry>
 	<entry>Text of the label widget inside the button, if the button
-contains a label widget.</entry>
+contains a label widget. Default value: <literal>None</literal>.</entry>
 	  </row>
 
 	<row valign="top">
@@ -155,7 +176,16 @@ contains a label widget.</entry>
 	  <entry>Read/Write</entry>
 	  <entry>The border relief style. One of:
 <literal>gtk.RELIEF_NORMAL</literal>, <literal>gtk.RELIEF_HALF</literal> or
-<literal>gtk.RELIEF_NONE</literal></entry>
+<literal>gtk.RELIEF_NONE</literal>. Default value:
+<literal>gtk.RELIEF_NORMAL</literal>.</entry>
+	</row>
+
+	<row valign="top">
+	  <entry>"use-stock"</entry>
+	  <entry>Read/Write</entry>
+	  <entry>If <literal>TRUE</literal>, the label text is used to pick
+a stock item instead of being displayed.
+Default value: <literal>FALSE</literal>.</entry>
 	</row>
 
 	<row valign="top">
@@ -163,14 +193,8 @@ contains a label widget.</entry>
 	  <entry>Read/Write</entry>
 	  <entry>If <literal>TRUE</literal>, an underscore in the text
 indicates the next character should be underlined and used for the mnemonic
-accelerator key if it is the first character so marked</entry>
-	</row>
-
-	<row valign="top">
-	  <entry>"use-stock"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>If <literal>TRUE</literal>, the label text is used to pick
-a stock item instead of being displayed</entry>
+accelerator key if it is the first character so marked.
+Default value: <literal>FALSE</literal>.</entry>
 	</row>
 
 	<row valign="top">
@@ -183,8 +207,8 @@ a stock item instead of being displayed</entry>
 	  linkend="class-gtkalignment"><classname>gtk.Alignment</classname></link>,
 	  this property can be used to control it's horizontal
 	  alignment. The value ranges from 0.0 to 1.0 representing the fraction
- of freespace to the left of the widget. This property is available in GTK+ 2.4
- and above.</entry>
+ of freespace to the left of the widget. Default value: 0.5.
+This property is available in GTK+ 2.4 and above.</entry>
 	</row>
 
 	<row valign="top">
@@ -197,8 +221,8 @@ a stock item instead of being displayed</entry>
 	  linkend="class-gtkalignment"><classname>gtk.Alignment</classname></link>,
 	  this property can be used to control it's vertical
 	  alignment. The value ranges from 0.0 to 1.0 representing the fraction
-of freespace above the widget. This property is available in GTK+ 2.4
- and above.</entry>
+of freespace above the widget.  Default value: 0.5.
+This property is available in GTK+ 2.4 and above.</entry>
 	</row>
 
 	</tbody>
@@ -839,7 +863,8 @@ linkend="class-gtkalignment"><classname>gtk.Alignment</classname></link>.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>get_alignment</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -856,6 +881,67 @@ linkend="class-gtkalignment"><classname>gtk.Alignment</classname></link>.</para>
 
       <para>The <methodname>get_alignment</methodname>() method returns the
 values of the "xalign" and "yalign" properties. See the <link linkend="method-gtkbutton--set-alignment"><methodname>set_alignment</methodname>()</link> method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkbutton--set-image">
+      <title>gtk.Button.set_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_image</methodname>
+	  <methodparam><parameter
+			 role="keyword">image</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>image</parameter>&nbsp;:</term>
+	  <listitem>
+	    <simpara>the widget to set as the image for the button.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>set_image</methodname>() method sets the "image"
+property to the value of <parameter>image</parameter>. This property has no
+effect unless the "gtk-button-images" property is
+<literal>TRUE</literal>. See the <link
+linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+reference for more information. Note you do not have to call the <link
+linkend="method-gtkwidget--show"><methodname>gtk.Widget.show</methodname>()</link>
+method for <parameter>image</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkbutton--get-image">
+      <title>gtk.Button.get_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_image</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem>
+	    <simpara>the <link
+linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> used as
+the button image or <literal>None</literal> if there is no image.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <methodname>get_image</methodname>() method returns the
+value of the "image" property. See the <link
+linkend="method-gtkbutton--set-image"><methodname>set_image</methodname>()</link>
+method for more information.</para>
 
     </refsect2>
 

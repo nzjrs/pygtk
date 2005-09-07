@@ -51,19 +51,34 @@ linkend="method-gtkprogressbar--set-orientation">set_orientation</link></methodn
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkprogressbar--get-text">get_text</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkprogressbar--get-fraction">get_fraction</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkprogressbar--get-pulse-step">get_pulse_step</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkprogressbar--get-orientation">get_orientation</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkprogressbar--set-ellipsize">set_ellipsize</link></methodname>
+	<methodparam><parameter
+		       role="keyword">mode</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkprogressbar--get-ellipsize">get_ellipsize</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -108,7 +123,10 @@ block when pulsed</entry>
 	      <entry>"orientation"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The orientation and growth direction of the progress
-bar: <literal>gtk.PROGRESS_LEFT_TO_RIGHT</literal>,
+bar - one of the <xref
+linkend="gtk-progressbar-orientation-constants"
+endterm="gtk-progressbar-orientation-constants-title"></xref>:
+<literal>gtk.PROGRESS_LEFT_TO_RIGHT</literal>,
 <literal>gtk.PROGRESS_RIGHT_TO_LEFT</literal>,
 <literal>gtk.PROGRESS_BOTTOM_TO_TOP</literal>,
 <literal>gtk.PROGRESS_TOP_TO_BOTTOM</literal></entry>
@@ -297,43 +315,9 @@ bar</simpara></listitem>
       <para>The <methodname>set_orientation</methodname>() method switches
 the progress bar to a different orientation as specified by the value of
 <parameter>orientation</parameter>. The value of
-<parameter>orientation</parameter> must be one of:</para>
-
-      <variablelist>
-
-	<varlistentry>
-	  <term><literal>gtk.PROGRESS_LEFT_TO_RIGHT</literal></term>
-	  <listitem>
-	    <simpara>A horizontal progress bar growing from left to
-right.</simpara>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><literal>gtk.PROGRESS_RIGHT_TO_LEFT</literal></term>
-	  <listitem>
-	    <simpara>A horizontal progress bar growing from right to
-left.</simpara>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><literal>gtk.PROGRESS_BOTTOM_TO_TOP</literal></term>
-	  <listitem>
-	    <simpara>A vertical progress bar growing from bottom to
-top.</simpara>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><literal>gtk.PROGRESS_TOP_TO_BOTTOM</literal></term>
-	  <listitem>
-	    <simpara>A vertical progress bar growing from top to
-bottom.</simpara>
-	  </listitem>
-	</varlistentry>
-
-      </variablelist>
+<parameter>orientation</parameter> must be one of the <xref
+linkend="gtk-progressbar-orientation-constants"
+endterm="gtk-progressbar-orientation-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -413,11 +397,64 @@ bar</simpara></listitem>
       <para>The <methodname>get_orientation</methodname>() method returns
 the current progress bar orientation. See the <link
 linkend="method-gtkprogressbar--set-orientation"><methodname>set_orientation</methodname>()</link>
-method for information about the orientation values:
-<literal>gtk.PROGRESS_LEFT_TO_RIGHT</literal>,
-<literal>gtk.PROGRESS_RIGHT_TO_LEFT</literal>,
-<literal>gtk.PROGRESS_BOTTOM_TO_TOP</literal>,
-<literal>gtk.PROGRESS_TOP_TO_BOTTOM</literal>.</para>
+method for information about the orientation values.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprogressbar--set-ellipsize">
+      <title>gtk.ProgressBar.set_ellipsize</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_ellipsize</methodname>
+	  <methodparam><parameter
+			 role="keyword">mode</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">mode</parameter>&nbsp;:</term>
+	  <listitem><simpara>one of the <xref
+linkend="pango-ellipsize-mode-constants"
+endterm="pango-ellipsize-mode-constants-title"></xref></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+    <note>
+      <para>This method is available in PyGTK 2.6 and above.</para>
+    </note>
+
+      <para>The <methodname>set_ellipsize</methodname>() method sets the
+mode used to ellipsize (add an ellipsis "...") the text if there is not
+enough space to render the entire string to the value specified by
+<parameter>mode</parameter>. <parameter>mode</parameter> must be one of the
+<xref linkend="pango-ellipsize-mode-constants"
+endterm="pango-ellipsize-mode-constants-title"></xref></para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprogressbar--get-ellipsize">
+      <title>gtk.ProgressBar.get_ellipsize</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_ellipsize</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the mode used to ellipsize
+text</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+    <note>
+      <para>This method is available in PyGTK 2.6 and above.</para>
+    </note>
+
+      <para>The <methodname>get_ellipsize</methodname>() method returns the
+mode used to ellipsize text when there is not enough space. See the <link
+linkend="method-gtkprogressbar--set-ellipsize"><methodname>set_ellipsize</methodname>()</link>
+method for information.</para>
 
     </refsect2>
 

@@ -48,6 +48,14 @@
 	<methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbutton--set-icon-name">set_icon_name</link></methodname>
+	<methodparam><parameter role="keyword">icon_name</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtktoolbutton--get-icon-name">get_icon_name</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link linkend="method-gtktoolbutton--set-icon-widget">set_icon_widget</link></methodname>
 	<methodparam><parameter role="keyword">icon_widget</parameter></methodparam>
       </methodsynopsis>
@@ -93,29 +101,41 @@
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"icon-name"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The themed icon name to display in the item. This
+property only has an effect if not overridden by "label", "icon-widget" or
+"stock-id" properties. Default value: <literal>None</literal>.
+Available in GTK+ 2.8 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"icon-widget"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The icon widget to display in the item.</entry>
+	      <entry>The icon widget to display in the item.
+Default value: <literal>None</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"label"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The text to show in the item.</entry>
+	      <entry>The text to show in the item.
+Default value: <literal>None</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"label-widget"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The widget to use as the item label instead of
-"label".</entry>
+"label". Default value: <literal>None</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"stock-id"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The stock icon displayed on the item if "label" and
-"label-widget" are None.</entry>
+"label-widget" are <literal>None</literal>.
+Default value: <literal>None</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -123,7 +143,8 @@
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, an underline in the "label"
 property indicates that the next character should be used for the mnemonic
-accelerator key in the overflow menu.</entry>
+accelerator key in the overflow menu.
+Default value: <literal>FALSE</literal>.</entry>
 	    </row>
 
 	  </tbody>
@@ -413,9 +434,10 @@ method for more information.</para>
       </note>
 
       <para>The <methodname>set_stock_id</methodname>() method sets the
-"stock_id" property to the value of <parameter>stock_id</parameter>. The
-stock item specified by stock_id is used to determine the icon and label if
-not overridden by the "label" and "icon_widget" properties. See the <link
+"stock-id" property to the value of <parameter>stock_id</parameter>. The
+stock item specified by <parameter>stock_id</parameter> is used to determine
+the icon and label if not overridden by the "label" and "icon-widget"
+properties. See the <link
 linkend="constructor-gtktoolbutton2">gtk.ToolButton</link>() constructor for
 more information.</para>
 
@@ -441,6 +463,61 @@ more information.</para>
 
       <para>The <methodname>get_stock_id</methodname>() method returns the
 value of the "stock-id" property that contains the name of a stock item or
+<literal>None</literal>. See the <link
+linkend="constructor-gtktoolbutton2">gtk.ToolButton</link>() constructor for
+more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbutton--set-icon-name">
+      <title>gtk.ToolButton.set_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_icon_name</methodname>
+	  <methodparam><parameter role="keyword">icon_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>a name of a themed icon, or
+<literal>None</literal></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_icon_name</methodname>() method sets the
+"icon-name" property to the value of <parameter>icon_name</parameter>. The
+themed icon name specified by <parameter>icon_name</parameter> is used to
+determine the icon for the toolbutton if not overridden by the "label",
+"stock-id" and "icon-widget" properties. See the <link
+linkend="constructor-gtktoolbutton2">gtk.ToolButton</link>() constructor for
+more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolbutton--get-icon-name">
+      <title>gtk.ToolButton.get_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_icon_name</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the name of the stock item.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_icon_name</methodname>() method returns the
+value of the "icon_name" property that contains the name of a themed icon or
 <literal>None</literal>. See the <link
 linkend="constructor-gtktoolbutton2">gtk.ToolButton</link>() constructor for
 more information.</para>

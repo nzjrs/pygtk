@@ -67,6 +67,16 @@ linkend="method-gtkmenushell--select-first">select_first</link></methodname>
 	<methodname><link
 linkend="method-gtkmenushell--cancel">cancel</link></methodname>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkmenushell--set-take-focus">set_take_focus</link></methodname>
+	<methodparam><parameter
+		       role="keyword">take_focus</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkmenushell--get-take-focus">get_take_focus</link></methodname>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -80,6 +90,32 @@ linkend="method-gtkmenushell--cancel">cancel</link></methodname>
       +-- <link linkend="class-gtkcontainer">gtk.Container</link>
         +-- <link linkend="class-gtkmenushell">gtk.MenuShell</link>
 </synopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"take-focus"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the menu and its submenus grab
+the keyboard focus on popup. Default value: <literal>TRUE</literal>.
+Available in GTK+ 2.8 and above.</entry>
+	    </row>
+
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
 
   </refsect1>
 
@@ -419,6 +455,89 @@ if the menu is being popped up initially.</para>
 
       <para>The <methodname>cancel</methodname>() method cancels the
 selection within the menu shell.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenushell--set-take-focus">
+      <title>gtk.MenuShell.set_take_focus</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_take_focus</methodname>
+	  <methodparam><parameter role="keyword">take_focus</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">take_focus</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, the menu shell should
+take the keyboard focus on popup.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_take_focus</methodname>() method sets the
+"take-focus" property to the value of <parameter>take_focus</parameter>. If
+<parameter>take_focus</parameter> is <literal>TRUE</literal> the menu shell
+will take the keyboard focus so that it will receive all keyboard events to
+enable keyboard navigation in menus.</para>
+
+      <para>Setting the "take-focus" property to <literal>FALSE</literal> is
+useful only for special applications like virtual keyboard implementations
+which should not take keyboard focus.</para>
+
+      <para>The "take-focus" state of a menu or menu bar is automatically
+propagated to submenus whenever a submenu is popped up, so you don't have to
+worry about recursively setting it for your entire menu hierarchy. Only when
+programmatically picking a submenu and popping it up manually, should the
+"take-focus" property of the submenu be set explicitly.</para>
+
+      <para>Note that setting it to FALSE has side-effects:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>If the focus is in some other app, it keeps the focus and
+keyboard navigation in the menu doesn't work. Consequently, keyboard
+navigation on the menu will only work if the focus is on some toplevel owned
+by the onscreen keyboard.</para>
+        </listitem>
+
+        <listitem>
+          <para>To avoid confusing the user, menus with the "take-focus"
+property set to <literal>FALSE</literal> should not display mnemonics or
+accelerators, since they may not work.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Also see the <link
+linkend="function-gdk--keyboard-grab"><function>gtk.gdk.keyboard_grab</function>()</link>
+function for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenushell--get-take-focus">
+      <title>gtk.MenuShell.get_take_focus</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_take_focus</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if the men shell will
+take keyboard foucs on popup.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_take_focus</methodname>() method returns the
+value of the "take-focus" property. See the <link
+linkend="method-gtkmenushell--set-take-focus"><methodname>set_take_focus</methodname>()</link>
+method for more information.</para>
 
     </refsect2>
 

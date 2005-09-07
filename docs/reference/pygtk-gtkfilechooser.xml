@@ -196,6 +196,14 @@
 	<methodname><link linkend="method-gtkfilechooser--get-show-hidden">get_show_hidden</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--set-do-overwrite-confirmation">set_do_overwrite_confirmation</link></methodname>
+	<methodparam><parameter role="keyword">do_overwrite_confirmation</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--get-do-overwrite-confirmation">get_do_overwrite_confirmation</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -220,6 +228,15 @@ performing - one of: <literal>gtk.FILE_CHOOSER_ACTION_OPEN</literal>,
 <literal>gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER</literal> or
 <literal>gtk.FILE_CHOOSER_ACTION_CREATE_FOLDER</literal>. Default value:
 <literal>gtk.FILE_CHOOSER_ACTION_OPEN</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"do-overwrite-confirmation"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> a file chooser in
+<literal>gtk.FILE_CHOOSER_ACTION_SAVE</literal> will present an overwrite
+confirmation dialog if the user selects a file name that already
+exists. Default calue: <literal>FALSE</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -301,6 +318,16 @@ the name of the previewed file. Default value: <literal>TRUE</literal></entry>
     <title>Signal Prototypes</title>
 
     <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkfilechooser--confirm-overwrite">confirm-overwrite</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>filechooser</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
       <varlistentry>
         <term>"<link linkend="signal-gtkfilechooser--current-folder-changed">current-folder-changed</link>"</term>
         <listitem>
@@ -1994,10 +2021,167 @@ method for more information.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkfilechooser--set-do-overwrite-confirmation">
+      <title>gtk.FileChooser.set_do_overwrite_confirmation</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_do_overwrite_confirmation</methodname>
+	  <methodparam><parameter role="keyword">do_overwrite_confirmation</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">do_overwrite_confirmation</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> ask the user for
+confirmation before overwriting a file in save mode.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_do_overwrite_confirmation</methodname>()
+method sets the "do-overwrite-confirmation" property to the value of
+<parameter>do_overwrite_confirmation</parameter>. If
+<parameter>do_overwrite_confirmation</parameter> is <literal>TRUE</literal>
+and the "action" property is set to
+<literal>gtk.FILE_CHOOSER_ACTION_SAVE</literal>, the file chooser will
+present a onfirmation dialog if the user attempts to overwrite an existing
+file. The default value is <literal>FALSE</literal>.</para>
+
+      <para>If all you need is the stock confirmation dialog, set the
+"do-overwrite-confirmation" property to <literal>TRUE</literal>. You can
+override the way confirmation is done by actually handling the
+"confirm-overwrite" signal; please refer to its documentation for
+details.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooser--get-do-overwrite-confirmation">
+      <title>gtk.FileChooser.get_do_overwrite_confirmation</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_do_overwrite_confirmation</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if hidden files and
+folders are displayed.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_do_overwrite_confirmation</methodname>()
+method returns the value of the "do-overwrite-confirmation" property that
+indicates whether a user is asked for confirmation before overwriting an
+existing file. See the <link
+linkend="method-gtkfilechooser--set-do-overwrite-confirmation"><methodname>set_do_overwrite_confirmation()</methodname></link>
+method for more information.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
     <title>Signals</title>
+
+    <refsect2 id="signal-gtkfilechooser--confirm-overwrite">
+      <title>The "confirm-overwrite" gtk.FileChooser Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>filechooser</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>filechooser</parameter>&nbsp;:</term>
+	  <listitem><simpara>the filechooser widget that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara> one of the <xref
+linkend="gtk-filechooser-confirmation-constants"
+endterm="gtk-filechooser-confirmation-constants-title"></xref>
+indicating what action GTK+ should take.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The "confirm-overwrite" signal is emitted when it is appropriate
+to present a confirmation dialog when the user has selected a file name that
+already exists. The signal is only emitted when the file chooser "action" property is set to <literal>gtk.FILE_CHOOSER_ACTION_SAVE</literal>.</para>
+
+      <para> Most applications just need to turn on the
+"do-overwrite-confirmation" property (or call the <link
+linkend="method-gtkfilechooser--set-do-overwrite-confirmation"><methodname>set_do_overwrite_confirmation</methodname>()</link>
+method), to automatically get a stock confirmation dialog. Applications
+that need to customize this behavior should do that, and also connect to
+the "confirm-overwrite" signal.</para>
+
+      <para>A signal handler for this signal must return one of the <xref
+linkend="gtk-filechooser-confirmation-constants"
+endterm="gtk-filechooser-confirmation-constants-title"></xref> that
+indicates the action to take. If the handler determines that the user wants
+to select a different filename, it should return
+<literal>gtk.FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN</literal>. If it
+determines that the user is satisfied with his choice of file name, it
+should return
+<literal>gtk.FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME</literal>. On the
+other hand, if it determines that the stock confirmation dialog should be
+used, it should return
+<literal>gtkfile_CHOOSER_CONFIRMATION_CONFIRM</literal>. The following
+psuedo-code example illustrates this.</para>
+
+      <programlisting>
+def confirm_overwrite_callback(chooser):
+  uri = chooser.get_uri()
+
+  if is_uri_read_only(uri):
+    if user_wants_to_replace_read_only_file (uri):
+      return gtk.FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME
+    else
+      return gtk.FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN
+  else
+    # fall back to the default dialog
+    return gtk.FILE_CHOOSER_CONFIRMATION_CONFIRM 
+
+...
+
+chooser = gtk.FileChooserDialog(...)
+
+chooser.set_do_overwrite_confirmation(TRUE)
+chooser.connect("confirm-overwrite", confirm_overwrite_callback)
+
+if chooser.run() == gtk.RESPONSE_ACCEPT:
+  save_to_file(chooser.get_filename()
+
+chooser.destroy()
+</programlisting>
+
+    </refsect2>
 
     <refsect2 id="signal-gtkfilechooser--current-folder-changed">
       <title>The "current-folder-changed" gtk.FileChooser Signal</title>

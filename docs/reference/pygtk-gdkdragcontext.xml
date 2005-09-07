@@ -158,6 +158,16 @@ linkend="method-gdkdragcontext--set-icon-stock">set_icon_stock</link></methodnam
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gdkdragcontext--set-icon-name">set_icon_name</link></methodname>
+	<methodparam><parameter
+		       role="keyword">icon_name</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">hot_x</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">hot_y</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gdkdragcontext--set-icon-default">set_icon_default</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
@@ -1046,6 +1056,53 @@ the icon for a given drag from a stock ID specified by
 <parameter>stock_id</parameter>. <parameter>hot_x</parameter> and
 <parameter>hot_y</parameter> specify the offset of the hot spot within the
 stock icon.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkdragcontext--set-icon-name">
+      <title>gtk.gdk.DragContext.set_icon_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_icon_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">icon_name</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">hot_x</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">hot_y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of the icon to use for the
+drag.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">hot_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the X offset within the icon of the
+hotspot.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">hot_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the Y offset within the icon of the
+hotspot.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>set_icon_name</methodname>() method sets the the
+icon for a given drag from the named themed icon specified by
+<parameter>icon_name</parameter>. <parameter>hot_x</parameter> and
+<parameter>hot_y</parameter> specify the offset of the hot spot within the
+stock icon. See the docs for <link
+linkend="class-gtkicontheme"><classname>gtk.IconTheme</classname></link> for
+more information. Note that the size of the icon depends on the icon theme
+(the icon is loaded at the symbolic size
+<literal>gtk.ICON_SIZE_DND</literal>), thus <parameter>hot_x</parameter> and
+<parameter>hot_y</parameter> have to be used with care.</para>
 
     </refsect2>
 
