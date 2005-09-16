@@ -1012,8 +1012,14 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
     case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
     case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
         if (!strcmp(attr, "subwindow")) {
-	    PyErr_SetString(PyExc_TypeError, "subwindow is not writable");
-	    return -1;
+          if (!pygobject_check(value, &PyGdkWindow_Type)) {
+              PyErr_SetString(PyExc_TypeError, "subwindow must be a GdkWindow");
+              return -1;
+          }
+          if (event->crossing.subwindow)
+              g_object_unref(event->crossing.subwindow);
+          event->crossing.subwindow = g_object_ref(GDK_WINDOW(((PyGObject*)value)->obj));
+          return 0;
 	} else if (!strcmp(attr, "time")) {
 	    INT_CHECK();
 	    event->crossing.time = PyInt_AsLong(value);
