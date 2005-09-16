@@ -1,3 +1,20 @@
+2005-09-16  John Ehresman  <jpe@wingware.com>
+
+	* gobjectmodule.c (initgobject): Add gobject.Warning Warning subclass
+	and redirect all g_log messages for the "GLib", "Glib-GObject", and 
+	"GThread" domains to the python warning system
+
+	* pangomodule.c (initpango): Add pango.Warning Warning subclass
+	and redirect all g_log messages for the "Pango" domain to the 
+	python warning system
+
+	* gtkmodule.c (initgtk): Move gtk Warning subclass from the gdk
+	module to the gtk module and added redirections for g_log messages 
+	for the "Gdk" and "GdkPixbuf" domains to the python warning system
+
+	* gtk/__init__.py: Set gdk.Warning = gtk.Warning for backward
+	compatibility
+
 2005-09-13  Johan Dahlin  <jdahlin@async.com.br>
 
 	* gtk/gdk.defs:

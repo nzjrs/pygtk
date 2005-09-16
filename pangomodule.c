@@ -33,10 +33,25 @@ void pypango_register_classes(PyObject *d);
 void pypango_add_constants(PyObject *module, const gchar *strip_prefix);
 extern PyMethodDef pypango_functions[];
 
+static void
+_log_func(const gchar *log_domain,
+          GLogLevelFlags log_level,
+          const gchar *message,
+          gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyObject* warning = user_data;
+
+    state = pyg_gil_state_ensure();
+    PyErr_Warn(warning, (char *) message);
+    pyg_gil_state_release(state);
+}
+
 DL_EXPORT(void)
 initpango(void)
 {
     PyObject *m, *d;
+    PyObject *warning;
 
     /* perform any initialisation required by the library here */
 
@@ -66,5 +81,8 @@ initpango(void)
 		       PyInt_FromLong(PANGO_SCALE));    
 
     /* add anything else to the module dictionary (such as constants) */
-
+    warning = PyErr_NewException("pango.PangoWarning", PyExc_Warning, NULL);
+    PyDict_SetItemString(d, "Warning", warning);
+    g_log_set_handler("Pango", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _log_func, warning);
 }

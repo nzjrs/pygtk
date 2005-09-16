@@ -123,4 +123,7 @@ FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 	    
 _gobject = _GObjectWrapper('gtk._gobject')
 
+# Can't figure out how to deprecate gdk.Warning
+gdk.Warning = Warning
+
 del _Deprecated, _DeprecatedConstant, _GObjectWrapper, _module, 

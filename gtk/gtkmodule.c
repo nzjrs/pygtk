@@ -255,6 +255,15 @@ init_gtk(void)
 	g_slist_free_1(cur);
     }
     
+    PyGtkWarning = PyErr_NewException("gtk.GtkWarning", PyExc_Warning, NULL);
+    PyDict_SetItemString(d, "Warning", PyGtkWarning);
+    g_log_set_handler("Gtk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _pygtk_log_func, NULL);
+    g_log_set_handler("Gdk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _pygtk_log_func, NULL);
+    g_log_set_handler("GdkPixbuf", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _pygtk_log_func, NULL);
+
     /* namespace all the gdk stuff in gtk.gdk ... */
     m = Py_InitModule("gtk.gdk", pygdk_functions);
     d = PyModule_GetDict(m);
@@ -283,11 +292,6 @@ g_free(aname); }
     add_atom(SELECTION_TYPE_WINDOW);
     add_atom(SELECTION_TYPE_STRING);
 #undef add_atom
-
-    PyGtkWarning = PyErr_NewException("gtk.GtkWarning", PyExc_Warning, NULL);
-    PyDict_SetItemString(d, "Warning", PyGtkWarning);
-    g_log_set_handler("Gtk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
-                      _pygtk_log_func, NULL);
     
     gtk_timeout_add(100, python_do_pending_calls, NULL);
 }
