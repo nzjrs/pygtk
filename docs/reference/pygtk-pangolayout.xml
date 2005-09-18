@@ -205,15 +205,15 @@ linkend="method-pangolayout--get-pixel-size">get_pixel_size</link></methodname>
 	<methodname><link
 linkend="method-pangolayout--get-line-count">get_line_count</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
-
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-pangolayout--get-line">get_line</link></methodname>
+        <methodparam><parameter role="keyword">line</parameter></methodparam>
+      </methodsynopsis>
 <!-- NOT IMPLEMENTED
 <methodsynopsis language="python">
-    <methodname><link linkend="method-pangolayout- -get-line">get_line</link></methodname>
-    <methodparam><parameter role="keyword">line</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
     <methodname><link linkend="method-pangolayout- -get-lines">get_lines</link></methodname>
-    <methodparam></methodparam>  </methodsynopsis>
+    <methodparam></methodparam>
+      </methodsynopsis>
 END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
         <methodname><link linkend="method-pangolayout--get-iter">get_iter</link></methodname>
@@ -1226,33 +1226,40 @@ count of lines in the layout.</para>
 
     </refsect2>
 
+    <refsect2 id="method-pangolayout--get-line">
+      <title>pango.Layout.get_line</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>get_line</methodname>
+          <methodparam><parameter role="keyword">line</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">line</parameter>&nbsp;:</term>
+          <listitem><simpara>the index of a line, which must be between 0 and
+layout.get_line_count() - 1, inclusive.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the requested <link
+linkend="class-pangolayoutline"><classname>pango.LayoutLine</classname></link>,
+ or <literal>None</literal> if the index is out of range.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <methodname>get_line</methodname>() method returns the line
+with the index number specified by <parameter>line</parameter> from the
+layout. The returned layout line will become invalid if changes are made to
+the <link
+linkend="class-pangolayout"><classname>pango.Layout</classname></link>.</para>
+
+    </refsect2>
+
  <!-- NOT IMPLEMENTED
- <refsect2 id="method-pangolayout- -get-line">
-    <title>pango.Layout.get_line</title>
-
-<programlisting><methodsynopsis language="python">
-    <methodname>get_line</methodname>
-    <methodparam><parameter role="keyword">line</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">line</parameter>&nbsp;:</term>
-      <listitem><simpara>the index of a line, which must be between 0 and
-pango_layout_get_line_count(layout) - 1, inclusive.</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>the requested <literal>PangoLayoutLine</literal>, or <literal>NULL</literal> if the
-index is out of range. This layout line can
-be ref'ed and retained, but will become invalid
-if changes are made to the <link linkend="class-pangolayout"><classname>pango.Layout</classname></link>.</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Retrieves a particular line from a <link linkend="class-pangolayout"><classname>pango.Layout</classname></link>.
-</para>  </refsect2>
-
-
   <refsect2 id="method-pangolayout- -get-lines">
     <title>pango.Layout.get_lines</title>
 

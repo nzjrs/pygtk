@@ -114,6 +114,30 @@ linkend="function-gobject--main-context-default">gobject.main_context_default</l
 	<methodname><link
 linkend="function-gobject--markup-escape-text">gobject.markup_escape_text</link></methodname>
 	<methodparam><parameter role="keyword">text</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+        <methodname><link linkend="function-gobject--child-watch-add">gobject.child_watch_add</link></methodname>
+        <methodparam><parameter role="keyword">pid</parameter></methodparam>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
+        <methodparam><parameter role="keyword">priority</parameter><initializer>gobject.PRIORITY_DEFAULT</initializer></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--spawn-async">gobject.spawn_async</link></methodname>
+	<methodparam><parameter role="keyword">argv</parameter></methodparam>
+	<methodparam><parameter role="keyword">envp</parameter><initializer>None</initializer></methodparam>
+ 	<methodparam><parameter role="keyword">working_directory</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">flags</parameter><initializer>0</initializer></methodparam>
+ 	<methodparam><parameter role="keyword">child_setup</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+ 	<methodparam><parameter role="keyword">standard_input</parameter><initializer>None</initializer></methodparam>
+	<methodparam><parameter role="keyword">standard_output</parameter><initializer>None</initializer></methodparam>
+ 	<methodparam><parameter role="keyword">standard_error</parameter><initializer>None</initializer></methodparam>
+     </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--get-current-time">gobject.get_current_time</link></methodname>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gobject--main-depth">gobject.main_depth</link></methodname>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -1029,6 +1053,318 @@ parser.</para>
       <para>Note that this function doesn't protect whitespace and line
 endings from being processed according to the XML rules for normalization of
 line endings and attribute values.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--child-watch-add">
+      <title>gobject.child_watch_add</title>
+      
+      <programlisting><methodsynopsis language="python">
+        <methodname>gobject.child_watch_add</methodname>
+        <methodparam><parameter role="keyword">pid</parameter></methodparam>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
+        <methodparam><parameter role="keyword">priority</parameter><initializer>gobject.PRIORITY_DEFAULT</initializer></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist role="params">
+        <varlistentry>
+          <term><parameter role="keyword">pid</parameter>&nbsp;:</term>
+          <listitem><simpara>process id of a child process to watch</simpara></listitem>
+        </varlistentry>
+        <varlistentry><term><parameter role="keyword">function</parameter>&nbsp;:</term>
+          <listitem><simpara>the function to call</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+          <listitem><simpara>the optional data to pass to
+<parameter>function</parameter></simpara></listitem>
+        </varlistentry>
+         <varlistentry>
+          <term><parameter role="keyword">priority</parameter>&nbsp;:</term>
+          <listitem><simpara>the priority of the idle source - one of the
+<xref linkend="gobject-priority-constants"
+endterm="gobject-priority-constants-title"></xref></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the id of event source.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gobject.child_watch_add</function>() function sets
+the function specified by <parameter>function</parameter> to be called with
+the user data specified by <parameter>data</parameter> when the child
+indicated by <parameter>pid</parameter> exits. The signature for the
+callback is:</para>
+
+      <programlisting>
+def callback(pid, condition, user_data)
+</programlisting>
+
+      <para>where <parameter>pid</parameter> is is the child process id,
+<parameter>condition</parameter> is the status information about the child
+process and <parameter>user_data</parameter> is <parameter>data</parameter>
+PyGTK supports only a single callback per process id.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--spawn-async">
+      <title>gobject.spawn_async</title>
+      
+      <programlisting><methodsynopsis language="python">
+        <methodname>gobject.spawn_async</methodname>
+          <methodparam><parameter role="keyword">argv</parameter></methodparam>
+          <methodparam><parameter role="keyword">envp</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">working_directory</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">flags</parameter><initializer>0</initializer></methodparam>
+          <methodparam><parameter role="keyword">child_setup</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">standard_input</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">standard_output</parameter><initializer>None</initializer></methodparam>
+          <methodparam><parameter role="keyword">standard_error</parameter><initializer>None</initializer></methodparam>
+ 	</methodsynopsis></programlisting>
+      <variablelist role="params">
+        <varlistentry>
+          <term><parameter role="keyword">argv</parameter>&nbsp;:</term>
+          <listitem><simpara>a sequence of strings containing the arguments
+of the child process</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">envp</parameter>&nbsp;:</term>
+          <listitem><simpara>the child's environment or
+<literal>None</literal> to inherit the parent's
+environment.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">working_directory</parameter>&nbsp;:</term>
+          <listitem><simpara>the child's current working directory, or
+<literal>None</literal> to inherit parent's</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">flags</parameter>&nbsp;:</term>
+          <listitem><simpara>flags from the <xref
+linkend="gobject-spawn-flag-constants"
+endterm="gobject-spawn-flag-constants-title"></xref>.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">child_setup</parameter>&nbsp;:</term>
+          <listitem><simpara>a function to run in the child just before
+calling <function>exec</function>()</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+          <listitem><simpara>the user data for the
+<parameter>child_setup</parameter> function</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">standard_input</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> return the file
+descriptor for the child's stdin</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">standard_output</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> return the file
+descriptor for the child's stdout</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">standard_error</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> return the file
+descriptor for the child's stderr</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a 4-tuple containing the child's process id and
+the stdin, stdout and stderr file descriptor integers.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+      <note>
+        <para>This function is available in PyGTK 2.6 and above.</para>
+      </note>
+
+      <para>The <function>gobject.spawn_async</function>() function executes
+a child program asynchronously (your program will not block waiting for the
+child to exit). The child program is specified by the only argument that
+must be provided, <parameter>argv</parameter>. <parameter>argv</parameter>
+should be a sequence of strings, to be passed as the argument vector for the
+child. The first string in <parameter>argv</parameter> is of course the name
+of the program to execute. By default, the name of the program must be a
+full path; the <envar>PATH</envar> shell variable will only be searched if
+you pass the <literal>gobject.SPAWN_SEARCH_PATH</literal> flag in
+<parameter>flags</parameter>. The function returns a 4-tuple containing the
+child's process id and the file descriptors for the child's stdin, stdout
+and stderr. The stdin, stdout and stderr file descriptors are returned only
+ofthe corresponding <parameter>standard_input</parameter>,
+<parameter>standard_output</parameter> or
+<parameter>standard_error</parameter> params are
+<literal>TRUE</literal>.</para>
+
+      <para>On Windows, the low-level child process creation API
+(<function>CreateProcess</function>()) doesn't use argument vectors, but a
+command line. The C runtime library's <function>spawn*</function>() family
+of functions (which <link
+linkend="function-gobject--spawn-async"><function>gobject.spawn_async</function>()</link>
+eventually calls) paste the argument vector elements into a command line,
+and the C runtime startup code does a corresponding reconstruction of an
+argument vector from the command line, to be passed to
+<function>main</function>(). Complications arise when you have argument
+vector elements that contain spaces of double quotes. The
+<function>spawn*</function>() functions don't do any quoting or escaping,
+but on the other hand the startup code does do unquoting and unescaping in
+order to enable receiving arguments with embedded spaces or double
+quotes. To work around this asymmetry, the <link
+linkend="function-gobject--spawn-async"><function>gobject.spawn_async</function>()</link>
+function will do quoting and escaping on argument vector elements that need
+it before calling the C runtime <function>spawn</function>()
+function.</para>
+
+      <para><parameter>envp</parameter> is a sequence of strings, where each
+ string has the form <literal>KEY=VALUE</literal>. This will become the
+ child's environment. If <parameter>envp</parameter> is
+ <parameter>None</parameter> or not specified, the child inherits its
+ parent's environment.</para>
+
+      <para><parameter>flags</parameter> should be the bitwise
+<literal>OR</literal> of the <xref linkend="gobject-spawn-flag-constants"
+endterm="gobject-spawn-flag-constants-title"></xref> you want to affect the
+function's behaviour. The <literal>gobject.SPAWN_DO_NOT_REAP_CHILD</literal>
+flag means that the child will not automatically be reaped; you must use a
+GChildWatch source to be notified about the death of the child
+process. Eventually you must call g_spawn_close_pid() on the child_pid, in
+order to free resources which may be associated with the child process. (On
+Unix, using a GChildWatch source is equivalent to calling
+<function>waitpid</function>() or handling the <literal>SIGCHLD</literal>
+signal manually. On Windows, calling g_spawn_close_pid() is equivalent to
+calling <function>CloseHandle</function>() on the process handle
+returned).</para>
+
+      <para><literal>gobject.SPAWN_LEAVE_DESCRIPTORS_OPEN</literal> means
+that the parent's open file descriptors will be inherited by the child;
+otherwise all descriptors except stdin/stdout/stderr will be closed before
+calling <function>exec</function>() in the
+child. <literal>gobject.SPAWN_SEARCH_PATH</literal> means that
+<parameter>argv</parameter>[0] need not be an absolute path, it will be
+looked for in the user's
+<envar>PATH</envar>. <literal>gobject.SPAWN_STDOUT_TO_DEV_NULL</literal>
+means that the child's standard output will be discarded, instead of going
+to the same location as the parent's standard output. If you use this flag,
+<parameter>standard_output</parameter> must be
+<literal>None</literal>. <literal>gobject.SPAWN_STDERR_TO_DEV_NULL</literal>
+means that the child's standard error will be discarded, instead of going to
+the same location as the parent's standard error. If you use this flag,
+<parameter>standard_error</parameter> must be
+<literal>None</literal>. <literal>gobject.SPAWN_CHILD_INHERITS_STDIN</literal>
+means that the child will inherit the parent's standard input (by default,
+the child's standard input is attached to
+<filename>/dev/null</filename>). If you use this flag,
+<parameter>standard_input</parameter> must be
+<literal>None</literal>. <literal>gobject.SPAWN_FILE_AND_ARGV_ZERO</literal>
+means that the first element of <parameter>argv</parameter> is the file to
+execute, while the remaining elements are the actual argument vector to pass
+to the file. Normally the <link
+linkend="function-gobject--spawn-async"><function>gobject.spawn_async</function>()</link>
+function uses <parameter>argv</parameter>[0] as the file to execute, and
+passes all of <parameter>argv</parameter> to the child.</para>
+
+      <para><parameter>child_setup</parameter> and
+<parameter>user_data</parameter> are a function and user data. On POSIX
+platforms, the function is called in the child after GLib has performed all
+the setup it plans to perform (including creating pipes, closing file
+descriptors, etc.) but before calling <function>exec</function>(). That is,
+<parameter>child_setup</parameter> is called just before calling
+<function>exec</function>() in the child. Obviously actions taken in this
+function will only affect the child, not the parent. On Windows, there is no
+separate <function>fork</function>() and <function>exec</function>()
+functionality. Child processes are created and run right away with one API
+call,
+<function>CreateProcess</function>(). <parameter>child_setup</parameter> is
+called in the parent process just before creating the child process. You
+should carefully consider what you do in <parameter>child_setup</parameter>
+if you intend your software to be portable to Windows.</para>
+
+      <para>The returned child process id can be used to send signals to the
+child, or to wait for the child if you specified the
+<literal>gobject.SPAWN_DO_NOT_REAP_CHILD</literal> flag.  On Windows, child
+pid will be returned only if you specified the
+<literal>gobject.SPAWN_DO_NOT_REAP_CHILD</literal> flag.</para>
+
+      <para>The caller of the <link
+linkend="function-gobject--spawn-async"><function>gobject.spawn_async</function>()</link>
+must close any returned file descriptors when they are no longer in
+use.</para>
+
+      <para>If <parameter>standard_input</parameter> is
+<literal>None</literal>, the child's standard input is attached to
+<filename>/dev/null</filename> unless
+<literal>gobject.SPAWN_CHILD_INHERITS_STDIN</literal> is set.</para>
+
+      <para>If <parameter>standard_error</parameter> is
+<literal>None</literal>, the child's standard error goes to the same
+location as the parent's standard error unless
+<literal>gobject.SPAWN_STDERR_TO_DEV_NULL</literal> is set.</para>
+
+      <para>If <parameter>standard_output</parameter> is
+<literal>None</literal>, the child's standard output goes to the same
+location as the parent's standard output unless
+<literal>gobject.SPAWN_STDOUT_TO_DEV_NULL</literal> is set.</para>
+
+      <para>If an error occurs, the gobject.GError exception will be
+raised.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--get-current-time">
+      <title>gobject.get_current_time</title>
+      
+      <programlisting><methodsynopsis language="python">
+        <methodname>gobject.get_current_time</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist role="params">
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the current time as the number of seconds and
+microseconds from the epoch.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+      <note>
+        <para>This function is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <function>gobject.get_current_time</function>() function
+reurns the current time of day as the number of seconds and microseconds
+from the epoch.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gobject--main-depth">
+      <title>gobject.main_depth</title>
+      
+      <programlisting><methodsynopsis language="python">
+        <methodname>gobject.main_depth</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist role="params">
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>he depth of the stack of calls to the main
+context.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+      <note>
+        <para>This function is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <para>The <function>main_depth</function>() function returns the depth
+of the stack of calls in the main context. That is, when called from the
+toplevel, it gives 0. When called from within a callback from the <link
+linkend="method-gobjectmaincontext--iteration"><methodname>gobject.MainContext.iteration</methodname>()</link>
+method (or the <link
+linkend="method-gobjectmainloop--run"><methodname>gobject.MainLoop.run</methodname>()</link>
+method, etc.) it returns 1. When called from within a callback to a
+recursive call to the <link
+linkend="method-gobjectmaincontext--iteration"><methodname>gobject.MainContext.iteration</methodname>()</link>
+method), it returns 2. And so forth.</para>
 
     </refsect2>
 

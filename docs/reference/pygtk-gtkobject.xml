@@ -54,7 +54,24 @@ linkend="function-gtk--bindings-activate-event">gtk.bindings_activate_event</lin
 		       role="keyword">object</parameter></methodparam>
 	<methodparam><parameter
 		       role="keyword">event</parameter></methodparam>
-      </methodsynopsis></programlisting>
+      </methodsynopsis><methodsynopsis language="python">
+	  <methodname><link
+linkend="function-gtk--binding-entry-add-signal">gtk.binding_entry_add_signal</link></methodname>
+	  <methodparam><parameter>object</parameter></methodparam>
+	  <methodparam><parameter>keyval</parameter></methodparam>
+	  <methodparam><parameter>modifiers</parameter></methodparam>
+	  <methodparam><parameter>signal_name</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis><methodsynopsis language="python">
+	  <methodname><link
+linkend="function-gtk--binding-entry-remove">gtk.binding_entry_remove</link></methodname>
+	  <methodparam><parameter
+                         role="keyword">class_type</parameter></methodparam>
+	  <methodparam><parameter
+                         role="keyword">keyval</parameter></methodparam>
+	  <methodparam><parameter
+                         role="keyword">modifiers</parameter></methodparam>
+	</methodsynopsis></programlisting>
 
   </refsect1>
 
@@ -493,6 +510,95 @@ by <parameter>object</parameter> to find one matching the key <link
 linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
 specified by <parameter>event</parameter>, and if one was found, activate
 it.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--binding-entry-add-signal">
+      <title>gtk.binding_entry_add_signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.binding_entry_add_signal</methodname>
+	  <methodparam><parameter>object</parameter></methodparam>
+	  <methodparam><parameter>keyval</parameter></methodparam>
+	  <methodparam><parameter>modifiers</parameter></methodparam>
+	  <methodparam><parameter>signal_name</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>object</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gtkobject"><classname>gtk.Object</classname></link>
+class the binding entry will be associated with</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>keyval</parameter>&nbsp;:</term>
+	  <listitem><simpara>the key value</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>modifiers</parameter>&nbsp;:</term>
+	  <listitem><simpara>the modifier mask</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>signal_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the signal name</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>zero or more pairs of value type-value
+pairs</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.binding_entry_add_signal</function>() function
+adds a binding (specified by <parameter>keyval</parameter> and
+<parameter>modifiers</parameter>) to the binding set of the object class
+derived from <parameter>object</parameter>. The signal specified by
+<parameter>signal_name</parameter> will be emitted with the optional
+arguments specified by the argument pairs denoted by ... that are value type
+and value. This function is used when creating a new widget class to set up
+key bindings.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--binding-entry-remove">
+      <title>gtk.binding_entry_remove</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.binding_entry_remove</methodname>
+	  <methodparam><parameter
+                         role="keyword">class_type</parameter></methodparam>
+	  <methodparam><parameter
+                         role="keyword">keyval</parameter></methodparam>
+	  <methodparam><parameter
+                         role="keyword">modifiers</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">class_type</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gtkobject"><classname>gtk.Object</classname></link>
+class the binding entry will be removed from</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">keyval</parameter>&nbsp;:</term>
+	  <listitem><simpara>the key value</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+role="keyword">modifiers</parameter>&nbsp;:</term>
+	  <listitem><simpara>the modifier mask</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.2 and above.</para>
+      </note>
+
+      <para>The <function>gtk.binding_entry_remove</function>() function
+removes the binding (specified by <parameter>keyval</parameter> and
+<parameter>modifiers</parameter>) from the binding set of the object class
+specified by <parameter>class_type</parameter>.</para>
 
     </refsect2>
 
