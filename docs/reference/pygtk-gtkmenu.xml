@@ -409,6 +409,18 @@ the current pointer position. The <parameter>button</parameter> and
 was pressed to trigger the menu popup and the time the button was pressed.
 These values can usually be retrieved from the "button_press_event".</para>
 
+      <para>The signature of <parameter>func</parameter> is:</para>
+
+      <programlisting>
+def func(menu):
+</programlisting>
+
+      <para><parameter>func</parameter> should return a 3-tuple containing
+the x and y coordinates of the position to draw the menu and a boolean that,
+if <literal>TRUE</literal>, indicates that the menu should be pushed in to
+be completely inside the screen instead of just clamped to the size of the
+screen.</para>
+
     </refsect2>
 
     <refsect2 id="method-gtkmenu--reposition">
@@ -602,7 +614,19 @@ the menu to the widget specified by <parameter>attach_widget</parameter> and
 provides a callback function specified by <parameter>detach_func</parameter>
 that will be invoked when the menu calls the <link
 linkend="method-gtkmenu--detach"><methodname>detach</methodname>()</link>
-method during its destruction.</para>
+method during its destruction. Attaching a menu to a widget associates the
+menu with a widget similar to setting a parent. This is mainly used for
+associating popup menus with a widget and a submenu with a menuitem.</para>
+
+      <para>The signature of <parameter>detach</parameter> is:</para>
+
+      <programlisting>
+def detach_cb(widget, menu):
+</programlisting>
+
+      <para>where <parameter>widget</parameter> is the
+<parameter>attach_widget</parameter> and <parameter>menu</parameter> is the
+menu being detached.</para>
 
     </refsect2>
 
