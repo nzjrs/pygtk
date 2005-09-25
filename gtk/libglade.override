@@ -261,7 +261,7 @@ connect_many(const gchar *handler_name, GObject *obj,
 	Py_DECREF(tuple);
 	return;
     }
-
+    Py_DECREF(tuple);
     self = pygobject_new(obj);
     g_signal_connect_closure(obj, signal_name, closure, after);
     pygobject_watch_closure(self, closure);
