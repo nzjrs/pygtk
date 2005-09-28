@@ -74,9 +74,9 @@ initpango(void)
     PyModule_AddObject(m, "SCALE_LARGE",
 		       PyFloat_FromDouble(PANGO_SCALE_LARGE));
     PyModule_AddObject(m, "SCALE_X_LARGE",
-		       PyFloat_FromDouble(PANGO_SCALE_LARGE));
+		       PyFloat_FromDouble(PANGO_SCALE_X_LARGE));
     PyModule_AddObject(m, "SCALE_XX_LARGE",
-		       PyFloat_FromDouble(PANGO_SCALE_LARGE));    
+		       PyFloat_FromDouble(PANGO_SCALE_XX_LARGE));    
     PyModule_AddObject(m, "SCALE",
 		       PyInt_FromLong(PANGO_SCALE));    
 
