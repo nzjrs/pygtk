@@ -1234,3 +1234,16 @@ _wrap_gtk_text_iter_backward_find_char(PyGObject *self, PyObject *args,
 
     return PyBool_FromLong(ret);
 }
+%%
+override gtk_text_view_get_default_attributes noargs
+/* Workaround gtk bug #317455; moreover, copy_boxed should have been FALSE
+ * in the first place (missing caller-owns-return in the defs) */
+static PyObject *
+_wrap_gtk_text_view_get_default_attributes(PyGObject *self)
+{
+    GtkTextAttributes *ret;
+
+    ret = gtk_text_view_get_default_attributes(GTK_TEXT_VIEW(self->obj));
+    /* pyg_boxed_new handles NULL checking */
+    return pyg_boxed_new(GTK_TYPE_TEXT_ATTRIBUTES, ret, FALSE, TRUE);
+}
