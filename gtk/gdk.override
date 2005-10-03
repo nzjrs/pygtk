@@ -2223,7 +2223,7 @@ _wrap_gdk_gc_set_dashes(PyGObject *self, PyObject *args)
 {
     gint dash_offset, n, i;
     PyObject *list;
-    guchar *dash_list;
+    gint8 *dash_list;
 
     if (!PyArg_ParseTuple(args, "iO:GdkGC.set_dashes", &dash_offset, &list))
         return NULL;
@@ -2232,7 +2232,7 @@ _wrap_gdk_gc_set_dashes(PyGObject *self, PyObject *args)
         return NULL;
     }
     n = PySequence_Length(list);
-    dash_list = g_new(char, n);
+    dash_list = g_new(gint8, n);
     for (i = 0; i < n; i++) {
         PyObject *item = PySequence_GetItem(list, i);
         Py_DECREF(item);
@@ -2242,7 +2242,7 @@ _wrap_gdk_gc_set_dashes(PyGObject *self, PyObject *args)
             g_free(dash_list);
             return NULL;
         }
-        dash_list[i] = (guchar)PyInt_AsLong(item);
+        dash_list[i] = (gint8)PyInt_AsLong(item);
         if (dash_list[i] == 0) {
             PyErr_SetString(PyExc_TypeError, "sequence member must not be 0");
             g_free(dash_list);
@@ -2346,7 +2346,8 @@ _wrap_gdk_property_get(PyGObject *self, PyObject *args, PyObject *kwargs)
 
         switch (aformat) {
         case 8:
-            if ((pdata = PyString_FromStringAndSize(data, alength)) == NULL)
+            if ((pdata = PyString_FromStringAndSize((char*)data,
+						    alength)) == NULL)
                 return NULL;
             break;
         case 16: {
@@ -2442,7 +2443,7 @@ _wrap_gdk_property_change(PyGObject *self, PyObject *args, PyObject *kwargs)
             PyErr_SetString(PyExc_TypeError, "data not a string and format=8");
             return NULL;
         }
-        data = PyString_AsString(pdata);
+        data = (guchar*)PyString_AsString(pdata);
         nelements = PyString_Size(pdata);
         break;
     case 16: {
@@ -2840,7 +2841,7 @@ _wrap_gdk_pixbuf_get_pixels(PyGObject *self)
         return NULL;
     }
 
-    return PyString_FromStringAndSize(pixels, rowstride*height);
+    return PyString_FromStringAndSize((char*)pixels, rowstride*height);
 }
 %%
 override gdk_pixbuf_save kwargs
@@ -3273,7 +3274,7 @@ _wrap_gdk_pixbuf_new_from_data(PyObject *self, PyObject *args,
     gboolean has_alpha;
     gint data_len, bits_per_sample, width, height, rowstride;
     gint required_len;
-    gchar *data_copy;
+    guchar *data_copy;
     GdkPixbuf *pixbuf;
     PyObject *ret;
 
@@ -3295,9 +3296,9 @@ _wrap_gdk_pixbuf_new_from_data(PyObject *self, PyObject *args,
 	return PyErr_NoMemory();
     memcpy(data_copy, data, required_len);
     pixbuf = gdk_pixbuf_new_from_data(data_copy, colorspace, has_alpha, 
-				       bits_per_sample, width, height, 
-				       rowstride, 
-				       (GdkPixbufDestroyNotify )g_free, NULL);
+				      bits_per_sample, width, height, 
+				      rowstride, 
+				      (GdkPixbufDestroyNotify )g_free, NULL);
     ret = pygobject_new((GObject *)pixbuf);
     g_object_unref(pixbuf);
     return ret;
@@ -3318,7 +3319,7 @@ _wrap_gdk_pixbuf_new_from_array(PyObject *self, PyObject *args,
     gboolean has_alpha;
     gint width, height;
     gint i, j, nc, rs, st0, st1, st2;
-    gchar *src, *dst;
+    guchar *src, *dst;
 
     if (!have_numpy())
 	return NULL;

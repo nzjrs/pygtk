@@ -362,8 +362,8 @@ _wrap_gtk_selection_data__get_data(PyGObject *self, void *closure)
 {
     if (pyg_boxed_get(self, GtkSelectionData)->length >= 0) {
         return PyString_FromStringAndSize(
-                        pyg_boxed_get(self, GtkSelectionData)->data,
-                        pyg_boxed_get(self, GtkSelectionData)->length);
+	    (char*)pyg_boxed_get(self, GtkSelectionData)->data,
+	    pyg_boxed_get(self, GtkSelectionData)->length);
     } else {
         Py_INCREF(Py_None);
         return Py_None;
@@ -398,9 +398,10 @@ override gtk_selection_data_get_text noargs
 static PyObject *
 _wrap_gtk_selection_data_get_text(PyObject *self)
 {
-    guchar *ret;
+    gchar *ret;
 
-    ret = gtk_selection_data_get_text(pyg_boxed_get(self, GtkSelectionData));
+    ret = (char*)gtk_selection_data_get_text(pyg_boxed_get(self,
+							   GtkSelectionData));
     if (ret) {
         PyObject *py_ret = PyUnicode_DecodeUTF8(ret, strlen(ret), "strict");
         g_free(ret);
