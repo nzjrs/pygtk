@@ -2999,7 +2999,10 @@ pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
     PyObject *retobj;
     gboolean ret = FALSE;
 
-    g_assert (cunote->func);
+      /* gracefully guard against NULL values */
+    g_return_val_if_fail(cunote->func, TRUE);
+    g_return_val_if_fail(key, TRUE);
+    g_return_val_if_fail(iter, TRUE);
 
     state = pyg_gil_state_ensure();
 
@@ -3017,7 +3020,7 @@ pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
                                      py_model, py_column, py_key, py_iter);
 
     if (retobj)
-        ret = retobj == Py_True ? TRUE : FALSE;
+        ret = (PyObject_IsTrue(retobj)? TRUE : FALSE);
     if (PyErr_Occurred()) {
         PyErr_Print();
     }
