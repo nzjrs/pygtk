@@ -33,8 +33,16 @@ except ImportError:
 import gobject as _gobject
 
 # load the required modules:
-import keysyms
 from _gtk import *
+import sys
+# init_gtk calls PySys_SetArgv which calls sys.path.insert(0, ''),
+# that is already there unless we're running embedded, so check
+# if '' is present twice and remove it
+if len(sys.path) >= 2 and sys.path[0] == sys.path[1]:
+    del sys.path[0]
+del sys
+
+import keysyms
 import gdk # this is created by the _gtk import
 
 threads_init = gdk.threads_init
