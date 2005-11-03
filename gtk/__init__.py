@@ -33,14 +33,15 @@ except ImportError:
 import gobject as _gobject
 
 # load the required modules:
-from _gtk import *
 import sys
+sys_path = sys.path[:]
+from _gtk import *
+
 # init_gtk calls PySys_SetArgv which calls sys.path.insert(0, ''),
-# that is already there unless we're running embedded, so check
-# if '' is present twice and remove it
-if len(sys.path) >= 2 and sys.path[0] == sys.path[1]:
-    del sys.path[0]
-del sys
+# which causes problems for pychecker, restore it if modified.
+if sys.path != sys_path:
+    sys.path = sys_path
+del sys, sys_path
 
 import keysyms
 import gdk # this is created by the _gtk import
