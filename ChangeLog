@@ -1,3 +1,19 @@
+2005-11-09  Gustavo J. A. M. Carneiro  <gjc@inescporto.pt>
+
+	* gobject/pygobject.c (CHECK_GOBJECT): Use %p formatter instead of 0x%x.
+
+	* gobject/pygobject-private.h (pyg_gil_state_ensure)
+	(pyg_gil_state_release): Sync these macro definitions with the
+	version in pygobject.h, i.e. don't call pygobject API
+	replacements, call the Python API directly.
+
+	* tests/Makefile.am (tests): Add test_glade.py.
+
+	* tests/test_glade.py: Add this file which was missing from CVS.
+
+	* gtk/gtk.defs (gtk_widget_render_icon): Add missing
+	"(caller-owns-return #t)" to plug a leak.
+
 2005-11-03  Manish Singh  <yosh@gimp.org> 
 
 	reviewed by: Johan Dahlin  <jdahlin@async.com.br>
