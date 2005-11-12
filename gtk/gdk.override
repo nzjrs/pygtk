@@ -3843,6 +3843,7 @@ _wrap_gdk_pixbuf_animation_get_iter(PyGObject *self, PyObject *args,
     GdkPixbufAnimationIter *ret;
     double start_time = 0.0;
     GTimeVal starttime, *starttimep;
+    PyObject *pyretval;
 
     if (!PyArg_ParseTupleAndKeywords(
 	    args, kwargs, "|d:GdkPixbufAnimation.get_iter",
@@ -3864,7 +3865,10 @@ _wrap_gdk_pixbuf_animation_get_iter(PyGObject *self, PyObject *args,
     ret = gdk_pixbuf_animation_get_iter(GDK_PIXBUF_ANIMATION(self->obj),
 					starttimep);
     /* pygobject_new handles NULL checking */
-    return pygobject_new((GObject *)ret);
+    pyretval = pygobject_new((GObject *)ret);
+    if (ret)
+        g_object_unref(ret);
+    return pyretval;
 }
 %%
 override gdk_pixbuf_animation_iter_advance kwargs
