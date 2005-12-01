@@ -59,12 +59,17 @@ class Window(gtk.Window):
         ag = gtk.ActionGroup('WindowActions')
         actions = [
             ('FileMenu', None, '_File'),
-            ('New',      gtk.STOCK_NEW, '_New', '<control>N', 'Create a new file', self.file_new_cb),
-            ('Open',     gtk.STOCK_OPEN, '_Open', '<control>O', 'Open a file', self.file_open_cb),
-            ('Close',    gtk.STOCK_CLOSE, '_Close', '<control>W', 'Close the current window', self.file_close_cb),
-            ('Quit',     gtk.STOCK_QUIT, '_Quit', '<control>Q', 'Quit application', self.file_quit_cb),
+            ('New',      gtk.STOCK_NEW, '_New', '<control>N',
+             'Create a new file', self.file_new_cb),
+            ('Open',     gtk.STOCK_OPEN, '_Open', '<control>O',
+             'Open a file', self.file_open_cb),
+            ('Close',    gtk.STOCK_CLOSE, '_Close', '<control>W',
+             'Close the current window', self.file_close_cb),
+            ('Quit',     gtk.STOCK_QUIT, '_Quit', '<control>Q',
+             'Quit application', self.file_quit_cb),
             ('HelpMenu', None, '_Help'),
-            ('About',    None, '_About', None, 'About application', self.help_about_cb),
+            ('About',    None, '_About', None, 'About application',
+             self.help_about_cb),
             ]
         ag.add_actions(actions)
         self.ui = gtk.UIManager()
@@ -106,7 +111,8 @@ class Window(gtk.Window):
 
     def help_about_cb(self, action):
         dialog = gtk.MessageDialog(self,
-                                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   (gtk.DIALOG_MODAL |
+                                    gtk.DIALOG_DESTROY_WITH_PARENT),
                                    gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
                                    "Small example of the new GtkUIManger")
         dialog.run()
