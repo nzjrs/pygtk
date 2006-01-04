@@ -178,8 +178,15 @@ gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
                                   'pango-types.defs',
                                   'gtk/gdk-types.defs'])
 # Gtk+
-gtk = TemplateExtension(name='gtk', pkc_name='gtk+-2.0',
-                        pkc_version=GTK_REQUIRED,
+if pangocairo.can_build():
+    gtk_pkc_name=('gtk+-2.0','pycairo')
+    gtk_pkc_version=(GTK_REQUIRED,PYCAIRO_REQUIRED)
+else:
+    gtk_pkc_name='gtk+-2.0'
+    gtk_pkc_version=GTK_REQUIRED
+    
+gtk = TemplateExtension(name='gtk', pkc_name=gtk_pkc_name,
+                        pkc_version=gtk_pkc_version,
                         output='gtk._gtk',
                         sources=['gtk/gtkmodule.c',
                                  'gtk/gtkobject-support.c',
@@ -232,6 +239,7 @@ if pango.can_build():
     if pangocairo.can_build():
         ext_modules.append(pangocairo)
         data_files.append((DEFS_DIR, ('pangocairo.defs',)))
+        GLOBAL_MACROS.append(('HAVE_PYCAIRO',1))
 if gtk.can_build():
     if '--disable-numeric' in sys.argv:
         sys.argv.remove('--disable-numeric')
