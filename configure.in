@@ -97,6 +97,11 @@ if test -n "$export_dynamic"; then
   GLIB_LIBS=`echo $GLIB_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
+dnl  Check if we should build a private copy of pygobject
+PKG_CHECK_MODULES(PYGOBJECT, pygobject >= 2.9,
+	build_gobject=false, build_gobject=true)
+AM_CONDITIONAL(BUILD_GOBJECT, $build_gobject)
+
 dnl atk
 PKG_CHECK_MODULES(ATK, atk >= atk_required_version,
 	build_atk=true, build_atk=false)
@@ -197,7 +202,7 @@ AC_OUTPUT
 echo
 echo "The following modules will be built:"
 echo
-true                     && echo     gobject
+$build_gobject           && echo     gobject
 $build_atk               && echo     atk
 $build_pango             && echo     pango
 $build_pangocairo        && echo     pangocairo
@@ -213,6 +218,7 @@ if test ! $build_atk || ! $build_pango || \
         ! $build_pangocairo ; then
   echo "The following modules will NOT be built:"
   echo
+  $build_gobject           || echo     "gobject (newer version already installed)"
   $build_atk               || echo     atk
   $build_pango             || echo     pango
   $build_pangocairo        || echo     pangocairo

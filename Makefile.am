@@ -4,7 +4,13 @@ if BUILD_GTK
   GTK_SUBDIR = gtk
 endif
 
-SUBDIRS = codegen gobject . $(GTK_SUBDIR) docs examples tests 
+SUBDIRS = codegen
+
+if BUILD_GOBJECT
+  SUBDIRS += gobject
+endif
+
+SUBDIRS += . $(GTK_SUBDIR) docs examples tests 
 
 PLATFORM_VERSION = 2.0
 
@@ -28,7 +34,10 @@ INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) -I$(top_srcdir)/gobject
 
 # pkg-config files
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = pygobject-$(PLATFORM_VERSION).pc
+pkgconfig_DATA =
+if BUILD_GOBJECT
+pkgconfig_DATA += pygobject-$(PLATFORM_VERSION).pc
+endif
 if BUILD_GTK
 pkgconfig_DATA += pygtk-$(PLATFORM_VERSION).pc
 endif
@@ -38,13 +47,17 @@ defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
 # python
+if BUILD_GOBJECT
 pyexec_PYTHON = pygtk.py
+endif
 pyexec_LTLIBRARIES =
 noinst_PYTHON = ltihooks.py
 
 # pygtk scripts
+if BUILD_GOBJECT
 pkgpythondir = $(pyexecdir)/gtk-2.0
 pkgpython_PYTHON = dsextras.py
+endif
 
 # pygtk extension modules
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
