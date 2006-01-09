@@ -1,8 +1,6 @@
 import os
 import sys
 
-import gobject
-
 def importModules(buildDir, srcDir):
     # Be very careful when you change this code, it's
     # fragile and the order is really significant
@@ -11,11 +9,16 @@ def importModules(buildDir, srcDir):
     sys.path.insert(0, srcDir)
     # atk, pango
     sys.path.insert(0, buildDir)
+    # gobject
+    sys.path.insert(0, os.path.join(buildDir, 'gobject'))
     # _gtk, keysyms, glade
     sys.path.insert(0, os.path.join(buildDir, 'gtk'))
+    # testhelper
+    sys.path.insert(0, os.path.join(buildDir, 'tests'))
     sys.argv.append('--g-fatal-warnings')
     import ltihooks
     
+    gobject = importModule('gobject', buildDir, 'gobject/gobject.la')
     atk = importModule('atk', buildDir)
     pango = importModule('pango', buildDir)
     gtk = importModule('gtk', buildDir, 'gtk')
@@ -24,6 +27,8 @@ def importModules(buildDir, srcDir):
         glade = importModule('gtk.glade', buildDir, 'glade.la')
     except ImportError:
         glade = None
+        
+    testhelper = importModule('testhelper', '.')
         
     ltihooks.uninstall()
     del ltihooks
