@@ -1,22 +1,11 @@
 INCLUDES = \
 	$(PYTHON_INCLUDES) \
-	$(GLIB_CFLAGS) \
+	$(PYGOBJECT_FLAGS) \
 	$(PANGO_CFLAGS) \
 	$(ATK_CFLAGS) \
-	$(GTK_CFLAGS) \
-	-I$(top_srcdir)/gobject
+	$(GTK_CFLAGS)
 
-EXTRA_DIST = $(tests) common.py runtests.py test-thread.h test-unknown.h testmodule.py leak.glade
-
-noinst_LTLIBRARIES = testhelper.la
-linked_LIBS = testhelper.la
-
-testhelper_la_LDFLAGS = -module -avoid-version
-testhelper_la_LIBADD = $(GLIB_LIBS)
-testhelper_la_SOURCES = \
-	testhelpermodule.c \
-	test-thread.c \
-	test-unknown.c 
+EXTRA_DIST = $(tests) common.py runtests.py leak.glade
 
 tests =  \
 	test_glade.py \
@@ -24,21 +13,9 @@ tests =  \
 	test_dialog.py \
 	test_enum.py \
 	test_gdk.py \
-	test_gtype.py \
-	test_mainloop.py \
 	test_radiobutton.py \
-	test_properties.py \
-	test_signal.py \
-	test_subprocess.py \
-	test_subtype.py \
 	test_gdkevent.py \
-	test_unknown.py \
-	test_textview.py \
-	test_source.py
-
-# This is a hack to make sure a shared library is built
-testhelper.la: $(testhelper_la_OBJECTS) $(testhelper_la_DEPENDENCIES)
-	$(LINK) -rpath $(pkgpyexecdir) $(testhelper_la_LDFLAGS) $(testhelper_la_OBJECTS) $(testhelper_la_LIBADD) $(LIBS)
+	test_textview.py
 
 check-local: $(top_srcdir)/gtk/__init__.py
 	@if test "$(top_builddir)" != "$(top_srcdir)"; then \

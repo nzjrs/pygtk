@@ -4,7 +4,7 @@ PLATFORM_VERSION = 2.0
 
 CLEANFILES =
 EXTRA_DIST = 
-INCLUDES = $(PYTHON_INCLUDES) -I$(top_srcdir)/gobject 
+INCLUDES = $(PYTHON_INCLUDES) $(PYGOBJECT_CFLAGS)
 
 # defs files
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
