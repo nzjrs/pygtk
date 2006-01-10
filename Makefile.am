@@ -30,7 +30,12 @@ EXTRA_DIST = 				\
 	PKG-INFO.in 			\
 	setup.py 			\
 	THREADS
-INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS) -I$(top_srcdir)/gobject
+INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS)
+if BUILD_GOBJECT
+  INCLUDES += -I$(top_srcdir)/gobject
+else
+  INCLUDES += -I$(PYGOBJECT_INCLUDEDIR)
+endif
 
 # pkg-config files
 pkgconfigdir = $(libdir)/pkgconfig
@@ -54,8 +59,8 @@ pyexec_LTLIBRARIES =
 noinst_PYTHON = ltihooks.py
 
 # pygtk scripts
-if BUILD_GOBJECT
 pkgpythondir = $(pyexecdir)/gtk-2.0
+if BUILD_GOBJECT
 pkgpython_PYTHON = dsextras.py
 endif
 

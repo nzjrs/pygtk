@@ -98,9 +98,12 @@ if test -n "$export_dynamic"; then
 fi
 
 dnl  Check if we should build a private copy of pygobject
-PKG_CHECK_MODULES(PYGOBJECT, pygobject >= 2.9,
+PKG_CHECK_MODULES(PYGOBJECT, [pygobject-2.0 >= 2.9],
 	build_gobject=false, build_gobject=true)
 AM_CONDITIONAL(BUILD_GOBJECT, $build_gobject)
+
+PYGOBJECT_INCLUDEDIR=`$PKG_CONFIG --variable=pygtkincludedir "pygobject-2.0 >= 2.9"`
+AC_SUBST(PYGOBJECT_INCLUDEDIR)
 
 dnl atk
 PKG_CHECK_MODULES(ATK, atk >= atk_required_version,
@@ -215,7 +218,7 @@ echo
 
 if test ! $build_atk || ! $build_pango || \
         ! $build_gtk || ! $build_libglade ||\
-        ! $build_pangocairo ; then
+        ! $build_pangocairo || ! $build_gobject ; then
   echo "The following modules will NOT be built:"
   echo
   $build_gobject           || echo     "gobject (newer version already installed)"

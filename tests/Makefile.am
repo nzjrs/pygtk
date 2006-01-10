@@ -3,8 +3,12 @@ INCLUDES = \
 	$(GLIB_CFLAGS) \
 	$(PANGO_CFLAGS) \
 	$(ATK_CFLAGS) \
-	$(GTK_CFLAGS) \
-	-I$(top_srcdir)/gobject
+	$(GTK_CFLAGS)
+if BUILD_GOBJECT
+  INCLUDES += -I$(top_srcdir)/gobject
+else
+  INCLUDES += -I$(PYGOBJECT_INCLUDEDIR)
+endif
 
 EXTRA_DIST = $(tests) common.py runtests.py test-thread.h test-unknown.h testmodule.py leak.glade
 
