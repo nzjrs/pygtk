@@ -130,6 +130,7 @@ endif
 	&& cp gen-$*.c $*.c \
 	&& rm -f gen-$*.c
 
+if BUILD_GOBJECT
 # install pth file.
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(pythondir)
@@ -139,6 +140,7 @@ install-exec-local:
 	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pyexecdir)/pygtk.pth
 uninstall-local:
 	rm -f $(DESTDIR)$(pythondir)/pygtk.pth $(DESTDIR)$(pyexecdir)/pygtk.pth
+endif
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
