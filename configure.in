@@ -92,7 +92,7 @@ dnl get rid of the -export-dynamic stuff from the configure flags ...
 export_dynamic=`(./libtool --config; echo eval echo \\$export_dynamic_flag_spec) | sh`
 
 dnl glib
-AM_PATH_GLIB_2_0(glib_required_version,,[AC_MSG_ERROR(maybe you want the pygtk-2-4 branch?)],gobject $extra_mods)
+AM_PATH_GLIB_2_0(glib_required_version,,[AC_MSG_ERROR(gobject is required to build pygtk?)],gobject $extra_mods)
 if test -n "$export_dynamic"; then
   GLIB_LIBS=`echo $GLIB_LIBS | sed -e "s/$export_dynamic//"`
 fi
