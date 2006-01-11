@@ -43,9 +43,7 @@ pkgconfig_DATA =
 if BUILD_GOBJECT
 pkgconfig_DATA += pygobject-$(PLATFORM_VERSION).pc
 endif
-if BUILD_GTK
 pkgconfig_DATA += pygtk-$(PLATFORM_VERSION).pc
-endif
 
 # defs files
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
