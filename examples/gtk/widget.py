@@ -47,6 +47,9 @@ class PyGtkWidget(gtk.Widget):
         self.style.set_background(self.window, gtk.STATE_NORMAL)
         self.window.move_resize(*self.allocation)
 
+    def do_unrealize(self):
+	self.window.set_user_data(None)
+        
     def do_size_request(self, requisition):
 	width, height = self.layout.get_size()
 	requisition.width = width // pango.SCALE + BORDER_WIDTH*4

@@ -18,7 +18,10 @@ EXTRA_DIST = \
 	atk/atk-demo.py		\
 	gobject/properties.py	\
 	gobject/signal.py	\
+	gtk/bin.py		\
 	gtk/filechooser.py	\
+	gtk/layout.py		\
+	gtk/sizegroup.py	\
 	gtk/uimanager.py	\
 	gtk/widget.py		\
 	glade/README		\
