@@ -108,8 +108,6 @@ class PixbufsDemo(gtk.Window):
         #pixels = frame.get_pixels()[len(frame.get_pixels()) + rowstride * event.area.y + event.area.x * 3]
         pixels = self.frame.get_pixels()
 
-        # FIXME: draw_rgb_image_dithalign seems not to be available
-        #draw_area.window.draw_rgb_image_dithalign(widget.style.black_gc,
         draw_area.window.draw_rgb_image(
             draw_area.style.black_gc,
             event.area.x, event.area.y,
