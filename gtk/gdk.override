@@ -307,6 +307,10 @@ _wrap_gdk_draw_rgb_image(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
         return NULL;
     }
+      /* We always call gdk_draw_rgb_image_dithalign instead of
+       * gdk_draw_rgb_image, since gdk_draw_rgb_image is strictly
+       * equivalent to calling gdk_draw_rgb_image_dithalign with
+       * xdith=0 and ydith=0, which are their default values. */
     gdk_draw_rgb_image_dithalign(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj),
                                  x, y, width, height, dith, rgb_buf,
                                  rowstride, xdith, ydith);
@@ -348,6 +352,10 @@ _wrap_gdk_draw_rgb_32_image(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_IndexError, "rgb_buf is not large enough");
         return NULL;
     }
+      /* We always call gdk_draw_rgb_32_image_dithalign instead of
+       * gdk_draw_rgb_32_image, since gdk_draw_rgb_32_image is strictly
+       * equivalent to calling gdk_draw_rgb_32_image_dithalign with
+       * xdith=0 and ydith=0, which are their default values. */
     gdk_draw_rgb_32_image_dithalign(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj),
                                     x, y, width, height, dith, rgb_buf,
                                     rowstride, xdith, ydith);
