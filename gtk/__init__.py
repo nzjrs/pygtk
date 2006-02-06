@@ -8,32 +8,39 @@
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-#                                                                             
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-#                                                                             
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
+import os
+import sys
 from types import ModuleType as _module
 from warnings import warn as _warn
 
 # this can go when things are a little further along
 try:
-    import ltihooks, sys
+    import ltihooks
     sys.path.insert(1, 'gobject')
-    del ltihooks, sys
+    del ltihooks
 except ImportError:
     pass
+
+_is_pydoc = False
+if sys.argv:
+    name = os.path.basename(sys.argv[0])
+    if 'pydoc' in name:
+        _is_pydoc = True
 
 import gobject as _gobject
 
 # load the required modules:
-import sys
 sys_path = sys.path[:]
 from _gtk import *
 
@@ -64,17 +71,18 @@ class _Deprecated:
             self.module = module
         else:
             self.module = 'gtk'
-            
+
     def __repr__(self):
         return '<deprecated function %s>' % (self.oldname)
-    
+
     def __call__(self, *args, **kwargs):
-        oldname = 'gtk.' + self.oldname
-	newname = self.module + '.' + self.name
-        message = '%s is deprecated, use %s instead' % (oldname, newname)
-        # DeprecationWarning is imported from _gtk, so it's not the same
-        # as the one found in exceptions.
-        _warn(message, DeprecationWarning, 2)
+        if not _is_pydoc:
+            oldname = 'gtk.' + self.oldname
+            newname = self.module + '.' + self.name
+            message = '%s is deprecated, use %s instead' % (oldname, newname)
+            # DeprecationWarning is imported from _gtk, so it's not the same
+            # as the one found in exceptions.
+            _warn(message, DeprecationWarning, 2)
         try:
 	    return self.func(*args, **kwargs)
 	except TypeError, e:
@@ -86,27 +94,29 @@ class _DeprecatedConstant:
         self._v = value
         self._name = name
         self._suggestion = suggestion
-        
+
     def _deprecated(self, value):
-        message = '%s is deprecated, use %s instead' % (self._name,
-                                                        self._suggestion)
-        _warn(message, DeprecationWarning, 3)
+        if not _is_pydoc:
+            message = '%s is deprecated, use %s instead' % (self._name,
+                                                            self._suggestion)
+            _warn(message, DeprecationWarning, 3)
         return value
-    
+
     __nonzero__ = lambda self: self._deprecated(self._v == True)
     __int__     = lambda self: self._deprecated(int(self._v))
     __str__     = lambda self: self._deprecated(str(self._v))
     __repr__    = lambda self: self._deprecated(repr(self._v))
     __cmp__     = lambda self, other: self._deprecated(cmp(self._v, other))
-        
+
 # _gobject deprecation
 class _GObjectWrapper(_module):
     _gobject = _gobject
     def __getattr__(self, attr):
-        _warn('gtk._gobject is deprecated, use gobject directly instead',
-	      DeprecationWarning, 2)
+        if not _is_pydoc:
+            _warn('gtk._gobject is deprecated, use gobject directly instead',
+                  DeprecationWarning, 2)
         return getattr(self._gobject, attr)
-    
+
 # old names compatibility ...
 idle_add       = _Deprecated(_gobject.idle_add, 'idle_add', 'gobject')
 idle_remove    = _Deprecated(_gobject.source_remove, 'idle_remove', 'gobject')
@@ -129,10 +139,10 @@ create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
 
 TRUE = _DeprecatedConstant(True, 'gtk.TRUE', 'True')
 FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
-	    
+
 _gobject = _GObjectWrapper('gtk._gobject')
 
 # Can't figure out how to deprecate gdk.Warning
 gdk.Warning = Warning
 
-del _Deprecated, _DeprecatedConstant, _GObjectWrapper, _module, 
+del _Deprecated, _DeprecatedConstant, _GObjectWrapper, _module,
