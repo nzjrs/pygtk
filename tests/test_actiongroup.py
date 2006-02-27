@@ -106,10 +106,10 @@ class ActionGroupTest(unittest.TestCase):
         gc.collect()             # Clean out unreachable objects
 
         del ag0
-        assert gc.collect() == 1 # Collect just the ActionGroup
+        self.assertEqual(gc.collect(), 1) # Collect just the ActionGroup
 
         uimanager.ensure_update()
-        assert gc.collect() == 6 # Now the GtkActions have lost their last
+        self.assertEqual(gc.collect(), 6) # Now the GtkActions have lost their last
                                  # GObject reference; they should be collected.
                                  # We have a ToggleAction, an Action and a
                                  # RadioAction, plus self.cb is bound in three

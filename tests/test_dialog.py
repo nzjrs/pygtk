@@ -1,5 +1,7 @@
 import sys
 import unittest
+import gc
+import weakref
 
 from common import gtk
 
@@ -19,6 +21,15 @@ class MessageDialogTest(unittest.TestCase):
         # This depends on 311254
         #type('Sub', (gtk.MessageDialog,), {'__gtype_name__': 'SubDialog'})
         #self.assertEqual(sub.__gtype__.name, 'SubDialog')
+
+    def testDialogLeak(self):
+        dlg = gtk.Dialog()
+        dlg.destroy()
+        ref = weakref.ref(dlg)
+        del dlg
+        while gc.collect():
+            pass
+        self.assertEqual(ref(), None)
         
 if __name__ == '__main__':
     unittest.main()

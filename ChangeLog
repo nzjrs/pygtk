@@ -1,3 +1,14 @@
+2006-02-27  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* tests/test_dialog.py (MessageDialogTest.testDialogLeak): Add
+	test for bug #332771.
+
+	* tests/test_actiongroup.py (ActionGroupTest.timeout_cb): Use
+	self.assertEqual instead of plain assert.
+
+	* gtk/gtk.override (gtk_dialog_new_with_buttons): Remove one too
+	many g_object_ref.  Fixes Bug 332771: "gtk.Dialog leak".
+
 2006-02-20  Gustavo J. A. M. Carneiro  <gjc@inescporto.pt>
 
 	* gtk/gdkcairo.override: Don't raise an exception if pangocairo
