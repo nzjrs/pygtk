@@ -125,6 +125,7 @@ class Layout(gtk.Container):
 
     def do_unrealize(self):
 	self._bin_window.set_user_data(None)
+        self._bin_window.destroy()
         self._bin_window = None
         gtk.Container.do_unrealize(self)
 
