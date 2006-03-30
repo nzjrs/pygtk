@@ -20,7 +20,7 @@ EXTRA_DIST = \
 	gobject/signal.py	\
 	gtk/bin.py		\
 	gtk/filechooser.py	\
-	gtk/layout.py		\
+	gtk/scrollable.py	\
 	gtk/sizegroup.py	\
 	gtk/uimanager.py	\
 	gtk/widget.py		\
