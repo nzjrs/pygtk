@@ -139,9 +139,6 @@ init_gtk(void)
     pygobject_register_sinkfunc(GTK_TYPE_INVISIBLE, sink_gtkinvisible);
     pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
 
-    /* set the default python encoding to utf-8 */
-    PyUnicode_SetDefaultEncoding("utf-8");
-
     /* initialise GTK ... */
     av = PySys_GetObject("argv");
     if (av != NULL) {
