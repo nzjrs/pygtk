@@ -478,8 +478,18 @@ class ObjectArg(ArgType):
 		info.codebefore.append(self.null % {'name':pname,
                                                     'cast':self.cast,
                                                     'type':self.objname}) 
-            info.arglist.append(pname)
-            info.add_parselist('O', ['&py_' + pname], [pname])
+            if ptype.endswith('*'):
+        	typename = ptype[:-1]
+                try:
+                    const, typename = typename.split('const-')
+                except ValueError:
+                    const = ''
+        	if typename != ptype:
+            	    info.arglist.append('(%s *) %s' % (ptype[:-1], pname))
+        	else:
+            	    info.arglist.append(pname)
+            
+	    info.add_parselist('O', ['&py_' + pname], [pname])
 	else:
 	    if pdflt:
 		info.varlist.add(self.objname, '*' + pname + ' = ' + pdflt)
@@ -820,6 +830,7 @@ class ArgMatcher:
         oa = ObjectArg(ptype, parent, typecode)
         self.register(ptype, oa)  # in case I forget the * in the .defs
 	self.register(ptype+'*', oa)
+	self.register('const-'+ptype+'*', oa)
         if ptype == 'GdkPixmap':
             # hack to handle GdkBitmap synonym.
             self.register('GdkBitmap', oa)
