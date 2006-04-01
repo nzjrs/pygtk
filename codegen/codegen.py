@@ -689,7 +689,7 @@ class Wrapper:
         # write the PyMethodDef structure
         functions.append('    { NULL, NULL, 0, NULL }\n')
 
-        self.fp.write('static const PyMethodDef ' + prefix + '_functions[] = {\n')
+        self.fp.write('const PyMethodDef ' + prefix + '_functions[] = {\n')
         self.fp.write(string.join(functions, ''))
         self.fp.write('};\n\n')
 
