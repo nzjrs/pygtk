@@ -5,6 +5,13 @@ from copy import *
 def get_valid_scheme_definitions(defs):
     return [x for x in defs if isinstance(x, tuple) and len(x) >= 2]
 
+def unescape(s):
+    s = s.replace('\r\n', '\\r\\n').replace('\t', '\\t')
+    return s.replace('\r', '\\r').replace('\n', '\\n')
+
+def make_docstring(lines):
+    return "(char *) " + '\n'.join(['"%s"' % unescape(s) for s in lines])
+
 # New Parameter class, wich emulates a tuple for compatibility reasons
 class Parameter(object):
     def __init__(self, ptype, pname, pdflt, pnull, prop=None):
@@ -12,7 +19,7 @@ class Parameter(object):
         self.pname = pname
         self.pdflt = pdflt
         self.pnull = pnull
-        
+
     def __len__(self): return 4
     def __getitem__(self, i):
         return (self.ptype, self.pname, self.pdflt, self.pnull)[i]
@@ -38,6 +45,7 @@ class Property(object):
 
 
 class Definition:
+    docstring = "NULL"
     def __init__(self, *args):
 	"""Create a new defs object of this type.  The arguments are the
 	components of the definition"""
@@ -73,6 +81,8 @@ class ObjectDef(Definition):
 	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
+	    elif arg[0] == 'docstring':
+                self.docstring = make_docstring(arg[1:])
 	    elif arg[0] == 'parent':
                 self.parent = arg[1]
 	    elif arg[0] == 'c-name':
@@ -94,7 +104,7 @@ class ObjectDef(Definition):
 	fp.write('(define-object ' + self.name + '\n')
 	if self.module:
 	    fp.write('  (in-module "' + self.module + '")\n')
-	if self.parent != (None, None):	
+	if self.parent != (None, None):
 	    fp.write('  (parent "' + self.parent + '")\n')
         for interface in self.implements:
             fp.write('  (implements "' + interface + '")\n')
@@ -121,6 +131,8 @@ class InterfaceDef(Definition):
 	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.module = arg[1]
+	    elif arg[0] == 'docstring':
+                self.docstring = make_docstring(arg[1:])
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
 	    elif arg[0] == 'gtype-id':
@@ -276,6 +288,8 @@ class MethodDefBase(Definition):
 	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'of-object':
                 self.of_object = arg[1]
+	    elif arg[0] == 'docstring':
+                self.docstring = make_docstring(arg[1:])
 	    elif arg[0] == 'c-name':
 		self.c_name = arg[1]
 	    elif arg[0] == 'gtype-id':
@@ -302,7 +316,7 @@ class MethodDefBase(Definition):
             elif arg[0] == 'deprecated':
                 self.deprecated = arg[1]
             else:
-                sys.stderr.write("Warning: %s argument unsupported.\n" 
+                sys.stderr.write("Warning: %s argument unsupported.\n"
                                  % (arg[0]))
                 dump = 1
         if dump:
@@ -310,7 +324,7 @@ class MethodDefBase(Definition):
 
         if self.caller_owns_return is None and self.ret is not None:
             self.guess_return_value_ownership()
-            
+
     def merge(self, old, parmerge):
         self.caller_owns_return = old.caller_owns_return
         self.varargs = old.varargs
@@ -357,7 +371,7 @@ class MethodDef(MethodDefBase):
             if self.__dict__[item] == None:
                 self.write_defs(sys.stderr)
                 raise RuntimeError, "definition missing required %s" % (item,)
-        
+
     def write_defs(self, fp=sys.stdout):
 	fp.write('(define-method ' + self.name + '\n')
         self._write_defs(fp)
@@ -383,6 +397,8 @@ class FunctionDef(Definition):
 	for arg in get_valid_scheme_definitions(args):
 	    if arg[0] == 'in-module':
 		self.in_module = arg[1]
+	    elif arg[0] == 'docstring':
+                self.docstring = make_docstring(arg[1:])
 	    elif arg[0] == 'is-constructor-of':
 		self.is_constructor_of = arg[1]
 	    elif arg[0] == 'c-name':
@@ -465,7 +481,7 @@ class FunctionDef(Definition):
             # parameter names changed and we can't find a match; it's
             # safer to keep the old parameter list untouched.
             self.params = deepcopy(old.params)
-        
+
 	if not self.is_constructor_of:
             try:
                 self.is_constructor_of = old.is_constructor_of

@@ -102,7 +102,7 @@ class Wrapper:
         '    (setattrofunc)%(tp_setattro)s,	/* tp_setattro */\n' \
         '    (PyBufferProcs*)%(tp_as_buffer)s,	/* tp_as_buffer */\n' \
         '    %(tp_flags)s,                      /* tp_flags */\n' \
-        '    NULL, 				/* Documentation string */\n' \
+        '    %(tp_doc)s, 			/* Documentation string */\n' \
         '    (traverseproc)%(tp_traverse)s,	/* tp_traverse */\n' \
         '    (inquiry)%(tp_clear)s,		/* tp_clear */\n' \
         '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
@@ -130,7 +130,7 @@ class Wrapper:
                   'tp_call', 'tp_str', 'tp_as_buffer', 'tp_richcompare', 'tp_iter',
                   'tp_iternext', 'tp_descr_get', 'tp_descr_set', 'tp_init',
                   'tp_alloc', 'tp_new', 'tp_free', 'tp_is_gc',
-                  'tp_traverse', 'tp_clear', 'tp_dealloc', 'tp_flags']
+                  'tp_traverse', 'tp_clear', 'tp_dealloc', 'tp_flags', 'tp_doc']
 
     getter_tmpl = \
         'static PyObject *\n' \
@@ -149,7 +149,8 @@ class Wrapper:
         '    if (PyErr_Warn(PyExc_DeprecationWarning, "%(deprecationmsg)s") < 0)\n' \
         '        return %(errorreturn)s;\n'
 
-    methdef_tmpl = '    { "%(name)s", (PyCFunction)%(cname)s, %(flags)s },\n'
+    methdef_tmpl = '    { "%(name)s", (PyCFunction)%(cname)s, %(flags)s,\n'\
+                   '      %(docstring)s },\n'
 
     noconstructor = \
         'static int\n' \
@@ -230,6 +231,7 @@ class Wrapper:
                                            self.objinfo.name)
         else:
             substdict['classname'] = self.objinfo.name
+        substdict['tp_doc'] = self.objinfo.docstring
 
         # Maybe this could be done in a nicer way, but I'll leave it as it is
         # for now: -- Johan
@@ -430,7 +432,8 @@ class Wrapper:
                 methods.append(self.methdef_tmpl %
                                { 'name':  fixname(meth.name),
                                  'cname': '_wrap_' + method_name,
-                                 'flags': methflags})
+                                 'flags': methflags,
+                                 'docstring': meth.docstring })
                 methods_coverage.declare_wrapped()
             except:
                 methods_coverage.declare_not_wrapped()
@@ -451,7 +454,8 @@ class Wrapper:
                 methods.append(self.methdef_tmpl %
                                { 'name':  method_name,
                                  'cname': '_wrap_' + c_name,
-                                 'flags': methflags})
+                                 'flags': methflags,
+                                 'docstring': meth.docstring })
                 methods_coverage.declare_wrapped()
             except:
                 methods_coverage.declare_not_wrapped()
@@ -465,7 +469,7 @@ class Wrapper:
         if methods:
             methoddefs = '_Py%s_methods' % self.objinfo.c_name
             # write the PyMethodDef structure
-            methods.append('    { NULL, NULL, 0 }\n')
+            methods.append('    { NULL, NULL, 0, NULL }\n')
             self.fp.write('static const PyMethodDef %s[] = {\n' % methoddefs)
             self.fp.write(string.join(methods, ''))
             self.fp.write('};\n\n')
@@ -502,7 +506,8 @@ class Wrapper:
                 methods.append(self.methdef_tmpl %
                                { 'name':  "do_" + fixname(meth.name),
                                  'cname': '_wrap_' + method_name,
-                                 'flags': methflags + '|METH_CLASS'})
+                                 'flags': methflags + '|METH_CLASS',
+                                 'docstring': 'NULL'})
                 vaccessors_coverage.declare_wrapped()
             except:
                 vaccessors_coverage.declare_not_wrapped()
@@ -656,7 +661,8 @@ class Wrapper:
                 functions.append(self.methdef_tmpl %
                                  { 'name':  func.name,
                                    'cname': '_wrap_' + funcname,
-                                   'flags': methflags })
+                                   'flags': methflags,
+                                   'docstring': func.docstring })
                 functions_coverage.declare_wrapped()
             except:
                 functions_coverage.declare_not_wrapped()
@@ -672,7 +678,8 @@ class Wrapper:
                 functions.append(self.methdef_tmpl %
                                  { 'name':  funcname,
                                    'cname': '_wrap_' + funcname,
-                                   'flags': methflags })
+                                   'flags': methflags,
+                                   'docstring': 'NULL'})
                 functions_coverage.declare_wrapped()
             except:
                 functions_coverage.declare_not_wrapped()
@@ -680,7 +687,7 @@ class Wrapper:
                                  % (funcname, exc_info()))
 
         # write the PyMethodDef structure
-        functions.append('    { NULL, NULL, 0 }\n')
+        functions.append('    { NULL, NULL, 0, NULL }\n')
 
         self.fp.write('static const PyMethodDef ' + prefix + '_functions[] = {\n')
         self.fp.write(string.join(functions, ''))
