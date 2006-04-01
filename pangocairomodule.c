@@ -55,9 +55,9 @@ initpangocairo(void)
         return;
 
     PyPangoCairoContext_Type.tp_base = &PycairoContext_Type;
-    if (PyType_Ready(&PyPangoCairoContext_Type) < 0)
+    if (PyType_Ready(&PyPangoCairoContext_Type) < 0) {
         g_return_if_reached();
-
+    }
     init_pygobject();
 
     pypangocairo_register_classes(d);
