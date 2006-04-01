@@ -89,11 +89,15 @@ _pygtk_log_func(const gchar *log_domain,
                 const gchar *message,
                 gpointer user_data)
 {
-    PyGILState_STATE state;
-
-    state = pyg_gil_state_ensure();
-    PyErr_Warn(PyGtkWarning, (char *) message);
-    pyg_gil_state_release(state);
+    if (G_LIKELY(Py_IsInitialized()))
+    {
+        PyGILState_STATE state;
+        
+        state = pyg_gil_state_ensure();
+        PyErr_Warn(PyGtkWarning, (char *) message);
+        pyg_gil_state_release(state);
+    } else
+        g_log_default_handler(log_domain, log_level, message, user_data);
 }
 
 static gboolean
