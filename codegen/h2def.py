@@ -311,7 +311,7 @@ proto_pat=re.compile(r"""
 (?P<ret>(-|\w|\&|\*)+\s*)  # return type
 \s+                   # skip whitespace
 (?P<func>\w+)\s*[(]   # match the function name until the opening (
-\s*(?P<args>.*?)[)]     # group the function arguments
+\s*(?P<args>.*?)\s*[)]     # group the function arguments
 """, re.IGNORECASE|re.VERBOSE)
 #"""
 arg_split_pat = re.compile("\s*,\s*")
