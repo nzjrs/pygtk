@@ -117,7 +117,8 @@ class Overrides:
 		self.staticmethod[func] = True
             elif 'classmethod' in words[1:]:
 		self.classmethod[func] = True
-            
+            if func in self.overrides:
+                raise RuntimeError("Function %s is being overridden more than once" % (func,))
 	    self.overrides[func] = rest
             self.startlines[func] = (startline + 1, filename)
         elif command == 'override-attr':
