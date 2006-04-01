@@ -2804,7 +2804,35 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     if (pyg_enum_get_value(GTK_TYPE_BUTTONS_TYPE, py_buttons, (gint *)&buttons))
         return -1;
 
-      /* Note: with current API (gtk 2.4), it is impossible to
+#if GTK_CHECK_VERSION(2, 9, 0)
+
+    if (flags & GTK_DIALOG_NO_SEPARATOR)
+        g_warning("The gtk.DIALOG_NO_SEPARATOR flag cannot be used for gtk.MessageDialog");
+    
+    pygobject_construct(self, "buttons", buttons,
+                        "message-type", type,
+                        (message_format? "text" : NULL), message_format,
+                        NULL);
+    if (parent != NULL)
+        gtk_window_set_transient_for(GTK_WINDOW(self->obj), parent);
+    
+    if (flags & GTK_DIALOG_MODAL)
+        gtk_window_set_modal(GTK_WINDOW(self->obj), TRUE);
+
+    if (flags & GTK_DIALOG_DESTROY_WITH_PARENT)
+        gtk_window_set_destroy_with_parent(GTK_WINDOW(self->obj), TRUE);
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkMessageDialog object");
+        return -1;
+    }
+    
+    g_object_ref(self->obj); /* we don't own the first reference of windows */
+
+#else
+
+      /* Note: with older API (< 2.10), it is impossible to
        * construct a GtkMessageDialog through g_object_new(), because
        * there is no 'message' property and the label field is
        * private */
@@ -2830,6 +2858,8 @@ _wrap_gtk_message_dialog_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
 
     pygobject_register_wrapper((PyObject *)self);
+
+#endif
     return 0;
 }
 %%
