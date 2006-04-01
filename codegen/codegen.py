@@ -680,7 +680,7 @@ class Wrapper:
         for funcname in self.overrides.get_functions():
             try:
                 data = self.overrides.function(funcname)
-                self.write_function(funcname)
+                self.write_function(funcname, data)
                 methflags = self.get_methflags(funcname)
                 functions.append(self.methdef_tmpl %
                                  { 'name':  funcname,
