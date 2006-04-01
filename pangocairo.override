@@ -22,6 +22,45 @@ import pango.Layout as PyPangoLayout_Type
 import pango.Font as PyPangoFont_Type
 
 %%
+define context_get_font_options kwargs
+static PyObject *
+_wrap_context_get_font_options(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "context", NULL };
+    PyGObject *context;
+    const cairo_font_options_t *font_options;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:pangocairo.context_get_font_options",
+                                     kwlist, &PyPangoContext_Type, &context))
+        return NULL;
+    font_options = pango_cairo_context_get_font_options(PANGO_CONTEXT(context->obj));
+    if (!font_options) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+    return PycairoFontOptions_FromFontOptions(cairo_font_options_copy(font_options));
+}
+
+%%
+define context_set_font_options kwargs
+static PyObject *
+_wrap_context_set_font_options(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "context", "font_options", NULL };
+    PyGObject *context;
+    PycairoFontOptions *options;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!:pangocairo.context_set_font_options",
+                                     kwlist, &PyPangoContext_Type, &context,
+				     &PycairoFontOptions_Type, &options))
+        return NULL;
+    pango_cairo_context_set_font_options(PANGO_CONTEXT(context->obj), options->font_options);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+
+%%
 body
 
 static PyObject *
