@@ -2169,7 +2169,7 @@
   (c-name "gdk_pango_renderer_set_drawable")
   (return-type "none")
   (parameters
-    '("GdkDrawable*" "drawable")
+    '("GdkDrawable*" "drawable" (null-ok))
   )
 )
 
@@ -2178,7 +2178,7 @@
   (c-name "gdk_pango_renderer_set_gc")
   (return-type "none")
   (parameters
-    '("GdkGC*" "gc")
+    '("GdkGC*" "gc"(null-ok))
   )
 )
 
@@ -2188,7 +2188,7 @@
   (return-type "none")
   (parameters
     '("PangoRenderPart" "part")
-    '("GdkBitmap*" "stipple")
+    '("GdkBitmap*" "stipple"(null-ok))
   )
 )
 
@@ -2198,7 +2198,7 @@
   (return-type "none")
   (parameters
     '("PangoRenderPart" "part")
-    '("const-GdkColor*" "color")
+    '("const-GdkColor*" "color"(null-ok))
   )
 )
 
@@ -3947,6 +3947,15 @@
     '("const-GdkPointerHooks*" "new_hooks")
   )
 )
+(define-method set_urgency_hint
+  (of-object "GdkWindow")
+  (c-name "gdk_window_set_urgency_hint")
+  (return-type "none")
+  (parameters
+    '("gboolean" "urgent")
+  )
+)
+
 
 
 ;;; XXXX functions from GTK that extend GDK types.
@@ -4017,6 +4026,17 @@
   (of-object "GdkDragContext")
   (c-name "gtk_drag_set_icon_default")
   (return-type "none")
+)
+
+(define-method set_icon_name
+  (of-object "GdkDragContext")
+  (c-name "gtk_drag_set_icon_name")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "icon_name")
+    '("gint" "hot_x")
+    '("gint" "hot_y")
+  )
 )
 
 
