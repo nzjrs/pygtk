@@ -848,6 +848,25 @@ class GObjectWrapper(Wrapper):
 
 
 class GInterfaceWrapper(GObjectWrapper):
+    virtual_accessor_tmpl = (
+        'static PyObject *\n'
+        '_wrap_%(cname)s(PyObject *cls%(extraparams)s)\n'
+        '{\n'
+        '    %(vtable)s *iface;\n'
+        '%(varlist)s'
+        '%(parseargs)s'
+        '%(codebefore)s'
+        '    iface = g_type_interface_peek(g_type_class_peek(pyg_type_from_object(cls)), %(typecode)s);\n'
+        '    if (iface->%(virtual)s)\n'
+        '        %(setreturn)siface->%(virtual)s(%(arglist)s);\n'
+        '    else {\n'
+        '        PyErr_SetString(PyExc_NotImplementedError, '
+        '"interface method %(name)s not implemented");\n'
+        '        return NULL;\n'
+        '    }\n'
+        '%(codeafter)s\n'
+        '}\n\n')
+
     def get_initial_class_substdict(self):
         return { 'tp_basicsize'      : 'PyObject',
                  'tp_weaklistoffset' : '0',
@@ -860,9 +879,13 @@ class GInterfaceWrapper(GObjectWrapper):
         # interfaces have no fields ...
         return '0'
 
-    def write_virtual_accessors(self):
-        ## we don't want the 'chaining' functions for interfaces
-        return []
+    def _get_class_virtual_substdict(self, meth, cname, parent):
+        substdict = self.get_initial_method_substdict(meth)
+        substdict['virtual'] = substdict['name'].split('.')[1]
+        substdict['cname'] = cname
+        substdict['typecode'] = self.objinfo.typecode
+        substdict['vtable'] = self.objinfo.vtable
+        return substdict
 
     def write_virtuals(self):
         ## Now write reverse method wrappers, which let python code
@@ -907,12 +930,33 @@ class GInterfaceWrapper(GObjectWrapper):
             funcname = "__%s__interface_init" % klass
             vtable = self.objinfo.vtable
             self.fp.write(('\nstatic void\n'
-                           '%(funcname)s(%(vtable)s *iface)\n'
-                           '{\n') % vars())
+                           '%(funcname)s(%(vtable)s *iface, PyTypeObject *pytype)\n'
+                           '{\n'
+                           '    %(vtable)s *parent_iface = g_type_interface_peek_parent(iface);\n'
+                           '    PyObject *py_method;\n'
+                           '\n'
+                           ) % vars())
             for name, cname in proxies:
                 do_name = 'do_' + name
                 if cname is not None:
-                    self.fp.write('    iface->%s = %s;\n' % (name, cname))
+                    self.fp.write((
+                        '     /* Map interface method %(name)s to python method %(do_name)s */\n'
+                        '    py_method = pytype? PyObject_GetAttrString((PyObject *) pytype, "%(do_name)s") : NULL;\n'
+                        '    if (py_method && !PyObject_TypeCheck(py_method, &PyCFunction_Type)) {\n'
+                        '        iface->%(name)s = %(cname)s;\n'
+                        #'        g_message("user class implements %(name)s");\n'
+                        '    } else {\n'
+                        '        PyErr_Clear();\n'
+                        '        if (parent_iface) {\n'
+                        '            iface->%(name)s = parent_iface->%(name)s;\n'
+                        #'            g_message("user class uses parent implementation of %(name)s");\n'
+                        '        }\n'
+                        #'        } else {\n'
+                        #'            g_message("user class cannot use parent implementation of %(name)s");\n'
+                        #'        }\n'
+                        '    Py_XDECREF(py_method);\n'
+                        '    }\n'
+                        ) % vars())
             self.fp.write('}\n\n')
             interface_info = "__%s__iinfo" % klass
             self.fp.write('''

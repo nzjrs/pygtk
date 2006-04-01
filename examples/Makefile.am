@@ -16,6 +16,7 @@ CLEANFILES = pygtk-demo/pygtk-demo
 EXTRA_DIST = \
 	pygtk-demo/pygtk-demo.in\
 	atk/atk-demo.py		\
+	gobject/editable-interface.py \
 	gobject/properties.py	\
 	gobject/signal.py	\
 	gtk/bin.py		\
