@@ -54,6 +54,8 @@ static struct _PyGtk_FunctionStruct functions = {
 
     &PyGdkAtom_Type,  PyGdkAtom_New,
     pygdk_rectangle_from_pyobject,
+    pygtk_tree_path_to_pyobject,
+    pygtk_tree_path_from_pyobject,
 };
 
 static void
