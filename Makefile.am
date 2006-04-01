@@ -4,13 +4,7 @@ if BUILD_GTK
   GTK_SUBDIR = gtk
 endif
 
-SUBDIRS = codegen
-
-if BUILD_GOBJECT
-  SUBDIRS += gobject
-endif
-
-SUBDIRS += . $(GTK_SUBDIR) docs examples tests 
+SUBDIRS = codegen . $(GTK_SUBDIR) docs examples tests 
 
 PLATFORM_VERSION = 2.0
 
@@ -19,7 +13,6 @@ EXTRA_DIST = 				\
 	ChangeLog.pre-2-0		\
 	ChangeLog.pre-2-6		\
 	config.h.win32 			\
-	dsextras.py 			\
 	MANIFEST.in 			\
 	MAPPING 			\
 	pygtk.spec 			\
@@ -30,19 +23,15 @@ EXTRA_DIST = 				\
 	PKG-INFO.in 			\
 	setup.py 			\
 	THREADS
-INCLUDES = $(PYTHON_INCLUDES) $(GLIB_CFLAGS)
-if BUILD_GOBJECT
-  INCLUDES += -I$(top_srcdir)/gobject
-else
-  INCLUDES += -I$(PYGOBJECT_INCLUDEDIR)
-endif
+
+INCLUDES = 				\
+	$(PYTHON_INCLUDES) 		\
+	$(PYGOBJECT_CFLAGS)		\
+	$(GLIB_CFLAGS)
 
 # pkg-config files
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA =
-if BUILD_GOBJECT
-pkgconfig_DATA += pygobject-$(PLATFORM_VERSION).pc
-endif
 pkgconfig_DATA += pygtk-$(PLATFORM_VERSION).pc
 
 # defs files
@@ -50,17 +39,11 @@ defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
 # python
-if BUILD_GOBJECT
-pyexec_PYTHON = pygtk.py
-endif
 pyexec_LTLIBRARIES =
 noinst_PYTHON = ltihooks.py
 
 # pygtk scripts
 pkgpythondir = $(pyexecdir)/gtk-2.0
-if BUILD_GOBJECT
-pkgpython_PYTHON = dsextras.py
-endif
 
 # pygtk extension modules
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
@@ -127,18 +110,6 @@ endif
 	    --prefix py$* $*.defs) > gen-$*.c \
 	&& cp gen-$*.c $*.c \
 	&& rm -f gen-$*.c
-
-if BUILD_GOBJECT
-# install pth file.
-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(pythondir)
-	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pyexecdir)/pygtk.pth
-install-exec-local:
-	$(mkinstalldirs) $(DESTDIR)$(pyexecdir)
-	echo "gtk-$(PLATFORM_VERSION)" > $(DESTDIR)$(pyexecdir)/pygtk.pth
-uninstall-local:
-	rm -f $(DESTDIR)$(pythondir)/pygtk.pth $(DESTDIR)$(pyexecdir)/pygtk.pth
-endif
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
