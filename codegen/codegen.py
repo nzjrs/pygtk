@@ -109,9 +109,9 @@ class Wrapper:
         '    %(tp_weaklistoffset)s,             /* tp_weaklistoffset */\n' \
         '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
         '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
-        '    %(tp_methods)s,			/* tp_methods */\n' \
-        '    0,					/* tp_members */\n' \
-        '    %(tp_getset)s,		       	/* tp_getset */\n' \
+        '    (struct PyMethodDef*)%(tp_methods)s, /* tp_methods */\n' \
+        '    (struct PyMemberDef*)0,   	          /* tp_members */\n' \
+        '    (struct PyGetSetDef*)%(tp_getset)s,  /* tp_getset */\n' \
         '    NULL,				/* tp_base */\n' \
         '    NULL,				/* tp_dict */\n' \
         '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
@@ -466,7 +466,7 @@ class Wrapper:
             methoddefs = '_Py%s_methods' % self.objinfo.c_name
             # write the PyMethodDef structure
             methods.append('    { NULL, NULL, 0 }\n')
-            self.fp.write('static PyMethodDef %s[] = {\n' % methoddefs)
+            self.fp.write('static const PyMethodDef %s[] = {\n' % methoddefs)
             self.fp.write(string.join(methods, ''))
             self.fp.write('};\n\n')
         else:
@@ -625,7 +625,7 @@ class Wrapper:
 
         if not getsets:
             return '0'
-        self.fp.write('static PyGetSetDef %s[] = {\n' % getsets_name)
+        self.fp.write('static const PyGetSetDef %s[] = {\n' % getsets_name)
         for getset in getsets:
             self.fp.write(getset)
         self.fp.write('    { NULL, (getter)0, (setter)0 },\n')
@@ -682,7 +682,7 @@ class Wrapper:
         # write the PyMethodDef structure
         functions.append('    { NULL, NULL, 0 }\n')
 
-        self.fp.write('PyMethodDef ' + prefix + '_functions[] = {\n')
+        self.fp.write('static const PyMethodDef ' + prefix + '_functions[] = {\n')
         self.fp.write(string.join(functions, ''))
         self.fp.write('};\n\n')
 
