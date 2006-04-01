@@ -539,13 +539,14 @@ class Wrapper:
                         c_type=(klass + ' *')))
                     for param in meth.params:
                         handler, props = argtypes.matcher.get_reverse(param.ptype)
+                        props["direction"] = param.pdir
                         wrapper.add_parameter(handler(wrapper, param.pname, **props))
                     buf = reversewrapper.MemoryCodeSink()
                     wrapper.generate(buf)
                     self.fp.write(buf.flush())
                 virtuals.append((fixname(meth.name), '_wrap_' + method_name))
                 vproxies_coverage.declare_wrapped()
-            except KeyError:
+            except (KeyError, ValueError):
                 vproxies_coverage.declare_not_wrapped()
                 virtuals.append((fixname(meth.name), None))
                 sys.stderr.write('Could not write virtual proxy %s.%s: %s\n'
@@ -889,13 +890,14 @@ class GInterfaceWrapper(GObjectWrapper):
                         c_type=(klass + ' *')))
                     for param in meth.params:
                         handler, props = argtypes.matcher.get_reverse(param.ptype)
+                        props["direction"] = param.pdir
                         wrapper.add_parameter(handler(wrapper, param.pname, **props))
                     buf = reversewrapper.MemoryCodeSink()
                     wrapper.generate(buf)
                     self.fp.write(buf.flush())
                 proxies.append((fixname(meth.name), '_wrap_' + method_name))
                 iproxies_coverage.declare_wrapped()
-            except KeyError:
+            except (KeyError, ValueError):
                 iproxies_coverage.declare_not_wrapped()
                 proxies.append((fixname(meth.name), None))
                 sys.stderr.write('Could not write interface proxy %s.%s: %s\n'

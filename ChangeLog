@@ -1,3 +1,19 @@
+2006-04-01  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gtk.defs (GtkSpinButton.input, GtkEditable.do_insert_text) 
+	(GtkEditable.get_selection_bounds,
+	GtkMenuItem.toggle_size_request): Add (direction ...) specifiers
+	to these virtuals.  Probably more of these are missing, though.
+
+	* codegen/codegen.py,
+	* codegen/definitions.py,
+	* codegen/reversewrapper.py:
+	Add support for int* and double* (and basic infrastructure to
+	support other types in the future) parameters for "reverse
+	wrappers".  To use this feature one needs to help the
+	codegenerator by adding (direction "in") or (direction "inout") to
+	the parameter definitions as appropriate.  Fixes #335964.
+	
 2006-04-01  John Finlay  <finlay@moerari.com>
 
 	reviewed by: Johan

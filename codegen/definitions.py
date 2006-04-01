@@ -14,11 +14,12 @@ def make_docstring(lines):
 
 # New Parameter class, wich emulates a tuple for compatibility reasons
 class Parameter(object):
-    def __init__(self, ptype, pname, pdflt, pnull, prop=None):
+    def __init__(self, ptype, pname, pdflt, pnull, pdir=None):
         self.ptype = ptype
         self.pname = pname
         self.pdflt = pdflt
         self.pnull = pnull
+        self.pdir = pdir
 
     def __len__(self): return 4
     def __getitem__(self, i):
@@ -304,13 +305,16 @@ class MethodDefBase(Definition):
                     pname = parg[1]
                     pdflt = None
                     pnull = 0
+                    pdir = None
                     for farg in parg[2:]:
                         assert isinstance(farg, tuple)
                         if farg[0] == 'default':
                             pdflt = farg[1]
                         elif farg[0] == 'null-ok':
                             pnull = 1
-                    self.params.append(Parameter(ptype, pname, pdflt, pnull))
+                        elif farg[0] == 'direction':
+                            pdir = farg[1]
+                    self.params.append(Parameter(ptype, pname, pdflt, pnull, pdir))
             elif arg[0] == 'varargs':
                 self.varargs = arg[1] in ('t', '#t')
             elif arg[0] == 'deprecated':

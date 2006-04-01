@@ -5951,7 +5951,7 @@
   (parameters
     '("const-gchar*" "text")
     '("gint" "length")
-    '("gint*" "position")
+    '("gint*" "position" (direction "inout"))
   )
 )
 (define-virtual do_delete_text
@@ -5974,8 +5974,8 @@
   (of-object "GtkEditable")
   (return-type "gboolean")
   (parameters
-    '("gint*" "start_pos")
-    '("gint*" "end_pos")
+    '("gint*" "start_pos" (direction "out"))
+    '("gint*" "end_pos" (direction "out"))
   )
 )
 (define-virtual set_position
@@ -12161,7 +12161,7 @@
   (of-object "GtkMenuItem")
   (return-type "none")
   (parameters
-    '("gint*" "requisition")
+    '("gint*" "requisition" (direction "out"))
   )
 )
 (define-virtual toggle_size_allocate
@@ -15401,7 +15401,7 @@
   (of-object "GtkSpinButton")
   (return-type "gint")
   (parameters
-    '("gdouble*" "new_value")
+    '("gdouble*" "new_value" (direction "out"))
   )
 )
 (define-virtual output
