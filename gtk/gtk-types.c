@@ -108,6 +108,8 @@ pygtk_style_helper_getitem(PyGtkStyleHelper_Object *self, int pos)
     case STYLE_PIXMAP_ARRAY:
 	{
 	    GdkPixmap **array = (GdkPixmap **)self->array;
+	    if ((long)array[pos] == GDK_PARENT_RELATIVE)
+		return PyLong_FromLong(GDK_PARENT_RELATIVE);
 	    return pygobject_new((GObject *)array[pos]);
 	}
     }
@@ -156,19 +158,29 @@ pygtk_style_helper_setitem(PyGtkStyleHelper_Object *self, int pos,
     case STYLE_PIXMAP_ARRAY:
 	{
 	    GdkPixmap **array = (GdkPixmap **)self->array;
+	    GdkPixmap *cvalue = NULL;
 
-	    if (!pygobject_check(value, &PyGdkPixmap_Type) && value!=Py_None) {
+	    if (pygobject_check(value, &PyGdkPixmap_Type))
+		cvalue = GDK_PIXMAP(g_object_ref(pygobject_get(value)));
+	    else if (PyLong_Check(value)) {
+		if (PyLong_AsLong(value) != GDK_PARENT_RELATIVE) {
+		    PyErr_SetString(PyExc_TypeError,
+				    "can only assign a GdkPixmap, None or "
+				    "GDK_PARENT_RELATIVE");
+		    return -1;
+		}
+		cvalue = (GdkPixmap*)GDK_PARENT_RELATIVE;
+	    } else if (value != Py_None) {
 		PyErr_SetString(PyExc_TypeError,
-				"can only assign a GdkPixmap or None");
+				"can only assign a GdkPixmap, None or "
+				"GDK_PARENT_RELATIVE");
 		return -1;
 	    }
-	    if (array[pos]) {
+	    
+	    if (array[pos] && (long)array[pos] != GDK_PARENT_RELATIVE) {
 		g_object_unref(array[pos]);
 	    }
-	    if (value != Py_None)
-		array[pos] = GDK_PIXMAP(g_object_ref(pygobject_get(value)));
-	    else
-		array[pos] = NULL;
+	    array[pos] = cvalue;
 	    return 0;
 	}
     }
