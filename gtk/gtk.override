@@ -2774,7 +2774,10 @@ _wrap_gtk_dialog_add_buttons(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
-new-constructor GTK_TYPE_MESSAGE_DIALOG
+init
+#if GTK_CHECK_VERSION(2, 9, 0)
+    pyg_set_object_has_new_constructor(GTK_TYPE_MESSAGE_DIALOG);
+#endif
 %%
 override gtk_message_dialog_new kwargs
 static int

@@ -365,17 +365,6 @@ _wrap_gtk_tree_view_insert_column_with_attributes(PyGObject *self, PyObject *arg
     return pygobject_new ((GObject *) column);
 }
 %%
-override gtk_tree_view_get_visible_rect noargs
-static PyObject *
-_wrap_gtk_tree_view_get_visible_rect(PyGObject *self)
-{
-    GdkRectangle visible_rect;
-
-    gtk_tree_view_get_visible_rect(GTK_TREE_VIEW(self->obj), &visible_rect);
-
-    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &visible_rect, TRUE, TRUE);
-}
-%%
 override gtk_tree_view_get_cell_area kwargs
 static PyObject *
 _wrap_gtk_tree_view_get_cell_area(PyGObject *self, PyObject *args, PyObject *kwargs)
