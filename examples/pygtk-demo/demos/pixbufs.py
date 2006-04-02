@@ -149,7 +149,10 @@ class PixbufsDemo(gtk.Window):
             xpos = math.floor(xmid + r * math.cos(ang) - iw / 2.0 + 0.5)
             ypos = math.floor(ymid + r * math.sin(ang) - ih / 2.0 + 0.5)
 
-            k = (i & 1) and math.sin(f * 2.0 * math.pi) or math.cos(f * 2.0 * math.pi)
+            if i % 2 == 0:
+                k = math.cos(f * 2.0 * math.pi)
+            else:
+                k = math.sin(f * 2.0 * math.pi)
             k = 2.0 * k * k
             k = max(0.25, k)
 
@@ -168,6 +171,12 @@ class PixbufsDemo(gtk.Window):
 
             dest = r1.intersect(r2)
             if dest is not None:
+                if i % 2 == 0:
+                    alpha = int(
+                        max(127, math.fabs(255 * math.cos(f * 2.0 * math.pi))))
+                else:
+                    alpha = int(
+                        max(127, math.fabs(255 * math.sin(f * 2.0 * math.pi))))
                 self.images[i].composite(
                       self.frame,
                       dest.x, dest.y,
@@ -175,9 +184,7 @@ class PixbufsDemo(gtk.Window):
                       xpos, ypos,
                       k, k,
                       gtk.gdk.INTERP_NEAREST,
-                      ((i & 1)
-                       and int(max(127, math.fabs(255 * math.sin(f * 2.0 * math.pi))))
-                       or  int(max(127, math.fabs(255 * math.cos(f * 2.0 * math.pi))))))
+                      alpha)
 
         if self is not None:
             self.queue_draw()
