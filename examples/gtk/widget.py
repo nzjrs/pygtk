@@ -49,7 +49,7 @@ class PyGtkWidget(gtk.Widget):
 
         # Associate the gdk.Window with ourselves, Gtk+ needs a reference
         # between the widget and the gdk window
-	self.window.set_user_data(self)
+        self.window.set_user_data(self)
 
         # Attach the style to the gdk.Window, a style contains colors and
         # GC contextes used for drawing
@@ -64,7 +64,7 @@ class PyGtkWidget(gtk.Widget):
         # The do_unrealized method is responsible for freeing the GDK resources
 
         # De-associate the window we created in do_realize with ourselves
-	self.window.set_user_data(None)
+        self.window.set_user_data(None)
 
     def do_size_request(self, requisition):
         # The do_size_request method Gtk+ is calling on a widget to ask
@@ -73,9 +73,9 @@ class PyGtkWidget(gtk.Widget):
 
         # In this case, we say that we want to be as big as the
         # text is, plus a little border around it.
-	width, height = self._layout.get_size()
-	requisition.width = width // pango.SCALE + BORDER_WIDTH*4
-	requisition.height = height // pango.SCALE + BORDER_WIDTH*4
+        width, height = self._layout.get_size()
+        requisition.width = width // pango.SCALE + BORDER_WIDTH*4
+        requisition.height = height // pango.SCALE + BORDER_WIDTH*4
 
     def do_size_allocate(self, allocation):
         # The do_size_allocate is called by when the actual size is known
