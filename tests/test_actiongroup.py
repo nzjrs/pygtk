@@ -117,6 +117,9 @@ class ActionGroupTest(unittest.TestCase):
 
         gtk.main_quit()
 
+    def setUp(self):
+	gc.collect()
+
     def testActionGroups(self):
         self.build_gui()
 
