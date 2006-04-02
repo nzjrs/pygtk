@@ -6,7 +6,9 @@ tests =  \
 	test_dialog.py \
 	test_enum.py \
 	test_gdk.py \
+	test_pango.py \
 	test_radiobutton.py \
+	test_style.py \
 	test_textview.py
 
 check-local: $(top_srcdir)/gtk/__init__.py

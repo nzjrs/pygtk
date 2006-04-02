@@ -1324,7 +1324,7 @@ _wrap_pango_parse_markup(PyObject *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "markup_text", "accel_marker", NULL };
     char *markup_text, *text = NULL;
     gint length;
-    Py_UNICODE *py_accel_marker, py_accel_char;
+    Py_UNICODE *py_accel_marker = NULL, py_accel_char;
     gint py_accel_marker_len;
     gunichar accel_marker, accel_char = 0;
     PangoAttrList *attr_list = NULL;
@@ -1332,15 +1332,19 @@ _wrap_pango_parse_markup(PyObject *self, PyObject *args, PyObject *kwargs)
     gboolean ret;
     PyObject *py_ret;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#u#:pango.parse_markup",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#|u#:pango.parse_markup",
 				     kwlist, &markup_text, &length,
 				     &py_accel_marker, &py_accel_marker_len))
 	return NULL;
-    if (py_accel_marker_len != 1) {
-	PyErr_SetString(PyExc_TypeError, "accel_mark must be one character");
-	return NULL;
-    }
-    accel_marker = py_accel_marker[0];
+    if (py_accel_marker != NULL) {
+	if (py_accel_marker_len != 1) {
+	    PyErr_SetString(PyExc_TypeError, "accel_mark must be one character");
+	    return NULL;
+	}
+	accel_marker = py_accel_marker[0];
+    } else
+	accel_marker = 0;
+
     ret = pango_parse_markup(markup_text, length, accel_marker,
 			     &attr_list, &text, &accel_char, &error);
     if (pyg_error_check(&error))
