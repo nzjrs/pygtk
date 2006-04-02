@@ -13,8 +13,6 @@ def importModules(buildDir, srcDir):
     sys.path.insert(0, os.path.join(buildDir, 'gobject'))
     # _gtk, keysyms, glade
     sys.path.insert(0, os.path.join(buildDir, 'gtk'))
-    # testhelper
-    sys.path.insert(0, os.path.join(buildDir, 'tests'))
     sys.argv.append('--g-fatal-warnings')
     import ltihooks
     
@@ -27,8 +25,6 @@ def importModules(buildDir, srcDir):
         glade = importModule('gtk.glade', buildDir, 'glade.la')
     except ImportError:
         glade = None
-        
-    testhelper = importModule('testhelper', '.')
         
     ltihooks.uninstall()
     del ltihooks
