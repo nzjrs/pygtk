@@ -567,6 +567,9 @@ _wrap_gtk_container_class_list_child_properties (PyObject *self, PyObject *args,
     guint nprops;
     guint i;
 
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use the gtk.Container.list_child_properties classmethod"))
+        return NULL;
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "O:gtk.container_class_list_child_properties", kwlist,
 				     &py_itype))
@@ -605,6 +608,47 @@ _wrap_gtk_container_class_list_child_properties (PyObject *self, PyObject *args,
     return list;
 }
 %%
+define GtkContainer.list_child_properties noargs classmethod
+static PyObject *
+_wrap_gtk_container_list_child_properties (PyObject *self, PyObject *args,
+                                           PyObject*kwargs)
+{
+    GParamSpec **specs;
+    PyObject *list;
+    GType itype;
+    GObjectClass *class;
+    guint nprops;
+    guint i;
+
+    if ((itype = pyg_type_from_object(self)) == 0)
+	return NULL;
+
+    class = g_type_class_ref(itype);
+    if (!class) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not get a reference to type class");
+	return NULL;
+    }
+
+    specs = gtk_container_class_list_child_properties(class, &nprops);
+    list = PyList_New(nprops);
+    if (list == NULL) {
+	g_free(specs);
+	g_type_class_unref(class);
+	return NULL;
+    }
+    
+    for (i = 0; i < nprops; i++) {
+	PyList_SetItem(list, i, pyg_param_spec_new(specs[i]));
+    }
+    
+    g_free(specs);
+    g_type_class_unref(class);
+
+    return list;
+}
+
+%%
 override gtk_container_class_install_child_property kwargs
 static PyObject *
 _wrap_gtk_container_class_install_child_property (PyObject *self,
@@ -617,6 +661,9 @@ _wrap_gtk_container_class_install_child_property (PyObject *self,
     GtkContainerClass *class;
     guint property_id;
     GParamSpec *pspec;
+
+    if (PyErr_Warn(PyExc_DeprecationWarning, "use the gtk.Container.install_child_property classmethod"))
+        return NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "OiO:container_class_install_child_property",
@@ -660,6 +707,59 @@ _wrap_gtk_container_class_install_child_property (PyObject *self,
     Py_INCREF(Py_None);
     return Py_None;
 }
+
+%%
+define GtkContainer.install_child_property kwargs classmethod
+static PyObject *
+_wrap_gtk_container_install_child_property (PyObject *self,
+                                            PyObject *args,
+                                            PyObject* kwargs)
+{
+    static char *kwlist[] = { "property_id", "pspec", NULL };
+    PyObject *property;
+    GType itype;
+    GtkContainerClass *class;
+    guint property_id;
+    GParamSpec *pspec;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:container_class_install_child_property",
+				     kwlist,
+				     &property_id, &property))
+	return NULL;
+
+
+    if ((itype = pyg_type_from_object(self)) == 0)
+	return NULL;
+
+    class = g_type_class_ref(itype);
+    if (!class) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not get a reference to type class");
+	return NULL;
+    }
+
+    pspec = pyg_param_spec_from_object(property);
+    if(!pspec) {
+	g_type_class_unref(class);
+	return NULL;
+    }
+
+    if (gtk_container_class_find_child_property(G_OBJECT_CLASS(class), pspec->name)) {
+	PyErr_Format(PyExc_TypeError,
+		     "there is already a '%s' property installed", pspec->name);
+	g_type_class_unref(class);
+	return NULL;
+    }
+    
+    gtk_container_class_install_child_property(class, property_id, pspec);
+	
+    g_type_class_unref(class);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 %%
 override-slot GtkContainer.tp_iter
 
