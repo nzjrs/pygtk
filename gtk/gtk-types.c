@@ -414,7 +414,7 @@ PyGdkWindow_PropertyGet(PyGdkWindow_Object *self, PyObject *args)
     if (Pyerr_Occurred())
 	return NULL;
 	
-    if (gdk_property_get(self->obj, property, type, 0, 9999,
+    if (gdk_property_get(self->obj, property, type, 0, G_MAXLONG,
 			 pdelete, &atype, &aformat, &alength, &data)) {
 	/* success */
 	PyObject *pdata = NULL;
