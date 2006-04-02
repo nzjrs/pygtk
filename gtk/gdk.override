@@ -402,6 +402,59 @@ _wrap_gdk_draw_gray_image(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
+override gdk_draw_indexed_image kwargs
+static PyObject *
+_wrap_gdk_draw_indexed_image(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "gc", "x", "y", "width", "height", "dith",
+                              "buf", "rowstride", "colors", NULL };
+    PyGObject *gc;
+    PyObject *py_dith;
+    gint x, y, width, height, rowstride = -1, len;
+    GdkRgbDither dith;
+    guchar *buf;
+    PyObject *pycolors;
+    GdkRgbCmap *cmap;
+    guint32 *colors;
+    int i, n_colors;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O!iiiiOs#iO:GdkDrawable.draw_indexed_image",
+                                     kwlist, &PyGdkGC_Type, &gc, &x, &y,
+                                     &width, &height, &py_dith,
+                                     &buf, &len, &rowstride,
+				     &pycolors))
+        return NULL;
+
+    if (pyg_enum_get_value(GDK_TYPE_RGB_DITHER, py_dith, (gint *)&dith))
+        return NULL;
+    if (!(width > 0 && height > 0)) {
+        PyErr_SetString(PyExc_ValueError,
+                        "height and width must be greater than zero");
+        return NULL;
+    }
+    if (rowstride == -1) rowstride = width;
+    if (len < rowstride * (height - 1) + width) {
+        PyErr_SetString(PyExc_IndexError, "buf is not large enough");
+        return NULL;
+    }
+    if (!PyList_Check(pycolors)) {
+        PyErr_SetString(PyExc_TypeError, "colors must be a list");
+        return NULL;
+    }
+    n_colors = PyList_Size(pycolors);
+    colors = g_new0(guint32, n_colors);
+    for (i = 0; i < n_colors; i++)
+	colors[i] = PyInt_AsLong(PyList_GetItem(pycolors, i));
+    cmap = gdk_rgb_cmap_new(colors, n_colors);
+    gdk_draw_indexed_image(GDK_DRAWABLE(self->obj), GDK_GC(gc->obj), x, y,
+			   width, height, dith, buf, rowstride,
+			   cmap);
+    gdk_rgb_cmap_free(cmap);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 ignore
   gdk_color_copy gdk_color_free
   gdk_color_hash gdk_color_equal

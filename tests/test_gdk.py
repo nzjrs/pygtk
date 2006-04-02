@@ -34,3 +34,15 @@ class GdkTest(unittest.TestCase):
         while gc.collect():
             pass
         assert common['finalized']
+
+
+    def testDrawIndexedImage(self):
+        w = gtk.Window()
+        w.realize()
+        w.window.draw_indexed_image(gtk.gdk.GC(w.window),
+                                    0, 0,
+                                    1, 2,
+                                    gtk.gdk.RGB_DITHER_NONE,
+                                    '\x00\x01',
+                                    1,
+                                    [0xdeadbe, 0xbebabe])
