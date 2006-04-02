@@ -1666,7 +1666,7 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     if (!strcmp(attr, "__members__"))
         return Py_BuildValue("[sss]", "type", "window", "send_event");
 
-    return Py_FindMethod(_PyGdkEvent_methods, self, attr);
+    return Py_FindMethod((PyMethodDef*)_PyGdkEvent_methods, self, attr);
 }
 %%
 override gdk_event_get_axis args
