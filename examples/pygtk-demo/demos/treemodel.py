@@ -52,9 +52,10 @@ class MyTreeModel(gtk.GenericTreeModel):
         return `node`
     def on_iter_next(self, node):
         '''returns the next node at this level of the tree'''
-        if node[-1] == self.TREE_SIBLINGS - 1: # last node at level
-            return None
-        return node[:-1] +(node[-1]+1,)
+        if node != None:
+            if node[-1] == self.TREE_SIBLINGS - 1: # last node at level
+                return None
+            return node[:-1] +(node[-1]+1,)
     def on_iter_children(self, node):
         '''returns the first child of this node'''
         if node == None: # top of tree
@@ -64,10 +65,10 @@ class MyTreeModel(gtk.GenericTreeModel):
         return node +(0,)
     def on_iter_has_child(self, node):
         '''returns true if this node has children'''
-        return len(node) < self.TREE_DEPTH
+        return node == None or len(node) < self.TREE_DEPTH
     def on_iter_n_children(self, node):
         '''returns the number of children of this node'''
-        if len(node) < self.TREE_DEPTH:
+        if node == None or len(node) < self.TREE_DEPTH:
             return self.TREE_SIBLINGS
         else:
             return 0
@@ -81,6 +82,7 @@ class MyTreeModel(gtk.GenericTreeModel):
             return None
     def on_iter_parent(self, node):
         '''returns the parent of this node'''
+        assert node != None
         if len(node) == 0:
             return None
         else:
@@ -100,6 +102,7 @@ class GenericTreeModelDemo(gtk.Window):
         self.add(scrolled_window)
 
         model = MyTreeModel()
+        model = model.filter_new()
         tree_view = gtk.TreeView(model)
         cell = gtk.CellRendererText()
         # the text in the column comes from column 0
