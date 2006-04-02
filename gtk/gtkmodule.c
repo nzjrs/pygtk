@@ -273,6 +273,8 @@ init_gtk(void)
 
     pygdk_register_classes(d);
     pygdk_add_constants(m, "GDK_");
+    PyModule_AddObject(m, "PARENT_RELATIVE",
+		       PyLong_FromLong(GDK_PARENT_RELATIVE));
       /* Add predefined atoms */
 #define add_atom(name) { aname = gdk_atom_name((GDK_##name)); \
 PyModule_AddObject(m, #name, PyString_FromString(aname)); \
