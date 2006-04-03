@@ -1,8 +1,7 @@
 # Test for Bug #162874
 
-import unittest
-import sys
 import gc
+import unittest
 
 from common import gtk, gobject
 

@@ -12,6 +12,7 @@ for _mod in _file_list:
         continue
     _mod = _mod[:-3]
     try:
+        _doc = ''
         exec 'import ' + _mod + '\n' + \
         '_doc = ' + _mod + '.__doc__'
         _description = _doc.splitlines()[0]

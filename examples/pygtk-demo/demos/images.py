@@ -251,7 +251,7 @@ class ImagesDemo(gtk.Window):
                                gtk.BUTTONS_CLOSE,
                                "Failed to load image")
 
-                    dialog.connect("response", lambda d, r: dlg.destroy())
+                    dialog.connect("response", lambda d, r: d.destroy())
                     dialog.show()
 
                     self.pixbuf_loader = None

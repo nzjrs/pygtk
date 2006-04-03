@@ -1,9 +1,10 @@
 #! /usr/bin/env python
 
-import pygtk
-pygtk.require('2.0')
-import gtk, gobject
-from dndpixmap import *
+import gobject
+import gtk
+
+from dndpixmap import drag_icon_xpm, trashcan_open_xpm, trashcan_closed_xpm
+
 
 trashcan_open = None
 trashcan_closed = None
@@ -20,9 +21,10 @@ TARGET_STRING = 0
 TARGET_ROOTWIN = 1
 
 target = [
-('STRING', 0, TARGET_STRING),
-('text/plain', 0, TARGET_STRING),
-('application/x-rootwin-drop', 0, TARGET_ROOTWIN)]
+    ('STRING', 0, TARGET_STRING),
+    ('text/plain', 0, TARGET_STRING),
+    ('application/x-rootwin-drop', 0, TARGET_ROOTWIN)
+    ]
 
 def target_drag_leave(w, context, time):
     global trashcan_closed

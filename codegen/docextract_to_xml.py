@@ -6,10 +6,11 @@
 # Usage example:
 # # ./docextract_to_xml.py -s /gnome/head/cvs/gtk+/gtk/ -s /gnome/head/cvs/gtk+/docs/reference/gtk/tmpl/ > gtk_docs.xml
 
-import sys, os, string, re, getopt
+import getopt
+import string
+import sys
 
 import docextract
-import string
 
 def escape_text(unescaped_text):
     escaped_text = unescaped_text

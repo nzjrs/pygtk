@@ -1,7 +1,13 @@
-import sys, os, string
-import getopt, traceback, keyword
-import defsparser, argtypes, override
+import getopt
+import keyword
+import os
+import string
+import sys
+
+import argtypes
 import definitions
+import defsparser
+import override
 import reversewrapper
 
 class Coverage(object):

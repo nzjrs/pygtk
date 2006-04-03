@@ -83,10 +83,10 @@ def parse_file(fp, doc_dict):
             if match:
                 # assume the last return statement was really part of the
                 # description
-                cur_doc.description = cur_doc.description + return_start + \
-                                      cur_doc.ret
                 return_start = match.group(1)
                 cur_doc.ret = match.group(2)
+                cur_doc.description = cur_doc.description + return_start + \
+                                      cur_doc.ret
             else:
                 cur_doc.append_return(line)
         elif in_description:

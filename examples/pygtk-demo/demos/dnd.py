@@ -7,7 +7,8 @@ fairly straight forward port of the example distributed with gtk.
 
 import gtk
 import gobject
-from dndpixmap import *
+
+from dndpixmap import drag_icon_xpm, trashcan_open_xpm, trashcan_closed_xpm
 
 TARGET_STRING = 0
 TARGET_ROOTWIN = 1

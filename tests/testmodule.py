@@ -1,4 +1,3 @@
-import gobject
 import gtk
 
 class PyLabel(gtk.Label):

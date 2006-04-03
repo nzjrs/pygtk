@@ -1,6 +1,6 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
+import copy
 import sys
-from copy import *
 
 def get_valid_scheme_definitions(defs):
     return [x for x in defs if isinstance(x, tuple) and len(x) >= 2]
@@ -334,7 +334,7 @@ class MethodDefBase(Definition):
         self.varargs = old.varargs
         # here we merge extra parameter flags accross to the new object.
         if not parmerge:
-            self.params = deepcopy(old.params)
+            self.params = copy.deepcopy(old.params)
             return
         for i in range(len(self.params)):
             ptype, pname, pdflt, pnull = self.params[i]
@@ -463,7 +463,7 @@ class FunctionDef(Definition):
         self.caller_owns_return = old.caller_owns_return
         self.varargs = old.varargs
         if not parmerge:
-            self.params = deepcopy(old.params)
+            self.params = copy.deepcopy(old.params)
             return
         # here we merge extra parameter flags accross to the new object.
         def merge_param(param):
@@ -473,7 +473,7 @@ class FunctionDef(Definition):
                         # h2def never scans Property's, therefore if
                         # we have one it was manually written, so we
                         # keep it.
-                        return deepcopy(old_param)
+                        return copy.deepcopy(old_param)
                     else:
                         param.merge(old_param)
                         return param
@@ -484,7 +484,7 @@ class FunctionDef(Definition):
         except RuntimeError:
             # parameter names changed and we can't find a match; it's
             # safer to keep the old parameter list untouched.
-            self.params = deepcopy(old.params)
+            self.params = copy.deepcopy(old.params)
 
         if not self.is_constructor_of:
             try:

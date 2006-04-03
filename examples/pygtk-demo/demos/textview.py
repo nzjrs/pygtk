@@ -6,12 +6,11 @@ by multiple GtkTextViews. This demo has two views displaying a single buffer, an
 shows off the widget's text formatting features."""
 # pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
-import sys
 import os
+import sys
 
 import gobject
 import gtk
-import pango
 
 gray50_width  = 2
 gray50_height = 2

@@ -27,6 +27,7 @@ from warnings import warn as _warn
 # this can go when things are a little further along
 try:
     import ltihooks
+    ltihooks # pyflakes
     sys.path.insert(1, 'gobject')
     del ltihooks
 except ImportError:

@@ -16,7 +16,6 @@ official homepage, http://www.daa.com.au/~james/pygtk/"""
 
 from distutils.command.build import build
 from distutils.core import setup
-import glob
 import os
 import sys
 
@@ -246,6 +245,7 @@ if gtk.can_build():
     else:
         try:
             import Numeric
+            Numeric # pyflakes
             GLOBAL_MACROS.append(('HAVE_NUMPY', 1))
         except ImportError:
             print ('* Numeric module could not be found, '
@@ -270,6 +270,7 @@ else:
         sys.argv.remove('--enable-threading')
     try:
         import thread
+        thread # pyflakes
     except ImportError:
         print "Warning: Could not import thread module, disabling threading"
         enable_threading = False

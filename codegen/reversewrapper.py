@@ -756,7 +756,7 @@ def _test():
         wrapper.add_parameter(PyGObjectMethodParam(wrapper, "self", method_name="do_xxx"))
         wrapper.add_parameter(StringParam(wrapper, "param2", optional=True))
         wrapper.add_parameter(GObjectParam(wrapper, "param3"))
-        wrapper.add_parameter(InoutIntParam(wrapper, "param4"))
+        #wrapper.add_parameter(InoutIntParam(wrapper, "param4"))
         wrapper.generate(FileCodeSink(sys.stderr))
 
     if 0:

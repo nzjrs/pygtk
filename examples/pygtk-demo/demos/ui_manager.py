@@ -6,6 +6,7 @@ from an array of actions and a description of the menu hierarchy.
 '''
 # pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
+import gobject
 import gtk
 
 def activate_action(action):

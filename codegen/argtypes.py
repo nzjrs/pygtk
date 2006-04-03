@@ -1,7 +1,5 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
-import sys
 import string
-import traceback
 import keyword
 import struct
 

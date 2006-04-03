@@ -2,7 +2,7 @@ import unittest
 import warnings
 
 from gobject import GEnum, GFlags, GObject, GType, PARAM_READWRITE
-from common import gobject, atk, pango, gtk, gdk
+from common import gobject, atk, gtk, gdk
 
 class PObject(GObject):
     __gproperties__ = {

@@ -1,5 +1,4 @@
 import unittest
-import gc
 
 from common import gtk
 

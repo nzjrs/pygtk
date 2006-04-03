@@ -56,7 +56,7 @@ class PixbufsDemo(gtk.Window):
                 gtk.MESSAGE_ERROR,
                 gtk.BUTTONS_CLOSE,
                 "Failed to load an image")
-            dialog.connect("response", lambda d, r: dlg.destroy())
+            dialog.connect("response", lambda d, r: d.destroy())
             dialog.show()
 
         else:

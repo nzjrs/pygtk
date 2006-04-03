@@ -2,10 +2,10 @@
 
 # This is a sample implementation of an editor.
 
-import pygtk
-pygtk.require('2.0')
+import os
+import dialogs
+
 import gtk
-import sys, os, dialogs
 
 BLOCK_SIZE = 2048
 RESPONSE_FORWARD = 1
@@ -261,9 +261,9 @@ class EditWindow(gtk.Window):
     def help_about(self, mi):
         dlg = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
-                                "Copyright (C)\n" \
-                                "1998 James Henstridge\n" \
-                                "2004 John Finlay\n" \
+                                "Copyright (C)\n"
+                                "1998 James Henstridge\n"
+                                "2004 John Finlay\n"
                                 "This program is covered by the GPL>=2")
         dlg.run()
         dlg.hide()

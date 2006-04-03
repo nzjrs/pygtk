@@ -149,9 +149,9 @@ class Application(gtk.Window):
         return
     def debug_script(self, fname):
         if not fname or not os.path.exists(fname):
-            gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
-                              gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
-                              "Invalid filename "+fname)
+            dlg = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                    gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
+                                    "Invalid filename "+fname)
             dlg.run()
             return
         args = dialogs.InputBox("Arguments",
@@ -162,9 +162,9 @@ class Application(gtk.Window):
         return
     def profile_script(self, fname):
         if not fname or not os.path.exists(fname):
-            gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
-                              gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
-                              "Invalid filename "+fname)
+            dlg = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                    gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
+                                    "Invalid filename "+fname)
             dlg.run()
             return
         args = dialogs.InputBox("Arguments",

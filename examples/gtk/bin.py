@@ -1,5 +1,4 @@
 # A simple gtk.Conatiner subclassing example reimplementing gtk.Bin in python
-import gobject
 import gtk
 
 class Bin(gtk.Container):

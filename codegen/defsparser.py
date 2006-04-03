@@ -1,7 +1,8 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 import os, sys
 import scmexpr
-from definitions import *
+from definitions import BoxedDef, EnumDef, FlagsDef, FunctionDef, \
+     InterfaceDef, MethodDef, ObjectDef, PointerDef, VirtualDef
 
 class IncludeParser(scmexpr.Parser):
     """A simple parser that follows include statements automatically"""
