@@ -18,7 +18,7 @@ class GdkTest(unittest.TestCase):
         gtk.gdk.pixmap_create_from_data(None, '\x00', 1, 1, 1,
                                         black, black)
 
-    def testWindow(self):
+    def _testWindow(self):
         common = {'finalized': False}
         def on_finalize():
             common['finalized'] = True
