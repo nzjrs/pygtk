@@ -177,7 +177,7 @@ class FlagsTest(unittest.TestCase):
 
     def testParamSpec(self):
         props = filter(lambda x: GType.is_a(x.value_type, GFlags),
-                       gtk.container_class_list_child_properties(gtk.Table))
+                       gtk.Table.list_child_properties())
         self.failUnless(len(props) >= 2)
         pspec = props[0]
         klass = pspec.flags_class
