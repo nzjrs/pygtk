@@ -15,6 +15,6 @@ class SimpleTest:
 
     def on_button1_clicked(self, button):
         print 'foo!'
-        
+
 test = SimpleTest()
 gtk.main()

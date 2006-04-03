@@ -8,7 +8,7 @@ from common import gtk
 class MessageDialogTest(unittest.TestCase):
     def testDialogAdd(self):
         dialog = gtk.MessageDialog()
-        
+
         response_id = sys.maxint + 1
         self.assertRaises(OverflowError, dialog.add_button, "Foo", response_id)
         self.assertRaises(OverflowError, dialog.add_buttons, "Foo", response_id)
@@ -30,6 +30,6 @@ class MessageDialogTest(unittest.TestCase):
         while gc.collect():
             pass
         self.assertEqual(ref(), None)
-        
+
 if __name__ == '__main__':
     unittest.main()

@@ -28,4 +28,3 @@ if __name__ == '__main__':
     w.connect("destroy", lambda w: gtk.main_quit())
     w.show_all()
     gtk.main()
-    

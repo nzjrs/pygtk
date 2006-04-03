@@ -195,7 +195,7 @@ def find_enum_defs(buf, enums=[]):
     buf = strip_comments(buf)
 
     buf = re.sub('\n', ' ', buf)
-    
+
     enum_pat = re.compile(r'enum\s*{([^}]*)}\s*([A-Z][A-Za-z]*)(\s|;)')
     splitter = re.compile(r'\s*,\s', re.MULTILINE)
     pos = 0
@@ -212,7 +212,7 @@ def find_enum_defs(buf, enums=[]):
             entries.append(string.split(val)[0])
         if name != 'GdkCursorType':
             enums.append((name, isflags, entries))
-        
+
         pos = m.end()
 
 def write_enum_defs(enums, output=None):
@@ -266,31 +266,31 @@ def clean_func(buf):
     buf = strip_comments(buf)
 
     # compact continued lines
-    pat = re.compile(r"""\\\n""", re.MULTILINE) 
+    pat = re.compile(r"""\\\n""", re.MULTILINE)
     buf=pat.sub('',buf)
 
     # Preprocess directives
-    pat = re.compile(r"""^[#].*?$""", re.MULTILINE) 
+    pat = re.compile(r"""^[#].*?$""", re.MULTILINE)
     buf=pat.sub('',buf)
 
     #typedefs, stucts, and enums
-    pat = re.compile(r"""^(typedef|struct|enum)(\s|.|\n)*?;\s*""", re.MULTILINE) 
+    pat = re.compile(r"""^(typedef|struct|enum)(\s|.|\n)*?;\s*""", re.MULTILINE)
     buf=pat.sub('',buf)
 
     #strip DECLS macros
-    pat = re.compile(r"""G_BEGIN_DECLS|BEGIN_LIBGTOP_DECLS""", re.MULTILINE) 
+    pat = re.compile(r"""G_BEGIN_DECLS|BEGIN_LIBGTOP_DECLS""", re.MULTILINE)
     buf=pat.sub('',buf)
 
     #extern "C"
-    pat = re.compile(r"""^\s*(extern)\s+\"C\"\s+{""", re.MULTILINE) 
+    pat = re.compile(r"""^\s*(extern)\s+\"C\"\s+{""", re.MULTILINE)
     buf=pat.sub('',buf)
 
     #multiple whitespace
-    pat = re.compile(r"""\s+""", re.MULTILINE) 
+    pat = re.compile(r"""\s+""", re.MULTILINE)
     buf=pat.sub(' ',buf)
 
     #clean up line ends
-    pat = re.compile(r""";\s*""", re.MULTILINE) 
+    pat = re.compile(r""";\s*""", re.MULTILINE)
     buf=pat.sub('\n',buf)
     buf = buf.lstrip()
 
@@ -336,7 +336,7 @@ def define_func(buf,fp, prefix):
             spaces = string.count(args[i], ' ')
             if spaces > 1:
                 args[i] = string.replace(args[i], ' ', '-', spaces - 1)
-                
+
         write_func(fp, func, ret, args, prefix)
 
 get_type_pat = re.compile(r'(const-)?([A-Za-z0-9]+)\*?\s+')
@@ -400,10 +400,10 @@ def write_func(fp, name, ret, args, prefix):
     m = func_new_pat.match(name)
     if pointer_pat.match(ret) and m:
         cname = ''
-	for s in m.group(1).split ('_'):
-	    cname += s.title()
-	if cname != '':
-	    fp.write('  (is-constructor-of "' + cname + '")\n')
+        for s in m.group(1).split ('_'):
+            cname += s.title()
+        if cname != '':
+            fp.write('  (is-constructor-of "' + cname + '")\n')
 
     if ret != 'void':
         fp.write('  (return-type "' + ret + '")\n')
@@ -469,7 +469,7 @@ def main(args):
             separate = v
         if o in ('-m', '--modulename'):
             modulename = v
-            
+
     if not args[0:1]:
         print 'Must specify at least one input file name'
         return -1
@@ -486,12 +486,12 @@ def main(args):
     if separate:
         types = file(separate + '-types.defs', 'w')
         methods = file(separate + '.defs', 'w')
-        
+
         write_obj_defs(objdefs,types)
         write_enum_defs(enums,types)
         types.close()
         print "Wrote %s-types.defs" % separate
-        
+
         for filename in args:
             write_def(filename,methods,prefix=modulename)
         methods.close()
@@ -507,6 +507,6 @@ def main(args):
 
             for filename in args:
                 write_def(filename,None,prefix=modulename)
-            
+
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

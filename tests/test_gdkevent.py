@@ -12,7 +12,7 @@ class TestGdkEvent(unittest.TestCase):
         win1.realize()
         event.window = win1.window
         self.assertEqual(event.window, win1.window)
-        
+
         win2 = gtk.Window()
         win2.realize()
         event.window = win2.window

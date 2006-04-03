@@ -70,12 +70,12 @@ def source_drag_data_get(w, context, selection_data, info, time):
     if info == TARGET_ROOTWIN:
         print 'I was dropped on the rootwin'
     else:
-        selection_data.set(selection_data.target, 8, "I'm Data!")	
+        selection_data.set(selection_data.target, 8, "I'm Data!")
 
 def popdown_cb():
     global popdown_timer, popped_up
     global popup_win
-    popdown_timer = 0	
+    popdown_timer = 0
     popup_win.hide()
     popped_up = False
     return False
@@ -108,7 +108,7 @@ def popup_cb():
                 i, j = divmod(k, 3)
                 b = gtk.Button("%d,%d" % (i,j))
                 table.attach(b, i,i+1,j,j+1)
-                b.drag_dest_set(gtk.DEST_DEFAULT_ALL, target, 
+                b.drag_dest_set(gtk.DEST_DEFAULT_ALL, target,
                         gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
                 b.connect('drag_motion', popup_motion)
                 b.connect('drag_leave', popup_leave)

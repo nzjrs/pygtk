@@ -7,11 +7,11 @@ class Bin(gtk.Container):
     def __init__(self):
         gtk.Container.__init__(self)
         self.child = None
-        
+
     def do_add(self, child):
         child.set_parent(self)
         self.child = child
-        
+
     def do_remove(self, child):
         widget_was_visible = child.flags() & gtk.VISIBLE
         child.unparent()
@@ -19,11 +19,11 @@ class Bin(gtk.Container):
 
         if widget_was_visible:
             self.queue_resize()
-        
+
     def do_forall(self, internal, callback, data):
         if self.child:
             callback(self.child, data)
-        
+
 label = gtk.Label()
 c = Bin()
 c.add(label)

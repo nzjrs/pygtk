@@ -16,28 +16,28 @@ def draw_text(cr):
 
     # Create a PangoLayout, set the font and text */
     layout = cr.create_layout()
-  
+
     layout.set_text("Text")
     layout.set_font_description(pango.FontDescription(FONT))
 
     # Draw the layout N_WORDS times in a circle
     for i in range(N_WORDS):
-         angle = (360 * i) / N_WORDS;
-         cr.save()
+        angle = (360 * i) / N_WORDS;
+        cr.save()
 
-         # Gradient from red at angle == 60 to blue at angle == 300
-         red   = (1 + math.cos((angle - 60)*math.pi/180))/2
-         cr.set_source_rgb(red, 0, 1 - red)
-         cr.rotate(angle*math.pi/180)
-    
-         # Inform Pango to re-layout the text with the new transformation */
-         cr.update_layout(layout)
-    
-         width, height = layout.get_size()
-         cr.move_to(-width/pango.SCALE/2, -RADIUS)
-         cr.show_layout(layout)
+        # Gradient from red at angle == 60 to blue at angle == 300
+        red   = (1 + math.cos((angle - 60)*math.pi/180))/2
+        cr.set_source_rgb(red, 0, 1 - red)
+        cr.rotate(angle*math.pi/180)
 
-         cr.restore()
+        # Inform Pango to re-layout the text with the new transformation */
+        cr.update_layout(layout)
+
+        width, height = layout.get_size()
+        cr.move_to(-width/pango.SCALE/2, -RADIUS)
+        cr.show_layout(layout)
+
+        cr.restore()
 
 def main(argv):
     if len(argv) != 2:
@@ -60,7 +60,7 @@ def main(argv):
     draw_text(cr)
     cr.show_page()
     surface.finish()
-    
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

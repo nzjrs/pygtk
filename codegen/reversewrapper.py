@@ -27,10 +27,10 @@ class CodeSink(object):
         if l[-1]:
             l.append('')
         return '\n'.join(l)
-    
+
     def writeln(self, line=''):
         raise NotImplementedError
-    
+
     def indent(self, level=4):
         '''Add a certain ammount of indentation to all lines written
         from now on and until unindent() is called'''
@@ -78,10 +78,10 @@ class ReverseWrapper(object):
         assert isinstance(cname, str)
 
         self.cname = cname
-        ## function object we will call, or object whose method we will call 
+        ## function object we will call, or object whose method we will call
         self.called_pyobj = None
         ## name of method of self.called_pyobj we will call
-        self.method_name = None 
+        self.method_name = None
         self.is_static = is_static
 
         self.parameters = []
@@ -314,7 +314,7 @@ class ReverseWrapper(object):
             self.post_return_code.writeln("/* end post-return code */")
         self.post_return_code.flush_to(sink)
         sink.writeln()
-        
+
         for cleanup_action in self.cleanup_actions:
             sink.writeln(cleanup_action)
         if self.return_type.get_c_type() != 'void':

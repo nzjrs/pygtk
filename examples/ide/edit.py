@@ -231,12 +231,12 @@ class EditWindow(gtk.Window):
                 self.buffer.select_range(match_start, match_end)
                 self.text.scroll_to_iter(match_start, 0.0)
                 self.last_search_iter = match_end
-                
+
             else:
                 self.search_string = None
                 self.last_search_iter = None
-    
-    def edit_find(self, mi): 
+
+    def edit_find(self, mi):
         def dialog_response_callback(dialog, response_id):
             if response_id == gtk.RESPONSE_CLOSE:
                 dialog.destroy()
@@ -257,7 +257,7 @@ class EditWindow(gtk.Window):
         dialog.show_all()
         response_id = dialog.run()
     def edit_find_next(self, mi):
-        self._search(self.search_string, self.last_search_iter)    
+        self._search(self.search_string, self.last_search_iter)
     def help_about(self, mi):
         dlg = gtk.MessageDialog(self, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_INFO, gtk.BUTTONS_OK,

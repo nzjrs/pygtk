@@ -34,7 +34,7 @@ class ActionGroupTest(unittest.TestCase):
       </placeholder>
     </toolbar>
     </ui>'''
-      
+
     def build_gui(self):
         # Create the toplevel window
         window = gtk.Window()
@@ -118,7 +118,7 @@ class ActionGroupTest(unittest.TestCase):
         gtk.main_quit()
 
     def setUp(self):
-	gc.collect()
+        gc.collect()
 
     def testActionGroups(self):
         self.build_gui()

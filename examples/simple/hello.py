@@ -26,7 +26,6 @@ button.connect("clicked", hello)
 window.add(button)
 button.show()
 
-# as the button is within the window this also shows the window 
+# as the button is within the window this also shows the window
 window.show_all()
 gtk.main()
-

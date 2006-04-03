@@ -84,10 +84,10 @@ class _Deprecated:
             # as the one found in exceptions.
             _warn(message, DeprecationWarning, 2)
         try:
-	    return self.func(*args, **kwargs)
-	except TypeError, e:
-	    msg = str(e).replace(self.name, self.oldname)
-	    raise TypeError(msg)
+            return self.func(*args, **kwargs)
+        except TypeError, e:
+            msg = str(e).replace(self.name, self.oldname)
+            raise TypeError(msg)
 
 class _DeprecatedConstant:
     def __init__(self, value, name, suggestion):

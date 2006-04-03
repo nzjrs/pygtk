@@ -13,7 +13,7 @@ class ListStoreTest(unittest.TestCase):
         store.set_value(store.insert(0), 0, 2)
         self.assertEqual(len(store), 1)
         self.assertEqual(store[0][0], 2)
-        
+
         # New way
         store.insert(0, (1,))
         self.assertEqual(len(store), 2)

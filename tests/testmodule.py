@@ -6,4 +6,3 @@ class PyLabel(gtk.Label):
 
     def __init__(self):
         gtk.Label.__init__(self, "hello")
-

@@ -44,7 +44,7 @@ def exc_info():
 
 def fixname(name):
     if keyword.iskeyword(name):
-	return name + '_'
+        return name + '_'
     return name
 
 class FileOutput:
@@ -81,43 +81,43 @@ class Wrapper:
     type_tmpl = \
         'PyTypeObject Py%(typename)s_Type = {\n' \
         '    PyObject_HEAD_INIT(NULL)\n' \
-        '    0,					/* ob_size */\n' \
-        '    "%(classname)s",			/* tp_name */\n' \
-        '    sizeof(%(tp_basicsize)s),	        /* tp_basicsize */\n' \
-        '    0,					/* tp_itemsize */\n' \
+        '    0,                                 /* ob_size */\n' \
+        '    "%(classname)s",                   /* tp_name */\n' \
+        '    sizeof(%(tp_basicsize)s),          /* tp_basicsize */\n' \
+        '    0,                                 /* tp_itemsize */\n' \
         '    /* methods */\n' \
-        '    (destructor)%(tp_dealloc)s,	/* tp_dealloc */\n' \
-        '    (printfunc)0,			/* tp_print */\n' \
-        '    (getattrfunc)%(tp_getattr)s,	/* tp_getattr */\n' \
-        '    (setattrfunc)%(tp_setattr)s,	/* tp_setattr */\n' \
-        '    (cmpfunc)%(tp_compare)s,		/* tp_compare */\n' \
-        '    (reprfunc)%(tp_repr)s,		/* tp_repr */\n' \
+        '    (destructor)%(tp_dealloc)s,        /* tp_dealloc */\n' \
+        '    (printfunc)0,                      /* tp_print */\n' \
+        '    (getattrfunc)%(tp_getattr)s,       /* tp_getattr */\n' \
+        '    (setattrfunc)%(tp_setattr)s,       /* tp_setattr */\n' \
+        '    (cmpfunc)%(tp_compare)s,           /* tp_compare */\n' \
+        '    (reprfunc)%(tp_repr)s,             /* tp_repr */\n' \
         '    (PyNumberMethods*)%(tp_as_number)s,     /* tp_as_number */\n' \
         '    (PySequenceMethods*)%(tp_as_sequence)s, /* tp_as_sequence */\n' \
         '    (PyMappingMethods*)%(tp_as_mapping)s,   /* tp_as_mapping */\n' \
-        '    (hashfunc)%(tp_hash)s,		/* tp_hash */\n' \
-        '    (ternaryfunc)%(tp_call)s,		/* tp_call */\n' \
-        '    (reprfunc)%(tp_str)s,		/* tp_str */\n' \
-        '    (getattrofunc)%(tp_getattro)s,	/* tp_getattro */\n' \
-        '    (setattrofunc)%(tp_setattro)s,	/* tp_setattro */\n' \
-        '    (PyBufferProcs*)%(tp_as_buffer)s,	/* tp_as_buffer */\n' \
+        '    (hashfunc)%(tp_hash)s,             /* tp_hash */\n' \
+        '    (ternaryfunc)%(tp_call)s,          /* tp_call */\n' \
+        '    (reprfunc)%(tp_str)s,              /* tp_str */\n' \
+        '    (getattrofunc)%(tp_getattro)s,     /* tp_getattro */\n' \
+        '    (setattrofunc)%(tp_setattro)s,     /* tp_setattro */\n' \
+        '    (PyBufferProcs*)%(tp_as_buffer)s,  /* tp_as_buffer */\n' \
         '    %(tp_flags)s,                      /* tp_flags */\n' \
-        '    %(tp_doc)s, 			/* Documentation string */\n' \
-        '    (traverseproc)%(tp_traverse)s,	/* tp_traverse */\n' \
-        '    (inquiry)%(tp_clear)s,		/* tp_clear */\n' \
-        '    (richcmpfunc)%(tp_richcompare)s,	/* tp_richcompare */\n' \
+        '    %(tp_doc)s,                        /* Documentation string */\n' \
+        '    (traverseproc)%(tp_traverse)s,     /* tp_traverse */\n' \
+        '    (inquiry)%(tp_clear)s,             /* tp_clear */\n' \
+        '    (richcmpfunc)%(tp_richcompare)s,   /* tp_richcompare */\n' \
         '    %(tp_weaklistoffset)s,             /* tp_weaklistoffset */\n' \
-        '    (getiterfunc)%(tp_iter)s,		/* tp_iter */\n' \
-        '    (iternextfunc)%(tp_iternext)s,	/* tp_iternext */\n' \
+        '    (getiterfunc)%(tp_iter)s,          /* tp_iter */\n' \
+        '    (iternextfunc)%(tp_iternext)s,     /* tp_iternext */\n' \
         '    (struct PyMethodDef*)%(tp_methods)s, /* tp_methods */\n' \
-        '    (struct PyMemberDef*)0,   	          /* tp_members */\n' \
+        '    (struct PyMemberDef*)0,              /* tp_members */\n' \
         '    (struct PyGetSetDef*)%(tp_getset)s,  /* tp_getset */\n' \
-        '    NULL,				/* tp_base */\n' \
-        '    NULL,				/* tp_dict */\n' \
-        '    (descrgetfunc)%(tp_descr_get)s,	/* tp_descr_get */\n' \
-        '    (descrsetfunc)%(tp_descr_set)s,	/* tp_descr_set */\n' \
+        '    NULL,                              /* tp_base */\n' \
+        '    NULL,                              /* tp_dict */\n' \
+        '    (descrgetfunc)%(tp_descr_get)s,    /* tp_descr_get */\n' \
+        '    (descrsetfunc)%(tp_descr_set)s,    /* tp_descr_set */\n' \
         '    %(tp_dictoffset)s,                 /* tp_dictoffset */\n' \
-        '    (initproc)%(tp_init)s,		/* tp_init */\n' \
+        '    (initproc)%(tp_init)s,             /* tp_init */\n' \
         '    (allocfunc)%(tp_alloc)s,           /* tp_alloc */\n' \
         '    (newfunc)%(tp_new)s,               /* tp_new */\n' \
         '    (freefunc)%(tp_free)s,             /* tp_free */\n' \
@@ -1257,10 +1257,10 @@ def register_types(parser):
     for obj in parser.interfaces:
         argtypes.matcher.register_object(obj.c_name, None, obj.typecode)
     for enum in parser.enums:
-	if enum.deftype == 'flags':
-	    argtypes.matcher.register_flag(enum.c_name, enum.typecode)
-	else:
-	    argtypes.matcher.register_enum(enum.c_name, enum.typecode)
+        if enum.deftype == 'flags':
+            argtypes.matcher.register_flag(enum.c_name, enum.typecode)
+        else:
+            argtypes.matcher.register_enum(enum.c_name, enum.typecode)
 
 usage = 'usage: codegen.py [-o overridesfile] [-p prefix] defsfile'
 def main(argv):
@@ -1278,7 +1278,7 @@ def main(argv):
         elif opt in ('-p', '--prefix'):
             prefix = arg
         elif opt in ('-r', '--register'):
-	    # Warning: user has to make sure all -D options appear before -r
+            # Warning: user has to make sure all -D options appear before -r
             p = defsparser.DefsParser(arg, defines)
             p.startParsing()
             register_types(p)
@@ -1290,12 +1290,12 @@ def main(argv):
         elif opt in ('-t', '--load-types'):
             globals = {}
             execfile(arg, globals)
-	elif opt == '-D':
-	    nameval = arg.split('=')
-	    try:
-		defines[nameval[0]] = nameval[1]
-	    except IndexError:
-		defines[nameval[0]] = None
+        elif opt == '-D':
+            nameval = arg.split('=')
+            try:
+                defines[nameval[0]] = nameval[1]
+            except IndexError:
+                defines[nameval[0]] = None
     if len(args) < 1:
         print >> sys.stderr, usage
         return 1

@@ -33,4 +33,3 @@ if response == gtk.RESPONSE_OK:
 elif response == gtk.RESPONSE_CANCEL:
     print 'Closed, no files selected'
 dialog.destroy()
-    

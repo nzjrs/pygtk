@@ -28,4 +28,3 @@ class StylePixmapTest(unittest.TestCase):
         self.assertRaises(TypeError, func, gtk.STATE_NORMAL, True)
         self.assertRaises(TypeError, func, gtk.STATE_NORMAL, 0L)
         self.assertRaises(TypeError, func, gtk.STATE_NORMAL, object())
-

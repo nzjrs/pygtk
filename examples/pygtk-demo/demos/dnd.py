@@ -191,7 +191,7 @@ class DragAndDropDemo(gtk.Window):
         if info == TARGET_ROOTWIN:
             print 'I was dropped on the rootwin'
         else:
-            selection_data.set(selection_data.target, 8, "I'm Data!")	
+            selection_data.set(selection_data.target, 8, "I'm Data!")
 
     def source_drag_data_delete(self, btn, context, data):
         print 'Delete the data!'

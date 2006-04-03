@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-""" Simple example of creating a basic window and button.  
+""" Simple example of creating a basic window and button.
     Also adds a tooltip. """
 
-import gtk 
+import gtk
 
 def hello_cb(widget, main_window):
     """ Callback function that prints a message and destroys the window """
@@ -11,13 +11,13 @@ def hello_cb(widget, main_window):
     main_window.destroy()
 
 def destroy_cb(widget, main_window):
-	""" Callback function to hide the main window and then terminate. """
-	main_window.hide()
-	gtk.main_quit()
+    """ Callback function to hide the main window and then terminate. """
+    main_window.hide()
+    gtk.main_quit()
 
 def main():
     """ Sets up the application
-	Forms the widgets and connects callback functions to the signals """
+        Forms the widgets and connects callback functions to the signals """
 
     window = gtk.Window( type=gtk.WINDOW_TOPLEVEL )
     window.set_title("Hello World")
@@ -41,4 +41,3 @@ def main():
 # if we're being run normally then call the main function
 if __name__ == '__main__':
     main()
-

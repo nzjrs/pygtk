@@ -94,7 +94,7 @@ class PyGTKDb(gtk.Window, bdb.Bdb):
         selection = self.stackdisp.get_selection()
         selection.set_mode(gtk.SELECTION_BROWSE)
         selection.connect("changed", self.update_curstack)
- 
+
         self.stackdisp.set_border_width(2)
         swin.add(self.stackdisp)
         self.stackdisp.show()

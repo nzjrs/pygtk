@@ -151,12 +151,12 @@ class TextViewDemo(gtk.Window):
                     underline=pango.UNDERLINE_DOUBLE)
 
         text_buffer.create_tag("superscript",
-                    rise=10 * pango.SCALE,	# 10 pixels
-                    size=8 * pango.SCALE)	#  8 points
+                    rise=10 * pango.SCALE,      # 10 pixels
+                    size=8 * pango.SCALE)       #  8 points
 
         text_buffer.create_tag("subscript",
-                    rise=-10 * pango.SCALE,	# 10 pixels
-                    size=8 * pango.SCALE)	#  8 points
+                    rise=-10 * pango.SCALE,     # 10 pixels
+                    size=8 * pango.SCALE)       #  8 points
 
         text_buffer.create_tag("rtl_quote",
                     wrap_mode=gtk.WRAP_WORD, direction=gtk.TEXT_DIR_RTL,
@@ -339,7 +339,7 @@ class TextViewDemo(gtk.Window):
             "German(Deutsch S\303\274d) Gr\303\274\303\237 Gott\nGreek"
             "(\316\225\316\273\316\273\316\267\316\275\316\271\316\272"
             "\316\254) \316\223\316\265\316\271\316\254 \317\203\316\261"
-            "\317\202\nHebrew	\327\251\327\234\327\225\327\235\n"
+            "\317\202\nHebrew   \327\251\327\234\327\225\327\235\n"
             "Japanese(\346\227\245\346\234\254\350\252\236)\n\nThe "
             "widget properly handles bidirectional text, word wrapping, "
             "DOS/UNIX/Unicode paragraph separators, grapheme boundaries, "

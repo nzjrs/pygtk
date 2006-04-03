@@ -5,7 +5,7 @@ from common import gtk
 class RadioTest(unittest.TestCase):
     widget_type = None
     constructor_args = ()
-    
+
     def new(self):
         return self.widget_type(*self.constructor_args)
 
@@ -17,10 +17,10 @@ class RadioTest(unittest.TestCase):
 
     def getLabel(self, obj):
         return obj.get_property('label')
-    
+
     def compareGroups(self, group1, group2):
         return self.assertEqual(group1, group2)
-    
+
     def testCreate(self):
         if self.widget_type is None:
             return
@@ -40,7 +40,7 @@ class RadioTest(unittest.TestCase):
         radio2 = self.newGroup(radio)
         self.compareGroups(radio.get_group(), radio2.get_group())
         self.compareGroups(radio2.get_group(), radio.get_group())
-        
+
     def testEmptyGroup(self):
         if self.widget_type is None:
             return
@@ -57,11 +57,11 @@ class RadioTest(unittest.TestCase):
 
 class RadioButtonTest(RadioTest):
     widget_type = gtk.RadioButton
-    
+
 class RadioActionTest(RadioTest):
     widget_type = gtk.RadioAction
     constructor_args = ('RadioAction', 'test-radio-action', '', '', 0)
-    
+
     def newGroup(self, radio):
         # No constructor, so set it manually
         obj = self.new()
@@ -85,7 +85,7 @@ class RadioToolButtonTest(RadioTest):
         radio = gtk.RadioToolButton(None)
         radio.set_label(label)
         return radio
-    
+
 class RadioMenuItem(RadioTest):
     widget_type = gtk.RadioMenuItem
 

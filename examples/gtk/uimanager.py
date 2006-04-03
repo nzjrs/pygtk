@@ -51,10 +51,10 @@ class Window(gtk.Window):
         textview = gtk.TextView()
         self.buffer = textview.get_buffer()
         sw.add(textview)
-        
+
         status = gtk.Statusbar()
         vbox.pack_end(status, expand=False)
-        
+
     def create_ui(self):
         ag = gtk.ActionGroup('WindowActions')
         actions = [
@@ -81,7 +81,7 @@ class Window(gtk.Window):
         w = Window()
         w.show_all()
         gtk.main()
-        
+
     def file_open_cb(self, action):
         dialog = gtk.FileChooserDialog("Open..", self,
                                        gtk.FILE_CHOOSER_ACTION_OPEN,
@@ -101,7 +101,7 @@ class Window(gtk.Window):
             self.buffer.set_text(file(filename).read())
 
         dialog.destroy()
-        
+
     def file_close_cb(self, action):
         self.hide()
         gtk.main_quit()

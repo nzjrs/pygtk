@@ -40,7 +40,7 @@ def main():
     hbox, label = create_label('Address:')
     sg.add_widget(label)
     vbox.pack_start(hbox)
-    
+
     win.show_all()
     gtk.main()
 

@@ -8,10 +8,10 @@
 #
 """Python Bindings for the GTK Widget Set.
 
-PyGTK is a set of bindings for the GTK widget set. It provides an object 
-oriented interface that is slightly higher level than the C one. It 
-automatically does all the type casting and reference counting that you 
-would have to do normally with the C API. You can find out more on the 
+PyGTK is a set of bindings for the GTK widget set. It provides an object
+oriented interface that is slightly higher level than the C one. It
+automatically does all the type casting and reference counting that you
+would have to do normally with the C API. You can find out more on the
 official homepage, http://www.daa.com.au/~james/pygtk/"""
 
 from distutils.command.build import build
@@ -32,7 +32,7 @@ else:
     print "It's mainly included to be able to easily build win32 installers"
     print "You may continue, but only if you agree to not ask any questions"
     print "To build PyGTK in a supported way, read the INSTALL file"
-    print 
+    print
     print "Build fixes are of course welcome and should be filed in bugzilla"
     print '*'*70
     input = raw_input('Not supported, ok [y/N]? ')
@@ -184,7 +184,7 @@ if pangocairo.can_build():
 else:
     gtk_pkc_name='gtk+-2.0'
     gtk_pkc_version=GTK_REQUIRED
-    
+
 gtk = TemplateExtension(name='gtk', pkc_name=gtk_pkc_name,
                         pkc_version=gtk_pkc_version,
                         output='gtk._gtk',

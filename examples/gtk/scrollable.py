@@ -100,7 +100,7 @@ class Layout(gtk.Container):
             wclass=gdk.INPUT_OUTPUT,
             colormap=self.get_colormap(),
             event_mask=gdk.VISIBILITY_NOTIFY_MASK)
-	self.window.set_user_data(self)
+        self.window.set_user_data(self)
 
         self._bin_window = gdk.Window(
             self.window,
@@ -113,7 +113,7 @@ class Layout(gtk.Container):
             wclass=gdk.INPUT_OUTPUT,
             event_mask=(self.get_events() | gdk.EXPOSURE_MASK |
                         gdk.SCROLL_MASK))
-	self._bin_window.set_user_data(self)
+        self._bin_window.set_user_data(self)
 
         self.set_style(self.style.attach(self.window))
         self.style.set_background(self.window, gtk.STATE_NORMAL)
@@ -124,7 +124,7 @@ class Layout(gtk.Container):
         self.queue_resize()
 
     def do_unrealize(self):
-	self._bin_window.set_user_data(None)
+        self._bin_window.set_user_data(None)
         self._bin_window.destroy()
         self._bin_window = None
         gtk.Container.do_unrealize(self)
