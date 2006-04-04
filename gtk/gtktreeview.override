@@ -119,15 +119,27 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
     return 0;
 }
 %%
-override gtk_tree_view_column_cell_get_size noargs
+override gtk_tree_view_column_cell_get_size kwargs
 static PyObject *
-_wrap_gtk_tree_view_column_cell_get_size(PyGObject *self)
+_wrap_gtk_tree_view_column_cell_get_size(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    GdkRectangle cell_area;
-    gint x_offset, y_offset, width, height;
+    static char *kwlist[] = { "cell_area", NULL };
+    PyObject *py_cell_area = Py_None;
+    GdkRectangle cell_area = { 0, 0, 0, 0};
+    gint x_offset = 0, y_offset = 0, width, height;
 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "|O:GtkTreeViewColumn.cell_get_size",
+				     kwlist, &py_cell_area))
+        return NULL;
+
+    if (py_cell_area != Py_None) {
+        if (!pygdk_rectangle_from_pyobject(py_cell_area, &cell_area))
+            return NULL;
+    }
+	
     gtk_tree_view_column_cell_get_size(GTK_TREE_VIEW_COLUMN(self->obj),
-                                       &cell_area,
+                                       (py_cell_area == Py_None) ? NULL : &cell_area,
                                        &x_offset, &y_offset, &width, &height);
 
     return Py_BuildValue("(Niiii)",
