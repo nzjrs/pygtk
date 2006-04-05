@@ -1115,6 +1115,14 @@ _wrap_gtk_tree_sortable_set_default_sort_func(PyGObject *self, PyObject *args)
                           &callback, &data))
         return NULL;
 
+    if (callback == Py_None) {
+	gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(self->obj),
+						NULL,
+						NULL,
+						NULL);
+	goto beach;
+    }
+    
     if (!PyCallable_Check(callback)) {
         PyErr_SetString(PyExc_TypeError, "callback must be a callable object");
         return NULL;
@@ -1129,7 +1137,7 @@ _wrap_gtk_tree_sortable_set_default_sort_func(PyGObject *self, PyObject *args)
                                             pygtk_tree_sortable_sort_cb,
                                             cunote,
                                             pygtk_custom_destroy_notify);
-
+ beach:
     Py_INCREF(Py_None);
     return Py_None;
 }

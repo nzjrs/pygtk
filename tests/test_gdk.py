@@ -17,7 +17,6 @@ class GdkTest(unittest.TestCase):
         black = gtk.gdk.color_parse('black')
         gtk.gdk.pixmap_create_from_data(None, '\x00', 1, 1, 1,
                                         black, black)
-
     def testWindow(self):
         common = {'finalized': False}
         def on_finalize():
