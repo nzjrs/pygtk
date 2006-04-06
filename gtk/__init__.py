@@ -107,6 +107,8 @@ def _is_pydoc():
 
 def _init():
     import sys
+
+
     try:
         sys_path = sys.path[:]
 
@@ -119,6 +121,9 @@ def _init():
         # which causes problems for pychecker, restore it if modified.
         if sys.path != sys_path:
             sys.path = sys_path
+
+    # install the default log handlers
+    add_log_handlers()
 
 threads_init = gdk.threads_init
 threads_enter = gdk.threads_enter

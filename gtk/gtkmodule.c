@@ -48,7 +48,6 @@ extern PyMethodDef pygdk_functions[];
 PyObject *PyGtkDeprecationWarning;
 PyObject *PyGtkWarning;
 
-
 static struct _PyGtk_FunctionStruct functions = {
     VERSION,
 
@@ -83,23 +82,6 @@ sink_gtkobject(GObject *object)
 	g_object_ref(object);
 	gtk_object_sink(GTK_OBJECT(object));
     }
-}
-
-static void
-_pygtk_log_func(const gchar *log_domain,
-                GLogLevelFlags log_level,
-                const gchar *message,
-                gpointer user_data)
-{
-    if (G_LIKELY(Py_IsInitialized()))
-    {
-        PyGILState_STATE state;
-        
-        state = pyg_gil_state_ensure();
-        PyErr_Warn(PyGtkWarning, (char *) message);
-        pyg_gil_state_release(state);
-    } else
-        g_log_default_handler(log_domain, log_level, message, user_data);
 }
 
 static gboolean
@@ -193,14 +175,15 @@ g_free(aname); }
 #undef add_atom
 }
 
-static void
+static gboolean
 init_pycairo(void)
 {
 #ifdef HAVE_PYCAIRO
     Pycairo_IMPORT;
     if (Pycairo_CAPI == NULL)
-        return;
+        return FALSE;
 #endif
+    return TRUE;
 }
 
 DL_EXPORT(void)
@@ -213,7 +196,8 @@ init_gtk(void)
     g_assert(pygobject_register_class != NULL);
     
     /* initialise pycairo */
-    init_pycairo();
+    if (!init_pycairo())
+	return;
     
     /* initialise pygtk */
     gtk_type_init(0);
@@ -253,12 +237,6 @@ init_gtk(void)
 
     PyGtkWarning = PyErr_NewException("gtk.GtkWarning", PyExc_Warning, NULL);
     PyDict_SetItemString(d, "Warning", PyGtkWarning);
-    g_log_set_handler("Gtk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
-                      _pygtk_log_func, NULL);
-    g_log_set_handler("Gdk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
-                      _pygtk_log_func, NULL);
-    g_log_set_handler("GdkPixbuf", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
-                      _pygtk_log_func, NULL);
 
     /* namespace all the gdk stuff in gtk.gdk ... */
     m = Py_InitModule("gtk.gdk", pygdk_functions);

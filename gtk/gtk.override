@@ -52,6 +52,26 @@ extern PyTypeObject PyGdkScreen_Type;
 extern PyTypeObject PyGdkRectangle_Type;
 extern PyTypeObject PyGdkDevice_Type;
 
+extern PyObject *PyGtkWarning;
+static guint _gtk_handler = -1, _gdk_handler = -1, _gdk_pixbuf_handler = -1;
+
+static void
+_pygtk_log_func(const gchar *log_domain,
+                GLogLevelFlags log_level,
+                const gchar *message,
+                gpointer user_data)
+ {
+    if (G_LIKELY(Py_IsInitialized()))
+    {
+        PyGILState_STATE state;
+        
+        state = pyg_gil_state_ensure();
+        PyErr_Warn(PyGtkWarning, (char *) message);
+        pyg_gil_state_release(state);
+    } else
+        g_log_default_handler(log_domain, log_level, message, user_data);
+}
+
 
 static gboolean
 pygtk_util_pyobject_as_double(PyObject *obj, gdouble *value, const char *argument_name)
@@ -360,6 +380,46 @@ _wrap_gtk_init_check(PyGObject *self, PyObject *args)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+define add_log_handlers
+static PyObject *
+_wrap_add_log_handlers(PyGObject *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":add_log_handlers"))
+	return NULL;
+
+    _gtk_handler = g_log_set_handler("Gtk",
+				     G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+				     _pygtk_log_func, NULL);
+    _gdk_handler = g_log_set_handler("Gdk",
+				     G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+				     _pygtk_log_func, NULL);
+    _gdk_pixbuf_handler = g_log_set_handler("GdkPixbuf",
+					    G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+					    _pygtk_log_func, NULL);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+define remove_log_handlers
+static PyObject *
+_wrap_remove_log_handlers(PyGObject *self, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ":remove_log_handlers"))
+	return NULL;
+
+    g_log_remove_handler("Gtk", _gtk_handler);
+    _gtk_handler = -1;
+    g_log_remove_handler("Gdk", _gdk_handler);
+    _gdk_handler = -1;
+    g_log_remove_handler("GdkPixbuf", _gdk_pixbuf_handler);
+    _gdk_pixbuf_handler = -1;
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 %%
 override gtk_paint_polygon kwargs
 static PyObject *
