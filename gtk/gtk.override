@@ -179,7 +179,6 @@ ignore
   gtk_image_menu_item_new_with_mnemonic
   gtk_init
   gtk_init_abi_check
-  gtk_init_check
   gtk_init_check_abi_check
   gtk_input_add_full
   gtk_input_remove
@@ -298,6 +297,69 @@ ignore-glob
   gtk_quit_add_*
   gtk_signal_*
   gtk_timeout_add*
+%%
+override gtk_init_check noargs
+static PyObject *
+_wrap_gtk_init_check(PyGObject *self, PyObject *args)
+{
+    PyObject *av;
+    int argc, i;
+    char **argv;
+    
+    /* initialise GTK ... */
+    av = PySys_GetObject("argv");
+    if (av != NULL) {
+	if (!PyList_Check(av)) {
+	    PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
+	    av = NULL;
+	} else {
+	    argc = PyList_Size(av);
+	    for (i = 0; i < argc; i++)
+		if (!PyString_Check(PyList_GetItem(av, i))) {
+		    PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
+		    av = NULL;
+		    break;
+		}
+	}
+    }
+    if (av != NULL) {
+	argv = g_new(char *, argc);
+	for (i = 0; i < argc; i++)
+	    argv[i] = g_strdup(PyString_AsString(PyList_GetItem(av, i)));
+    } else {
+	    argc = 0;
+	    argv = NULL;
+    }
+
+    if (!gtk_init_check(&argc, &argv)) {
+	if (argv != NULL) {
+	    for (i = 0; i < argc; i++)
+		g_free(argv[i]);
+	    g_free(argv);
+	}
+	PyErr_SetString(PyExc_RuntimeError, "could not open display");
+	/* set the LC_NUMERIC locale back to "C", as Python < 2.4 requires
+	 * that it be set that way. */
+#if PY_VERSION_HEX < 0x020400F0
+	setlocale(LC_NUMERIC, "C");
+#endif
+	return NULL;
+    }
+    /* set the LC_NUMERIC locale back to "C", as Python < 2.4 requires that
+     * it be set that way. */
+#if PY_VERSION_HEX < 0x020400F0
+    setlocale(LC_NUMERIC, "C");
+#endif
+    if (argv != NULL) {
+	PySys_SetArgv(argc, argv);
+	for (i = 0; i < argc; i++)
+	    g_free(argv[i]);
+	g_free(argv);
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 %%
 override gtk_paint_polygon kwargs
 static PyObject *

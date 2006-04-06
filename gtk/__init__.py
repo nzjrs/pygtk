@@ -1,6 +1,7 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 # pygtk - Python bindings for the GTK toolkit.
 # Copyright (C) 1998-2003  James Henstridge
+#               2004-2006  Johan Dahlin
 #
 #   gtk/__init__.py: initialisation file for gtk package.
 #
@@ -28,41 +29,17 @@ from warnings import warn as _warn
 try:
     import ltihooks
     ltihooks # pyflakes
-    sys.path.insert(1, 'gobject')
     del ltihooks
 except ImportError:
     pass
 
-_is_pydoc = False
-if sys.argv:
-    name = os.path.basename(sys.argv[0])
-    if 'pydoc' in name:
-        _is_pydoc = True
-
+# load the required modules:
 import gobject as _gobject
 
-# load the required modules:
-sys_path = sys.path[:]
 from _gtk import *
-
-# init_gtk calls PySys_SetArgv which calls sys.path.insert(0, ''),
-# which causes problems for pychecker, restore it if modified.
-if sys.path != sys_path:
-    sys.path = sys_path
-del sys, sys_path
-
 import keysyms
-import gdk # this is created by the _gtk import
+import gdk
 
-threads_init = gdk.threads_init
-threads_enter = gdk.threads_enter
-threads_leave = gdk.threads_leave
-
-gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
-gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
-gdk.INPUT_EXCEPTION = _gobject.IO_PRI
-
-# other deprecated symbols
 class _Deprecated:
     def __init__(self, func, oldname, module=''):
         self.func = func
@@ -77,7 +54,7 @@ class _Deprecated:
         return '<deprecated function %s>' % (self.oldname)
 
     def __call__(self, *args, **kwargs):
-        if not _is_pydoc:
+        if not _is_pydoc():
             oldname = 'gtk.' + self.oldname
             newname = self.module + '.' + self.name
             message = '%s is deprecated, use %s instead' % (oldname, newname)
@@ -97,7 +74,7 @@ class _DeprecatedConstant:
         self._suggestion = suggestion
 
     def _deprecated(self, value):
-        if not _is_pydoc:
+        if not _is_pydoc():
             message = '%s is deprecated, use %s instead' % (self._name,
                                                             self._suggestion)
             _warn(message, DeprecationWarning, 3)
@@ -111,12 +88,45 @@ class _DeprecatedConstant:
 
 # _gobject deprecation
 class _GObjectWrapper(_module):
-    _gobject = _gobject
     def __getattr__(self, attr):
-        if not _is_pydoc:
+        import gobject as _gobject
+        if not _is_pydoc():
             _warn('gtk._gobject is deprecated, use gobject directly instead',
-                  DeprecationWarning, 2)
-        return getattr(self._gobject, attr)
+                  DeprecationWarning, 3)
+        return getattr(_gobject, attr)
+
+def _is_pydoc():
+    import sys
+
+    if sys.argv:
+        name = os.path.basename(sys.argv[0])
+        if 'pydoc' in name:
+            return True
+
+    return False
+
+def _init():
+    import sys
+    try:
+        sys_path = sys.path[:]
+
+        try:
+            init_check()
+        except RuntimeError, e:
+            print >> sys.stderr, "WARNING: %s" % e
+    finally:
+        # init_check calls PySys_SetArgv which calls sys.path.insert(0, ''),
+        # which causes problems for pychecker, restore it if modified.
+        if sys.path != sys_path:
+            sys.path = sys_path
+
+threads_init = gdk.threads_init
+threads_enter = gdk.threads_enter
+threads_leave = gdk.threads_leave
+
+gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
+gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
+gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
 # old names compatibility ...
 idle_add       = _Deprecated(_gobject.idle_add, 'idle_add', 'gobject')
@@ -147,3 +157,5 @@ _gobject = _GObjectWrapper('gtk._gobject')
 gdk.Warning = Warning
 
 del _Deprecated, _DeprecatedConstant, _GObjectWrapper, _module,
+
+_init()

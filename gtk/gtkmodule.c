@@ -121,109 +121,11 @@ python_do_pending_calls(gpointer data)
     return TRUE;
 }
 
-DL_EXPORT(void)
-init_gtk(void)
+static void
+pygtk_add_stock_items(PyObject *d)
 {
-    PyObject *m, *d, *tuple, *o;
-    PyObject *av;
-    int argc, i;
-    char **argv;
     GSList *stock_ids, *cur;
     char buf[128];
-    gchar * aname;
-
-#ifdef HAVE_PYCAIRO
-    Pycairo_IMPORT;
-    if (Pycairo_CAPI == NULL)
-        return;
-#endif
-    /* initialise gobject */
-    init_pygobject();
-    g_assert(pygobject_register_class != NULL);
-
-    pygobject_register_sinkfunc(GTK_TYPE_WINDOW, sink_gtkwindow);
-    pygobject_register_sinkfunc(GTK_TYPE_INVISIBLE, sink_gtkinvisible);
-    pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
-
-    /* initialise GTK ... */
-    av = PySys_GetObject("argv");
-    if (av != NULL) {
-	if (!PyList_Check(av)) {
-	    PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
-	    av = NULL;
-	} else {
-	    argc = PyList_Size(av);
-	    for (i = 0; i < argc; i++)
-		if (!PyString_Check(PyList_GetItem(av, i))) {
-		    PyErr_Warn(PyExc_Warning, "ignoring sys.argv: it must be a list of strings");
-		    av = NULL;
-		    break;
-		}
-	}
-    }
-    if (av != NULL) {
-	argv = g_new(char *, argc);
-	for (i = 0; i < argc; i++)
-	    argv[i] = g_strdup(PyString_AsString(PyList_GetItem(av, i)));
-    } else {
-	    argc = 0;
-	    argv = NULL;
-    }
-
-    if (!gtk_init_check(&argc, &argv)) {
-	if (argv != NULL) {
-	    for (i = 0; i < argc; i++)
-		g_free(argv[i]);
-	    g_free(argv);
-	}
-	PyErr_SetString(PyExc_RuntimeError, "could not open display");
-	/* set the LC_NUMERIC locale back to "C", as Python < 2.4 requires
-	 * that it be set that way. */
-#if PY_VERSION_HEX < 0x020400F0
-	setlocale(LC_NUMERIC, "C");
-#endif
-	return;
-    }
-    /* set the LC_NUMERIC locale back to "C", as Python < 2.4 requires that
-     * it be set that way. */
-#if PY_VERSION_HEX < 0x020400F0
-    setlocale(LC_NUMERIC, "C");
-#endif
-    if (argv != NULL) {
-	PySys_SetArgv(argc, argv);
-	for (i = 0; i < argc; i++)
-	    g_free(argv[i]);
-	g_free(argv);
-    }
-
-    /* now initialise pygtk */
-    m = Py_InitModule("gtk._gtk", pygtk_functions);
-    d = PyModule_GetDict(m);
-
-    /* gtk+ version */
-    tuple = Py_BuildValue ("(iii)", gtk_major_version, gtk_minor_version,
-			   gtk_micro_version);
-    PyDict_SetItemString(d, "gtk_version", tuple);    
-    Py_DECREF(tuple);
-	
-    /* pygtk version */
-    tuple = Py_BuildValue ("(iii)", PYGTK_MAJOR_VERSION, PYGTK_MINOR_VERSION,
-			   PYGTK_MICRO_VERSION);
-    PyDict_SetItemString(d, "pygtk_version", tuple);
-    Py_DECREF(tuple);
-	
-    _pygtk_register_boxed_types(d);
-    pygtk_register_classes(d);
-    pygtk_add_constants(m, "GTK_");
-    
-    /* for addon libraries ... */
-    PyDict_SetItemString(d, "_PyGtk_API",
-			 o=PyCObject_FromVoidPtr(&functions, NULL));
-    Py_DECREF(o);
-	
-    PyGtkDeprecationWarning = PyErr_NewException("gtk.GtkDeprecationWarning",
-						 PyExc_DeprecationWarning, NULL);
-    PyDict_SetItemString(d, "DeprecationWarning", PyGtkDeprecationWarning);
 
     stock_ids = gtk_stock_list_ids();
     strcpy(buf, "STOCK_");
@@ -258,21 +160,13 @@ init_gtk(void)
 	g_slist_free_1(cur);
     }
     
-    PyGtkWarning = PyErr_NewException("gtk.GtkWarning", PyExc_Warning, NULL);
-    PyDict_SetItemString(d, "Warning", PyGtkWarning);
-    g_log_set_handler("Gtk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
-                      _pygtk_log_func, NULL);
-    g_log_set_handler("Gdk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
-                      _pygtk_log_func, NULL);
-    g_log_set_handler("GdkPixbuf", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
-                      _pygtk_log_func, NULL);
+}
 
-    /* namespace all the gdk stuff in gtk.gdk ... */
-    m = Py_InitModule("gtk.gdk", pygdk_functions);
-    d = PyModule_GetDict(m);
+static void
+pygdk_add_extra_constants(PyObject *m)
+{
+    gchar * aname;
 
-    pygdk_register_classes(d);
-    pygdk_add_constants(m, "GDK_");
     PyModule_AddObject(m, "PARENT_RELATIVE",
 		       PyLong_FromLong(GDK_PARENT_RELATIVE));
       /* Add predefined atoms */
@@ -297,6 +191,82 @@ g_free(aname); }
     add_atom(SELECTION_TYPE_WINDOW);
     add_atom(SELECTION_TYPE_STRING);
 #undef add_atom
+}
+
+static void
+init_pycairo(void)
+{
+#ifdef HAVE_PYCAIRO
+    Pycairo_IMPORT;
+    if (Pycairo_CAPI == NULL)
+        return;
+#endif
+}
+
+DL_EXPORT(void)
+init_gtk(void)
+{
+    PyObject *m, *d, *tuple, *o;
+
+    /* initialise pygobject */
+    init_pygobject();
+    g_assert(pygobject_register_class != NULL);
+    
+    /* initialise pycairo */
+    init_pycairo();
+    
+    /* initialise pygtk */
+    gtk_type_init(0);
+
+    pygobject_register_sinkfunc(GTK_TYPE_WINDOW, sink_gtkwindow);
+    pygobject_register_sinkfunc(GTK_TYPE_INVISIBLE, sink_gtkinvisible);
+    pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
+	
+    m = Py_InitModule("gtk._gtk", pygtk_functions);
+    d = PyModule_GetDict(m);
+
+    /* gtk+ version */
+    tuple = Py_BuildValue("(iii)", gtk_major_version, gtk_minor_version,
+			  gtk_micro_version);
+    PyDict_SetItemString(d, "gtk_version", tuple);    
+    Py_DECREF(tuple);
+	
+    /* pygtk version */
+    tuple = Py_BuildValue("(iii)", PYGTK_MAJOR_VERSION, PYGTK_MINOR_VERSION,
+			  PYGTK_MICRO_VERSION);
+    PyDict_SetItemString(d, "pygtk_version", tuple);
+    Py_DECREF(tuple);
+	
+    _pygtk_register_boxed_types(d);
+    pygtk_register_classes(d);
+    pygtk_add_constants(m, "GTK_");
+    pygtk_add_stock_items(d);
+    
+    /* extension API */
+    PyDict_SetItemString(d, "_PyGtk_API",
+			 o=PyCObject_FromVoidPtr(&functions, NULL));
+    Py_DECREF(o);
+	
+    PyGtkDeprecationWarning = PyErr_NewException("gtk.GtkDeprecationWarning",
+						 PyExc_DeprecationWarning, NULL);
+    PyDict_SetItemString(d, "DeprecationWarning", PyGtkDeprecationWarning);
+
+    PyGtkWarning = PyErr_NewException("gtk.GtkWarning", PyExc_Warning, NULL);
+    PyDict_SetItemString(d, "Warning", PyGtkWarning);
+    g_log_set_handler("Gtk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _pygtk_log_func, NULL);
+    g_log_set_handler("Gdk", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _pygtk_log_func, NULL);
+    g_log_set_handler("GdkPixbuf", G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
+                      _pygtk_log_func, NULL);
+
+    /* namespace all the gdk stuff in gtk.gdk ... */
+    m = Py_InitModule("gtk.gdk", pygdk_functions);
+    d = PyModule_GetDict(m);
+
+    pygdk_register_classes(d);
+    pygdk_add_constants(m, "GDK_");
+    pygdk_add_extra_constants(m);
     
     gtk_timeout_add(100, python_do_pending_calls, NULL);
 }
