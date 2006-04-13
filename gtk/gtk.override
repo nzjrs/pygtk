@@ -3153,7 +3153,6 @@ _wrap_gtk_stock_add(PyGObject *self, PyObject *args, PyObject *kwargs)
         items = g_new(GtkStockItem, len);
         for (i = 0; i < len; i++) {
             py_item = PySequence_GetItem(py_items, i);
-	    Py_DECREF(py_item);
             if (!py_item) goto error;
             if (!PyArg_ParseTuple(py_item, "zziiz",
                                   &items[i].stock_id, &items[i].label,
@@ -3165,6 +3164,7 @@ _wrap_gtk_stock_add(PyGObject *self, PyObject *args, PyObject *kwargs)
                                 "keyval, domain)");
                 goto error;
             }
+	    Py_DECREF(py_item);
         }
         gtk_stock_add(items, PySequence_Length(py_items));
         g_free(items);

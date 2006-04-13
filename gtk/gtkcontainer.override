@@ -526,7 +526,10 @@ pygtk_container_for_common(PyGObject *self, PyObject *args, unsigned for_index)
             { "O|O:GtkContainer.forall", gtk_container_forall }
     };
 
-    g_assert(for_index < countof(table));
+    if (for_index >= countof(table)) {
+	PyErr_SetString(PyExc_TypeError, "for_index > 2");
+	return NULL;
+    }
 
     if (!PyArg_ParseTuple(args, table[for_index].parse_arg,
                           &pyfunc, &pyarg))
@@ -537,7 +540,6 @@ pygtk_container_for_common(PyGObject *self, PyObject *args, unsigned for_index)
     table[for_index].for_func(GTK_CONTAINER(self->obj),
 			      pygtk_container_for_common_marshal,
 			      &cunote);
-
     Py_INCREF(Py_None);
     return Py_None;
 }
