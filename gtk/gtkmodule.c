@@ -24,8 +24,6 @@
 #include "config.h"
 #endif
 
-#include <locale.h>
-
 /* include this first, before NO_IMPORT_PYGOBJECT is defined */
 #include <pygobject.h>
 #include "pygtk-private.h"
