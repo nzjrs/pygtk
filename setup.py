@@ -58,7 +58,7 @@ PYCAIRO_REQUIRED  = get_m4_define('pycairo_required_version')
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
 
-GLOBAL_INC += ['.', 'gtk', 'gobject']
+GLOBAL_INC += ['.', 'gtk']
 GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('PYGTK_MINOR_VERSION', MINOR_VERSION),
                   ('PYGTK_MICRO_VERSION', MICRO_VERSION)]
@@ -79,7 +79,6 @@ class PyGtkInstallLib(InstallLib):
 
         # Install pygtk.pth, pygtk.py[c] and templates
         self.install_pth()
-        self.install_pygtk()
 
         # Modify the base installation dir
         install_dir = os.path.join(self.install_dir, PYGTK_SUFFIX_LONG)
@@ -94,14 +93,6 @@ class PyGtkInstallLib(InstallLib):
         open(file, 'w').write(PYGTK_SUFFIX_LONG)
         self.local_outputs.append(file)
         self.local_inputs.append('pygtk.pth')
-
-    def install_pygtk(self):
-        """install pygtk.py in the right place."""
-        self.copy_file('pygtk.py', self.install_dir)
-        pygtk = os.path.join(self.install_dir, 'pygtk.py')
-        self.byte_compile([pygtk])
-        self.local_outputs.append(pygtk)
-        self.local_inputs.append('pygtk.py')
 
 class PyGtkInstallData(InstallData):
     def run(self):
@@ -120,31 +111,11 @@ class PyGtkInstallData(InstallData):
         self.install_template('pygtk-2.0.pc.in',
                               os.path.join(self.install_dir,
                                            'lib','pkgconfig'))
-        self.install_template('pygobject-2.0.pc.in',
-                              os.path.join(self.install_dir,
-                                           'lib', 'pkgconfig'))
 
 class PyGtkBuild(build):
     enable_threading = 1
 PyGtkBuild.user_options.append(('enable-threading', None,
                                 'enable threading support'))
-
-# GObject
-gobject = PkgConfigExtension(name='gobject', pkc_name='gobject-2.0',
-                             pkc_version=GOBJECT_REQUIRED,
-                             sources=['gobject/gobjectmodule.c',
-                                      'gobject/pygboxed.c',
-                                      'gobject/pygenum.c',
-                                      'gobject/pygflags.c',
-                                      'gobject/pygobject.c',
-                                      'gobject/pygmaincontext.c',
-                                      'gobject/pygmainloop.c',
-                                      'gobject/pygparamspec.c',
-                                      'gobject/pygpointer.c',
-                                      'gobject/pygtype.c',
-                                      'gobject/pygsource.c',
-                                      'gobject/pygiochannel.c',
-                                      ])
 
 # Atk
 atk = TemplateExtension(name='atk', pkc_name='atk',
@@ -215,20 +186,11 @@ libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
 data_files = []
 ext_modules = []
 py_modules = []
-py_modules.append('dsextras')
 
 if not have_pkgconfig():
     print "Error, could not find pkg-config"
     raise SystemExit
 
-if gobject.can_build():
-    ext_modules.append(gobject)
-    data_files.append((INCLUDE_DIR, ('gobject/pygobject.h',)))
-    data_files.append((CODEGEN_DIR, list_files(os.path.join('codegen', '*.py'))))
-else:
-    print
-    print 'ERROR: Nothing to do, gobject could not be found and is essential.'
-    raise SystemExit
 if atk.can_build():
     ext_modules.append(atk)
     data_files.append((DEFS_DIR, ('atk.defs', 'atk-types.defs')))
