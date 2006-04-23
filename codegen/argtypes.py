@@ -503,8 +503,13 @@ class ObjectArg(ArgType):
                 info.add_parselist('O!', ['&Py%s_Type' % self.objname,
                                           '&' + pname], [pname])
     def write_return(self, ptype, ownsreturn, info):
-        if ptype[-1] == '*': ptype = ptype[:-1]
-        info.varlist.add(ptype, '*ret')
+        if ptype.endswith('*'):
+            typename = ptype[:-1]
+            try:
+                const, typename = typename.split('const-')
+            except ValueError:
+                const = ''
+        info.varlist.add(typename, '*ret')
         if ownsreturn:
             info.varlist.add('PyObject', '*py_ret')
             info.codeafter.append('    py_ret = pygobject_new((GObject *)ret);\n'
