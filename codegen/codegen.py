@@ -195,7 +195,9 @@ class Wrapper:
         '%(varlist)s'
         '%(parseargs)s'
         '%(codebefore)s'
+        '    %(begin_allow_threads)s\n'
         '    %(setreturn)s%(cname)s(%(arglist)s);\n'
+        '    %(end_allow_threads)s\n'
         '%(codeafter)s\n'
         '}\n\n'
         )
@@ -246,7 +248,14 @@ class Wrapper:
         return { 'name': '%s.__init__' % self.objinfo.c_name,
                  'errorreturn': '-1' }
     def get_initial_method_substdict(self, method):
-        return { 'name': '%s.%s' % (self.objinfo.c_name, method.name) }
+        substdict = { 'name': '%s.%s' % (self.objinfo.c_name, method.name) }
+        if method.unblock_threads:
+            substdict['begin_allow_threads'] = 'pyg_begin_allow_threads;'
+            substdict['end_allow_threads'] = 'pyg_end_allow_threads;'
+        else:
+            substdict['begin_allow_threads'] = ''
+            substdict['end_allow_threads'] = ''
+        return substdict
 
     def write_class(self):
         self.fp.write('\n/* ----------- %s ----------- */\n\n' %
@@ -331,6 +340,13 @@ class Wrapper:
 
         # if name isn't set, set it to function_obj.name
         substdict.setdefault('name', function_obj.name)
+
+        if function_obj.unblock_threads:
+            substdict['begin_allow_threads'] = 'pyg_begin_allow_threads;'
+            substdict['end_allow_threads'] = 'pyg_end_allow_threads;'
+        else:
+            substdict['begin_allow_threads'] = ''
+            substdict['end_allow_threads'] = ''
 
         if self.objinfo:
             substdict['typename'] = self.objinfo.c_name
@@ -788,7 +804,9 @@ class GObjectWrapper(Wrapper):
         '%(varlist)s'
         '%(parseargs)s'
         '%(codebefore)s'
+        '    %(begin_allow_threads)s\n'
         '    %(setreturn)s%(cname)s(%(cast)s(self->obj)%(arglist)s);\n'
+        '    %(end_allow_threads)s\n'
         '%(codeafter)s\n'
         '}\n\n'
         )
@@ -1102,8 +1120,10 @@ class GBoxedWrapper(Wrapper):
         '%(varlist)s'
         '%(parseargs)s'
         '%(codebefore)s'
+        '    %(begin_allow_threads)s\n'
         '    %(setreturn)s%(cname)s(pyg_boxed_get(self, '
         '%(typename)s)%(arglist)s);\n'
+        '    %(end_allow_threads)s\n'
         '%(codeafter)s\n'
         '}\n\n'
         )

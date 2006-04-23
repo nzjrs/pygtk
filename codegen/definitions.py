@@ -280,6 +280,7 @@ class MethodDefBase(Definition):
         self.name = name
         self.ret = None
         self.caller_owns_return = None
+        self.unblock_threads = None
         self.c_name = None
         self.typecode = None
         self.of_object = None
@@ -299,6 +300,8 @@ class MethodDefBase(Definition):
                 self.ret = arg[1]
             elif arg[0] == 'caller-owns-return':
                 self.caller_owns_return = arg[1] in ('t', '#t')
+            elif arg[0] == 'unblock-threads':
+                self.unblock_threads = arg[1] in ('t', '#t')
             elif arg[0] == 'parameters':
                 for parg in arg[1:]:
                     ptype = parg[0]
@@ -351,6 +354,8 @@ class MethodDefBase(Definition):
             fp.write('  (gtype-id "' + self.typecode + '")\n')
         if self.caller_owns_return:
             fp.write('  (caller-owns-return #t)\n')
+        if self.unblock_threads:
+            fp.write('  (unblock_threads #t)\n')
         if self.ret:
             fp.write('  (return-type "' + self.ret + '")\n')
         if self.deprecated:
@@ -393,6 +398,7 @@ class FunctionDef(Definition):
         self.is_constructor_of = None
         self.ret = None
         self.caller_owns_return = None
+        self.unblock_threads = None
         self.c_name = None
         self.typecode = None
         self.params = [] # of form (type, name, default, nullok)
@@ -413,6 +419,8 @@ class FunctionDef(Definition):
                 self.ret = arg[1]
             elif arg[0] == 'caller-owns-return':
                 self.caller_owns_return = arg[1] in ('t', '#t')
+            elif arg[0] == 'unblock-threads':
+                self.unblock_threads = arg[1] in ('t', '#t')
             elif arg[0] == 'parameters':
                 for parg in arg[1:]:
                     ptype = parg[0]
@@ -509,6 +517,8 @@ class FunctionDef(Definition):
             fp.write('  (gtype-id "' + self.typecode + '")\n')
         if self.caller_owns_return:
             fp.write('  (caller-owns-return #t)\n')
+        if self.unblock_threads:
+            fp.write('  (unblock-threads #t)\n')
         if self.ret:
             fp.write('  (return-type "' + self.ret + '")\n')
         if self.deprecated:
