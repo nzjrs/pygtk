@@ -1,0 +1,201 @@
+/* -*- Mode: C; c-basic-offset: 4 -*-
+ * pygtk- Python bindings for the GTK toolkit.
+ * Copyright (C) 1998-2003  James Henstridge
+ *
+ *   gdkcolor.override: gtk.gdk.Color and gtk.gdk.ColorMap overrides
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+%%
+ignore
+  gdk_color_copy gdk_color_free
+  gdk_color_hash gdk_color_equal
+%%
+override gdk_color_new kwargs
+static int
+_wrap_gdk_color_new(PyGBoxed *self,
+                    PyObject *args,
+                    PyObject *kwargs)
+{
+    static char *kwlist[] = {"red", "green", "blue", "pixel", NULL };
+    int red = 0, green = 0, blue = 0;
+    unsigned int pixel = 0;
+    GdkColor colour;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|iiik:gdk.Color", kwlist,
+                                     &red, &green, &blue, &pixel)) {
+        return -1;
+    }
+    colour.red = red;
+    colour.green = green;
+    colour.blue = blue;
+    colour.pixel = pixel;
+    
+    self->boxed =  g_boxed_copy(GDK_TYPE_COLOR, &colour);
+    self->free_on_dealloc = TRUE;
+    self->gtype = GDK_TYPE_COLOR;
+    
+    return 0;
+}
+%%
+override-slot GdkColor.tp_setattr
+static int
+_wrap_gdk_color_tp_setattr(PyGBoxed *self, char *attr, PyObject *value)
+{
+    if (value == NULL) {
+        PyErr_SetString(PyExc_TypeError, "can't delete attributes");
+        return -1;
+    }
+
+    if (PyInt_Check(value)) {
+        int i = PyInt_AsLong(value);
+        if (!strcmp(attr, "red")) {
+            pyg_boxed_get(self, GdkColor)->red = i;
+            return 0;
+        } else if (!strcmp(attr, "green")) {
+            pyg_boxed_get(self, GdkColor)->green = i;       
+            return 0;
+        } else if (!strcmp(attr, "blue")) {
+            pyg_boxed_get(self, GdkColor)->blue = i;
+            return 0;
+        } else if (!strcmp(attr, "pixel")) {
+            pyg_boxed_get(self, GdkColor)->pixel = i;
+            return 0;
+        } 
+    }
+
+    PyErr_SetString(PyExc_AttributeError, "could not write attribute");
+    return -1;
+}
+%%
+override gdk_color_parse kwargs
+static PyObject *
+_wrap_gdk_color_parse(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "spec", NULL };
+    const char *spec;
+    GdkColor colour = { 0, };
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:color_parse", kwlist,
+                                     &spec))
+        return NULL;
+
+    if (!gdk_color_parse(spec, &colour)) {
+        PyErr_SetString(PyExc_ValueError,
+                        "unable to parse colour specification");
+        return NULL;
+    }
+    
+    /* pyg_boxed_new handles NULL checking */    
+    return pyg_boxed_new (GDK_TYPE_COLOR, &colour, TRUE, TRUE);
+}
+%%
+override gdk_colormap_alloc_color kwargs
+static PyObject *
+_wrap_gdk_colormap_alloc_color(PyGObject *self, PyObject *args,
+                              PyObject *kwargs)
+{
+    static char *kwlist1[] = { "red", "green", "blue", "writeable", "best_match", NULL };
+    static char *kwlist2[] = { "spec", "writeable", "best_match", NULL };
+    static char *kwlist3[] = { "color", "writeable", "best_match", NULL };
+    GdkColor colour = { 0, 0, 0, 0 };
+    gboolean writeable = FALSE;
+    gboolean best_match = TRUE;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "HHH|ii:GdkColormap.alloc_color", kwlist1,
+                                     &colour.red, &colour.green, &colour.blue,
+                                     &writeable, &best_match)) {
+
+ 	PyObject *pycolour;
+	
+        PyErr_Clear();
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+ 					 "O|ii:GdkColormap.alloc_color",
+ 					 kwlist3, &pycolour,
+ 					 &writeable, &best_match)) {
+            return NULL;
+	}
+
+ 	if (!pyg_boxed_check(pycolour, GDK_TYPE_COLOR)) {
+ 	    gchar *color_name;
+ 
+ 	    PyErr_Clear();
+ 	    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+ 					     "s|ii:GdkColormap.alloc_color",
+ 					     kwlist2, &color_name, &writeable,
+ 					     &best_match)) {
+ 		return NULL;
+	    }
+	    
+ 	    if (!gdk_color_parse(color_name, &colour)) {
+ 		PyErr_SetString(PyExc_ValueError,
+ 				"unable to parse colour specification");
+ 		return NULL;
+	    }
+ 	} else {
+ 	    colour = *pyg_boxed_get(pycolour, GdkColor);
+        }
+    }
+    
+    if (!gdk_colormap_alloc_color(GDK_COLORMAP(self->obj),
+                                  &colour, writeable, best_match)) {
+        PyErr_SetString(PyExc_RuntimeError, "couldn't allocate colour");
+        return NULL;
+    }
+    return pyg_boxed_new(GDK_TYPE_COLOR, &colour, TRUE, TRUE);
+}
+%%
+override gdk_color_alloc kwargs
+static PyObject *
+_wrap_gdk_color_alloc(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    if (!PyErr_Warn(PyExc_DeprecationWarning, "use GdkColormap.alloc_color")<0)
+        return NULL;
+    return _wrap_gdk_colormap_alloc_color(self, args, kwargs);
+}
+%%
+override gdk_colormap_query_color kwargs
+static PyObject *
+_wrap_gdk_colormap_query_color(PyGObject *self, PyObject *args,
+                               PyObject *kwargs)
+{
+    static char *kwlist[] = { "pixel", NULL };
+    GdkColor colour = { 0, 0, 0, 0 };
+    PyObject *py_pixel;
+    gulong pixel;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:GdkColormap.query_color", kwlist,
+                                     &py_pixel))
+        return NULL;
+
+    if (PyLong_Check(py_pixel)) {
+        pixel = PyLong_AsUnsignedLong(py_pixel);
+        if (PyErr_Occurred())
+            return NULL;
+    } else if (PyInt_Check(py_pixel))
+        pixel = PyInt_AS_LONG(py_pixel);
+    else {
+        PyErr_SetString(PyExc_TypeError, "GdkColormap.query_color: pixel must be"
+                        " either int or long");
+        return NULL;
+    }
+
+    gdk_colormap_query_color(GDK_COLORMAP(self->obj), pixel, &colour);
+    
+    return pyg_boxed_new(GDK_TYPE_COLOR, &colour, TRUE, TRUE);
+}

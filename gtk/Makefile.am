@@ -35,7 +35,17 @@ endif
 # gtk module
 GDK_DEFS = gdk.defs gdk-types.defs
 GTK_DEFS = gtk.defs gtk-types.defs gtk-extrafuncs.defs
-GDK_OVERRIDES = gdk.override gdkcairo.override
+GDK_OVERRIDES = \
+	gdk.override 		\
+	gdkcairo.override	\
+	gdkcolor.override	\
+	gdkdraw.override	\
+	gdkevent.override	\
+	gdkgc.override		\
+	gdkpixbuf.override	\
+	gdkrectangle.override	\
+	gdkwindow.override
+
 GTK_OVERRIDES = 		\
 	gtk.override 		\
 	gtkclist.override 	\
@@ -44,9 +54,11 @@ GTK_OVERRIDES = 		\
 	gtkiconview.override 	\
 	gtkstyle.override 	\
 	gtktextview.override 	\
+	gtktoolbar.override 	\
 	gtktreeview.override 	\
 	gtkwidget.override 	\
 	gtkwindow.override
+
 CLEANFILES += gtk.c gdk.c
 EXTRA_DIST += $(GDK_DEFS) $(GDK_OVERRIDES) $(GTK_DEFS) $(GTK_OVERRIDES)
 gdk.c: $(GDK_DEFS) $(GDK_OVERRIDES)
