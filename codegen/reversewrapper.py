@@ -294,7 +294,7 @@ class ReverseWrapper(object):
         if len(self.pyret_parse_items) == 1:
             ## if retval is one item only, pack it in a tuple so we
             ## can use PyArg_ParseTuple as usual..
-            self.write_code('py_retval = Py_BuildValue("N", py_retval);')
+            self.write_code('py_retval = Py_BuildValue("(N)", py_retval);')
         if len(self.pyret_parse_items) > 0:
             ## Parse return values using PyArg_ParseTuple
             self.write_code(code=None, failure_expression=(
