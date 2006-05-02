@@ -27,6 +27,7 @@ headers
 
 #define NO_IMPORT_PYGOBJECT
 #include "pygobject.h"
+#include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "pygtk-private.h"
@@ -52,6 +53,20 @@ extern PyTypeObject PyGtkWidget_Type;
 # include <pycairo.h>
 extern Pycairo_CAPI_t *Pycairo_CAPI;
 extern PyTypeObject PyGdkCairoContext_Type;
+#endif
+
+#ifndef GDK_TYPE_REGION
+GType
+pygdk_region_get_type (void)
+{
+  static GType our_type = 0;
+  
+  if (our_type == 0)
+    our_type = g_boxed_type_register_static ("GdkRegion",
+					     (GBoxedCopyFunc)gdk_region_copy,
+					     (GBoxedFreeFunc)gdk_region_destroy);
+  return our_type;
+}
 #endif
 
 %%
@@ -467,6 +482,17 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     }
     self->free_on_dealloc = TRUE;
     return 0;
+}
+%%
+override gdk_region_get_clipbox noargs
+static PyObject *
+_wrap_gdk_region_get_clipbox(PyGObject *self)
+{
+    GdkRectangle rect = {0, 0, 0, 0};
+
+    gdk_region_get_clipbox(pyg_boxed_get(self, GdkRegion), &rect);
+
+    return pyg_boxed_new(GDK_TYPE_RECTANGLE, &rect, TRUE, TRUE);
 }
 %%
 override-attr GdkDevice.axes

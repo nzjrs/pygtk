@@ -1157,12 +1157,14 @@
   (of-object "GdkDrawable")
   (c-name "gdk_drawable_get_clip_region")
   (return-type "GdkRegion*")
+  (caller-owns-return #t)
 )
 
 (define-method get_visible_region
   (of-object "GdkDrawable")
   (c-name "gdk_drawable_get_visible_region")
   (return-type "GdkRegion*")
+  (caller-owns-return #t)
 )
 
 
@@ -2227,6 +2229,7 @@
 (define-function gdk_pango_layout_line_get_clip_region
   (c-name "gdk_pango_layout_line_get_clip_region")
   (return-type "GdkRegion*")
+  (caller-owns-return #t)
   (parameters
     '("PangoLayoutLine*" "line")
     '("gint" "x_origin")
@@ -2239,6 +2242,7 @@
 (define-function gdk_pango_layout_get_clip_region
   (c-name "gdk_pango_layout_get_clip_region")
   (return-type "GdkRegion*")
+  (caller-owns-return #t)
   (parameters
     '("PangoLayout*" "layout")
     '("gint" "x_origin")
@@ -3837,7 +3841,7 @@
   (return-type "none")
   (parameters
     '("GdkRegion*" "region")
-    '("gboolean" "(*child_func")
+    '("gboolean (*child_func)(GdkWindow *, gpointer)" "child_func")
   )
 )
 
@@ -3845,6 +3849,7 @@
   (of-object "GdkWindow")
   (c-name "gdk_window_get_update_area")
   (return-type "GdkRegion*")
+  (caller-owns-return #t)
 )
 
 (define-method freeze_updates
@@ -4610,6 +4615,51 @@
   (c-name "gdk_rectangle_new")
   (is-constructor-of "GdkRectangle")
   (return-type "GdkRectangle")
+)
+
+
+(define-method get_clipbox
+  (of-object "GdkRegion")
+  (c-name "gdk_region_get_clipbox")
+  (return-type "none")
+  (parameters
+    '("GdkRectangle*" "rect")
+  )
+)
+
+(define-method empty
+  (of-object "GdkRegion")
+  (c-name "gdk_region_empty")
+  (return-type "gboolean")
+)
+
+
+(define-method equal
+  (of-object "GdkRegion")
+  (c-name "gdk_region_equal")
+  (return-type "gboolean")
+  (parameters
+    '("GdkRegion*" "other")
+  )
+)
+
+(define-method point_in
+  (of-object "GdkRegion")
+  (c-name "gdk_region_point_in")
+  (return-type "gboolean")
+  (parameters
+    '("int" "x")
+    '("int" "y")
+  )
+)
+
+(define-method rect_in
+  (of-object "GdkRegion")
+  (c-name "gdk_region_rect_in")
+  (return-type "GdkOverlapType")
+  (parameters
+    '("GdkRectangle*" "rect")
+  )
 )
 
 ;; From /opt/gnome-devel/include/gtk-2.0/gdk/gdkcairo.h
