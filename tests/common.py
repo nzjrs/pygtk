@@ -17,6 +17,12 @@ def importModules(buildDir, srcDir):
     import ltihooks
 
     gobject = importModule('gobject', buildDir, 'gobject/gobject.la')
+    version = getattr(gobject, 'pygobject_version', None)
+    if not version:
+        raise AssertionError("gobject %r is too old" % gobject)
+    if version < (2, 10, 0):
+        raise AssertionError("gobject %r is too old, %s found" % (gobject,
+                                                                  version))
     atk = importModule('atk', buildDir)
     pango = importModule('pango', buildDir)
     gtk = importModule('gtk', buildDir, 'gtk')
