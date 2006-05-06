@@ -33,6 +33,10 @@ try:
 except ImportError:
     pass
 
+# For broken embedded programs which forgot to call Sys_SetArgv
+if not hasattr(sys, 'argv'):
+    sys.argv = []
+
 # load the required modules:
 import gobject as _gobject
 
@@ -86,15 +90,6 @@ class _DeprecatedConstant:
     __repr__    = lambda self: self._deprecated(repr(self._v))
     __cmp__     = lambda self, other: self._deprecated(cmp(self._v, other))
 
-# _gobject deprecation
-class _GObjectWrapper(_module):
-    def __getattr__(self, attr):
-        import gobject as _gobject
-        if not _is_pydoc():
-            _warn('gtk._gobject is deprecated, use gobject directly instead',
-                  DeprecationWarning, 3)
-        return getattr(_gobject, attr)
-
 def _is_pydoc():
     import sys
 
@@ -107,7 +102,6 @@ def _is_pydoc():
 
 def _init():
     import sys
-
 
     try:
         sys_path = sys.path[:]
@@ -156,11 +150,9 @@ threads_leave = _Deprecated(gdk.threads_leave, 'threads_leave', 'gtk.gdk')
 TRUE = _DeprecatedConstant(True, 'gtk.TRUE', 'True')
 FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 
-_gobject = _GObjectWrapper('gtk._gobject')
-
 # Can't figure out how to deprecate gdk.Warning
 gdk.Warning = Warning
 
-del _Deprecated, _DeprecatedConstant, _GObjectWrapper, _module,
+del _Deprecated, _DeprecatedConstant, _gobject, _module,
 
 _init()
