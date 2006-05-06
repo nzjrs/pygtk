@@ -808,6 +808,20 @@
   )
 )
 
+(define-enum SignalRunType
+  (in-module "Gtk")
+  (c-name "GtkSignalRunType")
+  (gtype-id "GTK_TYPE_SIGNAL_RUN_TYPE")
+  (values
+    '("first" "GTK_RUN_FIRST")
+    '("last" "GTK_RUN_LAST")
+    '("both" "GTK_RUN_BOTH")
+    '("no-recurse" "GTK_RUN_NO_RECURSE")
+    '("action" "GTK_RUN_ACTION")
+    '("no-hooks" "GTK_RUN_NO_HOOKS")
+  )
+)
+
 (define-enum SizeGroupMode
   (in-module "Gtk")
   (c-name "GtkSizeGroupMode")
@@ -2593,4 +2607,83 @@
   (in-module "Gtk")
   (c-name "GtkCTreeNode")
   (gtype-id "GTK_TYPE_CTREE_NODE")
+)
+
+;; Unsupported
+
+(define-object FileFolder
+  (in-module "Gtk")
+  (c-name "GtkFileFolder")
+  (gtype-id "GTK_TYPE_FILE_FOLDER")
+)
+
+(define-object FileSystem
+  (in-module "Gtk")
+  (c-name "GtkFileSystem")
+  (gtype-id "GTK_TYPE_FILE_SYSTEM")
+)
+
+(define-object FileSystemHandle
+  (in-module "Gtk")
+  (parent "GObject")
+  (c-name "GtkFileSystemHandle")
+  (gtype-id "GTK_TYPE_FILE_SYSTEM_HANDLE")
+)
+
+(define-object TextLayout
+  (in-module "Gtk")
+  (parent "GObject")
+  (c-name "GtkTextLayout")
+  (gtype-id "GTK_TYPE_TEXT_LAYOUT")
+)
+
+(define-object Text
+  (in-module "Gtk")
+  (parent "GtkOldEditable")
+  (c-name "GtkText")
+  (gtype-id "GTK_TYPE_TEXT")
+)
+
+(define-object Tree
+  (in-module "Gtk")
+  (parent "GtkContainer")
+  (c-name "GtkTree")
+  (gtype-id "GTK_TYPE_TREE")
+)
+
+(define-object TreeItem
+  (in-module "Gtk")
+  (parent "GtkItem")
+  (c-name "GtkTreeItem")
+  (gtype-id "GTK_TYPE_TREE_ITEM")
+)
+
+(define-flags FileInfoType
+  (in-module "Gtk")
+  (c-name "GtkFileInfoType")
+  (gtype-id "GTK_TYPE_FILE_INFO_TYPE")
+  (values
+    '("display-name" "GTK_FILE_INFO_DISPLAY_NAME")
+    '("is-folder" "GTK_FILE_INFO_IS_FOLDER")
+    '("is-hidden" "GTK_FILE_INFO_IS_HIDDEN")
+    '("mime-type" "GTK_FILE_INFO_MIME_TYPE")
+    '("modification-time" "GTK_FILE_INFO_MODIFICATION_TIME")
+    '("size" "GTK_FILE_INFO_SIZE")
+    '("icon" "GTK_FILE_INFO_ICON")
+    '("all" "GTK_FILE_INFO_ALL")
+  )
+)
+
+(define-enum FileSystemError
+  (in-module "Gtk")
+  (c-name "GtkFileSystemError")
+  (gtype-id "GTK_TYPE_FILE_SYSTEM_ERROR")
+  (values
+    '("nonexistent" "GTK_FILE_SYSTEM_ERROR_NONEXISTENT")
+    '("not-folder" "GTK_FILE_SYSTEM_ERROR_NOT_FOLDER")
+    '("invalid-uri" "GTK_FILE_SYSTEM_ERROR_INVALID_URI")
+    '("bad-filename" "GTK_FILE_SYSTEM_ERROR_BAD_FILENAME")
+    '("failed" "GTK_FILE_SYSTEM_ERROR_FAILED")
+    '("already-exists" "GTK_FILE_SYSTEM_ERROR_ALREADY_EXISTS")
+  )
 )

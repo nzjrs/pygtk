@@ -26,6 +26,7 @@ class Overrides:
         self.modulename = None
         self.ignores = {}
         self.glob_ignores = []
+        self.type_ignores = {}
         self.overrides = {}
         self.overridden = {}
         self.kwargs = {}
@@ -103,6 +104,13 @@ class Overrides:
                 self.glob_ignores.append(func)
             for func in string.split(rest):
                 self.glob_ignores.append(func)
+        elif (command == 'ignore-type' or
+              command == 'ignore-type-' + sys.platform):
+            "ignore-type/ignore-type-platform [typenames..]"
+            for typename in words[1:]:
+                self.type_ignores[typename] = 1
+            for typename in string.split(rest):
+                self.type_ignores[typename] = 1
         elif command == 'override':
             "override function/method [kwargs|noargs|onearg] [staticmethod|classmethod]"
             func = words[1]
@@ -198,6 +206,9 @@ class Overrides:
             if fnmatch.fnmatchcase(name, glob):
                 return 1
         return 0
+
+    def is_type_ignored(self, name):
+        return name in self.type_ignores
 
     def is_overriden(self, name):
         return self.overrides.has_key(name)

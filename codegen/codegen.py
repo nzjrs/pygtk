@@ -258,6 +258,8 @@ class Wrapper:
         return substdict
 
     def write_class(self):
+        if self.overrides.is_type_ignored(self.objinfo.c_name):
+            return
         self.fp.write('\n/* ----------- %s ----------- */\n\n' %
                       self.objinfo.c_name)
         substdict = self.get_initial_class_substdict()
@@ -1259,7 +1261,7 @@ def write_classes(parser, overrides, fp):
             instance.write_class()
             fp.write('\n')
 
-def write_enums(parser, prefix, fp=sys.stdout):
+def write_enums(parser, overrides, prefix, fp=sys.stdout):
     if not parser.enums:
         return
     fp.write('\n/* ----------- enums and flags ----------- */\n\n')
@@ -1268,6 +1270,8 @@ def write_enums(parser, prefix, fp=sys.stdout):
         '_add_constants(PyObject *module, const gchar *strip_prefix)\n{\n')
 
     for enum in parser.enums:
+        if overrides.is_type_ignored(enum.c_name):
+            continue
         if enum.typecode is None:
             for nick, value in enum.values:
                 fp.write(
@@ -1321,7 +1325,7 @@ def write_extension_init(overrides, prefix, fp):
     fp.write(overrides.get_init() + '\n')
     fp.resetline()
 
-def write_registers(parser, fp):
+def write_registers(parser, overrides, fp):
     for boxed in parser.boxes:
         fp.write('    pyg_register_boxed(d, "' + boxed.name +
                  '", ' + boxed.typecode +
@@ -1351,6 +1355,8 @@ def write_registers(parser, fp):
         else:
             pos = pos + 1
     for obj in objects:
+        if overrides.is_type_ignored(obj.c_name):
+            continue
         bases = []
         if obj.parent != None:
             bases.append(obj.parent)
@@ -1388,9 +1394,9 @@ def write_source(parser, overrides, prefix, fp=FileOutput(sys.stdout)):
     wrapper = Wrapper(parser, None, overrides, fp)
     wrapper.write_functions(prefix)
 
-    write_enums(parser, prefix, fp)
+    write_enums(parser, overrides, prefix, fp)
     write_extension_init(overrides, prefix, fp)
-    write_registers(parser, fp)
+    write_registers(parser, overrides, fp)
 
 def register_types(parser):
     for boxed in parser.boxes:
