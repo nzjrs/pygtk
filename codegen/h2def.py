@@ -11,9 +11,12 @@
 # Updated to be PEP-8 compatible and refactored to use OOP
 
 import getopt
+import os
 import re
 import string
 import sys
+
+import defsparser
 
 # ------------------ Create typecodes from typenames ---------
 
@@ -260,7 +263,8 @@ pointer_pat = re.compile('.*\*$')
 func_new_pat = re.compile('(\w+)_new$')
 
 class DefsWriter:
-    def __init__(self, fp=None, prefix=None, verbose=False):
+    def __init__(self, fp=None, prefix=None, verbose=False,
+                 defsfilter=None):
         if not fp:
             fp = sys.stdout
 
@@ -268,11 +272,24 @@ class DefsWriter:
         self.prefix = prefix
         self.verbose = verbose
 
+        self._enums = {}
+        self._objects = {}
+        self._functions = {}
+        if defsfilter:
+            filter = defsparser.DefsParser(defsfilter)
+            filter.startParsing()
+            for func in filter.functions + filter.methods.values():
+                self._functions[func.c_name] = func
+            for obj in filter.objects + filter.boxes + filter.interfaces:
+                self._objects[obj.c_name] = func
+            for obj in filter.enums:
+                self._enums[obj.c_name] = func
+
     def write_def(self, deffile):
         buf = open(deffile).read()
 
-        self.fp.write('\n;; From %s\n\n' % deffile)
-        buf = self._define_func(buf)
+        self.fp.write('\n;; From %s\n\n' % os.path.basename(deffile))
+        self._define_func(buf)
         self.fp.write('\n')
 
     def write_enum_defs(self, enums, fp=None):
@@ -282,7 +299,11 @@ class DefsWriter:
         fp.write(';; Enumerations and flags ...\n\n')
         trans = string.maketrans(string.uppercase + '_',
                                  string.lowercase + '-')
+        filter = self._enums
         for cname, isflags, entries in enums:
+            if filter:
+                if cname in filter:
+                    continue
             name = cname
             module = None
             m = split_prefix_pat.match(cname)
@@ -318,7 +339,11 @@ class DefsWriter:
         fp.write(';; -*- scheme -*-\n')
         fp.write('; object definitions ...\n')
 
+        filter = self._objects
         for klass, parent in objdefs:
+            if filter:
+                if klass in filter:
+                    continue
             m = split_prefix_pat.match(klass)
             cmodule = None
             cname = klass
@@ -338,6 +363,7 @@ class DefsWriter:
     def _define_func(self, buf):
         buf = clean_func(buf)
         buf = string.split(buf,'\n')
+        filter = self._functions
         for p in buf:
             if not p:
                 continue
@@ -349,6 +375,9 @@ class DefsWriter:
             func = m.group('func')
             if func[0] == '_':
                 continue
+            if filter:
+                if func in filter:
+                    continue
             ret = m.group('ret')
             args = m.group('args')
             args = arg_split_pat.split(args)
@@ -443,9 +472,11 @@ def main(args):
     onlyobjdefs = False
     separate = False
     modulename = None
-    opts, args = getopt.getopt(args[1:], 'vs:m:',
+    defsfilter = None
+    opts, args = getopt.getopt(args[1:], 'vs:m:f:',
                                ['onlyenums', 'onlyobjdefs',
-                                'modulename=', 'separate='])
+                                'modulename=', 'separate=',
+                                'defsfilter='])
     for o, v in opts:
         if o == '-v':
             verbose = True
@@ -457,6 +488,8 @@ def main(args):
             separate = v
         if o in ('-m', '--modulename'):
             modulename = v
+        if o in ('-f', '--defsfilter'):
+            defsfilter = v
 
     if not args[0:1]:
         print 'Must specify at least one input file name'
@@ -475,17 +508,18 @@ def main(args):
         methods = file(separate + '.defs', 'w')
         types = file(separate + '-types.defs', 'w')
 
-        dw = DefsWriter(methods, prefix=modulename, verbose=verbose)
-        dw.write_obj_defs(objdefs)
-        dw.write_enum_defs(enums)
-
+        dw = DefsWriter(methods, prefix=modulename, verbose=verbose,
+                        defsfilter=defsfilter)
+        dw.write_obj_defs(objdefs, types)
+        dw.write_enum_defs(enums, types)
         print "Wrote %s-types.defs" % separate
 
         for filename in args:
             dw.write_def(filename)
         print "Wrote %s.defs" % separate
     else:
-        dw = DefsWriter(prefix=modulename, verbose=verbose)
+        dw = DefsWriter(prefix=modulename, verbose=verbose,
+                        defsfilter=defsfilter)
 
         if onlyenums:
             dw.write_enum_defs(enums)
