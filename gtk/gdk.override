@@ -88,11 +88,22 @@ import pango.Font as PyPangoFont_Type
 import pango.Layout as PyPangoLayout_Type
 import pango.Renderer as PyPangoRenderer_Type
 %%
+ignore
+  gdk_cairo_set_source_color
+  gdk_cairo_set_source_pixbuf
+  gdk_window_set_debug_updates
+%%
 ignore-glob
   *_get_type
   _*
   *_ref
   *_unref
+  gdk_spawn_*
+  gdk_x11_*
+%%
+ignore-type
+  GdkPixmapObject
+  GdkWindowObject
 %%
 override gdk_threads_init noargs
 static PyObject *
