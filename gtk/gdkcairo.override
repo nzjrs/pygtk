@@ -136,10 +136,12 @@ init
     }
 
     PyGdkCairoContext_Type.tp_base = &PyPangoCairoContext_Type;
-    if (PyType_Ready(&PyGdkCairoContext_Type) < 0)
+    if (PyType_Ready(&PyGdkCairoContext_Type) < 0) {
         g_return_if_reached();
-    if (PyDict_SetItemString(d, "CairoContext", (PyObject *)&PyGdkCairoContext_Type) < 0)
+    }
+    if (PyDict_SetItemString(d, "CairoContext", (PyObject *)&PyGdkCairoContext_Type) < 0) {
         g_return_if_reached();
+    }
 #endif
 
 %%

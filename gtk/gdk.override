@@ -1347,3 +1347,82 @@ _wrap_gdk_event_handler_set(PyObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+
+%%
+override gdk_bitmap_create_from_data kwargs
+static PyObject *
+_wrap_gdk_bitmap_create_from_data(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "drawable", "data", "width", "height", NULL };
+    PyGObject *py_drawable;
+    GdkDrawable *drawable = NULL;
+    gchar *data;
+    GdkBitmap *ret;
+    int data_len, width, height, rowstride;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"Os#ii:bitmap_create_from_data", kwlist, &py_drawable, &data, &data_len, &width, &height))
+        return NULL;
+    if (py_drawable && pygobject_check(py_drawable, &PyGdkDrawable_Type))
+        drawable = GDK_DRAWABLE(py_drawable->obj);
+    else if ((PyObject *)py_drawable != Py_None) {
+        PyErr_SetString(PyExc_TypeError, "drawable should be a GdkDrawable or None");
+        return NULL;
+    }
+
+    rowstride = (width&(~7))/8 + 1;
+    if (data_len*8 < rowstride*height) {
+        PyErr_SetString(PyExc_ValueError, "data size is insufficient for the given width, height, and depth");
+        return NULL;
+    }
+    
+    ret = gdk_bitmap_create_from_data((GdkDrawable *) drawable, data, width, height);
+    
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
+
+%%
+override gdk_pixmap_create_from_data kwargs
+static PyObject *
+_wrap_gdk_pixmap_create_from_data(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "drawable", "data", "width", "height", "depth", "fg", "bg", NULL };
+    int data_len, width, height, depth;
+    GdkPixmap *ret;
+    PyObject *py_fg, *py_bg;
+    GdkColor *fg = NULL, *bg = NULL;
+    GdkDrawable *drawable = NULL;
+    gchar *data;
+    PyGObject *py_drawable;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"Os#iiiOO:pixmap_create_from_data", kwlist, &py_drawable, &data, &data_len, &width, &height, &depth, &py_fg, &py_bg))
+        return NULL;
+    if (py_drawable && pygobject_check(py_drawable, &PyGdkDrawable_Type))
+        drawable = GDK_DRAWABLE(py_drawable->obj);
+    else if ((PyObject *)py_drawable != Py_None) {
+        PyErr_SetString(PyExc_TypeError, "drawable should be a GdkDrawable or None");
+        return NULL;
+    }
+    if (pyg_boxed_check(py_fg, GDK_TYPE_COLOR))
+        fg = pyg_boxed_get(py_fg, GdkColor);
+    else {
+        PyErr_SetString(PyExc_TypeError, "fg should be a GdkColor");
+        return NULL;
+    }
+    if (pyg_boxed_check(py_bg, GDK_TYPE_COLOR))
+        bg = pyg_boxed_get(py_bg, GdkColor);
+    else {
+        PyErr_SetString(PyExc_TypeError, "bg should be a GdkColor");
+        return NULL;
+    }
+
+    if (data_len < width*height*(depth>>3)) {
+        PyErr_SetString(PyExc_ValueError, "data size is insufficient for the given width, height, and depth");
+        return NULL;
+    }
+    
+    ret = gdk_pixmap_create_from_data((GdkDrawable *) drawable, data, width, height, depth, fg, bg);
+    
+    /* pygobject_new handles NULL checking */
+    return pygobject_new((GObject *)ret);
+}
