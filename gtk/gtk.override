@@ -30,6 +30,11 @@ headers
 #include <gtk/gtktreeitem.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk-pixbuf/gdk-pixdata.h>
+
+#include <pycairo.h>
+extern Pycairo_CAPI_t *Pycairo_CAPI;
+extern PyTypeObject PyGdkCairoContext_Type;
+
 #include "pygtk-private.h"
 
 #define PYGTK_CONTAINER_FOREACH 0
@@ -6685,4 +6690,17 @@ _wrap_gtk_clipboard_request_image(PyGObject *self, PyObject *args,
 			       (gpointer)data);
     Py_INCREF(Py_None);
     return Py_None;
+}
+
+%%
+override gtk_print_context_get_cairo noargs
+static PyObject *
+_wrap_gtk_print_context_get_cairo(PyGObject *self)
+{
+    cairo_t *ret;
+
+    ret = gtk_print_context_get_cairo(GTK_PRINT_CONTEXT(self->obj));
+    
+    cairo_reference(ret);
+    return PycairoContext_FromContext(ret, &PyGdkCairoContext_Type, NULL);
 }

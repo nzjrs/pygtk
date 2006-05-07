@@ -1,5 +1,23 @@
 2006-05-07  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* examples/gtk/testprint.py: Add a python print demonstration,
+	based on testprint.c in gtk+ sources.  It is missing a print
+	dialog, though...
+
+	* examples/Makefile.am (EXTRA_DIST): add gtk/testprint.py.
+
+	* gtk/gtk.override: Include pycairo.
+	(_wrap_gtk_print_context_get_cairo): Override to make
+	gtk.PrintContext return a gtk.gdk.CairoContext object instead of a
+	cairo.Context one.
+
+	* configure.in: pycairo dependency no longer optional.
+
+	* gtk/gtk-2.10-types.defs (PrintContext): Missing gtk.PrintContext.
+
+	* gtk/gtk-2.10.defs: Make 'parent' parameter of
+	gtk_print_operation_run optional and None acceptable.
+
 	* gtk/gtk-2.10-types.defs: Declare type gtk.PageSetup.
 	(PrintSettings): idem for gtk.PrintSettings.
 	(PaperSize): Add boxed gtk.PaperSize.

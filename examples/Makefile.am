@@ -25,6 +25,7 @@ EXTRA_DIST = \
 	gtk/sizegroup.py	\
 	gtk/uimanager.py	\
 	gtk/widget.py		\
+	gtk/testprint.py	\
 	glade/README		\
 	glade/test.glade	\
 	glade/autoconnect.py	\
