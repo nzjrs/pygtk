@@ -2,11 +2,13 @@
 
 	* gtk/Makefile.am: Make sure the defs are regenerated when
 	configure runs, due to possible changes in gtk+ 2.10 detection.
+	(gtk.c): Make gtk.c depend on gdk-types.defs to force it to be
+	generated early.
+	(.defs.c): Remove the recursive make invocation, no longer needed.
 
 	* gtk/Makefile.am (defs_DATA): Install gdk.defs, gtk.defs,
 	gdk-types.defs, and gtk-types.defs.  Thanks Olav Vitters
 	Fixes bug #340920.
-	
 
 2006-05-06  Johan Dahlin  <jdahlin@async.com.br>
 

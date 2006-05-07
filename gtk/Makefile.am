@@ -104,7 +104,7 @@ gtk-types.defs: $(GTK_TYPES_DEFS)
 gtk-types.defs: Makefile
 
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
-gtk.c: gtk-types.defs gtk.defs $(GTK_OVERRIDES)
+gtk.c: gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
 _gtk_la_CFLAGS = $(GTK_CFLAGS)
 _gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
 _gtk_la_LIBADD = $(GTK_LIBS)
@@ -144,7 +144,6 @@ defs_DATA += $(LIBGLADE_DEFS)
 endif
 
 .defs.c: 
-	@make -s gtk.defs gtk-types.defs gdk.defs gdk-types.defs
 	(cd $(srcdir) \
 	 && $(PYTHON) ../codegen/codegen.py \
 	   $(PYGTK_CODEGEN_DEFINES) \
