@@ -89,15 +89,19 @@ EXTRA_DIST += 			\
 
 gdk.defs: $(GDK_DEFS)
 	$(CREATEDEFS) gdk.defs $(GDK_DEFS)
+gdk.defs: Makefile
 
 gtk.defs: $(GTK_DEFS)
 	$(CREATEDEFS) gtk.defs $(GTK_DEFS)
+gtk.defs: Makefile
 
 gdk-types.defs: $(GDK_TYPES_DEFS)
 	$(CREATEDEFS) gdk-types.defs $(GDK_TYPES_DEFS)
+gdk-types.defs: Makefile
 
 gtk-types.defs: $(GTK_TYPES_DEFS)
 	$(CREATEDEFS) gtk-types.defs $(GTK_TYPES_DEFS)
+gtk-types.defs: Makefile
 
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
 gtk.c: gtk-types.defs gtk.defs $(GTK_OVERRIDES)
@@ -117,7 +121,8 @@ _gtk_la_SOURCES = 		\
 nodist__gtk_la_SOURCES = gtk.c gdk.c
 if BUILD_GTK
 pygtkexec_LTLIBRARIES += _gtk.la
-defs_DATA += $(GDK_DEFS) $(GDK_TYPES_DEFS) $(GTK_DEFS) $(GTK_TYPES_DEFS)
+defs_DATA += $(GDK_DEFS) $(GDK_TYPES_DEFS) $(GTK_DEFS) $(GTK_TYPES_DEFS) \
+	gdk.defs gtk.defs gdk-types.defs gtk-types.defs
 endif
 if PLATFORM_WIN32
 _gtk_la_CFLAGS  += -DPLATFORM_WIN32
