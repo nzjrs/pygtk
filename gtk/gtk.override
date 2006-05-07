@@ -61,6 +61,9 @@ extern PyTypeObject PyGdkRectangle_Type;
 extern PyTypeObject PyGdkDevice_Type;
 
 extern PyObject *PyGtkWarning;
+
+#ifndef pyg_add_warning_redirection
+
 static guint _gtk_handler = -1, _gdk_handler = -1, _gdk_pixbuf_handler = -1;
 
 static void
@@ -80,6 +83,7 @@ _pygtk_log_func(const gchar *log_domain,
         g_log_default_handler(log_domain, log_level, message, user_data);
 }
 
+#endif /* ifndef pyg_add_warning_redirection */
 
 static gboolean
 pygtk_util_pyobject_as_double(PyObject *obj, gdouble *value, const char *argument_name)
@@ -415,6 +419,7 @@ _wrap_add_log_handlers(PyGObject *self, PyObject *args)
 {
     if (!PyArg_ParseTuple(args, ":add_log_handlers"))
 	return NULL;
+#ifndef pyg_add_warning_redirection
 
     _gtk_handler = g_log_set_handler("Gtk",
 				     G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
@@ -425,6 +430,13 @@ _wrap_add_log_handlers(PyGObject *self, PyObject *args)
     _gdk_pixbuf_handler = g_log_set_handler("GdkPixbuf",
 					    G_LOG_LEVEL_CRITICAL|G_LOG_LEVEL_WARNING,
 					    _pygtk_log_func, NULL);
+#else
+
+    pyg_add_warning_redirection("Gtk", PyGtkWarning);
+    pyg_add_warning_redirection("Gdk", PyGtkWarning);
+    pyg_add_warning_redirection("GdkPixbuf", PyGtkWarning);
+
+#endif /* ifndef pyg_add_warning_redirection */
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -437,12 +449,20 @@ _wrap_remove_log_handlers(PyGObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, ":remove_log_handlers"))
 	return NULL;
 
+#ifndef pyg_disable_warning_redirections
+
     g_log_remove_handler("Gtk", _gtk_handler);
     _gtk_handler = -1;
     g_log_remove_handler("Gdk", _gdk_handler);
     _gdk_handler = -1;
     g_log_remove_handler("GdkPixbuf", _gdk_pixbuf_handler);
     _gdk_pixbuf_handler = -1;
+
+#else
+
+    pyg_disable_warning_redirections();
+
+#endif /* ifndef pyg_disable_warning_redirections */
 
     Py_INCREF(Py_None);
     return Py_None;
