@@ -77,6 +77,7 @@ demo_PYTHON = \
 	pygtk-demo/demos/menu.py		\
 	pygtk-demo/demos/panes.py		\
 	pygtk-demo/demos/pixbufs.py		\
+	pygtk-demo/demos/print_editor.py	\
 	pygtk-demo/demos/sizegroup.py		\
 	pygtk-demo/demos/stock_browser.py	\
 	pygtk-demo/demos/textview.py		\
