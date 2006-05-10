@@ -105,7 +105,7 @@ gtk-types.defs: Makefile
 
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
 gtk.c: gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
-_gtk_la_CFLAGS = $(GTK_CFLAGS)
+_gtk_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
 _gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
 _gtk_la_LIBADD = $(GTK_LIBS)
 _gtk_la_SOURCES = 		\

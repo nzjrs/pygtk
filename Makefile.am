@@ -90,7 +90,7 @@ PANGOCAIRO_DEFS = pangocairo.defs pangocairo.override
 CLEANFILES += pangocairo.c
 EXTRA_DIST += $(PANGOCAIRO_DEFS) pangocairo.override
 pangocairo.c: $(PANGOCAIRO_DEFS) pangocairo.override
-pangocairo_la_CFLAGS = $(PANGOCAIRO_CFLAGS)
+pangocairo_la_CFLAGS = $(PYCAIRO_CFLAGS) $(PANGOCAIRO_CFLAGS)
 pangocairo_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initpangocairo
 pangocairo_la_LIBADD = $(PANGOCAIRO_LIBS)
 pangocairo_la_SOURCES = pangocairomodule.c
