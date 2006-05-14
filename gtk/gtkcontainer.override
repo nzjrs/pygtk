@@ -929,3 +929,163 @@ _wrap_GtkContainer__proxy_do_forall (GtkContainer *container,
     
     pyg_gil_state_release(state);
 }
+%%
+override GtkContainer__proxy_do_set_child_property
+static void
+_wrap_GtkContainer__proxy_do_set_child_property (GtkContainer *container,
+                                                 GtkWidget *child,
+                                                 guint property_id,
+                                                 const GValue *value,
+                                                 GParamSpec *pspec)
+{
+    PyGILState_STATE state;
+    PyObject *self, *py_ret;
+
+    state = pyg_gil_state_ensure();
+    self = pygobject_new((GObject *) container);
+
+    py_ret = PyObject_CallMethod(self, "do_set_child_property", "NNN",
+                                 pygobject_new((GObject *) child),
+                                 PyLong_FromUnsignedLong(property_id),
+                                 pyg_value_as_pyobject(value, FALSE),
+                                 pyg_param_spec_new(pspec));
+    if (!py_ret) {
+	PyErr_Print();
+	Py_DECREF(self);
+	pyg_gil_state_release(state);
+	return;
+    }
+    Py_DECREF(self);
+    if (py_ret != Py_None)
+        PyErr_Warn(PyExc_Warning, "do_set_child_property must return None");
+    Py_DECREF(py_ret);
+
+    pyg_gil_state_release(state);
+}
+
+%%
+override GtkContainer__proxy_do_get_child_property
+static void
+_wrap_GtkContainer__proxy_do_get_child_property (GtkContainer *container,
+                                                 GtkWidget *child,
+                                                 guint property_id,
+                                                 GValue *value,
+                                                 GParamSpec *pspec)
+{
+    PyGILState_STATE state;
+    PyObject *self, *py_ret;
+
+    state = pyg_gil_state_ensure();
+
+    self = pygobject_new((GObject*)container);
+    py_ret = PyObject_CallMethod(self, "do_get_child_property", "NNN",
+                                 pygobject_new((GObject *) child),
+                                 PyLong_FromUnsignedLong(property_id),
+                                 pyg_param_spec_new(pspec));
+    if (!py_ret) {
+	PyErr_Print();
+	Py_DECREF(self);
+	pyg_gil_state_release(state);
+	return;
+    }
+    Py_DECREF(self);
+    pyg_value_from_pyobject(value, py_ret);
+    Py_DECREF(py_ret);
+
+    pyg_gil_state_release(state);
+}
+
+%%
+override GtkContainer__do_set_child_property kwargs
+static PyObject *
+_wrap_GtkContainer__do_set_child_property(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    gpointer klass;
+    static char *kwlist[] = { "self", "child", "property_id", "value", "pspec", NULL };
+    PyGObject *self, *child;
+    PyObject *py_property_id = NULL, *py_value, *py_pspec;
+    guint property_id = 0;
+    GValue value = {0, };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!O!OOO!:GtkContainer.set_child_property",
+                                     kwlist, &PyGtkContainer_Type, &self,
+                                     &PyGtkWidget_Type, &child,
+                                     &py_property_id,
+                                     &py_value,
+                                     &PyGParamSpec_Type, &py_pspec))
+        return NULL;
+
+    if (pyg_value_from_pyobject(&value, py_value)) {
+        PyErr_SetString(PyExc_TypeError, "unable to convert value");
+        return NULL;
+    }
+
+    if (py_property_id) {
+        if (PyLong_Check(py_property_id))
+            property_id = PyLong_AsUnsignedLong(py_property_id);
+        else if (PyInt_Check(py_property_id))
+            property_id = PyInt_AsLong(py_property_id);
+        else
+            PyErr_SetString(PyExc_TypeError, "Parameter 'property_id' must be an int or a long");
+        if (PyErr_Occurred())
+            return NULL;
+    }
+    klass = g_type_class_ref(pyg_type_from_object(cls));
+    if (GTK_CONTAINER_CLASS(klass)->set_child_property)
+        GTK_CONTAINER_CLASS(klass)->set_child_property(GTK_CONTAINER(self->obj), GTK_WIDGET(child->obj), property_id,
+                                                       &value, ((PyGParamSpec *)py_pspec)->pspec);
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "virtual method GtkContainer.set_child_property not implemented");
+        g_type_class_unref(klass);
+        return NULL;
+    }
+    g_type_class_unref(klass);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+%%
+override GtkContainer__do_get_child_property kwargs
+static PyObject *
+_wrap_GtkContainer__do_get_child_property(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    gpointer klass;
+    static char *kwlist[] = { "self", "child", "property_id", "pspec", NULL };
+    PyGObject *self, *child;
+    PyObject *py_property_id = NULL;
+    guint property_id = 0;
+    GValue value = {0, };
+    PyObject *py_value, *py_pspec;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!O!OO!:GtkContainer.get_child_property", kwlist,
+                                     &PyGtkContainer_Type, &self,
+                                     &PyGtkWidget_Type, &child,
+                                     &py_property_id,
+                                     &PyGParamSpec_Type, &py_pspec))
+        return NULL;
+    if (py_property_id) {
+        if (PyLong_Check(py_property_id))
+            property_id = PyLong_AsUnsignedLong(py_property_id);
+        else if (PyInt_Check(py_property_id))
+            property_id = PyInt_AsLong(py_property_id);
+        else
+            PyErr_SetString(PyExc_TypeError, "Parameter 'property_id' must be an int or a long");
+        if (PyErr_Occurred())
+            return NULL;
+    }
+    klass = g_type_class_ref(pyg_type_from_object(cls));
+    if (GTK_CONTAINER_CLASS(klass)->get_child_property)
+        GTK_CONTAINER_CLASS(klass)->get_child_property(GTK_CONTAINER(self->obj), GTK_WIDGET(child->obj), property_id,
+                                                       &value, ((PyGParamSpec *)py_pspec)->pspec);
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "virtual method GtkContainer.get_child_property not implemented");
+        g_type_class_unref(klass);
+        return NULL;
+    }
+    g_type_class_unref(klass);
+    
+    py_value = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+    return py_value;
+}
+

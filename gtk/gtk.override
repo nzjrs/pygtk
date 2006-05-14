@@ -6448,11 +6448,13 @@ _wrap_GtkCellRenderer__proxy_do_get_size (GtkCellRenderer *cell,
 				 py_widget, py_cell_area);
     if (!py_ret) {
 	PyErr_Print();
+	Py_DECREF(self);
 	Py_DECREF(py_widget);
 	Py_DECREF(py_cell_area);
 	pyg_gil_state_release(state);
 	return;
     }
+    Py_DECREF(self);
     Py_DECREF(py_widget);
     Py_DECREF(py_cell_area);
 
@@ -6463,6 +6465,7 @@ _wrap_GtkCellRenderer__proxy_do_get_size (GtkCellRenderer *cell,
 	pyg_gil_state_release(state);
 	return;
     }
+    Py_DECREF(py_ret);
 
     pyg_gil_state_release(state);
 
@@ -6554,6 +6557,8 @@ _wrap_GtkCellLayout__proxy_do_set_cell_data_func (
                                  self, py_cell, py_func, py_func_data);
     if (!py_ret)
 	PyErr_Print();
+    Py_DECREF(self);
+    Py_DECREF(py_ret);
     pyg_gil_state_release(state);
 }
 %%

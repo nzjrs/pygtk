@@ -720,6 +720,7 @@ class PyGObjectMethodParam(Parameter):
                                 failure_expression=("!py_%s" % self.name))
         self.wrapper.set_call_target("py_%s" % self.name, self.method_name)
 
+
 class CallbackInUserDataParam(Parameter):
     def __init__(self, wrapper, name, free_it, **props):
         Parameter.__init__(self, wrapper, name, **props)
