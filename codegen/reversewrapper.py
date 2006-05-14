@@ -407,7 +407,7 @@ class StringReturn(ReturnType):
         self.wrapper.write_code("retval = g_strdup(retval);", code_sink=self.wrapper.post_return_code)
 
 for ctype in ('char*', 'gchar*'):
-    argtypes.matcher.register_reverse(ctype, StringReturn)
+    argtypes.matcher.register_reverse_ret(ctype, StringReturn)
 del ctype
 
 
