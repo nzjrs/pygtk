@@ -4910,7 +4910,9 @@ clipboard_request_text_cb(GtkClipboard *clipboard,
 			  gpointer user_data)
 {
     PyGILState_STATE state;
-    PyObject *callback, *args, *ret, *py_text;
+    PyObject *callback, *args, *ret, *py_text, *data;
+
+    data = (PyObject *) user_data;
 
     if (text) {
         py_text = PyString_FromString(text);
@@ -4920,17 +4922,20 @@ clipboard_request_text_cb(GtkClipboard *clipboard,
     }
 
     state = pyg_gil_state_ensure();
-    callback = PyTuple_GetItem((PyObject *)user_data, 0);
+    callback = PyTuple_GetItem(data, 0);
     args = Py_BuildValue("(NNO)",
 			 pygobject_new((GObject *)clipboard),
                          py_text,
-			 PyTuple_GetItem((PyObject *)user_data, 1));
+			 PyTuple_GetItem(data, 1));
     ret = PyObject_CallObject(callback, args);
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
+    Py_DECREF(data);
+    Py_DECREF(args);
     pyg_gil_state_release(state);
 }
+
 static PyObject *
 _wrap_gtk_clipboard_request_text(PyGObject *self, PyObject *args,
 				 PyObject *kwargs)
