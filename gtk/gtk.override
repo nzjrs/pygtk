@@ -626,6 +626,7 @@ clipboard_get_func(GtkClipboard *clipboard, GtkSelectionData *selection_data,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
+    Py_DECREF(args);
     pyg_gil_state_release(state);
 }
 static void
@@ -643,6 +644,7 @@ clipboard_clear_func(GtkClipboard *clipboard, gpointer user_data)
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
+    Py_DECREF(args);
     Py_DECREF((PyObject *)user_data);
     pyg_gil_state_release(state);
 }
@@ -4872,6 +4874,8 @@ clipboard_request_contents_cb(GtkClipboard *clipboard,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
+    Py_DECREF(args);
+    Py_DECREF((PyObject *)user_data);
     pyg_gil_state_release(state);
 }
 static PyObject *
@@ -4992,6 +4996,8 @@ clipboard_request_targets_cb(GtkClipboard *clipboard,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
+    Py_DECREF(args);
+    Py_DECREF((PyObject *)user_data);
     pyg_gil_state_release(state);
 }
 static PyObject *
@@ -6696,6 +6702,8 @@ clipboard_request_image_cb(GtkClipboard *clipboard,
     if (!ret)
 	PyErr_Print();
     Py_XDECREF(ret);
+    Py_DECREF(args);
+    Py_DECREF((PyObject *)user_data);
     pyg_gil_state_release(state);
 }
 static PyObject *
