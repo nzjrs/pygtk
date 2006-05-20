@@ -180,11 +180,12 @@ def begin_print(operation, context, print_data):
 	  page_height = 0
       page_height += line_height
 
-    operation.set_nr_of_pages(len(page_breaks) + 1)
+    operation.set_n_pages(len(page_breaks) + 1)
     print_data.page_breaks = page_breaks
 
 
 def draw_page(operation, context, page_nr, print_data):
+    assert isinstance(print_data.page_breaks, list)
     if page_nr == 0:
         start = 0
     else:
