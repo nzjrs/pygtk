@@ -48,13 +48,22 @@ _wrap_context_set_font_options(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "context", "font_options", NULL };
     PyGObject *context;
-    PycairoFontOptions *options;
+    PyGObject *py_options;
+    const cairo_font_options_t *options;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!:pangocairo.context_set_font_options",
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O:pangocairo.context_set_font_options",
                                      kwlist, &PyPangoContext_Type, &context,
-				     &PycairoFontOptions_Type, &options))
+				     &py_options))
         return NULL;
-    pango_cairo_context_set_font_options(PANGO_CONTEXT(context->obj), options->font_options);
+    if ((PyObject*)py_options == Py_None)
+        options = NULL;
+    else if (pygobject_check(py_options, &PycairoFontOptions_Type))
+        options = ((PycairoFontOptions *)py_options)->font_options;
+    else {
+        PyErr_SetString(PyExc_TypeError, "font_options must be a cairo.FontOptions or None");
+        return NULL;
+    }
+    pango_cairo_context_set_font_options(PANGO_CONTEXT(context->obj), options);
     Py_INCREF(Py_None);
     return Py_None;
 }
