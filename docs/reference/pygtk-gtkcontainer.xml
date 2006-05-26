@@ -171,6 +171,15 @@ linkend="method-gtkcontainer--child-get-property">child_get_property</link></met
 	<methodparam><parameter>child</parameter></methodparam>
 	<methodparam><parameter>property_name</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkcontainer--install-child-property">gtk.container_class_install_child_property</link></methodname>
+        <methodparam><parameter role="keyword">property_id</parameter></methodparam>
+        <methodparam><parameter role="keyword">pspec</parameter></methodparam>
+        </methodsynopsis>
+        <methodsynopsis language="python">
+          <methodname><link linkend="method-gtkcontainer--list-child-properties">gtk.container_class_list_child_properties</link></methodname>
+          <methodparam></methodparam>
+        </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -1221,6 +1230,199 @@ retrieves the value of the child property specified by
 
     </refsect2>
 
+    <refsect2 id="method-gtkcontainer--install-child-property">
+      <title>gtk.Container.install_child_property</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>install_child_property</methodname>
+        <methodparam><parameter role="keyword">property_id</parameter></methodparam>
+        <methodparam><parameter role="keyword">pspec</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">property_id</parameter>&nbsp;:</term>
+	  <listitem><simpara>an integer property ID</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pspec</parameter>&nbsp;:</term>
+	  <listitem><simpara>a tuple containing a parameter
+specifications</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>install_child_property</methodname>() method
+      installs a child property for the container class using the integer ID
+      specified by
+      <parameter>property_id</parameter>. <parameter>pspec</parameter> is a
+      tuple containing at least 5 items. The first 4 items contain the
+      following parameter specification items:</para>
+
+      <itemizedlist>
+        <listitem>
+          <simpara>a string specifying the name of the property</simpara>
+        </listitem>
+        <listitem>
+          <simpara>an object specifying the property type</simpara>
+        </listitem>
+        <listitem>
+          <simpara>a string specifying the nickname for the property or
+<literal>None</literal></simpara>
+        </listitem>
+        <listitem>
+          <simpara>a string specifying the short description for the property
+or <literal>None</literal></simpara>
+        </listitem>
+      </itemizedlist>
+
+      <para>The last item must be a integer containing <xref
+      linkend="gobject-param-constants"
+      endterm="gobject-param-constants-title"></xref>. Additional tuple
+      items (if needed) are inserted between the fourth item and the last
+      item depending on the property type:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term><literal>gobject.TYPE_CHAR</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_CHAR</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_BOOLEAN</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_INT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_UINT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_LONG</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_ULONG</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_INT64</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_UINT64</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_ENUM</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_FLAGS</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_FLOAT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_DOUBLE</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_STRING</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_PARAM</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_BOXED</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_POINTER</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_OBJECT</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2 id="method-gtk--container-class-list-child-properties">
+      <title>gtk.container_class_list_child_properties</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.container_class_list_child_properties</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the list of child properties</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>list_child_properties</methodname>() method
+      returns a list containing the child properties of the container
+      class. See the <link
+      linkend="method-gtkcontainer--install-child-property"><methodname>install_child_property</methodname>()</link>
+      method for more information.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -1249,7 +1451,7 @@ retrieves the value of the child property specified by
 	</varlistentry>
 	<varlistentry>
 	  <term><parameter role="keyword">pspec</parameter>&nbsp;:</term>
-	  <listitem><simpara>a 4-tuple containing a parameter
+	  <listitem><simpara>a tuple containing a parameter
 specification</simpara></listitem>
 	</varlistentry>
       </variablelist>
@@ -1258,12 +1460,17 @@ specification</simpara></listitem>
         <para>This function is available in PyGTK 2.4 and above.</para>
       </note>
 
+      <warning>
+        <para>This function is deprecated in PyGTK 2.10 and above.</para>
+      </warning>
+ 
       <para>The
-<function>gtk.container_class_install_child_property</function>() function
-installs a child property for the container class specified by
-<parameter>klass</parameter> using the integer ID specified by
-<parameter>property_id</parameter>. <parameter>pspec</parameter> is a
-4-tuple containing the parameter specification:</para>
+      <function>gtk.container_class_install_child_property</function>()
+      function installs a child property for the container class specified
+      by <parameter>klass</parameter> using the integer ID specified by
+      <parameter>property_id</parameter>. <parameter>pspec</parameter> is a
+      tuple containing at least 5 items. The first 4 items contain the
+      following parameter specification items:</para>
 
       <itemizedlist>
         <listitem>
@@ -1277,10 +1484,127 @@ installs a child property for the container class specified by
 <literal>None</literal></simpara>
         </listitem>
         <listitem>
-          <simpara>a string specifying the short deciription for the property
+          <simpara>a string specifying the short description for the property
 or <literal>None</literal></simpara>
         </listitem>
       </itemizedlist>
+
+      <para>The last item must be a integer containing <xref
+      linkend="gobject-param-constants"
+      endterm="gobject-param-constants-title"></xref>. Additional tuple
+      items (if needed) are inserted between the fourth item and the last
+      item depending on the property type:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term><literal>gobject.TYPE_CHAR</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_CHAR</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_BOOLEAN</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_INT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_UINT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_LONG</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_ULONG</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_INT64</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_UINT64</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_ENUM</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_FLAGS</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_FLOAT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_DOUBLE</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_STRING</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_PARAM</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_BOXED</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_POINTER</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_OBJECT</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>
 
     </refsect2>
 
@@ -1309,10 +1633,14 @@ or <literal>None</literal></simpara>
         <para>This function is available in PyGTK 2.4 and above.</para>
       </note>
 
+      <warning>
+        <para>This function is deprecated in PyGTK 2.10 and above.</para>
+      </warning>
+ 
       <para>The
-<function>gtk.container_class_list_child_properties</function>() function
-returns a tuple containing the child properties of the container class
-specified by <parameter>klass</parameter>.</para>
+      <function>gtk.container_class_list_child_properties</function>()
+      function returns a tuple containing the child properties of the
+      container class specified by <parameter>klass</parameter>.</para>
 
     </refsect2>
 

@@ -102,6 +102,14 @@
 	<methodname><link linkend="method-gdkscreen--get-setting">get_setting</link></methodname>
 	<methodparam><parameter role="keyword">name</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkscreen--get-rgba-colormap">get_rgba_colormap</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkscreen--get-rgba-visual">get_rgba_visual</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -797,6 +805,68 @@ amount of data is limited to one long, i.e. four bytes.</para>
 value of the desktop-wide setting (specified by
 <parameter>setting</parameter>) such as double-click time for the
 screen.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkscreen--get-rgba-colormap">
+      <title>gtk.gdk.Screen.get_rgba_colormap</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_rgba_colormap</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkcolormap"><classname>gtk.gdk.Colormap</classname></link>
+          for use with windows with an alpha channel or <literal>None</literal>
+          if the capability is not available.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+    <note>
+      <para>This method is available in PyGTK 2.10 and above.</para>
+    </note>
+
+      <para>The <methodname>get_rgba_colormap</methodname>() method returns
+      a colormap to use for creating windows or pixmaps with an alpha
+      channel. The windowing system on which PyGTK is running may not
+      support this capability, in which case <literal>None</literal> will be
+      returned. Even if a non-<literal>None</literal> value is returned,
+      it's possible that the window's alpha channel won't be honored when
+      displaying the window on the screen: in particular, for X an
+      appropriate windowing manager and compositing manager must be running
+      to provide appropriate display.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkscreen--get-rgba-visual">
+      <title>gtk.gdk.Screen.get_rgba_visual</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_rgba_visual</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkvisual"><classname>gtk.gdk.Visual</classname></link>
+          to use for windows with an alpha channel or <literal>None</literal>
+          if the capability is not available.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+    <note>
+      <para>This method is available in PyGTK 2.10 and above.</para>
+    </note>
+
+      <para>The <methodname>get_rgba_visual</methodname>() method returns a
+      visual to use for creating windows or pixmaps with an alpha
+      channel. See the <link
+      linkend="method-gdkscreen--get-rgba-colormap"><methodname>get_rgba_colormap</methodname>()</link>
+      method for caveats.</para>
 
     </refsect2>
 

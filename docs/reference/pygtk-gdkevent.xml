@@ -95,6 +95,11 @@ linkend="function-gdk--set-show-events">gtk.gdk.set_show_events</link></methodna
 	<methodname><link
 linkend="function-gdk--get-show-events">gtk.gdk.get_show_events</link></methodname>
 	<methodparam><parameter></parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--event-handler-set">gtk.gdk.event_handler_set</link></methodname>
+	<methodparam><parameter>func</parameter></methodparam>
+	<methodparam><parameter>data</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -1885,6 +1890,45 @@ flag is set.</simpara></listitem>
 
       <para>The <function>gtk.gdk.get_show_events</function>() function
 returns the setting of the internal debug events flag.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--event-handler-set">
+      <title>gtk.gdk.event_handler_set</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.event_handler_set</methodname>
+	  <methodparam><parameter>func</parameter></methodparam>
+	  <methodparam><parameter>data</parameter><initializer>None</initializer></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>func</parameter>&nbsp;:</term>
+	  <listitem><simpara> the function to call to handle events from GDK
+          or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>data</parameter>&nbsp;:</term>
+	  <listitem><simpara> user data to pass to the function.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The <function>gtk.gdk.event_handler_set</function>() function
+      specifies <parameter>func</parameter> as the function to call to
+      handle all events from GDK. <parameter>data</parameter> is the
+      optional user data to pass to <parameter>func</parameter>.</para>
+
+      <para>The signature of <parameter>func</parameter> is:</para>
+
+      <programlisting>
+  def func(event, user_data):
+      </programlisting>
+
+      <para>where <parameter>event</parameter> is the <link
+      linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+      and <parameter>user_data</parameter> is
+      <parameter>data</parameter>.</para>
 
     </refsect2>
 

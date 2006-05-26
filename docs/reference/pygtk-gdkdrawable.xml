@@ -341,22 +341,18 @@ linkend="method-gdkdrawable--draw-gray-image">draw_gray_image</link></methodname
 	<methodparam><parameter role="keyword">rowstride</parameter>
 	  <initializer>-1</initializer></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkdrawable- -draw-indexed-image">draw_indexed_image</link></methodname>
-    <methodparam><parameter role="keyword">gc</parameter></methodparam>
-    <methodparam><parameter role="keyword">x</parameter></methodparam>
-    <methodparam><parameter role="keyword">y</parameter></methodparam>
-    <methodparam><parameter role="keyword">width</parameter></methodparam>
-    <methodparam><parameter role="keyword">height</parameter></methodparam>
-    <methodparam><parameter role="keyword">dith</parameter></methodparam>
-    <methodparam><parameter role="keyword">buf</parameter></methodparam>
-    <methodparam><parameter role="keyword">rowstride</parameter></methodparam>
-    <methodparam><parameter role="keyword">cmap</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkdrawable--draw-indexed-image">draw_indexed_image</link></methodname>
+        <methodparam><parameter role="keyword">gc</parameter></methodparam>
+        <methodparam><parameter role="keyword">x</parameter></methodparam>
+        <methodparam><parameter role="keyword">y</parameter></methodparam>
+        <methodparam><parameter role="keyword">width</parameter></methodparam>
+        <methodparam><parameter role="keyword">height</parameter></methodparam>
+        <methodparam><parameter role="keyword">dith</parameter></methodparam>
+        <methodparam><parameter role="keyword">buf</parameter></methodparam>
+        <methodparam><parameter role="keyword">rowstride</parameter></methodparam>
+        <methodparam><parameter role="keyword">cmap</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdrawable--cairo-create">cairo_create</link></methodname>
@@ -2011,92 +2007,106 @@ grayscale image on the drawable at the location specified by
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gdkdrawable- -draw-indexed-image">
+  <refsect2 id="method-gdkdrawable--draw-indexed-image">
     <title>gtk.gdk.Drawable.draw_indexed_image</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>draw_indexed_image</methodname>
-    <methodparam><parameter role="keyword">gc</parameter></methodparam>
-    <methodparam><parameter role="keyword">x</parameter></methodparam>
-    <methodparam><parameter role="keyword">y</parameter></methodparam>
-    <methodparam><parameter role="keyword">width</parameter></methodparam>
-    <methodparam><parameter role="keyword">height</parameter></methodparam>
-    <methodparam><parameter role="keyword">dith</parameter></methodparam>
-    <methodparam><parameter role="keyword">buf</parameter></methodparam>
-    <methodparam><parameter role="keyword">rowstride</parameter></methodparam>
-    <methodparam><parameter role="keyword">cmap</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">gc</parameter>&nbsp;:</term>
-      <listitem><simpara>a graphics context</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">x</parameter>&nbsp;:</term>
-      <listitem><simpara></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">y</parameter>&nbsp;:</term>
-      <listitem><simpara></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">width</parameter>&nbsp;:</term>
-      <listitem><simpara></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">height</parameter>&nbsp;:</term>
-      <listitem><simpara></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">dith</parameter>&nbsp;:</term>
-      <listitem><simpara>a GdkRgbDither</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">buf</parameter>&nbsp;:</term>
-      <listitem><simpara>a guchar*</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">rowstride</parameter>&nbsp;:</term>
-      <listitem><simpara></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">cmap</parameter>&nbsp;:</term>
-      <listitem><simpara>a GdkRgbCmap*</simpara></listitem>
-    </varlistentry>
-  </variablelist>
+    <programlisting><methodsynopsis language="python">
+      <methodname>draw_indexed_image</methodname>
+      <methodparam><parameter role="keyword">gc</parameter></methodparam>
+      <methodparam><parameter role="keyword">x</parameter></methodparam>
+      <methodparam><parameter role="keyword">y</parameter></methodparam>
+      <methodparam><parameter role="keyword">width</parameter></methodparam>
+      <methodparam><parameter role="keyword">height</parameter></methodparam>
+      <methodparam><parameter role="keyword">dith</parameter></methodparam>
+      <methodparam><parameter role="keyword">buf</parameter></methodparam>
+      <methodparam><parameter role="keyword">rowstride</parameter></methodparam>
+      <methodparam><parameter role="keyword">colors</parameter></methodparam>
+    </methodsynopsis></programlisting>
+    <variablelist>
+      <varlistentry>
+        <term><parameter role="keyword">gc</parameter>&nbsp;:</term>
+        <listitem><simpara>a graphics context</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">x</parameter>&nbsp;:</term>
+        <listitem><simpara>The x coordinate of the top-left corner in the
+        drawable.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">y</parameter>&nbsp;:</term>
+        <listitem><simpara>the y coordinate of the top-left corner in the
+        drawable.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">width</parameter>&nbsp;:</term>
+        <listitem><simpara>the width of the rectangle to be
+        drawn.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">height</parameter>&nbsp;:</term>
+        <listitem><simpara>the height of the rectangle to be
+        drawn.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">dith</parameter>&nbsp;:</term>
+        <listitem><simpara>a GdkRgbDither value, selecting the desired
+        dither mode.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">buf</parameter>&nbsp;:</term>
+        <listitem><simpara>the pixel data, represented as 8-bit color
+        indices.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">rowstride</parameter>&nbsp;:</term>
+        <listitem><simpara>the number of bytes from the start of one row in
+        <parameter>buf</parameter> to the start of the
+        next.</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><parameter role="keyword">colors</parameter>&nbsp;:</term>
+        <listitem><simpara>a list of colors represented as 0xRRGGBB integer
+        values.</simpara></listitem>
+      </varlistentry>
+    </variablelist>
 
-      <para></para>
+    <note>
+      <para>This method is available in PyGTK 2.10 and above.</para>
+    </note>
+
+    <para>The <methodname>draw_indexed_image</methodname>() method draws an
+    indexed image in the drawable, using the list of colors specified
+    by <parameter>colors</parameter> to assign actual colors to the image's
+    color indices.</para>
 
   </refsect2>
-END NOT IMPLEMENTED -->
 
-    <refsect2 id="method-gdkdrawable--cairo-create">
-      <title>gtk.gdk.Drawable.cairo_create</title>
+  <refsect2 id="method-gdkdrawable--cairo-create">
+    <title>gtk.gdk.Drawable.cairo_create</title>
 
-      <programlisting><methodsynopsis language="python">
-	  <methodname>cairo_create</methodname>
-	  <methodparam></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-	<varlistentry>
-	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>a <link
-linkend="class-gdkcairocontext"><classname>gtk.gdk.CairoContext</classname></link></simpara></listitem>
-	</varlistentry>
-      </variablelist>
+    <programlisting><methodsynopsis language="python">
+      <methodname>cairo_create</methodname>
+      <methodparam></methodparam>
+    </methodsynopsis></programlisting>
+    <variablelist>
+      <varlistentry>
+        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+        <listitem><simpara>a <link
+        linkend="class-gdkcairocontext"><classname>gtk.gdk.CairoContext</classname></link></simpara></listitem>
+      </varlistentry>
+    </variablelist>
 
-      <note>
-        <para>This method is available in PyGTK 2.8 and above.</para>
-      </note>
+    <note>
+      <para>This method is available in PyGTK 2.8 and above.</para>
+    </note>
 
-      <para>The <methodname>cairo_create</methodname>() method returns a
-<link
-linkend="class-gdkcairocontext"><classname>gtk.gdk.CairoContext</classname></link>
-object to be used for drawing on the drawable using Cairo drawing
-operations.</para>
+    <para>The <methodname>cairo_create</methodname>() method returns a
+    <link
+        linkend="class-gdkcairocontext"><classname>gtk.gdk.CairoContext</classname></link>
+    object to be used for drawing on the drawable using Cairo drawing
+    operations.</para>
 
-    </refsect2>
+  </refsect2>
 
   </refsect1>
 

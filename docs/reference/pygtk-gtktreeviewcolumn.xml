@@ -278,7 +278,7 @@ linkend="method-gtktreeviewcolumn--cell-set-cell-data">cell_set_cell_data</link>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeviewcolumn--cell-get-size">cell_get_size</link></methodname>
-	<methodparam></methodparam>
+	<methodparam><parameter>cell_area</parameter><initializer>(0,0,0,0)</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
@@ -1667,15 +1667,22 @@ displayed.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>cell_get_size</methodname>
-	  <methodparam></methodparam>
+	<methodparam><parameter>cell_area</parameter><initializer>(0,0,0,0)</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
+	<varlistentry>
+	  <term><parameter>cell_area</parameter>&nbsp;:</term>
+	  <listitem><simpara>an optional 4-tuple or 4-list or <link
+          linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
+          specifying the area allocated for a cell in the
+          column</simpara></listitem>
+	</varlistentry>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
 	  <listitem><simpara>a tuple containing five values: a <link
 linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
-holding the area a the column will be allocated; the x offset of the cell;
-the y offset of the cell; the cell width; and, the cell
+holding the area a cell in the column will be allocated; the x offset of the
+cell; the y offset of the cell; the cell width; and, the cell
 height</simpara></listitem>
 	</varlistentry>
       </variablelist>
