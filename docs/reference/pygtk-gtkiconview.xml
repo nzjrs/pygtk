@@ -64,8 +64,8 @@ PyGTK 2.6)</refpurpose>
 <methodsynopsis language="python">
     <methodname><link linkend="method-gtkiconview--set-cursor">set_cursor</link></methodname>
     <methodparam><parameter role="keyword">path</parameter></methodparam>
-    <methodparam><parameter role="keyword">cell</parameter></methodparam>
-    <methodparam><parameter role="keyword">start_editing</parameter></methodparam>
+    <methodparam><parameter role="keyword">cell</parameter><initializer>None</initializer></methodparam>
+    <methodparam><parameter role="keyword">start_editing</parameter><initializer>FALSE</initializer></methodparam>
   </methodsynopsis>
 <methodsynopsis language="python">
     <methodname><link linkend="method-gtkiconview--get-cursor">get_cursor</link></methodname>
@@ -882,9 +882,9 @@ there is no item at the specified location.</para>
 	  <methodparam><parameter
 			 role="keyword">path</parameter></methodparam>
 	  <methodparam><parameter
-			 role="keyword">cell</parameter></methodparam>
+			 role="keyword">cell</parameter><initializer>None</initializer></methodparam>
 	  <methodparam><parameter
-			 role="keyword">start_editing</parameter></methodparam>
+			 role="keyword">start_editing</parameter><initializer>FALSE</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -921,6 +921,12 @@ editing should be started in the specified cell.</para>
  linkend="method-gtkwidget--grab-focus"><methodname>gtk.Widget.grab_focus</methodname>()</link>
  in order to give keyboard focus to the icon view. Please note that editing
  can only happen when the icon view is realized.</para>
+
+ <note>
+   <para>In PyGTK 2.8 <parameter>cell</parameter> and
+   <parameter>start_editing</parameter> must be specified.  Also
+   <parameter>cell</parameter> cannot be <literal>None</literal>.</para>
+ </note>
 
     </refsect2>
 
