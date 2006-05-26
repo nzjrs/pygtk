@@ -540,8 +540,12 @@ span.</para>
       </note>
 
       <para>The <methodname>get_active</methodname>() method returns the
-value of the "active" property which is the index in the model of the
-currently active item, or -1 if there's no active item.</para>
+      value of the "active" property which is the index in the model of the
+      currently active item, or -1 if there's no active item. If the model
+      is a non-flat treemodel, and the active item is not an immediate child
+      of the root of the tree, this method returns the first path index of
+      the active item. For example if the path of the active item is (1, 0,
+      2) this method will return 1.</para>
 
     </refsect2>
 
