@@ -27,6 +27,20 @@ linkend="class-pangocairocairocontext">pangocairo.CairoContext</link></classname
         <methodparam><parameter role="keyword">pixbuf_x</parameter></methodparam>
         <methodparam><parameter role="keyword">pixbuf_y</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkcairocontext--rectangle">rectangle</link></methodname>
+        <methodparam><parameter role="keyword">rectangle</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkcairocontext--region">region</link></methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkcairocontext--set-source-pixmap">set_source_pixmap</link></methodname>
+        <methodparam><parameter role="keyword">pixmap</parameter></methodparam>
+        <methodparam><parameter role="keyword">pixmap_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">pixmap_y</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -141,6 +155,103 @@ cairo context. The pattern has an extend mode of
 <literal>cairo.EXTEND_NONE</literal> and is aligned so that the origin of
 <parameter>pixbuf</parameter> is at the location specified by
 <parameter>pixbuf_x</parameter>, <parameter>pixbuf_y</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkcairocontext--rectangle">
+      <title>gtk.gdk.CairoContext.rectangle</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>rectangle</methodname>
+	  <methodparam><parameter
+			 role="keyword">rectangle</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">rectangle</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
+	  or a 4-tuple representing a rectangle</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>rectangle</methodname>() method adds the
+      rectangle specified by <parameter>rectangle</parameter> to the current
+      path.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkcairocontext--region">
+      <title>gtk.gdk.CairoContext.region</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>region</methodname>
+	  <methodparam><parameter
+			 role="keyword">region</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">region</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>region</methodname>() method adds the
+      <link linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link> specified by <parameter>region</parameter> to the current
+      path.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkcairocontext--set-source-pixmap">
+      <title>gtk.gdk.CairoContext.set_source_pixmap</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_source_pixmap</methodname>
+	  <methodparam><parameter
+			 role="keyword">pixmap</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">pixmap_x</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">pixmap_y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">pixmap</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pixmap_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the X coordinate of the location to place the
+upper left corner of <parameter>pixmap</parameter>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">pixmap_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the Y coordinate of the location to place the
+upper left corner of <parameter>pixmap</parameter>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_source_pixmap</methodname>() method sets the
+<link linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>
+specified by <parameter>pixmap</parameter> as the source pattern for the
+cairo context. The pattern has an extend mode of
+<literal>cairo.EXTEND_NONE</literal> and is aligned so that the origin of
+<parameter>pixmap</parameter> is at the location specified by
+<parameter>pixmap_x</parameter>, <parameter>pixmap_y</parameter>.</para>
 
     </refsect2>
 

@@ -165,14 +165,10 @@ linkend="method-gdkgc--set-clip-rectangle">set_clip_rectangle</link></methodname
 	<methodparam><parameter
 		       role="keyword">rectangle</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkgc- -set-clip-region">set_clip_region</link></methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkgc--set-clip-region">set_clip_region</link></methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkgc--set-subwindow">set_subwindow</link></methodname>
@@ -1168,22 +1164,34 @@ method.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gdkgc- -set-clip-region">
-    <title>gtk.gdk.GC.set_clip_region</title>
+    <refsect2 id="method-gdkgc--set-clip-region">
+      <title>gtk.gdk.GC.set_clip_region</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>set_clip_region</methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">region</parameter>&nbsp;:</term>
-      <listitem><simpara>a GdkRegion*</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-  </refsect2>
-END NOT IMPLEMENTED -->
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_clip_region</methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">region</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_clip_region</methodname>() method sets the
+      clip mask for a graphics context from the <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      specified by <parameter>region</parameter>. The clip mask is
+      interpreted relative to the clip origin. (See the <link
+      linkend="method-gdkgc--set-clip-origin"><methodname>set_clip_origin</methodname>()</link>
+      method).</para>
+
+    </refsect2>
 
     <refsect2 id="method-gdkgc--set-subwindow">
       <title>gtk.gdk.GC.set_subwindow</title>

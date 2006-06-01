@@ -337,14 +337,10 @@ linkend="method-gdkwindow--begin-paint-rect">begin_paint_rect</link></methodname
 	<methodparam><parameter
 		       role="keyword">rectangle</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkwindow- -begin-paint-region">begin_paint_region</link></methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkwindow--begin-paint-region">begin_paint_region</link></methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkwindow--end-paint">end_paint</link></methodname>
@@ -568,24 +564,24 @@ linkend="method-gdkwindow--invalidate-rect">invalidate_rect</link></methodname>
 	<methodparam><parameter
 		       role="keyword">invalidate_children</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkwindow--invalidate-region">invalidate_region</link></methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+        <methodparam><parameter role="keyword">invalidate_children</parameter></methodparam>
+      </methodsynopsis>
 
 <!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkwindow- -invalidate-region">invalidate_region</link></methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-    <methodparam><parameter role="keyword">invalidate_children</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkwindow- -invalidate-maybe-recurse">invalidate_maybe_recurse</link></methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-    <methodparam><parameter role="keyword">(*child_func</parameter></methodparam>
-  </methodsynopsis>
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkwindow- -get-update-area">get_update_area</link></methodname>
-    <methodparam></methodparam>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkwindow- -invalidate-maybe-recurse">invalidate_maybe_recurse</link></methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+        <methodparam><parameter role="keyword">(*child_func</parameter></methodparam>
       </methodsynopsis>
 END NOT IMPLEMENTED -->
 
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkwindow--get-update-area">get_update_area</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkwindow--freeze-updates">freeze_updates</link></methodname>
@@ -631,6 +627,42 @@ END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gdkwindow--set-urgency-hint">set_urgency_hint</link></methodname>
 	<methodparam><parameter role="keyword">urgent</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkwindow--move-region">move_region</link></methodname>
+	<methodparam><parameter role="keyword">region</parameter></methodparam>
+	<methodparam><parameter role="keyword">dx</parameter></methodparam>
+	<methodparam><parameter role="keyword">dy</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gdkwindow--shape-combine-region">shape_combine_region</link></methodname>
+	<methodparam><parameter
+		       role="keyword">shape_region</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">offset_x</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">offset_y</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gdkwindow--input-shape-combine-mask">input_shape_combine_mask</link></methodname>
+	<methodparam><parameter
+		       role="keyword">mask</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">x</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">y</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gdkwindow--input-shape-combine-region">input_shape_combine_region</link></methodname>
+	<methodparam><parameter
+		       role="keyword">shape_region</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">offset_x</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">offset_y</parameter></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -2337,64 +2369,83 @@ programmer, so you can avoid doing that work yourself.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gdkwindow- -begin-paint-region">
-    <title>gtk.gdk.Window.begin_paint_region</title>
+    <refsect2 id="method-gdkwindow--begin-paint-region">
+      <title>gtk.gdk.Window.begin_paint_region</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>begin_paint_region</methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">region</parameter>&nbsp;:</term>
-      <listitem><simpara>region you intend to draw to</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Indicates that you are beginning the process of redrawing <parameter>region</parameter>.
-A backing store (off-screen buffer) large enough to contain <parameter>region</parameter>
-will be created. The backing store will be initialized with the
-background color or background pixmap for the window. Then, all
-drawing operations performed on the window will be diverted to the
-backing store.  When you call <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link>, the backing
-store will be copied to the window, making it visible on-screen. Only
-the part of the window contained in <parameter>region</parameter> will be modified; that is,
-drawing operations are clipped to <parameter>region</parameter>.
-</para>
-<para>
-The net result of all this is to remove flicker, because the user
-sees the finished product appear all at once when you call
-<link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link>. If you draw to the window directly without
-calling <link linkend="method-gdkwindow- -begin-paint-region"><function>gtk.gdk.Window.begin_paint_region()</function></link>, the user may see flicker
-as individual drawing operations are performed in sequence.  The
-clipping and background-initializing features of
-<link linkend="method-gdkwindow- -begin-paint-region"><function>gtk.gdk.Window.begin_paint_region()</function></link> are conveniences for the
-programmer, so you can avoid doing that work yourself.
-</para>
-<para>
-When using GTK+, the widget system automatically places calls to
-<link linkend="method-gdkwindow- -begin-paint-region"><function>gtk.gdk.Window.begin_paint_region()</function></link> and <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link> around
-emissions of the expose_event signal. That is, if you're writing an
-expose event handler, you can assume that the exposed area in
-<literal>GdkEventExpose</literal> has already been cleared to the window background,
-is already set as the clip region, and already has a backing store.
-Therefore in most cases, application code need not call
-<link linkend="method-gdkwindow- -begin-paint-region"><function>gtk.gdk.Window.begin_paint_region()</function></link>. (You can disable the automatic
-calls around expose events on a widget-by-widget basis by calling
-<link linkend="method-gtkwidget- -set-double-buffered"><function>gtk.Widget.set_double_buffered()</function></link>.)
-</para>
-<para>
-If you call this function multiple times before calling the
-matching <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link>, the backing stores are pushed onto
-a stack. <link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link> copies the topmost backing store
-on-screen, subtracts the topmost region from all other regions in
-the stack, and pops the stack. All drawing operations affect only
-the topmost backing store in the stack. One matching call to
-<link linkend="method-gdkwindow- -end-paint"><function>gtk.gdk.Window.end_paint()</function></link> is required for each call to
-<link linkend="method-gdkwindow- -begin-paint-region"><function>gtk.gdk.Window.begin_paint_region()</function></link>.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <programlisting><methodsynopsis language="python">
+        <methodname>begin_paint_region</methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">region</parameter>&nbsp;:</term>
+          <listitem><simpara>the region you intend to draw to</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>begin_paint_region</methodname>() method
+      indicates that you are beginning the process of redrawing the <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      specified by <parameter>region</parameter>.  A backing store
+      (off-screen buffer) large enough to contain
+      <parameter>region</parameter> will be created. The backing store will
+      be initialized with the background color or background pixmap for the
+      window. Then, all drawing operations performed on the window will be
+      diverted to the backing store.  When you call the <link
+      linkend="method-gdkwindow--end-paint"><methodname>end_paint</methodname>()</link>
+      method, the backing store will be copied to the window, making it
+      visible on-screen. Only the part of the window contained in
+      <parameter>region</parameter> will be modified; that is, drawing
+      operations are clipped to <parameter>region</parameter>.</para>
+
+      <para>The net result of all this is to remove flicker, because the
+      user sees the finished product appear all at once when you call the
+      <link
+      linkend="method-gdkwindow--end-paint"><methodname>end_paint</methodname>()</link>
+      method. If you draw to the window directly without calling the <link
+      linkend="method-gdkwindow--begin-paint-region"><methodname>begin_paint_region</methodname>()</link>
+      method, the user may see flicker as individual drawing operations are
+      performed in sequence.  The clipping and background initializing
+      features of the <link
+      linkend="method-gdkwindow--begin-paint-region"><methodname>begin_paint_region</methodname>()</link>
+      method are conveniences for the programmer, so you can avoid doing
+      that work yourself.</para>
+
+      <para>The widget system automatically places calls to the <link
+      linkend="method-gdkwindow--begin-paint-region"><methodname>begin_paint_region</methodname>()</link>
+      and <link
+      linkend="method-gdkwindow--end-paint"><methodname>end_paint</methodname>()</link>
+      methods around emissions of the "expose_event" signal. That is, if
+      you're writing an expose event handler, you can assume that the
+      exposed area in a gtk.gdk.EXPOSE type <link
+      linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+      has already been cleared to the window background, is already set as
+      the clip region, and already has a backing store.  Therefore in most
+      cases, application code need not call the <link
+      linkend="method-gdkwindow--begin-paint-region"><methodname>begin_paint_region</methodname>()</link>
+      method. (You can disable the automatic calls around expose events on a
+      widget-by-widget basis by calling <link
+      linkend="method-gtkwidget--set-double-buffered"><methodname>gtk.Widget.set_double_buffered</methodname>()</link>.)</para>
+
+      <para>If you call this method multiple times before calling the
+      matching the <link
+      linkend="method-gdkwindow--end-paint"><methodname>end_paint</methodname>()</link>
+      method, the backing stores are pushed onto a stack. The <link
+      linkend="method-gdkwindow--end-paint"><methodname>end_paint</methodname>()</link>
+      method copies the topmost backing store on-screen, subtracts the
+      topmost region from all other regions in the stack, and pops the
+      stack. All drawing operations affect only the topmost backing store in
+      the stack. One matching call to the <link
+      linkend="method-gdkwindow--end-paint"><methodname>end_paint</methodname>()</link>
+      method is required for each call to the <link
+      linkend="method-gdkwindow--begin-paint-region"><methodname>begin_paint_region</methodname>()</link>
+      method.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gdkwindow--end-paint">
       <title>gtk.gdk.Window.end_paint</title>
@@ -3466,50 +3517,63 @@ object of the window are also invalidated.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gdkwindow- -invalidate-region">
-    <title>gtk.gdk.Window.invalidate_region</title>
+    <refsect2 id="method-gdkwindow--invalidate-region">
+      <title>gtk.gdk.Window.invalidate_region</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>invalidate_region</methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-    <methodparam><parameter role="keyword">invalidate_children</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">region</parameter>&nbsp;:</term>
-      <listitem><simpara>a <literal>GdkRegion</literal></simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">invalidate_children</parameter>&nbsp;:</term>
-      <listitem><simpara><literal>TRUE</literal> to also invalidate child windows</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Adds <parameter>region</parameter> to the update area for the window. The update area is the
-region that needs to be redrawn, or "dirty region." The call
-<link linkend="method-gdkwindow- -process-updates"><function>gtk.gdk.Window.process_updates()</function></link> sends one or more expose events to the
-window, which together cover the entire update area. An
-application would normally redraw the contents of the window in
-response to those expose events.
-</para>
-<para>
-GDK will call <function>window_process_all_updates()</function> on your behalf
-whenever your program returns to the main loop and becomes idle, so
-normally there's no need to do that manually, you just need to
-invalidate regions that you know should be redrawn.
-</para>
-<para>
-The <parameter>invalidate_children</parameter> parameter controls whether the region of
-each child window that intersects <parameter>region</parameter> will also be invalidated.
-If <literal>FALSE</literal>, then the update area for child windows will remain
-unaffected. See gdk_window_invalidate_maybe_recurse if you need
-fine grained control over which children are invalidated.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+        <methodname>invalidate_region</methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+        <methodparam><parameter role="keyword">invalidate_children</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">region</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">invalidate_children</parameter>&nbsp;:</term>
+          <listitem><simpara>If <literal>TRUE</literal> also invalidate child
+          windows</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>invalidate_region</methodname>() method adds the
+      <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      specified by <parameter>region</parameter> to the update area for the
+      window. The update area is the region that needs to be redrawn, or the
+      "dirty region."  The call to the <link
+      linkend="method-gdkwindow--process-updates"><methodname>process_updates</methodname>()</link>
+      method sends one or more expose events to the window, which together
+      cover the entire update area. An application would normally redraw the
+      contents of the window in response to those expose events.</para>
+
+      <para>PyGTK will call the <link
+      linkend="function-gdk--window-process-all-updates"><function>gtk.gdk.window_process_all_updates</function>()</link>
+      method on your behalf whenever your program returns to the main loop
+      and becomes idle, so normally there's no need to do that manually, you
+      just need to invalidate regions that you know should be
+      redrawn.</para>
+
+      <para>The <parameter>invalidate_children</parameter> parameter
+      controls whether the region of each child window that intersects
+      <parameter>region</parameter> will also be invalidated.  If
+      <literal>FALSE</literal>, then the update area for child windows will
+      remain unaffected.<!-- See gdk_window_invalidate_maybe_recurse if you
+      need fine grained control over which children are
+      invalidated.--></para>
+
+    </refsect2>
 
 
-  <refsect2 id="method-gdkwindow- -invalidate-maybe-recurse">
-    <title>gtk.gdk.Window.invalidate_maybe_recurse</title>
+<!-- NOT IMPLEMENTED <refsect2 id="method-gdkwindow-
+     -invalidate-maybe-recurse">
+     <title>gtk.gdk.Window.invalidate_maybe_recurse</title>
 
 <programlisting><methodsynopsis language="python">
     <methodname>invalidate_maybe_recurse</methodname>
@@ -3546,30 +3610,42 @@ each child window that intersects <parameter>region</parameter> will also be inv
 Only children for which <parameter>child_func</parameter> returns TRUE will have the area
 invalidated.
 </para>  </refsect2>
+END NOT IMPLEMENTED -->
 
 
-  <refsect2 id="method-gdkwindow- -get-update-area">
-    <title>gtk.gdk.Window.get_update_area</title>
+<refsect2 id="method-gdkwindow--get-update-area">
+  <title>gtk.gdk.Window.get_update_area</title>
 
-<programlisting><methodsynopsis language="python">
+  <programlisting><methodsynopsis language="python">
     <methodname>get_update_area</methodname>
     <methodparam></methodparam>
-      </methodsynopsis></programlisting>
+  </methodsynopsis></programlisting>
   <variablelist>
     <varlistentry>
       <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>the update area for the window</simpara></listitem>
+      <listitem><simpara>a <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      conatining the update area for the window</simpara></listitem>
     </varlistentry>
   </variablelist>
-<para>
-Transfers ownership of the update area from the window to the caller
-of the function. That is, after calling this function, the window will
-no longer have an invalid/dirty region; the update area is removed
-from the window and handed to you. If a window has no update area,
-<link linkend="method-gdkwindow- -get-update-area"><function>gtk.gdk.Window.get_update_area()</function></link> returns <literal>NULL</literal>. You are responsible for
-calling <function>gdk_region_destroy()</function> on the returned region if it's non-<literal>NULL</literal>.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+
+  <note>
+    <para>This method is available in PyGTK 2.10 and above.</para>
+  </note>
+
+  <para>The <methodname>get_update_area</methodname>() method returns a
+  <link
+  linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+  containing the update area and transfers ownership of the update area from
+  the window to the caller of the method. That is, after calling this
+  method, the window will no longer have an invalid/dirty region; the update
+  area is removed from the window and passed in the returned <link
+  linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>. If
+  a window has no update area, the <link
+  linkend="method-gdkwindow--get-update-area"><methodname>get_update_area()</methodname></link>
+  method returns <literal>None</literal>.</para>
+
+</refsect2>
 
     <refsect2 id="method-gdkwindow--freeze-updates">
       <title>gtk.gdk.Window.freeze_updates</title>
@@ -3821,6 +3897,209 @@ a hint for the desktop environment to the value specified by
 <parameter>urgent</parameter>. If <parameter>urgent</parameter> is
 <literal>TRUE</literal> the window sets a hint for the desktop environment
 indicating that it needs urgent user attention.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkwindow--move-region">
+      <title>gtk.gdk.Window.move_region</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>move_region</methodname>
+	  <methodparam><parameter role="keyword">region</parameter></methodparam>
+	  <methodparam><parameter role="keyword">dx</parameter></methodparam>
+	  <methodparam><parameter role="keyword">dy</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">region</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link> to move</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">dx</parameter>&nbsp;:</term>
+	  <listitem><simpara>the distance to move horizontally</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">dy</parameter>&nbsp;:</term>
+	  <listitem><simpara>the distance to move vertically</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>move_region</methodname>() method moves the part
+      of window indicated by the <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      specified by <parameter>region</parameter> by
+      <parameter>dy</parameter> pixels in the Y direction and
+      <parameter>dx</parameter> pixels in the X direction. The portions of
+      <parameter>region</parameter> that are not covered by the new position
+      of <parameter>region</parameter> are invalidated.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkwindow--shape-combine-region">
+      <title>gtk.gdk.Window.shape_combine_region</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>shape_combine_region</methodname>
+	  <methodparam><parameter role="keyword">shape_region</parameter></methodparam>
+	  <methodparam><parameter role="keyword">offset_x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">offset_y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">shape_region</parameter>&nbsp;:</term>
+	  <listitem><simpara>the region of the window to leave
+	  opaque</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">offset_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>X position of <parameter>shape_region</parameter>
+          in window coordinates</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">offset_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>Y position of <parameter>shape_region</parameter>
+          in window coordinates</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>shape_combine_region</methodname>() method makes
+      pixels in the window outside of the <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      specified by <parameter>shape_region</parameter> transparent, so
+      that the window may be nonrectangular. See the <link
+      linkend="method-gdkwindow--shape-combine-mask"><methodname>shape_combine_mask</methodname>()</link>
+      method to use a bitmap as the mask.</para>
+
+      <para>If <parameter>shape_region</parameter> is
+      <literal>None</literal>, the shape will be unset, so the whole window
+      will be opaque again. <parameter>offset_x</parameter> and
+      <parameter>offset_y</parameter> are ignored if
+      <parameter>shape_region</parameter> is <literal>None</literal>.</para>
+
+      <para>This method works on both toplevel and child windows.</para>
+
+      <para>On the X11 platform, this uses an X server extension which is
+      widely available on most common platforms, but not available on very
+      old X servers, and occasionally the implementation will be buggy. On
+      servers without the shape extension, this method will do
+      nothing.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkwindow--input-shape-combine-mask">
+      <title>gtk.gdk.Window.input_shape_combine_mask</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>input_shape_combine_mask</methodname>
+	  <methodparam><parameter
+			 role="keyword">mask</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">x</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+role="keyword">mask</parameter>&nbsp;:</term>
+	  <listitem><simpara>the shape bitmap mask</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the X position of shape mask with respect to
+the window</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the Y position of shape mask with respect to
+the window</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>input_shape_combine_mask</methodname>() method
+      is similar to the <link
+      linkend="method-gdkwindow--shape-combine-mask"><methodname>shape_combine_mask</methodname>()</link>
+      method but the shape applies only to event handling. Mouse events
+      which happen while the pointer position corresponds to an unset bit in
+      the mask will be passed onto the window below this window.</para>
+
+      <para>An input shape is typically used with RGBA windows. The alpha
+      channel of the window defines which pixels are invisible and allows
+      for nicely antialiased borders, and the input shape controls where the
+      window is "clickable".</para>
+
+      <para>On the X11 platform, this requires version 1.1 of the shape
+      extension.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkwindow--input-shape-combine-region">
+      <title>gtk.gdk.Window.input_shape_combine_region</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>input_shape_combine_region</methodname>
+	  <methodparam><parameter role="keyword">shape_region</parameter></methodparam>
+	  <methodparam><parameter role="keyword">offset_x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">offset_y</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">shape_region</parameter>&nbsp;:</term>
+	  <listitem><simpara>the region of the window to leave
+	  opaque</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">offset_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>X position of <parameter>shape_region</parameter>
+          in window coordinates</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">offset_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>Y position of <parameter>shape_region</parameter>
+          in window coordinates</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>input_shape_combine_region</methodname>() method
+      is similar to the <link
+      linkend="method-gdkwindow--shape-combine-region"><methodname>shape_combine_region</methodname>()</link>
+      method, but the shape applies only to event handling. Mouse events
+      which happen while the pointer position corresponds to an unset bit in
+      <parameter>shape_region</parameter> will be passed onto the window
+      below this window.</para>
+
+      <para>An input shape is typically used with RGBA windows. The alpha
+      channel of the window defines which pixels are invisible and allows
+      for nicely antialiased borders, and the input shape controls where the
+      window is "clickable".</para>
+
+      <para>On the X11 platform, this requires version 1.1 of the shape
+      extension.</para>
 
     </refsect2>
 

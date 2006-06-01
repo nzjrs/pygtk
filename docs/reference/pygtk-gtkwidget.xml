@@ -439,14 +439,10 @@ linkend="method-gtkwidget--intersect">intersect</link></methodname>
 	<methodparam><parameter
 		       role="keyword">area</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gtkwidget- -region-intersect">region_intersect</link></methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--region-intersect">region_intersect</link></methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkwidget--freeze-child-notify">freeze_child_notify</link></methodname>
@@ -3926,34 +3922,49 @@ intersection.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-    <refsect2 id="method-gtkwidget- -region-intersect">
-    <title>gtk.Widget.region_intersect</title>
+    <refsect2 id="method-gtkwidget--region-intersect">
+      <title>gtk.Widget.region_intersect</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>region_intersect</methodname>
-    <methodparam><parameter role="keyword">region</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">region</parameter>&nbsp;:</term>
-      <listitem><simpara>a <literal>GdkRegion</literal>, in the same coordinate system as 
-the widget->allocation. That is, relative to the widget->window
-for <literal>NO_WINDOW</literal> widgets; relative to the parent window
-of the widget->window for widgets with their own window.</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>a GdkRegion*</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Computes the intersection of a the widget's area and <parameter>region</parameter>, returning
-the intersection. The result may be empty, use <function>gdk_region_empty()</function> to
-check.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <programlisting><methodsynopsis language="python">
+        <methodname>region_intersect</methodname>
+        <methodparam><parameter role="keyword">region</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">region</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>,
+          in the same coordinate system as the widget.allocation. That is,
+          relative to the widget.window for <literal>NO_WINDOW</literal>
+          widgets; relative to the parent window of the widget.window for
+          widgets with their own window.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a newly allocated <link
+          linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+          holding the intersection of the widget and <parameter>region</parameter>. The coordinates of
+          the returned region are relative to widget.window for <literal>NO_WINDOW</literal>
+          widgets, and relative to the parent window of widget.window for
+          widgets with their own window.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
 
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>region_intersect</methodname>() method computes
+      and returns as a <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      the intersection of a the widget's area and the <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      specified by <parameter>region</parameter>. Since the result may be
+      empty, use the <link
+      linkend="method-gdkregion--empty"><methodname>gtk.gdk.Region.empty</methodname>()</link>
+      method to check.</para>
+
+    </refsect2>
 
   <refsect2 id="method-gtkwidget--freeze-child-notify">
       <title>gtk.Widget.freeze_child_notify</title>

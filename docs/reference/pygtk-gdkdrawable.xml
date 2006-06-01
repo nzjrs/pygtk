@@ -197,17 +197,19 @@ linkend="method-gdkdrawable--draw-glyphs">draw_glyphs</link></methodname>
 	<methodparam><parameter
 		       role="keyword">glyphs</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
-<methodsynopsis language="python">
-    <methodname><link linkend="method-gdkdrawable- -draw-layout-line">draw_layout_line</link></methodname>
-    <methodparam><parameter role="keyword">gc</parameter></methodparam>
-    <methodparam><parameter role="keyword">x</parameter></methodparam>
-    <methodparam><parameter role="keyword">y</parameter></methodparam>
-    <methodparam><parameter role="keyword">line</parameter></methodparam>
-  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gdkdrawable--draw-layout-line">draw_layout_line</link></methodname>
+        <methodparam><parameter role="keyword">gc</parameter></methodparam>
+        <methodparam><parameter role="keyword">x</parameter></methodparam>
+        <methodparam><parameter role="keyword">y</parameter></methodparam>
+        <methodparam><parameter role="keyword">line</parameter></methodparam>
+        <methodparam><parameter
+                         role="keyword">layout</parameter></methodparam>
+        <methodparam><parameter role="keyword">foreground</parameter>
+        <initializer>None</initializer></methodparam>
+        <methodparam><parameter role="keyword">background</parameter>
+        <initializer>None</initializer></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdrawable--draw-layout">draw_layout</link></methodname>
@@ -231,18 +233,16 @@ linkend="method-gdkdrawable--get-image">get_image</link></methodname>
 	<methodparam><parameter
 		       role="keyword">height</parameter></methodparam>
       </methodsynopsis>
-
-<!-- NOT IMPLEMENTED
       <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gdkdrawable- -get-clip-region">get_clip_region</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+linkend="method-gdkdrawable--get-clip-region">get_clip_region</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gdkdrawable- -get-visible-region">get_visible_region</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
-END NOT IMPLEMENTED -->
-
+linkend="method-gdkdrawable--get-visible-region">get_visible_region</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkdrawable--new-gc">new_gc</link></methodname>
@@ -1352,39 +1352,82 @@ method.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-  <refsect2 id="method-gdkdrawable- -draw-layout-line">
-    <title>gtk.gdk.Drawable.draw_layout_line</title>
+    <refsect2 id="method-gdkdrawable--draw-layout-line">
+      <title>gtk.gdk.Drawable.draw_layout_line</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>draw_layout_line</methodname>
-    <methodparam><parameter role="keyword">gc</parameter></methodparam>
-    <methodparam><parameter role="keyword">x</parameter></methodparam>
-    <methodparam><parameter role="keyword">y</parameter></methodparam>
-    <methodparam><parameter role="keyword">line</parameter></methodparam>
-  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><parameter role="keyword">gc</parameter>&nbsp;:</term>
-      <listitem><simpara>base graphics to use</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">x</parameter>&nbsp;:</term>
-      <listitem><simpara>the x position of start of string (in pixels)</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">y</parameter>&nbsp;:</term>
-      <listitem><simpara>the y position of baseline (in pixels)</simpara></listitem>
-    </varlistentry>
-    <varlistentry>
-      <term><parameter role="keyword">line</parameter>&nbsp;:</term>
-      <listitem><simpara>a <literal>PangoLayoutLine</literal></simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Render a <literal>PangoLayoutLine</literal> onto an GDK drawable
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <programlisting><methodsynopsis language="python">
+        <methodname>draw_layout_line</methodname>
+        <methodparam><parameter role="keyword">gc</parameter></methodparam>
+        <methodparam><parameter role="keyword">x</parameter></methodparam>
+        <methodparam><parameter role="keyword">y</parameter></methodparam>
+        <methodparam><parameter role="keyword">line</parameter></methodparam>
+        <methodparam><parameter role="keyword">foreground</parameter>
+        <initializer>None</initializer></methodparam>
+        <methodparam><parameter role="keyword">background</parameter>
+        <initializer>None</initializer></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">gc</parameter>&nbsp;:</term>
+          <listitem><simpara>base graphics to use</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">x</parameter>&nbsp;:</term>
+          <listitem><simpara>the x position of start of string (in pixels)</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">y</parameter>&nbsp;:</term>
+          <listitem><simpara>the y position of baseline (in pixels)</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">line</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-pangolayoutline"><classname>pango.LayoutLine</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+                    role="keyword">foreground</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+          to override the foreground color or
+          <literal>None</literal></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter
+                    role="keyword">background</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+          to override the background color or
+          <literal>None</literal></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <parameter>draw_layout_line</parameter>() method renders the
+      <link
+      linkend="class-pangolayoutline"><classname>pango.LayoutLine</classname></link>
+      specified by <parameter>line</parameter> onto the drawable at the
+      position specified by (<parameter>x</parameter>,
+      <parameter>y</parameter>). The <link
+      linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link>
+      specified by <parameter>gc</parameter> is used as the graphics context
+      but the layout's normal colors may be overriden with the <link
+      linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>s
+      specified by <parameter>foreground</parameter> and/or
+      <parameter>background</parameter>. <parameter>foreground</parameter>
+      and <parameter>background</parameter> are optional and default to
+      <literal>None</literal>.</para>
+
+      <para>If the layout's <link
+      linkend="class-pangocontext"><classname>pango.Context</classname></link>
+      has a transformation matrix set, then <parameter>x</parameter> and
+      <parameter>y</parameter> specify the position of the left edge of the
+      baseline (left is in before-tranform user coordinates) in
+      after-transform device coordinates.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gdkdrawable--draw-layout">
       <title>gtk.gdk.Drawable.draw_layout</title>
@@ -1532,51 +1575,66 @@ image will contain undefined data.</para>
 
     </refsect2>
 
-<!-- NOT IMPLEMENTED
-    <refsect2 id="method-gdkdrawable- -get-clip-region">
-    <title>gtk.gdk.Drawable.get_clip_region</title>
+    <refsect2 id="method-gdkdrawable--get-clip-region">
+      <title>gtk.gdk.Drawable.get_clip_region</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>get_clip_region</methodname>
-    <methodparam></methodparam>  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>a <literal>GdkRegion</literal>.</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Computes the region of a drawable that potentially can be written
-to by drawing primitives. This region will not take into account
-the clip region for the GC, and may also not take into account
-other factors such as if the window is obscured by other windows,
-but no area outside of this region will be affected by drawing
-primitives.
-</para>  </refsect2>
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_clip_region</methodname>
+      <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+      
+      <para>The <methodname>get_clip_region</methodname>() method computes
+      and returns the <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      of the drawable that potentially can be written to by drawing
+      primitives. This region will not take into account the clip region for
+      the <link
+      linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link>, and
+      may also not take into account other factors such as if the window is
+      obscured by other windows, but no area outside of this region will be
+      affected by drawing primitives.</para>
+
+    </refsect2>
 
 
-  <refsect2 id="method-gdkdrawable- -get-visible-region">
-    <title>gtk.gdk.Drawable.get_visible_region</title>
+    <refsect2 id="method-gdkdrawable--get-visible-region">
+      <title>gtk.gdk.Drawable.get_visible_region</title>
 
-<programlisting><methodsynopsis language="python">
-    <methodname>get_visible_region</methodname>
-    <methodparam></methodparam>  </methodsynopsis></programlisting>
-  <variablelist>
-    <varlistentry>
-      <term><emphasis>Returns</emphasis>&nbsp;:</term>
-      <listitem><simpara>a <literal>GdkRegion</literal>. This must be freed with <function>gdk_region_destroy()</function>
-when you are done.</simpara></listitem>
-    </varlistentry>
-  </variablelist>
-<para>
-Computes the region of a drawable that is potentially visible.
-This does not necessarily take into account if the window is
-obscured by other windows, but no area outside of this region
-is visible.
-</para>  </refsect2>
-END NOT IMPLEMENTED -->
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_visible_region</methodname>
+      <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>. This must be freed with <function>gdk_region_destroy()</function>
+          when you are done.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
 
-  <refsect2 id="method-gdkdrawable--new-gc">
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+      
+      <para>The <methodname>get_visible_region</methodname>() method
+      computes and returns the <link
+      linkend="class-gdkregion"><classname>gtk.gdk.Region</classname></link>
+      of the drawable that is potentially visible.  This does not
+      necessarily take into account if the window is obscured by other
+      windows, but no area outside of this region is visible.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkdrawable--new-gc">
       <title>gtk.gdk.Drawable.new_gc</title>
 
       <programlisting><methodsynopsis language="python">
