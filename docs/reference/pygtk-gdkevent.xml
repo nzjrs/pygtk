@@ -112,9 +112,14 @@ linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> are
 dependent on the type of the event. The event types are described in the
 <link linkend="description-gdkevent">Description</link> section.</para>
 
-<para>The following attributes are available to all different kind of events:</para>
-
     <refsect2>
+      <title><literal>gtk.gdk.NOTHING</literal></title>
+      <title><literal>gtk.gdk.DELETE</literal></title>
+      <title><literal>gtk.gdk.DESTROY</literal></title>
+      <title><literal>gtk.gdk.MAP</literal></title>
+      <title><literal>gtk.gdk.UNMAP</literal></title>
+      <title><literal>gtk.gdk.NO_EXPOSE</literal></title>
+
       <blockquote role="properties">
 	<informaltable pgwide="1" frame="none">
 	  <tgroup cols="3">
@@ -151,6 +156,9 @@ explicitly.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Contain only the fields that are common to all event
+      types.</para>
+
     </refsect2>
     
     <refsect2>
@@ -164,6 +172,28 @@ explicitly.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"area"</entry>
@@ -186,6 +216,9 @@ normally needed.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Generated when all or part of a window becomes visible and needs
+      to be redrawn.</para>
+
     </refsect2>
 
     <refsect2>
@@ -199,6 +232,28 @@ normally needed.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"time"</entry>
@@ -269,6 +324,8 @@ of the screen.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Generated when the pointer moves.</para>
+
     </refsect2>
 
     <refsect2>
@@ -285,6 +342,28 @@ of the screen.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"time"</entry>
@@ -357,6 +436,44 @@ of the screen.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Used for button press and button release events.</para>
+
+      <para>Double and triple-clicks result in a sequence of events being
+      received. For double-clicks the order of events will be:</para>
+
+      <orderedlist>
+        <listitem><literal>gtk.gdk.BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_RELEASE</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.2BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_RELEASE</literal></listitem>
+      </orderedlist>
+
+      <para>Note that the first click is received just like a normal button
+      press, while the second click results in a
+      <literal>gtk.gdk.2BUTTON_PRESS</literal> being received just after the
+      <literal>gtk.gdk.BUTTON_PRESS</literal>.</para>
+
+      <para>Triple-clicks are very similar to double-clicks, except that
+      <literal>gtk.gdk.3BUTTON_PRESS</literal> is inserted after the third
+      click. The order of the events is:</para>
+
+      <orderedlist>
+        <listitem><literal>gtk.gdk.BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_RELEASE</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.2BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_RELEASE</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.3BUTTON_PRESS</literal></listitem>
+        <listitem><literal>gtk.gdk.BUTTON_RELEASE</literal></listitem>
+      </orderedlist>
+
+      <para>For a double click to occur, the second button press must occur
+      within 1/4 of a second of the first. For a triple click to occur, the
+      third button press must also occur within 1/2 second of the first
+      button press.</para>
+
     </refsect2>
 
     <refsect2>
@@ -371,6 +488,28 @@ of the screen.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"time"</entry>
@@ -423,6 +562,8 @@ above.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Generated for a key press or key release event.</para>
+
     </refsect2>
 
     <refsect2>
@@ -439,8 +580,30 @@ above.</entry>
 	    <tbody>
 
 	      <row valign="top">
-		<entry>"subwindow"</entry>
+		<entry>"type"</entry>
 		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"subwindow"</entry>
+		<entry>Read/Write</entry>
 		<entry>The window that was entered or left.</entry>
 	      </row>
 
@@ -518,6 +681,8 @@ keys (e.g. <keycap>Control</keycap>, <keycap>Shift</keycap> and
 	</informaltable>
       </blockquote>
 
+      <para>Generated when the pointer enters or leaves a window.</para>
+
     </refsect2>
 
     <refsect2>
@@ -533,6 +698,28 @@ keys (e.g. <keycap>Control</keycap>, <keycap>Shift</keycap> and
 	    <tbody>
 
 	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
+
+	      <row valign="top">
 		<entry>"in_"</entry>
 		<entry>Read/Write</entry>
 		<entry><literal>TRUE</literal> if the window has gained the
@@ -543,6 +730,8 @@ keyboard focus, <literal>FALSE</literal> if it has lost the focus.</entry>
 	  </tgroup>
 	</informaltable>
       </blockquote>
+
+      <para>Describes a change of keyboard focus.</para>
 
     </refsect2>
 
@@ -557,6 +746,28 @@ keyboard focus, <literal>FALSE</literal> if it has lost the focus.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"x"</entry>
@@ -589,6 +800,8 @@ parent.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Generated when a window size or position has changed.</para>
+
     </refsect2>
 
     <refsect2>
@@ -602,6 +815,28 @@ parent.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"atom"</entry>
@@ -628,6 +863,8 @@ parent.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Describes a property change on a window.</para>
+
     </refsect2>
 
     <refsect2>
@@ -643,6 +880,28 @@ parent.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"selection"</entry>
@@ -682,6 +941,9 @@ property.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Generated when a selection is requested or ownership of a
+      selection is taken over by another client application.</para>
+
     </refsect2>
 
     <refsect2>
@@ -698,6 +960,28 @@ property.</entry>
 	    <tbody>
 
 	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
+
+	      <row valign="top">
 		<entry>"time"</entry>
 		<entry>Read/Write</entry>
 		<entry>The time of the event in milliseconds.</entry>
@@ -705,7 +989,7 @@ property.</entry>
 
 	      <row valign="top">
 		<entry>"device"</entry>
-		<entry>Read/Write</entry>
+		<entry>Read</entry>
 		<entry>The device where the event originated.</entry>
 	      </row>
 
@@ -713,6 +997,13 @@ property.</entry>
 	  </tgroup>
 	</informaltable>
       </blockquote>
+
+      <para>Proximity events are generated when using GDK's wrapper for the
+      XInput extension. The XInput extension is an add-on for standard X
+      that allows you to use nonstandard devices such as graphics tablets. A
+      proximity event indicates that the stylus has moved in or out of
+      contact with the tablet, or perhaps that the user's finger has moved
+      in or out of contact with a touch screen.</para>
 
     </refsect2>
 
@@ -732,6 +1023,28 @@ property.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"context"</entry>
@@ -768,6 +1081,8 @@ of the screen only set for <literal>gtk.gdk.DRAG_MOTION</literal> and
 	</informaltable>
       </blockquote>
 
+      <para>Generated during Drag and Drop operations.</para>
+
     </refsect2>
 
     <refsect2>
@@ -781,6 +1096,28 @@ of the screen only set for <literal>gtk.gdk.DRAG_MOTION</literal> and
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"message_type"</entry>
@@ -807,6 +1144,8 @@ in each data element, i.e. 8, 16, or 32.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>An event sent by another client application.</para>
+
     </refsect2>
 
     <refsect2>
@@ -822,6 +1161,28 @@ in each data element, i.e. 8, 16, or 32.</entry>
 	    <tbody>
 
 	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
+
+	      <row valign="top">
 		<entry>"state"</entry>
 		<entry>Read/Write</entry>
 		<entry>The new visibility state
@@ -834,6 +1195,8 @@ in each data element, i.e. 8, 16, or 32.</entry>
 	  </tgroup>
 	</informaltable>
       </blockquote>
+
+      <para>Generated when the window visibility status has changed.</para>
 
     </refsect2>
 
@@ -848,6 +1211,28 @@ in each data element, i.e. 8, 16, or 32.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"time"</entry>
@@ -912,6 +1297,10 @@ of the screen.</entry>
 	</informaltable>
       </blockquote>
 
+      <para>Generated from button presses for the buttons 4 to 7. Wheel mice
+      are usually configured to generate button press events for buttons 4
+      and 5 when the wheel is turned.</para>
+
     </refsect2>
 
     <refsect2>
@@ -925,6 +1314,28 @@ of the screen.</entry>
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"changed_mask"</entry>
@@ -951,6 +1362,8 @@ combination of: <literal>gtk.gdk.WINDOW_STATE_WITHDRAWN</literal>,
 	</informaltable>
       </blockquote>
 
+      <para>Generated when the state of a toplevel window changes.</para>
+
     </refsect2>
 
     <refsect2>
@@ -964,6 +1377,28 @@ combination of: <literal>gtk.gdk.WINDOW_STATE_WITHDRAWN</literal>,
 	    <colspec column="2" colwidth="1in"/>
 	    <colspec column="3" colwidth="4in"/>
 	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
 
 	      <row valign="top">
 		<entry>"action"</entry>
@@ -985,6 +1420,167 @@ combination of: <literal>gtk.gdk.WINDOW_STATE_WITHDRAWN</literal>,
 	</informaltable>
       </blockquote>
 
+      <para>Generated when a setting is modified.</para>
+
+    </refsect2>
+
+    <refsect2>
+      <title><literal>gtk.gdk.OWNER_CHANGE</literal></title>
+
+      <note>
+      <para>This Event type is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <blockquote role="properties">
+	<informaltable pgwide="1" frame="none">
+	  <tgroup cols="3">
+	<?dbhtml cellpadding="5"?>
+	    <colspec column="1" colwidth="1in"/>
+	    <colspec column="2" colwidth="1in"/>
+	    <colspec column="3" colwidth="4in"/>
+	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"owner"</entry>
+		<entry>Read/Write</entry>
+		<entry>the new owner of the selection - the native window
+                ID as an integer</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"reason"</entry>
+		<entry>Read/Write</entry>
+		<entry>the reason for the ownership change indicated by one
+		of the <xref linkend="gdk-owner-change-constants"
+		endterm="gdk-owner-change-constants-title"></xref>.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"selection"</entry>
+		<entry>Read</entry>
+		<entry>the atom identifying the selection</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"time"</entry>
+		<entry>Read/Write</entry>
+		<entry>the timestamp of the event</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"selection_time"</entry>
+		<entry>Read/Write</entry>
+		<entry>the time at which the selection ownership was taken
+                over</entry>
+	      </row>
+
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+      </blockquote>
+
+      <para>Generated when the owner of a selection changes. On X11, this
+      information is only available if the X server supports the XFIXES
+      extension.</para>
+
+    </refsect2>
+
+    <refsect2>
+      <title><literal>gtk.gdk.GRAB_BROKEN</literal></title>
+
+      <note>
+      <para>This Event type is available in PyGTK 2.8 and above.</para>
+      </note>
+
+      <blockquote role="properties">
+	<informaltable pgwide="1" frame="none">
+	  <tgroup cols="3">
+	<?dbhtml cellpadding="5"?>
+	    <colspec column="1" colwidth="1in"/>
+	    <colspec column="2" colwidth="1in"/>
+	    <colspec column="3" colwidth="4in"/>
+	    <tbody>
+
+	      <row valign="top">
+		<entry>"type"</entry>
+		<entry>Read</entry>
+		<entry>The event type - see the list below in the <link
+linkend="description-gdkevent">Description</link> section</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"window"</entry>
+		<entry>Read/Write</entry>
+		<entry>The <link
+linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> the
+event occurred on.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"send_event"</entry>
+		<entry>Read/Write</entry>
+		<entry><literal>TRUE</literal> if the event was sent
+explicitly.</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"keyboard"</entry>
+		<entry>Read/Write</entry>
+		<entry>if <literal>TRUE</literal> a keyboard grab was
+		broken; if <literal>FALSE</literal> a pointer grab was
+		broken</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"implicit"</entry>
+		<entry>Read/Write</entry>
+		<entry>if TRUE the broken grab was implicit</entry>
+	      </row>
+
+	      <row valign="top">
+		<entry>"grab_window"</entry>
+		<entry>Read</entry>
+		<entry>If this event is caused by another grab in the same
+		application, <parameter>grab_window</parameter> contains the
+		new grab window. Otherwise
+		<parameter>grab_window</parameter> is
+		<literal>None</literal>.</entry>
+	      </row>
+
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+      </blockquote>
+
+      <para>Generated when a pointer or keyboard grab is broken. On X11,
+      this happens when the grab window becomes unviewable (i.e. it or one
+      of its ancestors is unmapped), or if the same application grabs the
+      pointer or keyboard again. Note that implicit grabs (which are
+      initiated by button presses) can also cause
+      <literal>gtk.gdk.GRAB_BROKEN</literal> events.</para>
+
     </refsect2>
 
     <para></para>
@@ -994,7 +1590,13 @@ combination of: <literal>gtk.gdk.WINDOW_STATE_WITHDRAWN</literal>,
   <refsect1 id="description-gdkevent">
     <title>Description</title>
 
-    <para>A <link linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> represents an event from the windowing system. The <link linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> methods are usually not used by applications since the <literal>PyGTK</literal> main loop generates signals and invokes the appropriate signal handler. The event types are:</para>
+    <para>A <link
+    linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+    represents an event from the windowing system. The <link
+    linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+    methods are usually not used by applications since the
+    <literal>PyGTK</literal> main loop generates signals and invokes the
+    appropriate signal handler. The event types are:</para>
 
       <variablelist>
 	<varlistentry>
@@ -1207,11 +1809,27 @@ combination of: <literal>gtk.gdk.WINDOW_STATE_WITHDRAWN</literal>,
 	    <simpara>a setting has changed</simpara>
 	  </listitem>
 	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.OWNER_CHANGE</literal></term>
+	  <listitem>
+	    <simpara>the owner of a selection has changed. Added in GTK+
+	    2.6</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>gtk.gdk.GRAB_BROKEN</literal></term>
+	  <listitem>
+	    <simpara>a pointer or keyboard grab was broken. Added in GTK+
+	    2.8.</simpara>
+	  </listitem>
+	</varlistentry>
       </variablelist>
 
     <para>A set of bit-flags is used to indicate which events a window is to
-receive. Most of these masks map onto one or more of the event types
-above.</para>
+    receive. Most of these masks map onto one or more of the event types
+    above. Use the <link
+    linkend="method-gtkwidget--set-events"><methodname>gtk.Widget.set_events</methodname>()</link>
+    method to indicate which events a widget should receive.</para>
 
     <para>The <literal>gtk.gdk.POINTER_MOTION_HINT_MASK</literal> is a
 special mask which is used to reduce the number of
