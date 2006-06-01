@@ -790,9 +790,10 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     /* New in 2.8 */
     case GDK_OWNER_CHANGE:
         if (!strcmp(attr, "__members__"))
-            return Py_BuildValue("[sssssss]",
-                                 "type", "window", "send_event",
-                                 "owner", "reason", "time", "selection_time");
+            return Py_BuildValue("[ssssssss]",
+                                 "type", "window", "send_event", "owner",
+                                 "reason", "selection", "time",
+                                 "selection_time");
         if (!strcmp(attr, "owner"))
             return PyInt_FromLong(event->owner_change.owner);
         if (!strcmp(attr, "reason"))
