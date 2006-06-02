@@ -6779,3 +6779,65 @@ _wrap_gtk_print_context_get_cairo(PyGObject *self)
     cairo_reference(ret);
     return PycairoContext_FromContext(ret, &PyGdkCairoContext_Type, NULL);
 }
+%%
+override gtk_assistant_set_forward_page_func kwargs
+static gint
+pygtk_assistant_set_forward_page_func_cb(gint current_page,
+                                         gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    gint ret = current_page;
+    PyObject *retobj;
+  
+    g_assert(cunote->func);
+ 
+    state = pyg_gil_state_ensure();
+  
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(iO)",
+                                     current_page, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(i)", current_page);
+    }
+ 
+    if (retobj != NULL) {
+        ret = PyInt_AsLong(retobj);
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+    }
+  
+    pyg_gil_state_release(state);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_assistant_set_forward_page_func(PyGObject *self, PyObject *args,
+                                          PyObject *kwargs)
+{
+    static char *kwlist[] = { "page_func", "data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                          "O|O:GtkAssistant.set_forward_page_func",
+                          kwlist, &pyfunc, &pyarg))
+        return NULL;
+  
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "page_func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
+                                        pygtk_assistant_set_forward_page_func_cb,
+                                        cunote, pygtk_custom_destroy_notify);
+ 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
