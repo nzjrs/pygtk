@@ -183,7 +183,7 @@
   (return-type "none")
   (parameters
     '("GtkWidget*" "page")
-    '("GdkPixbuf*" "pixbuf")
+    '("GdkPixbuf*" "pixbuf" (null-ok) (default "NULL"))
   )
 )
 
@@ -1216,9 +1216,9 @@
   (return-type "GType")
 )
 
-(define-method get_cairo_context
+(define-method get_cairo
   (of-object "GtkPrintContext")
-  (c-name "gtk_print_context_get_cairo_context")
+  (c-name "gtk_print_context_get_cairo")
   (return-type "cairo_t*")
 )
 
@@ -1252,21 +1252,21 @@
   (return-type "gdouble")
 )
 
-(define-method get_pango_fontmap
+(define-method get_fontmap
   (of-object "GtkPrintContext")
-  (c-name "gtk_print_context_get_pango_fontmap")
+  (c-name "gtk_print_context_get_fontmap")
   (return-type "PangoFontMap*")
 )
 
-(define-method create_pango_context
+(define-method create_context
   (of-object "GtkPrintContext")
-  (c-name "gtk_print_context_create_pango_context")
+  (c-name "gtk_print_context_create_context")
   (return-type "PangoContext*")
 )
 
-(define-method create_pango_layout
+(define-method create_layout
   (of-object "GtkPrintContext")
-  (c-name "gtk_print_context_create_pango_layout")
+  (c-name "gtk_print_context_create_layout")
   (return-type "PangoLayout*")
 )
 
