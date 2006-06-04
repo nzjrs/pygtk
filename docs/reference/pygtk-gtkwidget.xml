@@ -864,9 +864,26 @@ linkend="method-gtkwidget--set-activate-signal">set_scroll_adjustments_signal</l
 		       role="keyword">signal_name</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-	<methodname><link
-linkend="method-gtkwidget--get-for-attach-widget">get_for_attach_widget</link></methodname>
-	<methodparam></methodparam>
+        <methodname><link linkend="method-gtkwidget--get-action">get_action</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--drag-dest-set-track-motion">drag_dest_set_track_motion</link></methodname>
+        <methodparam><parameter role="keyword">track_motion</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--drag-dest-get-track-motion">drag_dest_get_track_motion</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--is-composited">is_composited</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--input-shape-combine-mask">input_shape_combine_mask</link></methodname>
+        <methodparam><parameter role="keyword">shape_mask</parameter></methodparam>
+        <methodparam><parameter role="keyword">offset_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">offset_y</parameter></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -6122,30 +6139,163 @@ method.</para>
 
     </refsect2>
 
-    <refsect2 id="method-gtkwidget--get-for-attach-widget">
-      <title>gtk.Widget.get_for_attach_widget</title>
+    <refsect2 id="method-gtkwidget--get-action">
+      <title>gtk.Widget.get_action</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>get_for_attach_widget</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+        <methodname>get_action</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
       <variablelist>
-	<varlistentry>
-	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>a list of the menus that are attached to this
-widget.</simpara></listitem>
-	</varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the <link
+          linkend="class-gtkaction"><classname>gtk.Action</classname></link>
+          that a widget is a proxy for, or <literal>None</literal>, if it is
+          not attached to an action.</simpara></listitem>
+        </varlistentry>
       </variablelist>
 
       <note>
-        <para>This method is available in PyGTK 2.6 and above.</para>
+        <para>This method is available in PyGTK 2.10 and above.</para>
       </note>
 
-      <para>The <methodname>get_for_attach_widget</methodname>() method
-returns a list of the menus that are attached to this widget.</para>
+      <para>The <methodname>get_action</methodname>() method returns the
+      <link
+      linkend="class-gtkaction"><classname>gtk.Action</classname></link>
+      that <parameter>widget</parameter> is a proxy for.  See also the <link
+      linkend="method-gtkaction--get-proxies"><methodname>gtk.Action.get_proxies()</methodname></link>
+      method.</para>
 
     </refsect2>
 
- </refsect1>
+    <refsect2 id="method-gtkwidget--drag-dest-set-track-motion">
+      <title>gtk.Widget.drag_dest_set_track_motion</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>drag_dest_set_track_motion</methodname>
+        <methodparam><parameter role="keyword">track_motion</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">track_motion</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> accept all
+          targets</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>drag_dest_set_track_motion</methodname>() method
+      tells the widget to emit "drag-motion" and "drag-leave" events
+      regardless of the targets and the
+      <literal>gtk.DEST_DEFAULT_MOTION</literal> flag.</para>
+      
+      <para>This may be used when a widget wants to do generic actions
+      regardless of the targets that the source offers.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwidget--drag-dest-get-track-motion">
+      <title>gtk.Widget.drag_dest_get_track_motion</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>drag_dest_get_track_motion</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if the widget always
+          emits "drag-motion events"</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>drag_dest_get_track_motion</methodname>() method
+      returns <literal>TRUE</literal> if the widget has been configured to
+      always emit "drag-motion" signals.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwidget--is-composited">
+      <title>gtk.Widget.is_composited</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>is_composited</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if the widget can rely
+          on its alpha channel being drawn correctly.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>is_composited</methodname>() method returns
+      <literal>TRUE</literal> if the widget can rely on having its alpha
+      channel drawn correctly. On X11 this function returns whether a
+      compositing manager is running for the widget's screen</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkwidget--input-shape-combine-mask">
+      <title>gtk.Widget.input_shape_combine_mask</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>input_shape_combine_mask</methodname>
+        <methodparam><parameter role="keyword">shape_mask</parameter></methodparam>
+        <methodparam><parameter role="keyword">offset_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">offset_y</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">shape_mask</parameter>&nbsp;:</term>
+          <listitem><simpara>shape to be added, or <literal>None</literal>
+          to remove an existing shape.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">offset_x</parameter>&nbsp;:</term>
+          <listitem><simpara>X position of <parameter>shape_mask</parameter>
+          with respect to the widget's window.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">offset_y</parameter>&nbsp;:</term>
+          <listitem><simpara>Y position of <parameter>shape_mask</parameter>
+          with respect to the widget's window.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>input_shape_combine_mask</methodname>() method
+      sets an input shape for this widget's <link
+      linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>.
+      This allows for windows that react to a mouse click in a
+      nonrectangular region, see the <link
+      linkend="method-gdkwindow--input-shape-combine-mask"><methodname>gtk.gdk.Window.input_shape_combine_mask</methodname>()</link>
+      method for more information.</para>
+
+    </refsect2>
+
+  </refsect1>
 
   <refsect1>
     <title>Functions</title>
