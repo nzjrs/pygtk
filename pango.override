@@ -1400,6 +1400,8 @@ _wrap_pango_tab_array_get_tabs(PyObject *self)
 	item = Py_BuildValue("(ii)", (int)alignments[i], locations[i]);
 	PyTuple_SetItem(ret, i, item);
     }
+    g_free(alignments);
+    g_free(locations);
     return ret;
 }
 %%
