@@ -99,6 +99,20 @@
 	<methodname><link linkend="method-gtkclipboard--wait-is-image-available">wait_is_image_available</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkclipboard--request-rich-text">request_rich_text</link></methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+        <methodparam><parameter role="keyword">callback</parameter></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkclipboard--wait-for-rich-text">wait_for_rich_text</link></methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkclipboard--wait-is-rich-text-available">wait_is_rich_text_available</link></methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -1016,6 +1030,140 @@ since it doesn't need to retrieve the actual image data.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkclipboard--request-rich-text">
+      <title>gtk.Clipboard.request_rich_text</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>request_rich_text</methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+        <methodparam><parameter role="keyword">callback</parameter></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">buffer</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link>
+          to retrieve the deserialize formats from.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">callback</parameter>&nbsp;:</term>
+          <listitem><simpara>a function to call when the text is received,
+          or the retrieval fails. (It will always be called one way or the
+          other.)</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+          <listitem><simpara>user data to pass to
+          <parameter>callback</parameter>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+ 
+      <para>The <methodname>request_rich_text</methodname>() method requests
+      the contents of the clipboard as rich text. When the rich text is
+      later received, the function specified by
+      <parameter>callback</parameter> will be called with the argument
+      specified by <parameter>user_data</parameter>.</para>
+
+      <para>The signature of the callback is:</para>
+
+      <programlisting>
+        def callback(clipboard, format, text, length, data):
+      </programlisting>
+       
+      <para>where <parameter>format</parameter> is the atom indicating the
+      text format, <parameter>text</parameter> contains the resulting rich
+      text if the request succeeded, or <literal>None</literal> if it
+      failed, <parameter>length</parameter> contains the length of
+      <parameter>text</parameter> and <parameter>data</parameter> is
+      <parameter>user_data</parameter>. This function can fail for various
+      reasons, in particular if the clipboard was empty or if the contents
+      of the clipboard could not be converted into rich text form.</para>
+ 
+    </refsect2>
+ 
+    <refsect2 id="method-gtkclipboard--wait-for-rich-text">
+      <title>gtk.Clipboard.wait_for_rich_text</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>wait_for_rich_text</methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">buffer</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link>
+          to retrieve the deserialize formats from.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a 2-tuple containing the rich text as a string
+          and the format string , or <literal>None</literal> if retrieving
+          the selection data failed. (This could happen for various reasons,
+          in particular if the clipboard was empty or if the contents of the
+          clipboard could not be converted into text
+          form.)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+ 
+      <para>The <methodname>wait_for_rich_text</methodname>() method
+      requests the contents of the clipboard as rich text. This method
+      waits for the data to be received using the main loop, so events,
+      timeouts, etc, may be dispatched during the wait.</para>
+ 
+    </refsect2>
+ 
+    <refsect2 id="method-gtkclipboard--wait-is-rich-text-available">
+      <title>gtk.Clipboard.wait_is_rich_text_available</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>wait_is_rich_text_available</methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis></programlisting>
+                                                                                
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">buffer</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link>
+          to retrieve the deserialize formats from.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if is there is rich
+          text available, <literal>FALSE</literal>
+          otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+ 
+      <para>The <methodname>wait_is_rich_text_available</methodname>()
+      method tests to see if there is rich text available to be pasted. This
+      is done by requesting the <literal>TARGETS</literal> atom and checking
+      if it contains any of the supported rich text targets. This method
+      waits for the data to be received using the main loop, so events,
+      timeouts, etc, may be dispatched during the wait.</para>
+       
+      <para>This method is a little faster than calling <link
+      linkend="method-gtkclipboard--wait-for-rich-text"><methodname>wait_for_rich_text()</methodname></link>
+      since it doesn't need to retrieve the actual text.</para>
+ 
+    </refsect2>
+ 
   </refsect1>
 
   <refsect1>
