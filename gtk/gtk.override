@@ -4915,7 +4915,7 @@ clipboard_request_text_cb(GtkClipboard *clipboard,
 {
     PyGILState_STATE state;
     PyObject *callback, *args, *ret, *py_text, *data;
-
+ 
     data = (PyObject *) user_data;
 
     if (text) {
@@ -6841,3 +6841,101 @@ _wrap_gtk_assistant_set_forward_page_func(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_clipboard_request_rich_text kwargs
+static void
+clipboard_request_rich_text_cb(GtkClipboard *clipboard,
+                               GdkAtom format,
+                               const guint8 *text,
+                               gsize length,
+                               gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyObject *callback, *args, *ret, *py_format, *py_text, *data;
+    gchar *name;
+
+    data = (PyObject *) user_data;
+
+    if (text) {
+        py_text = PyString_FromString(text);
+    } else {
+        py_text = Py_None;
+        Py_INCREF(Py_None);
+    }
+
+    name = gdk_atom_name(format);
+    py_format = PyString_FromString(name);
+    g_free(name);
+ 
+    state = pyg_gil_state_ensure();
+    callback = PyTuple_GetItem(data, 0);
+    args = Py_BuildValue("(NNNiO)",
+			 pygobject_new((GObject *)clipboard),
+                         py_format, py_text, length,
+			 PyTuple_GetItem(data, 1));
+    ret = PyObject_CallObject(callback, args);
+    if (!ret)
+	PyErr_Print();
+    Py_XDECREF(ret);
+    Py_DECREF(args);
+    Py_DECREF((PyObject *)user_data);
+    pyg_gil_state_release(state);
+}
+static PyObject *
+_wrap_gtk_clipboard_request_rich_text(PyGObject *self, PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "buffer", "callback", "user_data", NULL };
+    PyObject *callback, *data, *user_data = Py_None;
+    GtkTextBuffer *buffer;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O!O|O:GtkClipboard.request_rich_text",
+				     kwlist, &PyGtkTextBuffer_Type, &buffer,
+                                     &callback, &user_data))
+        return NULL;
+    if (!PyCallable_Check(callback)) {
+	PyErr_SetString(PyExc_TypeError, "callback must be callable");
+	return NULL;
+    }
+
+    data = Py_BuildValue("(OO)", callback, user_data);
+    gtk_clipboard_request_rich_text(GTK_CLIPBOARD(self->obj), buffer,
+                                    clipboard_request_rich_text_cb,
+                                    (gpointer)data);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_clipboard_wait_for_rich_text kwargs
+static PyObject *
+_wrap_gtk_clipboard_wait_for_rich_text(PyGObject *self, PyObject *args,
+                                       PyObject *kwargs)
+{
+    static char *kwlist[] = { "buffer", NULL };
+    GtkTextBuffer *buffer;
+    GdkAtom format;
+    gchar *name;
+    gsize length;
+    guint8 *ret;
+ 
+     
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,
+				     "O:GtkClipboard.wait_for_rich_text",
+                                     kwlist, &PyGtkTextBuffer_Type, &buffer))
+        return NULL;
+
+    ret = gtk_clipboard_wait_for_rich_text(GTK_CLIPBOARD(self->obj),
+                                           buffer, &format, &length);
+     
+    if (ret) {
+        name = gdk_atom_name(format);
+        PyObject *py_ret = Py_BuildValue("(s#s)", ret, length, name);
+        g_free(ret);
+        g_free(name);
+        return py_ret;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+ 
