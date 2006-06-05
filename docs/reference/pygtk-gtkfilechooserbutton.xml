@@ -53,6 +53,14 @@ END REMOVED -->
     <methodname><link linkend="method-gtkfilechooserbutton--set-width-chars">set_width_chars</link></methodname>
     <methodparam><parameter role="keyword">n_chars</parameter></methodparam>
   </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkfilechooserbutton--get-focus-on-click">get_focus_on_click</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkfilechooserbutton--set-focus-on-click">set_focus_on_click</link></methodname>
+        <methodparam><parameter role="keyword">focus_on_click</parameter></methodparam>
+      </methodsynopsis>
 </classsynopsis>
 
 </refsect1>
@@ -99,8 +107,19 @@ END REMOVED -->
 	      <entry>Write-Construct Only</entry>
 
 	      <entry>The <link
-linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
-associated with the button.</entry>
+	      linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
+	      associated with the button. Available in GTK+ 2.6.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"focus-on-click"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>TRUE</literal> the <link
+	      linkend="class-gtkfilechooserbutton"><classname>gtk.FileChooserButton</classname></link>
+	      button grabs focus when it is clicked with the mouse. Default
+	      value: <literal>TRUE</literal>. Available in GTK+
+	      2.10.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -108,8 +127,9 @@ associated with the button.</entry>
 	      <entry>Read-Write</entry>
 
 	      <entry>The string to use as the title on the <link
-linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
-associated with the button.</entry>
+	      linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link>
+	      associated with the button. Default value: "Select A
+	      File". Available in GTK+ 2.6.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -117,7 +137,8 @@ associated with the button.</entry>
 	      <entry>Read-Write</entry>
 
 	      <entry>The width of the entry and label inside the button, in
-characters. Allowed values: >= -1. Default value: -1</entry>
+	      characters. Allowed values: >= -1. Default value:
+	      -1. Available in GTK+ 2.6.</entry>
 	    </row>
 
 	  </tbody>
@@ -413,6 +434,66 @@ button</simpara></listitem>
 "width-chars" property to the value of <parameter>n_chars</parameter>. The
 "width-chars" property contains the width in characters that the button
 should be set to.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooserbutton--get-focus-on-click">
+      <title>gtk.FileChooserButton.get_focus_on_click</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_focus_on_click</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if the button grabs
+          focus when it is clicked with the mouse.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>get_focus_on_click</methodname>() method returns
+      the value of the "focus-on-click" property. If the return value is
+      <literal>TRUE</literal> if the button grabs focus when it is clicked
+      with the mouse.  See the <link
+      linkend="method-gtkfilechooserbutton--set-focus-on-click"><methodname>set_focus_on_click()</methodname></link>
+      method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooserbutton--set-focus-on-click">
+      <title>gtk.FileChooserButton.set_focus_on_click</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_focus_on_click</methodname>
+        <methodparam><parameter role="keyword">focus_on_click</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">focus_on_click</parameter>&nbsp;:</term>
+          <listitem><simpara>If <literal>TRUE</literal>, the button grabs
+          focus when clicked with the mouse</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_focus_on_click</methodname>() method sets
+      the "focus-on-click" property to the value of
+      <parameter>focus_on_click</parameter>.  If
+      <parameter>focus_on_click</parameter> is <literal>TRUE</literal>, the
+      button will grab focus when it is clicked with the mouse.  Making
+      mouse clicks not grab focus is useful in places like toolbars where
+      you don't want the keyboard focus removed from the main area of the
+      application.</para>
 
     </refsect2>
 
