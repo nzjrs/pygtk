@@ -246,6 +246,32 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
 	<methodparam><parameter
 		       role="keyword">position</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--set-group-id">set_group_id</link></methodname>
+        <methodparam><parameter role="keyword">group_id</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--get-group-id">get_group_id</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--get-tab-reorderable">get_tab_reorderable</link></methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--set-tab-reorderable">set_tab_reorderable</link></methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+        <methodparam><parameter role="keyword">reorderable</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--get-tab-detachable">get_tab_detachable</link></methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--set-tab-detachable">set_tab_detachable</link></methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+        <methodparam><parameter role="keyword">detachable</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -397,10 +423,6 @@ reference to the start or end of the parent:
   <refsect1>
     <title>Style Properties</title>
 
-    <note>
-      <para>These style properties are available in PyGTK 2.4 and above.</para>
-    </note>
-
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
 	<tgroup cols="3">
@@ -410,31 +432,56 @@ reference to the start or end of the parent:
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"arrow-spacing"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The "arrow-size" property defines the spacing between
+	      the scroll arrows and the tabs. Allowed values: >= 0.
+	      Default value: 0. Available in GTK+ 2.10.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"has-backward-stepper"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>
-	      the standard backward arrow button is displayed.</entry>
+	      <entry>If <literal>TRUE</literal> the standard backward arrow
+	      button is displayed. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"has-forward-stepper"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>
-	      the standard forward arrow button is displayed.</entry>
+	      <entry>If <literal>TRUE</literal> the standard forward arrow
+	      button is displayed. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"has-secondary-backward-stepper"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal> a second backward arrow
-button is displayed on the opposite end of the tab area.</entry>
+	      button is displayed on the opposite end of the tab
+	      area. Available in GTK+ 2.4 and above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"has-secondary-forward-stepper"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal> a second forward arrow
-button is displayed on the opposite end of the tab area.</entry>
+	      button is displayed on the opposite end of the tab
+	      area. Available in GTK+ 2.4 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"tab-curvature"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The "tab-curvature" property defines size of tab
+	      curvature. Allowed values: >= 0. Default value: 1. Available
+	      in GTK+ 2.10.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"tab-overlap"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The "tab-overlap" property defines size of tab overlap
+	      area. Default value: 2. Available in GTK+ 2.10.</entry>
 	    </row>
 
 	  </tbody>
@@ -508,6 +555,7 @@ linkend="signal-gtknotebook--focus-tab">focus-tab</link>"</term>
           </methodsynopsis>
         </listitem>
       </varlistentry>
+
       <varlistentry>
         <term>"<link
 linkend="signal-gtknotebook--move-focus-out">move-focus-out</link>"</term>
@@ -524,6 +572,58 @@ linkend="signal-gtknotebook--move-focus-out">move-focus-out</link>"</term>
           </methodsynopsis>
         </listitem>
       </varlistentry>
+
+      <varlistentry>
+        <term>"<link linkend="signal-gtknotebook--page-added">page-added</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>notebook</parameter>
+            </methodparam>
+	    <methodparam><parameter>child</parameter></methodparam>
+	    <methodparam><parameter>page_num</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>"<link linkend="signal-gtknotebook--page-removed">page-removed</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>notebook</parameter>
+            </methodparam>
+	    <methodparam><parameter>child</parameter></methodparam>
+	    <methodparam><parameter>page_num</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>"<link linkend="signal-gtknotebook--page-reordered">page-reordered</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>notebook</parameter>
+            </methodparam>
+	    <methodparam><parameter>child</parameter></methodparam>
+	    <methodparam><parameter>page_num</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>"<link
 linkend="signal-gtknotebook--select-page">select-page</link>"</term>
@@ -1713,6 +1813,206 @@ to the end of the list.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtknotebook--set-group-id">
+      <title>gtk.Notebook.set_group_id</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_group_id</methodname>
+        <methodparam><parameter role="keyword">group_id</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">group_id</parameter>&nbsp;:</term>
+          <listitem><simpara>a group identifier, or -1 to unset
+          it</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_group_id</methodname>() method sets the
+      group identifier for the notebook to the value specified by
+      <parameter>group_id</parameter>. Notebooks sharing the same group
+      identifier will be able to exchange tabs via drag and drop. A notebook
+      with group identifier -1 will not be able to exchange tabs with any
+      other notebook.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-group-id">
+      <title>gtk.Notebook.get_group_id</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_group_id</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the group identifier, or -1 if none is
+          set.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>get_group_id</methodname>() method returns the
+      current group identifier for the notebook.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-tab-reorderable">
+      <title>gtk.Notebook.get_tab_reorderable</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_tab_reorderable</methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">child</parameter>&nbsp;:</term>
+          <listitem><simpara>a child <link
+          linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if the tab is
+          reorderable.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>get_tab_reorderable</methodname>() method
+      returns <literal>TRUE</literal> if the tab can be reordered via drag
+      and drop.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--set-tab-reorderable">
+      <title>gtk.Notebook.set_tab_reorderable</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_tab_reorderable</methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+        <methodparam><parameter role="keyword">reorderable</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">child</parameter>&nbsp;:</term>
+          <listitem><simpara>a child <link
+          linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">reorderable</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> the tab is
+          reorderable.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_tab_reorderable</methodname>() method sets
+      the "reorderable" property of <parameter>child</parameter> to the
+      value of <parameter>reorderable</parameter>. If
+      <parameter>reorderable</parameter> is <literal>TRUE</literal>, the
+      notebook tab can be reordered via drag and drop.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-tab-detachable">
+      <title>gtk.Notebook.get_tab_detachable</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_tab_detachable</methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">child</parameter>&nbsp;:</term>
+          <listitem><simpara>a child <link
+          linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> the tab is
+          detachable.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>get_tab_detachable</methodname>() method returns
+      the value of the "detachable" property of
+      <parameter>child</parameter>. The method returns
+      <parameter>TRUE</parameter> if the tab contents can be detached from
+      <parameter>notebook</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--set-tab-detachable">
+      <title>gtk.Notebook.set_tab_detachable</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_tab_detachable</methodname>
+        <methodparam><parameter role="keyword">child</parameter></methodparam>
+        <methodparam><parameter role="keyword">detachable</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">child</parameter>&nbsp;:</term>
+          <listitem><simpara>a child <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">detachable</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> the tab is
+          detachable or not</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_tab_detachable</methodname>() method sets
+      the "detachable" property of <parameter>child</parameter> to the value
+      specified by <parameter>detachable</parameter>. If
+      <parameter>detachable</parameter> is <literal>TRUE</literal>,
+      <parameter>child</parameter> can be moved from this notebook to
+      another notebook or widget.</para>
+      
+      <para>Note that two notebooks must share a common group identifier
+      (see the <link
+      linkend="method-gtknotebook--set-group-id"><methodname>set_group_id</methodname>()</link>
+      method) to allow automatic tabs interchange between them.</para>
+      
+      <para>If you want a widget to interact with a notebook through DnD
+      (i.e.: accept dragged tabs from it) it must be set as a drop
+      destination and accept the target "gtk.NOTEBOOK_TAB". The notebook
+      will fill the selection with a reference to the child
+      widget that corresponds to the dropped tab.</para>
+      
+      <para>If you want a notebook to accept drags from other widgets, you
+      will have to set your own DnD code to do it.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -1848,6 +2148,162 @@ any)</simpara></listitem>
       <para>The "move-focus-out" signal is emitted when the focus is moved
 out of the notebook with the specified
 <parameter>direction_type</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtknotebook--page-added">
+      <title>The "page-added" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>notebook</parameter></methodparam>
+	  <methodparam><parameter>child</parameter></methodparam>
+	  <methodparam><parameter>page_num</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>notebook</parameter>&nbsp;:</term>
+	  <listitem><simpara>the notebook that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>child</parameter>&nbsp;:</term>
+	  <listitem><simpara>the child <link
+	  linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+	  affected</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>page_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new page number for
+	  <parameter>child</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The "page-added" signal is emitted when a page is added to the
+      notebook.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtknotebook--page-removed">
+      <title>The "page-removed" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>notebook</parameter></methodparam>
+	  <methodparam><parameter>child</parameter></methodparam>
+	  <methodparam><parameter>page_num</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>notebook</parameter>&nbsp;:</term>
+	  <listitem><simpara>the notebook that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>child</parameter>&nbsp;:</term>
+	  <listitem><simpara>the child <link
+	  linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+	  affected</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>page_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new page number for
+	  <parameter>child</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The "page-removed" signal is emitted after a page is removed
+      from the notebook.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtknotebook--page-reordered">
+      <title>The "page-reordered" Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>notebook</parameter></methodparam>
+	  <methodparam><parameter>child</parameter></methodparam>
+	  <methodparam><parameter>page_num</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>notebook</parameter>&nbsp;:</term>
+	  <listitem><simpara>the notebook that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>child</parameter>&nbsp;:</term>
+	  <listitem><simpara>the child <link
+	  linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+	  affected</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>page_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new page number for
+	  <parameter>child</parameter></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The "page-reordered" signal is emitted when a page has been
+      reordered.</para>
 
     </refsect2>
 
