@@ -6938,4 +6938,62 @@ _wrap_gtk_clipboard_wait_for_rich_text(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_link_button_set_uri_hook kwargs
+static void
+pygtk_link_button_set_uri_hook_cb(GtkLinkButton *button,
+                                  const gchar *link,
+                                  gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *retobj;
+    g_assert(cunote->func);
  
+    state = pyg_gil_state_ensure();
+  
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NsO)",
+                                     pygobject_new((GObject *)button),
+                                     link, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(Ns)",
+                                     pygobject_new((GObject *)button), link);
+    }
+ 
+    if (retobj == NULL)
+        PyErr_Print();
+
+    Py_XDECREF(retobj);
+  
+    pyg_gil_state_release(state);
+}
+static PyObject *
+_wrap_gtk_link_button_set_uri_hook(PyGObject *self, PyObject *args,
+                                   PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                          "O|O:gtk.link_button_set_uri_hook",
+                          kwlist, &pyfunc, &pyarg))
+        return NULL;
+  
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    gtk_link_button_set_uri_hook(pygtk_link_button_set_uri_hook_cb,
+                                 cunote, pygtk_custom_destroy_notify);
+ 
+    Py_INCREF(Py_None);
+    return Py_None;
+}

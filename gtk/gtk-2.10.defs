@@ -691,7 +691,6 @@
 
 (define-function link_button_new
   (c-name "gtk_link_button_new")
-  (is-constructor-of "GtkLinkButton")
   (return-type "GtkWidget*")
   (parameters
     '("const-gchar*" "uri")
@@ -700,10 +699,11 @@
 
 (define-function link_button_new_with_label
   (c-name "gtk_link_button_new_with_label")
+  (is-constructor-of "GtkLinkButton")
   (return-type "GtkWidget*")
   (parameters
     '("const-gchar*" "uri")
-    '("const-gchar*" "label")
+    '("const-gchar*" "label" (null-ok) (default "NULL"))
   )
 )
 
