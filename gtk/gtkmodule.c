@@ -173,6 +173,25 @@ g_free(aname); }
 #undef add_atom
 }
 
+static void
+pygtk_add_extra_constants(PyObject *m)
+{
+    PyModule_AddObject(m, "PAPER_NAME_A3",
+		       PyString_FromString(GTK_PAPER_NAME_A3));
+    PyModule_AddObject(m, "PAPER_NAME_A4",
+		       PyString_FromString(GTK_PAPER_NAME_A4));
+    PyModule_AddObject(m, "PAPER_NAME_A5",
+		       PyString_FromString(GTK_PAPER_NAME_A5));
+    PyModule_AddObject(m, "PAPER_NAME_B5",
+		       PyString_FromString(GTK_PAPER_NAME_B5));
+    PyModule_AddObject(m, "PAPER_NAME_LETTER",
+		       PyString_FromString(GTK_PAPER_NAME_LETTER));
+    PyModule_AddObject(m, "PAPER_NAME_EXECUTIVE",
+		       PyString_FromString(GTK_PAPER_NAME_EXECUTIVE));
+    PyModule_AddObject(m, "PAPER_NAME_LEGAL",
+		       PyString_FromString(GTK_PAPER_NAME_LEGAL));
+}
+
 static gboolean
 init_pycairo(void)
 {
@@ -222,6 +241,7 @@ init_gtk(void)
     _pygtk_register_boxed_types(d);
     pygtk_register_classes(d);
     pygtk_add_constants(m, "GTK_");
+    pygtk_add_extra_constants(m);
     pygtk_add_stock_items(d);
     
     /* extension API */
