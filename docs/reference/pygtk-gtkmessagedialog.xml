@@ -44,6 +44,10 @@ linkend="constructor-gtkmessagedialog">gtk.MessageDialog</link></methodname>
 	<methodparam><parameter
 		       role="keyword">message_format</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmessagedialog--set-image">set_image</link></methodname>
+        <methodparam><parameter role="keyword">image</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -90,6 +94,13 @@ endterm="gtk-buttons-type-constants-title"></xref>:
 	    </row>
 
 	    <row valign="top">
+	      <entry>"image"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The image for this dialog. Available in GTK+
+	      2.10.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"message-type"</entry>
 	      <entry>Read-Write-Construct</entry>
 	      <entry>The type of message. One of the
@@ -99,6 +110,43 @@ endterm="gtk-message-type-constants-title"></xref>:
 <literal>gtk.MESSAGE_QUESTION</literal> or
 <literal>gtk.MESSAGE_ERROR</literal>. Default value:
 <literal>gtk.MESSAGE_INFO</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"secondary-text"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The secondary text of the message dialog. Default
+	      value: <literal>None</literal>. Available in GTK+
+	      2.10.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"secondary-use-markup"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the secondary text of the
+	      dialog includes Pango markup. See the <link
+	      linkend="function-pango--parse-markup"><function>pango.parse_markup</function>()</link>
+	      function.  Default value: <literal>FALSE</literal>. Available
+	      in GTK+ 2.10.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"text"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The primary text of the message dialog. If the dialog
+	      has a secondary text, this will appear as the title. Default
+	      value: <literal>None</literal>. Available in GTK+
+	      2.10.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"use-markup"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal> the primary text of the
+	      dialog includes Pango markup. See the <link
+	      linkend="function-pango--parse-markup"><function>pango.parse_markup</function>()</link>
+	      function. Default value: <literal>FALSE</literal>. Available
+	      in GTK+ 2.10.</entry>
 	    </row>
 
 	  </tbody>
@@ -359,6 +407,32 @@ sets the secondary text to the markup text specified by
 <parameter>message_format</parameter>. Note that setting a secondary text
 makes the primary text become bold, unless you have provided explicit
 markup.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmessagedialog--set-image">
+      <title>gtk.MessageDialog.set_image</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_image</methodname>
+        <methodparam><parameter role="keyword">image</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">image</parameter>&nbsp;:</term>
+          <listitem><simpara>the image widget</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_image</methodname>() method sets the
+      dialog's image to the <link
+      linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+      specified by <parameter>image</parameter>.</para>
 
     </refsect2>
 
