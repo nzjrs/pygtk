@@ -39,21 +39,6 @@ void pygtkunixprint_register_classes(PyObject *d);
 void pygtkunixprint_add_constants(PyObject *module, const gchar *strip_prefix);
 extern PyMethodDef pygtkunixprint_functions[];
 
-static void
-pygtkunixprint_add_extra_constants(PyObject *m)
-{
-    PyModule_AddObject(m, "PRINT_CAPABILITY_PAGE_SET",
-		       PyLong_FromLong(GTK_PRINT_CAPABILITY_PAGE_SET));
-    PyModule_AddObject(m, "PRINT_CAPABILITY_COPIES",
-		       PyLong_FromLong(GTK_PRINT_CAPABILITY_COPIES));
-    PyModule_AddObject(m, "PRINT_CAPABILITY_COLLATE",
-		       PyLong_FromLong(GTK_PRINT_CAPABILITY_COLLATE));
-    PyModule_AddObject(m, "PRINT_CAPABILITY_REVERSE",
-		       PyLong_FromLong(GTK_PRINT_CAPABILITY_REVERSE));
-    PyModule_AddObject(m, "PRINT_CAPABILITY_SCALE",
-		       PyLong_FromLong(GTK_PRINT_CAPABILITY_SCALE));
-}
-
 DL_EXPORT(void)
 initunixprint(void)
 {
@@ -67,5 +52,5 @@ initunixprint(void)
     init_pygtk();
 
     pygtkunixprint_register_classes(d);
-    pygtkunixprint_add_extra_constants(m);
+    pygtkunixprint_add_constants(m, "GTK_");
 }
