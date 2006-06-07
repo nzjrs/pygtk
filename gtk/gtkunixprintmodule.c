@@ -1,0 +1,71 @@
+/* -*- Mode: C; c-basic-offset: 4 -*-
+ * pygtk- Python bindings for the GTK toolkit.
+ * Copyright (C) 2006  John Finlay
+ *
+ *   gtkunixprintmodule.c: wrapper for the gtkunixprint library.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+#include <Python.h>
+/* include this first, before NO_IMPORT_PYGOBJECT is defined */
+#include <pygobject.h>
+#include <pygtk.h>
+#include <gtk/gtk.h>
+#include <gtk/gtkprinter.h>
+#include <gtk/gtkprintjob.h>
+#include <gtk/gtkpagesetupunixdialog.h>
+#include <gtk/gtkprintunixdialog.h>
+
+# include <pycairo.h>
+Pycairo_CAPI_t *Pycairo_CAPI;
+ 
+void pygtkunixprint_register_classes(PyObject *d);
+void pygtkunixprint_add_constants(PyObject *module, const gchar *strip_prefix);
+extern PyMethodDef pygtkunixprint_functions[];
+
+static void
+pygtkunixprint_add_extra_constants(PyObject *m)
+{
+    PyModule_AddObject(m, "PRINT_CAPABILITY_PAGE_SET",
+		       PyLong_FromLong(GTK_PRINT_CAPABILITY_PAGE_SET));
+    PyModule_AddObject(m, "PRINT_CAPABILITY_COPIES",
+		       PyLong_FromLong(GTK_PRINT_CAPABILITY_COPIES));
+    PyModule_AddObject(m, "PRINT_CAPABILITY_COLLATE",
+		       PyLong_FromLong(GTK_PRINT_CAPABILITY_COLLATE));
+    PyModule_AddObject(m, "PRINT_CAPABILITY_REVERSE",
+		       PyLong_FromLong(GTK_PRINT_CAPABILITY_REVERSE));
+    PyModule_AddObject(m, "PRINT_CAPABILITY_SCALE",
+		       PyLong_FromLong(GTK_PRINT_CAPABILITY_SCALE));
+}
+
+DL_EXPORT(void)
+initunixprint(void)
+{
+    PyObject *m, *d;
+
+    m = Py_InitModule("gtk.unixprint", pygtkunixprint_functions);
+    d = PyModule_GetDict(m);
+
+    init_pygobject();
+    Pycairo_IMPORT;
+    init_pygtk();
+
+    pygtkunixprint_register_classes(d);
+    pygtkunixprint_add_extra_constants(m);
+}

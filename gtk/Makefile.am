@@ -143,6 +143,21 @@ pygtkexec_LTLIBRARIES += glade.la
 defs_DATA += $(LIBGLADE_DEFS)
 endif
 
+# gtkunixprint module
+GTKUNIXPRINT_DEFS = gtkunixprint.defs
+CLEANFILES += gtkunixprint.c
+EXTRA_DIST += $(GTKUNIXPRINT_DEFS) gtkunixprint.override
+gtkunixprint.c: $(GTKUNIXPRINT_DEFS) gtkunixprint.override
+unixprint_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTKUNIXPRINT_CFLAGS)
+unixprint_la_LIBADD = $(GTKUNIXPRINT_LIBS)
+unixprint_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initunixprint
+unixprint_la_SOURCES = gtkunixprintmodule.c
+nodist_unixprint_la_SOURCES = gtkunixprint.c
+if BUILD_GTKUNIXPRINT
+pygtkexec_LTLIBRARIES += unixprint.la
+defs_DATA += $(GTKUNIXPRINT_DEFS)
+endif
+
 .defs.c: 
 	(cd $(srcdir) \
 	 && $(PYTHON) ../codegen/codegen.py \

@@ -13,6 +13,7 @@ m4_define(pango_required_version,      1.10.0)
 m4_define(atk_required_version,        1.8.0)
 m4_define(gtk_required_version,        2.8.0)
 m4_define(libglade_required_version,   2.5.0)
+m4_define(gtkunixprint_required_version,  2.9.0)
 m4_define(pycairo_required_version,    0.5.0)
 m4_define(pygobject_required_version,  2.10.0)
 
@@ -193,6 +194,16 @@ if test $have_pycairo; then
     LIBGLADE_LIBS=`echo $LIBGLADE_LIBS | sed -e "s/$export_dynamic//"`
   fi
 
+  dnl gtkunixprint
+  PKG_CHECK_MODULES(GTKUNIXPRINT, [gtk+-unix-print-2.0 >= gtkunixprint_required_version],
+	  have_gtkunixprint=true, have_gtkunixprint=false)
+  AC_SUBST(GTKUNIXPRINT_CFLAGS)
+  AC_SUBST(GTKUNIXPRINT_LIBS)
+  AM_CONDITIONAL(BUILD_GTKUNIXPRINT, $have_gtkunixprint)
+  if test -n "$export_dynamic"; then
+    GTKUNIXPRINT_LIBS=`echo $GTKUNIXPRINT_LIBS | sed -e "s/$export_dynamic//"`
+  fi
+
 else
   AC_MSG_RESULT(no)
   AC_MSG_RESULT(not checking for gtk due to missing pycairo)
@@ -238,11 +249,12 @@ $have_pango             && echo     pango
 $have_pangocairo        && echo     pangocairo
 $have_gtk               && echo     gtk with $gtk_version API
 $have_libglade          && echo     gtk.glade
+$have_gtkunixprint         && echo     gtk.unixprint
 echo
 
 if test ! $have_atk || ! $have_pango || \
         ! $have_gtk || ! $have_libglade || \
-        ! $have_pangocairo; then
+        ! $have_pangocairo || ! $have_gtkunixprint; then
   echo "The following modules will NOT be built:"
   echo
   $have_atk               || echo     atk
@@ -250,5 +262,6 @@ if test ! $have_atk || ! $have_pango || \
   $have_pangocairo        || echo     pangocairo
   $have_gtk               || echo     gtk
   $have_libglade          || echo     gtk.glade
+  $have_gtkunixprint         || echo     gtk.unixprint
 fi
 
