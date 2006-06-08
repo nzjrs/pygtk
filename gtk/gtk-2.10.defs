@@ -1372,15 +1372,6 @@
   )
 )
 
-(define-method set_show_dialog
-  (of-object "GtkPrintOperation")
-  (c-name "gtk_print_operation_set_show_dialog")
-  (return-type "none")
-  (parameters
-    '("gboolean" "show_dialog")
-  )
-)
-
 (define-method set_pdf_target
   (of-object "GtkPrintOperation")
   (c-name "gtk_print_operation_set_pdf_target")
@@ -1395,6 +1386,7 @@
   (c-name "gtk_print_operation_run")
   (return-type "GtkPrintOperationResult")
   (parameters
+    '("GtkPrintOperationAction" "action")
     '("GtkWindow*" "parent" (null-ok) (default "NULL"))
     '("GError**" "error")
   )
@@ -1425,15 +1417,6 @@
     '("GtkWindow*" "parent")
     '("GtkPageSetup*" "page_setup" (null-ok))
     '("GtkPrintSettings*" "settings")
-  )
-)
-
-(define-method run_async
-  (of-object "GtkPrintOperation")
-  (c-name "gtk_print_operation_run_async")
-  (return-type "none")
-  (parameters
-    '("GtkWindow*" "parent")
   )
 )
 
