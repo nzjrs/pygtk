@@ -21,12 +21,6 @@
   (gtype-id "GTK_TYPE_PAGE_SETUP")
 )
 
-(define-boxed PaperSize
-  (in-module "Gtk")
-  (c-name "GtkPaperSize")
-  (gtype-id "GTK_TYPE_PAPER_SIZE")
-)
-
 (define-object PrintContext
   (in-module "Gtk")
   (parent "GObject")
@@ -41,6 +35,12 @@
   (gtype-id "GTK_TYPE_PRINT_OPERATION")
 )
 
+(define-object PrintOperationPreview
+  (in-module "Gtk")
+  (c-name "GtkPrintOperationPreview")
+  (gtype-id "GTK_TYPE_PRINT_OPERATION_PREVIEW")
+)
+
 (define-object PrintSettings
   (in-module "Gtk")
   (parent "GObject")
@@ -52,6 +52,13 @@
   (in-module "Gtk")
   (c-name "GtkRecentChooser")
   (gtype-id "GTK_TYPE_RECENT_CHOOSER")
+)
+
+(define-object RecentFilter
+  (in-module "Gtk")
+  (parent "GtkObject")
+  (c-name "GtkRecentFilter")
+  (gtype-id "GTK_TYPE_RECENT_FILTER")
 )
 
 (define-object RecentManager
@@ -101,6 +108,18 @@
   (parent "GtkWindow")
   (c-name "GtkAssistant")
   (gtype-id "GTK_TYPE_ASSISTANT")
+)
+
+(define-boxed PaperSize
+  (in-module "Gtk")
+  (c-name "GtkPaperSize")
+  (gtype-id "GTK_TYPE_PAPER_SIZE")
+)
+
+(define-boxed RecentInfo
+  (in-module "Gtk")
+  (c-name "GtkRecentInfo")
+  (gtype-id "GTK_TYPE_RECENT_INFO")
 )
 
 ;; Enumerations and flags ...
@@ -225,6 +244,18 @@
   )
 )
 
+(define-enum PrintOperationResult
+  (in-module "Gtk")
+  (c-name "GtkPrintOperationResult")
+  (gtype-id "GTK_TYPE_PRINT_OPERATION_RESULT")
+  (values
+    '("error" "GTK_PRINT_OPERATION_RESULT_ERROR")
+    '("apply" "GTK_PRINT_OPERATION_RESULT_APPLY")
+    '("cancel" "GTK_PRINT_OPERATION_RESULT_CANCEL")
+    '("in-progress" "GTK_PRINT_OPERATION_RESULT_IN_PROGRESS")
+  )
+)
+
 (define-enum PrintOperationAction
   (in-module "Gtk")
   (c-name "GtkPrintOperationAction")
@@ -234,19 +265,6 @@
     '("print" "GTK_PRINT_OPERATION_ACTION_PRINT")
     '("preview" "GTK_PRINT_OPERATION_ACTION_PREVIEW")
     '("export" "GTK_PRINT_OPERATION_ACTION_EXPORT")
-  )
-)
-
-(define-enum PrintOperationResult
-  (in-module "Gtk")
-  (c-name "GtkPrintOperationResult")
-  (gtype-id "GTK_TYPE_PRINT_OPERATION_RESULT")
-  (values
-    '("error" "GTK_PRINT_OPERATION_RESULT_ERROR")
-    '("apply" "GTK_PRINT_OPERATION_RESULT_APPLY")
-    '("cancel" "GTK_PRINT_OPERATION_RESULT_CANCEL")
-    '("preview" "GTK_PRINT_OPERATION_RESULT_PREVIEW")
-    '("in-progress" "GTK_PRINT_OPERATION_RESULT_IN_PROGRESS")
   )
 )
 
@@ -304,10 +322,8 @@
   (values
     '("not-found" "GTK_RECENT_MANAGER_ERROR_NOT_FOUND")
     '("invalid-uri" "GTK_RECENT_MANAGER_ERROR_INVALID_URI")
-    '("invalid-mime" "GTK_RECENT_MANAGER_ERROR_INVALID_MIME")
     '("invalid-encoding" "GTK_RECENT_MANAGER_ERROR_INVALID_ENCODING")
     '("not-registered" "GTK_RECENT_MANAGER_ERROR_NOT_REGISTERED")
-    '("bad-exec-string" "GTK_RECENT_MANAGER_ERROR_BAD_EXEC_STRING")
     '("read" "GTK_RECENT_MANAGER_ERROR_READ")
     '("write" "GTK_RECENT_MANAGER_ERROR_WRITE")
     '("unknown" "GTK_RECENT_MANAGER_ERROR_UNKNOWN")
