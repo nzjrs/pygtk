@@ -7126,3 +7126,143 @@ _wrap_gtk_print_settings_set_page_ranges(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_recent_chooser_get_items noargs
+static PyObject *
+_wrap_gtk_recent_chooser_get_items(PyGObject *self)
+{
+    GList *items;
+    GtkRecentInfo *info;
+    PyObject *py_items;
+    guint count, i;
+
+    items = gtk_recent_chooser_get_items(GTK_RECENT_CHOOSER(self->obj));
+    count = g_list_length(items);
+    py_items = PyList_New(count);
+    for (i = 0; i < count; i++) {
+        info = g_list_nth_data(items, i);
+        PyList_SetItem(py_items, i,
+                       pyg_boxed_new(GTK_TYPE_RECENT_INFO, info, TRUE, TRUE));
+    }
+    g_list_foreach(items, (GFunc) gtk_recent_info_unref, NULL);
+    g_list_free(items);
+
+    return py_items;
+}
+%%
+override gtk_recent_chooser_get_uris noargs
+static PyObject *
+_wrap_gtk_recent_chooser_get_uris(PyGObject *self)
+{
+    gchar **uris;
+    PyObject *py_uris;
+    guint length, i;
+
+    uris = gtk_recent_chooser_get_uris(GTK_RECENT_CHOOSER(self->obj),
+                                        &length);
+    if (!uris)
+        length = 0;
+    py_uris = PyList_New(length);
+    for (i = 0; i < length; i++)
+        PyList_SetItem(py_uris, i, PyString_FromString(uris[i]));
+    g_strfreev(uris);
+
+    return py_uris;
+}
+%%
+override gtk_recent_chooser_dialog_new  kwargs
+static int
+_wrap_gtk_recent_chooser_dialog_new(PyGObject *self, PyObject *args,
+                                    PyObject *kwargs)
+{
+    gchar *title = NULL;
+    PyGObject *py_window = NULL, *py_manager = NULL;
+    PyObject *py_buttons = Py_None;
+    int len, i;
+    GtkWindow *parent;
+    GtkRecentManager *manager;
+    
+    static char *kwlist[] = { "title", "parent", "manager", "buttons", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "|zOOO:gtk.RecentChooserDialog", kwlist,
+                                     &title, &py_window, &py_manager,
+                                     &py_buttons))
+        return -1;
+
+    if (py_window == NULL || (PyObject*)py_window == Py_None)
+	parent = NULL;
+    else if (pygobject_check(py_window, &PyGtkWindow_Type))
+	parent = GTK_WINDOW(py_window->obj);
+    else {
+        PyErr_SetString(PyExc_TypeError, "parent must be a GtkWindow or None");
+        return -1;
+    }
+
+    if (py_manager == NULL || (PyObject*)py_manager == Py_None)
+	manager = NULL;
+    else if (pygobject_check(py_manager, &PyGtkRecentManager_Type))
+	manager = GTK_RECENT_MANAGER(py_manager->obj);
+    else {
+        PyErr_SetString(PyExc_TypeError, "manager must be a GtkRecentManager or None");
+        return -1;
+    }
+
+    if (py_buttons == Py_None)
+        len = 0;
+    else if (PySequence_Check(py_buttons))
+        len = PySequence_Size(py_buttons);
+    else {
+        PyErr_SetString(PyExc_TypeError, "buttons must be a sequence containing text/response pairs or None");
+        return -1;
+    }
+
+    if (len % 2) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "buttons tuple must contain text/response id pairs");
+        return -1;
+    }
+
+    if (pygobject_construct(self, "recent-manager", manager, NULL)) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "could not create GtkDialog object");
+        return -1;
+    }
+
+  if (title)
+    gtk_window_set_title (GTK_WINDOW (self->obj), title);
+
+  if (parent)
+    gtk_window_set_transient_for (GTK_WINDOW (self->obj), parent);
+
+  for (i = 0; i < len; i += 2) {
+      PyObject *text = PySequence_GetItem(py_buttons, i);
+      PyObject *id = PySequence_GetItem(py_buttons, i + 1);
+      if (!PyString_Check(text)) {
+          gtk_object_destroy(GTK_OBJECT(self->obj));
+          self->obj = NULL;
+          PyErr_SetString(PyExc_RuntimeError,
+                          "first member of each text/response id pair "
+                          "must be a string");
+          Py_DECREF(text);
+          Py_DECREF(id);
+          return -1;
+      }
+      if (!PyInt_Check(id)) {
+          gtk_object_destroy(GTK_OBJECT(self->obj));
+          self->obj = NULL;
+          PyErr_SetString(PyExc_RuntimeError,
+                          "second member of each text/response id pair "
+                          "must be a number");
+          Py_DECREF(text);
+          Py_DECREF(id);
+          return -1;
+      }
+      gtk_dialog_add_button(GTK_DIALOG(self->obj), PyString_AsString(text),
+                            PyInt_AsLong(id));
+      Py_DECREF(text);
+      Py_DECREF(id);
+  }
+    
+  return 0;
+}
