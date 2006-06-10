@@ -7002,3 +7002,127 @@ _wrap_gtk_link_button_set_uri_hook(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_print_settings_foreach kwargs
+static void
+pygtk_print_settings_foreach_cb(const gchar *key,
+                                const gchar *value,
+                                gpointer data)
+{
+    PyGILState_STATE state;
+    PyObject *retobj;
+    PyGtkCustomNotify *cunote = data;
+  
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+  
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(ssO)", key, value,
+                                     cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(ss)", key, value);
+ 
+    if (retobj == NULL)
+        PyErr_Print();
+
+    Py_XDECREF(retobj);
+  
+    pyg_gil_state_release(state);
+}
+static PyObject *
+_wrap_gtk_print_settings_foreach(PyGObject *self, PyObject *args,
+                                 PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "user_data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify cunote;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:gtk.PrintSettings.foreach",
+                                     kwlist, &pyfunc, &pyarg))
+        return NULL;
+  
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+
+    cunote.func = pyfunc;
+    cunote.data = pyarg;
+ 
+    gtk_print_settings_foreach(GTK_PRINT_SETTINGS(self->obj),
+                               pygtk_print_settings_foreach_cb, &cunote);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_print_settings_get_page_ranges noargs
+static PyObject *
+_wrap_gtk_print_settings_get_page_ranges(PyGObject *self)
+{
+    GtkPageRange *ranges;
+    PyObject *py_ranges;
+    gint n_ranges, i;
+
+    ranges = gtk_print_settings_get_page_ranges(GTK_PRINT_SETTINGS(self->obj),
+                                                &n_ranges);
+
+    py_ranges = PyList_New(n_ranges);
+
+    for (i = 0; i < n_ranges; i++)
+        PyList_SetItem(py_ranges, i,
+                       Py_BuildValue("(ii)", ranges[i].start, ranges[i].end));
+    g_free(ranges);
+    return py_ranges;
+}
+%%
+override gtk_print_settings_set_page_ranges kwargs
+static PyObject *
+_wrap_gtk_print_settings_set_page_ranges(PyGObject *self, PyObject *args,
+                                         PyObject *kwargs)
+{
+    static char *kwlist[] = { "page_ranges", NULL };
+    PyObject *py_ranges;
+    gint n_ranges = 0, i;
+    GtkPageRange *ranges = NULL;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:gtk.PrintSettings.set_page_ranges",
+                                     kwlist, &py_ranges))
+        return NULL;
+
+    if (!PySequence_Check(py_ranges)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "page_ranges must be a sequence of 2-tuples");
+        return NULL;
+    }
+
+    n_ranges = PySequence_Size(py_ranges);
+    ranges = g_new0(GtkPageRange, n_ranges);
+    for (i = 0; i < n_ranges; i++) {
+        PyObject *range = PySequence_GetItem(py_ranges, i);
+
+        if (!PyTuple_Check(range)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "Each page range must be a 2-tuple of start and end page numbers");
+            g_free(ranges);
+            return NULL;
+        }
+        if (!PyArg_ParseTuple(range,
+                              "ii;Each page range must be a 2-tuple of start and end page numbers",
+                              &ranges[i].start, &ranges[i].end)) {
+            Py_DECREF(range);
+            g_free(ranges);
+            return NULL;
+        }
+        Py_DECREF(range);
+    }
+    gtk_print_settings_set_page_ranges(GTK_PRINT_SETTINGS(self->obj),
+                                       ranges, n_ranges);
+    g_free(ranges);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}

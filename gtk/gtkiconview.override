@@ -95,6 +95,7 @@ pygtk_icon_view_selected_foreach_cb(GtkIconView *iconview,
     if (!ret)
         PyErr_Print();
     Py_XDECREF(ret);
+    Py_DECREF(args);
     pyg_gil_state_release(state);
 }
 static PyObject *
@@ -119,6 +120,7 @@ _wrap_gtk_icon_view_selected_foreach(PyGObject *self, PyObject *args,
     gtk_icon_view_selected_foreach(GTK_ICON_VIEW(self->obj),
                                    pygtk_icon_view_selected_foreach_cb,
                                    (gpointer)data);
+    Py_DECREF(data);
     Py_INCREF(Py_None);
     return Py_None;
 }

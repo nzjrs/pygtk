@@ -1099,6 +1099,7 @@ pygtk_text_tag_table_foreach_cb(GtkTextTag *tag, gpointer user_data)
     ret = PyObject_CallObject(callback, args);
     if (!ret)
 	PyErr_Print();
+    Py_DECREF(args);
     Py_XDECREF(ret);
     pyg_gil_state_release(state);
 }
@@ -1124,6 +1125,7 @@ _wrap_gtk_text_tag_table_foreach(PyGObject *self, PyObject *args,
     gtk_text_tag_table_foreach(GTK_TEXT_TAG_TABLE(self->obj),
 			       pygtk_text_tag_table_foreach_cb,
 			       (gpointer)data);
+    Py_DECREF(data);
     Py_INCREF(Py_None);
     return Py_None;
 }
