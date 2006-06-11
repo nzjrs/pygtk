@@ -275,6 +275,7 @@ ignore
   gtk_plug_construct_for_display
   gtk_preview_uninit
   gtk_preview_get_info
+  gtk_print_error_quark
   gtk_progress_bar_new
   gtk_propagate_event
   gtk_quit_remove_by_data
@@ -285,6 +286,11 @@ ignore
   gtk_range_default_htrough_click
   gtk_range_default_vtrough_click
   gtk_range_trough_click
+  gtk_recent_chooser_error_quark
+  gtk_recent_chooser_dialog_new_for_manager
+  gtk_recent_chooser_menu_new
+  gtk_recent_chooser_widget_new
+  gtk_recent_manager_error_quark
   gtk_selection_clear
   gtk_selection_data_copy
   gtk_selection_data_free
@@ -6776,7 +6782,7 @@ _wrap_gtk_print_context_get_cairo(PyGObject *self)
     cairo_t *ret;
 
     ret = gtk_print_context_get_cairo(GTK_PRINT_CONTEXT(self->obj));
-    
+
     cairo_reference(ret);
     return PycairoContext_FromContext(ret, &PyGdkCairoContext_Type, NULL);
 }
@@ -6790,18 +6796,18 @@ pygtk_assistant_set_forward_page_func_cb(gint current_page,
     PyGtkCustomNotify *cunote = user_data;
     gint ret = current_page;
     PyObject *retobj;
-  
+
     g_assert(cunote->func);
- 
+
     state = pyg_gil_state_ensure();
-  
+
     if (cunote->data) {
         retobj = PyEval_CallFunction(cunote->func, "(iO)",
                                      current_page, cunote->data);
     } else {
         retobj = PyEval_CallFunction(cunote->func, "(i)", current_page);
     }
- 
+
     if (retobj != NULL) {
         ret = PyInt_AsLong(retobj);
         Py_DECREF(retobj);
@@ -6819,14 +6825,15 @@ _wrap_gtk_assistant_set_forward_page_func(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "page_func", "data", NULL };
     PyObject *pyfunc, *pyarg = NULL;
     PyGtkCustomNotify *cunote;
-  
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                           "O|O:GtkAssistant.set_forward_page_func",
                           kwlist, &pyfunc, &pyarg))
         return NULL;
-  
+
     if (!PyCallable_Check(pyfunc)) {
-        PyErr_SetString(PyExc_TypeError, "page_func must be a callable object");
+        PyErr_SetString(PyExc_TypeError,
+                        "page_func must be a callable object");
         return NULL;
     }
     cunote = g_new0(PyGtkCustomNotify, 1);
@@ -6838,7 +6845,7 @@ _wrap_gtk_assistant_set_forward_page_func(PyGObject *self, PyObject *args,
     gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
                                         pygtk_assistant_set_forward_page_func_cb,
                                         cunote, pygtk_custom_destroy_notify);
- 
+
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -7265,4 +7272,161 @@ _wrap_gtk_recent_chooser_dialog_new(PyGObject *self, PyObject *args,
   }
     
   return 0;
+}
+%%
+override gtk_recent_chooser_list_filters noargs
+static PyObject *
+_wrap_gtk_recent_chooser_list_filters(PyGObject *self)
+{
+    GSList *filters;
+    GtkRecentFilter *filter;
+    PyObject *py_filters;
+    guint count, i;
+
+    filters = gtk_recent_chooser_list_filters(GTK_RECENT_CHOOSER(self->obj));
+    count = g_slist_length(filters);
+    py_filters = PyList_New(count);
+    for (i = 0; i < count; i++) {
+        filter = g_slist_nth_data(filters, i);
+        PyList_SetItem(py_filters, i, pygobject_new((GObject*)filter));
+    }
+    g_slist_free(filters);
+
+    return py_filters;
+}
+%%
+override gtk_recent_chooser_set_sort_func kwargs
+static gint
+pygtk_recent_chooser_set_sort_func_cb(GtkRecentInfo *a,
+                                      GtkRecentInfo *b,
+                                      gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_a, *py_b, *retobj;
+    gint ret = -1;
+
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    py_a = pyg_boxed_new(GTK_TYPE_RECENT_INFO, a, TRUE, TRUE);
+    py_b = pyg_boxed_new(GTK_TYPE_RECENT_INFO, b, TRUE, TRUE);
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NNO)",
+                                     py_a, py_b, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(NN)", py_a, py_b);
+    }
+
+    if (retobj != NULL) {
+        ret = PyInt_AsLong(retobj);
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+    }
+
+    pyg_gil_state_release(state);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_recent_chooser_set_sort_func(PyGObject *self, PyObject *args,
+                                          PyObject *kwargs)
+{
+    static char *kwlist[] = { "sort_func", "sort_data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:GtkRecentChooser.set_sort_func",
+                                     kwlist, &pyfunc, &pyarg))
+        return NULL;
+
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "sort_func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    gtk_recent_chooser_set_sort_func(GTK_RECENT_CHOOSER(self->obj),
+                                        pygtk_recent_chooser_set_sort_func_cb,
+                                        cunote, pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_recent_info_get_applications noargs
+static PyObject *
+_wrap_gtk_recent_info_get_applications(PyGObject *self)
+{
+    gchar **apps;
+    PyObject *py_apps;
+    guint length, i;
+
+    apps = gtk_recent_info_get_applications(pyg_boxed_get(self, GtkRecentInfo),
+                                            &length);
+    if (!apps)
+        length = 0;
+    py_apps = PyList_New(length);
+    for (i = 0; i < length; i++)
+        PyList_SetItem(py_apps, i, PyString_FromString(apps[i]));
+    g_strfreev(apps);
+
+    return py_apps;
+}
+%%
+override gtk_recent_info_get_groups noargs
+static PyObject *
+_wrap_gtk_recent_info_get_groups(PyGObject *self)
+{
+    gchar **groups;
+    PyObject *py_groups;
+    guint length, i;
+
+    groups = gtk_recent_info_get_groups(pyg_boxed_get(self, GtkRecentInfo),
+                                        &length);
+    if (!groups)
+        length = 0;
+    py_groups = PyList_New(length);
+    for (i = 0; i < length; i++)
+        PyList_SetItem(py_groups, i, PyString_FromString(groups[i]));
+    g_strfreev(groups);
+
+    return py_groups;
+}
+%%
+override gtk_recent_info_get_application_info kwargs
+static PyObject *
+_wrap_gtk_recent_info_get_application_info(PyGObject *self, PyObject *args,
+                                           PyObject *kwargs)
+{
+    static char *kwlist[] = { "app_name", NULL };
+    gchar *app_name, *app_exec = NULL;
+    gboolean ret;
+    PyObject *py_ret;
+    guint count = 0;
+    time_t time_;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "s:GtkRecentInfo.get_application_info",
+                                     kwlist, &app_name))
+        return NULL;
+
+    ret = gtk_recent_info_get_application_info(pyg_boxed_get(self,
+                                                             GtkRecentInfo),
+                                               app_name, &app_exec, &count,
+                                               &time_);
+    if (ret) {
+        py_ret = Py_BuildValue("(sii)", app_exec, count, time_);
+        g_free(app_exec);
+    } else {
+        py_ret = Py_None;
+    }
+    return py_ret;
 }
