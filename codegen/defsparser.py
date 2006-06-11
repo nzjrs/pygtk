@@ -125,7 +125,11 @@ class DefsParser(IncludeParser):
     def ifdef(self, *args):
         if args[0] in self.defines:
             for arg in args[1:]:
+                #print >> sys.stderr, "-----> Handling conditional definition (%s): %s" % (args[0], arg)
                 self.handle(arg)
+        else:
+            pass
+            #print >> sys.stderr, "-----> Conditional %s is not true" % (args[0],)
 
     def ifndef(self, *args):
         if args[0] not in self.defines:

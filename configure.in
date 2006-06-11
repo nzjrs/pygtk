@@ -209,11 +209,27 @@ else
   AC_MSG_RESULT(not checking for gtk due to missing pycairo)
 fi
 
+dnl Check for GDK target
+AC_MSG_CHECKING([for GDK target])
+gdk_target=`$PKG_CONFIG --variable target gdk-2.0`
+if test -z $gdk_target; then
+  AC_MSG_RESULT((unknown))
+  AC_MSG_WARN([unable to determine the GDK target system; some functions may not be available])
+else
+  AC_MSG_RESULT($gdk_target)
+fi
+
+case $gdk_target in
+        x11) PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DGDK_TARGET_X11"
+        ;;
+esac
+
+
+dnl checks to see if Numeric Python is installed.
 AC_ARG_ENABLE(numpy,
   AC_HELP_STRING([--disable-numpy], [Disable numeric python features]),,
   enable_numpy=yes)
 
-dnl checks to see if Numeric Python is installed.
 if test "x$enable_numpy" != xno; then
   save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
