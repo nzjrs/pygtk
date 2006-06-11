@@ -7452,3 +7452,244 @@ _wrap_gtk_size_group_get_widgets(PyGObject *self)
 
     return py_widgets;
 }
+%%
+override gtk_recent_filter_add_custom kwargs
+static gboolean
+pygtk_recent_filter_add_custom_cb(const GtkRecentFilterInfo *info,
+                                  gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_info, *retobj;
+    gboolean ret = TRUE;
+
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    py_info = PyDict_New();
+
+    if (info->contains & GTK_RECENT_FILTER_URI)
+        PyDict_SetItemString(py_info, "uri", PyString_FromString(info->uri));
+
+    if (info->contains & GTK_RECENT_FILTER_DISPLAY_NAME)
+        PyDict_SetItemString(py_info, "display_name",
+                             PyString_FromString(info->display_name));
+
+    if (info->contains & GTK_RECENT_FILTER_MIME_TYPE)
+        PyDict_SetItemString(py_info, "mime_type",
+                             PyString_FromString(info->mime_type));
+
+    if (info->contains & GTK_RECENT_FILTER_APPLICATION) {
+        gchar **apps = (gchar **)info->applications;
+        PyObject *applications = PyList_New(0);
+        if (apps) {
+            while (*apps) {
+                PyList_Append(applications, PyString_FromString(*apps));
+                apps++;
+            }
+        }
+        PyDict_SetItemString(py_info, "applications", applications);
+    }
+
+    if (info->contains & GTK_RECENT_FILTER_GROUP) {
+        gchar **grps = (gchar **)info->groups;
+        PyObject *groups = PyList_New(0);
+        if (grps) {
+            while (*grps) {
+                PyList_Append(groups, PyString_FromString(*grps));
+                grps++;
+            }
+        }
+        PyDict_SetItemString(py_info, "groups", groups);
+    }
+
+    if (info->contains & GTK_RECENT_FILTER_AGE)
+        PyDict_SetItemString(py_info, "age", PyInt_FromLong(info->age));
+    
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NO)", py_info,
+                                      cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(N)", py_info);
+    }
+
+    if (retobj != NULL) {
+        ret = PyInt_AsLong(retobj);
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+    }
+
+    pyg_gil_state_release(state);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_recent_filter_add_custom(PyGObject *self, PyObject *args,
+                                   PyObject *kwargs)
+{
+    static char *kwlist[] = { "needed", "func", "data", NULL };
+    PyObject *pyneeded, *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+    GtkRecentFilterFlags needed;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO|O:GtkRecentFilter.add_custom",
+                                     kwlist, &pyneeded, &pyfunc, &pyarg))
+        return NULL;
+
+    if (pyg_flags_get_value(GTK_TYPE_RECENT_FILTER_FLAGS, pyneeded,
+                            (gint *)&needed))
+        return NULL;
+
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    gtk_recent_filter_add_custom(GTK_RECENT_FILTER(self->obj), needed,
+                                 pygtk_recent_filter_add_custom_cb,
+                                 cunote, pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_recent_filter_filter kwargs
+static PyObject*
+_wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
+                               PyObject *kwargs)
+{
+    static char *kwlist[] = { "filter_info", NULL };
+    GtkRecentFilterInfo info;
+    PyObject *py_info, *py_ret = Py_False, *item;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:GtkRecentFilter.filter", kwlist,
+                                     &py_info))
+        return NULL;
+
+    if (!PyMapping_Check(py_info)) {
+        PyErr_SetString(PyExc_TypeError, "filter_info must be a mapping");
+        return NULL;
+    }
+
+    if ((item = PyMapping_GetItemString(py_info, "uri"))) {
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "filter_info uri must be a string");
+            return NULL;
+        }
+        info.uri = PyString_AsString(item);
+        info.contains |= GTK_RECENT_FILTER_URI;
+        Py_DECREF(item);
+    } else {
+        info.uri = NULL;
+    }
+
+    if ((item = PyMapping_GetItemString(py_info, "mime_type"))) {
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "filter_info mime_type must be a string");
+            return NULL;
+        }
+        info.mime_type = PyString_AsString(item);
+        info.contains |= GTK_RECENT_FILTER_MIME_TYPE;
+        Py_DECREF(item);
+    } else {
+        info.mime_type = NULL;
+    }
+
+    if ((item = PyMapping_GetItemString(py_info, "display_name"))) {
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "filter_info display_name must be a string");
+            return NULL;
+        }
+        info.display_name = PyString_AsString(item);
+        info.contains |= GTK_RECENT_FILTER_DISPLAY_NAME;
+        Py_DECREF(item);
+    } else {
+        info.display_name = NULL;
+    }
+
+    if ((item = PyMapping_GetItemString(py_info, "applications"))) {
+        gint size, i;
+        if (!PySequence_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "filter_info applications must be a sequence of strings");
+            return NULL;
+        }
+        size = PySequence_Size(item);
+        info.applications = (const gchar**)g_new0(gchar*, size + 1);
+        for (i = 0; i < size; i++) {
+            PyObject *app = PySequence_GetItem(item, i);
+            if (!PyString_Check(app)) {
+                PyErr_SetString(PyExc_TypeError,
+                                "filter_info applications must be a sequence of strings");
+                return NULL;
+            }
+            info.applications[i] = PyString_AsString(app);
+            Py_DECREF(app);
+        }
+        info.contains |= GTK_RECENT_FILTER_APPLICATION;
+        Py_DECREF(item);
+    } else {
+        info.applications = NULL;
+    }
+
+    if ((item = PyMapping_GetItemString(py_info, "groups"))) {
+        gint size, i;
+        if (!PySequence_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "filter_info groups must be a sequence of strings");
+            return NULL;
+        }
+        size = PySequence_Size(item);
+        info.groups = (const gchar**)g_new0(gchar*, size + 1);
+        for (i = 0; i < size; i++) {
+            PyObject *grp = PySequence_GetItem(item, i);
+            if (!PyString_Check(grp)) {
+                PyErr_SetString(PyExc_TypeError,
+                                "filter_info groups must be a sequence of strings");
+                return NULL;
+            }
+            info.groups[i] = PyString_AsString(grp);
+            Py_DECREF(grp);
+        }
+        info.contains |= GTK_RECENT_FILTER_GROUP;
+        Py_DECREF(item);
+    } else {
+        info.groups = NULL;
+    }
+
+    if ((item = PyMapping_GetItemString(py_info, "age"))) {
+        if (!PyInt_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "filter_info age must be an int");
+            return NULL;
+        }
+        info.age = PyInt_AsLong(item);
+        info.contains |= GTK_RECENT_FILTER_AGE;
+        Py_DECREF(item);
+    } else {
+        info.age = -1;
+    }
+
+    if (gtk_recent_filter_filter(GTK_RECENT_FILTER(self->obj), &info))
+        py_ret = Py_True;
+
+    if (info.applications)
+        g_strfreev((gchar **)info.applications);
+    if (info.groups)
+        g_strfreev((gchar **)info.groups);
+
+    Py_INCREF(py_ret);
+    return py_ret;
+}
