@@ -7432,3 +7432,23 @@ _wrap_gtk_recent_info_get_application_info(PyGObject *self, PyObject *args,
     }
     return py_ret;
 }
+%%
+override gtk_size_group_get_widgets noargs
+static PyObject *
+_wrap_gtk_size_group_get_widgets(PyGObject *self)
+{
+    GSList *widgets;
+    GtkWidget *widget;
+    PyObject *py_widgets;
+    guint count, i;
+
+    widgets = gtk_size_group_get_widgets(GTK_RECENT_CHOOSER(self->obj));
+    count = g_slist_length(widgets);
+    py_widgets = PyList_New(count);
+    for (i = 0; i < count; i++) {
+        widget = g_slist_nth_data(widgets, i);
+        PyList_SetItem(py_widgets, i, pygobject_new((GObject*)widget));
+    }
+
+    return py_widgets;
+}
