@@ -1337,13 +1337,25 @@ _wrap_gtk_item_factory_create_items(PyGObject *self, PyObject *args,
 override gtk_menu_popup kwargs
 static void
 pygtk_menu_position(GtkMenu *menu, int *x, int *y, gboolean *push_in,
-                    PyObject *func)
+                    gpointer user_data)
 {
+    PyGtkCustomNotify *cunote = (PyGtkCustomNotify*)user_data;
     PyObject *ret;
     PyGILState_STATE state;
 
+    g_assert(cunote->func);
+
     state = pyg_gil_state_ensure();
-    ret = PyObject_CallFunction(func, "O", pygobject_new((GObject *)menu));
+
+    if (cunote->data) {
+        ret = PyObject_CallFunction(cunote->func, "(NO)",
+                                    pygobject_new((GObject *)menu),
+                                    cunote->data);
+    } else {
+        ret = PyObject_CallFunction(cunote->func, "(N)",
+                                    pygobject_new((GObject *)menu));
+    }
+
     if (ret == NULL || !PyArg_ParseTuple(ret, "iii", x, y, push_in)) {
         PyErr_Print();
         Py_XDECREF(ret);
@@ -1356,33 +1368,36 @@ static PyObject *
 _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "parent_menu_shell", "parent_menu_item", "func",
-                       "button", "activate_time", NULL };
+                       "button", "activate_time", "data", NULL };
     PyGObject *py_pms, *py_pmi;
     GtkWidget *pms = NULL, *pmi = NULL;
-    PyObject *func;
+    PyObject *func, *data = NULL;
     int button;
     guint32 time;
     PyObject *pytime;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,  "OOOiO:GtkMenu.popup",
+    PyGtkCustomNotify *cunote;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,  "OOOiO|O:GtkMenu.popup",
                                      kwlist, &py_pms, &py_pmi, &func,
-                                     &button, &pytime))
+                                     &button, &pytime, &data))
         return NULL;
     if (pygobject_check(py_pms, &PyGtkWidget_Type))
         pms = GTK_WIDGET(py_pms->obj);
     else if ((PyObject *)py_pms != Py_None) {
         PyErr_SetString(PyExc_TypeError,
-                        "first argument must be a GtkWidget or None");
+                        "parent_menu_shell must be a GtkWidget or None");
         return NULL;
     }
     if (pygobject_check(py_pmi, &PyGtkWidget_Type))
         pmi = GTK_WIDGET(py_pmi->obj);
     else if ((PyObject *)py_pmi != Py_None) {
         PyErr_SetString(PyExc_TypeError,
-                        "second argument must be a GtkWidget or None");
+                        "parent_menu_item must be a GtkWidget or None");
         return NULL;
     }
     if (!PyCallable_Check(func) && func != Py_None) {
-        PyErr_SetString(PyExc_TypeError, "third argument not callable");
+        PyErr_SetString(PyExc_TypeError,
+                        "func must be a callable object or None");
         return NULL;
     }
     if (PyLong_Check(pytime)) {
@@ -1396,13 +1411,28 @@ _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
                         "last argument must be int or long");
         return NULL;
     }
+
     if (func != Py_None) {
+        /* this is an ugly hack to avoid leaking memory and references
+           gtk_menu_popup should use a data destroy function */
+        GtkMenu *m = GTK_MENU(self->obj);
+        if (m->position_func == pygtk_menu_position) {
+            PyGtkCustomNotify *oldcunote = m->position_func_data;
+            Py_DECREF(oldcunote->func);
+            Py_XDECREF(oldcunote->data);
+            g_free(oldcunote);
+        }
+        cunote = g_new0(PyGtkCustomNotify, 1);
+        cunote->func = func;
+        cunote->data = data;
         Py_INCREF(func);
+        Py_XINCREF(data);
         gtk_menu_popup(GTK_MENU(self->obj), pms, pmi,
                        (GtkMenuPositionFunc)pygtk_menu_position,
-                       func, button, time);
+                       cunote, button, time);
     } else
         gtk_menu_popup(GTK_MENU(self->obj), pms, pmi, NULL,NULL, button,time);
+
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -7826,4 +7856,43 @@ _wrap_gtk_recent_manager_get_items(PyGObject *self)
     g_list_free(items);
 
     return py_items;
+}
+%%
+override gtk_status_icon_get_geometry noargs
+static PyObject *
+_wrap_gtk_status_icon_get_geometry(PyGObject *self)
+{
+    GdkScreen *screen;
+    GdkRectangle rect;
+    GtkOrientation orientation;
+    gboolean ret;
+
+    ret = gtk_status_icon_get_geometry(GTK_STATUS_ICON(self->obj),
+                                       &screen, &rect, &orientation);
+    if (ret) 
+        return Py_BuildValue("(NNN)", pygobject_new((GObject*)screen),
+                             pyg_boxed_new(GDK_TYPE_RECTANGLE, &rect,
+                                           TRUE, TRUE),
+                             pyg_enum_from_gtype(GTK_TYPE_ORIENTATION,
+                                                 orientation));
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_status_icon_position_menu args
+static PyObject *
+_wrap_gtk_status_icon_position_menu(PyGObject *self, PyObject *args)
+{
+    PyGObject *menu, *icon;
+    gint x, y;
+    gboolean push_in;
+
+    if (!PyArg_ParseTuple(args,"O!O!:gtk.status_icon_position_menu",
+                          &PyGtkMenu_Type, &menu,
+                          &PyGtkStatusIcon_Type, &icon))
+        return NULL;
+
+    gtk_status_icon_position_menu(GTK_MENU(menu->obj), &x, &y, &push_in,
+                                  (gpointer)icon->obj);
+    return Py_BuildValue("(iii)", x, y, push_in);
 }
