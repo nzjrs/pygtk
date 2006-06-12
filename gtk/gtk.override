@@ -162,6 +162,7 @@ ignore
   gtk_color_selection_get_color
   gtk_combo_box_get_row_separator_func
   gtk_dialog_new
+  gtk_dialog_set_alternative_button_order_from_array
   gtk_drag_dest_handle_event
   gtk_drag_source_handle_event
   gtk_drag_finish
@@ -7146,7 +7147,7 @@ _wrap_gtk_recent_chooser_get_items(PyGObject *self)
     items = gtk_recent_chooser_get_items(GTK_RECENT_CHOOSER(self->obj));
     count = g_list_length(items);
     py_items = PyList_New(count);
-    for (i = 0; i < count; i++) {
+    for (i = 0;  i < count; i++) {
         info = g_list_nth_data(items, i);
         PyList_SetItem(py_items, i,
                        pyg_boxed_new(GTK_TYPE_RECENT_INFO, info, TRUE, TRUE));
@@ -7575,12 +7576,12 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
                                      &py_info))
         return NULL;
 
-    if (!PyMapping_Check(py_info)) {
+    if (!PyDict_Check(py_info)) {
         PyErr_SetString(PyExc_TypeError, "filter_info must be a mapping");
         return NULL;
     }
 
-    if ((item = PyMapping_GetItemString(py_info, "uri"))) {
+    if ((item = PyDict_GetItemString(py_info, "uri"))) {
         if (!PyString_Check(item)) {
             PyErr_SetString(PyExc_TypeError,
                             "filter_info uri must be a string");
@@ -7588,12 +7589,11 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
         }
         info.uri = PyString_AsString(item);
         info.contains |= GTK_RECENT_FILTER_URI;
-        Py_DECREF(item);
     } else {
         info.uri = NULL;
     }
 
-    if ((item = PyMapping_GetItemString(py_info, "mime_type"))) {
+    if ((item = PyDict_GetItemString(py_info, "mime_type"))) {
         if (!PyString_Check(item)) {
             PyErr_SetString(PyExc_TypeError,
                             "filter_info mime_type must be a string");
@@ -7601,12 +7601,11 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
         }
         info.mime_type = PyString_AsString(item);
         info.contains |= GTK_RECENT_FILTER_MIME_TYPE;
-        Py_DECREF(item);
     } else {
         info.mime_type = NULL;
     }
 
-    if ((item = PyMapping_GetItemString(py_info, "display_name"))) {
+    if ((item = PyDict_GetItemString(py_info, "display_name"))) {
         if (!PyString_Check(item)) {
             PyErr_SetString(PyExc_TypeError,
                             "filter_info display_name must be a string");
@@ -7614,12 +7613,11 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
         }
         info.display_name = PyString_AsString(item);
         info.contains |= GTK_RECENT_FILTER_DISPLAY_NAME;
-        Py_DECREF(item);
     } else {
         info.display_name = NULL;
     }
 
-    if ((item = PyMapping_GetItemString(py_info, "applications"))) {
+    if ((item = PyDict_GetItemString(py_info, "applications"))) {
         gint size, i;
         if (!PySequence_Check(item)) {
             PyErr_SetString(PyExc_TypeError,
@@ -7639,12 +7637,11 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
             Py_DECREF(app);
         }
         info.contains |= GTK_RECENT_FILTER_APPLICATION;
-        Py_DECREF(item);
     } else {
         info.applications = NULL;
     }
 
-    if ((item = PyMapping_GetItemString(py_info, "groups"))) {
+    if ((item = PyDict_GetItemString(py_info, "groups"))) {
         gint size, i;
         if (!PySequence_Check(item)) {
             PyErr_SetString(PyExc_TypeError,
@@ -7664,12 +7661,11 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
             Py_DECREF(grp);
         }
         info.contains |= GTK_RECENT_FILTER_GROUP;
-        Py_DECREF(item);
     } else {
         info.groups = NULL;
     }
 
-    if ((item = PyMapping_GetItemString(py_info, "age"))) {
+    if ((item = PyDict_GetItemString(py_info, "age"))) {
         if (!PyInt_Check(item)) {
             PyErr_SetString(PyExc_TypeError,
                             "filter_info age must be an int");
@@ -7677,7 +7673,6 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
         }
         info.age = PyInt_AsLong(item);
         info.contains |= GTK_RECENT_FILTER_AGE;
-        Py_DECREF(item);
     } else {
         info.age = -1;
     }
@@ -7686,10 +7681,149 @@ _wrap_gtk_recent_filter_filter(PyGObject *self, PyObject *args,
         py_ret = Py_True;
 
     if (info.applications)
-        g_strfreev((gchar **)info.applications);
+        g_free(info.applications);
     if (info.groups)
-        g_strfreev((gchar **)info.groups);
+        g_free(info.groups);
 
     Py_INCREF(py_ret);
     return py_ret;
+}
+%%
+override gtk_recent_manager_add_full kwargs
+static PyObject*
+_wrap_gtk_recent_manager_add_full(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "uri", "recent_data", NULL };
+    PyObject *py_data, *item, *py_ret = Py_False;
+    gchar *uri;
+    GtkRecentData recent_data;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "sO:GtkRecentManager.add_full", kwlist,
+                                     &uri, &py_data))
+        return NULL;
+
+    if (!PyDict_Check(py_data)) {
+        PyErr_SetString(PyExc_TypeError, "recent_data must be a mapping");
+        return NULL;
+    }
+
+    if (!(item = PyDict_GetItemString(py_data, "mime_type"))
+        || !PyString_Check(item)) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "recent_data must reference a 'mime_type' string value");
+        return NULL;
+    }
+    recent_data.mime_type = PyString_AsString(item);
+
+    if (!(item = PyDict_GetItemString(py_data, "app_name"))
+        || !PyString_Check(item)) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "recent_data must reference a 'app_name' string value");
+        return NULL;
+    }
+    recent_data.app_name = PyString_AsString(item);
+
+    if (!(item = PyDict_GetItemString(py_data, "app_exec"))
+        || !PyString_Check(item)) {
+        PyErr_SetString(PyExc_RuntimeError,
+                        "recent_data must reference a 'app_exec' string value");
+        return NULL;
+    }
+    recent_data.app_exec = PyString_AsString(item);
+
+    if ((item = PyDict_GetItemString(py_data, "display_name"))) {
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "recent_data 'display_name' must reference a string");
+            return NULL;
+        }
+        recent_data.display_name = PyString_AsString(item);
+    } else {
+        recent_data.display_name = NULL;
+    }
+
+    if ((item = PyDict_GetItemString(py_data, "description"))) {
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "recent_data 'description' must reference a string");
+            return NULL;
+        }
+        recent_data.description = PyString_AsString(item);
+    } else {
+        recent_data.description = NULL;
+    }
+
+    if ((item = PyDict_GetItemString(py_data, "is_private"))) {
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "recent_data 'is_private' must reference a boolean");
+            return NULL;
+        }
+        if (PyInt_AsLong(item))
+            recent_data.is_private = TRUE;
+        else
+            recent_data.is_private = FALSE;
+    } else {
+        recent_data.is_private = FALSE;
+    }
+
+    if ((item = PyDict_GetItemString(py_data, "groups"))) {
+        gint size, i;
+        if (!PySequence_Check(item)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "recent_data 'groups' must reference a sequence of strings");
+            return NULL;
+        }
+        size = PySequence_Size(item);
+        recent_data.groups = (gchar**)g_new0(gchar*, size+1);
+        for (i = 0; i < size; i++) {
+            PyObject *group = PySequence_GetItem(item, i);
+            if (!PyString_Check(group)) {
+                PyErr_SetString(PyExc_TypeError,
+                                "recent_data 'groups' must reference a sequence of strings");
+                g_free(recent_data.groups);
+                Py_XDECREF(group);
+                return NULL;
+            }
+            recent_data.groups[i] = PyString_AsString(group);
+            Py_DECREF(group);
+        }
+    } else {
+        recent_data.groups = NULL;
+    }
+
+    if (gtk_recent_manager_add_full(GTK_RECENT_MANAGER(self->obj), uri,
+                                    &recent_data))
+        py_ret = Py_True;
+
+    if (recent_data.groups)
+        g_free(recent_data.groups);
+
+    Py_INCREF(py_ret);
+    return py_ret;
+}
+%%
+override gtk_recent_manager_get_items noargs
+static PyObject *
+_wrap_gtk_recent_manager_get_items(PyGObject *self)
+{
+    GtkRecentInfo *info;
+    GList *items;
+    PyObject *py_items;
+    guint count, i;
+
+    items = gtk_recent_manager_get_items(GTK_RECENT_MANAGER(self->obj));
+    count = g_list_length(items);
+    py_items = PyList_New(count);
+    for (i = 0; i < count; i++) {
+        info = g_list_nth_data(items, i);
+        PyList_SetItem(py_items, i,
+                       pyg_boxed_new(GTK_TYPE_RECENT_INFO, info, TRUE, TRUE));
+    }
+    g_list_foreach(items, (GFunc) gtk_recent_info_unref, NULL);
+    g_list_free(items);
+
+    return py_items;
 }
