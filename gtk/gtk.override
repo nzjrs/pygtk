@@ -1371,6 +1371,7 @@ _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
                        "button", "activate_time", "data", NULL };
     PyGObject *py_pms, *py_pmi;
     GtkWidget *pms = NULL, *pmi = NULL;
+    GtkMenu *menu = GTK_MENU(self->obj);
     PyObject *func, *data = NULL;
     int button;
     guint32 time;
@@ -1412,16 +1413,15 @@ _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
         return NULL;
     }
 
+    /* this is an ugly hack to avoid leaking memory and references
+       gtk_menu_popup should use a data destroy function */
+    if (menu->position_func == pygtk_menu_position) {
+        cunote = menu->position_func_data;
+        Py_DECREF(cunote->func);
+        Py_XDECREF(cunote->data);
+        g_free(cunote);
+    }
     if (func != Py_None) {
-        /* this is an ugly hack to avoid leaking memory and references
-           gtk_menu_popup should use a data destroy function */
-        GtkMenu *m = GTK_MENU(self->obj);
-        if (m->position_func == pygtk_menu_position) {
-            PyGtkCustomNotify *oldcunote = m->position_func_data;
-            Py_DECREF(oldcunote->func);
-            Py_XDECREF(oldcunote->data);
-            g_free(oldcunote);
-        }
         cunote = g_new0(PyGtkCustomNotify, 1);
         cunote->func = func;
         cunote->data = data;
