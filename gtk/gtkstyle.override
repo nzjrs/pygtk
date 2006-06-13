@@ -256,3 +256,22 @@ _wrap_gtk_style__get_bg_pixmap(PyGObject *self, void *closure)
 
     return _pygtk_style_helper_new(style, STYLE_PIXMAP_ARRAY, style->bg_pixmap);
 }
+%%
+override gtk_style_lookup_color kwargs
+static PyObject *
+_wrap_gtk_style_lookup_color(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "color_name", NULL };
+    char *color_name;
+    GdkColor color;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:GtkStyle.lookup_color",
+                                     kwlist, &color_name))
+        return NULL;
+
+    if (gtk_style_lookup_color(GTK_STYLE(self->obj), color_name, &color))
+        return pyg_boxed_new(GDK_TYPE_COLOR, &color, TRUE, TRUE);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
