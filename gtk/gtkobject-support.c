@@ -42,3 +42,30 @@ pygtk_custom_destroy_notify(gpointer user_data)
     g_free(cunote);
 }
 
+GdkAtom*
+pygdk_atom_vector_from_sequence(PyObject *py_targets, gint *n_targets)
+{
+    gint i;
+    GdkAtom *targets;
+
+    if (!(py_targets = PySequence_Fast(py_targets,
+                                       "targets must be a sequence")))
+        return NULL;
+
+    *n_targets = PySequence_Fast_GET_SIZE(py_targets);
+    targets = g_new(GdkAtom, *n_targets);
+    for (i = 0; i < *n_targets; i++) {
+        PyObject *trgt = PySequence_Fast_GET_ITEM(py_targets, i);
+        targets[i] = pygdk_atom_from_pyobject(trgt);
+        if (PyErr_Occurred()) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "each 'targets' item must be a GdkAtom or string");
+            g_free(targets);
+            Py_DECREF(py_targets);
+            return NULL;
+        }
+    }
+    Py_DECREF(py_targets);
+    return targets;
+}

@@ -32,6 +32,7 @@ gboolean     pygdk_rectangle_from_pyobject(PyObject *object,
 					   GdkRectangle *rectangle);
 
 GdkAtom pygdk_atom_from_pyobject(PyObject *object);
+GdkAtom *pygdk_atom_vector_from_sequence(PyObject *sequence, gint *num);
 
 typedef struct {
     PyObject *func, *data;

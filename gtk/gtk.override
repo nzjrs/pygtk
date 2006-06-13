@@ -7896,3 +7896,111 @@ _wrap_gtk_status_icon_position_menu(PyGObject *self, PyObject *args)
                                   (gpointer)icon->obj);
     return Py_BuildValue("(iii)", x, y, push_in);
 }
+%%
+override gtk_targets_include_image kwargs
+static PyObject *
+_wrap_gtk_targets_include_image(PyGObject *self, PyObject *args,
+                                PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", "writable", NULL };
+    GdkAtom *targets;
+    gint n_targets;
+    gboolean writable;
+    PyObject *py_targets, *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "Oi:gtk.targets_include_image",
+                                     kwlist, &py_targets, &writable))
+        return NULL;
+
+    if (!(targets = pygdk_atom_vector_from_sequence(py_targets, &n_targets)))
+        return NULL;
+
+    if (gtk_targets_include_image(targets, n_targets, writable))
+        py_ret = Py_True;
+    else
+        py_ret = Py_False;
+    g_free(targets);
+    return py_ret;
+}
+%%
+override gtk_targets_include_text kwargs
+static PyObject *
+_wrap_gtk_targets_include_text(PyGObject *self, PyObject *args,
+                                PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", NULL };
+    GdkAtom *targets;
+    gint n_targets;
+    PyObject *py_targets, *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:gtk.targets_include_text",
+                                     kwlist, &py_targets))
+        return NULL;
+
+    if (!(targets = pygdk_atom_vector_from_sequence(py_targets, &n_targets)))
+        return NULL;
+
+    if (gtk_targets_include_text(targets, n_targets))
+        py_ret = Py_True;
+    else
+        py_ret = Py_False;
+    g_free(targets);
+    return py_ret;
+}
+%%
+override gtk_targets_include_uri kwargs
+static PyObject *
+_wrap_gtk_targets_include_uri(PyGObject *self, PyObject *args,
+                                PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", NULL };
+    GdkAtom *targets;
+    gint n_targets;
+    PyObject *py_targets, *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:gtk.targets_include_uri",
+                                     kwlist, &py_targets))
+        return NULL;
+
+    if (!(targets = pygdk_atom_vector_from_sequence(py_targets, &n_targets)))
+        return NULL;
+
+    if (gtk_targets_include_uri(targets, n_targets))
+        py_ret = Py_True;
+    else
+        py_ret = Py_False;
+    g_free(targets);
+    return py_ret;
+}
+%%
+override gtk_targets_include_rich_text kwargs
+static PyObject *
+_wrap_gtk_targets_include_rich_text(PyGObject *self, PyObject *args,
+                                PyObject *kwargs)
+{
+    static char *kwlist[] = { "targets", "buffer", NULL };
+    GdkAtom *targets;
+    PyGObject *buffer;
+    gint n_targets;
+    PyObject *py_targets, *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO!:gtk.targets_include_rich_text",
+                                     kwlist, &py_targets,
+                                     &PyGtkTextBuffer_Type, &buffer))
+        return NULL;
+
+    if (!(targets = pygdk_atom_vector_from_sequence(py_targets, &n_targets)))
+        return NULL;
+
+    if (gtk_targets_include_rich_text(targets, n_targets,
+                                      GTK_TEXT_BUFFER(buffer->obj)))
+        py_ret = Py_True;
+    else
+        py_ret = Py_False;
+    g_free(targets);
+    return py_ret;
+}
