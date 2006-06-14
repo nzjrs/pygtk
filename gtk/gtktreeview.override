@@ -66,6 +66,7 @@ ignore
   gtk_tree_view_column_set_attributes
   gtk_tree_view_get_row_separator_func
   gtk_tree_view_get_search_equal_func
+  gtk_tree_view_get_search_position_func
   gtk_list_store_insert_with_values
   gtk_list_store_insert_with_valuesv
   gtk_tree_store_insert_with_values
@@ -3082,6 +3083,65 @@ _wrap_gtk_tree_view_get_visible_range(PyGObject *self)
        return Py_BuildValue("(NN)", py_start_path, py_end_path);
     }
 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_view_set_search_position_func
+static void
+pygtk_tree_view_set_search_position_func_cb(GtkTreeView *treeview,
+                                            GtkWidget *search_dialog,
+                                            gpointer data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = data;
+    PyObject *retobj;
+
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(NNO)",
+                                     pygobject_new((GObject*)treeview),
+                                     pygobject_new((GObject*)search_dialog),
+                                     cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(NN)",
+                                     pygobject_new((GObject*)treeview),
+                                     pygobject_new((GObject*)search_dialog));
+
+    if (retobj == NULL) {
+        PyErr_Print();
+    }
+
+    Py_XDECREF(retobj);
+
+    pyg_gil_state_release(state);
+}
+static PyObject *
+_wrap_gtk_tree_view_set_search_position_func(PyGObject *self, PyObject *args)
+{
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+
+    if(!PyArg_ParseTuple(args, "O|O:GtkTreeView.set_search_position_func",
+                         &pyfunc, &pyarg))
+        return NULL;
+
+    if (pyfunc != Py_None) {
+        cunote = g_new0(PyGtkCustomNotify, 1);
+        cunote->func = pyfunc;
+        cunote->data = pyarg;
+        Py_INCREF(cunote->func);
+        Py_XINCREF(cunote->data);
+        gtk_tree_view_set_search_position_func(
+            GTK_TREE_VIEW(self->obj),
+            pygtk_tree_view_set_search_position_func_cb, cunote,
+            pygtk_custom_destroy_notify);
+    } else
+        gtk_tree_view_set_search_position_func(GTK_TREE_VIEW(self->obj),
+                                               NULL, NULL, NULL);
     Py_INCREF(Py_None);
     return Py_None;
 }
