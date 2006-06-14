@@ -328,6 +328,8 @@ ignore
   gtk_target_list_add_table
   gtk_target_list_remove
   gtk_target_list_find
+  gtk_target_table_new_from_list
+  gtk_target_table_free
 %%
 ignore-glob
   _*
@@ -8003,4 +8005,54 @@ _wrap_gtk_targets_include_rich_text(PyGObject *self, PyObject *args,
         py_ret = Py_False;
     g_free(targets);
     return py_ret;
+}
+%%
+override gtk_target_list_add_rich_text_targets kwargs
+static PyObject *
+_wrap_gtk_target_list_add_rich_text_targets(PyGObject *self, PyObject *args,
+                                       PyObject *kwargs)
+{
+    static char *kwlist[] = { "list", "info", "deserializable", "buffer", NULL };
+    PyObject *list = NULL;
+    guint info = 0;
+    GtkTargetList *targets;
+    GList *tmp;
+    gboolean deserializable;
+    PyGObject *buffer;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OiiO!:gtk.target_list_add_rich_text_targets",
+                                     kwlist, &list, &info, &deserializable,
+                                     &PyGtkTextBuffer_Type, &buffer)) {
+        return NULL;
+    }
+    if (!list || list == Py_None) {
+        list = NULL;
+    } else if (!PySequence_Check(list)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "list must be a sequence of target entries or None");
+        return NULL;
+    }
+    if (list)
+        list = PySequence_List(list);
+    else
+        list = PyList_New(0);
+    targets = gtk_target_list_new(NULL, 0);
+    gtk_target_list_add_rich_text_targets(targets, info, deserializable,
+                                          GTK_TEXT_BUFFER(buffer->obj));
+    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
+        GtkTargetPair *pair = tmp->data;
+        PyObject *item;
+        gchar * name;
+
+        name = gdk_atom_name(pair->target);
+        item = Py_BuildValue("(Nii)",
+                             PyString_FromString(name),
+                             pair->flags, pair->info);
+        PyList_Append(list, item);
+        g_free(name);
+        Py_DECREF(item);
+    }
+    gtk_target_list_unref(targets);
+    return list;
 }
