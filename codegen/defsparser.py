@@ -4,17 +4,33 @@ import scmexpr
 from definitions import BoxedDef, EnumDef, FlagsDef, FunctionDef, \
      InterfaceDef, MethodDef, ObjectDef, PointerDef, VirtualDef
 
+include_path = ['.']
+
 class IncludeParser(scmexpr.Parser):
     """A simple parser that follows include statements automatically"""
-    def include(self, filename):
-        if not os.path.isabs(filename):
-            filename = os.path.join(os.path.dirname(self.filename), filename)
-
-        # set self.filename to the include name, to handle recursive includes
-        oldfile = self.filename
-        self.filename = filename
-        self.startParsing()
-        self.filename = oldfile
+    def include(self, input_filename):
+        global include_path
+        if os.path.isabs(input_filename):
+            filename = os.path.join(os.path.dirname(self.filename), input_filename)
+            # set self.filename to the include name, to handle recursive includes
+            oldfile = self.filename
+            self.filename = filename
+            self.startParsing()
+            self.filename = oldfile
+        else:
+            inc_path = [os.path.dirname(self.filename)] + include_path
+            for filename in [os.path.join(path_entry, input_filename)
+                             for path_entry in include_path]:
+                if not os.path.exists(filename):
+                    continue
+                # set self.filename to the include name, to handle recursive includes
+                oldfile = self.filename
+                self.filename = filename
+                self.startParsing()
+                self.filename = oldfile
+                break
+            else:
+                raise IOError("%s not found in include path %s" % (input_filename, inc_path))
 
 class DefsParser(IncludeParser):
     def __init__(self, arg, defines={}):

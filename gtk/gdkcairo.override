@@ -70,23 +70,32 @@ _wrap_gdk_cairo_rectangle(PyObject *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "rectangle", NULL };
     PyObject *py_rectangle;
     GdkRectangle rectangle;
+    double x, y, width, height;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:gtk.gdk.CairoContext.rectangle", kwlist,
-                                     &py_rectangle))
-        return NULL;
-
-    if (!pyg_boxed_check(py_rectangle, GDK_TYPE_RECTANGLE)) {
-        if (!pygdk_rectangle_from_pyobject(py_rectangle, &rectangle)) {
-            PyErr_Clear();
-            PyErr_SetString(PyExc_TypeError,
-                            "rectangle must be a GdkRectangle or 4-tuple");
+    if (PyArg_ParseTuple (args, "dddd:Context.rectangle",
+			   &x, &y, &width, &height))
+    {
+        cairo_rectangle(PycairoContext_GET(self), x, y, width, height);
+    } else {
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:gtk.gdk.CairoContext.rectangle", kwlist,
+                                         &py_rectangle)) {
+            PyErr_SetString(PyExc_TypeError, "gtk.gdk.CairoContext.rectangle accepts either"
+                            " (x, y, width, height) or a single gtk.gdk.Rectangle parameter");
             return NULL;
         }
-    } else {
-        rectangle = *pyg_boxed_get(py_rectangle, GdkRectangle);
-    }
+        if (!pyg_boxed_check(py_rectangle, GDK_TYPE_RECTANGLE)) {
+            if (!pygdk_rectangle_from_pyobject(py_rectangle, &rectangle)) {
+                PyErr_Clear();
+                PyErr_SetString(PyExc_TypeError,
+                                "rectangle must be a GdkRectangle or 4-tuple");
+                return NULL;
+            }
+        } else {
+            rectangle = *pyg_boxed_get(py_rectangle, GdkRectangle);
+        }
  
-    gdk_cairo_rectangle(PycairoContext_GET(self), &rectangle);
+        gdk_cairo_rectangle(PycairoContext_GET(self), &rectangle);
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -115,7 +124,7 @@ _wrap_gdk_cairo_region(PyObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 
-#if HAVE_GTK_2_10_TRUE != '#'
+#if GTK_CHECK_VERSION(2, 9, 3)
 static PyObject *
 _wrap_gdk_cairo_set_source_pixmap(PyObject *self, PyObject *args, PyObject *kwargs)
 {
@@ -131,16 +140,16 @@ _wrap_gdk_cairo_set_source_pixmap(PyObject *self, PyObject *args, PyObject *kwar
     Py_INCREF(Py_None);
     return Py_None;
 }
-#endif /* HAVE_GTK_2_10_TRUE */
+#endif
 
 static PyMethodDef _PyGdkCairoContext_methods[] = {
     { "set_source_pixbuf", (PyCFunction)_wrap_gdk_cairo_set_source_pixbuf, METH_VARARGS|METH_KEYWORDS },
     { "set_source_color", (PyCFunction)_wrap_gdk_cairo_set_source_color, METH_VARARGS|METH_KEYWORDS },
-    { "gdk_rectangle", (PyCFunction)_wrap_gdk_cairo_rectangle, METH_VARARGS|METH_KEYWORDS },
+    { "rectangle", (PyCFunction)_wrap_gdk_cairo_rectangle, METH_VARARGS|METH_KEYWORDS },
     { "region", (PyCFunction)_wrap_gdk_cairo_region, METH_VARARGS|METH_KEYWORDS },
-#if HAVE_GTK_2_10_TRUE != '#'
+#if GTK_CHECK_VERSION(2, 9, 3)
     { "set_source_pixmap", (PyCFunction)_wrap_gdk_cairo_set_source_pixmap, METH_VARARGS|METH_KEYWORDS },
-#endif /* HAVE_GTK_2_10_TRUE */
+#endif
     { NULL, NULL, 0 }
 };
 

@@ -5,6 +5,8 @@
 #include "config.h"
 #endif
 
+#define PYCAIRO_VERSION_HEX ((PYCAIRO_MAJOR_VERSION<<24)|(PYCAIRO_MINOR_VERSION<<16)|(PYCAIRO_MICRO_VERSION<<8))
+
 #ifdef _PYGTK_H_
 #error "don't include pygtk.h and pygtk-private.h together"
 #endif

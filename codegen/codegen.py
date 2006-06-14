@@ -1431,7 +1431,7 @@ def main(argv):
     prefix = 'pygtk'
     outfilename = None
     errorfilename = None
-    opts, args = getopt.getopt(argv[1:], "o:p:r:t:D:",
+    opts, args = getopt.getopt(argv[1:], "o:p:r:t:D:I:",
                         ["override=", "prefix=", "register=", "outfilename=",
                          "load-types=", "errorfilename="])
     defines = {} # -Dkey[=val] options
@@ -1459,6 +1459,8 @@ def main(argv):
                 defines[nameval[0]] = nameval[1]
             except IndexError:
                 defines[nameval[0]] = None
+        elif opt == '-I':
+            defsparser.include_path.insert(0, arg)
     if len(args) < 1:
         print >> sys.stderr, usage
         return 1

@@ -1,11 +1,35 @@
+2006-06-14  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* codegen/defsparser.py (IncludeParser.include),
+	* codegen/codegen.py (main): Add a -I option to specify a path to
+	search for .defs files.
+
+	* gtk/Makefile.am (CREATEDEFS): Use $(top_srcdir) to find
+	createdefs.py.
+	(gtk.c): gtk.c depends also on gdk-types.defs.
+	(EXTRA_DIST): Add gtk-extrafuncs.defs.
+
+	* codegen/Makefile.am (EXTRA_DIST): Add createdefs.py.
+
 2006-06-13  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gtkmodule.c (pygtk_add_extra_constants): Don't add
+	GTK_PAPER_* constants with gtk+ 2.8.
+
+	* gtk/gtkunixprint.override (pygtk_print_job_complete_func_cb):
+	Make it conditionally compile with both pycairo >= 1.1.7 and
+	earlier versions.
+
+	* configure.in: Explicitly require pycairo for module pangocairo.
+	Minimum pycairo version changed back to 1.0.2.
 
 	* NEWS: Updated.
 
-	* gtk/gdkcairo.override: Rename the recently introduced
-	gdk.CairoContext.rectangle() to gdk.CairoContext.gdk_rectangle()
-	because it redefines cairo.Context.rectangle() with a different
-	signature, thus violates the Liskov substitution principle.
+	* gtk/gdkcairo.override (_wrap_gdk_cairo_rectangle): Make
+	gdk.CairoContext.rectangle() also accept (x, y, width, height)
+	parameters to avoid violating the Liskov substitution principle,
+	since it redefines cairo.Context.rectangle() with a different
+	signature.
 
 2006-06-13  John Finlay  <finlay@moeraki.com>
 

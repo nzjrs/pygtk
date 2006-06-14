@@ -19,4 +19,4 @@ codegen_PYTHON = \
 	override.py \
 	scmexpr.py
 
-EXTRA_DIST = README.defs pygtk-codegen-$(PLATFORM_VERSION).in
+EXTRA_DIST = README.defs pygtk-codegen-$(PLATFORM_VERSION).in createdefs.py

@@ -14,7 +14,7 @@ m4_define(atk_required_version,        1.8.0)
 m4_define(gtk_required_version,        2.8.0)
 m4_define(libglade_required_version,   2.5.0)
 m4_define(gtkunixprint_required_version,  2.9.0)
-m4_define(pycairo_required_version,    1.1.7)
+m4_define(pycairo_required_version,    1.0.2) dnl or 1.1.7
 m4_define(pygobject_required_version,  2.10.0)
 
 AC_INIT(pygtk, pygtk_version,
@@ -137,9 +137,17 @@ if test $have_pycairo; then
   PYGTK_CODEGEN_DEFINES="-DHAVE_PYCAIRO $PYGTK_CODEGEN_DEFINES";
   AC_DEFINE([HAVE_PYCAIRO], [1], [Define to 1 if pycairo is available])
 
+  AC_DEFINE_UNQUOTED(PYCAIRO_MAJOR_VERSION, [`pkg-config --modversion pycairo | cut -d '.' -f 1`], dnl
+                     [pycairo major version])
+  AC_DEFINE_UNQUOTED(PYCAIRO_MINOR_VERSION, [`pkg-config --modversion pycairo | cut -d '.' -f 2`], dnl
+                     [pycairo minor version])
+  AC_DEFINE_UNQUOTED(PYCAIRO_MICRO_VERSION, [`pkg-config --modversion pycairo | cut -d '.' -f 3`], dnl
+                     [pycairo micro version])
+
   dnl pangocairo
   PKG_CHECK_MODULES(PANGOCAIRO, 
-          pangocairo >= pango_required_version,
+          [pangocairo >= pango_required_version,
+           pycairo >= pycairo_required_version],
 	  have_pangocairo=true, have_pangocairo=false)
   if test ! $have_pangocairo
   then

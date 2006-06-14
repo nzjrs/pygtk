@@ -29,7 +29,7 @@ headers
 #include <libintl.h>
 
 #include <glib-object.h>
-#include <pygtk.h>
+#include "pygtk-private.h"
 #include <gtk/gtk.h>
 #include <gtk/gtkprinter.h>
 #include <gtk/gtkprintjob.h>
@@ -62,9 +62,6 @@ gtk_print_capabilites_get_type (void)
 }
 #endif
 
-typedef struct {
-    PyObject *func, *data;
-} PyGtkCustomNotify;
  
 void
 pygtk_custom_destroy_notify(gpointer user_data)
@@ -107,7 +104,12 @@ _wrap_gtk_print_job_get_surface(PyGObject *self)
 
     if (pyg_error_check(&error))
         return NULL;
+
+#if PYCAIRO_VERSION_HEX >= 0x1010700
     return PycairoSurface_FromSurface(surface, NULL);
+#else
+    return PycairoSurface_FromSurface(surface, NULL, NULL);
+#endif
 }
 %%
 override gtk_print_job_send kwargs

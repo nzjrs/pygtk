@@ -176,6 +176,7 @@ g_free(aname); }
 static void
 pygtk_add_extra_constants(PyObject *m)
 {
+#if GTK_CHECK_VERSION(2, 9, 3)
     PyModule_AddObject(m, "PAPER_NAME_A3",
 		       PyString_FromString(GTK_PAPER_NAME_A3));
     PyModule_AddObject(m, "PAPER_NAME_A4",
@@ -190,6 +191,7 @@ pygtk_add_extra_constants(PyObject *m)
 		       PyString_FromString(GTK_PAPER_NAME_EXECUTIVE));
     PyModule_AddObject(m, "PAPER_NAME_LEGAL",
 		       PyString_FromString(GTK_PAPER_NAME_LEGAL));
+#endif
 }
 
 static gboolean

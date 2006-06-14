@@ -44,7 +44,7 @@ GTK_DEFS += gtk-2.10.defs
 GTK_TYPES_DEFS += gtk-2.10-types.defs
 endif
 
-CREATEDEFS = $(PYTHON) ../codegen/createdefs.py
+CREATEDEFS = $(PYTHON) $(top_srcdir)/codegen/createdefs.py
 
 GDK_OVERRIDES = \
 	gdk.override 		\
@@ -79,6 +79,7 @@ CLEANFILES += 			\
 	gdk-types.defs
 
 EXTRA_DIST += 			\
+	gtk-extrafuncs.defs	\
 	$(GDK_DEFS) 		\
 	$(GDK_TYPES_DEFS) 	\
 	$(GDK_OVERRIDES) 	\
@@ -88,23 +89,23 @@ EXTRA_DIST += 			\
 
 
 gdk.defs: $(GDK_DEFS)
-	$(CREATEDEFS) gdk.defs $(GDK_DEFS)
+	$(CREATEDEFS) $@ $(GDK_DEFS)
 gdk.defs: Makefile
 
 gtk.defs: $(GTK_DEFS)
-	$(CREATEDEFS) gtk.defs $(GTK_DEFS)
+	$(CREATEDEFS) $@ $(GTK_DEFS)
 gtk.defs: Makefile
 
 gdk-types.defs: $(GDK_TYPES_DEFS)
-	$(CREATEDEFS) gdk-types.defs $(GDK_TYPES_DEFS)
+	$(CREATEDEFS) $@ $(GDK_TYPES_DEFS)
 gdk-types.defs: Makefile
 
 gtk-types.defs: $(GTK_TYPES_DEFS)
-	$(CREATEDEFS) gtk-types.defs $(GTK_TYPES_DEFS)
+	$(CREATEDEFS) $@ $(GTK_TYPES_DEFS)
 gtk-types.defs: Makefile
 
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
-gtk.c: gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
+gtk.c: gdk-types.defs gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
 _gtk_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
 _gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
 _gtk_la_LIBADD = $(GTK_LIBS)
@@ -158,16 +159,17 @@ pygtkexec_LTLIBRARIES += unixprint.la
 defs_DATA += $(GTKUNIXPRINT_DEFS)
 endif
 
+
 .defs.c: 
-	(cd $(srcdir) \
-	 && $(PYTHON) ../codegen/codegen.py \
+	($(PYTHON) $(top_srcdir)/codegen/codegen.py \
 	   $(PYGTK_CODEGEN_DEFINES) \
-	    --register ../pango-types.defs \
-	    --register ../atk-types.defs \
+	    -I $(srcdir) \
+	    --register $(top_srcdir)/pango-types.defs \
+	    --register $(top_srcdir)/atk-types.defs \
 	    --register gdk-types.defs \
 	    --register gtk-types.defs \
-	    --override $*.override \
-	    --prefix py$* $*.defs) > gen-$*.c \
+	    --override $(srcdir)/$*.override \
+	    --prefix py$* $<) > gen-$*.c \
 	&& cp gen-$*.c $*.c \
 	&& rm -f gen-$*.c
 
