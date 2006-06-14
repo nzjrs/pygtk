@@ -2241,8 +2241,6 @@ _wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "context", "target_list", NULL };
     PyObject *context, *py_targets;
-    gint i, n_targets;
-    GtkTargetEntry *targets;
     GtkTargetList *target_list;
     GdkAtom atom;
     gchar *name;
@@ -2253,30 +2251,14 @@ _wrap_gtk_drag_dest_find_target(PyGObject *self, PyObject *args,
                                      kwlist, &PyGdkDragContext_Type, &context,
                                      &py_targets))
         return NULL;
-    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
-	return NULL;
-    n_targets = PySequence_Fast_GET_SIZE(py_targets);
-    targets = g_new(GtkTargetEntry, n_targets);
-    for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
-                              &targets[i].flags, &targets[i].info)) {
-            PyErr_Clear();
-            PyErr_SetString(PyExc_TypeError,
-                            "list items should be of form (string,int,int)");
-            g_free(targets);
-	    Py_DECREF(py_targets);
-            return NULL;
-        }
-    }
-    target_list = gtk_target_list_new(targets, n_targets);
-    g_free(targets);
+
+    if (!(target_list = pygtk_target_list_from_sequence(py_targets)))
+        return NULL;
 
     atom = gtk_drag_dest_find_target(GTK_WIDGET(self->obj),
                                      GDK_DRAG_CONTEXT(pygobject_get(context)),
                                      target_list);
     gtk_target_list_unref(target_list);
-    Py_DECREF(py_targets);
 
     name = gdk_atom_name(atom);
     ret = PyString_FromString(name);
@@ -2289,8 +2271,6 @@ static PyObject *
 _wrap_gtk_drag_dest_get_target_list(PyGObject *self)
 {
     GtkTargetList *target_list;
-    PyObject *ret;
-    GList *tmp;
 
     target_list = gtk_drag_dest_get_target_list(GTK_WIDGET(self->obj));
 
@@ -2299,20 +2279,7 @@ _wrap_gtk_drag_dest_get_target_list(PyGObject *self)
         return Py_None;
     }
 
-    ret = PyList_New(0);
-    for (tmp = target_list->list; tmp != NULL; tmp = tmp->next) {
-        GtkTargetPair *pair = tmp->data;
-        PyObject *item;
-        gchar *name;
-
-        name = gdk_atom_name(pair->target);
-        item = Py_BuildValue("(Nii)", PyString_FromString(name),
-                             pair->flags, pair->info);
-        g_free(name);
-        PyList_Append(ret, item);
-        Py_DECREF(item);
-    }
-    return ret;
+    return pygtk_target_list_to_list(target_list);
 }
 %%
 override gtk_drag_dest_set_target_list kwargs
@@ -2322,36 +2289,18 @@ _wrap_gtk_drag_dest_set_target_list(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "target_list", NULL };
     PyObject *py_targets;
-    gint i, n_targets;
-    GtkTargetEntry *targets;
     GtkTargetList *target_list;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O:GtkWidget.drag_dest_set_target_list",
                                      kwlist, &py_targets))
         return NULL;
-    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
-	return NULL;
-    n_targets = PySequence_Fast_GET_SIZE(py_targets);
-    targets = g_new(GtkTargetEntry, n_targets);
-    for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
-                              &targets[i].flags, &targets[i].info)) {
-            PyErr_Clear();
-            PyErr_SetString(PyExc_TypeError,
-                            "list items should be of form (string,int,int)");
-            g_free(targets);
-	    Py_DECREF(py_targets);
-            return NULL;
-        }
-    }
-    target_list = gtk_target_list_new(targets, n_targets);
-    g_free(targets);
+
+    if (!(target_list = pygtk_target_list_from_sequence(py_targets)))
+        return NULL;
 
     gtk_drag_dest_set_target_list(GTK_WIDGET(self->obj), target_list);
     gtk_target_list_unref(target_list);
-    Py_DECREF(py_targets);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -2407,10 +2356,9 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "targets", "actions", "button", "event", NULL };
     PyObject *py_targets, *py_actions, *event;
-    GtkTargetEntry *tents;
     GtkTargetList *targets;
     GdkDragAction actions;
-    gint button, n_targets, i;
+    gint button;
     GdkDragContext *context;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -2425,28 +2373,12 @@ _wrap_gtk_drag_begin(PyGObject *self, PyObject *args, PyObject *kwargs)
         PyErr_SetString(PyExc_TypeError, "event must be a GdkEvent");
         return NULL;
     }
-    if (!(py_targets = PySequence_Fast(py_targets, "targets must be a sequence")))
-	return NULL;
-    n_targets = PySequence_Fast_GET_SIZE(py_targets);
-    tents = g_new(GtkTargetEntry, n_targets);
-    for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "sii", &tents[i].target,
-                              &tents[i].flags, &tents[i].info)) {
-            PyErr_Clear();
-            PyErr_SetString(PyExc_TypeError,
-                            "list items should be of form (string,int,int)");
-            g_free(tents);
-	    Py_DECREF(py_targets);
-            return NULL;
-        }
-    }
-    targets = gtk_target_list_new(tents, n_targets);
-    g_free(tents);
+    if (!(targets = pygtk_target_list_from_sequence(py_targets)))
+        return NULL;
+
     context = gtk_drag_begin(GTK_WIDGET(self->obj), targets, actions, button,
                              pyg_boxed_get(event, GdkEvent));
     gtk_target_list_unref(targets);
-    Py_DECREF(py_targets);
     return pygobject_new((GObject *)context);
 }
 %%
@@ -5782,8 +5714,6 @@ static PyObject *
 _wrap_gtk_drag_source_get_target_list(PyGObject *self)
 {
     GtkTargetList *target_list;
-    PyObject *ret;
-    GList *tmp;
 
     target_list = gtk_drag_source_get_target_list(GTK_WIDGET(self->obj));
 
@@ -5792,21 +5722,7 @@ _wrap_gtk_drag_source_get_target_list(PyGObject *self)
         return Py_None;
     }
 
-    ret = PyList_New(0);
-    for (tmp = target_list->list; tmp != NULL; tmp = tmp->next) {
-        GtkTargetPair *pair = tmp->data;
-        PyObject *item;
-        gchar *name;
-
-        name = gdk_atom_name(pair->target);
-        item = Py_BuildValue("(Nii)",
-                             PyString_FromString(name),
-                             pair->flags, pair->info);
-        PyList_Append(ret, item);
-        g_free(name);
-        Py_DECREF(item);
-    }
-    return ret;
+    return pygtk_target_list_to_list(target_list);
 }
 %%
 override gtk_drag_source_set_target_list kwargs
@@ -5816,37 +5732,18 @@ _wrap_gtk_drag_source_set_target_list(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "target_list", NULL };
     PyObject *py_targets;
-    gint i, n_targets;
-    GtkTargetEntry *targets;
     GtkTargetList *target_list;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O:GtkWidget.drag_source_set_target_list",
                                      kwlist, &py_targets))
         return NULL;
-    if (!(py_targets = PySequence_Fast(py_targets,
-                                       "targets must be a sequence")))
-	return NULL;
-    n_targets = PySequence_Fast_GET_SIZE(py_targets);
-    targets = g_new(GtkTargetEntry, n_targets);
-    for (i = 0; i < n_targets; i++) {
-        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
-        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
-                              &targets[i].flags, &targets[i].info)) {
-            PyErr_Clear();
-            PyErr_SetString(PyExc_TypeError,
-                            "list items should be of form (string,int,int)");
-            g_free(targets);
-	    Py_DECREF(py_targets);
-            return NULL;
-        }
-    }
-    target_list = gtk_target_list_new(targets, n_targets);
-    g_free(targets);
+
+    if (!(target_list = pygtk_target_list_from_sequence(py_targets)))
+        return NULL;
 
     gtk_drag_source_set_target_list(GTK_WIDGET(self->obj), target_list);
     gtk_target_list_unref(target_list);
-    Py_DECREF(py_targets);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -6248,7 +6145,6 @@ _wrap_gtk_target_list_add_text_targets(PyGObject *self, PyObject *args,
     PyObject *list = NULL;
     guint info = 0;
     GtkTargetList *targets;
-    GList *tmp;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "|Oi:gtk.target_list_add_text_targets",
@@ -6256,31 +6152,12 @@ _wrap_gtk_target_list_add_text_targets(PyGObject *self, PyObject *args,
         return NULL;
     }
     if (!list || list == Py_None) {
-        list = NULL;
-    } else if (!PySequence_Check(list)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "list must be a sequence of target entries or None");
+        targets = gtk_target_list_new(NULL, 0);
+    } else if (!(targets = pygtk_target_list_from_sequence(list)))
         return NULL;
-    }
-    if (list)
-        list = PySequence_List(list);
-    else
-        list = PyList_New(0);
-    targets = gtk_target_list_new(NULL, 0);
-    gtk_target_list_add_text_targets(targets, info);
-    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
-        GtkTargetPair *pair = tmp->data;
-        PyObject *item;
-        gchar * name;
 
-        name = gdk_atom_name(pair->target);
-        item = Py_BuildValue("(Nii)",
-                             PyString_FromString(name),
-                             pair->flags, pair->info);
-        PyList_Append(list, item);
-        g_free(name);
-        Py_DECREF(item);
-    }
+    gtk_target_list_add_text_targets(targets, info);
+    list = pygtk_target_list_to_list(targets);
     gtk_target_list_unref(targets);
     return list;
 }
@@ -6295,7 +6172,6 @@ _wrap_gtk_target_list_add_image_targets(PyGObject *self, PyObject *args,
     guint info = 0;
     gboolean writable = FALSE;
     GtkTargetList *targets;
-    GList *tmp;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "|Oii:gtk.target_list_add_text_targets",
@@ -6303,31 +6179,12 @@ _wrap_gtk_target_list_add_image_targets(PyGObject *self, PyObject *args,
         return NULL;
     }
     if (!list || list == Py_None) {
-        list = NULL;
-    } else if (!PySequence_Check(list)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "list must be a sequence of target entries or None");
+        targets = gtk_target_list_new(NULL, 0);
+    } else if (!(targets = pygtk_target_list_from_sequence(list)))
         return NULL;
-    }
-    if (list)
-        list = PySequence_List(list);
-    else
-        list = PyList_New(0);
-    targets = gtk_target_list_new(NULL, 0);
-    gtk_target_list_add_image_targets(targets, info, writable);
-    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
-        GtkTargetPair *pair = tmp->data;
-        PyObject *item;
-        gchar * name;
 
-        name = gdk_atom_name(pair->target);
-        item = Py_BuildValue("(Nii)",
-                             PyString_FromString(name),
-                             pair->flags, pair->info);
-        PyList_Append(list, item);
-        g_free(name);
-        Py_DECREF(item);
-    }
+    gtk_target_list_add_image_targets(targets, info, writable);
+    list = pygtk_target_list_to_list(targets);
     gtk_target_list_unref(targets);
     return list;
 }
@@ -6341,7 +6198,6 @@ _wrap_gtk_target_list_add_uri_targets(PyGObject *self, PyObject *args,
     PyObject *list = NULL;
     guint info = 0;
     GtkTargetList *targets;
-    GList *tmp;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "|Oi:gtk.target_list_add_text_targets",
@@ -6349,31 +6205,12 @@ _wrap_gtk_target_list_add_uri_targets(PyGObject *self, PyObject *args,
         return NULL;
     }
     if (!list || list == Py_None) {
-        list = NULL;
-    } else if (!PySequence_Check(list)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "list must be a sequence of target entries or None");
+        targets = gtk_target_list_new(NULL, 0);
+    } else if (!(targets = pygtk_target_list_from_sequence(list)))
         return NULL;
-    }
-    if (list)
-        list = PySequence_List(list);
-    else
-        list = PyList_New(0);
-    targets = gtk_target_list_new(NULL, 0);
+
     gtk_target_list_add_uri_targets(targets, info);
-    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
-        GtkTargetPair *pair = tmp->data;
-         gchar * name;
-       PyObject *item;
- 
-        name = gdk_atom_name(pair->target);
-        item = Py_BuildValue("(Nii)",
-                             PyString_FromString(name),
-                             pair->flags, pair->info);
-        PyList_Append(list, item);
-        g_free(name);
-        Py_DECREF(item);
-    }
+    list = pygtk_target_list_to_list(targets);
     gtk_target_list_unref(targets);
     return list;
 }
@@ -8016,7 +7853,6 @@ _wrap_gtk_target_list_add_rich_text_targets(PyGObject *self, PyObject *args,
     PyObject *list = NULL;
     guint info = 0;
     GtkTargetList *targets;
-    GList *tmp;
     gboolean deserializable;
     PyGObject *buffer;
 
@@ -8027,32 +7863,13 @@ _wrap_gtk_target_list_add_rich_text_targets(PyGObject *self, PyObject *args,
         return NULL;
     }
     if (!list || list == Py_None) {
-        list = NULL;
-    } else if (!PySequence_Check(list)) {
-        PyErr_SetString(PyExc_TypeError,
-                        "list must be a sequence of target entries or None");
+        targets = gtk_target_list_new(NULL, 0);
+    } else if (!(targets = pygtk_target_list_from_sequence(list)))
         return NULL;
-    }
-    if (list)
-        list = PySequence_List(list);
-    else
-        list = PyList_New(0);
-    targets = gtk_target_list_new(NULL, 0);
+
     gtk_target_list_add_rich_text_targets(targets, info, deserializable,
                                           GTK_TEXT_BUFFER(buffer->obj));
-    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
-        GtkTargetPair *pair = tmp->data;
-        PyObject *item;
-        gchar * name;
-
-        name = gdk_atom_name(pair->target);
-        item = Py_BuildValue("(Nii)",
-                             PyString_FromString(name),
-                             pair->flags, pair->info);
-        PyList_Append(list, item);
-        g_free(name);
-        Py_DECREF(item);
-    }
+    list = pygtk_target_list_to_list(targets);
     gtk_target_list_unref(targets);
     return list;
 }

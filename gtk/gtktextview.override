@@ -1,6 +1,6 @@
 /* -*- Mode: C; c-basic-offset: 4 -*-
  * pygtk- Python bindings for the GTK toolkit.
- * Copyright (C) 1998-2003  James Henstridge
+ * Copyright (C) 1998-2006  James Henstridge
  *
  *   gtktextview.override: overrides for the gtk.TextView object.
  *
@@ -1268,4 +1268,17 @@ _wrap_gtk_text_view_get_iter_at_position(PyGObject *self, PyObject *args,
     return Py_BuildValue("Oi",
                           pyg_boxed_new(GTK_TYPE_TEXT_ITER, &iter, TRUE, TRUE),
                           trailing);
+}
+%%
+override gtk_text_buffer_get_copy_target_list noargs
+static PyObject*
+_wrap_gtk_text_buffer_get_copy_target_list(PyGObject *self)
+{
+    GtkTargetList *targets;
+    PyObject *py_targets;
+
+    targets = gtk_text_buffer_get_copy_target_list(GTK_TEXT_BUFFER(self->obj));
+    py_targets = pygtk_target_list_to_list(targets);
+    gtk_target_list_unref(targets);
+    return py_targets;
 }

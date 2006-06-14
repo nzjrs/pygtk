@@ -1,6 +1,6 @@
 /* -*- Mode: C; c-basic-offset: 4 -*-
  * pygtk- Python bindings for the GTK toolkit.
- * Copyright (C) 1998-2003  James Henstridge
+ * Copyright (C) 1998-2006  James Henstridge
  *
  *   gtkobject-support.c: some helper routines for the GTK module.
  *
@@ -69,3 +69,54 @@ pygdk_atom_vector_from_sequence(PyObject *py_targets, gint *n_targets)
     Py_DECREF(py_targets);
     return targets;
 }
+
+GtkTargetList *
+pygtk_target_list_from_sequence(PyObject *py_targets)
+{
+    gint n_targets, i;
+    GtkTargetEntry *targets;
+    GtkTargetList *target_list;
+
+    if (!(py_targets = PySequence_Fast(py_targets,
+                                       "target list must be a sequence")))
+	return NULL;
+    n_targets = PySequence_Fast_GET_SIZE(py_targets);
+    targets = g_new(GtkTargetEntry, n_targets);
+    for (i = 0; i < n_targets; i++) {
+        PyObject *item = PySequence_Fast_GET_ITEM(py_targets, i);
+        if (!PyArg_ParseTuple(item, "sii", &targets[i].target,
+                              &targets[i].flags, &targets[i].info)) {
+            PyErr_Clear();
+            PyErr_SetString(PyExc_TypeError,
+                            "target list items should be of form (string,int,int)");
+            g_free(targets);
+	    Py_DECREF(py_targets);
+            return NULL;
+        }
+    }
+    target_list = gtk_target_list_new(targets, n_targets);
+    g_free(targets);
+    Py_DECREF(py_targets);
+    return target_list;
+}
+
+PyObject *
+pygtk_target_list_to_list(GtkTargetList *targets)
+{
+    GList *tmp;
+    PyObject *list = PyList_New(0);
+
+    for (tmp = targets->list; tmp != NULL; tmp = tmp->next) {
+        GtkTargetPair *pair = tmp->data;
+        PyObject *item;
+        gchar * name = gdk_atom_name(pair->target);
+        item = Py_BuildValue("(Nii)",
+                             PyString_FromString(name),
+                             pair->flags, pair->info);
+        PyList_Append(list, item);
+        g_free(name);
+        Py_DECREF(item);
+    }
+    return list;
+}
+

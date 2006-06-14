@@ -1,3 +1,21 @@
+2006-06-14  John Finlay  <finlay@moeraki.com>
+
+	* gtk/gtktextview.override
+	(_wrap_gtk_text_buffer_get_copy_target_list): 
+	* gtk/gtk.override (_wrap_gtk_drag_dest_find_target) 
+	(_wrap_gtk_drag_dest_get_target_list) 
+	(_wrap_gtk_drag_dest_set_target_list, _wrap_gtk_drag_begin) 
+	(_wrap_gtk_drag_source_get_target_list) 
+	(_wrap_gtk_drag_source_set_target_list) 
+	(_wrap_gtk_target_list_add_text_targets) 
+	(_wrap_gtk_target_list_add_image_targets) 
+	(_wrap_gtk_target_list_add_uri_targets) 
+	(_wrap_gtk_target_list_add_rich_text_targets):
+	Use pygtk_target_list_from_sequence and pygtk_target_list_to_list.
+
+	* gtk/gtkobject-support.c (pygtk_target_list_from_sequence) 
+	(pygtk_target_list_to_list): Add.
+
 2006-06-13  John Finlay  <finlay@moeraki.com>
 
 	* gtk/gtk-2.10.defs (gtk_tree_view_set_search_entry): Allow entry arg
