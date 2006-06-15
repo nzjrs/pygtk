@@ -160,7 +160,7 @@ class PrintData:
 def begin_print(operation, context, print_data):
     width = context.get_width()
     height = context.get_height()
-    print_data.layout = context.create_layout()
+    print_data.layout = context.create_pango_layout()
     print_data.layout.set_font_description(pango.FontDescription("Sans 12"))
     print_data.layout.set_width(int(width*pango.SCALE))
     print_data.layout.set_text(print_data.text)
@@ -196,7 +196,7 @@ def draw_page(operation, context, page_nr, print_data):
     except IndexError:
         end = print_data.layout.get_line_count()
     
-    cr = context.get_cairo()
+    cr = context.get_cairo_context()
 
     cr.set_source_rgb(0, 0, 0)
   
@@ -247,7 +247,7 @@ def do_print(action):
     print_.connect("draw_page", draw_page, print_data)
 
     try:
-        res = print_.run(main_window)
+        res = print_.run(gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG, main_window)
     except gobject.GError, ex:
         error_dialog = gtk.MessageDialog(main_window,
                                          gtk.DIALOG_DESTROY_WITH_PARENT,
