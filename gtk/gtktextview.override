@@ -1282,3 +1282,58 @@ _wrap_gtk_text_buffer_get_copy_target_list(PyGObject *self)
     gtk_target_list_unref(targets);
     return py_targets;
 }
+%%
+override gtk_text_buffer_get_paste_target_list noargs
+static PyObject*
+_wrap_gtk_text_buffer_get_paste_target_list(PyGObject *self)
+{
+    GtkTargetList *targets;
+    PyObject *py_targets;
+
+    targets = gtk_text_buffer_get_paste_target_list(GTK_TEXT_BUFFER(self->obj));
+    py_targets = pygtk_target_list_to_list(targets);
+    gtk_target_list_unref(targets);
+    return py_targets;
+}
+%%
+override gtk_text_buffer_deserialize kwargs
+static PyObject *
+_wrap_gtk_text_buffer_deserialize(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "content_buffer", "format", "iter", "data",
+                              NULL };
+    gsize length;
+    PyObject *py_format = NULL, *py_iter;
+    GdkAtom format;
+    GError *error = NULL;
+    int data_len, ret;
+    guchar *data;
+    PyGObject *content_buffer;
+    GtkTextIter *iter = NULL;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O!OOs#k:GtkTextBuffer.deserialize",
+                                     kwlist, &PyGtkTextBuffer_Type,
+                                     &content_buffer, &py_format, &py_iter,
+                                     &data, &length))
+        return NULL;
+
+    format = pygdk_atom_from_pyobject(py_format);
+    if (PyErr_Occurred())
+        return NULL;
+
+    if (pyg_boxed_check(py_iter, GTK_TYPE_TEXT_ITER))
+        iter = pyg_boxed_get(py_iter, GtkTextIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "iter should be a GtkTextIter");
+        return NULL;
+    }
+
+    ret = gtk_text_buffer_deserialize(GTK_TEXT_BUFFER(self->obj),
+                                      GTK_TEXT_BUFFER(content_buffer->obj),
+                                      format, iter, data, length, &error);
+    if (pyg_error_check(&error))
+        return NULL;
+    return PyBool_FromLong(ret);
+}
