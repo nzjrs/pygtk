@@ -1307,8 +1307,8 @@ _wrap_gtk_text_buffer_deserialize(PyGObject *self, PyObject *args,
     PyObject *py_format = NULL, *py_iter;
     GdkAtom format;
     GError *error = NULL;
-    int data_len, ret;
-    guchar *data;
+    int ret;
+    guint8 *data;
     PyGObject *content_buffer;
     GtkTextIter *iter = NULL;
  
@@ -1336,4 +1336,257 @@ _wrap_gtk_text_buffer_deserialize(PyGObject *self, PyObject *args,
     if (pyg_error_check(&error))
         return NULL;
     return PyBool_FromLong(ret);
+}
+%%
+override gtk_text_buffer_serialize kwargs
+static PyObject *
+_wrap_gtk_text_buffer_serialize(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "content_buffer", "format", "start", "end",
+                              NULL };
+    PyObject *py_format = NULL, *py_start, *py_end;
+    GdkAtom format;
+    gsize length;
+    guint8 *ret;
+    PyGObject *content_buffer;
+    GtkTextIter *start = NULL, *end = NULL;
+ 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O!OOs#k:GtkTextBuffer.serialize",
+                                     kwlist, &PyGtkTextBuffer_Type,
+                                     &content_buffer, &py_format, &py_start,
+                                     &py_end))
+        return NULL;
+
+    format = pygdk_atom_from_pyobject(py_format);
+    if (PyErr_Occurred())
+        return NULL;
+
+    if (pyg_boxed_check(py_start, GTK_TYPE_TEXT_ITER))
+        start = pyg_boxed_get(py_start, GtkTextIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "start should be a GtkTextIter");
+        return NULL;
+    }
+    if (pyg_boxed_check(py_end, GTK_TYPE_TEXT_ITER))
+        end = pyg_boxed_get(py_end, GtkTextIter);
+    else {
+        PyErr_SetString(PyExc_TypeError, "end should be a GtkTextIter");
+        return NULL;
+    }
+
+    ret = gtk_text_buffer_serialize(GTK_TEXT_BUFFER(self->obj),
+                                      GTK_TEXT_BUFFER(content_buffer->obj),
+                                      format, start, end, &length);
+    return PyString_FromStringAndSize(ret, length);
+}
+%%
+override gtk_text_buffer_register_deserialize_format kwargs
+static gint
+pygtk_text_buffer_register_deserialize_format_cb(GtkTextBuffer *register_buf,
+                                                 GtkTextBuffer *content_buf,
+                                                 GtkTextIter *iter,
+                                                 const guint8 *data,
+                                                 gsize length,
+                                                 gboolean create_tags,
+                                                 gpointer user_data,
+                                                 GError **error)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_register_buf, *py_content_buf, *py_iter, *py_data, *retobj;
+    gboolean ret = FALSE;
+
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    py_register_buf = pygobject_new((GObject*)register_buf);
+    py_content_buf = pygobject_new((GObject*)content_buf);
+    py_iter = pyg_boxed_new(GTK_TYPE_TEXT_ITER, iter, TRUE, TRUE);
+    py_data = PyString_FromStringAndSize(data, length);
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NNNNiO)",
+                                     py_register_buf, py_content_buf,
+                                     py_iter, py_data, create_tags,
+                                     cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(NNNNi)", py_register_buf,
+                                     py_content_buf, py_iter, py_data,
+                                     create_tags);
+    }
+
+    if (retobj != NULL) {
+        ret = PyInt_AsLong(retobj);
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+    }
+
+    pyg_gil_state_release(state);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_text_buffer_register_deserialize_format(PyGObject *self,
+                                                  PyObject *args,
+                                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "mime_type", "function", "user_data", NULL };
+    PyObject *pyfunc, *pyarg = NULL, *ret;
+    PyGtkCustomNotify *cunote;
+    const gchar *mimetype;
+    GdkAtom atom;
+    gchar *name;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "sO|O:GtkTextBuffer.register_deserialize_format",
+                                     kwlist, &mimetype, &pyfunc, &pyarg))
+        return NULL;
+
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "function must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    atom = gtk_text_buffer_register_deserialize_format(
+        GTK_TEXT_BUFFER(self->obj), mimetype,
+        pygtk_text_buffer_register_deserialize_format_cb, cunote,
+        pygtk_custom_destroy_notify);
+
+    name = gdk_atom_name(atom);
+    ret = PyString_FromString(name);
+    g_free(name);
+    return ret;
+}
+%%
+override gtk_text_buffer_register_serialize_format kwargs
+static guint8*
+pygtk_text_buffer_register_serialize_format_cb(GtkTextBuffer *register_buf,
+                                               GtkTextBuffer *content_buf,
+                                               const GtkTextIter *start,
+                                               const GtkTextIter *end,
+                                               gsize *length,
+                                               gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_register_buf, *py_content_buf, *py_start, *py_end;
+    PyObject *retobj;
+    guint8 *ret;
+
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    py_register_buf = pygobject_new((GObject*)register_buf);
+    py_content_buf = pygobject_new((GObject*)content_buf);
+    py_start = pyg_boxed_new(GTK_TYPE_TEXT_ITER, (gpointer)start, TRUE, TRUE);
+    py_end = pyg_boxed_new(GTK_TYPE_TEXT_ITER, (gpointer)end, TRUE, TRUE);
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NNNNO)",
+                                     py_register_buf, py_content_buf,
+                                     py_start, py_end,
+                                     cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(NNNN)", py_register_buf,
+                                     py_content_buf, py_start, py_end);
+    }
+
+    if (retobj != NULL) {
+        PyString_AsStringAndSize(retobj, (gchar**)&ret, length);
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+    }
+
+    pyg_gil_state_release(state);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_text_buffer_register_serialize_format(PyGObject *self,
+                                                PyObject *args,
+                                                PyObject *kwargs)
+{
+    static char *kwlist[] = { "mime_type", "function", "user_data",
+                              NULL };
+    PyObject *pyfunc, *pyarg = NULL, *ret;
+    PyGtkCustomNotify *cunote;
+    const gchar *mimetype;
+    GdkAtom atom;
+    gchar *name;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "sO|O:GtkTextBuffer.register_serialize_format",
+                                     kwlist, &mimetype, &pyfunc, &pyarg))
+        return NULL;
+
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "function must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    atom = gtk_text_buffer_register_serialize_format(
+        GTK_TEXT_BUFFER(self->obj), mimetype,
+        pygtk_text_buffer_register_serialize_format_cb,
+        cunote, pygtk_custom_destroy_notify);
+
+    name = gdk_atom_name(atom);
+    ret = PyString_FromString(name);
+    g_free(name);
+    return ret;
+}
+%%
+override gtk_text_buffer_get_deserialize_formats noargs
+static PyObject *
+_wrap_gtk_text_buffer_get_deserialize_formats(PyGObject *self)
+{
+    GdkAtom *formats;
+    gint n_formats, i;
+    PyObject *py_formats;
+
+    formats = gtk_text_buffer_get_deserialize_formats(
+        GTK_TEXT_BUFFER(self->obj), &n_formats);
+
+    py_formats = PyList_New(n_formats);
+    for (i = 0; i < n_formats; i++) {
+        gchar *name = gdk_atom_name(formats[i]);
+        PyList_SetItem(py_formats, i, PyString_FromString(name));
+        g_free(name);
+    }
+    g_free(formats);
+    return py_formats;
+}
+%%
+override gtk_text_buffer_get_serialize_formats noargs
+static PyObject *
+_wrap_gtk_text_buffer_get_serialize_formats(PyGObject *self)
+{
+    GdkAtom *formats;
+    gint n_formats, i;
+    PyObject *py_formats;
+
+    formats = gtk_text_buffer_get_serialize_formats(
+        GTK_TEXT_BUFFER(self->obj), &n_formats);
+
+    py_formats = PyList_New(n_formats);
+    for (i = 0; i < n_formats; i++) {
+        gchar *name = gdk_atom_name(formats[i]);
+        PyList_SetItem(py_formats, i, PyString_FromString(name));
+        g_free(name);
+    }
+    g_free(formats);
+    return py_formats;
 }
