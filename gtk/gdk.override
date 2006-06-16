@@ -91,6 +91,7 @@ import pango.Renderer as PyPangoRenderer_Type
 ignore
   gdk_window_set_debug_updates
   gdk_region_destroy
+  gdk_atom_intern_static_string
 %%
 ignore-glob
   *_get_type
@@ -1423,4 +1424,46 @@ _wrap_gdk_pixmap_create_from_data(PyObject *self, PyObject *args, PyObject *kwar
     
     /* pygobject_new handles NULL checking */
     return pygobject_new((GObject *)ret);
+}
+%%
+override gdk_screen_get_font_options noargs
+static PyObject *
+_wrap_gdk_screen_get_font_options(PyGObject *self)
+{
+    const cairo_font_options_t *options;
+
+    options = gdk_screen_get_font_options(GDK_SCREEN(self->obj));
+    if (!options) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    return PycairoFontOptions_FromFontOptions(cairo_font_options_copy(options));
+}
+%%
+override gdk_screen_set_font_options kwargs
+static PyObject *
+_wrap_gdk_screen_set_font_options(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "options", NULL };
+    PyGObject *py_options;
+    const cairo_font_options_t *options;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O:GdkScreen.set_font_options",
+                                     kwlist, &py_options))
+        return NULL;
+    if ((PyObject*)py_options == Py_None)
+        options = NULL;
+    else if (pygobject_check(py_options, &PycairoFontOptions_Type))
+        options = ((PycairoFontOptions *)py_options)->font_options;
+    else {
+        PyErr_SetString(PyExc_TypeError,
+                        "options must be a cairo.FontOptions or None");
+        return NULL;
+    }
+
+    gdk_screen_set_font_options(GDK_SCREEN(self->obj), options);
+    Py_INCREF(Py_None);
+    return Py_None;
 }

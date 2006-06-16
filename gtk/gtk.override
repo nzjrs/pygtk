@@ -7873,3 +7873,80 @@ _wrap_gtk_target_list_add_rich_text_targets(PyGObject *self, PyObject *args,
     gtk_target_list_unref(targets);
     return list;
 }
+%%
+override gtk_notebook_set_window_creation_hook kwargs
+static GtkNotebook *
+pygtk_notebook_set_window_creation_hook_cb(GtkNotebook *notebook,
+                                           GtkWidget *page,
+                                           gint x, gint y,
+                                           gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *py_notebook, *py_page, *retobj;
+    GtkNotebook *ret = NULL;
+
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    py_notebook = pygobject_new((GObject*)notebook);
+    py_page = pygobject_new((GObject*)page);
+    
+    if (cunote->data) {
+        retobj = PyEval_CallFunction(cunote->func, "(NNiiO)", py_notebook,
+                                     py_page, x, y, cunote->data);
+    } else {
+        retobj = PyEval_CallFunction(cunote->func, "(NNii)", py_notebook,
+                                     py_page, x, y);
+    }
+
+    if (retobj) {
+        if (!pygobject_check((PyGObject*)retobj, &PyGtkNotebook_Type)) {
+            PyErr_SetString(PyExc_TypeError,
+                            "GtkNotebook window creation hook function return should be a GtkNotebook or None");
+            PyErr_Print();
+            ret = NULL;
+        } else {
+            ret = GTK_NOTEBOOK(pygobject_get(retobj));
+        }
+        Py_DECREF(retobj);
+    } else {
+        PyErr_Print();
+        ret = NULL;
+    }
+
+    pyg_gil_state_release(state);
+    return ret;
+}
+static PyObject *
+_wrap_gtk_notebook_set_window_creation_hook(PyGObject *self, PyObject *args,
+                                   PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "OO|O:GtkNotebook.set_window_creation_hook",
+                                     kwlist, &pyfunc, &pyarg))
+        return NULL;
+
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    gtk_notebook_set_window_creation_hook(
+        pygtk_notebook_set_window_creation_hook_cb,
+        cunote, pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
