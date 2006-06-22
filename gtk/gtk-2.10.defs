@@ -690,6 +690,21 @@
 
 ;; From gtklabel.h
 
+(define-method set_line_wrap_mode
+  (of-object "GtkLabel")
+  (c-name "gtk_label_set_line_wrap_mode")
+  (return-type "none")
+  (parameters
+    '("PangoWrapMode" "wrap_mode")
+  )
+)
+
+(define-method get_line_wrap_mode
+  (of-object "GtkLabel")
+  (c-name "gtk_label_get_line_wrap_mode")
+  (return-type "PangoWrapMode")
+)
+
 
 
 ;; From gtklayout.h
@@ -816,6 +831,7 @@
   (parameters
     '("GtkNotebookWindowCreationFunc" "func")
     '("gpointer" "data")
+    '("GDestroyNotify" "destroy")
   )
 )
 
