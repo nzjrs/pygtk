@@ -151,8 +151,6 @@ _wrap_gtk_print_job_send(PyGObject *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "callback", "user_data", NULL };
     PyObject *pyfunc, *pyarg = NULL;
     PyGtkCustomNotify *cunote;
-    GError *error = NULL;
-    gboolean ret;
   
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O|O:gtk.unixprint.PrintJob.send",
@@ -169,18 +167,10 @@ _wrap_gtk_print_job_send(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(cunote->func);
     Py_XINCREF(cunote->data);
  
-    ret = gtk_print_job_send(GTK_PRINT_JOB(self->obj),
+    gtk_print_job_send(GTK_PRINT_JOB(self->obj),
                              pygtk_print_job_complete_func_cb,
-                             cunote, pygtk_custom_destroy_notify, &error);
+                             cunote, pygtk_custom_destroy_notify);
  
-    if (!ret) {
-        Py_XDECREF(cunote->func);
-        Py_XDECREF(cunote->data);
-        g_free(cunote);
-    }
-
-    if (pyg_error_check(&error))
-        return NULL;
- 
-    return PyBool_FromLong(ret);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
