@@ -7956,14 +7956,16 @@ static PyObject *
 _wrap_gtk_print_operation_get_error(PyGObject *self)
 {
     GError *error = NULL;
-    PyObject *ret;
 
     gtk_print_operation_get_error(GTK_PRINT_OPERATION(self->obj), &error);
 
     if (pyg_error_check(&error)) {
-        ret = PyString_FromString(error->message);
+        PyObject *type, *value, *traceback;
+        PyErr_Fetch(&type, &value, &traceback);
         g_clear_error(&error);
-        return ret;
+        Py_DECREF(type);
+        Py_DECREF(traceback);
+        return value;
     }
 
     Py_INCREF(Py_None);

@@ -2,6 +2,9 @@
 
 	* gtk/gtk.override (_wrap_gtk_print_operation_get_error):
 	s/g_error_clear/g_clear_error/.
+	(_wrap_gtk_print_operation_get_error): Return the exception value,
+	not just error->message, so that the programmer can consult
+	error.domain and error.code in addition to error.message.
 
 2006-06-24  John Finlay  <finlay@moeraki.com>
 
