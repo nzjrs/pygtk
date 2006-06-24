@@ -7950,3 +7950,22 @@ _wrap_gtk_notebook_set_window_creation_hook(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_print_operation_get_error noargs
+static PyObject *
+_wrap_gtk_print_operation_get_error(PyGObject *self)
+{
+    GError *error = NULL;
+    PyObject *ret;
+
+    gtk_print_operation_get_error(GTK_PRINT_OPERATION(self->obj), &error);
+
+    if (pyg_error_check(&error)) {
+        ret = PyString_FromString(error->message);
+        g_error_clear(&error);
+        return ret;
+    }
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
