@@ -828,12 +828,14 @@ class ArgMatcher:
 
     def register_enum(self, ptype, typecode):
         if typecode is None:
-            typecode = "G_TYPE_NONE"
-        self.register(ptype, EnumArg(ptype, typecode))
+            self.register(ptype, IntArg())
+        else:
+            self.register(ptype, EnumArg(ptype, typecode))
     def register_flag(self, ptype, typecode):
         if typecode is None:
-            typecode = "G_TYPE_NONE"
-        self.register(ptype, FlagsArg(ptype, typecode))
+            self.register(ptype, IntArg())
+        else:
+            self.register(ptype, FlagsArg(ptype, typecode))
     def register_object(self, ptype, parent, typecode):
         oa = ObjectArg(ptype, parent, typecode)
         self.register(ptype, oa)  # in case I forget the * in the .defs

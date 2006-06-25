@@ -1,5 +1,11 @@
 2006-06-25  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* codegen/argtypes.py (ArgMatcher.register_enum,
+	(ArgMatcher.register_flag): Use IntArg to handle enums and flags
+	with no typecode.  This is to avoid the compiler warning
+	"dereferencing type-punned pointer will break strict-aliasing
+	rules" when converting enums or flags with no typecode.
+
 	* codegen/codegen.py (SourceWriter.write_enums): Typecast second
 	 argument of PyModule_AddIntConstant to
 	 (char*) to avoid const warning on python < 2.5.
