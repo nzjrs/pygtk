@@ -7625,12 +7625,12 @@ _wrap_gtk_recent_manager_add_full(PyGObject *self, PyObject *args,
     }
 
     if ((item = PyDict_GetItemString(py_data, "is_private"))) {
-        if (!PyString_Check(item)) {
+        if (!PyBool_Check(item)) {
             PyErr_SetString(PyExc_TypeError,
                             "recent_data 'is_private' must reference a boolean");
             return NULL;
         }
-        if (PyInt_AsLong(item))
+        if (item == Py_True)
             recent_data.is_private = TRUE;
         else
             recent_data.is_private = FALSE;
