@@ -5,6 +5,9 @@
 	with no typecode.  This is to avoid the compiler warning
 	"dereferencing type-punned pointer will break strict-aliasing
 	rules" when converting enums or flags with no typecode.
+	(EnumArg.enum): Typecast to gpointer, not gint*, to avoid gcc type
+	punning warnings.
+	(FlagsArg.flag): idem.
 
 	* codegen/codegen.py (SourceWriter.write_enums): Typecast second
 	 argument of PyModule_AddIntConstant to
