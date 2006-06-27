@@ -98,6 +98,16 @@
       </methodsynopsis>
 </classsynopsis>
 
+<programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--print-run-page-setup-dialog">gtk.print_run_page_setup_dialog</link></methodname>
+    <methodparam><parameter role="keyword">parent</parameter></methodparam>
+    <methodparam><parameter role="keyword">page_setup</parameter></methodparam>
+    <methodparam><parameter role="keyword">settings</parameter></methodparam>
+  </methodsynopsis></programlisting>
+
   </refsect1>
 
   <refsect1>
@@ -107,6 +117,12 @@
   +-- <link linkend="class-gtkpagesetup">gtk.PageSetup</link>
 </synopsis>
 
+  </refsect1>
+
+  <refsect1 id="signal-prototypes-gtkpagesetup">
+    <title>gtk.PageSetup Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
   </refsect1>
 
   <refsect1>
@@ -741,6 +757,58 @@
       consideration.  See the <link
       linkend="method-gtkpagesetup--get-paper-height"><methodname>get_paper_height()</methodname></link>
       method.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gtk--print-run-page-setup-dialog">
+      <title>gtk.print_run_page_setup_dialog</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.print_run_page_setup_dialog</methodname>
+	  <methodparam><parameter
+			 role="keyword">parent</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">page_setup</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">settings</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">parent</parameter>&nbsp;:</term>
+	  <listitem><simpara>transient parent, or
+	  <literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">page_setup</parameter>&nbsp;:</term>
+	  <listitem><simpara>an existing <link
+	  linkend="class-gtkpagesetup"><classname>gtk.PageSetup</classname></link>,
+	  or <literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">settings</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtkprintsettings"><classname>gtk.PrintSettings</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+	  linkend="class-gtkpagesetup"><classname>gtk.PageSetup</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>Runs a page setup dialog, letting the user modify the values
+      from page_setup. If the user cancels the dialog, the returned <link
+      linkend="class-gtkpagesetup"><classname>gtk.PageSetup</classname></link>
+      is identical to the passed in page_setup, otherwise it contains the
+      modifications done in the dialog.</para>
+
+      <para>Note that this function may use a recursive mainloop to show the
+      page setup dialog.</para>
 
     </refsect2>
 

@@ -42,8 +42,11 @@ linkend="method-gtkcellrenderertext--set-fixed-height-from-font">set_fixed_heigh
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
+  <refsect1 id="properties-gtkcellrenderertext">
+    <title>gtk.CellRendererText Properties</title>
+
+    <para><link linkend="properties-gtkobject">gtk.Object Properties</link></para>
+    <para><link linkend="properties-gtkcellrenderer">gtk.CellRenderer Properties</link></para>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -340,13 +343,32 @@ weight. Default: <literal>FALSE</literal></entry>
 
 	<row valign="top">
 	  <entry>"width-chars"</entry>
-	  <entry>Read/Write</entry>
-	  <entry>The desired width of the cell, in characters. If this
-property is set to -1, the width will be calculated automatically,
-otherwise the cell will request either 3 characters or the property
-value, whichever is greater. GTK+ 2.6 and above.
-Allowed values &gt;= -1. Default value: -1</entry>
+	  <entry>Read/Write</entry> <entry>The desired width of the cell, in
+	  characters. If this property is set to -1, the width will be
+	  calculated automatically, otherwise the cell will request either 3
+	  characters or the property value, whichever is greater. GTK+ 2.6
+	  and above.  Allowed values &gt;= -1. Default value: -1</entry>
 	</row>
+
+        <row valign="top">
+          <entry>"wrap-mode"</entry>
+          <entry>Read-Write</entry>
+          <entry>Specifies how to break the string into multiple lines, if
+          the cell renderer does not have enough room to display the entire
+          string.  This property has no effect unless the "wrap-width"
+          property is set.  This property is available in GTK+ 2.8 and
+          above.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"wrap-width"</entry>
+          <entry>Read-Write</entry>
+          <entry>Specifies the width at which the text is wrapped. The
+          "wrap-mode" property can be used to influence at what character
+          positions the line breaks can be placed.  Setting "wrap-width" to
+          -1 turns wrapping off.  This property is available in GTK+ 2.8 and
+          above.</entry>
+        </row>
 
 	</tbody>
       </tgroup>
@@ -355,8 +377,12 @@ Allowed values &gt;= -1. Default value: -1</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="signal-prototypes-gtkcellrenderertext">
+    <title>gtk.CellRendererText Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkobject">gtk.Object Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkcellrenderer">gtk.CellRenderer Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>
@@ -386,10 +412,12 @@ linkend="signal-gtkcellrenderertext--edited">edited</link>"</term>
     <title>Description</title>
 
     <para>The <link
-linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link> 
-manages the rendering of text into a <link
-linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
-cell.</para>
+    linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
+    manages the rendering of text into a <link
+    linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
+    cell, using the font, color and style information provided by its
+    properties. The text will be ellipsized if it is too long and the
+    "ellipsize" property allows it.</para>
 
   </refsect1>
 

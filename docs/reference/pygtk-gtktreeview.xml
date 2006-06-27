@@ -447,6 +447,46 @@ END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
         <methodname><link linkend="method-gtktreeview--get-visible-range">get_visible_range</link></methodname>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-headers-clickable">get_headers_clickable</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-search-entry">get_search_entry</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-search-entry">set_search_entry</link></methodname>
+        <methodparam><parameter role="keyword">entry</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-search-position-func">set_search_position_func</link></methodname>
+        <methodparam><parameter role="keyword">func</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-rubber-banding">set_rubber_banding</link></methodname>
+        <methodparam><parameter role="keyword">enable</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-rubber-banding">get_rubber_banding</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-grid-lines">get_grid_lines</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-grid-lines">set_grid_lines</link></methodname>
+        <methodparam><parameter role="keyword">grid_lines</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-enable-tree-lines">get_enable_tree_lines</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-enable-tree-lines">set_enable_tree_lines</link></methodname>
+        <methodparam><parameter role="keyword">enabled</parameter></methodparam>      </methodsynopsis>
 
     </classsynopsis>
 
@@ -464,8 +504,12 @@ END NOT IMPLEMENTED -->
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
+  <refsect1 id="properties-gtktreeview">
+    <title>gtk.TreeView Properties</title>
+
+    <para><link linkend="properties-gtkobject">gtk.Object Properties</link></para>
+    <para><link linkend="properties-gtkwidget">gtk.Widget Properties</link></para>
+    <para><link linkend="properties-gtkcontainer">gtk.Container Properties</link></para>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -475,12 +519,26 @@ END NOT IMPLEMENTED -->
 	  <colspec column="3" colwidth="4in"/>
 	  <tbody>
 
+            <row valign="top">
+              <entry>"enable-grid-lines"</entry>
+              <entry>Read-Write</entry>
+              <entry>If <literal>TRUE</literal> grid lines should be drawn
+              in the tree view</entry>
+            </row>
+
 	    <row valign="top">
 	      <entry>"enable-search"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, the user can search through
 columns interactively. Default value: <literal>TRUE</literal></entry>
 	    </row>
+
+            <row valign="top">
+              <entry>"enable-tree-lines"</entry>
+              <entry>Read-Write</entry>
+              <entry>If <literal>TRUE</literal> tree lines should be drawn
+              in the tree view</entry>
+            </row>
 
 	    <row valign="top">
 	      <entry>"expander-column"</entry>
@@ -544,6 +602,12 @@ linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></l
 value: <literal>FALSE</literal>. Available in GTK+ 2.6 and above.</entry>
 	    </row>
 
+            <row valign="top">
+              <entry>"level-indentation"</entry>
+              <entry>Read-Write</entry>
+              <entry>Extra indentation for each level</entry>
+            </row>
+
 	    <row valign="top">
 	      <entry>"model"</entry>
 	      <entry>Read-Write</entry>
@@ -556,6 +620,13 @@ value: <literal>FALSE</literal>. Available in GTK+ 2.6 and above.</entry>
 	      <entry>If <literal>TRUE</literal>, the view is
 reorderable. Default value: <literal>FALSE</literal>.</entry>
 	    </row>
+
+            <row valign="top">
+              <entry>"rubber-banding"</entry>
+              <entry>Read-Write</entry>
+              <entry>If <literal>TRUE</literal> enable selection of multiple
+              items by dragging the mouse pointer</entry>
+            </row>
 
 	    <row valign="top">
 	      <entry>"rules-hint"</entry>
@@ -572,6 +643,12 @@ draw rows in alternating colors. Default value:
 code. Allowed values: >= -1. Default value: -1</entry>
 	    </row>
 
+            <row valign="top">
+              <entry>"show-expanders"</entry>
+              <entry>Read-Write</entry>
+              <entry>View has expanders</entry>
+            </row>
+
 	    <row valign="top">
 	      <entry>"vadjustment"</entry>
 	      <entry>Read-Write</entry>
@@ -585,8 +662,8 @@ code. Allowed values: >= -1. Default value: -1</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Style Properties</title>
+  <refsect1 id="style-properties-gtktreeview">
+    <title>gtk.TreeView Style Properties</title>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -618,6 +695,18 @@ to use for even rows. Available in GTK+ 2.2 and above.</entry>
 Default value: 12</entry>
 	    </row>
 
+            <row valign="top">
+              <entry>"grid-line-pattern"</entry>
+              <entry>Read</entry>
+              <entry>Dash pattern used to draw the tree view grid lines</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"grid-line-width"</entry>
+              <entry>Read</entry>
+              <entry>Width, in pixels, of the tree view grid lines</entry>
+            </row>
+
 	    <row valign="top">
 	      <entry>"horizontal-separator"</entry>
 	      <entry>Read</entry>
@@ -640,6 +729,24 @@ linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
 to use for odd rows. Available in GTK+ 2.2 and above.</entry>
 	    </row>
 
+            <row valign="top">
+              <entry>"row-ending-details"</entry>
+              <entry>Read</entry>
+              <entry>Enable extended row background theming</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"tree-line-pattern"</entry>
+              <entry>Read</entry>
+              <entry>Dash pattern used to draw the tree view lines</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"tree-line-width"</entry>
+              <entry>Read</entry>
+              <entry>Width, in pixels, of the tree view lines</entry>
+            </row>
+
 	    <row valign="top">
 	      <entry>"vertical-separator"</entry>
 	      <entry>Read</entry>
@@ -654,8 +761,13 @@ number. Allowed values: >= 0. Default value: 2</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="signal-prototypes-gtktreeview">
+    <title>gtk.TreeView Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkobject">gtk.Object Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkwidget">gtk.Widget Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkcontainer">gtk.Container Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>
@@ -2428,163 +2540,21 @@ drag</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>enable_model_drag_source</methodname>() method
-sets the treeview to start a drag operation when the user click and drags on
-a row. The value of <parameter>start_button_mask</parameter> is a
-combination of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
-	  <listitem>
-	    <simpara>The Shift key.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.LOCK_MASK</literal></term>
-	  <listitem>
-	    <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be Caps Lock or Shift Lock).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
-	  <listitem>
-	    <simpara>The Control key. </simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD1_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fourth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this modifier, but
-normally it is the Alt key).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD2_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fifth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD3_MASK</literal></term>
-	  <listitem>
-	    <simpara>The sixth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD4_MASK</literal></term>
-	  <listitem>
-	    <simpara>The seventh modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD5_MASK</literal></term>
-	  <listitem>
-	    <simpara>The eighth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
-	  <listitem>
-	    <simpara>The first mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
-	  <listitem>
-	    <simpara>The second mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
-	  <listitem>
-	    <simpara>The third mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fourth mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fifth mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
-	  <listitem>
-	    <simpara>Differentiates between (keyval, modifiers) pairs from
-key press and release events.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
-	  <listitem>
-	    <simpara>all of the above</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
+      sets the treeview to start a drag operation when the user click and
+      drags on a row. The value of <parameter>start_button_mask</parameter>
+      is a combination of the<xref linkend="gdk-modifier-constants"
+      endterm="gdk-modifier-constants-title"></xref>.</para>
 
       <para><parameter>targets</parameter> is a sequence (list or tuple) of
-tuples that contain information about the targets. The target data contains
-a string representing the drag type, target flags (a combination of
-<literal>gtk.TARGET_SAME_APP</literal> and
-<literal>gtk.TARGET_SAME_WIDGET</literal> or neither) and an application
-assigned integer ID used for identification purposes.</para>
+      tuples that contain information about the targets. The target data
+      contains a string representing the drag type, target flags (a
+      combination of the <xref linkend="gtk-target-flags-constants"
+      endterm="gtk-target-flags-constants-title"></xref>) and an application
+      assigned integer ID used for identification purposes.</para>
 
-      <para>The value of <parameter>actions</parameter> is one of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_DEFAULT</literal></term>
-	  <term><literal>gtk.gdk.ACTION_COPY</literal></term>
-	  <listitem>
-	    <simpara>Copy the data.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_MOVE</literal></term>
-	  <listitem>
-	    <simpara>Move the data, i.e. first copy it, then delete it from
-the source using the <literal>DELETE</literal> target of the X selection
-protocol.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_LINK</literal></term>
-	  <listitem>
-	    <simpara>Add a link to the data. Note that this is only useful
-if source and destination agree on what it means.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_PRIVATE</literal></term>
-	  <listitem>
-	    <simpara>Special action which tells the source that the
-destination will do something that the source doesn't understand.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_ASK</literal></term>
-	  <listitem>
-	    <simpara>Ask the user what to do with the data.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+      <para>The value of <parameter>actions</parameter> is one of the <xref
+      linkend="gdk-drag-action-constants"
+      endterm="gdk-drag-action-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -2612,56 +2582,19 @@ drag</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>enable_model_drag_dest</methodname>() method
-sets the treeview to receive a drag drop.</para>
+      sets the treeview to receive a drag drop.</para>
 
       <para><parameter>targets</parameter> is a sequence (list or tuple) of
-tuples that contain information about the targets. The target data contains
-a string representing the drag type, target flags (a combination of
-<literal>gtk.TARGET_SAME_APP</literal> and
-<literal>gtk.TARGET_SAME_WIDGET</literal> or neither) and an application
-assigned integer ID used for identification purposes.</para>
+      tuples that contain information about the targets. The target data
+      contains a string representing the drag type, target flags (a
+      combination of <literal>gtk.TARGET_SAME_APP</literal> and
+      <literal>gtk.TARGET_SAME_WIDGET</literal> or neither) and an
+      application assigned integer ID used for identification
+      purposes.</para>
 
-      <para>The value of <parameter>actions</parameter> is one of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_DEFAULT</literal></term>
-	  <term><literal>gtk.gdk.ACTION_COPY</literal></term>
-	  <listitem>
-	    <simpara>Copy the data.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_MOVE</literal></term>
-	  <listitem>
-	    <simpara>Move the data, i.e. first copy it, then delete it from
-the source using the <literal>DELETE</literal> target of the X selection
-protocol.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_LINK</literal></term>
-	  <listitem>
-	    <simpara>Add a link to the data. Note that this is only useful
-if source and destination agree on what it means.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_PRIVATE</literal></term>
-	  <listitem>
-	    <simpara>Special action which tells the source that the
-destination will do something that the source doesn't understand.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.ACTION_ASK</literal></term>
-	  <listitem>
-	    <simpara>Ask the user what to do with the data.</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+      <para>The value of <parameter>actions</parameter> is one of the <xref
+      linkend="gdk-drag-action-constants"
+      endterm="gdk-drag-action-constants-title"></xref>.</para>
 
     </refsect2>
 
@@ -3275,6 +3208,282 @@ the visible region or <literal>None</literal>.</simpara></listitem>
 a 2-tuple containing the start and end paths for the visible region in the
 treeview. If no valid paths are available this method returns
 <literal>None</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--get-headers-clickable">
+      <title>gtk.TreeView.get_headers_clickable</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_headers_clickable</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if all header columns
+          are clickable</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Returns <literal>TRUE</literal> if all header columns are
+      clickable.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--get-search-entry">
+      <title>gtk.TreeView.get_search_entry</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_search_entry</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the entry currently in use as the search
+          entry.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Returns the <link
+      linkend="class-gtkentry"><classname>gtk.Entry</classname></link> which
+      is currently in use as the interactive search entry for the treeview.
+      In case the built-in entry is being used, <literal>None</literal> will
+      be returned.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-search-entry">
+      <title>gtk.TreeView.set_search_entry</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_search_entry</methodname>
+        <methodparam><parameter role="keyword">entry</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">entry</parameter>&nbsp;:</term>
+          <listitem><simpara>the entry the interactive search code of the
+          treeview should use or
+          <literal>None</literal></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Sets the entry which the interactive search code will use for
+      this treeview.  This is useful when you want to provide a search entry
+      in our interface at all time at a fixed position.  Passing
+      <literal>None</literal> for <parameter>entry</parameter> will make the
+      interactive search code use the built-in popup entry again.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-search-position-func">
+      <title>gtk.TreeView.set_search_position_func</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_search_position_func</methodname>
+        <methodparam><parameter role="keyword">func</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">func</parameter>&nbsp;:</term>
+          <listitem><simpara>the function to use to position the search
+          dialog, or <literal>None</literal> to use the default search
+          position function</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+          <listitem><simpara>user data to pass to
+          <parameter>func</parameter>, or
+          <literal>None</literal></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Sets the function to use when positioning the search dialog. The
+      signature of <parameter>func</parameter> is:</para>
+
+      <programlisting>
+  def func(treeview, search_dialog, user_data):
+      </programlisting>
+
+      <para>where <parameter>search_dialog</parameter> is the dialog to be
+      positioned and <parameter>user_data</parameter> is
+      <parameter>data</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-rubber-banding">
+      <title>gtk.TreeView.set_rubber_banding</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_rubber_banding</methodname>
+        <methodparam><parameter role="keyword">enable</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">enable</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> enable rubber
+          banding</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Enables or disables rubber banding.  If the selection mode is
+      <literal>gtk.SELECTION_MULTIPLE</literal>, rubber banding will allow
+      the user to select multiple rows by dragging the mouse.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--get-rubber-banding">
+      <title>gtk.TreeView.get_rubber_banding</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_rubber_banding</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if rubber banding is
+          enabled.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Returns whether rubber banding is enabled.  If the selection
+      mode is <literal>gtk.SELECTION_MULTIPLE</literal>, rubber banding will
+      allow the user to select multiple rows by dragging the mouse.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--get-grid-lines">
+      <title>gtk.TreeView.get_grid_lines</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_grid_lines</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>one of the <xref
+          linkend="gtk-treeview-grid-lines-constants"
+          endterm="gtk-treeview-grid-lines-constants-title"></xref>
+          indicating which grid lines are enabled.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Returns which grid lines are enabled.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-grid-lines">
+      <title>gtk.TreeView.set_grid_lines</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_grid_lines</methodname>
+        <methodparam><parameter role="keyword">grid_lines</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">grid_lines</parameter>&nbsp;:</term>
+          <listitem><simpara>one of the <xref
+          linkend="gtk-treeview-grid-lines-constants"
+          endterm="gtk-treeview-grid-lines-constants-title"></xref>
+          indicating which grid lines to enable.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Sets which grid lines to draw.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--get-enable-tree-lines">
+      <title>gtk.TreeView.get_enable_tree_lines</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_enable_tree_lines</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if tree lines are
+          drawn.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Returns <literal>TRUE</literal> if tree lines are drawn.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--set-enable-tree-lines">
+      <title>gtk.TreeView.set_enable_tree_lines</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_enable_tree_lines</methodname>
+        <methodparam><parameter role="keyword">enabled</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">enabled</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> enable tree line
+          drawing.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Sets whether to draw lines interconnecting the expanders.  This
+      does not have any visible effects for lists.</para>
 
     </refsect2>
 

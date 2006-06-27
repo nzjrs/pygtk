@@ -83,6 +83,14 @@ linkend="method-gtkselectiondata--get-uris">get_uris</link></methodname>
 linkend="method-gtkselectiondata--targets-include-image">targets_include_image</link></methodname>
 	<methodparam><parameter role="keyword">writable</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkselectiondata--targets-include-rich-text">targets_include_rich_text</link></methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkselectiondata--targets-include-uri">targets_include_uri</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -107,6 +115,26 @@ linkend="method-gtkselectiondata--targets-include-image">targets_include_image</
 	<methodname><link linkend="function-gtk--target-list-add-uri-targets">gtk.target_list_add_uri_targets</link></methodname>
 	<methodparam><parameter role="keyword">list</parameter><initializer>None</initializer></methodparam>
 	<methodparam><parameter role="keyword">info</parameter><initializer>0</initializer></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--target-list-add-rich-text-targets">gtk.target_list_add_rich_text_targets</link></methodname>
+	<methodparam><parameter role="keyword">list</parameter></methodparam>
+	<methodparam><parameter role="keyword">info</parameter></methodparam>
+	<methodparam><parameter role="keyword">deserializable</parameter></methodparam>
+	<methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--targets-include-image">gtk.targets_include_image</link></methodname>
+	<methodparam><parameter role="keyword">targets</parameter></methodparam>
+	<methodparam><parameter role="keyword">writable</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--targets-include-rich-text">gtk.targets_include_rich_text</link></methodname>
+	<methodparam><parameter role="keyword">targets</parameter></methodparam>
+	<methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--targets-include-text">gtk.targets_include_text</link></methodname>
+	<methodparam><parameter role="keyword">targets</parameter></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link linkend="function-gtk--targets-include-uri">gtk.targets_include_uri</link></methodname>
+	<methodparam><parameter role="keyword">targets</parameter></methodparam>
       </methodsynopsis>
 </programlisting>
 
@@ -553,6 +581,63 @@ target.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkselectiondata--targets-include-rich-text">
+      <title>gtk.SelectionData.targets_include_rich_text</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>targets_include_rich_text</methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">buffer</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link
+          linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if a suitable target
+          for rich text is included in the selectiondata
+          targets.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Determines if any of the selectiondata targets can be used to
+      provide rich text.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkselectiondata--targets-include-uri">
+      <title>gtk.SelectionData.targets_include_uri</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>targets_include_uri</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if a suitable target
+          for uris is included in the selectiondata
+          targets.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Determines if any of the selectiondata targets can be used to
+      provide a list of URIs.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -747,6 +832,193 @@ linkend="class-gtkselectiondata"><classname>gtk.SelectionData</classname></link>
 to the list of target entry tuple specified by
 <parameter>list</parameter>. <literal>info</literal> is used as the info
 field of the target entry tuples.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--targets-include-uri">
+      <title>gtk.targets_include_uri</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.targets_include_uri</methodname>
+	  <methodparam><parameter
+			 role="keyword">targets</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of target strings</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if targets includes a
+	  uri target.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Determines if any of the targets in
+      <parameter>targets</parameter> can be used to provide an uri
+      list.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--targets-include-text">
+      <title>gtk.targets_include_text</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.targets_include_text</methodname>
+	  <methodparam><parameter
+			 role="keyword">targets</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of target strings</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if targets includes a
+	  text target.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Determines if any of the targets in
+      <parameter>targets</parameter> can be used to provide text.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--targets-include-rich-text">
+      <title>gtk.targets_include_rich_text</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.targets_include_rich_text</methodname>
+	  <methodparam><parameter
+			 role="keyword">targets</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">buffer</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of target strings</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">buffer</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Determines if any of the targets in
+      <parameter>targets</parameter> can be used to provide rich
+      text.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--targets-include-image">
+      <title>gtk.targets_include_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.targets_include_image</methodname>
+	  <methodparam><parameter
+			 role="keyword">targets</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">writable</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of target strings</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">writable</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal> accept only targets
+	  for which GTK+ knows how to convert a pixbuf into the
+	  format</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>TRUE</literal> if
+	  <parameter>targets</parameter> include a suitable target for
+	  images</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Determines if any of the targets in targets can be used to
+      provide a <link
+      linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--target-list-add-rich-text-targets">
+      <title>gtk.target_list_add_rich_text_targets</title>
+
+      <programlisting><methodsynopsis language="python">
+	<methodname>gtk.target_list_add_rich_text_targets</methodname>
+	<methodparam><parameter role="keyword">list</parameter></methodparam>
+	<methodparam><parameter role="keyword">info</parameter></methodparam>
+	<methodparam><parameter role="keyword">deserializable</parameter></methodparam>
+	<methodparam><parameter role="keyword">buffer</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">list</parameter>&nbsp;:</term>
+	  <listitem><simpara>a list of targets</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">info</parameter>&nbsp;:</term>
+	  <listitem><simpara>an ID that will be passed back to the
+	  application</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">deserializable</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>, deserializable rich
+	  text formats will be added, otherwise, serializable formats will
+	  be added.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">buffer</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a target list with the rich text targets
+	  registered with <parameter>buffer</parameter> appended to
+	  <parameter>list</parameter>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Appends the rich text targets registered with the <link
+      linkend="method-gtktextbuffer--register-serialize-format"><methodname>register_serialize_format</methodname>()</link>
+      or <link
+      linkend="method-gtktextbuffer--register-deserialize-format"><methodname>register_deserialize_format</methodname>()</link>
+      methods to the target list. All targets are added with the same
+      <parameter>info</parameter>.
+
+list</para>
 
     </refsect2>
 

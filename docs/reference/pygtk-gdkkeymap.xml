@@ -300,131 +300,27 @@ level</simpara>
       </note>
 
       <para>The <methodname>translate_keyboard_state</methodname>() method
-translates the contents of a keyboard <link
-linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
-(specified by <parameter>keycode</parameter>, <parameter>state</parameter>
-and <parameter>group</parameter>) into a keyval, effective group, level and
-consumed modifiers that affected the translation (and are unavailable for
-application use) which are returned in a 4-tuple. See the <link
-linkend="method-gdkkeymap--lookup-key"><methodname>lookup_key</methodname>()</link>
-method for an explanation of groups and levels. The effective group is the
-group that was actually used for the translation; some keys such as
-<keycap>Enter</keycap> are not affected by the active keyboard group. The
-level is derived from <parameter>state</parameter>. For convenience, the
-keyboard <link
-linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link> already
-contains the translated keyval, so this method isn't as useful as you might
-think.</para>
+      translates the contents of a keyboard <link
+      linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+      (specified by <parameter>keycode</parameter>,
+      <parameter>state</parameter> and <parameter>group</parameter>) into a
+      keyval, effective group, level and consumed modifiers that affected
+      the translation (and are unavailable for application use) which are
+      returned in a 4-tuple. See the <link
+      linkend="method-gdkkeymap--lookup-key"><methodname>lookup_key</methodname>()</link>
+      method for an explanation of groups and levels. The effective group is
+      the group that was actually used for the translation; some keys such
+      as <keycap>Enter</keycap> are not affected by the active keyboard
+      group. The level is derived from <parameter>state</parameter>. For
+      convenience, the keyboard <link
+      linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+      already contains the translated keyval, so this method isn't as useful
+      as you might think.</para>
 
       <para>The value of <parameter>state</parameter> or the consumed
-modifiers is a combination of:</para>
-
-      <variablelist>
-	<varlistentry>
-	  <term><literal>gtk.gdk.SHIFT_MASK</literal></term>
-	  <listitem>
-	    <simpara>The Shift key.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.LOCK_MASK</literal></term>
-	  <listitem>
-	    <simpara>A Lock key (depending on the modifier mapping of the X
-server this may either be CapsLock or ShiftLock).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.CONTROL_MASK</literal></term>
-	  <listitem>
-	    <simpara>The Control key. </simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD1_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fourth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this modifier, but
-normally it is the Alt key).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD2_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fifth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD3_MASK</literal></term>
-	  <listitem>
-	    <simpara>The sixth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD4_MASK</literal></term>
-	  <listitem>
-	    <simpara>The seventh modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MOD5_MASK</literal></term>
-	  <listitem>
-	    <simpara>The eighth modifier key (it depends on the modifier
-mapping of the X server which key is interpreted as this
-modifier).</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON1_MASK</literal></term>
-	  <listitem>
-	    <simpara>The first mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON2_MASK</literal></term>
-	  <listitem>
-	    <simpara>The second mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON3_MASK</literal></term>
-	  <listitem>
-	    <simpara>The third mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON4_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fourth mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.BUTTON5_MASK</literal></term>
-	  <listitem>
-	    <simpara>The fifth mouse button.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.RELEASE_MASK</literal></term>
-	  <listitem>
-	    <simpara>Differentiates between (keyval, modifiers) pairs from
-key press and release events.</simpara>
-	  </listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><literal>gtk.gdk.MODIFIER_MASK</literal></term>
-	  <listitem>
-	    <simpara>all of the above</simpara>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-
-      <para></para>
+      modifiers is a combination of the <xref
+      linkend="gdk-modifier-constants"
+      endterm="gdk-modifier-constants-title"></xref>.</para>
 
       <refsect3>
 	<title>Consumed Modifiers</title>

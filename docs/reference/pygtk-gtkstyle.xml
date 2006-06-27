@@ -755,6 +755,36 @@ be used for the background stippling in each widget state.</entry>
 
   </refsect1>
 
+  <refsect1 id="signal-prototypes-gtkstyle">
+    <title>gtk.Style Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+
+      <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkstyle--realize">realize</link></term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>style</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkstyle--unrealize">unrealize</link></term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>style</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
   <refsect1>
     <title>Description</title>
 
@@ -2827,5 +2857,92 @@ while drawing. Currently the grip can only be drawn at the
     </refsect2>
 
   </refsect1>
+
+  <refsect1>
+    <title>Signals</title>
+
+    <refsect2 id="signal-gtkstyle--realize">
+      <title>The "realize" gtk.Style Signal</title>
+
+      <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>style</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>style</parameter>&nbsp;:</term>
+          <listitem><simpara>the object which received the
+          signal.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+          with the <link
+          linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+          method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.4 and above.</para>
+      </note>
+
+      <para>Emitted when the style has been initialized for a particular
+      colormap and depth. Connecting to this signal is probably seldom
+      useful since most of the time applications and widgets only deal with
+      styles that have been already realized.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkstyle--unrealize">
+      <title>The "unrealize" gtk.Style Signal</title>
+
+      <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>style</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>style</parameter>&nbsp;:</term>
+          <listitem><simpara>the object which received the
+          signal.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+          with the <link
+          linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+          method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.4 and above.</para>
+      </note>
+
+      <para>Emitted when the aspects of the style specific to a particular
+      colormap and depth are being cleaned up. A connection to this signal
+      can be useful if a widget wants to cache objects like a <link
+      linkend="class-gdkgc"><classname>gtk.gdk.GC</classname></link> as
+      object data on <link
+      linkend="class-gtkstyle"><classname>gtk.Style</classname></link>.
+      This signal provides a convenient place to free such cached
+      objects.</para>
+
+    </refsect2>
+
+</refsect1>
 
 </refentry>

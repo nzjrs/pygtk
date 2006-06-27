@@ -401,6 +401,77 @@ linkend="method-gtktextbuffer--end-user-action">backspace</link></methodname>
 	<methodparam><parameter
 		       role="keyword">default_editable</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--get-has-selection">get_has_selection</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--get-copy-target-list">get_copy_target_list</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--get-paste-target-list">get_paste_target_list</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--register-serialize-format">register_serialize_format</link></methodname>
+        <methodparam><parameter role="keyword">mime_type</parameter></methodparam>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--register-serialize-tagset">register_serialize_tagset</link></methodname>
+        <methodparam><parameter role="keyword">tagset_name</parameter><initializer>NULL</initializer></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--register-deserialize-format">register_deserialize_format</link></methodname>
+        <methodparam><parameter role="keyword">mime_type</parameter></methodparam>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--register-deserialize-tagset">register_deserialize_tagset</link></methodname>
+        <methodparam><parameter role="keyword">tagset_name</parameter><initializer>NULL</initializer></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--unregister-serialize-format">unregister_serialize_format</link></methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--unregister-deserialize-format">unregister_deserialize_format</link></methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--deserialize-set-can-create-tags">deserialize_set_can_create_tags</link></methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+        <methodparam><parameter role="keyword">can_create_tags</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--deserialize-get-can-create-tags">deserialize_get_can_create_tags</link></methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--get-serialize-formats">get_serialize_formats</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--get-deserialize-formats">get_deserialize_formats</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--serialize">serialize</link></methodname>
+        <methodparam><parameter role="keyword">content_buffer</parameter></methodparam>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+        <methodparam><parameter role="keyword">start</parameter></methodparam>
+        <methodparam><parameter role="keyword">end</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--deserialize">deserialize</link></methodname>
+        <methodparam><parameter role="keyword">content_buffer</parameter></methodparam>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+        <methodparam><parameter role="keyword">iter</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -414,9 +485,9 @@ linkend="method-gtktextbuffer--end-user-action">backspace</link></methodname>
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
- 
+  <refsect1 id="properties-gtktextbuffer">
+    <title>gtk.TextBuffer Properties</title>
+
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
         <tgroup cols="3">
@@ -426,13 +497,58 @@ linkend="method-gtktextbuffer--end-user-action">backspace</link></methodname>
           <tbody>
  
             <row valign="top">
+              <entry>"copy-target-list"</entry>
+              <entry>Read</entry>
+              <entry>The list of targets this buffer supports for clipboard
+              copying and as DND source.  This property is available in GTK+
+              2.10 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"cursor-position"</entry>
+              <entry>Read</entry>
+              <entry>The position of the insert mark (as offset from the
+              beginning of the buffer).  It is useful for getting notified
+              when the cursor moves. Allowed values: >= 0.  Default value:
+              0.  This property is available in GTK+ 2.10 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"has-selection"</entry>
+              <entry>Read</entry>
+              <entry>If <literal>TRUE</literal> the buffer has some text
+              currently selected. Default value:
+              <literal>FALSE</literal>. This property is available in GTK+
+              2.10 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"paste-target-list"</entry>
+              <entry>Read</entry>
+              <entry>The list of targets this buffer supports for clipboard
+              pasting and as DND destination.  This property is available in
+              GTK+ 2.10 and above.</entry>
+            </row>
+
+            <row valign="top">
               <entry>"tag-table"</entry>
               <entry>Read-Write-Construct Only</entry>
               <entry>The <link
-linkend="class-gtktexttagtable"><classname>gtk.TextTagTable</classname></link> 
-associated with the textbuffer. Available in GTK+ 2.2 and above.</entry>
+              linkend="class-gtktexttagtable"><classname>gtk.TextTagTable</classname></link>
+              associated with the textbuffer. Available in GTK+ 2.2 and
+              above.</entry>
             </row>
  
+            <row valign="top">
+              <entry>"text"</entry>
+              <entry>Read-Write</entry>
+              <entry>The text content of the buffer. Without child widgets
+              and images, see the <link
+              linkend="method-gtktextbuffer--get-text"><methodname>gtk.TextBuffer.get_text()</methodname></link>
+              method for more information. Default value: "". This property
+              is available in GTK+ 2.8 and above.</entry>
+            </row>
+
           </tbody>
         </tgroup>
       </informaltable>
@@ -467,8 +583,10 @@ associated with the textbuffer.</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="signal-prototypes-gtktextbuffer">
+    <title>gtk.TextBuffer Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>
@@ -2660,6 +2778,599 @@ deleted.</para>
 invalid after calling this function; however, <parameter>iter</parameter>
 will be re-initialized to point to the location where text was
 deleted.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--get-has-selection">
+      <title>gtk.TextBuffer.get_has_selection</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_has_selection</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if there is text
+          selected</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Indicates whether the buffer has some text currently
+      selected.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--get-copy-target-list">
+      <title>gtk.TextBuffer.get_copy_target_list</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_copy_target_list</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a list of the targets each represented as a
+          3-tuple containing the target name, a combination of the <xref
+          linkend="gtk-target-flags-constants"
+          endterm="gtk-target-flags-constants-title"></xref> and an
+          application assigned integer</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method returns the list of targets this text buffer can
+      provide for copying and as DND source. The targets in the list are
+      added with <literal>info</literal> values from the <xref
+      linkend="gtk-textbuffer-target-info-constants"
+      endterm="gtk-textbuffer-target-info-constants-title"></xref>, using
+      the <link
+      linkend="function-gtk--target-list-add-rich-text-targets"><function>gtk.target_list_add_rich_text_targets</function>()</link>
+      and <link
+      linkend="function-gtk--target-list-add-text-targets"><function>gtk.target_list_add_text_targets</function>()</link>
+      functions.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--get-paste-target-list">
+      <title>gtk.TextBuffer.get_paste_target_list</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_paste_target_list</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a list of the targets each represented as a
+          3-tuple containing the target name, a combination of the <xref
+          linkend="gtk-target-flags-constants"
+          endterm="gtk-target-flags-constants-title"></xref> and an
+          application assigned integer</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method returns the list of targets this text buffer supports
+      for pasting and as DND destination. The targets in the list are
+      added with <literal>info</literal> values from the <xref
+      linkend="gtk-textbuffer-target-info-constants"
+      endterm="gtk-textbuffer-target-info-constants-title"></xref>, using
+      the <link
+      linkend="function-gtk--target-list-add-rich-text-targets"><function>gtk.target_list_add_rich_text_targets</function>()</link>
+      and <link
+      linkend="function-gtk--target-list-add-text-targets"><function>gtk.target_list_add_text_targets</function>()</link>
+      functions.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--register-serialize-format">
+      <title>gtk.TextBuffer.register_serialize_format</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>register_serialize_format</methodname>
+        <methodparam><parameter role="keyword">mime_type</parameter></methodparam>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">mime_type</parameter>&nbsp;:</term>
+          <listitem><simpara>the format's mime-type</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">function</parameter>&nbsp;:</term>
+          <listitem><simpara>the serialize function to register</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>function</literal>'s user_data</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the newly registered format's
+          mime-type.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method registers a rich text serialization
+      <literal>function</literal> along with its
+      <literal>mime_type</literal> with the passed
+      <literal>buffer</literal>.</para>
+
+      <para>The signature of function is:</para>
+
+      <programlisting>
+  def function(register_buf, content_buf, start, end, data):
+      </programlisting>
+
+      <para>where <parameter>register_buf</parameter> is the textbuffer that
+      the format is registered with, <parameter>content_buf</parameter> is
+      the textbuffer containing the text to be serialized,
+      <parameter>start</parameter> and <parameter>end</parameter> are
+      textiters bounding the text to be serialized and
+      <parameter>data</parameter> is
+      <parameter>user_data</parameter>. <parameter>function</parameter>
+      should return the serialized data.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--register-serialize-tagset">
+      <title>gtk.TextBuffer.register_serialize_tagset</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>register_serialize_tagset</methodname>
+        <methodparam><parameter role="keyword">tagset_name</parameter><initializer>NULL</initializer></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">tagset_name</parameter>&nbsp;:</term>
+          <listitem><simpara>an optional tagset name, or
+          <literal>None</literal></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the newly registered format's
+          mime-type.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method registers GTK+'s internal rich text serialization
+      format with this textbuffer. The internal format does not comply to
+      any standard rich text format and only works between <link
+      linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link>
+      instances. It is capable of serializing all of a text buffer's tags
+      and embedded pixbufs.</para>
+      
+      <para>This method is just a wrapper around <link
+      linkend="method-gtktextbuffer--register-serialize-format"><methodname>gtk.TextBuffer.register_serialize_format()</methodname></link>. The
+      <literal>mime_type</literal> used for registering is
+      "application/x-gtk-text-buffer-rich-text", or
+      "application/x-gtk-text-buffer-rich-text;format=<literal>tagset_name</literal>"
+      if a <literal>tagset_name</literal> was passed.</para>
+      
+      <para>The <literal>tagset_name</literal> can be used to restrict the
+      transfer of rich text to buffers with compatible sets of tags, in
+      order to avoid unknown tags from being pasted. It is probably the
+      common case to pass a non-<literal>None</literal> tagset here,
+      since the <literal>None</literal> tagset requires the receiving buffer
+      to deal with with pasting of arbitrary tags.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--register-deserialize-format">
+      <title>gtk.TextBuffer.register_deserialize_format</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>register_deserialize_format</methodname>
+        <methodparam><parameter role="keyword">mime_type</parameter></methodparam>
+        <methodparam><parameter role="keyword">function</parameter></methodparam>
+        <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">mime_type</parameter>&nbsp;:</term>
+          <listitem><simpara>the format's mime-type</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">function</parameter>&nbsp;:</term>
+          <listitem><simpara>the deserialize function to register</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>function</literal>'s user_data</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the newly registered format's
+          mime-type.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method registers a rich text deserialization
+      <literal>function</literal> along with its
+      <literal>mime_type</literal> with the passed
+      <literal>buffer</literal>.</para>
+
+      <para>The signature of function is:</para>
+
+      <programlisting>
+  def function(register_buf, content_buf, iter, data, create_tags, udata):
+      </programlisting>
+
+      <para>where <parameter>register_buf</parameter> is the textbuffer that
+      the format is registered with, <parameter>content_buf</parameter> is
+      the textbuffer that data will be deserialized into,
+      <parameter>iter</parameter> is a textiter indicating the start of the
+      deserialized data in <parameter>content_buf</parameter>, create_tags
+      is a boolean indicating if tags should be created during
+      deserializtion and <parameter>udata</parameter> is
+      <parameter>user_data</parameter>. <parameter>function</parameter>
+      should return <literal>TRUE</literal> if the data was successfully
+      deserialized.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--register-deserialize-tagset">
+      <title>gtk.TextBuffer.register_deserialize_tagset</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>register_deserialize_tagset</methodname>
+        <methodparam><parameter role="keyword">tagset_name</parameter><initializer>NULL</initializer></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">tagset_name</parameter>&nbsp;:</term>
+          <listitem><simpara>an optional tagset name, or
+          <literal>None</literal></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the newly registered format's
+          mime-type.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method registers GTK+'s internal rich text serialization
+      format with this buffer. See the <link
+      linkend="method-gtktextbuffer--register-serialize-tagset"><methodname>gtk.TextBuffer.register_serialize_tagset()</methodname></link>
+      method for details.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--unregister-serialize-format">
+      <title>gtk.TextBuffer.unregister_serialize_format</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>unregister_serialize_format</methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">format</parameter>&nbsp;:</term>
+          <listitem><simpara>a target string representing a registered rich
+          text format.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method unregisters a rich text format that was previously
+      registered using the <link
+      linkend="method-gtktextbuffer--register-serialize-format"><methodname>gtk.TextBuffer.register_serialize_format()</methodname></link>
+      or <link
+      linkend="method-gtktextbuffer--register-serialize-tagset"><methodname>gtk.TextBuffer.register_serialize_tagset()</methodname></link>
+      methods.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--unregister-deserialize-format">
+      <title>gtk.TextBuffer.unregister_deserialize_format</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>unregister_deserialize_format</methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">format</parameter>&nbsp;:</term>
+          <listitem><simpara>a target string representing a registered rich
+          text format.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method unregisters a rich text format that was previously
+      registered using the <link
+      linkend="method-gtktextbuffer--register-deserialize-format"><methodname>gtk.TextBuffer.register_deserialize_format()</methodname></link>
+      or <link
+      linkend="method-gtktextbuffer--register-deserialize-tagset"><methodname>gtk.TextBuffer.register_deserialize_tagset()</methodname></link>
+      methods.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--deserialize-set-can-create-tags">
+      <title>gtk.TextBuffer.deserialize_set_can_create_tags</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>deserialize_set_can_create_tags</methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+        <methodparam><parameter role="keyword">can_create_tags</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">format</parameter>&nbsp;:</term>
+          <listitem><simpara>a target string representing a registered rich
+          text format</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">can_create_tags</parameter>&nbsp;:</term>
+          <listitem><simpara>if <literal>TRUE</literal> deserializing
+          <parameter>format</parameter> may create tags</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>Use this method to allow a rich text deserialization function to
+      create new tags in the receiving buffer. Note that using this method
+      is almost always a bad idea, because the rich text functions you
+      register should know how to map the rich text format they handle to
+      your text buffers set of tags.</para>
+      
+      <para>The ability of creating new (arbitrary!) tags in the receiving
+      buffer is meant for special rich text formats like the internal one
+      that is registered using <link
+      linkend="method-gtktextbuffer--register-deserialize-tagset"><methodname>gtk.TextBuffer.register_deserialize_tagset()</methodname></link>,
+      because that format is essentially a dump of the internal structure of
+      the source buffer, including its tag names.</para>
+      
+      <para>You should allow creation of tags only if you know what you are
+      doing, e.g. if you defined a tagset name for your application suite's
+      text buffers and you know that it's fine to receive new tags from
+      these buffers, because you know that your application can handle the
+      newly created tags.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--deserialize-get-can-create-tags">
+      <title>gtk.TextBuffer.deserialize_get_can_create_tags</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>deserialize_get_can_create_tags</methodname>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">format</parameter>&nbsp;:</term>
+          <listitem><simpara>a target string representing a registered rich
+          text format</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> if deserializing
+          <parameter>format</parameter> may create tags</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method returns the value set with the <link
+      linkend="method-gtktextbuffer--deserialize-set-can-create-tags"><methodname>gtk.TextBuffer.deserialize_set_can_create_tags()</methodname></link>
+      method.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--get-serialize-formats">
+      <title>gtk.TextBuffer.get_serialize_formats</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_serialize_formats</methodname>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a list of target strings representing the
+          registered formats.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method returns a list of the rich text serialize formats
+      registered using the <link
+      linkend="method-gtktextbuffer--register-serialize-format"><methodname>gtk.TextBuffer.register_serialize_format()</methodname></link>
+      or <link
+      linkend="method-gtktextbuffer--register-serialize-tagset"><methodname>gtk.TextBuffer.register_serialize_tagset()</methodname></link>
+      methods.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--get-deserialize-formats">
+      <title>gtk.TextBuffer.get_deserialize_formats</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_deserialize_formats</methodname>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a list of target strings representing the
+          registered formats.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method returns the rich text deserialize formats registered
+      using the <link
+      linkend="method-gtktextbuffer--register-deserialize-format"><methodname>gtk.TextBuffer.register_deserialize_format()</methodname></link>
+      or <link
+      linkend="method-gtktextbuffer--register-deserialize-tagset"><methodname>gtk.TextBuffer.register_deserialize_tagset()</methodname></link>
+      methods.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--serialize">
+      <title>gtk.TextBuffer.serialize</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>serialize</methodname>
+        <methodparam><parameter role="keyword">content_buffer</parameter></methodparam>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+        <methodparam><parameter role="keyword">start</parameter></methodparam>
+        <methodparam><parameter role="keyword">end</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">content_buffer</parameter>&nbsp;:</term>
+          <listitem><simpara>the <link
+          linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link>
+          to serialize</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">format</parameter>&nbsp;:</term>
+          <listitem><simpara>the rich text format to use for
+          serializing</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">start</parameter>&nbsp;:</term>
+          <listitem><simpara>start of block of text to
+          serialize</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">end</parameter>&nbsp;:</term>
+          <listitem><simpara>end of block of test to
+          serialize</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the serialized data, encoded as
+          <literal>format</literal></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method serializes the portion of text between <literal>start</literal>
+      and <literal>end</literal> in the rich text format represented by <literal>format</literal>.</para>
+      
+            <para>The formats to be used must be registered using the <link
+            linkend="method-gtktextbuffer--register-serialize-format"><methodname>gtk.TextBuffer.register_serialize_format()</methodname></link>
+            or <link
+            linkend="method-gtktextbuffer--register-serialize-tagset"><methodname>gtk.TextBuffer.register_serialize_tagset()</methodname></link>
+            methods beforehand.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktextbuffer--deserialize">
+      <title>gtk.TextBuffer.deserialize</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>deserialize</methodname>
+        <methodparam><parameter role="keyword">content_buffer</parameter></methodparam>
+        <methodparam><parameter role="keyword">format</parameter></methodparam>
+        <methodparam><parameter role="keyword">iter</parameter></methodparam>
+        <methodparam><parameter role="keyword">data</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">content_buffer</parameter>&nbsp;:</term>
+          <listitem><simpara>the <link
+          linkend="class-gtktextbuffer"><classname>gtk.TextBuffer</classname></link>
+          to deserialize into</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">format</parameter>&nbsp;:</term>
+          <listitem><simpara>the rich text format to use for
+          deserializing</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+          <listitem><simpara>insertion point for the deserialized
+          text</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+          <listitem><simpara>data to deserialize</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> on success,
+          <literal>FALSE</literal> otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>This method deserializes rich text in format
+      <literal>format</literal> and inserts it at <literal>iter</literal> in
+      <parameter>content_buffer</parameter>.</para>
+      
+            <para>The formats to be used must be registered using the <link
+            linkend="method-gtktextbuffer--register-deserialize-format"><methodname>gtk.TextBuffer.register_deserialize_format()</methodname></link>
+            or <link
+            linkend="method-gtktextbuffer--register-deserialize-tagset"><methodname>gtk.TextBuffer.register_deserialize_tagset()</methodname></link>
+            methods beforehand.</para>
 
     </refsect2>
 

@@ -155,8 +155,11 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
+  <refsect1 id="properties-gtkentry">
+    <title>gtk.Entry Properties</title>
+
+    <para><link linkend="properties-gtkobject">gtk.Object Properties</link></para>
+    <para><link linkend="properties-gtkwidget">gtk.Widget Properties</link></para>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -283,8 +286,41 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="style-properties-gtkentry">
+    <title>gtk.Entry Style Properties</title>
+
+    <para><link linkend="style-properties-gtkwidget">gtk.Widget Style Properties</link></para>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+        <tgroup cols="3">
+          <colspec column="1" colwidth="1in"/>
+          <colspec column="2" colwidth="1in"/>
+          <colspec column="3" colwidth="3.5in"/>
+        <tbody>
+
+        <row valign="top">
+          <entry>"inner-border"</entry>
+          <entry>Read</entry>
+          <entry>Sets the text area's border between the text and the frame
+          This property is available in GTK+ 2.10 and above.</entry>
+        </row>
+
+        </tbody>
+      </tgroup>
+      </informaltable>
+    </blockquote>
+
+  </refsect1>
+
+  <refsect1 id="signal-prototypes-gtkentry">
+    <title>gtk.Entry Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkobject">gtk.Object Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkwidget">gtk.Widget Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkeditable">gtk.Editable Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkcelleditable">gtk.CellEditable Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>
@@ -299,6 +335,16 @@ linkend="signal-gtkentry--activate">activate</link>"</term>
             </methodparam>
             <methodparam><parameter>...</parameter>
             </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkentry--backspace">backspace</link></term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>entry</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
         </listitem>
       </varlistentry>
@@ -444,11 +490,11 @@ linkend="signal-gtkentry--toggle-overwrite">toggle-overwrite</link>"</term>
     <title>Description</title>
 
     <para>The <link
-linkend="class-gtkentry"><classname>gtk.Entry</classname></link> widget is a
-single line text entry widget. A fairly large set of key bindings are
-supported by default. If the entered text is longer than the allocation of
-the widget, the widget will scroll so that the cursor position is
-visible.</para>
+    linkend="class-gtkentry"><classname>gtk.Entry</classname></link> widget
+    is a single line text entry widget. A fairly large set of key bindings
+    are supported by default. If the entered text is longer than the
+    allocation of the widget, the widget will scroll so that the cursor
+    position is visible.</para>
 
   </refsect1>
 
@@ -475,8 +521,8 @@ linkend="class-gtkentry"><classname>gtk.Entry</classname></link>.</simpara></lis
     </variablelist>
 
     <para>Creates a new <link
-linkend="class-gtkentry"><classname>gtk.Entry</classname></link> widget with
-the maximum length specified by <parameter>max</parameter>.</para>
+    linkend="class-gtkentry"><classname>gtk.Entry</classname></link> widget
+    with the maximum length specified by <parameter>max</parameter>.</para>
 
   </refsect1>
 
@@ -500,14 +546,15 @@ the maximum length specified by <parameter>max</parameter>.</para>
       </variablelist>
 
       <para>The <methodname>set_visibility</methodname>() method sets the
-"visibility" property to the value of <parameter>visible</parameter>. If
-visible is <literal>TRUE</literal> the contents of the entry are displayed
-as plain text. If visible is <literal>FALSE</literal>, the contents are
-obscured by replacing the characters with the invisible character (specified
-by the "invisible-char" property). The characters will also be obscured when
-the text in the entry widget is copied elsewhere. The default invisible char
-is the asterisk '*', but it can be changed with <link
-linkend="method-gtkentry--set-invisible-char"><methodname>set_invisible_char</methodname>()</link>.</para>
+      "visibility" property to the value of
+      <parameter>visible</parameter>. If visible is <literal>TRUE</literal>
+      the contents of the entry are displayed as plain text. If visible is
+      <literal>FALSE</literal>, the contents are obscured by replacing the
+      characters with the invisible character (specified by the
+      "invisible-char" property). The characters will also be obscured when
+      the text in the entry widget is copied elsewhere. The default
+      invisible char is the asterisk '*', but it can be changed with <link
+      linkend="method-gtkentry--set-invisible-char"><methodname>set_invisible_char</methodname>()</link>.</para>
 
     </refsect2>
 
@@ -526,9 +573,9 @@ currently visible</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_visibility</methodname>() method retrieves
-the value of the "visibility" property that determines whether the text in
-<parameter>entry</parameter> is visible. See <link
-linkend="method-gtkentry--set-visibility"><methodname>set_visibility</methodname>()</link>.</para>
+      the value of the "visibility" property that determines whether the
+      text in <parameter>entry</parameter> is visible. See <link
+      linkend="method-gtkentry--set-visibility"><methodname>set_visibility</methodname>()</link>.</para>
 
     </refsect2>
 
@@ -548,15 +595,16 @@ linkend="method-gtkentry--set-visibility"><methodname>set_visibility</methodname
       </variablelist>
 
       <para>The <methodname>set_invisible_char</methodname>() method sets
-the "invisible-char" property with the value of <parameter>ch</parameter>.
-The "invisible-char" is the character to use in place of the actual text
-when <link
-linkend="method-gtkentry--set-visibility"><methodname>set_visibility</methodname>()</link> 
-has been called to set text visibility to <literal>FALSE</literal>. i.e.
-this is the character used in "password mode" to show the user how many
-characters have been typed. The default invisible character is an asterisk
-('*').  If you set the invisible character to 0, then the user will get no
-feedback at all; there will be no text on the screen as they type.</para>
+      the "invisible-char" property with the value of
+      <parameter>ch</parameter>.  The "invisible-char" is the character to
+      use in place of the actual text when <link
+      linkend="method-gtkentry--set-visibility"><methodname>set_visibility</methodname>()</link>
+      has been called to set text visibility to
+      <literal>FALSE</literal>. i.e.  this is the character used in
+      "password mode" to show the user how many characters have been
+      typed. The default invisible character is an asterisk ('*').  If you
+      set the invisible character to 0, then the user will get no feedback
+      at all; there will be no text on the screen as they type.</para>
 
     </refsect2>
 
@@ -575,10 +623,10 @@ does not show invisible text at all.</simpara></listitem>
       </variablelist>
 
       <para>The get_invisible_char() method retrieves the value of the
-"invisible-char" property. The "invisible-char" is the character displayed
-in place of the real characters for entries with visibility set to
-<literal>FALSE</literal>. See <link
-linkend="method-gtkentry--set-invisible-char"><methodname>set_invisible_char</methodname>()</link>.</para>
+      "invisible-char" property. The "invisible-char" is the character
+      displayed in place of the real characters for entries with visibility
+      set to <literal>FALSE</literal>. See <link
+      linkend="method-gtkentry--set-invisible-char"><methodname>set_invisible_char</methodname>()</link>.</para>
 
     </refsect2>
 
@@ -599,9 +647,9 @@ frame around it.</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>set_has_frame</methodname>() method sets the
-"has-frame" property to the value of <parameter>setting</parameter>.  If
-<parameter>setting</parameter> is <literal>TRUE</literal> the entry is
-displayed with a beveled frame around it.</para>
+      "has-frame" property to the value of <parameter>setting</parameter>.
+      If <parameter>setting</parameter> is <literal>TRUE</literal> the entry
+      is displayed with a beveled frame around it.</para>
 
     </refsect2>
 
@@ -619,9 +667,10 @@ frame</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The get_has_frame() method gets the value of the "has-frame"
-property. If "has-frame" is TRUE the entry will be displayed with a beveled
-frame around it.</para>
+      <para>The <methodname>get_has_frame</methodname>() method gets the
+      value of the "has-frame" property. If "has-frame" is
+      <literal>TRUE</literal> the entry will be displayed with a beveled
+      frame around it.</para>
 
     </refsect2>
 
@@ -637,17 +686,18 @@ frame around it.</para>
 	<varlistentry>
 	  <term><parameter role="keyword">max</parameter>&nbsp;:</term>
 	  <listitem><simpara>the maximum length of the entry, or 0 for no
-maximum. (other than the maximum length of entries.) The value passed in
-will be clamped to the range 0-65536.</simpara></listitem>
+	  maximum. (other than the maximum length of entries.) The value
+	  passed in will be clamped to the range
+	  0-65536.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
       <para>The <methodname>set_max_length</methodname>() method sets the
-"max-length" property to the value of <parameter>max</parameter>.  The
-"max-length" property sets the maximum allowed length of the contents of the
-widget. If the current contents are longer than the given length, then they
-will be truncated to fit. If max is 0 then there is no maximum length (other
-than 65536).</para>
+      "max-length" property to the value of <parameter>max</parameter>.  The
+      "max-length" property sets the maximum allowed length of the contents
+      of the widget. If the current contents are longer than the given
+      length, then they will be truncated to fit. If max is 0 then there is
+      no maximum length (other than 65536).</para>
 
     </refsect2>
 
@@ -666,10 +716,10 @@ if there is no maximum.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The get_max_length() method retrieves the value of the
-"max-length" property that specifies the maximum allowed length of the text
-in the entry. See <link
-linkend="method-gtkentry--set-max-length"><methodname>set_max_length</methodname>()</link>.</para>
+      <para>The <methodname>get_max_length</methodname>() method retrieves
+      the value of the "max-length" property that specifies the maximum
+      allowed length of the text in the entry. See <link
+      linkend="method-gtkentry--set-max-length"><methodname>set_max_length</methodname>()</link>.</para>
 
     </refsect2>
 
@@ -691,18 +741,19 @@ key press</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>set_activates_default</methodname>() method sets
-the "activates-default" property to the value of
-<parameter>setting</parameter>. If <parameter>setting</parameter> is
-<literal>TRUE</literal>, pressing the <keycap>Enter</keycap> key in the
-entry will activate the default widget for the window containing the entry.
-This usually means that the dialog box containing the entry will be closed,
-since the default widget is usually one of the dialog buttons.</para>
+      the "activates-default" property to the value of
+      <parameter>setting</parameter>. If <parameter>setting</parameter> is
+      <literal>TRUE</literal>, pressing the <keycap>Enter</keycap> key in
+      the entry will activate the default widget for the window containing
+      the entry.  This usually means that the dialog box containing the
+      entry will be closed, since the default widget is usually one of the
+      dialog buttons.</para>
 
       <para>(For experts: if <parameter>setting</parameter> is
-<literal>TRUE</literal>, the entry calls <link
-linkend="method-gtkwindow--activate-default"><methodname>gtk.Window.activate_default</methodname>()</link> 
-on the window containing the entry, in the default handler for the
-"activate" signal.)</para>
+      <literal>TRUE</literal>, the entry calls <link
+      linkend="method-gtkwindow--activate-default"><methodname>gtk.Window.activate_default</methodname>()</link>
+      on the window containing the entry, in the default handler for the
+      "activate" signal.)</para>
 
     </refsect2>
 
@@ -721,12 +772,12 @@ activate the default widget</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_activates_default</methodname>() method
-retrieves the value of the "activates-default" property which is set by
-<link
-linkend="method-gtkentry--set-activates-default"><methodname>set_activates_default</methodname>()</link>. 
-If "activates-default" is TRUE pressing the <keycap>Enter</keycap> key in
-the entry will activate the default widget for the window containing the
-entry.</para>
+      retrieves the value of the "activates-default" property which is set
+      by <link
+      linkend="method-gtkentry--set-activates-default"><methodname>set_activates_default</methodname>()</link>.
+      If "activates-default" is <literal>TRUE</literal> pressing the
+      <keycap>Enter</keycap> key in the entry will activate the default
+      widget for the window containing the entry.</para>
 
     </refsect2>
 
@@ -746,13 +797,13 @@ entry.</para>
       </variablelist>
 
       <para>The <methodname>set_width_chars</methodname>() method sets the
-"width-chars" property to the value of <parameter>n_char</parameter>.
-Setting the "width-chars" property changes the size request of the entry to
-be about the right size for <parameter>n_chars</parameter> characters. Note
-that it only changes the size <emphasis>request</emphasis>, the size can
-still be affected by how you pack the widget into containers. If
-<parameter>n_chars</parameter> is -1, the size reverts to the default entry
-size.</para>
+      "width-chars" property to the value of <parameter>n_char</parameter>.
+      Setting the "width-chars" property changes the size request of the
+      entry to be about the right size for <parameter>n_chars</parameter>
+      characters. Note that it only changes the size
+      <emphasis>request</emphasis>, the size can still be affected by how
+      you pack the widget into containers. If <parameter>n_chars</parameter>
+      is -1, the size reverts to the default entry size.</para>
 
     </refsect2>
 
@@ -771,9 +822,9 @@ negative if unset</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_width_chars</methodname>() method gets the
-value of the "width-chars" property which is set by the <link
-linkend="method-gtkentry--set-width-chars"><methodname>set_width_chars</methodname>()</link> 
-method.</para>
+      value of the "width-chars" property which is set by the <link
+      linkend="method-gtkentry--set-width-chars"><methodname>set_width_chars</methodname>()</link>
+      method.</para>
 
     </refsect2>
 
@@ -794,9 +845,9 @@ entry</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>set_text</methodname>() method sets the "text"
-property to the value of <parameter>text</parameter>. The string in
-<parameter>text</parameter> replaces the current contents of the
-entry.</para>
+      property to the value of <parameter>text</parameter>. The string in
+      <parameter>text</parameter> replaces the current contents of the
+      entry.</para>
 
     </refsect2>
 
@@ -815,8 +866,8 @@ string</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_text</methodname>() method returns the value
-of the "text" property which is a string containing the contents of the
-entry.</para>
+      of the "text" property which is a string containing the contents of
+      the entry.</para>
 
     </refsect2>
 
@@ -835,11 +886,11 @@ this entry</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
-      <para>The get_layout() method gets the <link
-linkend="class-pangolayout"><classname>pango.Layout</classname></link> used
-to display the entry. The layout is useful to e.g. convert text positions to
-pixel positions, in combination with <link
-linkend="method-gtkentry--get-layout-offsets"><methodname>get_layout_offsets</methodname>()</link>.</para>
+      <para>The <methodname>get_layout</methodname>() method gets the <link
+      linkend="class-pangolayout"><classname>pango.Layout</classname></link>
+      used to display the entry. The layout is useful to e.g. convert text
+      positions to pixel positions, in combination with <link
+      linkend="method-gtkentry--get-layout-offsets"><methodname>get_layout_offsets</methodname>()</link>.</para>
 
     </refsect2>
 
@@ -859,19 +910,20 @@ pango layout</simpara></listitem>
       </variablelist>
 
       <para>The <methodname>get_layout_offsets</methodname>() method obtains
-the position of the <link
-linkend="class-pangolayout"><classname>pango.Layout</classname></link> used
-to render text in the entry, in widget coordinates and returns it as a
-tuple. This method is used to line up the text in an entry with some other
-text, e.g. when using the entry to implement editable cells in a sheet
-widget. It is also useful to convert mouse events into coordinates inside
-the <link
-linkend="class-pangolayout"><classname>pango.Layout</classname></link>, e.g.
-to take some action if some part of the entry text is clicked.</para>
+      the position of the <link
+      linkend="class-pangolayout"><classname>pango.Layout</classname></link>
+      used to render text in the entry, in widget coordinates and returns it
+      as a tuple. This method is used to line up the text in an entry with
+      some other text, e.g. when using the entry to implement editable cells
+      in a sheet widget. It is also useful to convert mouse events into
+      coordinates inside the <link
+      linkend="class-pangolayout"><classname>pango.Layout</classname></link>,
+      e.g.  to take some action if some part of the entry text is
+      clicked.</para>
 
       <para>Note that as the user scrolls around in the entry the offsets
-will change; you'll need to connect to the "notify::scroll_offset" signal to
-track this.</para>
+      will change; you'll need to connect to the "notify::scroll_offset"
+      signal to track this.</para>
 
     </refsect2>
 
@@ -897,11 +949,11 @@ track this.</para>
       </note>
 
       <para>The <methodname>set_alignment</methodname>() method sets the
-"xalign" property to the value of <parameter>xalign</parameter>. The
-alignment controls the horizontal positioning of the contents when the
-displayed text is shorter than the width of the entry. The value of
-<parameter>xalign</parameter> is the fraction of freespace to the left
-(right in RTL layouts) of the text.</para>
+      "xalign" property to the value of <parameter>xalign</parameter>. The
+      alignment controls the horizontal positioning of the contents when the
+      displayed text is shorter than the width of the entry. The value of
+      <parameter>xalign</parameter> is the fraction of freespace to the left
+      (right in RTL layouts) of the text.</para>
 
     </refsect2>
 
@@ -925,8 +977,8 @@ displayed text is shorter than the width of the entry. The value of
       </note>
 
       <para>The <methodname>get_alignment</methodname>() method returns the
-value of the "xalign" property which is the fraction of freespace (if any)
-to the left (right in RTL layouts) of the text.</para>
+      value of the "xalign" property which is the fraction of freespace (if
+      any) to the left (right in RTL layouts) of the text.</para>
 
     </refsect2>
 
@@ -952,14 +1004,14 @@ to the left (right in RTL layouts) of the text.</para>
       </note>
 
       <para>The <methodname>set_completion</methodname>() method sets the
-<link
-linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
-specified by <parameter>completion</parameter> to be the auxiliary
-completion object to use with the entry. All further configuration of the
-completion mechanism is done using <parameter>completion</parameter> and the
-<link
-linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
-methods.</para>
+      <link
+      linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+      specified by <parameter>completion</parameter> to be the auxiliary
+      completion object to use with the entry. All further configuration of
+      the completion mechanism is done using
+      <parameter>completion</parameter> and the <link
+      linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+      methods.</para>
 
     </refsect2>
 
@@ -981,9 +1033,9 @@ methods.</para>
       </note>
 
      <para>The <methodname>get_completion</methodname>() method returns the
-<link
-linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
-object currently in use by the entry.</para>
+     <link
+     linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+     object currently in use by the entry.</para>
 
     </refsect2>
 
@@ -1085,10 +1137,42 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "activate" signal is emitted when the entry is activated
-either by user action (pressing the <keycap>Enter</keycap> key) or
-programmatically with the <link
-linkend="method-gtkwidget--activate"><methodname>gtk.Widget.activate</methodname>()</link> 
-method</para>
+      either by user action (pressing the <keycap>Enter</keycap> key) or
+      programmatically with the <link
+      linkend="method-gtkwidget--activate"><methodname>gtk.Widget.activate</methodname>()</link>
+      method</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkentry--backspace">
+      <title>The "backspace" gtk.Entry Signal</title>
+
+      <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>entry</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>entry</parameter>&nbsp;:</term>
+          <listitem><simpara>the object which received the signal.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+          with the <link
+          linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+          method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The "backspace" signal is emitted when the
+      <keysym>Backspace</keysym> key is entered from the keyboard.</para>
 
     </refsect2>
 
@@ -1123,7 +1207,7 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "copy-clipboard" signal is emitted when the selection text
-in the entry is copied to the clipboard.</para>
+      in the entry is copied to the clipboard.</para>
 
     </refsect2>
 
@@ -1158,7 +1242,8 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "cut-clipboard" signal is emitted when the selection in the
-entry is cut (removed from the entry) and placed in the clipboard.</para>
+      entry is cut (removed from the entry) and placed in the
+      clipboard.</para>
 
     </refsect2>
 
@@ -1204,10 +1289,10 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "delete-from-cursor" signal is emitted when the a deletion
-from the cursor i.e. removal o text at the cursor position, either before it
-(negative <parameter>count</parameter>) or after it (positive
-<parameter>count</parameter>). The value of
-<parameter>delete_type</parameter> can be one of:</para>
+      from the cursor i.e. removal o text at the cursor position, either
+      before it (negative <parameter>count</parameter>) or after it
+      (positive <parameter>count</parameter>). The value of
+      <parameter>delete_type</parameter> can be one of:</para>
 
       <itemizedlist>
 	<listitem>
@@ -1275,7 +1360,7 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "insert-at-cursor" signal is emitted when text is being
-inserted in the entry.</para>
+      inserted in the entry.</para>
 
     </refsect2>
 
@@ -1328,10 +1413,11 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "move-cursor" signal is emitted when the cursor is being
-moved by <parameter>count</parameter> steps of size
-<parameter>step</parameter>. If <parameter>extend_selection</parameter> is
-<literal>TRUE</literal> the selection is extended as the cursor is being
-moved. The value of <parameter>step</parameter> can be one of:</para>
+      moved by <parameter>count</parameter> steps of size
+      <parameter>step</parameter>. If
+      <parameter>extend_selection</parameter> is <literal>TRUE</literal> the
+      selection is extended as the cursor is being moved. The value of
+      <parameter>step</parameter> can be one of:</para>
 
       <itemizedlist>
 	<listitem>
@@ -1396,7 +1482,7 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "paste-clipboard" signal is emitted when the contents of the
-clipboard are pasted into the entry.</para>
+      clipboard are pasted into the entry.</para>
 
     </refsect2>
 
@@ -1437,7 +1523,7 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "populate-popup" signal is emitted when the
-<parameter>menu</parameter> needs populating.</para>
+      <parameter>menu</parameter> needs populating.</para>
 
     </refsect2>
 
@@ -1472,8 +1558,8 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "toggle-overwrite" signal is emitted when the internal entry
-attribute "overwrite_mode" is toggled by pressing the
-<keycap>Insert</keycap> key.</para>
+      attribute "overwrite_mode" is toggled by pressing the
+      <keycap>Insert</keycap> key.</para>
 
     </refsect2>
 

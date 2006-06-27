@@ -134,6 +134,27 @@
 
   </refsect1>
 
+  <refsect1 id="signal-prototypes-gtkclipboard">
+    <title>gtk.Clipboard Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+
+    <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkclipboard--owner-change">owner-change</link></term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+          <methodparam><parameter>clipboard</parameter></methodparam>
+          <methodparam><parameter>event</parameter></methodparam>
+          <methodparam><parameter>user_param1</parameter></methodparam>
+          <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
   <refsect1>
     <title>Description</title>
 
@@ -1205,6 +1226,53 @@ specified by selection for the default <link
 linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>. See
 the <link linkend="constructor-gtkclipboard">gtk.Clipboard</link>
 constructor for more information.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Signals</title>
+
+    <refsect2 id="signal-gtkclipboard--owner-change">
+      <title>The "owner-change" gtk.Clipboard Signal</title>
+
+      <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
+      <methodparam><parameter>clipboard</parameter></methodparam>
+      <methodparam><parameter>event</parameter></methodparam>
+      <methodparam><parameter>user_param1</parameter></methodparam>
+      <methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>clipboard</parameter>&nbsp;:</term>
+          <listitem><simpara>the object that received the signal.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>event</parameter>&nbsp;:</term>
+          <listitem><simpara>the event marking the ownership
+          change.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+          with the <link
+          linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+          method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.8 and above.</para>
+      </note>
+
+      <para>The "owner-changed" signal is emitted when the owner of the
+      clipboard is changed.</para>
 
     </refsect2>
 

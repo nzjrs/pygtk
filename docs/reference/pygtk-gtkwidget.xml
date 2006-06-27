@@ -921,8 +921,12 @@ linkend="method-gtkwidget--set-activate-signal">set_scroll_adjustments_signal</l
     <methodname><link linkend="function-gtk--widget-get-default-direction">gtk.widget_get_default_direction</link></methodname>
     <methodparam></methodparam>
   </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--widget-class-find-style-property">gtk.widget_class_find_style_property</link></methodname>
+    <methodparam><parameter role="keyword">widget</parameter></methodparam>
+    <methodparam><parameter role="keyword">property_name</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--widget-class-list-style-properties">gtk.widget_class_list_style_properties</link></methodname>
-    <methodparam><parameter role="keyword">cmap</parameter></methodparam>
+    <methodparam><parameter role="keyword">widget</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--widget-class-install-style-property">gtk.widget_class_install_style_property</link></methodname>
     <methodparam><parameter role="keyword">widget</parameter></methodparam>
@@ -941,8 +945,10 @@ linkend="method-gtkwidget--set-activate-signal">set_scroll_adjustments_signal</l
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
+  <refsect1 id="properties-gtkwidget">
+    <title>gtk.Widget Properties</title>
+
+    <para><link linkend="properties-gtkobject">gtk.Object Properties</link></para>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -1088,8 +1094,8 @@ request should be used.</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Style Properties</title>
+  <refsect1 id="style-properties-gtkwidget">
+    <title>gtk.Widget Style Properties</title>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -1113,6 +1119,14 @@ cursor</entry>
 linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link> with
 which to draw insertion cursor</entry>
 	    </row>
+
+            <row valign="top">
+              <entry>"draw-border"</entry>
+              <entry>Read</entry>
+              <entry>The "draw-border" property defines the size of areas
+              outside the widget's allocation to draw. This property is
+              available in GTK+ 2.8 and above.</entry>
+            </row>
 
 	    <row valign="top">
 	      <entry>"focus-line-pattern"</entry>
@@ -1142,6 +1156,30 @@ the widget 'box'.</entry>
 inside widgets.</entry>
 	    </row>
 
+            <row valign="top">
+              <entry>"link-color"</entry>
+              <entry>Read</entry>
+              <entry>The "link-color" property defines the color of
+              unvisited links.  This property is available in GTK+ 2.10 and
+              above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"scroll-arrow-hlength"</entry>
+              <entry>Read</entry>
+              <entry>The "scroll-arrow-hlength" property defines the length
+              of horizontal scroll arrows.  This property is available in
+              GTK+ 2.10 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"scroll-arrow-vlength"</entry>
+              <entry>Read</entry>
+              <entry>The "scroll-arrow-vlength" property defines the length
+              of vertical scroll arrows.  This property is available in GTK+
+              2.10 and above.</entry>
+            </row>
+
 	    <row valign="top">
 	      <entry>"secondary-cursor-color"</entry>
 	      <entry>Read</entry>
@@ -1150,6 +1188,41 @@ linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link> with
 which to draw the secondary insertion cursor when editing mixed
 right-to-left and left-to-right text.</entry>
 	    </row>
+
+            <row valign="top">
+              <entry>"separator-height"</entry>
+              <entry>Read</entry>
+              <entry>The "separator-height" property defines the height of
+              separators.  This property only takes effect if
+              "wide-separators" is <literal>TRUE</literal>.  This property
+              is available in GTK+ 2.10 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"separator-width"</entry>
+              <entry>Read</entry>
+              <entry>The "separator-width" property defines the width of
+              separators.  This property only takes effect if
+              "wide-separators" is <literal>TRUE</literal>.  This property
+              is available in GTK+ 2.10 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"visited-link-color"</entry>
+              <entry>Read</entry>
+              <entry>The "visited-link-color" property defines the color of
+              visited links.  This property is available in GTK+ 2.10 and
+              above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"wide-separators"</entry>
+              <entry>Read</entry>
+              <entry>The "wide-separators" property defines whether
+              separators have configurable width and should be drawn using a
+              box instead of a line.  This property is available in GTK+
+              2.10 and above.</entry>
+            </row>
 
 	  </tbody>
 	</tgroup>
@@ -1228,8 +1301,11 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="signal-prototypes-gtkwidget">
+    <title>gtk.Widget Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkobject">gtk.Object Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>
@@ -1281,6 +1357,16 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>widget</parameter></methodparam>
             <methodparam><parameter>child_property</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkwidget--composited-changed">composited-changed</link></term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>widget</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -1512,6 +1598,17 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
       </varlistentry>
       <varlistentry>
         <term>"<link linkend="signal-gtkwidget--focus-out-event">focus-out-event</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>widget</parameter></methodparam>
+            <methodparam><parameter>event</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkwidget--grab-broken-event">grab-broken-event</link></term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>widget</parameter></methodparam>
@@ -1963,10 +2060,15 @@ the theme, giving theme authors more control over the look of applications
 without the need to write a theme engine in C.</para>
 
     <para>Use the <link
-linkend="function-gtk--widget-class-list-style-properties"><function>gtk.widget_class_list_style_properties</function>()</link>
-function to get information about existing style properties and the <link
-linkend="method-gtkwidget--style-get-property"><methodname>style_get_property</methodname>()</link>
-method to obtain the value of a style property.</para>
+    linkend="function-gtk--widget-class-install-style-property"><function>gtk.widget_class_install_style_property</function>()</link>
+    function to install style properties for a widget class, the <link
+    linkend="function-gtk--widget-class-find-style-property"><function>gtk.widget_class_find_style_property</function>()</link>
+    function or the <link
+    linkend="function-gtk--widget-class-list-style-properties"><function>gtk.widget_class_list_style_properties</function>()</link>
+    function to get information about existing style properties and the
+    <link
+    linkend="method-gtkwidget--style-get-property"><methodname>style_get_property</methodname>()</link>
+    method to obtain the value of a style property.</para>
 
   </refsect1>
 
@@ -6529,6 +6631,42 @@ function.</para>
 
     </refsect2>
 
+    <refsect2 id="function-gtk--widget-class-find-style-property">
+      <title>gtk.widget_class_find_style_property</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.widget_class_find_style_property</methodname>
+	  <methodparam><parameter
+			 role="keyword">widget</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">property_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>a style property name</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the style property as a GParam
+	  object</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+       <note>
+	<para>This function is available in PyGTK 2.4 and above.</para>
+      </note>
+
+     <para>The <function>gtk.widget_class_find_style_property</function>()
+     function returns the GParam object corresponding to the style
+     property specified by <parameter>property_name</parameter> of the <link
+     linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+     specified by <parameter>widget</parameter>.</para>
+
+    </refsect2>
+
     <refsect2 id="function-gtk--widget-class-list-style-properties">
       <title>gtk.widget_class_list_style_properties</title>
 
@@ -6883,6 +7021,36 @@ any)</simpara></listitem>
 
       <para>The "client-event" signal is emitted when another application
 has sent an event to <parameter>widget</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkwidget--composited-changed">
+      <title>The "composited-changed" gtk.Widget Signal</title>
+
+      <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
+      <methodparam><parameter>widget</parameter></methodparam>
+      <methodparam><parameter>user_param1</parameter></methodparam>
+      <methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>widget</parameter>&nbsp;:</term>
+          <listitem><simpara>the object which received the signal.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+          with the <link
+          linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+          method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
 
     </refsect2>
 
@@ -7875,6 +8043,59 @@ any)</simpara></listitem>
 
       <para>The "focus-out-event" signal is emitted when the focus leaves
 <parameter>widget</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkwidget--grab-broken-event">
+      <title>The "grab-broken-event" gtk.Widget Signal</title>
+
+      <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>widget</parameter></methodparam>
+            <methodparam><parameter>event</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>widget</parameter>&nbsp;:</term>
+          <listitem><simpara>the object which received the
+          signal.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>event</parameter>&nbsp;:</term>
+          <listitem><simpara>the gtk.gdk.EventGrabBroken
+          event</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+          with the <link
+          linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+          method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>TRUE</literal> to stop other handlers
+          from being invoked for the event.  <literal>FALSE</literal> to
+          propagate the event further.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.8 and above.</para>
+      </note>
+
+      <para>Emitted when a pointer or keyboard grab on a window belonging to
+      <parameter>widget</parameter> gets broken. </para>
+      
+      <para>On X11, this happens when the grab window becomes unviewable
+      (i.e. it or one of its ancestors is unmapped), or if the same
+      application grabs the pointer or keyboard again.</para>
 
     </refsect2>
 

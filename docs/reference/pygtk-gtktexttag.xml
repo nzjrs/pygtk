@@ -55,8 +55,8 @@ linkend="method-gtktexttag--event">event</link></methodname>
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
+  <refsect1 id="properties-gtktexttag">
+    <title>gtk.TextTag Properties</title>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -67,22 +67,23 @@ linkend="method-gtktexttag--event">event</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
-	      <entry>"name"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The name of the texttag or <literal>None</literal> if
-anonymous</entry>
-	    </row>
-
-	    <row valign="top">
 	      <entry>"background"</entry>
 	      <entry>Write</entry>
 	      <entry>The background color as a string</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"foreground"</entry>
-	      <entry>Write</entry>
-	      <entry>The foreground color as a string</entry>
+	      <entry>"background-full-height"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, the background color fills
+the entire line height</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"background-full-height-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects background
+height</entry>
 	    </row>
 
 	    <row valign="top">
@@ -93,10 +94,10 @@ linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link></entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"foreground-gdk"</entry>
+	      <entry>"background-set"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The foreground color as a (possibly unallocated) <link
-linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link></entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the
+background color</entry>
 	    </row>
 
 	    <row valign="top">
@@ -107,10 +108,46 @@ background</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"foreground-stipple"</entry>
+	      <entry>"background-stipple-set"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The bitmap to use as a mask when drawing the text
-foreground</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the
+background stipple</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"direction"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The text direction:
+<literal>gtk.TEXT_DIR_NONE</literal>, <literal>gtk.TEXT_DIR_LTR</literal> or
+<literal>gtk.TEXT_DIR_RTL</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"editable"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>It <literal>TRUE</literal> the text can be modified by
+the user</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"editable-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects text
+editability</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"family"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The name of the font family, e.g. Sans, Helvetica,
+Times, Monospace</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"family-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the font
+family</entry>
 	    </row>
 
 	    <row valign="top">
@@ -128,39 +165,246 @@ object</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"family"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The name of the font family, e.g. Sans, Helvetica,
-Times, Monospace</entry>
+	      <entry>"foreground"</entry>
+	      <entry>Write</entry>
+	      <entry>The foreground color as a string</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"style"</entry>
+	      <entry>"foreground-gdk"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The font style - one of:
-<literal>pango.STYLE_NORMAL</literal>,
-<literal>pango.STYLE_OBLIQUE</literal> or
-<literal>pango.STYLE_ITALIC</literal>.</entry>
+	      <entry>The foreground color as a (possibly unallocated) <link
+linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link></entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"variant"</entry>
+	      <entry>"foreground-set"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The font variant - either
-<literal>pango.VARIANT_NORMAL</literal> or
-<literal>pango.VARIANT_SMALL_CAPS</literal>.</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the
+foreground color</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"weight"</entry>
+	      <entry>"foreground-stipple"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The font weight as an integer:
-<literal>pango.WEIGHT_ULTRALIGHT</literal> = 200,
-<literal>pango.WEIGHT_LIGHT</literal> = 300,
-<literal>pango.WEIGHT_NORMAL</literal> = 400,
-<literal>pango.WEIGHT_BOLD</literal> = 700,
-<literal>pango.WEIGHT_ULTRABOLD</literal> = 800,
-<literal>pango.WEIGHT_HEAVY</literal> = 900.</entry>
+	      <entry>The bitmap to use as a mask when drawing the text
+foreground</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"foreground-stipple-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the
+foreground stipple</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"indent"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The amount to indent the paragraph, in pixels</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"indent-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects
+indentation</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"invisible"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this text is hidden</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"invisible-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects text
+visibility</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"justification"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The text justification:
+<literal>gtk.JUSTIFY_LEFT</literal>, <literal>gtk.JUSTIFY_RIGHT</literal>,
+<literal>gtk.JUSTIFY_CENTER</literal> or
+<literal>gtk.JUSTIFY_FILL</literal></entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"justification-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects paragraph
+justification</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"language"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The language this text is in, as an ISO code. Pango can
+use this as a hint when rendering the text. If you don't understand this
+parameter, you probably don't need it.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"language-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the
+language the text is rendered as</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"left-margin"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The width of the left margin in pixels</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"left-margin-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the left
+margin</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"name"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The name of the texttag or <literal>None</literal> if
+anonymous</entry>
+	    </row>
+
+            <row valign="top">
+              <entry>"paragraph-background"</entry>
+              <entry>Write</entry>
+              <entry>The paragraph background color as a string.  This
+              property is available in GTK+ 2.8 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"paragraph-background-gdk"</entry>
+              <entry>Read-Write</entry>
+              <entry>The paragraph background color as a as a (possibly
+              unallocated) <link
+              linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>.
+              This property is available in GTK+ 2.8 and above.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"paragraph-background-set"</entry>
+              <entry>Read-Write</entry>
+              <entry>if <literal>TRUE</literal> this tag affects the
+              paragraph background color</entry>
+            </row>
+
+	    <row valign="top">
+	      <entry>"pixels-above-lines"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The number of pixels of blank space above
+paragraphs</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"pixels-above-lines-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the number
+of pixels above lines</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"pixels-below-lines"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The number of pixels of blank space below
+paragraphs</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"pixels-below-lines-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the number
+of pixels above lines</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"pixels-inside-wrap"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The number of pixels of blank space between wrapped
+lines in a paragraph</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"pixels-inside-wrap-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the number
+of pixels between wrapped lines</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"right-margin"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The width of the right margin in pixels</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"right-margin-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the right
+margin</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"rise"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The offset of text above the baseline (below the
+baseline if rise is negative) in pixels</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"rise-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the
+rise</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"scale"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The font size as a scale factor relative to the default
+font size. This properly adapts to theme changes etc. so is recommended.
+Pango predefines some scales such as
+<literal>pango.SCALE_XX_SMALL</literal>,
+<literal>pango.SCALE_X_SMALL</literal>,
+<literal>pango.SCALE_SMALL</literal>, <literal>pango.SCALE_MEDIUM</literal>,
+<literal>pango.SCALE_LARGE</literal>,
+<literal>pango.SCALE_X_LARGE</literal>,
+<literal>pango.SCALE_XX_LARGE</literal>.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"scale-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag scales the font
+size by a factor</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"size"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The font size in Pango units.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"size-points"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The font size in points</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"size-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the font
+size</entry>
 	    </row>
 
 	    <row valign="top">
@@ -179,94 +423,10 @@ Times, Monospace</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"size"</entry>
+	      <entry>"stretch-set"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The font size in Pango units.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"size-points"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The font size in points</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"scale"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The font size as a scale factor relative to the default
-font size. This properly adapts to theme changes etc. so is recommended.
-Pango predefines some scales such as
-<literal>pango.SCALE_XX_SMALL</literal>,
-<literal>pango.SCALE_X_SMALL</literal>,
-<literal>pango.SCALE_SMALL</literal>, <literal>pango.SCALE_MEDIUM</literal>,
-<literal>pango.SCALE_LARGE</literal>,
-<literal>pango.SCALE_X_LARGE</literal>,
-<literal>pango.SCALE_XX_LARGE</literal>.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"pixels-above-lines"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The number of pixels of blank space above
-paragraphs</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"pixels-below-lines"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The number of pixels of blank space below
-paragraphs</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"pixels-inside-wrap"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The number of pixels of blank space between wrapped
-lines in a paragraph</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"editable"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>It <literal>TRUE</literal> the text can be modified by
-the user</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"wrap-mode"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The wrap mode of the text:
-<literal>gtk.WRAP_NONE</literal>, <literal>gtk.WRAP_CHAR</literal> or
-<literal>gtk.WRAP_WORD</literal></entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"justification"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The text justification:
-<literal>gtk.JUSTIFY_LEFT</literal>, <literal>gtk.JUSTIFY_RIGHT</literal>,
-<literal>gtk.JUSTIFY_CENTER</literal> or
-<literal>gtk.JUSTIFY_FILL</literal></entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"direction"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The text direction:
-<literal>gtk.TEXT_DIR_NONE</literal>, <literal>gtk.TEXT_DIR_LTR</literal> or
-<literal>gtk.TEXT_DIR_RTL</literal></entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"left-margin"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The width of the left margin in pixels</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"indent"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The amount to indent the paragraph, in pixels</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the font
+stretch</entry>
 	    </row>
 
 	    <row valign="top">
@@ -277,9 +437,39 @@ text</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"right-margin"</entry>
+	      <entry>"strikethrough-set"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The width of the right margin in pixels</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects
+strikethrough</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"style"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The font style - one of:
+<literal>pango.STYLE_NORMAL</literal>,
+<literal>pango.STYLE_OBLIQUE</literal> or
+<literal>pango.STYLE_ITALIC</literal>.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"style-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects the font
+style</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"tabs"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The custom tabs for this text</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"tabs-set"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects
+tabs</entry>
 	    </row>
 
 	    <row valign="top">
@@ -293,79 +483,18 @@ text</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"rise"</entry>
+	      <entry>"underline-set"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The offset of text above the baseline (below the
-baseline if rise is negative) in pixels</entry>
+	      <entry>If <literal>TRUE</literal>, this tag affects
+underlining</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"background-full-height"</entry>
+	      <entry>"variant"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, the background color fills
-the entire line height</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"language"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The language this text is in, as an ISO code. Pango can
-use this as a hint when rendering the text. If you don't understand this
-parameter, you probably don't need it.</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"tabs"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The custom tabs for this text</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"invisible"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this text is hidden</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"background-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the
-background color</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"foreground-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the
-foreground color</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"background-stipple-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the
-background stipple</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"foreground-stipple-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the
-foreground stipple</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"family-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the font
-family</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"style-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the font
-style</entry>
+	      <entry>The font variant - either
+<literal>pango.VARIANT_NORMAL</literal> or
+<literal>pango.VARIANT_SMALL_CAPS</literal>.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -376,6 +505,18 @@ variant</entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"weight"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The font weight as an integer:
+<literal>pango.WEIGHT_ULTRALIGHT</literal> = 200,
+<literal>pango.WEIGHT_LIGHT</literal> = 300,
+<literal>pango.WEIGHT_NORMAL</literal> = 400,
+<literal>pango.WEIGHT_BOLD</literal> = 700,
+<literal>pango.WEIGHT_ULTRABOLD</literal> = 800,
+<literal>pango.WEIGHT_HEAVY</literal> = 900.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"weight-set"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal>, this tag affects the font
@@ -383,52 +524,11 @@ weight</entry>
 	    </row>
 
 	    <row valign="top">
-	      <entry>"stretch-set"</entry>
+	      <entry>"wrap-mode"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the font
-stretch</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"size-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the font
-size</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"scale-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag scales the font
-size by a factor</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"pixels-above-lines-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the number
-of pixels above lines</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"pixels-below-lines-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the number
-of pixels above lines</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"pixels-inside-wrap-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the number
-of pixels between wrapped lines</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"editable-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects text
-editability</entry>
+	      <entry>The wrap mode of the text:
+<literal>gtk.WRAP_NONE</literal>, <literal>gtk.WRAP_CHAR</literal> or
+<literal>gtk.WRAP_WORD</literal></entry>
 	    </row>
 
 	    <row valign="top">
@@ -438,83 +538,6 @@ editability</entry>
 mode</entry>
 	    </row>
 
-	    <row valign="top">
-	      <entry>"justification-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects paragraph
-justification</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"left-margin-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the left
-margin</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"indent-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects
-indentation</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"strikethrough-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects
-strikethrough</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"right-margin-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the right
-margin</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"underline-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects
-underlining</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"rise-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the
-rise</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"background-full-height-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects background
-height</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"language-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects the
-language the text is rendered as</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"tabs-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects
-tabs</entry>
-	    </row>
-
-	    <row valign="top">
-	      <entry>"invisible-set"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>If <literal>TRUE</literal>, this tag affects text
-visibility</entry>
-	    </row>
-
 	  </tbody>
 	</tgroup>
       </informaltable>
@@ -522,8 +545,10 @@ visibility</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="signal-prototypes-gtktexttag">
+    <title>gtk.TextTag Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>

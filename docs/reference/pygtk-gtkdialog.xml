@@ -122,8 +122,13 @@ linkend="function-gtk- -alternative-dialog-button-order">gtk.alternative_dialog_
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
+  <refsect1 id="properties-gtkdialog">
+    <title>gtk.Dialog Properties</title>
+
+    <para><link linkend="properties-gtkobject">gtk.Object Properties</link></para>
+    <para><link linkend="properties-gtkwidget">gtk.Widget Properties</link></para>
+    <para><link linkend="properties-gtkcontainer">gtk.Container Properties</link></para>
+    <para><link linkend="properties-gtkwindow">gtk.Window Properties</link></para>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -147,8 +152,10 @@ above its buttons</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Style Properties</title>
+  <refsect1 id="style-properties-gtkdialog">
+    <title>gtk.Dialog Style Properties</title>
+
+    <para><link linkend="style-properties-gtkwidget">gtk.Widget Style Properties</link></para>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -221,8 +228,14 @@ the buttons of the dialog.</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="signal-prototypes-gtkdialog">
+    <title>gtk.Dialog Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkobject">gtk.Object Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkwidget">gtk.Widget Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkcontainer">gtk.Container Signal Prototypes</link></para>
+    <para><link linkend="signal-prototypes-gtkwindow">gtk.Window Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>
@@ -264,58 +277,59 @@ linkend="signal-gtkdialog--response">response</link>"</term>
     <title>Description</title>
 
     <para>Dialog boxes are a convenient way to prompt the user for a small
-amount of input, e.g. to display a message, ask a question, or anything else
-that does not require extensive effort on the user's part. Dialogs are
-organized as a window split vertically. The top section is a <link
-linkend="class-gtkvbox"><classname>gtk.VBox</classname></link>, and is where
-widgets such as a <link
-linkend="class-gtklabel"><classname>gtk.Label</classname></link> or a <link
-linkend="class-gtkentry"><classname>gtk.Entry</classname></link> should be
-packed. The bottom area is known as the action_area which is generally used
-for packing buttons into the dialog which may perform functions such as
-cancel, ok, or apply. The two areas are separated by a <link
-linkend="class-gtkhseparator"><classname>gtk.HSeparator</classname></link>.</para>
+    amount of input, e.g. to display a message, ask a question, or anything
+    else that does not require extensive effort on the user's part. Dialogs
+    are organized as a window split vertically. The top section is a <link
+    linkend="class-gtkvbox"><classname>gtk.VBox</classname></link>, and is
+    where widgets such as a <link
+    linkend="class-gtklabel"><classname>gtk.Label</classname></link> or a
+    <link linkend="class-gtkentry"><classname>gtk.Entry</classname></link>
+    should be packed. The bottom area is known as the action_area which is
+    generally used for packing buttons into the dialog which may perform
+    functions such as cancel, ok, or apply. The two areas are separated by a
+    <link
+    linkend="class-gtkhseparator"><classname>gtk.HSeparator</classname></link>.</para>
 
     <para>The <link
-linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> boxes are
-created with a call to <link
-linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>() 
-that sets the dialog title, some convenient flags, and adds simple buttons.
-In a newly created dialog, the two primary areas of the window can be
-accessed as the vbox and action_area attributes, as can be seen from the
-example, below. A modal dialog (that is, one which freezes the rest of the
-application from user input), can be created by passing the
-<literal>gtk.DIALOG_MODAL</literal> flag to the <link
-linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>
-constructor or by calling <link
-linkend="method-gtkwindow--set-modal"><methodname>set_modal</methodname>()</link> 
-on the dialog.</para>
+    linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> boxes
+    are created with a call to <link
+    linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>()
+    that sets the dialog title, some convenient flags, and adds simple
+    buttons.  In a newly created dialog, the two primary areas of the window
+    can be accessed as the vbox and action_area attributes, as can be seen
+    from the example, below. A modal dialog (that is, one which freezes the
+    rest of the application from user input), can be created by passing the
+    <literal>gtk.DIALOG_MODAL</literal> flag to the <link
+    linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>
+    constructor or by calling <link
+    linkend="method-gtkwindow--set-modal"><methodname>set_modal</methodname>()</link>
+    on the dialog.</para>
 
     <para>If you add buttons to <link
-linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> using
-<link
-linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>,
-<link
-linkend="method-gtkdialog--add-button"><methodname>add_button</methodname>()</link>,
-or <link
-linkend="method-gtkdialog--add-action-widget"><methodname>add_action_widget</methodname>()</link>,
-clicking the button will emit a signal called "response" with a response ID
-that you specified. PyGTK will never assign a meaning to positive response
-IDs; these are entirely user-defined. But for convenience, you can use the
-pre-defined <xref linkend="gtk-response-type-constants"
-endterm="gtk-response-type-constants-title"></xref> (these all have values
-less than zero).</para>
+    linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> using
+    <link
+    linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>,
+    <link
+    linkend="method-gtkdialog--add-button"><methodname>add_button</methodname>()</link>,
+    or <link
+    linkend="method-gtkdialog--add-action-widget"><methodname>add_action_widget</methodname>()</link>,
+    clicking the button will emit a signal called "response" with a response
+    ID that you specified. PyGTK will never assign a meaning to positive
+    response IDs; these are entirely user-defined. But for convenience, you
+    can use the pre-defined <xref linkend="gtk-response-type-constants"
+    endterm="gtk-response-type-constants-title"></xref> (these all have
+    values less than zero).</para>
 
     <para>If a dialog receives a delete event, the "response" signal will be
-emitted with a response ID of
-<literal>gtk.RESPONSE_DELETE_EVENT</literal>.</para>
+    emitted with a response ID of
+    <literal>gtk.RESPONSE_DELETE_EVENT</literal>.</para>
 
     <para>If you want to block waiting for a dialog to return before
-returning control flow to your code, you can call <link
-linkend="method-gtkdialog--run"><methodname>run</methodname>()</link>. This
-function enters a recursive main loop and waits for the user to respond to
-the dialog, returning the response ID corresponding to the button the user
-clicked.</para>
+    returning control flow to your code, you can call <link
+    linkend="method-gtkdialog--run"><methodname>run</methodname>()</link>. This
+    function enters a recursive main loop and waits for the user to respond
+    to the dialog, returning the response ID corresponding to the button the
+    user clicked.</para>
 
   </refsect1>
 
@@ -378,7 +392,7 @@ linkend="gtk-dialog-flag-constants"
 endterm="gtk-dialog-flag-constants-title"></xref> for more
 information). After <parameter>flags</parameter>, a tuple of button
 text/response ID pairs should be listed, or <literal>None</literal> (the
-default value) is no buttons are needed. The button text can be either a
+default value) if no buttons are needed. The button text can be either a
 stock ID such as <literal>gtk.STOCK_OK</literal>, or some arbitrary text.  A
 response ID can be any positive number, or one of the pre-defined <xref
 linkend="gtk-response-type-constants"

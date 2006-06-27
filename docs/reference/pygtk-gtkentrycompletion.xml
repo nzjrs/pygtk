@@ -135,8 +135,8 @@
 
   </refsect1>
 
-  <refsect1>
-    <title>Properties</title>
+  <refsect1 id="properties-gtkentrycompletion">
+    <title>gtk.EntryCompletion Properties</title>
 
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
@@ -150,8 +150,9 @@
 	      <entry>"inline-completion"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal> the common prefix should be
-inserted automatically. Default value: <literal>FALSE</literal>. Available
-in GTK+ 2.6 and above.</entry>
+	      inserted automatically. Default value:
+	      <literal>FALSE</literal>. Available in GTK+ 2.6 and
+	      above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -164,42 +165,44 @@ in GTK+ 2.6 and above.</entry>
 	    <row valign="top">
 	      <entry>"model"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>The <link 
-linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> to 
-find matches in.</entry>
+	      <entry>The <link
+	      linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+	      to find matches in.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"popup-completion"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal> the completions should be
-shown in a popup window. Default value: <literal>TRUE</literal>. Available
-in GTK+ 2.6 and above.</entry>
+	      shown in a popup window. Default value:
+	      <literal>TRUE</literal>. Available in GTK+ 2.6 and
+	      above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"popup-set-width"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal> the completions popup window
-will be resized to the width of the entry.
-Default value: <literal>TRUE</literal>. Available in GTK+ 2.8 and
-above.</entry>
+	      will be resized to the width of the entry.  Default value:
+	      <literal>TRUE</literal>. Available in GTK+ 2.8 and
+	      above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"popup-single-match"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>TRUE</literal> the completions popup window
-will be for a single possible completion.
-Default value: <literal>TRUE</literal>. Available in GTK+ 2.8 and
-above.</entry>
+	      will be for a single possible completion.  Default value:
+	      <literal>TRUE</literal>. Available in GTK+ 2.8 and
+	      above.</entry>
 	    </row>
 
 	    <row valign="top">
 	      <entry>"text-column"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The column of the model containing the strings. Allowed
-values: >= -1. Default value: -1. Available in GTK+ 2.6 and above.</entry>
+	      values: >= -1. Default value: -1. Available in GTK+ 2.6 and
+	      above.</entry>
 	    </row>
 
 	  </tbody>
@@ -209,8 +212,10 @@ values: >= -1. Default value: -1. Available in GTK+ 2.6 and above.</entry>
 
   </refsect1>
 
-  <refsect1>
-    <title>Signal Prototypes</title>
+  <refsect1 id="signal-prototypes-gtkentrycompletion">
+    <title>gtk.EntryCompletion Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
 
     <variablelist>
       <varlistentry>
@@ -259,56 +264,56 @@ values: >= -1. Default value: -1. Available in GTK+ 2.6 and above.</entry>
     </note>
 
     <para><link
-linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
-is an auxiliary object to be used in conjunction with <link
-linkend="class-gtkentry"><classname>gtk.Entry</classname></link> to provide
-completion functionality. It implements the <link
-linkend="class-gtkcelllayout"><classname>gtk.CellLayout</classname></link>
-interface, to allow the user to add extra cells to the popup display of
-completions.</para>
+    linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+    is an auxiliary object to be used in conjunction with <link
+    linkend="class-gtkentry"><classname>gtk.Entry</classname></link> to
+    provide completion functionality. It implements the <link
+    linkend="class-gtkcelllayout"><classname>gtk.CellLayout</classname></link>
+    interface, to allow the user to add extra cells to the popup display of
+    completions.</para>
 
     <para>To add completion functionality to an entry, use the <link
-linkend="method-gtkentry--set-completion"><methodname>gtk.Entry.set_completion</methodname>()</link>
-method.  In addition to regular completion matches, that will be inserted
-into the entry when they are selected, <link
-linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
-also allows "actions" to be displayed in the popup window below any
-completions. Their appearance is similar to menuitems, to differentiate them
-clearly from completion strings. When an action is selected, the
-"action-activated" signal is emitted.</para>
+    linkend="method-gtkentry--set-completion"><methodname>gtk.Entry.set_completion</methodname>()</link>
+    method.  In addition to regular completion matches, that will be
+    inserted into the entry when they are selected, <link
+    linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+    also allows "actions" to be displayed in the popup window below any
+    completions. Their appearance is similar to menuitems, to differentiate
+    them clearly from completion strings. When an action is selected, the
+    "action-activated" signal is emitted.</para>
 
     <para>A <link
-linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
-(e.g. a <link
-linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>)
-containing the completion strings is associated with the <link
-linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
-using the <link
-linkend="method-gtkentrycompletion--set-model"><methodname>set_model</methodname>()</link>
-method. The tree model column containing the completion strings can be set
-using the convenience method <link
-linkend="method-gtkentrycompletion--set-text-column"><methodname>set_text_column</methodname>()</link>
-that also creates a <link
-linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
-and packs it into the entry completion.</para>
+    linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+    (e.g. a <link
+    linkend="class-gtkliststore"><classname>gtk.ListStore</classname></link>)
+    containing the completion strings is associated with the <link
+    linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+    using the <link
+    linkend="method-gtkentrycompletion--set-model"><methodname>set_model</methodname>()</link>
+    method. The tree model column containing the completion strings can be
+    set using the convenience method <link
+    linkend="method-gtkentrycompletion--set-text-column"><methodname>set_text_column</methodname>()</link>
+    that also creates a <link
+    linkend="class-gtkcellrenderertext"><classname>gtk.CellRendererText</classname></link>
+    and packs it into the entry completion.</para>
 
     <para>Otherwise, you can create <link
-linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
-objects and pack them into the <link
-linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
-using the <link
-linkend="class-gtkcelllayout"><classname>gtk.CellLayout</classname></link>
-methods <link
-linkend="method-gtkcelllayout--pack-start"><methodname>gtk.CellLayout.pack_start</methodname>()</link>
-or <link
-linkend="method-gtkcelllayout--pack-start"><methodname>gtk.CellLayout.pack_start</methodname>()</link>. However,
-you will also have to define a match function and set it with the <link
-linkend="method-gtkentrycompletion--set-match-func"><methodname>set_match_func</methodname>()</link>
-method.</para>
+    linkend="class-gtkcellrenderer"><classname>gtk.CellRenderer</classname></link>
+    objects and pack them into the <link
+    linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link>
+    using the <link
+    linkend="class-gtkcelllayout"><classname>gtk.CellLayout</classname></link>
+    methods <link
+    linkend="method-gtkcelllayout--pack-start"><methodname>gtk.CellLayout.pack_start</methodname>()</link>
+    or <link
+    linkend="method-gtkcelllayout--pack-start"><methodname>gtk.CellLayout.pack_start</methodname>()</link>. However,
+    you will also have to define a match function and set it with the <link
+    linkend="method-gtkentrycompletion--set-match-func"><methodname>set_match_func</methodname>()</link>
+    method.</para>
 
     <para>If you wanted to create a completion list with the strings to
-insert and some additional info e.g. an icon or description you could do
-something like:</para>
+    insert and some additional info e.g. an icon or description you could do
+    something like:</para>
 
     <programlisting>
   entry = gtk.Entry()
@@ -327,7 +332,7 @@ something like:</para>
 </programlisting>
 
     <para>This will create an entry that will display a pixbuf and the text
-string during completion.</para>
+    string during completion.</para>
 
     <para>Actions are easily managed using the <link
     linkend="method-gtkentrycompletion--insert-action-text"><methodname>insert_action_text</methodname>()</link>,
