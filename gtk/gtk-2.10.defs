@@ -1506,7 +1506,7 @@
   (c-name "gtk_print_run_page_setup_dialog")
   (return-type "GtkPageSetup*")
   (parameters
-    '("GtkWindow*" "parent")
+    '("GtkWindow*" "parent" (null-ok))
     '("GtkPageSetup*" "page_setup" (null-ok))
     '("GtkPrintSettings*" "settings")
   )
@@ -1557,6 +1557,39 @@
   )
 )
 
+(define-virtual ready
+  (of-object "GtkPrintOperationPreview")
+  (return-type "none")
+  (parameters
+    '("GtkPrintContext*" "context")
+  )
+)
+(define-virtual got_page_size
+  (of-object "GtkPrintOperationPreview")
+  (return-type "none")
+  (parameters
+    '("GtkPrintContext*" "context")
+    '("GtkPageSetup*" "page_setup")
+  )
+)
+(define-virtual render_page
+  (of-object "GtkPrintOperationPreview")
+  (return-type "none")
+  (parameters
+    '("gint" "page_nr")
+  )
+)
+(define-virtual is_selected
+  (of-object "GtkPrintOperationPreview")
+  (return-type "gboolean")
+  (parameters
+    '("gint" "page_nr")
+  )
+)
+(define-virtual end_preview
+  (of-object "GtkPrintOperationPreview")
+  (return-type "none")
+)
 
 
 ;; From gtkprintsettings.h
@@ -2440,6 +2473,84 @@
   (return-type "GtkRecentFilter*")
 )
 
+(define-virtual set_current_uri
+  (of-object "GtkRecentChooser")
+  (return-type "gboolean")
+  (parameters
+    '("const-gchar*" "uri")
+    '("GError**" "error")
+  )
+)
+(define-virtual get_current_uri
+  (of-object "GtkRecentChooser")
+  (return-type "gchar*")
+)
+(define-virtual select_uri
+  (of-object "GtkRecentChooser")
+  (return-type "gboolean")
+  (parameters
+    '("const-gchar*" "uri")
+    '("GError**" "error")
+  )
+)
+(define-virtual unselect_uri
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "uri")
+  )
+)
+(define-virtual select_all
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+)
+(define-virtual unselect_all
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+)
+(define-virtual get_items
+  (of-object "GtkRecentChooser")
+  (return-type "GList*")
+)
+(define-virtual get_recent_manager
+  (of-object "GtkRecentChooser")
+  (return-type "GtkRecentManager*")
+)
+(define-virtual add_filter
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+  (parameters
+    '("GtkRecentFilter*" "filter")
+  )
+)
+(define-virtual remove_filter
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+  (parameters
+    '("GtkRecentFilter*" "filter")
+  )
+)
+(define-virtual list_filters
+  (of-object "GtkRecentChooser")
+  (return-type "GSList*")
+)
+(define-virtual set_sort_func
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+  (parameters
+    '("GtkRecentSortFunc" "sort_func")
+    '("gpointer" "data")
+    '("GDestroyNotify" "destroy")
+  )
+)
+(define-virtual item_activated
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+)
+(define-virtual selection_changed
+  (of-object "GtkRecentChooser")
+  (return-type "none")
+)
 
 
 ;; From gtkrecentchoosermenu.h
