@@ -63,6 +63,15 @@
   )
 )
 
+(define-method get_localized_name
+  (of-object "AtkAction")
+  (c-name "atk_action_get_localized_name")
+  (return-type "const-gchar*")
+  (parameters
+    '("gint" "i")
+  )
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkcomponent.h
@@ -188,6 +197,23 @@
   )
 )
 
+(define-function rectangle_get_type
+  (c-name "atk_rectangle_get_type")
+  (return-type "GType")
+)
+
+(define-method get_layer
+  (of-object "AtkComponent")
+  (c-name "atk_component_get_layer")
+  (return-type "AtkLayer")
+)
+
+(define-method get_mdi_zorder
+  (of-object "AtkComponent")
+  (c-name "atk_component_get_mdi_zorder")
+  (return-type "gint")
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkdocument.h
@@ -235,7 +261,7 @@
   (return-type "none")
   (parameters
     '("const-gchar*" "string")
-  )
+    )
 )
 
 (define-method insert_text
@@ -286,6 +312,29 @@
   (parameters
     '("gint" "position")
   )
+)
+
+
+
+;; From atkgobjectaccessible.h
+
+(define-function gobject_accessible_get_type
+  (c-name "atk_gobject_accessible_get_type")
+  (return-type "GType")
+)
+
+(define-function gobject_accessible_for_object
+  (c-name "atk_gobject_accessible_for_object")
+  (return-type "AtkObject*")
+  (parameters
+    '("GObject*" "obj")
+  )
+)
+
+(define-method get_object
+  (of-object "AtkGObjectAccessible")
+  (c-name "atk_gobject_accessible_get_object")
+  (return-type "GObject*")
 )
 
 
@@ -341,6 +390,18 @@
   (of-object "AtkHyperlink")
   (c-name "atk_hyperlink_get_n_anchors")
   (return-type "gint")
+)
+
+(define-method is_inline
+  (of-object "AtkHyperlink")
+  (c-name "atk_hyperlink_is_inline")
+  (return-type "gboolean")
+)
+
+(define-method is_selected_link
+  (of-object "AtkHyperlink")
+  (c-name "atk_hyperlink_is_selected_link")
+  (return-type "gboolean")
 )
 
 
@@ -484,6 +545,12 @@
   (return-type "none")
 )
 
+(define-method get_accessible_type
+  (of-object "AtkObjectFactory")
+  (c-name "atk_object_factory_get_accessible_type")
+  (return-type "GType")
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkobject.h
@@ -499,7 +566,7 @@
 )
 
 (define-method ref_accessible
-  (of-object "AtkImplementorIface")
+  (of-object "AtkImplementor")
   (c-name "atk_implementor_ref_accessible")
   (return-type "AtkObject*")
 )
@@ -637,6 +704,49 @@
   )
 )
 
+(define-function role_register
+  (c-name "atk_role_register")
+  (return-type "AtkRole")
+  (parameters
+    '("const-gchar*" "name")
+  )
+)
+
+(define-method initialize
+  (of-object "AtkObject")
+  (c-name "atk_object_initialize")
+  (return-type "none")
+  (parameters
+    '("gpointer" "data")
+  )
+)
+
+(define-method add_relationship
+  (of-object "AtkObject")
+  (c-name "atk_object_add_relationship")
+  (return-type "gboolean")
+  (parameters
+    '("AtkRelationType" "relationship")
+    '("AtkObject*" "target")
+  )
+)
+
+(define-method remove_relationship
+  (of-object "AtkObject")
+  (c-name "atk_object_remove_relationship")
+  (return-type "gboolean")
+  (parameters
+    '("AtkRelationType" "relationship")
+    '("AtkObject*" "target")
+  )
+)
+
+(define-method get_localized_name
+  (of-object "AtkRole")
+  (c-name "atk_role_get_localized_name")
+  (return-type "const-gchar*")
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkregistry.h
@@ -734,7 +844,7 @@
   (c-name "atk_relation_get_target")
   (return-type "GPtrArray*")
 )
-
+ 
 
 
 ;; From /usr/include/atk-1.0/atk/atkrelationset.h
@@ -800,7 +910,7 @@
     '("AtkRelationType" "relationship")
   )
 )
-
+ 
 
 
 ;; From /usr/include/atk-1.0/atk/atkselection.h
@@ -878,6 +988,14 @@
 
 (define-function state_type_for_name
   (c-name "atk_state_type_for_name")
+  (return-type "AtkStateType")
+  (parameters
+    '("const-gchar*" "name")
+  )
+)
+
+(define-function state_type_register
+  (c-name "atk_state_type_register")
   (return-type "AtkStateType")
   (parameters
     '("const-gchar*" "name")
@@ -1484,6 +1602,54 @@
   )
 )
 
+(define-function text_attribute_register
+  (c-name "atk_text_attribute_register")
+  (return-type "AtkTextAttribute")
+  (parameters
+    '("const-gchar*" "name")
+  )
+)
+
+(define-method get_range_extents
+  (of-object "AtkText")
+  (c-name "atk_text_get_range_extents")
+  (return-type "none")
+  (parameters
+    '("gint" "start_offset")
+    '("gint" "end_offset")
+    '("AtkCoordType" "coord_type")
+    '("AtkTextRectangle*" "rect")
+  )
+)
+
+(define-method get_bounded_ranges
+  (of-object "AtkText")
+  (c-name "atk_text_get_bounded_ranges")
+  (return-type "AtkTextRange**")
+  (parameters
+    '("AtkTextRectangle*" "rect")
+    '("AtkCoordType" "coord_type")
+    '("AtkTextClipType" "x_clip_type")
+    '("AtkTextClipType" "y_clip_type")
+  )
+)
+
+(define-function text_free_ranges
+  (c-name "atk_text_free_ranges")
+  (return-type "none")
+  (parameters
+    '("AtkTextRange**" "ranges")
+  )
+)
+
+(define-function text_attribute_for_name
+  (c-name "atk_text_attribute_for_name")
+  (return-type "AtkTextAttribute")
+  (parameters
+    '("const-gchar*" "name")
+  )
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkutil.h
@@ -1572,6 +1738,11 @@
 (define-function get_toolkit_version
   (c-name "atk_get_toolkit_version")
   (return-type "const-gchar*")
+)
+
+(define-function get_focus_object
+  (c-name "atk_get_focus_object")
+  (return-type "AtkObject*")
 )
 
 

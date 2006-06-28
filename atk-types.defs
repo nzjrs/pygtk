@@ -7,6 +7,13 @@
   (gtype-id "ATK_TYPE_HYPERLINK")
 )
 
+(define-object GObjectAccessible
+  (in-module "Atk")
+  (parent "AtkObject")
+  (c-name "AtkGObjectAccessible")
+  (gtype-id "ATK_TYPE_GOBJECT_ACCESSIBLE")
+)
+
 (define-object Object
   (in-module "Atk")
   (parent "GObject")
@@ -70,10 +77,88 @@
   (gtype-id "ATK_TYPE_UTIL")
 )
 
-(define-interface ImplementorIface
+(define-interface Action
   (in-module "Atk")
-  (c-name "AtkImplementorIface")
+  (c-name "AtkAction")
+  (gtype-id "ATK_TYPE_ACTION")
+)
+
+(define-interface Component
+  (in-module "Atk")
+  (c-name "AtkComponent")
+  (gtype-id "ATK_TYPE_COMPONENT")
+)
+
+(define-interface Document
+  (in-module "Atk")
+  (c-name "AtkDocument")
+  (gtype-id "ATK_TYPE_DOCUMENT")
+)
+
+(define-interface EditableText
+  (in-module "Atk")
+  (c-name "AtkEditableText")
+  (gtype-id "ATK_TYPE_EDITABLE_TEXT")
+)
+
+(define-interface Hypertext
+  (in-module "Atk")
+  (c-name "AtkHypertext")
+  (gtype-id "ATK_TYPE_HYPERTEXT")
+)
+
+(define-interface Image
+  (in-module "Atk")
+  (c-name "AtkImage")
+  (gtype-id "ATK_TYPE_IMAGE")
+)
+
+(define-interface Implementor
+  (in-module "Atk")
+  (c-name "AtkImplementor")
   (gtype-id "ATK_TYPE_IMPLEMENTOR")
+)
+
+(define-interface Selection
+  (in-module "Atk")
+  (c-name "AtkSelection")
+  (gtype-id "ATK_TYPE_SELECTION")
+)
+
+(define-interface StreamableContent
+  (in-module "Atk")
+  (c-name "AtkStreamableContent")
+  (gtype-id "ATK_TYPE_STREAMABLE_CONTENT")
+)
+
+(define-interface Table
+  (in-module "Atk")
+  (c-name "AtkTable")
+  (gtype-id "ATK_TYPE_TABLE")
+)
+
+(define-interface Text
+  (in-module "Atk")
+  (c-name "AtkText")
+  (gtype-id "ATK_TYPE_TEXT")
+)
+
+(define-interface Value
+  (in-module "Atk")
+  (c-name "AtkValue")
+  (gtype-id "ATK_TYPE_VALUE")
+)
+
+(define-boxed Rectangle
+  (in-module "Atk")
+  (c-name "AtkRectangle")
+  (gtype-id "ATK_TYPE_RECTANGLE")
+  (fields
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )   
 )
 
 ;; Enumerations and flags ...
@@ -295,3 +380,24 @@
     '("window" "ATK_XY_WINDOW")
   )
 )
+(define-flags HyperlinkStateFlags
+  (in-module "Atk")
+  (c-name "AtkHyperlinkStateFlags")
+  (gtype-id "ATK_TYPE_HYPERLINK_STATE_FLAGS")
+  (values
+    '("e" "ATK_HYPERLINK_IS_INLINE")
+  )
+)
+
+(define-enum TextClipType
+  (in-module "Atk")
+  (c-name "AtkTextClipType")
+  (gtype-id "ATK_TYPE_TEXT_CLIP_TYPE")
+  (values
+    '("none" "ATK_TEXT_CLIP_NONE")
+    '("min" "ATK_TEXT_CLIP_MIN")
+    '("max" "ATK_TEXT_CLIP_MAX")
+    '("both" "ATK_TEXT_CLIP_BOTH")
+  )
+)
+
