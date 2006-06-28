@@ -1,0 +1,144 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+
+<refentry id="class-atkregistry">
+
+  <refnamediv>
+    <refname>atk.Registry</refname>
+      <refpurpose>An object used to store the GType of the factories used to create an accessible object for an object of a particular GType.  </refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>Synopsis</title>
+
+    <classsynopsis language="python">
+      <ooclass><classname>atk.Registry</classname></ooclass>
+      <ooclass><classname><link linkend="class-gobject">gobject.GObject</link></classname></ooclass>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-atkregistry--set-factory-type">set_factory_type</link></methodname>
+        <methodparam><parameter role="keyword">type</parameter></methodparam>
+        <methodparam><parameter role="keyword">factory_type</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-atkregistry--get-factory-type">get_factory_type</link></methodname>
+        <methodparam><parameter role="keyword">type</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-atkregistry--get-factory">get_factory</link></methodname>
+        <methodparam><parameter role="keyword">type</parameter></methodparam>
+      </methodsynopsis>
+</classsynopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Ancestry</title>
+
+<synopsis>+-- <link linkend="class-gobject">gobject.GObject</link>
+  +-- <link linkend="class-atkregistry">atk.Registry</link>
+</synopsis>
+
+  </refsect1>
+
+  <refsect1 id="signal-prototypes-atkregistry">
+    <title>atk.Registry Signal Prototypes</title>
+
+    <para><link linkend="signal-prototypes-gobject">gobject.GObject Signal Prototypes</link></para>
+  </refsect1>
+
+  <refsect1>
+    <title>Description</title>
+
+<para>
+
+</para>
+
+
+
+  </refsect1>
+
+  <refsect1>
+    <title>Methods</title>
+
+    <refsect2 id="method-atkregistry--set-factory-type">
+      <title>atk.Registry.set_factory_type</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_factory_type</methodname>
+        <methodparam><parameter role="keyword">type</parameter></methodparam>
+        <methodparam><parameter role="keyword">factory_type</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+          <listitem><simpara>an <link linkend="class-atkobject"><classname>atk.Object</classname></link> type</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">factory_type</parameter>&nbsp;:</term>
+          <listitem><simpara>an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> type to associate with <parameter>type</parameter>.  Must
+implement AtkObject appropriate for <parameter>type</parameter>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>Associate an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> subclass with a <literal>GType</literal>. Note:
+      The associated <parameter>factory_type</parameter> will thereafter be responsible for
+      the creation of new <link linkend="class-atkobject"><classname>atk.Object</classname></link> implementations for instances
+      appropriate for <parameter>type</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-atkregistry--get-factory-type">
+      <title>atk.Registry.get_factory_type</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_factory_type</methodname>
+        <methodparam><parameter role="keyword">type</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+          <listitem><simpara>a <literal>GType</literal> with which to look up the associated <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+subclass</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <literal>GType</literal> associated with type <parameter>type</parameter></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>Provides a <literal>GType</literal> indicating the <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> subclass
+      associated with <parameter>type</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-atkregistry--get-factory">
+      <title>atk.Registry.get_factory</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_factory</methodname>
+        <methodparam><parameter role="keyword">type</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+          <listitem><simpara>a <literal>GType</literal> with which to look up the associated <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> appropriate for creating <literal>AtkObjects</literal>
+appropriate for <parameter>type</parameter>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>Gets an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> appropriate for creating <literal>AtkObjects</literal>
+      appropriate for <parameter>type</parameter>.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+</refentry>
