@@ -22,7 +22,7 @@
 
 import os
 import sys
-from types import ModuleType as _module
+from types import ModuleType
 
 # this can go when things are a little further along
 try:
@@ -40,10 +40,11 @@ if not hasattr(sys, 'argv'):
 import gobject as _gobject
 
 from gtk._gtk import *
+from gtk._lazyutils import LazyModule
 from gtk.deprecation import _Deprecated, _DeprecatedConstant
-from gtk import keysyms
-
 import gdk
+
+keysyms = LazyModule('keysyms', locals())
 
 def _init():
     import sys
@@ -63,6 +64,7 @@ def _init():
 
     # install the default log handlers
     add_log_handlers()
+
 
 gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
@@ -98,6 +100,6 @@ FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 # Can't figure out how to deprecate gdk.Warning
 gdk.Warning = Warning
 
-del _Deprecated, _DeprecatedConstant, _gobject, _module,
+del _Deprecated, _DeprecatedConstant, _gobject
 
 _init()

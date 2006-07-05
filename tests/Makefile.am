@@ -1,6 +1,7 @@
 EXTRA_DIST = $(tests) common.py runtests.py testmodule.py leak.glade
 
 tests =  \
+	test_api.py \
 	test_glade.py \
 	test_conversion.py \
 	test_dialog.py \
