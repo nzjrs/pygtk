@@ -253,3 +253,71 @@ _wrap_atk_relation_get_target (PyGObject *self)
     }
     return py_targets;
 }
+%%
+override atk_state_set_add_states kwargs
+static PyObject *
+_wrap_atk_state_set_add_states(PyGObject *self, PyObject *args,
+                               PyObject *kwargs)
+{
+    static char *kwlist[] = { "types", NULL };
+    AtkStateType *types;
+    gint count, i;
+    PyObject *py_types;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:atk.StateSet.add_states",
+                                     kwlist, &py_types))
+	return NULL;
+
+    if (!(py_types = PySequence_Fast(py_types, "types must be a sequence")))
+        return NULL;
+
+    count = PySequence_Fast_GET_SIZE(py_types);
+    types = g_new0(AtkStateType, count);
+    for (i = 0; i < count; i++) {
+        if (pyg_enum_get_value(ATK_TYPE_STATE_TYPE,
+                               PySequence_Fast_GET_ITEM(py_types, i),
+                               (gpointer)&types[i]))
+            return NULL;
+    }
+    atk_state_set_add_states(ATK_STATE_SET(self->obj), types, count);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override atk_state_set_contains_states kwargs
+static PyObject *
+_wrap_atk_state_set_contains_states(PyGObject *self, PyObject *args,
+                               PyObject *kwargs)
+{
+    static char *kwlist[] = { "types", NULL };
+    AtkStateType *types;
+    gint count, i;
+    gboolean ret;
+    PyObject *py_types, *py_ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:atk.StateSet.contains_states",
+                                     kwlist, &py_types))
+	return NULL;
+
+    if (!(py_types = PySequence_Fast(py_types, "types must be a sequence")))
+        return NULL;
+
+    count = PySequence_Fast_GET_SIZE(py_types);
+    types = g_new0(AtkStateType, count);
+    for (i = 0; i < count; i++) {
+        if (pyg_enum_get_value(ATK_TYPE_STATE_TYPE,
+                               PySequence_Fast_GET_ITEM(py_types, i),
+                               (gpointer)&types[i]))
+            return NULL;
+    }
+    ret = atk_state_set_contains_states(ATK_STATE_SET(self->obj), types,
+                                        count);
+    if (ret)
+        py_ret = Py_True;
+    else
+        py_ret = Py_False;
+    Py_INCREF(py_ret);
+    return py_ret;
+}
