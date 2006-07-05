@@ -20,9 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-import os
 import sys
-from types import ModuleType
 
 # this can go when things are a little further along
 try:
@@ -39,7 +37,7 @@ if not hasattr(sys, 'argv'):
 # load the required modules:
 import gobject as _gobject
 
-from gtk._gtk import *
+from gtk import _gtk
 from gtk._lazyutils import LazyModule
 from gtk.deprecation import _Deprecated, _DeprecatedConstant
 import gdk
@@ -53,7 +51,7 @@ def _init():
         sys_path = sys.path[:]
 
         try:
-            init_check()
+            _gtk.init_check()
         except RuntimeError, e:
             print >> sys.stderr, "WARNING: %s" % e
     finally:
@@ -63,7 +61,7 @@ def _init():
             sys.path = sys_path
 
     # install the default log handlers
-    add_log_handlers()
+    _gtk.add_log_handlers()
 
 
 gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
@@ -79,9 +77,9 @@ input_add      = _Deprecated(_gobject.io_add_watch, 'input_add', 'gobject')
 input_add_full = _Deprecated(_gobject.io_add_watch, 'input_add_full', 'gobject')
 input_remove   = _Deprecated(_gobject.source_remove, 'input_remove', 'gobject')
 
-mainloop                 = _Deprecated(main, 'mainloop')
-mainquit                 = _Deprecated(main_quit, 'mainquit')
-mainiteration            = _Deprecated(main_iteration, 'mainiteration')
+mainloop                 = _Deprecated(_gtk.main, 'mainloop')
+mainquit                 = _Deprecated(_gtk.main_quit, 'mainquit')
+mainiteration            = _Deprecated(_gtk.main_iteration, 'mainiteration')
 load_font                = _Deprecated(gdk.Font, 'load_font', 'gtk.gdk')
 load_fontset             = _Deprecated(gdk.fontset_load, 'load_fontset', 'gtk.gdk')
 create_pixmap            = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gtk.gdk')
@@ -100,6 +98,10 @@ FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 # Can't figure out how to deprecate gdk.Warning
 gdk.Warning = Warning
 
-del _Deprecated, _DeprecatedConstant, _gobject
-
 _init()
+
+# We don't want to export this
+del _Deprecated, _DeprecatedConstant, _gobject, _gtk
+
+# Do this last, so programs like pyflakes can check everything above
+from gtk._gtk import *

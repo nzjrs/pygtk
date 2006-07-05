@@ -69,4 +69,3 @@ class gtkModule(RemapModule):
 
 gtk = gtkModule()
 
-del RemapModule, gtkModule
