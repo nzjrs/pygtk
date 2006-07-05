@@ -42,8 +42,6 @@ from gtk._lazyutils import LazyModule
 from gtk.deprecation import _Deprecated, _DeprecatedConstant
 import gdk
 
-keysyms = LazyModule('keysyms', locals())
-
 def _init():
     import sys
 
@@ -63,6 +61,9 @@ def _init():
     # install the default log handlers
     _gtk.add_log_handlers()
 
+keysyms = LazyModule('keysyms', locals())
+
+_init()
 
 gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
@@ -97,8 +98,6 @@ FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 
 # Can't figure out how to deprecate gdk.Warning
 gdk.Warning = Warning
-
-_init()
 
 # We don't want to export this
 del _Deprecated, _DeprecatedConstant, _gobject, _gtk, _init, _lazyutils
