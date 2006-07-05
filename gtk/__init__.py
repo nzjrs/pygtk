@@ -101,7 +101,7 @@ gdk.Warning = Warning
 _init()
 
 # We don't want to export this
-del _Deprecated, _DeprecatedConstant, _gobject, _gtk
+del _Deprecated, _DeprecatedConstant, _gobject, _gtk, _init, _lazyutils
 
 # Do this last, so programs like pyflakes can check everything above
 from gtk._gtk import *
