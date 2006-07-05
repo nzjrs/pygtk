@@ -44,6 +44,7 @@ class Overrides:
         self.defines = {}
         self.functions = {}
         self.newstyle_constructors = {}
+        self.dynamicnamespace = False
         if filename:
             self.handle_file(filename)
 
@@ -198,6 +199,10 @@ class Overrides:
             "new-constructor GType"
             gtype, = words[1:]
             self.newstyle_constructors[gtype] = True
+        elif command == 'options':
+            for option in words[1:]:
+                if option == 'dynamicnamespace':
+                    self.dynamicnamespace = True
 
     def is_ignored(self, name):
         if self.ignores.has_key(name):

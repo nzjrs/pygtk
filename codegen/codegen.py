@@ -1210,8 +1210,9 @@ class SourceWriter:
         wrapper.write_functions(self.prefix)
 
         self.write_enums()
-        self.write_extension_init()
-        self.write_registers()
+        if not self.overrides.dynamicnamespace:
+            self.write_extension_init()
+            self.write_registers()
 
     def write_headers(self):
         self.fp.write('/* -- THIS FILE IS GENERATED - DO NOT EDIT */')
@@ -1346,6 +1347,32 @@ class SourceWriter:
         self.fp.write(self.overrides.get_init() + '\n')
         self.fp.resetline()
 
+
+    def _get_classes(self):
+        objects = self.parser.objects[:]
+        pos = 0
+        while pos < len(objects):
+            parent = objects[pos].parent
+            for i in range(pos+1, len(objects)):
+                if objects[i].c_name == parent:
+                    objects.insert(i+1, objects[pos])
+                    del objects[pos]
+                    break
+            else:
+                pos = pos + 1
+
+        retval = []
+        for obj in objects:
+            if self.overrides.is_type_ignored(obj.c_name):
+                continue
+            bases = []
+            if obj.parent != None:
+                bases.append(obj.parent)
+            bases = bases + obj.implements
+            retval.append((obj, bases))
+
+        return retval
+
     def write_registers(self):
         for boxed in self.parser.boxes:
             self.fp.write('    pyg_register_boxed(d, "' + boxed.name +
@@ -1364,51 +1391,39 @@ class SourceWriter:
                 self.fp.write('    pyg_register_interface_info(%s, &%s);\n' %
                               (interface.typecode, interface.interface_info))
 
-        objects = self.parser.objects[:]
-        pos = 0
-        while pos < len(objects):
-            parent = objects[pos].parent
-            for i in range(pos+1, len(objects)):
-                if objects[i].c_name == parent:
-                    objects.insert(i+1, objects[pos])
-                    del objects[pos]
-                    break
-            else:
-                pos = pos + 1
-        for obj in objects:
-            if self.overrides.is_type_ignored(obj.c_name):
-                continue
-            bases = []
-            if obj.parent != None:
-                bases.append(obj.parent)
-            bases = bases + obj.implements
-            if bases:
-                self.fp.write(
-                    '    pygobject_register_class(d, "' + obj.c_name +
-                    '", ' + obj.typecode + ', &Py' + obj.c_name +
-                    '_Type, Py_BuildValue("(' + 'O' * len(bases) + ')", ' +
-                    string.join(map(lambda s: '&Py'+s+'_Type', bases), ', ') +
-                    '));\n')
-            else:
-                self.fp.write(
-                    '    pygobject_register_class(d, "' + obj.c_name +
-                    '", ' + obj.typecode + ', &Py' + obj.c_name +
-                    '_Type, NULL);\n')
-            if obj.has_new_constructor_api:
-                self.fp.write(
-                    '    pyg_set_object_has_new_constructor(%s);\n' %
-                    obj.typecode)
-            else:
-                print >> sys.stderr, (
-                    "Warning: Constructor for %s needs to be updated to new API\n"
-                    "         See http://live.gnome.org/PyGTK_2fWhatsNew28"
-                    "#update-constructors") % obj.c_name
-            if obj.class_init_func is not None:
-                self.fp.write(
-                    '    pyg_register_class_init(%s, %s);\n' %
-                    (obj.typecode, obj.class_init_func))
+        for obj, bases in self._get_classes():
+            self._write_class(obj, bases)
         self.fp.write('}\n')
 
+    def _write_class(self, obj, bases, indent=1):
+        indent_str = ' ' * (indent * 4)
+        if bases:
+            bases_str = (
+                'Py_BuildValue("(' + 'O' * len(bases) + ')", ' +
+                string.join(map(lambda s: '&Py'+s+'_Type', bases), ', ') +
+                ')')
+        else:
+            bases_str = 'NULL'
+
+        self.fp.write(
+                indent_str + 'pygobject_register_class(d, "' + obj.c_name +
+                '", ' + obj.typecode + ', &Py' + obj.c_name +
+                '_Type, ' + bases_str + ');\n')
+
+        if obj.has_new_constructor_api:
+            self.fp.write(
+                indent_str + 'pyg_set_object_has_new_constructor(%s);\n' %
+                obj.typecode)
+        else:
+            print >> sys.stderr, (
+                "Warning: Constructor for %s needs to be updated to new API\n"
+                "         See http://live.gnome.org/PyGTK_2fWhatsNew28"
+                "#update-constructors") % obj.c_name
+
+        if obj.class_init_func is not None:
+            self.fp.write(
+                indent_str + 'pyg_register_class_init(%s, %s);\n' %
+                (obj.typecode, obj.class_init_func))
 
 def register_types(parser):
     for boxed in parser.boxes:
