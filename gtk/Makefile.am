@@ -20,7 +20,11 @@ pygtkexec_LTLIBRARIES =
 
 # gtk python scripts
 pygtkdir = $(pkgpythondir)/gtk
-pygtk_PYTHON = __init__.py keysyms.py compat.py
+pygtk_PYTHON = 		\
+	__init__.py 	\
+	compat.py	\
+	deprecation.py	\
+	keysyms.py
 
 # gtk headers
 pkgincludedir = $(includedir)/pygtk-$(PLATFORM_VERSION)/pygtk

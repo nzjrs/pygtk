@@ -23,7 +23,6 @@
 import os
 import sys
 from types import ModuleType as _module
-from warnings import warn as _warn
 
 # this can go when things are a little further along
 try:
@@ -40,65 +39,11 @@ if not hasattr(sys, 'argv'):
 # load the required modules:
 import gobject as _gobject
 
-from _gtk import *
-import keysyms
+from gtk._gtk import *
+from gtk.deprecation import _Deprecated, _DeprecatedConstant
+from gtk import keysyms
+
 import gdk
-
-class _Deprecated:
-    def __init__(self, func, oldname, module=''):
-        self.func = func
-        self.oldname = oldname
-        self.name = func.__name__
-        if module:
-            self.module = module
-        else:
-            self.module = 'gtk'
-
-    def __repr__(self):
-        return '<deprecated function %s>' % (self.oldname)
-
-    def __call__(self, *args, **kwargs):
-        if not _is_pydoc():
-            oldname = 'gtk.' + self.oldname
-            newname = self.module + '.' + self.name
-            message = '%s is deprecated, use %s instead' % (oldname, newname)
-            # DeprecationWarning is imported from _gtk, so it's not the same
-            # as the one found in exceptions.
-            _warn(message, DeprecationWarning, 2)
-        try:
-            return self.func(*args, **kwargs)
-        except TypeError, e:
-            msg = str(e).replace(self.name, self.oldname)
-            raise TypeError(msg)
-
-class _DeprecatedConstant:
-    def __init__(self, value, name, suggestion):
-        self._v = value
-        self._name = name
-        self._suggestion = suggestion
-
-    def _deprecated(self, value):
-        if not _is_pydoc():
-            message = '%s is deprecated, use %s instead' % (self._name,
-                                                            self._suggestion)
-            _warn(message, DeprecationWarning, 3)
-        return value
-
-    __nonzero__ = lambda self: self._deprecated(self._v == True)
-    __int__     = lambda self: self._deprecated(int(self._v))
-    __str__     = lambda self: self._deprecated(str(self._v))
-    __repr__    = lambda self: self._deprecated(repr(self._v))
-    __cmp__     = lambda self, other: self._deprecated(cmp(self._v, other))
-
-def _is_pydoc():
-    import sys
-
-    if sys.argv:
-        name = os.path.basename(sys.argv[0])
-        if 'pydoc' in name:
-            return True
-
-    return False
 
 def _init():
     import sys
