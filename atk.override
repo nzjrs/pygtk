@@ -50,11 +50,16 @@ _wrap_atk_relation_new (PyGObject *self, PyObject *args, PyObject *kwargs)
 	return -1;
 
     if (!PySequence_Check(py_targets)) {
-	PyErr_SetString(PyExc_TypeError, "targets argument must be a sequence");
+	PyErr_SetString(PyExc_TypeError,
+                        "targets argument must be a non-empty sequence");
 	return -1;
     }
 
-    count = PySequence_Length(py_targets);
+    if ((count = PySequence_Length(py_targets)) == 0) {
+	PyErr_SetString(PyExc_ValueError,
+                        "targets argument must be a non-empty sequence");
+	return -1;
+    }
     targets = g_new(AtkObject *, count);
     for (i = 0; i < count; i++) {
 	PyObject *item = PySequence_GetItem(py_targets, i);
@@ -228,4 +233,23 @@ _wrap_atk_image_get_image_position(PyGObject *self, PyObject *args,
         return NULL;
     atk_image_get_image_position(ATK_IMAGE(self->obj), &x, &y, coord_type);
     return Py_BuildValue("(ii)", x, y);
+}
+%%
+override atk_relation_get_target noargs
+static PyObject *
+_wrap_atk_relation_get_target (PyGObject *self)
+{
+    GPtrArray * trgtarray;
+    AtkObject **targets;
+    int i;
+    PyObject *py_targets;
+    
+    trgtarray = atk_relation_get_target(ATK_RELATION(self->obj));
+    py_targets = PyList_New(trgtarray->len);
+    targets = (AtkObject**)trgtarray->pdata;
+    for (i = 0; i < trgtarray->len; i++) {
+	PyObject *item = pygobject_new((GObject*)targets[i]);
+	PyList_SetItem(py_targets, i, item);
+    }
+    return py_targets;
 }
