@@ -321,3 +321,37 @@ _wrap_atk_state_set_contains_states(PyGObject *self, PyObject *args,
     Py_INCREF(py_ret);
     return py_ret;
 }
+%%
+override atk_table_get_selected_columns noargs
+static PyObject *
+_wrap_atk_table_get_selected_columns(PyGObject *self)
+{
+    gint *selected, ret, i;
+    PyObject *py_selected;
+
+    ret = atk_table_get_selected_columns(ATK_TABLE(self->obj), &selected);
+    py_selected = PyTuple_New(ret);
+    for (i = 0; i < ret; i++) {
+        PyTuple_SetItem(py_selected, i, PyInt_FromLong(selected[i]));
+    }
+
+    g_free(selected);
+    return py_selected;
+}
+%%
+override atk_table_get_selected_rows noargs
+static PyObject *
+_wrap_atk_table_get_selected_rows(PyGObject *self)
+{
+    gint *selected, ret, i;
+    PyObject *py_selected;
+
+    ret = atk_table_get_selected_rows(ATK_TABLE(self->obj), &selected);
+    py_selected = PyTuple_New(ret);
+    for (i = 0; i < ret; i++) {
+        PyTuple_SetItem(py_selected, i, PyInt_FromLong(selected[i]));
+    }
+
+    g_free(selected);
+    return py_selected;
+}
