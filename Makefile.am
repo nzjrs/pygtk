@@ -57,9 +57,10 @@ endif
 
 # atk module
 ATK_DEFS = atk.defs atk-types.defs
+ATK_OVERRIDES = atk.override atkrectangle.override
 CLEANFILES += atk.c
-EXTRA_DIST += $(ATK_DEFS) atk.override
-atk.c: $(ATK_DEFS) atk.override
+EXTRA_DIST += $(ATK_DEFS) $(ATK_OVERRIDES)
+atk.c: $(ATK_DEFS) $(ATK_OVERRIDES)
 atk_la_CFLAGS = $(ATK_CFLAGS)
 atk_la_LIBADD = $(ATK_LIBS)
 atk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initatk

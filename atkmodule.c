@@ -29,6 +29,7 @@
 
 void pyatk_register_classes (PyObject *d);
 void pyatk_add_constants(PyObject *module, const gchar *strip_prefix);
+void _pyatk_register_boxed_types(void);	
 
 extern PyMethodDef pyatk_functions[];
 
@@ -41,7 +42,7 @@ initatk(void)
 
     m = Py_InitModule ("atk", pyatk_functions);
     d = PyModule_GetDict (m);
-	
+    _pyatk_register_boxed_types();	
     pyatk_register_classes (d);
     pyatk_add_constants(m, "ATK_");    
 }

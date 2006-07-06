@@ -28,6 +28,9 @@ headers
 #include <atk/atknoopobjectfactory.h>
 #include <atk/atknoopobject.h>
 %%
+include
+  atkrectangle.override
+%%
 modulename atk
 %%
 import gobject.GObject as PyGObject_Type
@@ -379,4 +382,219 @@ _wrap_atk_text_get_text_after_offset(PyGObject *self, PyObject *args,
     text = atk_text_get_text_after_offset(ATK_TEXT(self->obj),
                                           offset, boundary, &start, &end);
     return Py_BuildValue("(s#ii)", text, end-start, start, end);
+}
+%%
+override atk_text_get_text_at_offset kwargs
+static PyObject *
+_wrap_atk_text_get_text_at_offset(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "offset", "boundary_type", NULL };
+    gchar *text;
+    gint start, end, offset;
+    AtkTextBoundary boundary;
+    PyObject *py_boundary;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:atk.Text.get_text_at_offset",
+                                     kwlist, &offset, &py_boundary))
+	return NULL;
+
+    if (pyg_enum_get_value(ATK_TYPE_TEXT_BOUNDARY, py_boundary,
+                           (gpointer)&boundary))
+        return NULL;
+
+    text = atk_text_get_text_at_offset(ATK_TEXT(self->obj),
+                                       offset, boundary, &start, &end);
+    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+}
+%%
+override atk_text_get_text_before_offset kwargs
+static PyObject *
+_wrap_atk_text_get_text_before_offset(PyGObject *self, PyObject *args,
+                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "offset", "boundary_type", NULL };
+    gchar *text;
+    gint start, end, offset;
+    AtkTextBoundary boundary;
+    PyObject *py_boundary;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:atk.Text.get_text_before_offset",
+                                     kwlist, &offset, &py_boundary))
+	return NULL;
+
+    if (pyg_enum_get_value(ATK_TYPE_TEXT_BOUNDARY, py_boundary,
+                           (gpointer)&boundary))
+        return NULL;
+
+    text = atk_text_get_text_before_offset(ATK_TEXT(self->obj),
+                                           offset, boundary, &start, &end);
+    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+}
+%%
+override atk_text_get_character_extents kwargs
+static PyObject *
+_wrap_atk_text_get_character_extents(PyGObject *self, PyObject *args,
+                                     PyObject *kwargs)
+{
+    static char *kwlist[] = { "offset", "coords", NULL };
+    gint offset, x, y, width, height;
+    AtkCoordType coords;
+    PyObject *py_coords;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:atk.Text.get_character_extents",
+                                     kwlist, &offset, &py_coords))
+	return NULL;
+
+    if (pyg_enum_get_value(ATK_TYPE_COORD_TYPE, py_coords,
+                           (gpointer)&coords))
+        return NULL;
+
+    atk_text_get_character_extents(ATK_TEXT(self->obj), offset,
+                                   &x, &y, &width, &height, coords);
+    return Py_BuildValue("(iiii)", x, y, width, height);
+}
+%%
+override atk_text_get_run_attributes kwargs
+static PyObject *
+_wrap_atk_text_get_run_attributes(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "offset", NULL };
+    gint offset, start, end;
+    AtkAttributeSet *attribs;
+    PyObject *py_attribs;
+    gint count, i;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:atk.Text.get_run_attributes",
+                                     kwlist, &offset))
+	return NULL;
+
+    attribs = atk_text_get_run_attributes(ATK_TEXT(self->obj), offset,
+                                          &start, &end);
+    count = g_slist_length(attribs);
+    py_attribs = PyTuple_New(count);
+    for (i = 0; i < count; i++) {
+        AtkAttribute *attr = g_slist_nth_data(attribs, i);
+        PyTuple_SetItem(py_attribs, i, Py_BuildValue("(ss)", attr->name,
+                                                     attr->value));
+    }
+    atk_attribute_set_free(attribs);
+    return Py_BuildValue("(Nii)", py_attribs, start, end);
+}
+%%
+override atk_text_get_default_attributes noargs
+static PyObject *
+_wrap_atk_text_get_default_attributes(PyGObject *self)
+{
+    AtkAttributeSet *attribs;
+    PyObject *py_attribs;
+    gint count, i;
+
+    attribs = atk_text_get_default_attributes(ATK_TEXT(self->obj));
+    count = g_slist_length(attribs);
+    py_attribs = PyTuple_New(count);
+    for (i = 0; i < count; i++) {
+        AtkAttribute *attr = g_slist_nth_data(attribs, i);
+        PyTuple_SetItem(py_attribs, i, Py_BuildValue("(ss)", attr->name,
+                                                     attr->value));
+    }
+    atk_attribute_set_free(attribs);
+    return py_attribs;
+}
+%%
+override atk_text_get_bounded_ranges kwargs
+static PyObject *
+_wrap_atk_text_get_bounded_ranges(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "rect", "coord_type", "x_clip_type",
+                              "y_clip_type", NULL };
+    AtkRectangle rect;
+    AtkCoordType coord;
+    AtkTextClipType x_clip, y_clip;
+    AtkTextRange **ranges, *range;
+    PyObject *py_rect, *py_coord, *py_x_clip, *py_y_clip, *py_ranges;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "OOOO:atk.Text.get_bounded_ranges",
+                                     kwlist, &py_rect, &py_coord, &py_x_clip,
+                                     &py_y_clip))
+	return NULL;
+
+    if (pyatk_rectangle_from_pyobject(py_rect, &rect))
+        return NULL;
+    if (pyg_enum_get_value(ATK_TYPE_COORD_TYPE, py_coord, (gpointer)&coord))
+        return NULL;
+    if (pyg_enum_get_value(ATK_TYPE_TEXT_CLIP_TYPE, py_x_clip,
+                           (gpointer)&x_clip))
+        return NULL;
+    if (pyg_enum_get_value(ATK_TYPE_TEXT_CLIP_TYPE, py_y_clip,
+                           (gpointer)&y_clip))
+        return NULL;
+
+    ranges = atk_text_get_bounded_ranges(ATK_TEXT(self->obj),
+                                         (AtkTextRectangle*)&rect, coord,
+                                         x_clip, y_clip);
+    py_ranges = PyList_New(0);
+    while ((range = *ranges++)) {
+        PyObject *py_range;
+        py_rect = pyg_boxed_new(ATK_TYPE_RECTANGLE,
+                                (AtkRectangle*)&range->bounds, TRUE, TRUE);
+        py_range = Py_BuildValue("(Niis)", py_rect, range->start_offset,
+                                 range->end_offset, range->content);
+        PyList_Append(py_ranges, py_range);
+        Py_DECREF(py_range);
+    }
+    atk_text_free_ranges(ranges);
+
+    return py_ranges;
+}
+%%
+override atk_text_get_selection kwargs
+static PyObject *
+_wrap_atk_text_get_selection(PyGObject *self, PyObject *args,
+                             PyObject *kwargs)
+{
+    static char *kwlist[] = { "selection_num", NULL };
+    gchar *text;
+    gint start, end, selection_num;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:atk.Text.get_selection",
+                                     kwlist, &selection_num))
+	return NULL;
+
+    text = atk_text_get_selection(ATK_TEXT(self->obj),
+                                  selection_num, &start, &end);
+    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+}
+%%
+override atk_text_get_range_extents kwargs
+static PyObject *
+_wrap_atk_text_get_range_extents(PyGObject *self, PyObject *args,
+                                     PyObject *kwargs)
+{
+    static char *kwlist[] = { "start_offset", "end_offset", "coord_type",
+                              NULL };
+    gint start, end;
+    AtkCoordType coord;
+    AtkTextRectangle rect;
+    PyObject *py_coord;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iiO:atk.Text.get_range_extents",
+                                     kwlist, &start, &end, &py_coord))
+	return NULL;
+
+    if (pyg_enum_get_value(ATK_TYPE_COORD_TYPE, py_coord,
+                           (gpointer)&coord))
+        return NULL;
+
+    atk_text_get_range_extents(ATK_TEXT(self->obj), start, end, coord, &rect);
+    return pyg_boxed_new(ATK_TYPE_RECTANGLE, (AtkRectangle*)&rect, TRUE, TRUE);
 }
