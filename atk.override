@@ -35,6 +35,9 @@ modulename atk
 %%
 import gobject.GObject as PyGObject_Type
 %%
+ignore
+  atk_text_free_ranges
+%%
 ignore-glob
   *_get_type
 %%
@@ -597,4 +600,72 @@ _wrap_atk_text_get_range_extents(PyGObject *self, PyObject *args,
 
     atk_text_get_range_extents(ATK_TEXT(self->obj), start, end, coord, &rect);
     return pyg_boxed_new(ATK_TYPE_RECTANGLE, (AtkRectangle*)&rect, TRUE, TRUE);
+}
+%%
+override atk_value_get_current_value noargs
+static PyObject *
+_wrap_atk_value_get_current_value(PyGObject *self)
+{
+    GValue value = { 0, };
+    PyObject *ret;
+
+    atk_value_get_current_value(ATK_VALUE(self->obj), &value);
+    ret = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+    return ret;
+}
+%%
+override atk_value_get_maximum_value noargs
+static PyObject *
+_wrap_atk_value_get_maximum_value(PyGObject *self)
+{
+    GValue value = { 0, };
+    PyObject *ret;
+
+    atk_value_get_maximum_value(ATK_VALUE(self->obj), &value);
+    ret = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+    return ret;
+}
+%%
+override atk_value_get_minimum_value noargs
+static PyObject *
+_wrap_atk_value_get_minimum_value(PyGObject *self)
+{
+    GValue value = { 0, };
+    PyObject *ret;
+
+    atk_value_get_minimum_value(ATK_VALUE(self->obj), &value);
+    ret = pyg_value_as_pyobject(&value, TRUE);
+    g_value_unset(&value);
+    return ret;
+}
+%%
+override atk_value_set_current_value kwargs
+static PyObject *
+_wrap_atk_value_set_current_value(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "value", NULL };
+    GValue value = { 0, };
+    PyObject *ret, *py_value;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:atk.Value.set_current_value",
+                                     kwlist, &py_value))
+	return NULL;
+
+    if (pyg_value_from_pyobject(&value, py_value)) {
+        PyErr_SetString(PyExc_TypeError, "unable to convert value");
+        return NULL;
+    }
+
+    if (atk_value_set_current_value(ATK_VALUE(self->obj), &value))
+        ret = Py_True;
+    else
+        ret = Py_False;
+
+    g_value_unset(&value);
+    Py_INCREF(ret);
+    return ret;
 }
