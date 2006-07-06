@@ -3632,31 +3632,36 @@ _wrap_gtk_color_selection_palette_to_string(PyGObject *self, PyObject *args,
     PyObject *py_colors, *ret;
 
     if (!PyArg_ParseTupleAndKeywords(
-	args, kwargs, "O!:gtk.color_selection_palette_to_string",
-	kwlist, &PyList_Type, &py_colors))
+	args, kwargs, "O:gtk.color_selection_palette_to_string",
+	kwlist, &py_colors))
         return NULL;
 
-    n_colors = PySequence_Length(py_colors);
-    if ((colors = g_new0(GdkColor, n_colors)) == NULL)
-	return NULL;
+    if (!(py_colors = PySequence_Fast(
+              py_colors, "colors must be a sequence of gtk.gdk.Colors")))
+        return NULL;
 
+    n_colors = PySequence_Fast_GET_SIZE(py_colors);
+    if ((colors = g_new0(GdkColor, n_colors)) == NULL) {
+        Py_DECREF(py_colors);
+	return NULL;
+    }
     for (i = 0; i < n_colors; i++) {
-        PyObject *item = PySequence_GetItem(py_colors, i);
+        PyObject *item = PySequence_Fast_GET_ITEM(py_colors, i);
 	if (!pyg_boxed_check(item, GDK_TYPE_COLOR)) {
 	    PyErr_SetString(PyExc_TypeError,
 			    "colors must contain gtk.gdk.Colors");
 	    g_free(colors);
-	    Py_DECREF(item);
+            Py_DECREF(py_colors);
 	    return NULL;
 	}
 	colors[i] = *pyg_boxed_get(item, GdkColor);
-	Py_DECREF(item);
     }
 
     str = gtk_color_selection_palette_to_string(colors, n_colors);
     ret = PyString_FromString(str);
     g_free(colors);
     g_free(str);
+    Py_DECREF(py_colors);
 
     return ret;
 }
