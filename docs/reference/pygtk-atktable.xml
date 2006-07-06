@@ -6,7 +6,8 @@
 
   <refnamediv>
     <refname>atk.Table</refname>
-      <refpurpose>The ATK interface implemented for UI components which contain tabular or row/column information.  </refpurpose>
+      <refpurpose>the ATK interface implemented for UI components which
+      contain tabular or row/column information.  </refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -154,8 +155,8 @@
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>atktable</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
-            <methodparam><parameter>arg2</parameter></methodparam>
+            <methodparam><parameter>column</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -166,8 +167,8 @@
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>atktable</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
-            <methodparam><parameter>arg2</parameter></methodparam>
+            <methodparam><parameter>column</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -198,8 +199,8 @@
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>atktable</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
-            <methodparam><parameter>arg2</parameter></methodparam>
+            <methodparam><parameter>row</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -210,8 +211,8 @@
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>atktable</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
-            <methodparam><parameter>arg2</parameter></methodparam>
+            <methodparam><parameter>row</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -234,29 +235,41 @@
   <refsect1>
     <title>Description</title>
 
-<para>
-<link linkend="class-atktable"><classname>atk.Table</classname></link> should be implemented by components which present elements
-ordered via rows and columns.  It may also be used to present
-tree-structured information if the nodes of the trees can be said to
-contain multiple "columns".  Individual elements of an <link linkend="class-atktable"><classname>atk.Table</classname></link> are
-typically referred to as "cells", and these cells are exposed by
-<link linkend="class-atktable"><classname>atk.Table</classname></link> as child <literal>AtkObjects</literal> of the <link linkend="class-atktable"><classname>atk.Table</classname></link>.  Both row/column and
-child-index-based access to these children is provided.
-</para>
-<para>
-Children of <link linkend="class-atktable"><classname>atk.Table</classname></link> are frequently "lightweight" objects, that is,
-they may not have backing widgets in the host UI toolkit.  They are
-therefore often transient.
-</para>
-<para>
-Since tables are often very complex, <link linkend="class-atktable"><classname>atk.Table</classname></link> includes provision for
-offering simplified summary information, as well as row and column
-headers and captions.  Headers and captions are <literal>AtkObjects</literal> which may
-implement other interfaces (<link linkend="class-atktext"><classname>atk.Text</classname></link>, <link linkend="class-atkimage"><classname>atk.Image</classname></link>, etc.) as appropriate.
-<link linkend="class-atktable"><classname>atk.Table</classname></link> summaries may themselves be (simplified) <literal>AtkTables</literal>, etc.
-</para>
+    <para><link
+    linkend="class-atktable"><classname>atk.Table</classname></link> should
+    be implemented by components which present elements ordered via rows and
+    columns.  It may also be used to present tree-structured information if
+    the nodes of the trees can be said to contain multiple "columns".
+    Individual elements of an <link
+    linkend="class-atktable"><classname>atk.Table</classname></link> are
+    typically referred to as "cells", and these cells are exposed by <link
+    linkend="class-atktable"><classname>atk.Table</classname></link> as
+    child <link
+    linkend="class-atkobject"><classname>atk.Object</classname></link>
+    objects of the <link
+    linkend="class-atktable"><classname>atk.Table</classname></link>.  Both
+    row/column and child-index-based access to these children is
+    provided.</para>
 
+    <para>Children of <link
+    linkend="class-atktable"><classname>atk.Table</classname></link> are
+    frequently "lightweight" objects, that is, they may not have backing
+    widgets in the host UI toolkit.  They are therefore often
+    transient.</para>
 
+    <para>Since tables are often very complex, <link
+    linkend="class-atktable"><classname>atk.Table</classname></link>
+    includes provision for offering simplified summary information, as well
+    as row and column headers and captions.  Headers and captions are <link
+    linkend="class-atkobject"><classname>atk.Object</classname></link>
+    objects which may implement other interfaces (<link
+    linkend="class-atktext"><classname>atk.Text</classname></link>, <link
+    linkend="class-atkimage"><classname>atk.Image</classname></link>, etc.)
+    as appropriate.  <link
+    linkend="class-atktable"><classname>atk.Table</classname></link>
+    summaries may themselves be (simplified) <link
+    linkend="class-atktable"><classname>atk.Table</classname></link>
+    objects, etc.</para>
 
   </refsect1>
 
@@ -275,19 +288,24 @@ implement other interfaces (<link linkend="class-atktext"><classname>atk.Text</c
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a AtkObject* representing the referred to accessible</simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing the referred to accessible</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Get a reference to the table cell at <parameter>row</parameter>, <parameter>column</parameter>.</para>
+      <para>Get a reference to the table cell at <parameter>row</parameter>,
+      <parameter>column</parameter>.</para>
 
     </refsect2>
 
@@ -303,21 +321,25 @@ implement other interfaces (<link linkend="class-atktext"><classname>atk.Text</c
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing the index at specified position</simpara></listitem>
+          <listitem><simpara>an index representing the index at specified
+          position</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets a <literal>gint</literal> representing the index at the specified <parameter>row</parameter> and <parameter>column</parameter>.
-      The value -1 is returned if the object at row,column is not a child
-      of table or table does not implement this interface.</para>
+      <para>Gets the index at the specified <parameter>row</parameter> and
+      <parameter>column</parameter>.  The value -1 is returned if the object
+      at row,column is not a child of table or table does not implement this
+      interface.</para>
 
     </refsect2>
 
@@ -336,12 +358,14 @@ implement other interfaces (<link linkend="class-atktext"><classname>atk.Text</c
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the column at the specified index.</simpara></listitem>
+          <listitem><simpara>an integer representing the column at the
+          specified index.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets a <literal>gint</literal> representing the column at the specified <parameter>index_</parameter>, or -1
-      if the table does not implement this interface</para>
+      <para>Gets an index representing the column at the specified
+      <parameter>index</parameter>, or -1 if the table does not implement
+      this interface</para>
 
     </refsect2>
 
@@ -360,12 +384,14 @@ implement other interfaces (<link linkend="class-atktext"><classname>atk.Text</c
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the row at the specified index.</simpara></listitem>
+          <listitem><simpara>an integer representing the row at the
+          specified index.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets a <literal>gint</literal> representing the row at the specified <parameter>index_</parameter>, or -1
-      if the table does not implement this interface</para>
+      <para>Gets an index representing the row at the specified
+      <parameter>index</parameter>, or -1 if the table does not implement
+      this interface</para>
 
     </refsect2>
 
@@ -380,8 +406,9 @@ implement other interfaces (<link linkend="class-atktext"><classname>atk.Text</c
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the number of columns, or 0
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>an integer representing the number of columns,
+          or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -400,8 +427,8 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the number of rows, or 0
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>an integer representing the number of rows, or
+          0 if value does not implement this interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -421,21 +448,25 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the column extent at specified position, or 0
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>an integer representing the column extent at
+          specified position, or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the number of columns occupied by the accessible object
-      at the specified <parameter>row</parameter> and <parameter>column</parameter> in the <parameter>table</parameter>.</para>
+      <para>Gets the number of columns occupied by the accessible object at
+      the specified <parameter>row</parameter> and
+      <parameter>column</parameter>.</para>
 
     </refsect2>
 
@@ -451,21 +482,25 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          <parameter>table</parameter></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the row extent at specified position, or 0
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>an integer representing the row extent at
+          specified position, or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the number of rows occupied by the accessible object
-      at a specified <parameter>row</parameter> and <parameter>column</parameter> in the <parameter>table</parameter>.</para>
+      <para>Gets the number of rows occupied by the accessible object at a
+      specified <parameter>row</parameter> and
+      <parameter>column</parameter>.</para>
 
     </refsect2>
 
@@ -480,12 +515,14 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a AtkObject* representing the table caption, or <literal>None</literal>
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing the table caption, or <literal>None</literal> if
+          value does not implement this interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the caption for the <parameter>table</parameter>.</para>
+      <para>Gets the caption for the table.</para>
 
     </refsect2>
 
@@ -500,16 +537,19 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in the
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gchar* representing the column description, or <literal>None</literal>
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a string representing the column description,
+          or <literal>None</literal> if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the description text of the specified <parameter>column</parameter> in the table</para>
+      <para>Gets the description text of the specified
+      <parameter>column</parameter> in the table</para>
 
     </refsect2>
 
@@ -524,16 +564,21 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in the table</simpara></listitem>
+          <listitem><simpara>an index representing a column in the
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a AtkObject* representing the specified column header, or
-<literal>None</literal> if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing the specified column header, or
+          <literal>None</literal> if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the column header of a specified column in an accessible table.</para>
+      <para>Gets the column header of a specified column in an accessible
+      table.</para>
 
     </refsect2>
 
@@ -548,16 +593,19 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gchar* representing the row description, or <literal>None</literal>
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a string representing the row description, or
+          <literal>None</literal> if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the description text of the specified row in the table</para>
+      <para>Gets the description text of the specified row in the
+      table</para>
 
     </refsect2>
 
@@ -572,16 +620,20 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in the table</simpara></listitem>
+          <listitem><simpara>an index representing a row in the
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a AtkObject* representing the specified row header, or
-<literal>None</literal> if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing the specified row header, or <literal>None</literal>
+          if value does not implement this interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the row header of a specified row in an accessible table.</para>
+      <para>Gets the row header of a specified row in an accessible
+      table.</para>
 
     </refsect2>
 
@@ -596,8 +648,10 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a AtkObject* representing a summary description of the table,
-or zero if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing a summary description of the table, or zero if value
+          does not implement this interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -616,7 +670,9 @@ or zero if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">caption</parameter>&nbsp;:</term>
-          <listitem><simpara>a <link linkend="class-atkobject"><classname>atk.Object</classname></link> representing the caption to set for <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing the caption to set for table</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -636,16 +692,19 @@ or zero if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">description</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gchar</literal> representing the description text
-to set for the specified <parameter>column</parameter> of the <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>a string representing the description text to
+          set for the specified <parameter>column</parameter> of the
+          table</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Sets the description text for the specified <parameter>column</parameter> of the <parameter>table</parameter>.</para>
+      <para>Sets the description text for the specified
+      <parameter>column</parameter> of the table.</para>
 
     </refsect2>
 
@@ -661,15 +720,18 @@ to set for the specified <parameter>column</parameter> of the <parameter>table</
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">header</parameter>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atktable"><classname>atk.Table</classname></link></simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atktable"><classname>atk.Table</classname></link></simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Sets the specified column header to <parameter>header</parameter>.</para>
+      <para>Sets the specified column header to
+      <parameter>header</parameter>.</para>
 
     </refsect2>
 
@@ -685,16 +747,19 @@ to set for the specified <parameter>column</parameter> of the <parameter>table</
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">description</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gchar</literal> representing the description text
-to set for the specified <parameter>row</parameter> of <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>a string representing the description text to
+          set for the specified <parameter>row</parameter> of
+          table</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Sets the description text for the specified <parameter>row</parameter> of <parameter>table</parameter>.</para>
+      <para>Sets the description text for the specified
+      <parameter>row</parameter> of table.</para>
 
     </refsect2>
 
@@ -710,15 +775,18 @@ to set for the specified <parameter>row</parameter> of <parameter>table</paramet
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">header</parameter>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atktable"><classname>atk.Table</classname></link></simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atktable"><classname>atk.Table</classname></link></simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Sets the specified row header to <parameter>header</parameter>.</para>
+      <para>Sets the specified row header to
+      <parameter>header</parameter>.</para>
 
     </refsect2>
 
@@ -733,8 +801,10 @@ to set for the specified <parameter>row</parameter> of <parameter>table</paramet
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">accessible</parameter>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atkobject"><classname>atk.Object</classname></link> representing the summary description
-to set for <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing the summary description to set for
+          table</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -747,23 +817,17 @@ to set for <parameter>table</parameter></simpara></listitem>
 
       <programlisting><methodsynopsis language="python">
         <methodname>get_selected_columns</methodname>
-        <methodparam><parameter role="keyword">selected</parameter></methodparam>
       </methodsynopsis></programlisting>
 
       <variablelist>
         <varlistentry>
-          <term><parameter role="keyword">selected</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal>** that is to contain the selected columns numbers</simpara></listitem>
-        </varlistentry>
-        <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the number of selected columns,
-or <literal>0</literal> if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a tuple containing the indices ofthe selected
+          columns.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the selected columns of the table by initializing **selected with 
-      the selected column numbers. This array should be freed by the caller.</para>
+      <para>Gets the selected columns of the table.</para>
 
     </refsect2>
 
@@ -772,23 +836,17 @@ or <literal>0</literal> if value does not implement this interface.</simpara></l
 
       <programlisting><methodsynopsis language="python">
         <methodname>get_selected_rows</methodname>
-        <methodparam><parameter role="keyword">selected</parameter></methodparam>
       </methodsynopsis></programlisting>
 
       <variablelist>
         <varlistentry>
-          <term><parameter role="keyword">selected</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal>** that is to contain the selected row numbers</simpara></listitem>
-        </varlistentry>
-        <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the number of selected rows,
-or zero if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara>a tuple containing the indices ofthe selected
+          rows.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the selected rows of the table by initializing **selected with 
-      the selected row numbers. This array should be freed by the caller.</para>
+      <para>Gets the selected rows of the table.</para>
 
     </refsect2>
 
@@ -803,17 +861,19 @@ or zero if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing if the column is selected, or 0
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if the column is
+          selected, or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets a boolean value indicating whether the specified <parameter>column</parameter>
-      is selected</para>
+      <para>Gets a boolean value indicating whether the specified
+      <parameter>column</parameter> is selected</para>
 
     </refsect2>
 
@@ -828,17 +888,19 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing if the row is selected, or 0
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if the row is selected,
+          or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets a boolean value indicating whether the specified <parameter>row</parameter>
-      is selected</para>
+      <para>Gets a boolean value indicating whether the specified
+      <parameter>row</parameter> is selected</para>
 
     </refsect2>
 
@@ -854,21 +916,25 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing if the cell is selected, or 0
-if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if the cell is
+          selected, or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets a boolean value indicating whether the accessible object
-      at the specified <parameter>row</parameter> and <parameter>column</parameter> is selected</para>
+      <para>Gets a boolean value indicating whether the accessible object at
+      the specified <parameter>row</parameter> and
+      <parameter>column</parameter> is selected</para>
 
     </refsect2>
 
@@ -883,16 +949,19 @@ if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing if row was successfully added to selection,
-or 0 if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if
+          <parameter>row</parameter> was successfully added to selection, or
+          0 if value does not implement this interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Adds the specified <parameter>row</parameter> to the selection.</para>
+      <para>Adds the specified <parameter>row</parameter> to the
+      selection.</para>
 
     </refsect2>
 
@@ -907,16 +976,20 @@ or 0 if value does not implement this interface.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">row</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a row in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a row in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing if the row was successfully removed from
-the selection, or 0 if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if
+          <parameter>row</parameter> was successfully removed from the
+          selection, or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Removes the specified <parameter>row</parameter> from the selection.</para>
+      <para>Removes the specified <parameter>row</parameter> from the
+      selection.</para>
 
     </refsect2>
 
@@ -931,16 +1004,20 @@ the selection, or 0 if value does not implement this interface.</simpara></listi
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing if the column was successfully added to 
-the selection, or 0 if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if
+          <parameter>column</parameter> was successfully added to the
+          selection, or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Adds the specified <parameter>column</parameter> to the selection.</para>
+      <para>Adds the specified <parameter>column</parameter> to the
+      selection.</para>
 
     </refsect2>
 
@@ -955,16 +1032,20 @@ the selection, or 0 if value does not implement this interface.</simpara></listi
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">column</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> representing a column in <parameter>table</parameter></simpara></listitem>
+          <listitem><simpara>an index representing a column in
+          table</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing if the column was successfully removed from
-the selection, or 0 if value does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if
+          <parameter>column</parameter> was successfully removed from the
+          selection, or 0 if value does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Adds the specified <parameter>column</parameter> to the selection.</para>
+      <para>Adds the specified <parameter>column</parameter> to the
+      selection.</para>
 
     </refsect2>
 
@@ -990,11 +1071,11 @@ the selection, or 0 if value does not implement this interface.</simpara></listi
           <listitem><simpara>the object which received the signal.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg1</parameter>&nbsp;:</term>
+          <term><parameter>column</parameter>&nbsp;:</term>
           <listitem><simpara>The index of the first column deleted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg2</parameter>&nbsp;:</term>
+          <term><parameter>count</parameter>&nbsp;:</term>
           <listitem><simpara>The number of columns deleted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
@@ -1010,8 +1091,10 @@ the selection, or 0 if value does not implement this interface.</simpara></listi
         </varlistentry>
       </variablelist>
 
-      <para>The "column-deleted" signal is emitted by an object which implements the 
-AtkTable interface when a column is deleted.</para>
+      <para>The "column-deleted" signal is emitted by an object which
+      implements the <link
+      linkend="class-atktable"><classname>atk.Table</classname></link>
+      interface when a column is deleted.</para>
 
     </refsect2>
 
@@ -1020,8 +1103,8 @@ AtkTable interface when a column is deleted.</para>
 
       <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>atktable</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
-            <methodparam><parameter>arg2</parameter></methodparam>
+            <methodparam><parameter>column</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis></programlisting>
@@ -1032,11 +1115,11 @@ AtkTable interface when a column is deleted.</para>
           <listitem><simpara>the object which received the signal.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg1</parameter>&nbsp;:</term>
+          <term><parameter>column</parameter>&nbsp;:</term>
           <listitem><simpara>The index of the column inserted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg2</parameter>&nbsp;:</term>
+          <term><parameter>count</parameter>&nbsp;:</term>
           <listitem><simpara>The number of colums inserted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
@@ -1052,8 +1135,10 @@ AtkTable interface when a column is deleted.</para>
         </varlistentry>
       </variablelist>
 
-      <para>The "column-inserted" signal is emitted by an object which implements the 
-AtkTable interface when a column is inserted.</para>
+      <para>The "column-inserted" signal is emitted by an object which
+      implements the <link
+      linkend="class-atktable"><classname>atk.Table</classname></link>
+      interface when a column is inserted.</para>
 
     </refsect2>
 
@@ -1084,8 +1169,10 @@ AtkTable interface when a column is inserted.</para>
         </varlistentry>
       </variablelist>
 
-      <para>The "column-reordered" signal is emitted by an object which implements the 
-AtkTable interface when the columns are reordered.</para>
+      <para>The "column-reordered" signal is emitted by an object which
+      implements the <link
+      linkend="class-atktable"><classname>atk.Table</classname></link>
+      interface when the columns are reordered.</para>
 
     </refsect2>
 
@@ -1116,8 +1203,10 @@ AtkTable interface when the columns are reordered.</para>
         </varlistentry>
       </variablelist>
 
-      <para>The "model-changed" signal is emitted by an object which implements the 
-AtkTable interface when the model displayed by the table changes.</para>
+      <para>The "model-changed" signal is emitted by an object which
+      implements the <link
+      linkend="class-atktable"><classname>atk.Table</classname></link>
+      interface when the model displayed by the table changes.</para>
 
     </refsect2>
 
@@ -1126,8 +1215,8 @@ AtkTable interface when the model displayed by the table changes.</para>
 
       <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>atktable</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
-            <methodparam><parameter>arg2</parameter></methodparam>
+            <methodparam><parameter>row</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis></programlisting>
@@ -1138,11 +1227,11 @@ AtkTable interface when the model displayed by the table changes.</para>
           <listitem><simpara>the object which received the signal.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg1</parameter>&nbsp;:</term>
+          <term><parameter>row</parameter>&nbsp;:</term>
           <listitem><simpara>The index of the first row deleted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg2</parameter>&nbsp;:</term>
+          <term><parameter>count</parameter>&nbsp;:</term>
           <listitem><simpara>The number of rows deleted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
@@ -1158,8 +1247,10 @@ AtkTable interface when the model displayed by the table changes.</para>
         </varlistentry>
       </variablelist>
 
-      <para>The "row-deleted" signal is emitted by an object which implements the 
-AtkTable interface when a column is inserted.</para>
+      <para>The "row-deleted" signal is emitted by an object which
+      implements the <link
+      linkend="class-atktable"><classname>atk.Table</classname></link>
+      interface when a column is inserted.</para>
 
     </refsect2>
 
@@ -1168,8 +1259,8 @@ AtkTable interface when a column is inserted.</para>
 
       <programlisting><methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>atktable</parameter></methodparam>
-            <methodparam><parameter>arg1</parameter></methodparam>
-            <methodparam><parameter>arg2</parameter></methodparam>
+            <methodparam><parameter>row</parameter></methodparam>
+            <methodparam><parameter>count</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis></programlisting>
@@ -1180,12 +1271,14 @@ AtkTable interface when a column is inserted.</para>
           <listitem><simpara>the object which received the signal.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg1</parameter>&nbsp;:</term>
-          <listitem><simpara>The index of the first row deleted.</simpara></listitem>
+          <term><parameter>row</parameter>&nbsp;:</term>
+          <listitem><simpara>The index of the first row
+          deleted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
-          <term><parameter>arg2</parameter>&nbsp;:</term>
-          <listitem><simpara>The number of rows deleted.</simpara></listitem>
+          <term><parameter>count</parameter>&nbsp;:</term>
+          <listitem><simpara>The number of rows
+          deleted.</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter>user_param1</parameter>&nbsp;:</term>
@@ -1200,8 +1293,10 @@ AtkTable interface when a column is inserted.</para>
         </varlistentry>
       </variablelist>
 
-      <para>The "row-inserted" signal is emitted by an object which implements the 
-AtkTable interface when a column is inserted.</para>
+      <para>The "row-inserted" signal is emitted by an object which
+      implements the <link
+      linkend="class-atktable"><classname>atk.Table</classname></link>
+      interface when a column is inserted.</para>
 
     </refsect2>
 
@@ -1232,8 +1327,9 @@ AtkTable interface when a column is inserted.</para>
         </varlistentry>
       </variablelist>
 
-      <para>The "row-reordered" signal is emitted by an object which implements the 
-AtkTable interface when the columns are reordered.</para>
+      <para>The "row-reordered" signal is emitted by an object which
+      implements the AtkTable interface when the columns are
+      reordered.</para>
 
     </refsect2>
 

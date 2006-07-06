@@ -6,7 +6,13 @@
 
   <refnamediv>
     <refname>atk.RelationSet</refname>
-      <refpurpose>A set of AtkRelations, normally the set of AtkRelations which an AtkObject has.  </refpurpose>
+      <refpurpose>a set of <link
+      linkend="class-atkrelation"><classname>atk.Relation</classname></link>
+      objects, normally the set of <link
+      linkend="class-atkrelation"><classname>atk.Relation</classname></link>
+      objects that an <link
+      linkend="class-atkobject"><classname>atk.Object</classname></link>
+      has.</refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -65,11 +71,16 @@
   <refsect1>
     <title>Description</title>
 
-<para>
-
-</para>
-
-
+    <para>The <link
+    linkend="class-atkrelationset"><classname>atk.RelationSet</classname></link>
+    held by an object establishes its relationships with objects beyond the
+    normal "parent/child" hierarchical relationships that all user interface
+    objects have. <link
+    linkend="class-atkrelationset"><classname>atk.RelationSet</classname></link>
+    objects establish whether objects are labelled or controlled by other
+    components, share group membership with other components (for instance
+    within a radio-button group), or share content which "flows" between
+    them, among other types of possible relationships.</para>
 
   </refsect1>
 
@@ -87,7 +98,8 @@
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a new <link linkend="class-atkrelationset"><classname>atk.RelationSet</classname></link></simpara></listitem>
+          <listitem><simpara>a new <link
+          linkend="class-atkrelationset"><classname>atk.RelationSet</classname></link></simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -111,17 +123,21 @@
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">relationship</parameter>&nbsp;:</term>
-          <listitem><simpara>an <literal>AtkRelationType</literal></simpara></listitem>
+          <listitem><simpara>one of the <xref
+          linkend="atk-relation-type-constants"
+          endterm="atk-relation-type-constants-title"></xref>.</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara><literal>TRUE</literal> if <parameter>relationship</parameter> is the relationship type of a relation
-in <parameter>set</parameter>, <literal>FALSE</literal> otherwise</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if
+          <parameter>relationship</parameter> is the relationship
+          type.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Determines whether the relation set contains a relation that matches the
-      specified type.</para>
+      <para>Determines whether the relation set contains a relation that
+      matches the type specified by
+      <parameter>relationship</parameter>.</para>
 
     </refsect2>
 
@@ -136,13 +152,12 @@ in <parameter>set</parameter>, <literal>FALSE</literal> otherwise</simpara></lis
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">relation</parameter>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Removes a relation from the relation set.
-      This function unref's the <link linkend="class-atkrelation"><classname>atk.Relation</classname></link> so it will be deleted unless there
-      is another reference to it.</para>
+      <para>Removes a relation from the relation set.</para>
 
     </refsect2>
 
@@ -157,15 +172,14 @@ in <parameter>set</parameter>, <literal>FALSE</literal> otherwise</simpara></lis
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">relation</parameter>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Add a new relation to the current relation set if it is not already
-      present.
-      This function ref's the AtkRelation so the caller of this function
-      should unref it to ensure that it will be destroyed when the AtkRelationSet
-      is destroyed.</para>
+      <para>Add a new <link
+      linkend="class-atkrelation"><classname>atk.Relation</classname></link>
+      to the current relation set if it is not already present.</para>
 
     </refsect2>
 
@@ -180,11 +194,12 @@ in <parameter>set</parameter>, <literal>FALSE</literal> otherwise</simpara></lis
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>an integer representing the number of relations in the set.</simpara></listitem>
+          <listitem><simpara>an integer representing the number of relations
+          in the set.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Determines the number of relations in a relation set.</para>
+      <para>Returns the number of relations in a relation set.</para>
 
     </refsect2>
 
@@ -199,11 +214,15 @@ in <parameter>set</parameter>, <literal>FALSE</literal> otherwise</simpara></lis
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">i</parameter>&nbsp;:</term>
-          <listitem><simpara>a gint representing a position in the set, starting from 0.</simpara></listitem>
+          <listitem><simpara>an index representing a position in the set,
+          starting from 0.</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a <link linkend="class-atkrelation"><classname>atk.Relation</classname></link>, which is the relation at position i in the set.</simpara></listitem>
+          <listitem><simpara>the <link
+          linkend="class-atkrelation"><classname>atk.Relation</classname></link>,
+          that is the relation at position <parameter>i</parameter> in the
+          set.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -222,11 +241,16 @@ in <parameter>set</parameter>, <literal>FALSE</literal> otherwise</simpara></lis
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">relationship</parameter>&nbsp;:</term>
-          <listitem><simpara>an <literal>AtkRelationType</literal></simpara></listitem>
+          <listitem><simpara>one of the <xref
+          linkend="atk-relation-type-constants"
+          endterm="atk-relation-type-constants-title"></xref>.</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atkrelation"><classname>atk.Relation</classname></link>, which is a relation matching the specified type.</simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atkrelation"><classname>atk.Relation</classname></link>,
+          which is a relation matching the specified
+          type.</simpara></listitem>
         </varlistentry>
       </variablelist>
 

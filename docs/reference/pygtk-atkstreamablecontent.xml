@@ -6,7 +6,8 @@
 
   <refnamediv>
     <refname>atk.StreamableContent</refname>
-      <refpurpose>The ATK interface which provides access to streamable content.  </refpurpose>
+      <refpurpose>the ATK interface which provides access to streamable
+      content.  </refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -23,10 +24,12 @@
         <methodname><link linkend="method-atkstreamablecontent--get-mime-type">get_mime_type</link></methodname>
         <methodparam><parameter role="keyword">i</parameter></methodparam>
       </methodsynopsis>
+<!-- NOT IMPLEMENTED
       <methodsynopsis language="python">
-        <methodname><link linkend="method-atkstreamablecontent--get-stream">get_stream</link></methodname>
+        <methodname><link linkend="method-atkstreamablecontent- -get-stream">get_stream</link></methodname>
         <methodparam><parameter role="keyword">mime_type</parameter></methodparam>
       </methodsynopsis>
+END -->
 </classsynopsis>
 
   </refsect1>
@@ -34,11 +37,25 @@
   <refsect1>
     <title>Description</title>
 
-<para>
+    <para>An interface whereby an object allows its backing content to be
+    streamed to clients. Typical implementors would be images or icons, HTML
+    content, or multimedia display/rendering widgets.</para>
 
-</para>
+    <para>Negotiation of content type is allowed. Clients may examine the
+    backing data and transform, convert, or parse the content in order to
+    present it in an alternate form to end-users.</para>
 
-
+    <para>The <link
+    linkend="class-atkstreamablecontent"><classname>atk.StreamableContent</classname></link>
+    interface is particularly useful for saving, printing, or
+    post-processing entire documents, or for persisting alternate views of a
+    document. If document content itself is being serialized, stored, or
+    converted, then use of the <link
+    linkend="class-atkstreamablecontent"><classname>atk.StreamableContent</classname></link>
+    interface can help address performance issues. Unlike most ATK
+    interfaces, this interface is not strongly tied to the current
+    user-agent view of the a particular document, but may in some cases give
+    access to the underlying model data.</para>
 
   </refsect1>
 
@@ -56,7 +73,8 @@
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint which is the number of mime types supported by the object.</simpara></listitem>
+          <listitem><simpara>an integer which is the number of mime types
+          supported by the object.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -75,21 +93,24 @@
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">i</parameter>&nbsp;:</term>
-          <listitem><simpara>a gint representing the position of the mime type starting from 0</simpara></listitem>
+          <listitem><simpara>an index representing the position of the mime
+          type starting from 0</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>: a gchar* representing the specified mime type; the caller
-should not free the character string.</simpara></listitem>
+          <listitem><simpara>: a string* representing the specified mime
+          type.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the character string of the specified mime type. The first mime
-      type is at position 0, the second at position 1, and so on.</para>
+      <para>Gets the character string of the specified mime type. The first
+      mime type is at position 0, the second at position 1, and so
+      on.</para>
 
     </refsect2>
 
-    <refsect2 id="method-atkstreamablecontent--get-stream">
+<!-- NOT IMPLEMENTED
+    <refsect2 id="method-atkstreamablecontent- -get-stream">
       <title>atk.StreamableContent.get_stream</title>
 
       <programlisting><methodsynopsis language="python">
@@ -100,7 +121,8 @@ should not free the character string.</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">mime_type</parameter>&nbsp;:</term>
-          <listitem><simpara>a gchar* representing the mime type</simpara></listitem>
+          <listitem><simpara>a string representing the mime
+          type</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
@@ -112,6 +134,7 @@ type.</simpara></listitem>
       <para>Gets the content in the specified mime type.</para>
 
     </refsect2>
+END -->
 
   </refsect1>
 

@@ -6,7 +6,8 @@
 
   <refnamediv>
     <refname>atk.Relation</refname>
-      <refpurpose>An object used to describe a relation between a object and one or more other objects.  </refpurpose>
+      <refpurpose>an object used to describe a relation between a object and
+      one or more other objects.  </refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -18,7 +19,6 @@
       <constructorsynopsis language="python">
         <methodname><link linkend="constructor-atkrelation">atk.Relation</link></methodname>
         <methodparam><parameter role="keyword">targets</parameter></methodparam>
-        <methodparam><parameter role="keyword">n_targets</parameter></methodparam>
         <methodparam><parameter role="keyword">relationship</parameter></methodparam>
       </constructorsynopsis>
       <methodsynopsis language="python">
@@ -30,6 +30,20 @@
         <methodparam></methodparam>
       </methodsynopsis>
 </classsynopsis>
+
+<programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+    <methodname><link linkend="function-atk--relation-type-register">atk.relation_type_register</link></methodname>
+    <methodparam><parameter role="keyword">name</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-atk--relation-type-get-name">atk.relation_type_get_name</link></methodname>
+    <methodparam><parameter role="keyword">relationship</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-atk--relation-type-for-name">atk.relation_type_for_name</link></methodname>
+    <methodparam><parameter role="keyword">name</parameter></methodparam>
+  </methodsynopsis></programlisting>
 
   </refsect1>
 
@@ -56,13 +70,17 @@
         <row valign="top">
           <entry>"relation-type"</entry>
           <entry>Read-Write</entry>
-          <entry>The type of the relation</entry>
+          <entry>The type of the relation - one of the <xref
+          linkend="atk-relation-type-constants"
+          endterm="atk-relation-type-constants-title"></xref>. Default
+          value: atk.RELATION_NULL.</entry>
         </row>
 
         <row valign="top">
           <entry>"target"</entry>
           <entry>Read-Write</entry>
-          <entry>An array of the targets for the relation</entry>
+          <entry>An array of the targets for the relation. Default value:
+          None.</entry>
         </row>
 
         </tbody>
@@ -81,10 +99,15 @@
   <refsect1>
     <title>Description</title>
 
-<para>
-An AtkRelation describes a relation between an object and one or more
-other objects. The actual relations that an object has with other objects
-are defined as an AtkRelationSet, which is a set of AtkRelations.
+    <para>An <link
+    linkend="class-atkrelation"><classname>atk.Relation</classname></link>
+    describes a relation between an object and one or more other
+    objects. The actual relations that an object has with other objects are
+    defined as an <link
+    linkend="class-atkrelationset"><classname>atk.RelationSet</classname></link>,
+    which contains a set of <link
+    linkend="class-atkrelation"><classname>atk.Relation</classname></link>
+    objects.
 
 
 </para>
@@ -102,32 +125,34 @@ are defined as an AtkRelationSet, which is a set of AtkRelations.
       <programlisting><constructorsynopsis language="python">
         <methodname>atk.Relation</methodname>
         <methodparam><parameter role="keyword">targets</parameter></methodparam>
-        <methodparam><parameter role="keyword">n_targets</parameter></methodparam>
         <methodparam><parameter role="keyword">relationship</parameter></methodparam>
       </constructorsynopsis></programlisting>
 
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">targets</parameter>&nbsp;:</term>
-          <listitem><simpara>an array of pointers to <literal>AtkObjects</literal></simpara></listitem>
-        </varlistentry>
-        <varlistentry>
-          <term><parameter role="keyword">n_targets</parameter>&nbsp;:</term>
-          <listitem><simpara>number of <literal>AtkObjects</literal> pointed to by <parameter>targets</parameter></simpara></listitem>
+          <listitem><simpara>a sequence of <link
+          linkend="class-atkobject"><classname>atk.Object</classname>
+          objects</link></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">relationship</parameter>&nbsp;:</term>
-          <listitem><simpara>an <literal>AtkRelationType</literal> with which to create the new
- <link linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
+          <listitem><simpara>one of the <xref
+          linkend="atk-relation-type-constants"
+          endterm="atk-relation-type-constants-title"></xref> with which to
+          create the new <link
+          linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a pointer to a new <link linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
+          <listitem><simpara>a new <link
+          linkend="class-atkrelation"><classname>atk.Relation</classname></link></simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Create a new relation for the specified key and the specified list
-      of targets.</para>
+      <para>Create a new relation for the specified
+      <parameter>relationship</parameter> type and the specified sequence of
+      <parameter>targets</parameter>.</para>
 
     </refsect2>
 
@@ -147,11 +172,13 @@ are defined as an AtkRelationSet, which is a set of AtkRelations.
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>the type of <parameter>relation</parameter></simpara></listitem>
+          <listitem><simpara>the relation type - one of the <xref
+          linkend="atk-relation-type-constants"
+          endterm="atk-relation-type-constants-title"></xref>.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets the type of <parameter>relation</parameter></para>
+      <para>Gets the relationship type.</para>
 
     </refsect2>
 
@@ -170,7 +197,99 @@ are defined as an AtkRelationSet, which is a set of AtkRelations.
         </varlistentry>
       </variablelist>
 
-      <para>Gets the target list of <parameter>relation</parameter></para>
+      <para>Gets the target list of <link
+      linkend="class-atkobject"><classname>atk.Object</classname></link>
+      objects.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-atk--relation-type-register">
+      <title>atk.relation_type_register</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>atk.relation_type_register</methodname>
+	  <methodparam><parameter
+			 role="keyword">name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+	  <listitem><simpara>a name string</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new one of the <xref
+	  linkend="atk-relation-type-constants"
+	  endterm="atk-relation-type-constants-title"></xref> that is
+	  associated with <parameter>name</parameter></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>Associate <parameter>name</parameter> with a new one of the <xref
+	  linkend="atk-relation-type-constants"
+	  endterm="atk-relation-type-constants-title"></xref>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-atk--relation-type-get-name">
+      <title>atk.relation_type_get_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>atk.relation_type_get_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">type</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>one of the <xref
+	  linkend="atk-relation-type-constants"
+	  endterm="atk-relation-type-constants-title"></xref>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the string associated with
+	  <parameter>relationship</parameter>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>Gets the description string describing the relation type
+      specified by <parameter>type</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-atk--relation-type-for-name">
+      <title>atk.relation_type_for_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>atk.relation_type_for_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string which is the (non-localized) name of
+	  an ATK relation type.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the matching type of the <xref
+	  linkend="atk-relation-type-constants"
+	  endterm="atk-relation-type-constants-title"></xref> corresponding
+	  to the specified <parameter>name</parameter>, or
+	  <literal>atk.RELATION_NULL</literal> if no matching relation type
+	  is found.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>Get the relation type corresponding to the specified
+      <parameter>name</parameter>.</para>
 
     </refsect2>
 

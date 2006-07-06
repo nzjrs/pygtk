@@ -16,7 +16,10 @@
 <xref linkend="atk-layer-constants" endterm="atk-layer-constants-title"></xref>
 <xref linkend="atk-relation-type-constants" endterm="atk-relation-type-constants-title"></xref>
 <xref linkend="atk-role-constants" endterm="atk-role-constants-title"></xref>
+<xref linkend="atk-state-type-constants" endterm="atk-state-type-constants-title"></xref>
 <xref linkend="atk-text-attr-constants" endterm="atk-text-attr-constants-title"></xref>
+<xref linkend="atk-text-boundary-constants" endterm="atk-text-boundary-constants-title"></xref>
+<xref linkend="atk-text-clip-type-constants" endterm="atk-text-clip-type-constants-title"></xref>
 </programlisting>
 
   </refsect1>
@@ -867,9 +870,291 @@
 
     </refsect2>
 
+    <refsect2 id="atk-state-type-constants">
+      <title id="atk-state-type-constants-title">Atk State Type Constants</title>
+
+      <para>The Atk State Type constants specify a particular state of a
+      component. The actual state of an component is described by its <link
+      linkend="class-atkstateset"><classname>atk.StateSet</classname></link>,
+      which is a set of states.</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>atk.STATE_INVALID</literal></term>
+	  <listitem>
+	    <simpara>Indicates an invalid state</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_ACTIVE</literal></term>
+	  <listitem>
+	    <simpara>Indicates a window is currently the active
+	    window</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_ARMED</literal></term>
+	  <listitem>
+	    <simpara>Indicates that the object is armed.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_BUSY</literal></term>
+	  <listitem>
+	    <simpara> Indicates the current object is busy. This state may
+	    be used by implementors of Document to indicate that content
+	    loading is in process. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_CHECKED</literal></term>
+	  <listitem>
+	    <simpara>Indicates this object is currently checked</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_DEFUNCT</literal></term>
+	  <listitem>
+	    <simpara> Indicates the user interface object corresponding to
+	    this object no longer exists </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_EDITABLE</literal></term>
+	  <listitem>
+	    <simpara> Indicates the user can change the contents of this
+	    object </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_ENABLED</literal></term>
+	  <listitem>
+	    <simpara> Indicates that this object is enabled. An inconsistent
+	    <link
+	    linkend="class-gtktogglebutton"><classname>gtk.ToggleButton</classname></link>
+	    is an example of an object which is sensitive but not
+	    enabled. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_EXPANDABLE</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object allows progressive disclosure of
+	    its children </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_EXPANDED</literal></term>
+	  <listitem>
+	    <simpara>Indicates this object its expanded</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_FOCUSABLE</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object can accept keyboard focus, which
+	    means all events resulting from typing on the keyboard will
+	    normally be passed to it when it has focus </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_FOCUSED</literal></term>
+	  <listitem>
+	    <simpara>Indicates this object currently has the keyboard
+	    focus</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_HORIZONTAL</literal></term>
+	  <listitem>
+	    <simpara>Indicates the orientation of this object is
+	    horizontal</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_ICONIFIED</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object is minimized and is represented
+	    only by an icon </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_MODAL</literal></term>
+	  <listitem>
+	    <simpara> Indicates something must be done with this object
+	    before the user can interact with an object in a different
+	    window </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_MULTI_LINE</literal></term>
+	  <listitem>
+	    <simpara> Indicates this (text) object can contain multiple lines of text </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_MULTISELECTABLE</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object allows more than one of its
+	    children to be selected at the same time </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_OPAQUE</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object paints every pixel within its
+	    rectangular region. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_PRESSED</literal></term>
+	  <listitem>
+	    <simpara>Indicates this object is currently pressed</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_RESIZABLE</literal></term>
+	  <listitem>
+	    <simpara>Indicates the size of this object is not fixed</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_SELECTABLE</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object is the child of an object that
+	    allows its children to be selected and that this child is one of
+	    those children that can be selected </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_SELECTED</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object is the child of an object that
+	    allows its children to be selected and that this child is one of
+	    those children that has been selected </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_SENSITIVE</literal></term>
+	  <listitem>
+	    <simpara>Indicates this object is sensitive</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_SHOWING</literal></term>
+	  <listitem>
+	    <simpara> Indicates this object, the object's parent, the
+	    object's parent's parent, and so on, are all visible </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_SINGLE_LINE</literal></term>
+	  <listitem>
+	    <simpara> Indicates this (text) object can contain only a single
+	    line of text </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_STALE</literal></term>
+	  <listitem>
+	    <simpara> Indicates that the index associated with this object
+	    has changed since the user accessed the object. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_TRANSIENT</literal></term>
+	  <listitem>
+	    <simpara>Indicates this object is transient</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_VERTICAL</literal></term>
+	  <listitem>
+	    <simpara>Indicates the orientation of this object is
+	    vertical</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_VISIBLE</literal></term>
+	  <listitem>
+	    <simpara>Indicates this object is visible</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_MANAGES_DESCENDANTS</literal></term>
+	  <listitem>
+	    <simpara> Indicates that "active-descendant-changed" event is
+	    sent when children become 'active' (i.e. are selected or
+	    navigated to onscreen). Used to prevent need to enumerate all
+	    children in very large containers, like tables. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_INDETERMINATE</literal></term>
+	  <listitem>
+	    <simpara> Indicates that a check box is in a state other than
+	    checked or not checked. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_TRUNCATED</literal></term>
+	  <listitem>
+	    <simpara> Indicates that an object is truncated, e.g. a text
+	    value in a speradsheet cell. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_REQUIRED</literal></term>
+	  <listitem>
+	    <simpara> Indicates that explicit user interaction with an
+	    object is required by the user interface, e.g. a required field
+	    in a "web-form" interface. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_INVALID_ENTRY</literal></term>
+	  <listitem>
+	    <simpara> Indicates that the object has encountered an error
+	    condition due to failure of input validation. For instance, a
+	    form control may acquire this state in response to invalid or
+	    malformed user input. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_SUPPORTS_AUTOCOMPLETION</literal></term>
+	  <listitem>
+	    <simpara> Indicates that the object may exhibit "typeahead"
+	    behavior in response to user keystrokes, e.g. one keystroke may
+	    result in the insertion of several characters into an entry, or
+	    result in the auto-selection of an item in a list. This state
+	    supplants <literal>atk.ROLE_AUTOCOMPLETE</literal>. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_SELECTABLE_TEXT</literal></term>
+	  <listitem>
+	    <simpara>Indicates that the object in question supports text
+	    selection. It should only be exposed on objects which implement
+	    the Text interface, in order to distinguish this state from
+	    <literal>atk.STATE_SELECTABLE</literal>, which infers that the
+	    object in question is a selectable child of an object which
+	    implements Selection. While similar, text selection and
+	    subelement selection are distinct operations. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.STATE_LAST_DEFINED</literal></term>
+	  <listitem>
+	    <simpara>Not a valid state, used for finding end of
+	    enumeration</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+    </refsect2>
+
     <refsect2 id="atk-text-attr-constants">
-      <title id="atk-text-attr-constants-title">Atk Text Attribute
-      Constants</title>
+      <title id="atk-text-attr-constants-title">Atk Text Attribute Constants</title>
 
       <para>The Atk Text Attribute constants specify the built-in text
       attributes supported. Other text attributes may be set by an
@@ -1069,6 +1354,105 @@
 	  <listitem>
 	    <simpara> not a valid text attribute, used for finding end of
 	    enumeration </simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2 id="atk-text-boundary-constants">
+      <title id="atk-text-boundary-constants-title">Atk Text Boundary Constants</title>
+
+      <para>The Atk Text Boundary constants specify oundaries for regions of
+      text.</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>atk.TEXT_BOUNDARY_CHAR</literal></term>
+	  <listitem>
+	    <simpara> Boundary is the boundary between characters (including
+	    non-printing characters) </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_BOUNDARY_WORD_START</literal></term>
+	  <listitem>
+	    <simpara>Boundary is the start (i.e. first character) of a
+	    word.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_BOUNDARY_WORD_END</literal></term>
+	  <listitem>
+	    <simpara>Boundary is the end (i.e. last character) of a
+	    word.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_BOUNDARY_SENTENCE_START</literal></term>
+	  <listitem>
+	    <simpara>Boundary is the first character in a
+	    sentence.</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_BOUNDARY_SENTENCE_END</literal></term>
+	  <listitem>
+	    <simpara> Boundary is the last (terminal) character in a
+	    sentence; in languages which use "sentence stop" punctuation
+	    such as English, the boundary is thus the '.', '?', or similar
+	    terminal punctuation character. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_BOUNDARY_LINE_START</literal></term>
+	  <listitem>
+	    <simpara> Boundary is the initial character of the content or a
+	    character immediately following a newline, linefeed, or return
+	    character. </simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_BOUNDARY_LINE_END</literal></term>
+	  <listitem>
+	    <simpara>Boundary is the linefeed, or return
+	    character.</simpara>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2 id="atk-text-clip-type-constants">
+      <title id="atk-text-clip-type-constants-title">Atk Text Clip Type Constants</title>
+
+      <para>The Atk Text Clip Type constants specify the type of clipping
+      required.</para>
+
+      <variablelist>
+	<varlistentry>
+	  <term><literal>atk.TEXT_CLIP_NONE</literal></term>
+	  <listitem>
+	    <simpara>No clipping to be done</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_CLIP_MIN</literal></term>
+	  <listitem>
+	    <simpara>Text clipped by min coordinate is omitted</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_CLIP_MAX</literal></term>
+	  <listitem>
+	    <simpara>Text clipped by max coordinate is omitted</simpara>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><literal>atk.TEXT_CLIP_BOTH</literal></term>
+	  <listitem>
+	    <simpara>Only text fully within mix/max bound is
+	    retained</simpara>
 	  </listitem>
 	</varlistentry>
       </variablelist>

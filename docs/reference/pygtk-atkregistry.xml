@@ -6,7 +6,9 @@
 
   <refnamediv>
     <refname>atk.Registry</refname>
-      <refpurpose>An object used to store the GType of the factories used to create an accessible object for an object of a particular GType.  </refpurpose>
+      <refpurpose>an object used to store the GType of the factories used to
+      create an accessible object for an object of a particular GType.
+      </refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -30,6 +32,14 @@
       </methodsynopsis>
 </classsynopsis>
 
+<programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+    <methodname><link linkend="function-atk--get-default-registry">atk.get_default_registry</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis></programlisting>
+
   </refsect1>
 
   <refsect1>
@@ -50,11 +60,17 @@
   <refsect1>
     <title>Description</title>
 
-<para>
-
-</para>
-
-
+<para>The <link
+linkend="class-atkregistry"><classname>atk.Registry</classname></link> is
+normally used to create appropriate ATK "peers" for user interface
+components. Application developers usually need only interact with the <link
+linkend="class-atkregistry"><classname>atk.Registry</classname></link> by
+associating appropriate ATK implementation classes with <link
+linkend="class-gobject"><classname>gobject.GObject</classname></link>
+classes via the <link
+linkend="method-atkregistry--set-factory-type"><methodname>set_factory_type</methodname>()</link>
+method, passing the appropriate GType for application custom widget
+classes.</para>
 
   </refsect1>
 
@@ -77,15 +93,24 @@
         </varlistentry>
         <varlistentry>
           <term><parameter role="keyword">factory_type</parameter>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> type to associate with <parameter>type</parameter>.  Must
-implement AtkObject appropriate for <parameter>type</parameter>.</simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+          type to associate with <parameter>type</parameter>.  Must
+          implement the <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          appropriate for <parameter>type</parameter>.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Associate an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> subclass with a <literal>GType</literal>. Note:
-      The associated <parameter>factory_type</parameter> will thereafter be responsible for
-      the creation of new <link linkend="class-atkobject"><classname>atk.Object</classname></link> implementations for instances
-      appropriate for <parameter>type</parameter>.</para>
+      <para>Associate an <link
+      linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+      subclass with a <link
+      linkend="class-atkobject"><classname>atk.Object</classname></link>
+      type. Note: The associated <parameter>factory_type</parameter> will
+      thereafter be responsible for the creation of new <link
+      linkend="class-atkobject"><classname>atk.Object</classname></link>
+      implementations for instances appropriate for
+      <parameter>type</parameter>.</para>
 
     </refsect2>
 
@@ -100,17 +125,25 @@ implement AtkObject appropriate for <parameter>type</parameter>.</simpara></list
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">type</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>GType</literal> with which to look up the associated <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
-subclass</simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          type with which to look up the associated <link
+          linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+          subclass</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a <literal>GType</literal> associated with type <parameter>type</parameter></simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+          type associated with <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          <parameter>type</parameter></simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Provides a <literal>GType</literal> indicating the <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> subclass
-      associated with <parameter>type</parameter>.</para>
+      <para>Returns a <link
+      linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+      subclass associated with <parameter>type</parameter>.</para>
 
     </refsect2>
 
@@ -125,17 +158,59 @@ subclass</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">type</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>GType</literal> with which to look up the associated <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link></simpara></listitem>
+          <listitem><simpara>a <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          with which to look up the associated <link
+          linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link></simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> appropriate for creating <literal>AtkObjects</literal>
-appropriate for <parameter>type</parameter>.</simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+          appropriate for creating <parameter>type</parameter> <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>s.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets an <link linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link> appropriate for creating <literal>AtkObjects</literal>
-      appropriate for <parameter>type</parameter>.</para>
+      <para>Gets an <link
+      linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+      appropriate for creating <parameter>type</parameter> <link
+      linkend="class-atkobject"><classname>atk.Object</classname></link>s.</para>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-atk--get-default-registry">
+      <title>atk.get_default_registry</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>atk.get_default_registry</methodname>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a default implementation of the <link
+	  linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+	  type registry</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>Gets a default implementation of the <link
+      linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+      type registry. Note: For most toolkit maintainers, this will be the
+      correct registry for registering new <link
+      linkend="class-atkobject"><classname>atk.Object</classname></link>
+      factories. Following a call to this function, maintainers may call the
+      <link
+      linkend="method-atkregistry--set-factory-type"><methodname>set_factory_type</methodname>()</link>
+      method to associate an <link
+      linkend="class-atkobjectfactory"><classname>atk.ObjectFactory</classname></link>
+      subclass with the type of objects for whom accessibility information
+      will be provided.</para>
 
     </refsect2>
 

@@ -6,7 +6,10 @@
 
   <refnamediv>
     <refname>atk.Selection</refname>
-      <refpurpose> The ATK interface implemented by container objects whose #AtkObject children can be selected.  </refpurpose>
+      <refpurpose>the ATK interface implemented by container objects whose
+      <link
+      linkend="class-atkobject"><classname>atk.Object</classname></link>
+      children can be selected.  </refpurpose>
   </refnamediv>
 
   <refsect1>
@@ -69,20 +72,22 @@
   <refsect1>
     <title>Description</title>
 
-<para>
-<link linkend="class-atkselection"><classname>atk.Selection</classname></link> should be implemented by UI components with children which
-are exposed by <literal>atk_object_ref_child</literal> and <literal>atk_object_get_n_children</literal>, if
-the use of the parent UI component ordinarily involves selection of one
-or more of the objects corresponding to those <link linkend="class-atkobject"><classname>atk.Object</classname></link> children - for
-example, selectable lists.
-</para>
-<para>
-Note that other types of "selection" (for instance text selection) are
-accomplished a other ATK interfaces - <link linkend="class-atkselection"><classname>atk.Selection</classname></link> is limited to the
-selection/deselection of children.
-</para>
+    <para><link
+    linkend="class-atkselection"><classname>atk.Selection</classname></link>
+    should be implemented by UI components with children which are exposed
+    by the <link
+    linkend="method-atkobject--ref-accessible-child"><methodname>ref_accessible_child</methodname>()</link>
+    and <link
+    linkend="method-atkobject--get-n-accessible-children"><methodname>get_n_accessible_children</methodname>()</link>
+    methods, if the use of the parent UI component ordinarily involves
+    selection of one or more of the objects corresponding to those <link
+    linkend="class-atkobject"><classname>atk.Object</classname></link>
+    children - for example, selectable lists.</para>
 
-
+    <para>Note that other types of "selection" (for instance text selection)
+    are accomplished a other ATK interfaces - <link
+    linkend="class-atkselection"><classname>atk.Selection</classname></link>
+    is limited to the selection/deselection of children.</para>
 
   </refsect1>
 
@@ -100,11 +105,13 @@ selection/deselection of children.
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">i</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> specifying the child index.</simpara></listitem>
+          <listitem><simpara>an index specifying the child
+          index.</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>TRUE if success, FALSE otherwise.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if success,
+          <literal>FALSE</literal> otherwise.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -124,12 +131,13 @@ selection/deselection of children.
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>TRUE if success, FALSE otherwise.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if success,
+          <literal>FALSE</literal> otherwise.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Clears the selection in the object so that no children in the object
-      are selected.</para>
+      <para>Clears the selection in the object so that no children in the
+      object are selected.</para>
 
     </refsect2>
 
@@ -144,22 +152,26 @@ selection/deselection of children.
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">i</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> specifying the index in the selection set.  (e.g. the
-ith selection as opposed to the ith child).</simpara></listitem>
+          <listitem><simpara>an index specifying the index in the selection
+          set. (e.g. the ith selection as opposed to the ith
+          child).</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>an <link linkend="class-atkobject"><classname>atk.Object</classname></link> representing the selected accessible , or <literal>None</literal>
-if <parameter>selection</parameter> does not implement this interface.</simpara></listitem>
+          <listitem><simpara>an <link
+          linkend="class-atkobject"><classname>atk.Object</classname></link>
+          representing the selected accessible , or <literal>None</literal>
+          if the selection does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Gets a reference to the accessible object representing the specified 
-      selected child of the object.
-      Note: callers should not rely on <literal>None</literal> or on a zero value for
-      indication of whether AtkSelectionIface is implemented, they should
-      use type checking/interface checking macros or the
-      <methodname>atk_get_accessible_value</methodname>() convenience method.</para>
+      <para>Gets a reference to the accessible object representing the
+      specified selected child of the object.  Note: callers should not rely
+      on <literal>None</literal> or on a zero value for indication of
+      whether the <link
+      linkend="class-atkselection"><classname>atk.Selection</classname></link>
+      interface is implemented.</para>
 
     </refsect2>
 
@@ -174,16 +186,17 @@ if <parameter>selection</parameter> does not implement this interface.</simpara>
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gint representing the number of items selected, or 0
-if <parameter>selection</parameter> does not implement this interface.</simpara></listitem>
+          <listitem><simpara>an integer representing the number of items
+          selected, or 0 if the selection does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
       <para>Gets the number of accessible children currently selected.
-      Note: callers should not rely on <literal>None</literal> or on a zero value for
-      indication of whether AtkSelectionIface is implemented, they should
-      use type checking/interface checking macros or the
-      <methodname>atk_get_accessible_value</methodname>() convenience method.</para>
+      Note: callers should not rely on <literal>None</literal> or on a zero
+      value for indication of whether the <link
+      linkend="class-atkselection"><classname>atk.Selection</classname></link>
+      interface is implemented.</para>
 
     </refsect2>
 
@@ -198,20 +211,22 @@ if <parameter>selection</parameter> does not implement this interface.</simpara>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">i</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> specifying the child index.</simpara></listitem>
+          <listitem><simpara>an index specifying the child
+          index.</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>a gboolean representing the specified child is selected, or 0
-if <parameter>selection</parameter> does not implement this interface.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if the specified child
+          is selected, or 0 if the selection does not implement this
+          interface.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Determines if the current child of this object is selected
-      Note: callers should not rely on <literal>None</literal> or on a zero value for
-      indication of whether AtkSelectionIface is implemented, they should
-      use type checking/interface checking macros or the
-      <methodname>atk_get_accessible_value</methodname>() convenience method.</para>
+      <para>Determines if the current child of this object is selected Note:
+      callers should not rely on <literal>None</literal> or on a zero value
+      for indication of whether the <link
+      linkend="class-atkselection"><classname>atk.Selection</classname></link>
+      interface is implemented.</para>
 
     </refsect2>
 
@@ -226,16 +241,19 @@ if <parameter>selection</parameter> does not implement this interface.</simpara>
       <variablelist>
         <varlistentry>
           <term><parameter role="keyword">i</parameter>&nbsp;:</term>
-          <listitem><simpara>a <literal>gint</literal> specifying the index in the selection set.  (e.g. the
-ith selection as opposed to the ith child).</simpara></listitem>
+          <listitem><simpara>an index specifying the index in the selection
+          set.  (e.g. the ith selection as opposed to the ith
+          child).</simpara></listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>TRUE if success, FALSE otherwise.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if success,
+          <literal>FALSE</literal> otherwise.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>Removes the specified child of the object from the object's selection.</para>
+      <para>Removes the specified child of the object from the object's
+      selection.</para>
 
     </refsect2>
 
@@ -250,7 +268,8 @@ ith selection as opposed to the ith child).</simpara></listitem>
       <variablelist>
         <varlistentry>
           <term><emphasis>Returns</emphasis>&nbsp;:</term>
-          <listitem><simpara>TRUE if success, FALSE otherwise.</simpara></listitem>
+          <listitem><simpara><literal>TRUE</literal> if success,
+          <literal>FALSE</literal> otherwise.</simpara></listitem>
         </varlistentry>
       </variablelist>
 
@@ -291,8 +310,10 @@ ith selection as opposed to the ith child).</simpara></listitem>
         </varlistentry>
       </variablelist>
 
-      <para>The "selection-changed" signal is emitted by an object which implements 
-AtkSelection interface when the selection changes.</para>
+      <para>The "selection-changed" signal is emitted by an object which
+      implements <link
+      linkend="class-atkselection"><classname>atk.Selection</classname></link>
+      interface when the selection changes.</para>
 
     </refsect2>
 
