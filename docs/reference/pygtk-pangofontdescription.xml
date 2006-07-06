@@ -140,6 +140,14 @@ linkend="method-pangofontdescription--to-string">to_string</link></methodname>
 	<methodname><link
 linkend="method-pangofontdescription--to-filename">to_filename</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-pangofontdescription--set-absolute-size">set_absolute_size</link></methodname>
+        <methodparam><parameter role="keyword">size</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-pangofontdescription--get-size-is-absolute">get_size_is_absolute</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -1081,6 +1089,66 @@ filenames, and it is in lower case only.</para>
 
     </refsect2>
 
+    <refsect2 id="method-pangofontdescription--set-absolute-size">
+      <title>pango.FontDescription.set_absolute_size</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_absolute_size</methodname>
+        <methodparam><parameter role="keyword">size</parameter></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">size</parameter>&nbsp;:</term>
+          <listitem><simpara>the new size, in Pango units. There are
+          <literal>pango.SCALE</literal> Pango units in one device unit. For
+          an output backend where a device unit is a pixel, a
+          <parameter>size</parameter> value of 10 * pango.SCALE gives a 10
+          pixel font.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+ 
+      <para>Sets the size field of a font description, in device units. This
+      is mutually exclusive with <link
+      linkend="method-pangofontdescription--set-size"><methodname>pango.FontDescription.set_size()</methodname></link>.</para>
+ 
+    </refsect2>
+ 
+    <refsect2 id="method-pangofontdescription--get-size-is-absolute">
+      <title>pango.FontDescription.get_size_is_absolute</title>
+                                                                                
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_size_is_absolute</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>whether the size for the font description is in
+          points or device units.  Use <link
+          linkend="method-pangofontdescription--get-set-fields"><methodname>pango.FontDescription.get_set_fields()</methodname></link>
+          to find out if the size field of the font description was
+          explicitly set or not.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+ 
+      <para>Determines whether the size of the font is in points or device
+      units.  See <link
+      linkend="method-pangofontdescription--set-size"><methodname>pango.FontDescription.set_size()</methodname></link>
+      and <link
+      linkend="method-pangofontdescription--set-absolute-size"><methodname>pango.FontDescription.set_absolute_size()</methodname></link>.</para>
+ 
+    </refsect2>
+ 
   </refsect1>
 
 </refentry>
