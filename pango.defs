@@ -192,6 +192,42 @@
   )
 )
 
+(define-function AttrSizeAbsolute
+  (c-name "pango_attr_size_new_absolute")
+  (return-type "PangoAttribute*")
+  (parameters
+    '("int" "size")
+  )
+)
+ 
+(define-function AttrUnderlineColor
+  (c-name "pango_attr_underline_color_new")
+  (return-type "PangoAttribute*")
+  (parameters
+    '("guint16" "red")
+    '("guint16" "green")
+    '("guint16" "blue")
+  )
+)
+ 
+(define-function AttrStrikethroughColor
+  (c-name "pango_attr_strikethrough_color_new")
+  (return-type "PangoAttribute*")
+  (parameters
+    '("guint16" "red")
+    '("guint16" "green")
+    '("guint16" "blue")
+  )
+)
+ 
+(define-function AttrLetterSpacing
+  (c-name "pango_attr_letter_spacing_new")
+  (return-type "PangoAttribute*")
+  (parameters
+    '("int" "letter_spacing")
+  )
+)
+ 
 (define-function pango_attr_list_get_type
   (c-name "pango_attr_list_get_type")
   (return-type "GType")
@@ -785,6 +821,21 @@
   (return-type "char*")
 )
 
+(define-method set_absolute_size
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_set_absolute_size")
+  (return-type "none")
+  (parameters
+    '("double" "size")
+  )
+)
+ 
+(define-method get_size_is_absolute
+  (of-object "PangoFontDescription")
+  (c-name "pango_font_description_get_size_is_absolute")
+  (return-type "gboolean")
+)
+
 (define-function pango_font_metrics_get_type
   (c-name "pango_font_metrics_get_type")
   (return-type "GType")
@@ -960,6 +1011,12 @@
   )
 )
 
+(define-method get_font_map
+  (of-object "PangoFont")
+  (c-name "pango_font_get_font_map")
+  (return-type "PangoFontMap*")
+)
+ 
 
 
 ;; From /opt/gtk2/include/pango-1.0/pango/pango-fontmap.h

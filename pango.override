@@ -204,6 +204,8 @@ pypango_attr_tp_getattr(PyPangoAttribute *self, char *attr)
     case PANGO_ATTR_STRIKETHROUGH:
     case PANGO_ATTR_RISE:
     case PANGO_ATTR_FALLBACK:
+    case PANGO_ATTR_LETTER_SPACING:
+    case PANGO_ATTR_ABSOLUTE_SIZE:
 	if (!strcmp(attr, "__members__"))
 	    return Py_BuildValue("[s]", "value");
 	if (!strcmp(attr, "value"))
@@ -219,6 +221,8 @@ pypango_attr_tp_getattr(PyPangoAttribute *self, char *attr)
 	break;
     case PANGO_ATTR_FOREGROUND:
     case PANGO_ATTR_BACKGROUND:
+    case PANGO_ATTR_UNDERLINE_COLOR:
+    case PANGO_ATTR_STRIKETHROUGH_COLOR:
 	if (!strcmp(attr, "__members__"))
 	    return Py_BuildValue("[s]", "color");
 	if (!strcmp(attr, "color"))
@@ -1946,4 +1950,80 @@ _wrap_pango_layout_line__get_runs(PyGObject *self, void *closure)
         Py_DECREF(item);
     }
     return list;
+}
+%%
+override pango_attr_underline_color_new kwargs
+static PyObject *
+_wrap_pango_attr_underline_color_new(PyObject *self, PyObject *args,
+                                     PyObject *kwargs)
+{
+    static char *kwlist[] = { "red", "green", "blue", "start_index",
+			      "end_index", NULL };
+    guint16 red, green, blue;
+    guint start = 0, end = 1;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "HHH|ii:PangoAttrUnderlineColor",
+				     kwlist, &red, &green, &blue,
+				     &start, &end))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_underline_color_new(red, green, blue),
+			    start, end);
+}
+%%
+override pango_attr_strikethrough_color_new kwargs
+static PyObject *
+_wrap_pango_attr_strikethrough_color_new(PyObject *self, PyObject *args,
+                                         PyObject *kwargs)
+{
+    static char *kwlist[] = { "red", "green", "blue", "start_index",
+			      "end_index", NULL };
+    guint16 red, green, blue;
+    guint start = 0, end = 1;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "HHH|ii:PangoAttrStrikethroughColor",
+				     kwlist, &red, &green, &blue,
+				     &start, &end))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_strikethrough_color_new(red, green, blue),
+			    start, end);
+}
+%%
+override pango_attr_size_new_absolute kwargs
+static PyObject *
+_wrap_pango_attr_size_new_absolute(PyObject *self, PyObject *args,
+                                   PyObject *kwargs)
+{
+    static char *kwlist[] = { "size", "start_index", "end_index", NULL };
+    int size;
+    guint start = 0, end = 1;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "i|ii:PangoAttrSizeAbsolute",
+				     kwlist, &size, &start, &end))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_size_new_absolute(size), start, end);
+}
+%%
+override pango_attr_letter_spacing_new kwargs
+static PyObject *
+_wrap_pango_attr_letter_spacing_new(PyObject *self, PyObject *args,
+                                    PyObject *kwargs)
+{
+    static char *kwlist[] = { "letter_spacing", "start_index", "end_index",
+                              NULL };
+    int spacing;
+    guint start = 0, end = 1;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "i|ii:PangoAttrLetterSpacing",
+				     kwlist, &spacing, &start, &end))
+	return NULL;
+
+    return pypango_attr_new(pango_attr_letter_spacing_new(spacing),
+                            start, end);
 }
