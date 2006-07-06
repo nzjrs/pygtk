@@ -283,10 +283,14 @@ _wrap_atk_state_set_add_states(PyGObject *self, PyObject *args,
     for (i = 0; i < count; i++) {
         if (pyg_enum_get_value(ATK_TYPE_STATE_TYPE,
                                PySequence_Fast_GET_ITEM(py_types, i),
-                               (gpointer)&types[i]))
+                               (gpointer)&types[i])) {
+            Py_DECREF(py_types);
             return NULL;
+        }
     }
     atk_state_set_add_states(ATK_STATE_SET(self->obj), types, count);
+
+    Py_DECREF(py_types);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -315,8 +319,10 @@ _wrap_atk_state_set_contains_states(PyGObject *self, PyObject *args,
     for (i = 0; i < count; i++) {
         if (pyg_enum_get_value(ATK_TYPE_STATE_TYPE,
                                PySequence_Fast_GET_ITEM(py_types, i),
-                               (gpointer)&types[i]))
+                               (gpointer)&types[i])) {
+            Py_DECREF(py_types);
             return NULL;
+        }
     }
     ret = atk_state_set_contains_states(ATK_STATE_SET(self->obj), types,
                                         count);
@@ -324,6 +330,8 @@ _wrap_atk_state_set_contains_states(PyGObject *self, PyObject *args,
         py_ret = Py_True;
     else
         py_ret = Py_False;
+    
+    Py_DECREF(py_types);
     Py_INCREF(py_ret);
     return py_ret;
 }
