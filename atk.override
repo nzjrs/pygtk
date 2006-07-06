@@ -355,3 +355,28 @@ _wrap_atk_table_get_selected_rows(PyGObject *self)
     g_free(selected);
     return py_selected;
 }
+%%
+override atk_text_get_text_after_offset kwargs
+static PyObject *
+_wrap_atk_text_get_text_after_offset(PyGObject *self, PyObject *args,
+                                     PyObject *kwargs)
+{
+    static char *kwlist[] = { "offset", "boundary_type", NULL };
+    gchar *text;
+    gint start, end, offset;
+    AtkTextBoundary boundary;
+    PyObject *py_boundary;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "iO:atk.Text.get_text_after_offset",
+                                     kwlist, &offset, &py_boundary))
+	return NULL;
+
+    if (pyg_enum_get_value(ATK_TYPE_TEXT_BOUNDARY, py_boundary,
+                           (gpointer)&boundary))
+        return NULL;
+
+    text = atk_text_get_text_after_offset(ATK_TEXT(self->obj),
+                                          offset, boundary, &start, &end);
+    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+}
