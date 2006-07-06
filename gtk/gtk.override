@@ -3632,8 +3632,8 @@ _wrap_gtk_color_selection_palette_to_string(PyGObject *self, PyObject *args,
     PyObject *py_colors, *ret;
 
     if (!PyArg_ParseTupleAndKeywords(
-	args, kwargs, "O:gtk.color_selection_palette_to_string",
-	kwlist, &py_colors))
+	args, kwargs, "O!:gtk.color_selection_palette_to_string",
+	kwlist, &PyList_Type, &py_colors))
         return NULL;
 
     n_colors = PySequence_Length(py_colors);
