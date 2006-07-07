@@ -432,6 +432,34 @@ current folder in alphabetical order with last modified time.</simpara>
       </listitem>
    </itemizedlist>
 
+    <refsect2 id="FileNamesAndEncodings">
+      <title>File Names and Encodings</title>
+
+      <para>When the user is finished selecting files in a <link
+      linkend="class-gtkfilechooser"><classname>gtk.FileChooser</classname></link>,
+      your program can get the selected names either as filenames or as
+      URIs. For URIs, the normal escaping rules are applied if the URI
+      contains non-ASCII characters. However, filenames are always returned
+      in the character set specified by the result of calling the Python
+      sys.getfilesystemencoding() function. On POSIX this is the actual
+      on-disk encoding which might correspond to the locale settings of the
+      process, or not. On Windows the file name encoding is UTF-8. Note that
+      the Microsoft C library does not use UTF-8, but has separate APIs for
+      current system code page and wide characters (UTF-16).</para>
+
+      <important>
+        <para>This means that while you can pass the result of <link
+        linkend="method-gtkfilechooser--get-filename"><methodname>get_filename</methodname>()</link>
+        to open() or os.open(), you may not be able to directly set it as
+        the text of a <link
+        linkend="class-gtklabel"><classname>gtk.Label</classname></link>
+        widget unless you convert it first to UTF-8, which all PyGTK widgets
+        expect. If necessary you should use the Python codecs to convert
+        filenames into strings that can be passed to PyGTK widgets.</para>
+      </important>
+
+    </refsect2>
+
     <refsect2 id="AddingAPreviewWidget">
       <title>Adding A Preview Widget</title>
 
