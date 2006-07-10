@@ -328,6 +328,7 @@
 
 (define-method change
   (of-object "GdkColormap")
+  (deprecated "deprecated")
   (c-name "gdk_colormap_change")
   (return-type "none")
   (parameters
@@ -456,16 +457,6 @@
   (return-type "gint")
 )
 
-;(define-method change
-;  (deprecated "deprecated")
-;  (of-object "GdkColormap")
-;  (c-name "gdk_colormap_change")
-;  (return-type "none")
-;  (parameters
-;    '("gint" "ncolors")
-;  )
-;)
-
 (define-method alloc_color
   (of-object "GdkColormap")
   (c-name "gdk_colormap_alloc_color")
@@ -537,12 +528,12 @@
   )
 )
 
-(define-method change
+(define-function color_change
   (deprecated "deprecated")
-  (of-object "GdkColormap")
   (c-name "gdk_color_change")
   (return-type "gint")
   (parameters
+    '("GdkColormap*" "colormap")
     '("GdkColor*" "color")
   )
 )
