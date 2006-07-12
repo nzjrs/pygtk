@@ -12,14 +12,18 @@ tests =  \
 	test_style.py \
 	test_textview.py
 
+GTK_PY_FILES = __init__.py _lazyutils.py compat.py deprecation.py keysyms.py
+
 check-local: $(top_srcdir)/gtk/__init__.py
 	@if test "$(top_builddir)" != "$(top_srcdir)"; then \
-	   cp $(top_srcdir)/gtk/__init__.py $(top_builddir)/gtk/__init__.py; \
-	   cp $(top_srcdir)/gtk/keysyms.py $(top_builddir)/gtk/keysyms.py; \
+	   for gtk_py in $(GTK_PY_FILES) ; do \
+	     cp $(top_srcdir)/gtk/$${gtk_py} $(top_builddir)/gtk/; \
+	   done \
 	fi
 	@$(PYTHON) $(srcdir)/runtests.py $(top_builddir) $(top_srcdir)
 	@if test "$(top_builddir)" != "$(top_srcdir)"; then \
-	   rm -f $(top_builddir)/gtk/__init__.py*; \
-	   rm -f $(top_builddir)/gtk/keysyms.py*; \
+	   for gtk_py in $(GTK_PY_FILES) ; do \
+	     rm -f $(top_builddir)/gtk/$${gtk_py}*; \
+           done \
 	fi
 	@rm -fr *.pyc 

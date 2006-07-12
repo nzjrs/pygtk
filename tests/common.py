@@ -54,8 +54,8 @@ def importModule(module, directory, name=None):
 
     try:
         obj = __import__(module, {}, {}, fromlist)
-    except ImportError:
-        print 'WARNING: %s could not be imported' % origName
+    except ImportError, ex:
+        print 'WARNING: %s could not be imported: %s' % (origName, str(ex))
         return
 
     if hasattr(obj, '__file__'):
