@@ -178,6 +178,29 @@
     '("GtkPrinter*" "b")
   )
 )
+(define-method accepts_pdf
+  (of-object "GtkPrinter")
+  (c-name "gtk_printer_accepts_pdf")
+  (return-type "gboolean")
+)
+ 
+(define-method accepts_ps
+  (of-object "GtkPrinter")
+  (c-name "gtk_printer_accepts_ps")
+  (return-type "gboolean")
+)
+ 
+(define-function enumerate_printers
+  (c-name "gtk_enumerate_printers")
+  (return-type "none")
+  (parameters
+    '("GtkPrinterFunc" "func")
+    '("gpointer" "data")
+    '("GDestroyNotify" "destroy")
+    '("gboolean" "wait")
+  )
+)
+ 
 
 
 

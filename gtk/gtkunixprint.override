@@ -174,3 +174,63 @@ _wrap_gtk_print_job_send(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_enumerate_printers kwargs
+static gboolean
+pygtk_printer_func_cb(GtkPrinter *printer, gpointer user_data)
+{
+    PyGILState_STATE state;
+    PyGtkCustomNotify *cunote = user_data;
+    PyObject *retobj;
+    gboolean ret = TRUE;
+                                                                               
+    g_assert(cunote->func);
+    state = pyg_gil_state_ensure();
+                                                                               
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(NO)",
+                                     pygobject_new((GObject *)printer),
+                                     cunote->data);
+   else
+        retobj = PyEval_CallFunction(cunote->func, "(N)",
+                                     pygobject_new((GObject *)printer));
+                                                                               
+    if (retobj == NULL)
+        PyErr_Print();
+    else if (retobj == Py_False)
+        ret = FALSE;
+
+    Py_XDECREF(retobj);
+    pyg_gil_state_release(state);
+                                                                               
+    return ret;
+}
+static PyObject*
+_wrap_gtk_enumerate_printers(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "func", "data", "wait",  NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify *cunote;
+    gboolean wait = TRUE;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|Oi:gtk.unixprint.enumerate_printers",
+                                     kwlist, &pyfunc, &pyarg, &wait))
+        return NULL;
+  
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+    cunote = g_new0(PyGtkCustomNotify, 1);
+    cunote->func = pyfunc;
+    cunote->data = pyarg;
+    Py_INCREF(cunote->func);
+    Py_XINCREF(cunote->data);
+ 
+    gtk_enumerate_printers(pygtk_printer_func_cb, cunote,
+                           pygtk_custom_destroy_notify, wait);
+ 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
