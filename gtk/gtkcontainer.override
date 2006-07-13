@@ -944,7 +944,7 @@ _wrap_GtkContainer__proxy_do_set_child_property (GtkContainer *container,
     state = pyg_gil_state_ensure();
     self = pygobject_new((GObject *) container);
 
-    py_ret = PyObject_CallMethod(self, "do_set_child_property", "NNN",
+    py_ret = PyObject_CallMethod(self, "do_set_child_property", "NNNN",
                                  pygobject_new((GObject *) child),
                                  PyLong_FromUnsignedLong(property_id),
                                  pyg_value_as_pyobject(value, FALSE),
@@ -1088,4 +1088,3 @@ _wrap_GtkContainer__do_get_child_property(PyObject *cls, PyObject *args, PyObjec
     g_value_unset(&value);
     return py_value;
 }
-

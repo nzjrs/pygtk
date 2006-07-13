@@ -10,7 +10,8 @@ tests =  \
 	test_pango.py \
 	test_radiobutton.py \
 	test_style.py \
-	test_textview.py
+	test_textview.py \
+	test_container.py
 
 GTK_PY_FILES = __init__.py _lazyutils.py compat.py deprecation.py keysyms.py
 
