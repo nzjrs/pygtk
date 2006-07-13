@@ -158,6 +158,7 @@ class Layout(gtk.Container):
             child.widget.size_request()
 
     def do_size_allocate(self, allocation):
+        self.allocation = allocation
         for child in self._children:
             self._allocate_child(child)
 
