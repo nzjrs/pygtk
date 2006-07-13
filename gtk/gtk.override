@@ -353,13 +353,18 @@ ignore-glob
 %%
 ignore-type
   GtkFileFolder
+  GtkFileInfo
   GtkFileInfoType
+  GtkFilePath
   GtkFileSystem
   GtkFileSystemError
   GtkFileSystemHandle
   GtkSignalRunType
+  GtkTargetList
+  GtkTipsQuery
   GtkTree
   GtkTreeItem
+  GtkTreePath
   GtkText
   GtkTextLayout
 %%
@@ -8123,4 +8128,89 @@ _wrap_gtk_action_set_tool_item_type(PyObject *cls,
      g_type_class_unref(klass);
      Py_INCREF(Py_None);
      return Py_None;
+}
+%%
+override gtk_accel_map_foreach kwargs
+static void
+pygtk_accel_map_foreach_cb(gpointer data, const gchar *accel_path,
+                                guint accel_key, GdkModifierType accel_mode,
+                                gboolean changed)
+{
+    PyGILState_STATE state;
+    PyObject *retobj, *py_accel_mode;
+    PyGtkCustomNotify *cunote = data;
+  
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+    py_accel_mode = pyg_flags_from_gtype(GDK_TYPE_MODIFIER_TYPE, accel_mode);
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(siNNO)",
+                                     accel_path, accel_key, py_accel_mode,
+                                     PyBool_FromLong(changed), cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(siNN)", accel_path,
+                                     accel_key, py_accel_mode,
+                                     PyBool_FromLong(changed));
+ 
+    if (retobj == NULL)
+        PyErr_Print();
+
+    Py_XDECREF(retobj);
+  
+    pyg_gil_state_release(state);
+}
+static PyObject *
+_wrap_gtk_accel_map_foreach(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "foreach_func", "data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify cunote;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:gtk.accel_map_foreach",
+                                     kwlist, &pyfunc, &pyarg))
+        return NULL;
+  
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "foreach_func must be a callable object");
+        return NULL;
+    }
+
+    cunote.func = pyfunc;
+    cunote.data = pyarg;
+ 
+    gtk_accel_map_foreach(&cunote, pygtk_accel_map_foreach_cb);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_accel_map_foreach_unfiltered kwargs
+static PyObject *
+_wrap_gtk_accel_map_foreach_unfiltered(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "foreach_func", "data", NULL };
+    PyObject *pyfunc, *pyarg = NULL;
+    PyGtkCustomNotify cunote;
+  
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O|O:gtk.accel_map_foreach_unfiltered",
+                                     kwlist, &pyfunc, &pyarg))
+        return NULL;
+  
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError,
+                        "foreach_func must be a callable object");
+        return NULL;
+    }
+
+    cunote.func = pyfunc;
+    cunote.data = pyarg;
+ 
+    gtk_accel_map_foreach_unfiltered(&cunote, pygtk_accel_map_foreach_cb);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
