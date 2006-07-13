@@ -7977,3 +7977,94 @@ _wrap_gtk_print_operation_get_error(PyGObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+
+%%
+override GtkEditable__do_insert_text kwargs
+static PyObject *
+_wrap_GtkEditable__do_insert_text(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    gpointer klass;
+    static char *kwlist[] = { "self", "text", "position", NULL };
+    PyGObject *self;
+    int text_len, position;
+    char *text;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!s#i:GtkEditable.do_insert_text", kwlist,
+                                     &PyGtkEditable_Type, &self,
+                                     &text, &text_len, &position))
+        return NULL;
+
+
+    klass = g_type_class_ref(pyg_type_from_object(cls));
+    if (GTK_EDITABLE_CLASS(klass)->insert_text)
+        GTK_EDITABLE_CLASS(klass)->insert_text(GTK_EDITABLE(self->obj),
+                                               text, text_len, &position);
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "virtual method GtkEditable.do_insert_text not implemented");
+        g_type_class_unref(klass);
+        return NULL;
+    }
+    g_type_class_unref(klass);
+    
+    return PyInt_FromLong(position);
+}
+
+%%
+override GtkEditable__do_do_insert_text kwargs
+static PyObject *
+_wrap_GtkEditable__do_do_insert_text(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    gpointer klass;
+    static char *kwlist[] = { "self", "text", "position", NULL };
+    PyGObject *self;
+    int text_len, position;
+    char *text;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!s#i:GtkEditable.do_do_insert_text", kwlist,
+                                     &PyGtkEditable_Type, &self,
+                                     &text, &text_len, &position))
+        return NULL;
+
+
+    klass = g_type_class_ref(pyg_type_from_object(cls));
+    if (GTK_EDITABLE_CLASS(klass)->do_insert_text)
+        GTK_EDITABLE_CLASS(klass)->do_insert_text(GTK_EDITABLE(self->obj),
+                                                  text, text_len, &position);
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "virtual method GtkEditable.do_do_insert_text not implemented");
+        g_type_class_unref(klass);
+        return NULL;
+    }
+    g_type_class_unref(klass);
+    
+    return PyInt_FromLong(position);
+}
+
+%%
+override GtkEditable__do_get_selection_bounds kwargs
+static PyObject *
+_wrap_GtkEditable__do_get_selection_bounds(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    gpointer klass;
+    static char *kwlist[] = { "self", NULL };
+    PyGObject *self;
+    int start_pos, end_pos;;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!:GtkEditable.do_get_selection_bounds", kwlist,
+                                     &PyGtkEditable_Type, &self))
+        return NULL;
+
+    klass = g_type_class_ref(pyg_type_from_object(cls));
+    if (GTK_EDITABLE_CLASS(klass)->get_selection_bounds)
+        GTK_EDITABLE_CLASS(klass)->get_selection_bounds(GTK_EDITABLE(self->obj),
+                                                        &start_pos, &end_pos);
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "virtual method GtkEditable.do_get_selection_bounds not implemented");
+        g_type_class_unref(klass);
+        return NULL;
+    }
+    g_type_class_unref(klass);
+    
+    return Py_BuildValue("ii", start_pos, end_pos);
+}
+
