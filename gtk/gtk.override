@@ -8068,3 +8068,58 @@ _wrap_GtkEditable__do_get_selection_bounds(PyObject *cls, PyObject *args, PyObje
     return Py_BuildValue("ii", start_pos, end_pos);
 }
 
+%%
+define GtkAction.set_menu_item_type kwargs classmethod
+static PyObject *
+_wrap_gtk_action_set_menu_item_type(PyObject *cls,
+                                    PyObject *args,
+                                    PyObject *kwargs)
+{
+    static char *kwlist[] = { "menu_item_type", NULL };
+    GType gtype, menu_item_type;
+    GtkActionClass *klass;
+    PyObject *py_menu_item_type;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:gtk.Action.set_menu_item_type", kwlist,
+				     &py_menu_item_type))
+	return NULL;
+
+     if ((gtype = pyg_type_from_object(cls)) == 0)
+         return NULL;
+     if ((menu_item_type = pyg_type_from_object(py_menu_item_type)) == 0)
+         return NULL;
+     klass = (GtkActionClass *) g_type_class_ref(gtype);
+     klass->menu_item_type = menu_item_type;
+     g_type_class_unref(klass);
+     Py_INCREF(Py_None);
+     return Py_None;
+}
+
+%%
+define GtkAction.set_tool_item_type kwargs classmethod
+static PyObject *
+_wrap_gtk_action_set_tool_item_type(PyObject *cls,
+                                    PyObject *args,
+                                    PyObject *kwargs)
+{
+    static char *kwlist[] = { "tool_item_type", NULL };
+    GType gtype, tool_item_type;
+    GtkActionClass *klass;
+    PyObject *py_tool_item_type;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O:gtk.Action.set_tool_item_type", kwlist,
+				     &py_tool_item_type))
+	return NULL;
+
+     if ((gtype = pyg_type_from_object(cls)) == 0)
+         return NULL;
+     if ((tool_item_type = pyg_type_from_object(py_tool_item_type)) == 0)
+         return NULL;
+     klass = (GtkActionClass *) g_type_class_ref(gtype);
+     klass->toolbar_item_type = tool_item_type;
+     g_type_class_unref(klass);
+     Py_INCREF(Py_None);
+     return Py_None;
+}
