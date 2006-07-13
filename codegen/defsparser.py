@@ -114,7 +114,7 @@ class DefsParser(IncludeParser):
             if obj.c_name == c_name:
                 return obj
         else:
-            raise ValueError, 'object not found'
+            raise ValueError('object %r not found' % c_name)
 
     def find_constructor(self, obj, overrides):
         for func in self.functions:

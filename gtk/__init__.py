@@ -25,10 +25,10 @@ import sys
 # this can go when things are a little further along
 try:
     import ltihooks
-    ltihooks # pyflakes
-    del ltihooks
+    # pyflakes
+    ltihooks
 except ImportError:
-    pass
+    ltihooks = None
 
 # For broken embedded programs which forgot to call Sys_SetArgv
 if not hasattr(sys, 'argv'):
@@ -37,10 +37,20 @@ if not hasattr(sys, 'argv'):
 # load the required modules:
 import gobject as _gobject
 
-from gtk import _gtk
-from gtk._lazyutils import LazyModule
-from gtk.deprecation import _Deprecated, _DeprecatedConstant
+ver = getattr(_gobject, 'pygobject_version', ())
+if ver < (2, 11, 1):
+    raise ImportError(
+        "PyGTK requires PyGObject 2.11.1 or higher, but %s was found" % (ver,))
+
+from gtk import _gtkimpl
 import gdk
+
+if ltihooks:
+    ltihooks.uninstall()
+    del ltihooks
+
+from gtk._lazyutils import LazyNamespace, LazyModule
+from gtk.deprecation import _Deprecated, _DeprecatedConstant
 
 def _init():
     import sys
@@ -49,7 +59,7 @@ def _init():
         sys_path = sys.path[:]
 
         try:
-            _gtk.init_check()
+            _gtkimpl.init_check()
         except RuntimeError, e:
             print >> sys.stderr, "WARNING: %s" % e
     finally:
@@ -59,11 +69,14 @@ def _init():
             sys.path = sys_path
 
     # install the default log handlers
-    _gtk.add_log_handlers()
+    _gtkimpl.add_log_handlers()
 
 keysyms = LazyModule('keysyms', locals())
 
 _init()
+
+# CAPI
+_PyGtk_API = _gtkimpl._PyGtk_API
 
 gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
@@ -73,16 +86,20 @@ gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 idle_add       = _Deprecated(_gobject.idle_add, 'idle_add', 'gobject')
 idle_remove    = _Deprecated(_gobject.source_remove, 'idle_remove', 'gobject')
 timeout_add    = _Deprecated(_gobject.timeout_add, 'timeout_add', 'gobject')
-timeout_remove = _Deprecated(_gobject.source_remove, 'timeout_remove', 'gobject')
+timeout_remove = _Deprecated(_gobject.source_remove, 'timeout_remove',
+                             'gobject')
 input_add      = _Deprecated(_gobject.io_add_watch, 'input_add', 'gobject')
-input_add_full = _Deprecated(_gobject.io_add_watch, 'input_add_full', 'gobject')
+input_add_full = _Deprecated(_gobject.io_add_watch, 'input_add_full',
+                             'gobject')
 input_remove   = _Deprecated(_gobject.source_remove, 'input_remove', 'gobject')
 
-mainloop                 = _Deprecated(_gtk.main, 'mainloop')
-mainquit                 = _Deprecated(_gtk.main_quit, 'mainquit')
-mainiteration            = _Deprecated(_gtk.main_iteration, 'mainiteration')
+mainloop                 = _Deprecated(_gtkimpl.main, 'mainloop')
+mainquit                 = _Deprecated(_gtkimpl.main_quit, 'mainquit')
+mainiteration            = _Deprecated(_gtkimpl.main_iteration,
+                                       'mainiteration')
 load_font                = _Deprecated(gdk.Font, 'load_font', 'gtk.gdk')
-load_fontset             = _Deprecated(gdk.fontset_load, 'load_fontset', 'gtk.gdk')
+load_fontset             = _Deprecated(gdk.fontset_load, 'load_fontset',
+                                       'gtk.gdk')
 create_pixmap            = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gtk.gdk')
 create_pixmap_from_xpm   = _Deprecated(gdk.pixmap_create_from_xpm,
                                        'pixmap_create_from_xpm', 'gtk.gdk')
@@ -100,7 +117,15 @@ FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 gdk.Warning = Warning
 
 # We don't want to export this
-del _Deprecated, _DeprecatedConstant, _gobject, _gtk, _init, _lazyutils
+del _Deprecated, _DeprecatedConstant, _gobject, _init, _lazyutils
 
-# Do this last, so programs like pyflakes can check everything above
-from gtk._gtk import *
+# Do this as late as possible, so programs like pyflakes can check
+# everything above
+from gtk._gtkimpl import *
+
+# For testing, so you can just turn of dynamicnamespace in gtk.override
+if hasattr(_gtkimpl, '_get_symbol_names'):
+    import gtk
+    sys.modules['gtk'] = LazyNamespace(_gtkimpl, locals())
+    sys.modules['gtk.glade'] = LazyModule('_glade', {})
+

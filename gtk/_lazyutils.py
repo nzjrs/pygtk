@@ -20,6 +20,7 @@
 # Private to PyGTK, do not use in applications
 
 import sys
+from types import ModuleType
 
 class LazyModule(object):
     def __init__(self, name, locals):
@@ -31,3 +32,53 @@ class LazyModule(object):
         module = __import__(self._name, self._locals, {}, ' ')
         sys.modules[self._modname] = module
         return getattr(module, attr)
+
+_marker = object()
+
+class LazyNamespace(ModuleType):
+    def __init__(self, module, locals):
+        self._module = module
+        self.__dict__.update(locals)
+        symbols = {}
+        def __getattribute__(_, name, d=self.__dict__, module=module):
+            v = d.get(name, _marker)
+            if v is not _marker:
+                return v
+
+            if name in symbols:
+                return module._get_symbol(d, name)
+            elif name == 'glade':
+                m = __import__('_glade', {}, {}, ' ')
+                d['glade'] = m
+                return m
+            elif name == '_gtk':
+                m = __import__('gtk._gtk', {}, {}, ' ')
+                d['_gtk'] = m
+                return m
+            if name == '__dict__':
+                return d
+            elif name == '__bases__':
+                return (ModuleType,)
+
+            raise AttributeError(name)
+
+        LazyNamespace.__getattribute__ = __getattribute__
+
+        for symbol in module._get_symbol_names():
+            symbols[symbol] = None
+        self._symbols = symbols
+
+        ModuleType.__init__(self, self.__name__)
+
+    def ___getattr__(self, name):
+        if name in self._symbols:
+            self._module._get_symbol(self.__dict__, name)
+        elif name == 'glade':
+            module = __import__('_glade', {}, {}, ' ')
+            self.__dict__['glade'] = module
+            return module
+        elif name == '_gtk':
+            module = __import__('gtk._gtk', {}, {}, ' ')
+            self.__dict__['_gtk'] = module
+            return module
+        return self.__dict__[name]

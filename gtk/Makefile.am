@@ -4,7 +4,10 @@ PLATFORM_VERSION = 2.0
 
 CLEANFILES =
 EXTRA_DIST = 
-INCLUDES = $(PYTHON_INCLUDES) $(PYGOBJECT_CFLAGS)
+INCLUDES = \
+	$(PYTHON_INCLUDES) \
+	$(PYGOBJECT_CFLAGS) \
+	-I$(srcdir)/gtk
 
 # defs files
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
@@ -13,6 +16,7 @@ defs_DATA =
 # python scripts & extension modules
 pkgpythondir = $(pyexecdir)/gtk-2.0
 pkgpyexecdir = $(pyexecdir)/gtk-2.0
+pkgpyexec_LTLIBRARIES =
 
 # gtk python extension modules
 pygtkexecdir = $(pkgpyexecdir)/gtk
@@ -22,6 +26,7 @@ pygtkexec_LTLIBRARIES =
 pygtkdir = $(pkgpythondir)/gtk
 pygtk_PYTHON = 			\
 	__init__.py 		\
+	_gtk.py			\
 	_lazyutils.py 		\
 	compat.py		\
 	deprecation.py		\
@@ -111,10 +116,10 @@ gtk-types.defs: Makefile
 
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
 gtk.c: gdk-types.defs gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
-_gtk_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
-_gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
-_gtk_la_LIBADD = $(GTK_LIBS)
-_gtk_la_SOURCES = 		\
+_gtkimpl_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
+_gtkimpl_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtkimpl
+_gtkimpl_la_LIBADD = $(GTK_LIBS)
+_gtkimpl_la_SOURCES = 		\
 	gtk-types.c 		\
 	gtkmodule.c 		\
 	gtkobject-support.c 	\
@@ -124,14 +129,14 @@ _gtk_la_SOURCES = 		\
 	pygtkcellrenderer.c	\
 	pygtktreemodel.h 	\
 	pygtktreemodel.c
-nodist__gtk_la_SOURCES = gtk.c gdk.c
+nodist__gtkimpl_la_SOURCES = gtk.c gdk.c
 if BUILD_GTK
-pygtkexec_LTLIBRARIES += _gtk.la
+pygtkexec_LTLIBRARIES += _gtkimpl.la
 defs_DATA += $(GDK_DEFS) $(GDK_TYPES_DEFS) $(GTK_DEFS) $(GTK_TYPES_DEFS) \
 	gdk.defs gtk.defs gdk-types.defs gtk-types.defs
 endif
 if PLATFORM_WIN32
-_gtk_la_CFLAGS  += -DPLATFORM_WIN32
+_gtkimpl_la_CFLAGS  += -DPLATFORM_WIN32
 endif
 
 # libglade module
@@ -139,13 +144,13 @@ LIBGLADE_DEFS = libglade.defs
 CLEANFILES += libglade.c
 EXTRA_DIST += $(LIBGLADE_DEFS) libglade.override
 libglade.c: $(LIBGLADE_DEFS) libglade.override
-glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
-glade_la_LIBADD = $(LIBGLADE_LIBS)
-glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
-glade_la_SOURCES = libglademodule.c
-nodist_glade_la_SOURCES = libglade.c
+_glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
+_glade_la_LIBADD = $(LIBGLADE_LIBS)
+_glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_glade
+_glade_la_SOURCES = libglademodule.c
+nodist__glade_la_SOURCES = libglade.c
 if BUILD_LIBGLADE
-pygtkexec_LTLIBRARIES += glade.la
+pygtkexec_LTLIBRARIES += _glade.la
 defs_DATA += $(LIBGLADE_DEFS)
 endif
 

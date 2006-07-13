@@ -206,7 +206,7 @@ init_pycairo(void)
 }
 
 DL_EXPORT(void)
-init_gtk(void)
+init_gtkimpl(void)
 {
     PyObject *m, *d, *tuple, *o;
 
@@ -225,7 +225,7 @@ init_gtk(void)
     pygobject_register_sinkfunc(GTK_TYPE_INVISIBLE, sink_gtkinvisible);
     pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
 	
-    m = Py_InitModule("gtk._gtk", pygtk_functions);
+    m = Py_InitModule("gtk._gtkimpl", pygtk_functions);
     d = PyModule_GetDict(m);
 
     /* gtk+ version */

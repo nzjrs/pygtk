@@ -723,7 +723,41 @@ class Wrapper:
 
         return getsets_name
 
-    def write_functions(self, prefix):
+    def _write_get_symbol_names(self, writer):
+        self.fp.write("""static PyObject *
+_wrap__get_symbol_names(PyObject *self)
+{
+    PyObject *pylist = PyList_New(0);
+
+""")
+        for obj, bases in writer.get_classes():
+            self.fp.write('    PyList_Append(pylist, '
+                          'PyString_FromString("%s"));\n' % (obj.name))
+        self.fp.write("    return pylist;\n}\n\n");
+
+    def _write_get_symbol(self, writer):
+        self.fp.write("""static PyObject *
+_wrap__get_symbol(PyObject *self, PyObject *args)
+{
+    PyObject *d;
+    char *name;
+    if (!PyArg_ParseTuple(args, "Os", &d, &name))
+        return NULL;
+""")
+        first = True
+        for obj, bases in writer.get_classes():
+            if first:
+                self.fp.write('    if (!strcmp(name, "%s")) {\n' % obj.name)
+                first = False
+            else:
+                self.fp.write('    } else if (!strcmp(name, "%s")) {\n' % obj.name)
+            self.fp.write(
+                '       return (PyObject*)pygobject_lookup_class(%s);\n' %
+                obj.typecode)
+        self.fp.write('    }\n')
+        self.fp.write('    return Py_None;\n}\n\n');
+
+    def write_functions(self, writer, prefix):
         self.fp.write('\n/* ----------- functions ----------- */\n\n')
         functions = []
 
@@ -770,6 +804,30 @@ class Wrapper:
                 functions_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write function %s: %s\n'
                                  % (funcname, exc_info()))
+
+        # If we have a dynamic namespace, write symbol and attribute getter
+        if self.overrides.dynamicnamespace:
+            self._write_get_symbol_names(writer)
+            self._write_get_symbol(writer)
+            for obj, bases in writer.get_classes():
+                self.fp.write("""static PyTypeObject *
+%s_register_type(const gchar *name, PyObject *unused)
+{
+    PyObject *m = PyImport_ImportModule("gtk");
+    PyObject *d = PyModule_GetDict(m);
+""" % obj.c_name)
+                writer.write_class(obj, bases, indent=1)
+                self.fp.write(
+                    '    return (%s)PyDict_GetItemString(d, "%s");\n' % (
+                    'PyTypeObject*', obj.name))
+                self.fp.write("}\n")
+
+            functions.append('    { "_get_symbol_names", '
+                             '(PyCFunction)_wrap__get_symbol_names, '
+                             'METH_NOARGS, NULL },\n')
+            functions.append('    { "_get_symbol", '
+                             '(PyCFunction)_wrap__get_symbol, '
+                             'METH_VARARGS, NULL },\n')
 
         # write the PyMethodDef structure
         functions.append('    { NULL, NULL, 0, NULL }\n')
@@ -1207,12 +1265,11 @@ class SourceWriter:
         self.write_classes()
 
         wrapper = Wrapper(self.parser, None, self.overrides, self.fp)
-        wrapper.write_functions(self.prefix)
+        wrapper.write_functions(self, self.prefix)
 
         self.write_enums()
-        if not self.overrides.dynamicnamespace:
-            self.write_extension_init()
-            self.write_registers()
+        self.write_extension_init()
+        self.write_registers()
 
     def write_headers(self):
         self.fp.write('/* -- THIS FILE IS GENERATED - DO NOT EDIT */')
@@ -1313,42 +1370,49 @@ class SourceWriter:
         self.fp.write('    PyErr_Print();\n')
         self.fp.write('}\n\n')
 
+    def write_object_imports(self, retval=''):
+        imports = self.overrides.get_imports()[:]
+        if not imports:
+            return
+
+        bymod = {}
+        for module, pyname, cname in imports:
+            bymod.setdefault(module, []).append((pyname, cname))
+        self.fp.write('    PyObject *module;\n\n')
+        for module in bymod:
+            self.fp.write(
+                '    if ((module = PyImport_ImportModule("%s")) != NULL) {\n'
+                % module)
+            #self.fp.write(
+            #    '        PyObject *moddict = PyModule_GetDict(module);\n\n')
+            for pyname, cname in bymod[module]:
+                #self.fp.write(
+                #    '        _%s = (PyTypeObject *)PyDict_GetItemString('
+                #    'moddict, "%s");\n' % (cname, pyname))
+                self.fp.write(
+                    '        _%s = (PyTypeObject *)PyObject_GetAttrString('
+                    'module, "%s");\n' % (cname, pyname))
+                self.fp.write('        if (_%s == NULL) {\n' % cname)
+                self.fp.write('            PyErr_SetString(PyExc_ImportError,\n')
+                self.fp.write('                "cannot import name %s from %s");\n'
+                         % (pyname, module))
+                self.fp.write('            return %s;\n' % retval)
+                self.fp.write('        }\n')
+            self.fp.write('    } else {\n')
+            self.fp.write('        PyErr_SetString(PyExc_ImportError,\n')
+            self.fp.write('            "could not import %s");\n' % module)
+            self.fp.write('        return %s;\n' % retval)
+            self.fp.write('    }\n')
+        self.fp.write('\n')
+
     def write_extension_init(self):
         self.fp.write('/* initialise stuff extension classes */\n')
         self.fp.write('void\n' + self.prefix + '_register_classes(PyObject *d)\n{\n')
-        imports = self.overrides.get_imports()[:]
-        if imports:
-            bymod = {}
-            for module, pyname, cname in imports:
-                bymod.setdefault(module, []).append((pyname, cname))
-            self.fp.write('    PyObject *module;\n\n')
-            for module in bymod:
-                self.fp.write(
-                    '    if ((module = PyImport_ImportModule("%s")) != NULL) {\n'
-                    % module)
-                self.fp.write(
-                    '        PyObject *moddict = PyModule_GetDict(module);\n\n')
-                for pyname, cname in bymod[module]:
-                    self.fp.write(
-                        '        _%s = (PyTypeObject *)PyDict_GetItemString('
-                        'moddict, "%s");\n' % (cname, pyname))
-                    self.fp.write('        if (_%s == NULL) {\n' % cname)
-                    self.fp.write('            PyErr_SetString(PyExc_ImportError,\n')
-                    self.fp.write('                "cannot import name %s from %s");\n'
-                             % (pyname, module))
-                    self.fp.write('            return;\n')
-                    self.fp.write('        }\n')
-                self.fp.write('    } else {\n')
-                self.fp.write('        PyErr_SetString(PyExc_ImportError,\n')
-                self.fp.write('            "could not import %s");\n' % module)
-                self.fp.write('        return;\n')
-                self.fp.write('    }\n')
-            self.fp.write('\n')
+        self.write_object_imports()
         self.fp.write(self.overrides.get_init() + '\n')
         self.fp.resetline()
 
-
-    def _get_classes(self):
+    def get_classes(self):
         objects = self.parser.objects[:]
         pos = 0
         while pos < len(objects):
@@ -1391,19 +1455,42 @@ class SourceWriter:
                 self.fp.write('    pyg_register_interface_info(%s, &%s);\n' %
                               (interface.typecode, interface.interface_info))
 
-        for obj, bases in self._get_classes():
-            self._write_class(obj, bases)
+        if not self.overrides.dynamicnamespace:
+            for obj, bases in self.get_classes():
+                self.write_class(obj, bases)
+        else:
+            for obj, bases in self.get_classes():
+                self.fp.write(
+                    '    pyg_type_register_custom_callback("%s", '
+                    '(PyGTypeRegistrationFunction)%s_register_type, d);\n' %
+                    (obj.c_name, obj.c_name))
+
         self.fp.write('}\n')
 
-    def _write_class(self, obj, bases, indent=1):
+    def _can_direct_ref(self, base):
+        if not self.overrides.dynamicnamespace:
+            return True
+        if base == 'GObject':
+            return True
+        obj = get_object_by_name(base)
+        if obj.module.lower() != self.overrides.modulename:
+            return True
+        return False
+
+    def write_class(self, obj, bases, indent=1):
         indent_str = ' ' * (indent * 4)
         if bases:
-            bases_str = (
-                'Py_BuildValue("(' + 'O' * len(bases) + ')", ' +
-                string.join(map(lambda s: '&Py'+s+'_Type', bases), ', ') +
-                ')')
+            bases_str = 'Py_BuildValue("(%s)"' % (len(bases) * 'O')
+
+            for base in bases:
+                if self._can_direct_ref(base):
+                    bases_str += ', &Py%s_Type' % base
+                else:
+                    baseobj = get_object_by_name(base)
+                    bases_str += ', PyObject_GetAttrString(m, "%s")' % baseobj.name
+            bases_str += ')'
         else:
-            bases_str = 'NULL'
+            bases_str = ', NULL'
 
         self.fp.write(
                 indent_str + 'pygobject_register_class(d, "' + obj.c_name +
@@ -1425,15 +1512,25 @@ class SourceWriter:
                 indent_str + 'pyg_register_class_init(%s, %s);\n' %
                 (obj.typecode, obj.class_init_func))
 
+_objects = {}
+
+def get_object_by_name(c_name):
+    global _objects
+    return _objects[c_name]
+
 def register_types(parser):
+    global _objects
     for boxed in parser.boxes:
         argtypes.matcher.register_boxed(boxed.c_name, boxed.typecode)
+        _objects[boxed.c_name] = boxed
     for pointer in parser.pointers:
         argtypes.matcher.register_pointer(pointer.c_name, pointer.typecode)
     for obj in parser.objects:
         argtypes.matcher.register_object(obj.c_name, obj.parent, obj.typecode)
-    for obj in parser.interfaces:
-        argtypes.matcher.register_object(obj.c_name, None, obj.typecode)
+        _objects[obj.c_name] = obj
+    for iface in parser.interfaces:
+        argtypes.matcher.register_object(iface.c_name, None, iface.typecode)
+        _objects[iface.c_name] = iface
     for enum in parser.enums:
         if enum.deftype == 'flags':
             argtypes.matcher.register_flag(enum.c_name, enum.typecode)

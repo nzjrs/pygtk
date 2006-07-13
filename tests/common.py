@@ -9,8 +9,6 @@ def importModules(buildDir, srcDir):
     sys.path.insert(0, srcDir)
     # atk, pango
     sys.path.insert(0, buildDir)
-    # gobject
-    sys.path.insert(0, os.path.join(buildDir, 'gobject'))
     # _gtk, keysyms, glade
     sys.path.insert(0, os.path.join(buildDir, 'gtk'))
     sys.argv.append('--g-fatal-warnings')
@@ -27,10 +25,12 @@ def importModules(buildDir, srcDir):
     pango = importModule('pango', buildDir)
     gtk = importModule('gtk', buildDir, 'gtk')
     gdk = importModule('gtk.gdk', buildDir, '_gdk.la')
-    try:
-        glade = importModule('gtk.glade', buildDir, 'glade.la')
-    except ImportError:
-        glade = None
+
+    # gtk/__init__.py removes the ltihooks, readd them
+    import gtk
+
+    ltihooks.install()
+    glade = importModule('gtk.glade', buildDir)
 
     ltihooks.uninstall()
     del ltihooks
@@ -54,9 +54,8 @@ def importModule(module, directory, name=None):
 
     try:
         obj = __import__(module, {}, {}, fromlist)
-    except ImportError, ex:
-        print 'WARNING: %s could not be imported: %s' % (origName, str(ex))
-        return
+    except ImportError:
+        raise
 
     if hasattr(obj, '__file__'):
         location = obj.__file__
