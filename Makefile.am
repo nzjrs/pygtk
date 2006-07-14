@@ -126,7 +126,7 @@ gtkunixprint.c: $(GTKUNIXPRINT_DEFS) gtk/gtkunixprint.override
 gtkunixprint_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTKUNIXPRINT_CFLAGS)
 gtkunixprint_la_LIBADD = $(GTKUNIXPRINT_LIBS)
 gtkunixprint_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgtkunixprint
-gtkunixprint_la_SOURCES = gtk/gtkgtkunixprintmodule.c
+gtkunixprint_la_SOURCES = gtk/gtkunixprintmodule.c
 nodist_gtkunixprint_la_SOURCES = gtk/gtkunixprint.c
 if BUILD_GTKUNIXPRINT
 pkgpyexec_LTLIBRARIES += gtkunixprint.la
