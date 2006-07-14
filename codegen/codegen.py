@@ -1289,11 +1289,14 @@ class SourceWriter:
     def write_type_declarations(self):
         self.fp.write('/* ---------- forward type declarations ---------- */\n')
         for obj in self.parser.boxes:
-            self.fp.write('PyTypeObject Py' + obj.c_name + '_Type;\n')
+            if not self.overrides.is_type_ignored(obj.c_name):
+                self.fp.write('PyTypeObject Py' + obj.c_name + '_Type;\n')
         for obj in self.parser.objects:
-            self.fp.write('PyTypeObject Py' + obj.c_name + '_Type;\n')
+            if not self.overrides.is_type_ignored(obj.c_name):
+                self.fp.write('PyTypeObject Py' + obj.c_name + '_Type;\n')
         for interface in self.parser.interfaces:
-            self.fp.write('PyTypeObject Py' + interface.c_name + '_Type;\n')
+            if not self.overrides.is_type_ignored(interface.c_name):
+                self.fp.write('PyTypeObject Py' + interface.c_name + '_Type;\n')
         self.fp.write('\n')
 
     def write_body(self):
@@ -1439,21 +1442,24 @@ class SourceWriter:
 
     def write_registers(self):
         for boxed in self.parser.boxes:
-            self.fp.write('    pyg_register_boxed(d, "' + boxed.name +
-                          '", ' + boxed.typecode +
-                     ', &Py' + boxed.c_name +
+            if not self.overrides.is_type_ignored(boxed.c_name):
+                self.fp.write('    pyg_register_boxed(d, "' + boxed.name +
+                              '", ' + boxed.typecode +
+                              ', &Py' + boxed.c_name +
                           '_Type);\n')
         for pointer in self.parser.pointers:
-            self.fp.write('    pyg_register_pointer(d, "' + pointer.name +
-                          '", ' + pointer.typecode +
-                          ', &Py' + pointer.c_name + '_Type);\n')
+            if not self.overrides.is_type_ignored(pointer.c_name):
+                self.fp.write('    pyg_register_pointer(d, "' + pointer.name +
+                              '", ' + pointer.typecode +
+                              ', &Py' + pointer.c_name + '_Type);\n')
         for interface in self.parser.interfaces:
-            self.fp.write('    pyg_register_interface(d, "' + interface.name +
-                     '", '+ interface.typecode + ', &Py' + interface.c_name +
-                     '_Type);\n')
-            if interface.interface_info is not None:
-                self.fp.write('    pyg_register_interface_info(%s, &%s);\n' %
-                              (interface.typecode, interface.interface_info))
+            if not self.overrides.is_type_ignored(interface.c_name):
+                self.fp.write('    pyg_register_interface(d, "'
+                              + interface.name + '", '+ interface.typecode
+                              + ', &Py' + interface.c_name + '_Type);\n')
+                if interface.interface_info is not None:
+                    self.fp.write('    pyg_register_interface_info(%s, &%s);\n' %
+                                  (interface.typecode, interface.interface_info))
 
         if not self.overrides.dynamicnamespace:
             for obj, bases in self.get_classes():
