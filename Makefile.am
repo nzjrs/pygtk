@@ -142,9 +142,9 @@ endif
 	    --register atk-types.defs \
 	    --register gtk/gtk-base-types.defs \
 	    --override $*.override \
-	    --prefix py$* $*.defs) > gen-$*.c \
-	&& cp gen-$*.c $*.c \
-	&& rm -f gen-$*.c
+	    --prefix py$(*F) $*.defs) > $(*D)/gen-$(*F).c \
+	&& cp $(*D)/gen-$(*F).c $(*D)/$(*F).c \
+	&& rm -f $(*D)/gen-$(*F).c
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
