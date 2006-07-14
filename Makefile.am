@@ -27,7 +27,8 @@ EXTRA_DIST = 				\
 INCLUDES = 				\
 	$(PYTHON_INCLUDES) 		\
 	$(PYGOBJECT_CFLAGS)		\
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS)			\
+	-I$(srcdir)/gtk
 
 # pkg-config files
 pkgconfigdir = $(libdir)/pkgconfig
@@ -101,12 +102,45 @@ pkgpyexec_LTLIBRARIES += pangocairo.la
 defs_DATA += $(PANGOCAIRO_DEFS)
 endif
 
+# libglade module
+# XXX: Move libglade to 
+LIBGLADE_DEFS = gtk/libglade.defs
+CLEANFILES += gtk/libglade.c
+EXTRA_DIST += $(LIBGLADE_DEFS) gtk/libglade.override
+libglade.c: $(LIBGLADE_DEFS) gtk/libglade.override
+_glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
+_glade_la_LIBADD = $(LIBGLADE_LIBS)
+_glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_glade
+_glade_la_SOURCES = gtk/libglademodule.c
+nodist__glade_la_SOURCES = gtk/libglade.c
+if BUILD_LIBGLADE
+pkgpyexec_LTLIBRARIES += _glade.la
+defs_DATA += $(LIBGLADE_DEFS)
+endif
+
+# gtkunixprint module
+GTKUNIXPRINT_DEFS = gtk/gtkunixprint.defs
+CLEANFILES += gtk/gtkunixprint.c
+EXTRA_DIST += $(GTKUNIXPRINT_DEFS) gtk/gtkunixprint.override
+gtkunixprint.c: $(GTKUNIXPRINT_DEFS) gtk/gtkunixprint.override
+gtkunixprint_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTKUNIXPRINT_CFLAGS)
+gtkunixprint_la_LIBADD = $(GTKUNIXPRINT_LIBS)
+gtkunixprint_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgtkunixprint
+gtkunixprint_la_SOURCES = gtk/gtkgtkunixprintmodule.c
+nodist_gtkunixprint_la_SOURCES = gtk/gtkunixprint.c
+if BUILD_GTKUNIXPRINT
+pkgpyexec_LTLIBRARIES += gtkunixprint.la
+defs_DATA += $(GTKUNIXPRINT_DEFS)
+endif
+
+
 # code generator
 .defs.c:
 	(cd $(srcdir)\
 	 && $(PYTHON) codegen/codegen.py \
 	    --register pango-types.defs \
 	    --register atk-types.defs \
+	    --register gtk/gtk-base-types.defs \
 	    --override $*.override \
 	    --prefix py$* $*.defs) > gen-$*.c \
 	&& cp gen-$*.c $*.c \

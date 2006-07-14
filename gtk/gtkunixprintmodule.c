@@ -40,11 +40,11 @@ void pygtkunixprint_add_constants(PyObject *module, const gchar *strip_prefix);
 extern PyMethodDef pygtkunixprint_functions[];
 
 DL_EXPORT(void)
-initunixprint(void)
+initgtkunixprint(void)
 {
     PyObject *m, *d;
 
-    m = Py_InitModule("gtk.unixprint", pygtkunixprint_functions);
+    m = Py_InitModule("gtkunixprint", pygtkunixprint_functions);
     d = PyModule_GetDict(m);
 
     init_pygobject();
