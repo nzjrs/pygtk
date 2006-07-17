@@ -259,6 +259,30 @@
   (return-type "none")
 )
 
+(define-virtual prepare
+  (of-object "GtkAssistant")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "page")
+  )
+)
+
+(define-virtual apply
+  (of-object "GtkAssistant")
+  (return-type "none")
+)
+
+(define-virtual close
+  (of-object "GtkAssistant")
+  (return-type "none")
+)
+
+(define-virtual cancel
+  (of-object "GtkAssistant")
+  (return-type "none")
+)
+
+
 
 
 ;; From gtkbbox.h
@@ -318,6 +342,25 @@
   (c-name "gtk_cell_renderer_accel_new")
   (is-constructor-of "GtkCellRendererAccel")
   (return-type "GtkCellRenderer*")
+)
+
+(define-virtual accel_edited
+  (of-object "GtkCellRendererAccel")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "path_string")
+    '("guint" "accel_key")
+    '("GdkModifierType" "accel_mods")
+    '("guint" "hardware_keycode")
+  )
+)
+
+(define-virtual accel_cleared
+  (of-object "GtkCellRendererAccel")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "path_string")
+  )
 )
 
 
@@ -573,6 +616,22 @@
 
 
 ;; From gtkfilesystem.h
+
+(define-virtual get_info
+  (of-object "GtkFileSystem")
+  (return-type "GtkFileSystemHandle*")
+  (parameters
+    '("const-GtkFilePath*" "path")
+    '("GtkFileInfoType" "types")
+    '("GtkFileSystemGetInfoCallback" "callback")
+    '("gpointer" "data")
+  )
+)
+
+(define-virtual cancel_operation
+  (of-object "GtkFileSystem")
+  (return-type "none")
+)
 
 
 
@@ -885,6 +944,26 @@
   (parameters
     '("GtkWidget*" "child")
     '("gboolean" "detachable")
+  )
+)
+
+(define-virtual reorder_tab
+  (of-object "GtkNotebook")
+  (return-type "none")
+  (parameters
+    '("GtkDirectionType" "direction")
+    '("gboolean" "move_to_last")
+  )
+)
+
+(define-virtual insert_page
+  (of-object "GtkNotebook")
+  (return-type "gint")
+  (parameters
+    '("GtkWidget*" "child")
+    '("GtkWidget*" "tab_label")
+    '("GtkWidget*" "menu_label")
+    '("gint" "position")
   )
 )
 
@@ -1521,6 +1600,85 @@
     '("GtkPrintSettings*" "settings")
     '("GtkPageSetupDoneFunc" "done_cb")
     '("gpointer" "data")
+  )
+)
+
+(define-virtual done
+  (of-object "GtkPrintOperation")
+  (return-type "none")
+  (parameters
+    '("GtkPrintOperationResult" "result")
+  )
+)
+
+(define-virtual begin_print
+  (of-object "GtkPrintOperation")
+  (return-type "none")
+  (parameters
+    '("GtkPrintContext*" "context")
+  )
+)
+
+(define-virtual paginate
+  (of-object "GtkPrintOperation")
+  (return-type "gboolean")
+  (parameters
+    '("GtkPrintContext*" "context")
+  )
+)
+
+(define-virtual request_page_setup
+  (of-object "GtkPrintOperation")
+  (return-type "none")
+  (parameters
+    '("GtkPrintContext*" "context")
+    '("gint" "page_nr")
+    '("GtkPageSetup*" "setup")
+  )
+)
+
+(define-virtual draw_page
+  (of-object "GtkPrintOperation")
+  (return-type "none")
+  (parameters
+    '("GtkPrintContext*" "context")
+    '("gint" "page_nr")
+  )
+)
+
+(define-virtual end_print
+  (of-object "GtkPrintOperation")
+  (return-type "none")
+  (parameters
+    '("GtkPrintContext*" "context")
+  )
+)
+
+(define-virtual status_changed
+  (of-object "GtkPrintOperation")
+  (return-type "none")
+)
+
+(define-virtual create_custom_widget
+  (of-object "GtkPrintOperation")
+  (return-type "GtkWidget*")
+)
+
+(define-virtual custom_widget_apply
+  (of-object "GtkPrintOperation")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "widget")
+  )
+)
+
+(define-virtual preview
+  (of-object "GtkPrintOperation")
+  (return-type "gboolean")
+  (parameters
+    '("GtkPrintOperationPreview*" "preview")
+    '("GtkPrintContext*" "context")
+    '("GtkWindow*" "parent")
   )
 )
 
@@ -3018,6 +3176,11 @@
   )
 )
 
+(define-virtual changed
+  (of-object "GtkRecentManager")
+  (return-type "none")
+)
+
 
 
 ;; From gtkruler.h
@@ -3167,6 +3330,11 @@
 
 
 ;; From gtkspinbutton.h
+
+(define-virtual wrapped
+  (of-object "GtkSpinButton")
+  (return-type "none")
+)
 
 
 
@@ -3350,6 +3518,28 @@
     '("GdkScreen**" "screen")
     '("GdkRectangle*" "area")
     '("GtkOrientation*" "orientation")
+  )
+)
+
+(define-virtual activate
+  (of-object "GtkStatusIcon")
+  (return-type "none")
+)
+
+(define-virtual popup_menu
+  (of-object "GtkStatusIcon")
+  (return-type "none")
+  (parameters
+    '("guint" "button")
+    '("guint32" "activate_time")
+  )
+)
+
+(define-virtual size_changed
+  (of-object "GtkStatusIcon")
+  (return-type "gboolean")
+  (parameters
+    '("gint" "size")
   )
 )
 
@@ -3897,6 +4087,11 @@
     '("gint" "offset_x")
     '("gint" "offset_y")
   )
+)
+
+(define-virtual composited_changed
+  (of-object "GtkWidget")
+  (return-type "none")
 )
 
 

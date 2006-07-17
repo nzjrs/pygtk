@@ -678,7 +678,7 @@ class GBoxedReturn(ReturnType):
     def write_error_return(self):
         self.wrapper.write_code("return retval;")
     def write_conversion(self):
-        self.wrapper.write_code(
+        self.wrapper.write_code(code = None,
             failure_expression=("!pyg_boxed_check(py_retval, %s)" %
                                 (self.props['typecode'],)),
             failure_cleanup=('PyErr_SetString(PyExc_TypeError, "retval should be a %s");'

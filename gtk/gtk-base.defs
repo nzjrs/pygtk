@@ -1048,6 +1048,14 @@
   )
 )
 
+(define-virtual get_action
+  (of-object "GtkActionGroup")
+  (return-type "GtkAction*")
+  (parameters
+    '("const-gchar*" "action_name")
+  )
+)
+
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkadjustment.h
 
@@ -3548,6 +3556,229 @@
   )
 )
 
+(define-virtual set_scroll_adjustments
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GtkAdjustment*" "hadjustment")
+    '("GtkAdjustment*" "vadjustment")
+  )
+)
+
+(define-virtual refresh
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual select_row
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("gint" "row")
+    '("gint" "column")
+    '("GdkEvent*" "event")
+  )
+)
+
+(define-virtual unselect_row
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("gint" "row")
+    '("gint" "column")
+    '("GdkEvent*" "event")
+  )
+)
+
+(define-virtual row_move
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("gint" "source_row")
+    '("gint" "dest_row")
+  )
+)
+
+(define-virtual click_column
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("gint" "column")
+  )
+)
+
+(define-virtual resize_column
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("gint" "column")
+    '("gint" "width")
+  )
+)
+
+(define-virtual toggle_focus_row
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual select_all
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual unselect_all
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual undo_selection
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual start_selection
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual end_selection
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual extend_selection
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GtkScrollType" "scroll_type")
+    '("gfloat" "position")
+    '("gboolean" "auto_start_selection")
+  )
+)
+
+(define-virtual scroll_horizontal
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GtkScrollType" "scroll_type")
+    '("gfloat" "position")
+  )
+)
+
+(define-virtual scroll_vertical
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GtkScrollType" "scroll_type")
+    '("gfloat" "position")
+  )
+)
+
+(define-virtual toggle_add_mode
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual abort_column_resize
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual resync_selection
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GdkEvent*" "event")
+  )
+)
+
+(define-virtual selection_find
+  (of-object "GtkCList")
+  (return-type "GList*")
+  (parameters
+    '("gint" "row_number")
+    '("GList*" "row_list_element")
+  )
+)
+
+(define-virtual draw_row
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GdkRectangle*" "area")
+    '("gint" "row")
+    '("GtkCListRow*" "clist_row")
+  )
+)
+
+(define-virtual draw_drag_highlight
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GtkCListRow*" "target_row")
+    '("gint" "target_row_number")
+    '("GtkCListDragPos" "drag_pos")
+  )
+)
+
+(define-virtual clear
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual fake_unselect_all
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("gint" "row")
+  )
+)
+
+(define-virtual sort_list
+  (of-object "GtkCList")
+  (return-type "none")
+)
+
+(define-virtual insert_row
+  (of-object "GtkCList")
+  (return-type "gint")
+  (parameters
+    '("gint" "row")
+    '("gchar*[]" "text")
+  )
+)
+
+(define-virtual remove_row
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("gint" "row")
+  )
+)
+
+(define-virtual set_cell_contents
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GtkCListRow*" "clist_row")
+    '("gint" "column")
+    '("GtkCellType" "type")
+    '("const-gchar*" "text")
+    '("guint8" "spacing")
+    '("GdkPixmap*" "pixmap")
+    '("GdkBitmap*" "mask")
+  )
+)
+
+(define-virtual cell_size_request
+  (of-object "GtkCList")
+  (return-type "none")
+  (parameters
+    '("GtkCListRow*" "clist_row")
+    '("gint" "column")
+    '("GtkRequisition*" "requisition")
+  )
+)
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcolorbutton.h
@@ -4553,6 +4784,13 @@
   (of-object "GtkContainer")
   (return-type "GType")
 )
+(define-virtual composite_name
+  (of-object "GtkContainer")
+  (return-type "gchar*")
+  (parameters
+    '("GtkWidget*" "child")
+  )
+)
 (define-virtual set_child_property
   (of-object "GtkContainer")
   (return-type "none")
@@ -5285,6 +5523,58 @@
   (return-type "GType")
 )
 
+(define-virtual tree_select_row
+  (of-object "GtkCTree")
+  (return-type "none")
+  (parameters
+    '("GtkCTreeNode*" "row")
+    '("gint" "column")
+  )
+)
+
+(define-virtual tree_unselect_row
+  (of-object "GtkCTree")
+  (return-type "none")
+  (parameters
+    '("GtkCTreeNode*" "row")
+    '("gint" "column")
+  )
+)
+
+(define-virtual tree_expand
+  (of-object "GtkCTree")
+  (return-type "none")
+  (parameters
+    '("GtkCTreeNode*" "node")
+  )
+)
+
+(define-virtual tree_collapse
+  (of-object "GtkCTree")
+  (return-type "none")
+  (parameters
+    '("GtkCTreeNode*" "node")
+  )
+)
+
+(define-virtual tree_move
+  (of-object "GtkCTree")
+  (return-type "none")
+  (parameters
+    '("GtkCTreeNode*" "node")
+    '("GtkCTreeNode*" "new_parent")
+    '("GtkCTreeNode*" "new_sibling")
+  )
+)
+
+(define-virtual change_focus_row_expansion
+  (of-object "GtkCTree")
+  (return-type "none")
+  (parameters
+    '("GtkCTreeExpansionType" "action")
+  )
+)
+
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkcurve.h
@@ -5506,6 +5796,19 @@
   (parameters
     '("GdkScreen*" "screen" (null-ok) (default "NULL"))
   )
+)
+
+(define-virtual response
+  (of-object "GtkDialog")
+  (return-type "none")
+  (parameters
+    '("gint" "response_id")
+  )
+)
+
+(define-virtual close
+  (of-object "GtkDialog")
+  (return-type "none")
 )
 
 
@@ -6025,6 +6328,14 @@
 (define-virtual do_delete_text
   (of-object "GtkEditable")
   (return-type "none")
+  (parameters
+    '("gint" "start_pos")
+    '("gint" "end_pos")
+  )
+)
+(define-virtual get_chars
+  (of-object "GtkEditable")
+  (return-type "gchar*")
   (parameters
     '("gint" "start_pos")
     '("gint" "end_pos")
@@ -7735,6 +8046,30 @@
   (return-type "GSList*")
 )
 
+(define-virtual list_volumes
+  (of-object "GtkFileSystem")
+  (return-type "GSList*")
+)
+
+(define-virtual get_volume_for_path
+  (of-object "GtkFileSystem")
+  (return-type "GtkFileSystemVolume*")
+  (parameters
+    '("const-GtkFilePath*" "path")
+  )
+)
+
+(define-virtual get_folder
+  (of-object "GtkFileSystem")
+  (return-type "GtkFileSystemHandle*")
+  (parameters
+    '("const-GtkFilePath*" "path")
+    '("GtkFileInfoType" "types")
+    '("GtkFileSystemGetFolderCallback" "callback")
+    '("gpointer" "data")
+  )
+)
+
 (define-virtual create_folder
   (of-object "GtkFileSystem")
   (return-type "gboolean")
@@ -7750,6 +8085,14 @@
     '("GtkFileSystemVolume*" "volume")
   )
 )
+(define-virtual volume_get_base_path
+  (of-object "GtkFileSystem")
+  (return-type "GtkFilePath*")
+  (parameters
+    '("GtkFileSystemVolume*" "volume")
+  )
+)
+
 (define-virtual volume_get_is_mounted
   (of-object "GtkFileSystem")
   (return-type "gboolean")
@@ -7765,6 +8108,23 @@
     '("GError**" "error")
   )
 )
+(define-virtual volume_get_display_name
+  (of-object "GtkFileSystem")
+  (return-type "char*")
+  (parameters
+    '("GtkFileSystemVolume*" "volume")
+  )
+)
+
+(define-virtual volume_get_icon_name
+  (of-object "GtkFileSystem")
+  (return-type "gchar*")
+  (parameters
+    '("GtkFileSystemVolume*" "volume")
+    '("GError**" "error")
+  )
+)
+
 (define-virtual get_parent
   (of-object "GtkFileSystem")
   (return-type "gboolean")
@@ -7774,6 +8134,16 @@
     '("GError**" "error")
   )
 )
+(define-virtual make_path
+  (of-object "GtkFileSystem")
+  (return-type "GtkFilePath*")
+  (parameters
+    '("const-GtkFilePath*" "base_path")
+    '("const-gchar*" "display_name")
+    '("GError**" "error")
+  )
+)
+
 (define-virtual parse
   (of-object "GtkFileSystem")
   (return-type "gboolean")
@@ -7785,6 +8155,38 @@
     '("GError**" "error")
   )
 )
+(define-virtual path_to_uri
+  (of-object "GtkFileSystem")
+  (return-type "gchar*")
+  (parameters
+    '("const-GtkFilePath*" "path")
+  )
+)
+
+(define-virtual path_to_filename
+  (of-object "GtkFileSystem")
+  (return-type "gchar*")
+  (parameters
+    '("const-GtkFilePath*" "path")
+  )
+)
+
+(define-virtual uri_to_path
+  (of-object "GtkFileSystem")
+  (return-type "GtkFilePath*")
+  (parameters
+    '("const-gchar*" "uri")
+  )
+)
+
+(define-virtual filename_to_path
+  (of-object "GtkFileSystem")
+  (return-type "GtkFilePath*")
+  (parameters
+    '("const-gchar*" "path")
+  )
+)
+
 (define-virtual insert_bookmark
   (of-object "GtkFileSystem")
   (return-type "gboolean")
@@ -7802,6 +8204,11 @@
     '("GError**" "error")
   )
 )
+(define-virtual list_bookmarks
+  (of-object "GtkFileSystem")
+  (return-type "GSList*")
+)
+
 (define-virtual volumes_changed
   (of-object "GtkFileSystem")
   (return-type "none")
@@ -7809,6 +8216,23 @@
 (define-virtual bookmarks_changed
   (of-object "GtkFileSystem")
   (return-type "none")
+)
+
+(define-virtual get_bookmark_label
+  (of-object "GtkFileSystem")
+  (return-type "gchar*")
+  (parameters
+    '("const-GtkFilePath*" "path")
+  )
+)
+
+(define-virtual set_bookmark_label
+  (of-object "GtkFileSystem")
+  (return-type "none")
+  (parameters
+    '("const-GtkFilePath*" "path")
+    '("const-gchar*" "label")
+  )
 )
 
 
@@ -7858,6 +8282,15 @@
   (return-type "none")
   (parameters
     '("GSList*" "paths")
+  )
+)
+
+(define-virtual get_info
+  (of-object "GtkFileFolder")
+  (return-type "GtkFileInfo*")
+  (parameters
+    '("const-GtkFilePath*" "path")
+    '("GError**" "error")
   )
 )
 
@@ -13373,6 +13806,135 @@
   (return-type "none")
 )
 
+(define-virtual activate
+  (of-object "GtkOldEditable")
+  (return-type "none")
+)
+
+(define-virtual set_editable
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gboolean" "is_editable")
+  )
+)
+
+(define-virtual move_cursor
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+  )
+)
+
+(define-virtual move_word
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "n")
+  )
+)
+
+(define-virtual move_page
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+  )
+)
+
+(define-virtual move_to_row
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "row")
+  )
+)
+
+(define-virtual move_to_column
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "row")
+  )
+)
+
+(define-virtual kill_char
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "direction")
+  )
+)
+
+(define-virtual kill_word
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "direction")
+  )
+)
+
+(define-virtual kill_line
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "direction")
+  )
+)
+
+(define-virtual cut_clipboard
+  (of-object "GtkOldEditable")
+  (return-type "none")
+)
+
+(define-virtual copy_clipboard
+  (of-object "GtkOldEditable")
+  (return-type "none")
+)
+
+(define-virtual paste_clipboard
+  (of-object "GtkOldEditable")
+  (return-type "none")
+)
+
+(define-virtual update_text
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "start_pos")
+    '("gint" "end_pos")
+  )
+)
+
+(define-virtual get_chars
+  (of-object "GtkOldEditable")
+  (return-type "gchar*")
+  (parameters
+    '("gint" "start_pos")
+    '("gint" "end_pos")
+  )
+)
+
+(define-virtual set_selection
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "start_pos")
+    '("gint" "end_pos")
+  )
+)
+
+(define-virtual set_position
+  (of-object "GtkOldEditable")
+  (return-type "none")
+  (parameters
+    '("gint" "position")
+  )
+)
+
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkoptionmenu.h
@@ -14668,6 +15230,11 @@
   (return-type "none")
 )
 
+(define-virtual create_rc_style
+  (of-object "GtkRcStyle")
+  (return-type "GtkRcStyle*")
+)
+
 (define-virtual parse
   (of-object "GtkRcStyle")
   (return-type "guint")
@@ -14684,6 +15251,10 @@
   )
 )
 
+(define-virtual create_style
+  (of-object "GtkRcStyle")
+  (return-type "GtkStyle*")
+)
 
 (define-function rc_find_module_in_path
   (c-name "gtk_rc_find_module_in_path")
@@ -14881,6 +15452,14 @@
   (parameters
     '("gint*" "x")
     '("gint*" "y")
+  )
+)
+
+(define-virtual format_value
+  (of-object "GtkScale")
+  (return-type "gchar*")
+  (parameters
+    '("gdouble" "value")
   )
 )
 
@@ -16982,6 +17561,11 @@
     '("GtkStyle*" "src")
   )
 )
+(define-virtual clone
+  (of-object "GtkStyle")
+  (return-type "GtkStyle*")
+)
+
 (define-virtual init_from_rc
   (of-object "GtkStyle")
   (return-type "none")
@@ -16997,6 +17581,19 @@
     '("GtkStateType" "state_type")
   )
 )
+(define-virtual render_icon
+  (of-object "GtkStyle")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("const-GtkIconSource*" "source")
+    '("GtkTextDirection" "direction")
+    '("GtkStateType" "state")
+    '("GtkIconSize" "size")
+    '("GtkWidget*" "widget")
+    '("const-gchar*" "detail")
+  )
+)
+
 (define-virtual draw_hline
   (of-object "GtkStyle")
   (return-type "none")
@@ -17606,6 +18203,15 @@
   (return-type "gboolean")
   (parameters
     '("guint" "nchars")
+  )
+)
+
+(define-virtual set_scroll_adjustments
+  (of-object "GtkText")
+  (return-type "none")
+  (parameters
+    '("GtkAdjustment*" "hadjustment")
+    '("GtkAdjustment*" "vadjustment")
   )
 )
 
@@ -18281,6 +18887,24 @@
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtktextdisplay.h
+
+(define-method draw
+  (of-object "GtkTextLayout")
+  (c-name "gtk_text_layout_draw")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "widget")
+    '("GdkDrawable*" "drawable")
+    '("GdkGC*" "cursor_gc")
+    '("gint" "x_offset")
+    '("gint" "y_offset")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("GList**" "widgets")
+  )
+)
 
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtktextiter.h
@@ -19346,6 +19970,68 @@
   )
 )
 
+(define-virtual invalidated
+  (of-object "GtkTextLayout")
+  (return-type "none")
+)
+
+(define-virtual changed
+  (of-object "GtkTextLayout")
+  (return-type "none")
+  (parameters
+    '("gint" "y")
+    '("gint" "old_height")
+    '("gint" "new_height")
+  )
+)
+
+(define-virtual wrap
+  (of-object "GtkTextLayout")
+  (return-type "GtkTextLineData*")
+  (parameters
+    '("GtkTextLine*" "line")
+    '("GtkTextLineData*" "line_data")
+  )
+)
+
+(define-virtual get_log_attrs
+  (of-object "GtkTextLayout")
+  (return-type "none")
+  (parameters
+    '("GtkTextLine*" "line")
+    '("PangoLogAttr**" "attrs")
+    '("gint*" "n_attrs")
+  )
+)
+
+(define-virtual invalidate
+  (of-object "GtkTextLayout")
+  (return-type "none")
+  (parameters
+    '("const-GtkTextIter*" "start")
+    '("const-GtkTextIter*" "end")
+  )
+)
+
+(define-virtual free_line_data
+  (of-object "GtkTextLayout")
+  (return-type "none")
+  (parameters
+    '("GtkTextLine*" "line")
+    '("GtkTextLineData*" "line_data")
+  )
+)
+
+(define-virtual allocate_child
+  (of-object "GtkTextLayout")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+    '("gint" "x")
+    '("gint" "y")
+  )
+)
+
 (define-method register_child
   (of-object "GtkTextChildAnchor")
   (c-name "gtk_text_child_anchor_register_child")
@@ -19485,10 +20171,8 @@
   (return-type "gboolean")
   (parameters
     '("GObject*" "event_object")
-    '("/*" "widget")
-    '("canvas" "item")
-    '("whatever**" "event")
-    '("/***" "iter")
+    '("GdkEvent*" "event")
+    '("const-GtkTextIter*" "iter")
   )
 )
 
@@ -21499,6 +22183,27 @@
   )
 )
 
+(define-virtual selection_changed
+  (of-object "GtkTree")
+  (return-type "none")
+)
+
+(define-virtual select_child
+  (of-object "GtkTree")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+  )
+)
+
+(define-virtual unselect_child
+  (of-object "GtkTree")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "child")
+  )
+)
+
 ;; From /mondo/local/gtk-2.10/include/gtk-2.0/gtk/gtktreeitem.h
 
 (define-function gtk_tree_item_get_type
@@ -21556,6 +22261,16 @@
 (define-method collapse
   (of-object "GtkTreeItem")
   (c-name "gtk_tree_item_collapse")
+  (return-type "none")
+)
+
+(define-virtual expand
+  (of-object "GtkTreeItem")
+  (return-type "none")
+)
+
+(define-virtual collapse
+  (of-object "GtkTreeItem")
   (return-type "none")
 )
 
@@ -22113,6 +22828,14 @@
     '("GtkTreePath*" "path")
   )
 )
+(define-virtual get_path
+  (of-object "GtkTreeModel")
+  (return-type "GtkTreePath*")
+  (parameters
+    '("GtkTreeIter*" "iter")
+  )
+)
+
 (define-virtual get_value
   (of-object "GtkTreeModel")
   (return-type "none")
@@ -24496,6 +25219,11 @@
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtktypeutils.h
 
+(define-function identifier_get_type
+  (c-name "gtk_identifier_get_type")
+  (return-type "GType")
+)
+
 (define-method class
   (of-object "GtkType")
   (c-name "gtk_type_class")
@@ -24743,6 +25471,22 @@
   (return-type "none")
   (parameters
     '("GtkAction*" "action")
+  )
+)
+
+(define-virtual get_widget
+  (of-object "GtkUIManager")
+  (return-type "GtkWidget*")
+  (parameters
+    '("const-gchar*" "path")
+  )
+)
+
+(define-virtual get_action
+  (of-object "GtkUIManager")
+  (return-type "GtkAction*")
+  (parameters
+    '("const-gchar*" "path")
   )
 )
 
@@ -26423,6 +27167,11 @@
     '("GtkWidgetHelpType" "help_type")
   )
 )
+(define-virtual get_accessible
+  (of-object "GtkWidget")
+  (return-type "AtkObject*")
+)
+
 (define-virtual screen_changed
   (of-object "GtkWidget")
   (return-type "none")
@@ -26437,6 +27186,14 @@
     '("guint" "signal_id")
   )
 )
+(define-virtual grab_broken_event
+  (of-object "GtkWidget")
+  (return-type "gboolean")
+  (parameters
+    '("GdkEventGrabBroken*" "event")
+  )
+)
+
 
 
 (define-function gtk_requisition_get_type
