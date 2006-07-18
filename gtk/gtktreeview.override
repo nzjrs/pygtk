@@ -193,7 +193,7 @@ pygtk_cell_data_func_marshal (GtkCellLayout *cell_layout,
     pycell = pygobject_new((GObject *)cell);
     pytreemodel = pygobject_new((GObject *)tree_model);
     pyiter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,
-                           TRUE, TRUE);
+                           FALSE, FALSE);
     if (cunote->data)
         retobj = PyEval_CallFunction(cunote->func, "(NNNNO)",
                                      pycelllayout, pycell,
@@ -595,7 +595,7 @@ pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
 
     py_model = pygobject_new((GObject *)model);
     py_path = pygtk_tree_path_to_pyobject(path);
-    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, FALSE, FALSE);
     if (cunote->data)
         retobj = PyEval_CallFunction(cunote->func, "(NNNO)",
                                      py_model, py_path, py_iter,
@@ -1058,8 +1058,8 @@ pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
     state = pyg_gil_state_ensure();
 
     py_model = pygobject_new((GObject *)model);
-    py_iter1 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter1, TRUE, TRUE);
-    py_iter2 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter2, TRUE, TRUE);
+    py_iter1 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter1, FALSE, FALSE);
+    py_iter2 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter2,  FALSE, FALSE);
 
     if (cunote->data) {
         retobj = PyEval_CallFunction(cunote->func, "(NNNO)", py_model,
@@ -2052,7 +2052,7 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
 
     py_model = pygobject_new((GObject *)model);
     py_path = pygtk_tree_path_to_pyobject(path);
-    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,  FALSE, FALSE);
     if (cunote->data)
         retobj = PyEval_CallFunction(cunote->func, "(NNNO)",
                                      py_model, py_path, py_iter,
@@ -2460,7 +2460,7 @@ pygtk_tree_model_filter_visible_cb(GtkTreeModel *model, GtkTreeIter *iter,
     state = pyg_gil_state_ensure();
 
     py_model = pygobject_new((GObject *)model);
-    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,  FALSE, FALSE);
 
     if (cunote->data) {
         retobj = PyEval_CallFunction(cunote->func, "(NNO)", py_model,
@@ -2793,7 +2793,7 @@ pygtk_filter_modify_func_marshal(GtkTreeModel *model, GtkTreeIter *iter,
     state = pyg_gil_state_ensure();
 
     py_model = pygobject_new((GObject *)model);
-    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,  FALSE, FALSE);
     if (cunote->data)
         py_value = PyEval_CallFunction(cunote->func, "(NNiO)",
                                      py_model, py_iter, column, cunote->data);
@@ -2977,7 +2977,7 @@ pygtk_set_search_equal_func_marshal(GtkTreeModel *model,
     py_model = pygobject_new((GObject *)model);
     py_column = PyInt_FromLong(column);
     py_key = PyString_FromString(key);
-    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,  FALSE, FALSE);
 
     if (cunote->data)
         retobj = PyEval_CallFunction(cunote->func, "(NNNNO)",
@@ -3054,7 +3054,7 @@ pygtk_set_row_separator_func_marshal(GtkTreeModel *model,
     state = pyg_gil_state_ensure();
 
     py_model = pygobject_new((GObject *)model);
-    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, TRUE, TRUE);
+    py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,  FALSE, FALSE);
 
     if (cunote->data)
         retobj = PyEval_CallFunction(cunote->func, "(NNO)",
