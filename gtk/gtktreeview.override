@@ -1195,7 +1195,7 @@ _wrap_gtk_list_store_set_column_types(PyGObject *self, PyObject *args)
     len = PyTuple_Size(args);
     if (len == 0) {
         PyErr_SetString(PyExc_TypeError,
-                        "GtkListStore set_column_types at least one argument");
+                        "GtkListStore set_column_types requires at least one argument");
         return NULL;
     }
 
@@ -1695,10 +1695,14 @@ _wrap_gtk_tree_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
     PyObject *py_parent;
     GtkTreeIter iter, *parent = NULL;
     gint position;
-    PyObject *row = Py_None;
+    PyObject *items = NULL;
+    gint n_columns = 0;
+    gint *columns = NULL;
+    GValue *values = NULL;
+    gint i;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oi|O:GtkTreeStore.insert",
-                                     kwlist, &py_parent, &position, &row))
+                                     kwlist, &py_parent, &position, &items))
         return NULL;
     if (pyg_boxed_check(py_parent, GTK_TYPE_TREE_ITER))
         parent = pyg_boxed_get(py_parent, GtkTreeIter);
@@ -1707,12 +1711,55 @@ _wrap_gtk_tree_store_insert(PyGObject *self, PyObject *args, PyObject *kwargs)
                         "parent must be a GtkTreeIter or None");
         return NULL;
     }
-    gtk_tree_store_insert(GTK_TREE_STORE(self->obj), &iter, parent, position);
+    if (items) {
+	if (!PySequence_Check(items)) {
+	    PyErr_SetString(PyExc_TypeError, "expecting a sequence");
+	    return NULL;
+	}
+	
+	n_columns = gtk_tree_model_get_n_columns(GTK_TREE_MODEL(self->obj));
+	if (PySequence_Length(items) != n_columns) {
+	    PyErr_SetString(PyExc_ValueError, "row sequence has wrong length");
+	    return NULL;
+	}
+    }
 
-    /* optionally set items in the new row */
-    if (row != Py_None &&
-        _pygtk_tree_model_set_row(GTK_TREE_MODEL(self->obj), &iter, row) < 0)
-        return NULL;
+    columns = g_new0(gint, n_columns);
+    values = g_new0(GValue, n_columns);
+    for (i = 0; i < n_columns; i++) {
+	PyObject *item;
+
+	item = PySequence_GetItem(items, i);
+	if (!item)
+	    return NULL;
+
+	g_value_init(&values[i],
+                     gtk_tree_model_get_column_type(GTK_TREE_MODEL(self->obj),
+                                                    i));
+	
+	if (pyg_value_from_pyobject(&values[i], item)) {
+	    Py_DECREF(item);
+	    PyErr_SetString(PyExc_TypeError,
+			    "value is of wrong type for this column");
+	    return NULL;
+	}
+
+	columns[i] = i;
+	    
+	Py_DECREF(item);
+    }
+
+    gtk_tree_store_insert_with_valuesv(GTK_TREE_STORE(self->obj), &iter,
+                                       parent, position, columns, values,
+				       n_columns);
+    
+    for (i = 0; i < n_columns; i++) {
+	g_value_unset(&values[i]);
+    }
+    if (values)
+	g_free(values);
+    if (columns)
+	g_free(columns);
 
     return pyg_boxed_new(GTK_TYPE_TREE_ITER, &iter, TRUE, TRUE);
 }
@@ -3142,6 +3189,39 @@ _wrap_gtk_tree_view_set_search_position_func(PyGObject *self, PyObject *args)
     } else
         gtk_tree_view_set_search_position_func(GTK_TREE_VIEW(self->obj),
                                                NULL, NULL, NULL);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_tree_store_set_column_types args
+static PyObject*
+_wrap_gtk_tree_store_set_column_types(PyGObject *self, PyObject *args)
+{
+    guint len, i;
+    GType *column_types;
+
+    len = PyTuple_Size(args);
+    if (len == 0) {
+        PyErr_SetString(PyExc_TypeError,
+                        "GtkTreeStore set_column_types requires at least one argument");
+        return NULL;
+    }
+
+    column_types = g_new(GType, len);
+    for (i = 0; i < len; i++) {
+        PyObject *item = PyTuple_GetItem(args, i);
+
+        column_types[i] = pyg_type_from_object(item);
+        if (column_types[i] == 0) {
+            g_free(column_types);
+	    return NULL;
+        }
+    }
+    
+    gtk_tree_store_set_column_types(GTK_TREE_STORE(self->obj), len,
+                                    column_types);
+    g_free(column_types);
+
     Py_INCREF(Py_None);
     return Py_None;
 }
