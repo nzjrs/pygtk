@@ -40,6 +40,7 @@ class LazyNamespace(ModuleType):
         self._module = module
         self.__dict__.update(locals)
         symbols = {}
+        
         def __getattribute__(_, name, d=self.__dict__, module=module):
             v = d.get(name, _marker)
             if v is not _marker:
@@ -59,6 +60,8 @@ class LazyNamespace(ModuleType):
                 return d
             elif name == '__bases__':
                 return (ModuleType,)
+            elif name == '__all__':
+                return self._all_symbols
 
             raise AttributeError(name)
 
@@ -67,6 +70,7 @@ class LazyNamespace(ModuleType):
         for symbol in module._get_symbol_names():
             symbols[symbol] = None
         self._symbols = symbols
+        self._all_symbols = symbols.keys() + self.__dict__.keys()
 
         ModuleType.__init__(self, self.__name__)
 
