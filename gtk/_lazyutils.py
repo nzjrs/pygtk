@@ -37,52 +37,35 @@ _marker = object()
 
 class LazyNamespace(ModuleType):
     def __init__(self, module, locals):
-        self._module = module
-        self.__dict__.update(locals)
+        ModuleType.__init__(self, locals['__name__'])
+        self._imports = {}
+
         symbols = {}
-        
-        def __getattribute__(_, name, d=self.__dict__, module=module):
-            v = d.get(name, _marker)
+        for symbol in module._get_symbol_names():
+            symbols[symbol] = None
+
+        ns = self.__dict__
+        ns.update(locals)
+        ns.update(__all__=ns.keys() + symbols.keys(),
+                  __dict__=ns,
+                  __bases__=(ModuleType,),
+                  add_submodule=self.add_submodule)
+
+        def __getattribute__(_, name):
+            v = ns.get(name, _marker)
             if v is not _marker:
                 return v
 
             if name in symbols:
-                return module._get_symbol(d, name)
-            elif name == 'glade':
-                m = __import__('_glade', {}, {}, ' ')
-                d['glade'] = m
+                return module._get_symbol(ns, name)
+            elif name in self._imports:
+                m = __import__(self._imports[name], {}, {}, ' ')
+                ns[name] = m
                 return m
-            elif name == '_gtk':
-                m = __import__('gtk._gtk', {}, {}, ' ')
-                d['_gtk'] = m
-                return m
-            if name == '__dict__':
-                return d
-            elif name == '__bases__':
-                return (ModuleType,)
-            elif name == '__all__':
-                return self._all_symbols
 
             raise AttributeError(name)
-
         LazyNamespace.__getattribute__ = __getattribute__
 
-        for symbol in module._get_symbol_names():
-            symbols[symbol] = None
-        self._symbols = symbols
-        self._all_symbols = symbols.keys() + self.__dict__.keys()
+    def add_submodule(self, name, importname):
+        self._imports[name] = importname
 
-        ModuleType.__init__(self, self.__name__)
-
-    def ___getattr__(self, name):
-        if name in self._symbols:
-            self._module._get_symbol(self.__dict__, name)
-        elif name == 'glade':
-            module = __import__('_glade', {}, {}, ' ')
-            self.__dict__['glade'] = module
-            return module
-        elif name == '_gtk':
-            module = __import__('gtk._gtk', {}, {}, ' ')
-            self.__dict__['_gtk'] = module
-            return module
-        return self.__dict__[name]

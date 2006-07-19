@@ -126,6 +126,9 @@ from gtk._gtkimpl import *
 # For testing, so you can just turn of dynamicnamespace in gtk.override
 if hasattr(_gtkimpl, '_get_symbol_names'):
     import gtk
-    sys.modules['gtk'] = LazyNamespace(_gtkimpl, locals())
+    ns = LazyNamespace(_gtkimpl, locals())
+    ns.add_submodule('glade', '_glade')
+    ns.add_submodule('_gtk', 'gtk._gtk')
+    sys.modules['gtk'] = ns
     sys.modules['gtk.glade'] = LazyModule('_glade', {})
 
