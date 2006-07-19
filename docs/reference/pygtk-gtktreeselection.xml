@@ -30,9 +30,14 @@ linkend="method-gtktreeselection--get-mode">get_mode</link></methodname>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtktreeselection--set-select-function">set_select_function</link></methodname>
-	<methodparam><parameter>func</parameter></methodparam>
-	<methodparam><parameter>data</parameter>
+	<methodparam><parameter
+		       role="keyword">func</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">data</parameter>
 	  <initializer>None</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">full</parameter>
+	  <initializer>FALSE</initializer></methodparam>
       </methodsynopsis>
 
 <!-- NOT IMPLEMENTED
@@ -265,8 +270,12 @@ method for more information.</para>
 
       <programlisting><methodsynopsis language="python">
 	  <methodname>set_select_function</methodname>
-	  <methodparam><parameter>func</parameter></methodparam>
-	  <methodparam><parameter>data</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">func</parameter></methodparam>
+	  <methodparam><parameter
+		       role="keyword">data</parameter><initializer>None</initializer></methodparam>
+	  <methodparam><parameter
+		       role="keyword">full</parameter><initializer>FALSE</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -277,6 +286,12 @@ method for more information.</para>
 	  <term><parameter>data</parameter>&nbsp;:</term>
 	  <listitem><simpara>the selection function's
 data.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>full</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>TRUE</literal>
+	  <parameter>func</parameter> will be passed a full set of
+	  args</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -307,14 +322,18 @@ passed to the <link
 linkend="method-gtktreeselection--set-select-function"><methodname>set_select_function</methodname>()</link>
 method.</para>
 
-<!--      <programlisting>
+<para>In PyGTK 2.10 and above if the additional optional parameter
+<parameter>full</parameter> is <literal>TRUE</literal> the signature of
+<parameter>func</parameter> should be:</para>
+
+<programlisting>
 <methodsynopsis language="python">
 	  <methodname>selectfunction</methodname>
 	  <methodparam><parameter>selection</parameter></methodparam>
 	  <methodparam><parameter>model</parameter></methodparam>
 	  <methodparam><parameter>path</parameter></methodparam>
 	  <methodparam><parameter>path_currently_selected</parameter></methodparam>
-	  <methodparam><parameter>...</parameter></methodparam>
+	  <methodparam><parameter>user_data</parameter></methodparam>
 	</methodsynopsis>
 <methodsynopsis language="python">
 	  <methodname>selectmethod</methodname>
@@ -323,22 +342,24 @@ method.</para>
 	  <methodparam><parameter>model</parameter></methodparam>
 	  <methodparam><parameter>path</parameter></methodparam>
 	  <methodparam><parameter>is_selected</parameter></methodparam>
-	  <methodparam><parameter>...</parameter></methodparam>
+	  <methodparam><parameter>user_data</parameter></methodparam>
 	</methodsynopsis>
 </programlisting>
 
       <para>where <parameter>selection</parameter> is the <link
-linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link>,
-<parameter>model</parameter> is the <link
-linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
-used by the gtkTreeView associated with selection,
-<parameter>path</parameter> is the path of the selected row,
-<parameter>is_selected</parameter> is <literal>TRUE</literal> if
-the row is currently selected and <parameter>...</parameter> is the user
-data if any (may not be present if <parameter>data</parameter> was
-<literal>None</literal>). If <parameter>func</parameter> is a method then
-<parameter>self</parameter> is the object that the method is called
-upon.</para> -->
+      linkend="class-gtktreeselection"><classname>gtk.TreeSelection</classname></link>,
+      <parameter>model</parameter> is the <link
+      linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
+      used by the <link
+      linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>
+      associated with selection, <parameter>path</parameter> is the path of
+      the selected row, <parameter>is_selected</parameter> is
+      <literal>TRUE</literal> if the row is currently selected and
+      <parameter>user_data</parameter> is <parameter>data</parameter> if any
+      (may not be present if <parameter>data</parameter> was
+      <literal>None</literal>). If <parameter>func</parameter> is a method
+      then <parameter>self</parameter> is the object that the method is
+      called upon.</para>
 
     </refsect2>
 
