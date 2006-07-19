@@ -632,8 +632,7 @@ _wrap_gtk_tree_selection_selected_foreach(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
-override gtk_tree_selection_set_select_function
-
+override gtk_tree_selection_set_select_function kwargs
 static gboolean
 pygtk_tree_selection_marshal(GtkTreeSelection *selection,
                              GtkTreeModel *model,
@@ -652,10 +651,61 @@ pygtk_tree_selection_marshal(GtkTreeSelection *selection,
 
     pypath = pygtk_tree_path_to_pyobject(path);
     if (cunote->data)
-        retobj = PyEval_CallFunction(cunote->func, "(OO)", pypath,
+        retobj = PyEval_CallFunction(cunote->func, "(NO)", pypath,
                                      cunote->data);
     else
-        retobj = PyEval_CallFunction(cunote->func, "(O)", pypath);
+        retobj = PyEval_CallFunction(cunote->func, "(N)", pypath);
+
+    if (retobj == NULL) {
+        PyErr_Print();
+    }
+
+    Py_DECREF(pypath);
+    if (retobj) {
+        if(retobj == Py_None);
+        else if(PyInt_Check(retobj))
+            retval = PyInt_AsLong(retobj) && TRUE;
+        else if(PyLong_Check(retobj))
+            retval = PyLong_AsLongLong(retobj) && TRUE;
+        else if(PyString_Check(retobj))
+            retval = PyString_GET_SIZE(retobj) && TRUE;
+
+        Py_DECREF(retobj);
+    }
+
+
+    pyg_gil_state_release(state);
+
+    return retval;
+}
+static gboolean
+pygtk_tree_selection_marshal_full(GtkTreeSelection *selection,
+                                  GtkTreeModel *model,
+                                  GtkTreePath *path,
+                                  gboolean path_currently_selected,
+                                  gpointer data)
+{
+    PyGILState_STATE state;
+    gboolean retval = FALSE;
+    PyGtkCustomNotify *cunote = data;
+    PyObject *pyselection, *pymodel, *pypath, *retobj;
+
+    g_assert(cunote->func);
+
+    state = pyg_gil_state_ensure();
+
+    pyselection = pygobject_new((GObject*)selection);
+    pymodel = pygobject_new((GObject*)model);
+    pypath = pygtk_tree_path_to_pyobject(path);
+    if (cunote->data)
+        retobj = PyEval_CallFunction(cunote->func, "(NNNNO)", pyselection,
+                                     pymodel, pypath,
+                                     PyBool_FromLong(path_currently_selected),
+                                     cunote->data);
+    else
+        retobj = PyEval_CallFunction(cunote->func, "(NNNN)", pyselection,
+                                     pymodel, pypath,
+                                     PyBool_FromLong(path_currently_selected));
 
     if (retobj == NULL) {
         PyErr_Print();
@@ -680,24 +730,36 @@ pygtk_tree_selection_marshal(GtkTreeSelection *selection,
     return retval;
 }
 static PyObject *
-_wrap_gtk_tree_selection_set_select_function(PyGObject *self, PyObject *args)
+_wrap_gtk_tree_selection_set_select_function(PyGObject *self, PyObject *args,
+                                             PyObject *kwargs)
 {
-    PyObject *pyfunc, *pyarg = NULL;
+    static char *kwlist[] = { "func", "data", "full", NULL };
+    PyObject *pyfunc, *pyarg = NULL, *pyfull = Py_False;
     PyGtkCustomNotify *cunote;
 
-    if(!PyArg_ParseTuple(args, "O|O:GtkTreeSelection.set_select_function",
-                         &pyfunc, &pyarg))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|OO:GtkTreeSelection.set_select_function",
+                                     kwlist, &pyfunc, &pyarg, &pyfull))
         return NULL;
 
+    if (!PyCallable_Check(pyfunc)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
     cunote = g_new0(PyGtkCustomNotify, 1);
     cunote->func = pyfunc;
     cunote->data = pyarg;
     Py_INCREF(cunote->func);
     Py_XINCREF(cunote->data);
-    gtk_tree_selection_set_select_function(GTK_TREE_SELECTION(self->obj),
-                                           pygtk_tree_selection_marshal,
-                                           cunote,
-                                           pygtk_custom_destroy_notify);
+    if (PyObject_IsTrue(pyfull))
+        gtk_tree_selection_set_select_function(GTK_TREE_SELECTION(self->obj),
+                                               pygtk_tree_selection_marshal_full,
+                                               cunote,
+                                               pygtk_custom_destroy_notify);
+    else
+        gtk_tree_selection_set_select_function(GTK_TREE_SELECTION(self->obj),
+                                               pygtk_tree_selection_marshal,
+                                               cunote,
+                                               pygtk_custom_destroy_notify);
     Py_INCREF(Py_None);
     return Py_None;
 }
