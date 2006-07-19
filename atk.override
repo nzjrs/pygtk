@@ -178,7 +178,7 @@ _wrap_atk_editable_text_set_run_attributes(PyGObject *self, PyObject *args,
             Py_DECREF(py_attrib_set);
             return NULL;
         }
-        g_slist_append(attrib_set, attr);
+        attrib_set = g_slist_append(attrib_set, attr);
     }
     ret = atk_editable_text_set_run_attributes(ATK_EDITABLE_TEXT(self->obj),
                                                attrib_set, start, end);
