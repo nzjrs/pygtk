@@ -108,9 +108,9 @@ create_pixmap_from_xpm   = _Deprecated(gdk, 'pixmap_create_from_xpm',
 create_pixmap_from_xpm_d = _Deprecated(gdk, 'pixmap_create_from_xpm_d',
                                        'pixmap_create_from_xpm_d', 'gtk.gdk')
 
-threads_init = _Deprecated(gdk.threads_init, 'threads_init', 'gtk.gdk')
-threads_enter = _Deprecated(gdk.threads_enter, 'threads_enter', 'gtk.gdk')
-threads_leave = _Deprecated(gdk.threads_leave, 'threads_leave', 'gtk.gdk')
+threads_init = _Deprecated(gdk, 'threads_init', 'threads_init', 'gtk.gdk')
+threads_enter = _Deprecated(gdk, 'threads_enter', 'threads_enter', 'gtk.gdk')
+threads_leave = _Deprecated(gdk, 'threads_leave', 'threads_leave', 'gtk.gdk')
 
 TRUE = _DeprecatedConstant(True, 'gtk.TRUE', 'True')
 FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
