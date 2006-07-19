@@ -34,31 +34,34 @@ def _is_pydoc():
     return False
 
 class _Deprecated:
-    def __init__(self, func, oldname, module=''):
-        self.func = func
+    def __init__(self, module, funcname, oldname, modulename=''):
+        self.module = module
+        self.funcname = funcname
         self.oldname = oldname
-        self.name = func.__name__
-        if module:
-            self.module = module
+        if modulename:
+            self.modulename = modulename
         else:
-            self.module = 'gtk'
+            self.modulename = 'gtk'
 
     def __repr__(self):
         return '<deprecated function %s>' % (self.oldname)
 
     def __call__(self, *args, **kwargs):
+        if type(self.module) == str:
+            module = __import__(self.module, {}, {}, ' ')
+        else:
+            module = self.module
+        func = getattr(module, self.funcname)
         if not _is_pydoc():
-            oldname = 'gtk.' + self.oldname
-            newname = self.module + '.' + self.name
-            message = '%s is deprecated, use %s instead' % (oldname, newname)
+            message = 'gtk.%s is deprecated, use %s.%s instead' % (
+                self.oldname, self.modulename, func.__name__)
             # DeprecationWarning is imported from _gtk, so it's not the same
             # as the one found in exceptions.
             warnings.warn(message, DeprecationWarning, 2)
         try:
-            return self.func(*args, **kwargs)
+            return func(*args, **kwargs)
         except TypeError, e:
-            msg = str(e).replace(self.name, self.oldname)
-            raise TypeError(msg)
+            raise TypeError(str(e).replace(func.__name__, self.oldname))
 
 class _DeprecatedConstant:
     def __init__(self, value, name, suggestion):

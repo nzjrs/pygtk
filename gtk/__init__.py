@@ -55,11 +55,12 @@ from gtk.deprecation import _Deprecated, _DeprecatedConstant
 def _init():
     import sys
 
+    init_check = _gtkimpl._get_symbol(globals(), 'init_check')
     try:
         sys_path = sys.path[:]
 
         try:
-            _gtkimpl.init_check()
+            init_check()
         except RuntimeError, e:
             print >> sys.stderr, "WARNING: %s" % e
     finally:
@@ -69,7 +70,8 @@ def _init():
             sys.path = sys_path
 
     # install the default log handlers
-    _gtkimpl.add_log_handlers()
+    add_log_handlers = _gtkimpl._get_symbol(globals(), 'add_log_handlers')
+    add_log_handlers()
 
 keysyms = LazyModule('keysyms', locals())
 
@@ -83,27 +85,27 @@ gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
 gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
 # old names compatibility ...
-idle_add       = _Deprecated(_gobject.idle_add, 'idle_add', 'gobject')
-idle_remove    = _Deprecated(_gobject.source_remove, 'idle_remove', 'gobject')
-timeout_add    = _Deprecated(_gobject.timeout_add, 'timeout_add', 'gobject')
-timeout_remove = _Deprecated(_gobject.source_remove, 'timeout_remove',
+idle_add       = _Deprecated(_gobject, 'idle_add', 'idle_add', 'gobject')
+idle_remove    = _Deprecated(_gobject, 'source_remove', 'idle_remove', 'gobject')
+timeout_add    = _Deprecated(_gobject, 'timeout_add', 'timeout_add', 'gobject')
+timeout_remove = _Deprecated(_gobject, 'source_remove', 'timeout_remove',
                              'gobject')
-input_add      = _Deprecated(_gobject.io_add_watch, 'input_add', 'gobject')
-input_add_full = _Deprecated(_gobject.io_add_watch, 'input_add_full',
+input_add      = _Deprecated(_gobject, 'io_add_watch', 'input_add', 'gobject')
+input_add_full = _Deprecated(_gobject, 'io_add_watch', 'input_add_full',
                              'gobject')
-input_remove   = _Deprecated(_gobject.source_remove, 'input_remove', 'gobject')
+input_remove   = _Deprecated(_gobject, 'source_remove', 'input_remove', 'gobject')
 
-mainloop                 = _Deprecated(_gtkimpl.main, 'mainloop')
-mainquit                 = _Deprecated(_gtkimpl.main_quit, 'mainquit')
-mainiteration            = _Deprecated(_gtkimpl.main_iteration,
+mainloop                 = _Deprecated('gtk', 'main', 'mainloop')
+mainquit                 = _Deprecated('gtk', 'main_quit', 'mainquit')
+mainiteration            = _Deprecated('gtk', 'main_iteration',
                                        'mainiteration')
-load_font                = _Deprecated(gdk.Font, 'load_font', 'gtk.gdk')
-load_fontset             = _Deprecated(gdk.fontset_load, 'load_fontset',
+load_font                = _Deprecated(gdk, 'Font', 'load_font', 'gtk.gdk')
+load_fontset             = _Deprecated(gdk, 'fontset_load', 'load_fontset',
                                        'gtk.gdk')
-create_pixmap            = _Deprecated(gdk.Pixmap, 'create_pixmap', 'gtk.gdk')
-create_pixmap_from_xpm   = _Deprecated(gdk.pixmap_create_from_xpm,
+create_pixmap            = _Deprecated(gdk, 'Pixmap', 'create_pixmap', 'gtk.gdk')
+create_pixmap_from_xpm   = _Deprecated(gdk, 'pixmap_create_from_xpm',
                                        'pixmap_create_from_xpm', 'gtk.gdk')
-create_pixmap_from_xpm_d = _Deprecated(gdk.pixmap_create_from_xpm_d,
+create_pixmap_from_xpm_d = _Deprecated(gdk, 'pixmap_create_from_xpm_d',
                                        'pixmap_create_from_xpm_d', 'gtk.gdk')
 
 threads_init = _Deprecated(gdk.threads_init, 'threads_init', 'gtk.gdk')

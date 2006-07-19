@@ -723,7 +723,7 @@ class Wrapper:
 
         return getsets_name
 
-    def _write_get_symbol_names(self, writer):
+    def _write_get_symbol_names(self, writer, functions):
         self.fp.write("""static PyObject *
 _wrap__get_symbol_names(PyObject *self)
 {
@@ -733,17 +733,27 @@ _wrap__get_symbol_names(PyObject *self)
         for obj, bases in writer.get_classes():
             self.fp.write('    PyList_Append(pylist, '
                           'PyString_FromString("%s"));\n' % (obj.name))
+        for name, cname, flags, docstring in functions:
+            self.fp.write('    PyList_Append(pylist, '
+                          'PyString_FromString("%s"));\n' % (name))
+
         self.fp.write("    return pylist;\n}\n\n");
 
-    def _write_get_symbol(self, writer):
+    def _write_get_symbol(self, writer, functions):
         self.fp.write("""static PyObject *
 _wrap__get_symbol(PyObject *self, PyObject *args)
 {
     PyObject *d;
     char *name;
+    static PyObject *modulename = NULL;
+
     if (!PyArg_ParseTuple(args, "Os", &d, &name))
         return NULL;
-""")
+
+    if (!modulename)
+       modulename = PyString_FromString("%s");
+
+""" % self.overrides.modulename)
         first = True
         for obj, bases in writer.get_classes():
             if first:
@@ -755,12 +765,19 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
                 '       return (PyObject*)pygobject_lookup_class(%s);\n' %
                 obj.typecode)
         self.fp.write('    }\n')
+
+        for name, cname, flags, docstring in functions:
+            self.fp.write('    else if (!strcmp(name, "%s")) {\n' % name)
+            self.fp.write('        static PyMethodDef ml = { '
+                          '"%s", (PyCFunction)%s, %s, "%s"};\n' % (
+                name, cname, flags, docstring))
+            self.fp.write('        return PyCFunction_NewEx(&ml, NULL, modulename);\n')
+            self.fp.write('    }\n')
+
         self.fp.write('    return Py_None;\n}\n\n');
 
-    def write_functions(self, writer, prefix):
-        self.fp.write('\n/* ----------- functions ----------- */\n\n')
+    def _write_function_bodies(self):
         functions = []
-
         # First, get methods from the defs files
         for func in self.parser.find_functions():
             funcname = func.c_name
@@ -777,11 +794,8 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
                     code, methflags = self.write_function_wrapper(func,
                         self.function_tmpl, handle_return=1, is_method=0)
                     self.fp.write(code)
-                functions.append(self.methdef_tmpl %
-                                 { 'name':  func.name,
-                                   'cname': '_wrap_' + funcname,
-                                   'flags': methflags,
-                                   'docstring': func.docstring })
+                functions.append((func.name, '_wrap_' + funcname,
+                                  methflags, func.docstring))
                 functions_coverage.declare_wrapped()
             except:
                 functions_coverage.declare_not_wrapped()
@@ -794,21 +808,24 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
                 data = self.overrides.function(funcname)
                 self.write_function(funcname, data)
                 methflags = self.get_methflags(funcname)
-                functions.append(self.methdef_tmpl %
-                                 { 'name':  funcname,
-                                   'cname': '_wrap_' + funcname,
-                                   'flags': methflags,
-                                   'docstring': 'NULL'})
+                functions.append((funcname, '_wrap_' + funcname,
+                                  methflags, 'NULL'))
                 functions_coverage.declare_wrapped()
             except:
                 functions_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write function %s: %s\n'
                                  % (funcname, exc_info()))
+        return functions
+
+    def write_functions(self, writer, prefix):
+        self.fp.write('\n/* ----------- functions ----------- */\n\n')
+        functions = []
+        func_infos = self._write_function_bodies()
 
         # If we have a dynamic namespace, write symbol and attribute getter
         if self.overrides.dynamicnamespace:
-            self._write_get_symbol_names(writer)
-            self._write_get_symbol(writer)
+            self._write_get_symbol_names(writer, func_infos)
+            self._write_get_symbol(writer, func_infos)
             for obj, bases in writer.get_classes():
                 self.fp.write("""static PyTypeObject *
 %s_register_type(const gchar *name, PyObject *unused)
@@ -828,6 +845,12 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
             functions.append('    { "_get_symbol", '
                              '(PyCFunction)_wrap__get_symbol, '
                              'METH_VARARGS, NULL },\n')
+        else:
+            for name, cname, flags, docstring in func_infos:
+                functions.append(self.methdef_tmpl % dict(name=name,
+                                                          cname=cname,
+                                                          flags=flags,
+                                                          docstring=docstring))
 
         # write the PyMethodDef structure
         functions.append('    { NULL, NULL, 0, NULL }\n')
