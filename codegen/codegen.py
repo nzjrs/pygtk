@@ -91,7 +91,7 @@ class FileOutput:
 
 class Wrapper:
     type_tmpl = (
-        'PyTypeObject Py%(typename)s_Type = {\n'
+        'PyTypeObject G_GNUC_INTERNAL Py%(typename)s_Type = {\n'
         '    PyObject_HEAD_INIT(NULL)\n'
         '    0,                                 /* ob_size */\n'
         '    "%(classname)s",                   /* tp_name */\n'
@@ -1287,16 +1287,17 @@ class SourceWriter:
         self.fp.write('\n\n')
 
     def write_type_declarations(self):
+        #todo use 'static' if used only in one file
         self.fp.write('/* ---------- forward type declarations ---------- */\n')
         for obj in self.parser.boxes:
             if not self.overrides.is_type_ignored(obj.c_name):
-                self.fp.write('PyTypeObject Py' + obj.c_name + '_Type;\n')
+                self.fp.write('PyTypeObject G_GNUC_INTERNAL Py' + obj.c_name + '_Type;\n')
         for obj in self.parser.objects:
             if not self.overrides.is_type_ignored(obj.c_name):
-                self.fp.write('PyTypeObject Py' + obj.c_name + '_Type;\n')
+                self.fp.write('PyTypeObject G_GNUC_INTERNAL Py' + obj.c_name + '_Type;\n')
         for interface in self.parser.interfaces:
             if not self.overrides.is_type_ignored(interface.c_name):
-                self.fp.write('PyTypeObject Py' + interface.c_name + '_Type;\n')
+                self.fp.write('PyTypeObject G_GNUC_INTERNAL Py' + interface.c_name + '_Type;\n')
         self.fp.write('\n')
 
     def write_body(self):
