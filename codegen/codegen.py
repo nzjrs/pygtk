@@ -733,9 +733,18 @@ _wrap__get_symbol_names(PyObject *self)
         for obj, bases in writer.get_classes():
             self.fp.write('    PyList_Append(pylist, '
                           'PyString_FromString("%s"));\n' % (obj.name))
+
         for name, cname, flags, docstring in functions:
             self.fp.write('    PyList_Append(pylist, '
                           'PyString_FromString("%s"));\n' % (name))
+
+        for enum in writer.get_enums():
+            self.fp.write('    PyList_Append(pylist, '
+                          'PyString_FromString("%s"));\n' % (enum.name))
+            for nick, value in enum.values:
+                name = value[len(self.overrides.modulename)+1:]
+                self.fp.write('    PyList_Append(pylist, '
+                              'PyString_FromString("%s"));\n' % (name))
 
         self.fp.write("    return pylist;\n}\n\n");
 
@@ -746,6 +755,8 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
     PyObject *d;
     char *name;
     static PyObject *modulename = NULL;
+    static PyObject *module = NULL;
+    static char *strip_prefix = "%s";
 
     if (!PyArg_ParseTuple(args, "Os", &d, &name))
         return NULL;
@@ -753,8 +764,14 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
     if (!modulename)
        modulename = PyString_FromString("%s");
 
-""" % self.overrides.modulename)
+    if (!module)
+       module = PyDict_GetItemString(d, "__module__");
+
+""" % (self.overrides.modulename.upper() + '_',
+       self.overrides.modulename))
+
         first = True
+        # Classes / GObjects
         for obj, bases in writer.get_classes():
             if first:
                 self.fp.write('    if (!strcmp(name, "%s")) {\n' % obj.name)
@@ -766,6 +783,7 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
                 obj.typecode)
         self.fp.write('    }\n')
 
+        # Functions
         for name, cname, flags, docstring in functions:
             self.fp.write('    else if (!strcmp(name, "%s")) {\n' % name)
             self.fp.write('        static PyMethodDef ml = { '
@@ -773,6 +791,36 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
                 name, cname, flags, docstring))
             self.fp.write('        return PyCFunction_NewEx(&ml, NULL, modulename);\n')
             self.fp.write('    }\n')
+
+        # Enums
+        def write_enum(enum, returnobj=False):
+            if returnobj:
+                ret = 'return '
+            else:
+                ret = ''
+            if enum.deftype == 'enum':
+                self.fp.write(
+                    '        %spyg_enum_add(module, "%s", strip_prefix, %s);\n'
+                    % (ret, enum.name, enum.typecode))
+            else:
+                self.fp.write(
+                    '    %spyg_flags_add(module, "%s", strip_prefix, %s);\n'
+                    % (ret, enum.name, enum.typecode))
+
+        strip_len = len(self.overrides.modulename)+1 # GTK_
+        for enum in writer.get_enums():
+            # XXX: Implement without typecodes
+            self.fp.write('    else if (!strcmp(name, "%s")) {\n' % enum.name)
+            write_enum(enum, returnobj=True)
+            self.fp.write('    }\n')
+
+            for nick, value in enum.values:
+                value = value[strip_len:]
+                self.fp.write('    else if (!strcmp(name, "%s")) {\n' % value)
+                write_enum(enum)
+                self.fp.write('        return PyObject_GetAttrString(module, "%s");\n' %
+                              value)
+                self.fp.write('    }\n')
 
         self.fp.write('    return Py_None;\n}\n\n');
 
@@ -1290,7 +1338,8 @@ class SourceWriter:
         wrapper = Wrapper(self.parser, None, self.overrides, self.fp)
         wrapper.write_functions(self, self.prefix)
 
-        self.write_enums()
+        if not self.overrides.dynamicnamespace:
+            self.write_enums()
         self.write_extension_init()
         self.write_registers()
 
@@ -1367,17 +1416,24 @@ class SourceWriter:
                 instance.write_class()
                 self.fp.write('\n')
 
+    def get_enums(self):
+        enums = []
+        for enum in self.parser.enums:
+            if self.overrides.is_type_ignored(enum.c_name):
+                continue
+            enums.append(enum)
+        return enums
+
     def write_enums(self):
         if not self.parser.enums:
             return
+
         self.fp.write('\n/* ----------- enums and flags ----------- */\n\n')
         self.fp.write(
             'void\n' + self.prefix +
             '_add_constants(PyObject *module, const gchar *strip_prefix)\n{\n')
 
-        for enum in self.parser.enums:
-            if self.overrides.is_type_ignored(enum.c_name):
-                continue
+        for enum in self.get_enums():
             if enum.typecode is None:
                 for nick, value in enum.values:
                     self.fp.write(

@@ -242,7 +242,6 @@ init_gtkimpl(void)
 	
     _pygtk_register_boxed_types(d);
     pygtk_register_classes(d);
-    pygtk_add_constants(m, "GTK_");
     pygtk_add_extra_constants(m);
     pygtk_add_stock_items(d);
     
