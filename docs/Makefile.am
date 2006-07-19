@@ -1,4 +1,6 @@
 REF_VERSION = $(PYGTK_MAJOR_VERSION).$(PYGTK_MINOR_VERSION)
+FIX_XREF = ./fixxref.py
+FIX_REF_INDEX_DIRS = -i $(datadir)/gtk-doc/html/pygobject
 
 XMLFILES = 						\
 	reference/pygtk2-ref.xml			\
@@ -567,18 +569,22 @@ HTML_DATA = 						\
 	html/index.sgml					\
 	html/pygtk.devhelp
 
-BUILT_SOURCES = build_stamp $(HTML_DATA)
-CLEANFILES = build_stamp $(HTML_DATA) 
-EXTRA_DIST = $(XMLFILES)
+BUILT_SOURCES = build_stamp $(HTML_DATA) reference/version.xml \
+		reference/builddate.xml
+CLEANFILES = build_stamp $(HTML_DATA) reference/version.xml \
+		reference/builddate.xml
+EXTRA_DIST = $(XMLFILES) reference/version.xml.in
 
 HTML_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/ref-html-style.xsl
 PDF_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/pdf-style.xsl
 
 build_stamp: reference ${XMLFILES}
+	date '+%B %d, %Y' > reference/builddate.xml
 	xsltproc --nonet --xinclude -o html/ \
                  --stringparam gtkdoc.bookname "pygtk" \
                  --stringparam gtkdoc.version ${REF_VERSION} \
                  ${HTML_STYLE} reference/pygtk2-ref.xml
+	python ${FIX_XREF} ${FIX_REF_INDEX_DIRS} html
 	touch $@
 
 pdf: reference ${XMLFILES}
