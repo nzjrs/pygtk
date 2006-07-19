@@ -579,7 +579,8 @@ HTML_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/ref-html-style.xsl
 PDF_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/pdf-style.xsl
 
 build_stamp: reference ${XMLFILES}
-	date '+%B %d, %Y' > reference/builddate.xml
+	python -c 'import datetime; print datetime.date.today()' \
+		 > reference/builddate.xml
 	xsltproc --nonet --xinclude -o html/ \
                  --stringparam gtkdoc.bookname "pygtk" \
                  --stringparam gtkdoc.version ${REF_VERSION} \
