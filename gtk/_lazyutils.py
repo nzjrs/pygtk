@@ -40,24 +40,22 @@ class LazyNamespace(ModuleType):
         ModuleType.__init__(self, locals['__name__'])
         self._imports = {}
 
-        symbols = {}
-        for symbol in module._get_symbol_names():
-            symbols[symbol] = None
-
         ns = self.__dict__
         ns.update(locals)
-        ns.update(__all__=ns.keys() + symbols.keys(),
-                  __dict__=ns,
+        lazy_symbols = {}
+        for symbol in module._get_symbol_names():
+            lazy_symbols[symbol] = ns[symbol] = None
+
+        ns.update(__dict__=ns,
                   __bases__=(ModuleType,),
                   add_submodule=self.add_submodule)
 
         def __getattribute__(_, name):
+            if name in lazy_symbols:
+                return module._get_symbol(ns, name)
             v = ns.get(name, _marker)
             if v is not _marker:
                 return v
-
-            if name in symbols:
-                return module._get_symbol(ns, name)
             elif name in self._imports:
                 m = __import__(self._imports[name], {}, {}, ' ')
                 ns[name] = m
