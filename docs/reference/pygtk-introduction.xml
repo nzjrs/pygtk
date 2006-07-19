@@ -5,107 +5,110 @@
   <chapter id="pygtk-introduction">
   <title>Introduction</title>
 
-  <para>This document describes most of the <literal>PyGTK</literal>
-version 2.0 through 2.6 classes and their methods and associated
-functions. Deprecated classes, functions and methods have been specifically
-left out of this reference though classes that have become deprecated since
-PyGTK 2.0 have been left in but annotated with a deprecation warning. I have
-attempted to document as much of the <literal>PyGTK</literal>
-<literal>API</literal> as I can but there are undoubtedly errors and
-omissions. If you discover any of these please send me email at
-<email><ulink
-url="mailto:finlay@moeraki.com">finlay@moeraki.com</ulink></email> or file a
-bug report at <ulink url="http://bugzilla.gnome.org">bugzilla.gnome.org</ulink>
-for the <literal>pygtk</literal> project. Specific areas that have not been
-documented include:</para>
+  <para>This document describes most of the <literal>PyGTK</literal> version
+  2.0 through 2.10 classes and their methods and associated
+  functions. Deprecated classes, functions and methods have been
+  specifically left out of this reference though classes that have become
+  deprecated since PyGTK 2.0 have been left in but annotated with a
+  deprecation warning. I have attempted to document as much of the
+  <literal>PyGTK</literal> <literal>API</literal> as I can but there are
+  undoubtedly errors and omissions. If you discover any of these please send
+  me email at <email><ulink
+  url="mailto:finlay@moeraki.com">finlay@moeraki.com</ulink></email> or file
+  a bug report at <ulink
+  url="http://bugzilla.gnome.org">bugzilla.gnome.org</ulink> for the
+  <literal>pygtk</literal> project. Specific areas that have not been
+  documented include:</para>
 
   <itemizedlist>
     <listitem>
-      <simpara>The ATK classes</simpara>
+      <simpara>The Cairo classes</simpara>
     </listitem>
   </itemizedlist>
 
   <para>This reference describes the API for <literal>PyGTK</literal> as of
-version 2.5.0+ and assumes that the additional API changes for version 2.6
-may be significant. There will undoubtedly be changes that are not reflected
-in this reference. The differences in the API between version 2.0 and
-previous versions are denoted in this reference with a Note that describes
-the availability of the object, constructor, method or function. Any of
-these that do not have a notation can be assumed to be available in all
-versions of PyGTK from 2.0 and up. In the case of properties and signals the
-availability is dependent on the version of the underlying GTK+, GDK or
-Pango libraries. These will be annotated appropriately in a similar
-fashion. The source code must be consulted if this reference and your
-version of <literal>PyGTK</literal> seem to differ. You are encouraged to
-use the latest version of <literal>PyGTK</literal> that is available. See
-the <ulink url="http://www.pygtk.org"><literal>PyGTK</literal>
-homepage</ulink> for more information and more resources on how to use PyGTK
-as well as help in its development.</para>
+  version 2.9.0+ and assumes that the additional API changes for version
+  2.10 may not be significant. There will undoubtedly be changes that are
+  not reflected in this reference. The differences in the API between
+  version 2.0 and previous versions are denoted in this reference with a
+  Note that describes the availability of the object, constructor, method or
+  function. Any of these that do not have a notation can be assumed to be
+  available in all versions of PyGTK from 2.0 and up. In the case of
+  properties and signals the availability is dependent on the version of the
+  underlying GTK+, GDK or Pango libraries. These will be annotated
+  appropriately in a similar fashion. The source code must be consulted if
+  this reference and your version of <literal>PyGTK</literal> seem to
+  differ. You are encouraged to use the latest version of
+  <literal>PyGTK</literal> that is available. See the <ulink
+  url="http://www.pygtk.org"><literal>PyGTK</literal> homepage</ulink> for
+  more information and more resources on how to use PyGTK as well as help in
+  its development.</para>
 
-  <para> The Reference contains a chapter for each
-<literal>PyGTK</literal> module (that corresponds to the underlying
-<literal>GTK+</literal> library) containing the class descriptions. The
-second chapter illustrates the <literal>PyGTK</literal> class hierarchy
-covering the gobject, gtk, gtk.gdk and pango modules.</para>
+  <para> The Reference contains a chapter for each <literal>PyGTK</literal>
+  module (that corresponds to the underlying <literal>GTK+</literal>
+  library) containing the class descriptions. The second chapter illustrates
+  the <literal>PyGTK</literal> class hierarchy covering the gobject, gtk,
+  gtk.gdk and pango modules.</para>
 
-  <para>The class descriptions are arranged alphabetically
-within the chapters. Currently there are five module chapters:</para>
+  <para>The class descriptions are arranged alphabetically within the
+  chapters. Currently there are five module chapters:</para>
 
   <variablelist>
     <varlistentry>
-      <term>The&nbsp;<literal>gobject</literal>&nbsp;module</term>
+      <term>The&nbsp;<literal>atk</literal>&nbsp;module</term>
       <listitem><simpara>The classes that are included in the
-<literal>gobject</literal> module of <literal>PyGTK</literal> and are
-accessed similar to: gobject.GObject. These classes are the base object
-classes that the <literal>gtk</literal> and <literal>gtk.gdk</literal>
-module classes are built on.</simpara>
+      <literal>atk</literal> module of <literal>PyGTK</literal> and are
+      accessed similar to: atk.Object. These classes are the base object
+      classes that provide accessibility support for the
+      <literal>gtk</literal> module classes.</simpara>
       </listitem>
     </varlistentry>
     <varlistentry>
       <term>The&nbsp;<literal>gtk</literal>&nbsp;module</term>
       <listitem><simpara>The classes that are included in the
-<literal>gtk</literal> module of <literal>PyGTK</literal> and are accessed
-similar to: gtk.Widget. These classes are the "higher" level widget classes
-that provide most of the user interface widgets used for application
-development.</simpara>
+      <literal>gtk</literal> module of <literal>PyGTK</literal> and are
+      accessed similar to: gtk.Widget. These classes are the "higher" level
+      widget classes that provide most of the user interface widgets used
+      for application development.</simpara>
       </listitem>
     </varlistentry>
     <varlistentry>
       <term>The&nbsp;<literal>gtk.gdk</literal>&nbsp;module</term>
       <listitem><simpara>The classes that are included in the
-<literal>gtk.gdk</literal> module of <literal>PyGTK</literal>. These classes
-are "lower" level classes that provide more fundamental capabilities that
-the <literal>gtk</literal> module widgets are built upon. These classes
-provide an abstract interface to the underlying window system (either X
-Window System or Microsoft Windows).</simpara>
+      <literal>gtk.gdk</literal> module of <literal>PyGTK</literal>. These
+      classes are "lower" level classes that provide more fundamental
+      capabilities that the <literal>gtk</literal> module widgets are built
+      upon. These classes provide an abstract interface to the underlying
+      window system (either X Window System or Microsoft Windows).</simpara>
       </listitem>
     </varlistentry>
     <varlistentry>
         <term>The&nbsp;<literal>gtk.glade</literal>&nbsp;module</term>
       <listitem><simpara>The classes that are included in the
-<literal>gtk.glade</literal> module of <literal>PyGTK</literal>. These
-classes provide access to the libglade functions that allow the
-dynamic loading of user interfaces from XML descriptions.</simpara>
+      <literal>gtk.glade</literal> module of <literal>PyGTK</literal>. These
+      classes provide access to the libglade functions that allow the
+      dynamic loading of user interfaces from XML descriptions.</simpara>
       </listitem>
     </varlistentry>
     <varlistentry>
       <term>The&nbsp;<literal>pango</literal>&nbsp;module</term>
       <listitem>
 	<simpara>The classes that are included in the
-<literal>pango</literal> module of <literal>PyGTK</literal>. These classes
-provide access to the Pango text layout and rendering engines. PyGTK
-supports a subset of the full Pango capability: mainly the high level layout
-capabilities exposed by the pango.Layout objects. The low level rendering
-capabilities have not been exposed mostly because there isn't a full GObject
-interface to the underlying Pango data structures. It's also likely that the
-rendering capabilities require more performance that Python can
-provide.</simpara>
+	<literal>pango</literal> module of <literal>PyGTK</literal>. These
+	classes provide access to the Pango text layout and rendering
+	engines. PyGTK supports a subset of the full Pango capability:
+	mainly the high level layout capabilities exposed by the
+	pango.Layout objects. The low level rendering capabilities have not
+	been exposed mostly because there isn't a full GObject interface to
+	the underlying Pango data structures. It's also likely that the
+	rendering capabilities require more performance that Python can
+	provide.</simpara>
       </listitem>
     </varlistentry>
   </variablelist>
 
-  <para>The <literal>atk</literal> module classes will be added in a later
-version of this Reference.</para>
+  <para>The <literal>gobject</literal> module is documented in the <link
+  linkend="pygobject-reference">PyGObject Reference Manual</link>.</para>
 
   <sect1>
     <title>Major Changes since Version 1.9</title>
@@ -506,21 +509,23 @@ important). The following calls have the same result:</para>
 </programlisting>
 
     <para>Parameters that are not keyword parameters are displayed in
-<emphasis>italic</emphasis> and must be specified positionally but may also
-be optional.</para>
+    <emphasis>italic</emphasis> and must be specified positionally but may
+    also be optional.</para>
 
   </sect1>
 
   <sect1 id="pygtk-reference-copyright">
     <title>Copyright and License Notice</title>
 
-    <para>The PyGTK 2.0 Reference is Copyright (C) 2004 John
-Finlay.</para>
+    <para>The PyGTK 2.0 Reference is Copyright (C) 2004-2006 John
+    Finlay.</para>
 
     <para>This work is licensed under the Creative Commons
-Attribution-ShareAlike License. To view a copy of this license, visit
-<ulink url="http://creativecommons.org/licenses/by-sa/1.0/">http://creativecommons.org/licenses/by-sa/1.0/</ulink> or send a letter to Creative
-Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.</para>
+    Attribution-ShareAlike License. To view a copy of this license, visit
+    <ulink
+    url="http://creativecommons.org/licenses/by-sa/1.0/">http://creativecommons.org/licenses/by-sa/1.0/</ulink>
+    or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford,
+    California 94305, USA.</para>
 
   </sect1>
 
