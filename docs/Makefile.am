@@ -280,7 +280,7 @@ XMLFILES = 						\
 	reference/pygtk-unixprint-constants.xml		\
 	reference/pygtk-unixprint-functions.xml
 
-HTMLdir = $(datadir)/devhelp/books/pygtk
+HTMLdir = $(datadir)/gtk-doc/html/pygtk
 HTML_DATA = 						\
 	html/atk-class-reference.html			\
 	html/atk-constants.html				\
