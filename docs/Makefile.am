@@ -1,6 +1,10 @@
 REF_VERSION = $(PYGTK_MAJOR_VERSION).$(PYGTK_MINOR_VERSION)
+FULL_VERSION = $(REF_VERSION).$(PYGTK_MICRO_VERSION)
+
 FIX_XREF = ./fixxref.py
 FIX_REF_INDEX_DIRS = -i $(datadir)/gtk-doc/html/pygobject
+HTML_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/ref-html-style.xsl
+PDF_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/pdf-style.xsl
 
 XMLFILES = 						\
 	reference/pygtk2-ref.xml			\
@@ -569,27 +573,45 @@ HTML_DATA = 						\
 	html/index.sgml					\
 	html/pygtk.devhelp
 
-BUILT_SOURCES = build_stamp $(HTML_DATA) reference/version.xml \
-		reference/builddate.xml
-CLEANFILES = build_stamp $(HTML_DATA) reference/version.xml \
-		reference/builddate.xml
-EXTRA_DIST = $(XMLFILES) reference/version.xml.in
+BUILT_SOURCES = 			\
+	build_stamp 			\
+	reference/builddate.xml		\
+	reference/version.xml 		\
+	$(HTML_DATA)
 
-HTML_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/ref-html-style.xsl
-PDF_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/pdf-style.xsl
+CLEANFILES = 				\
+	build_stamp 			\
+	reference/builddate.xml		\
+	reference/version.xml 		\
+	$(HTML_DATA)
 
-build_stamp: reference ${XMLFILES}
-	python -c 'import datetime; print datetime.date.today()' \
-		 > reference/builddate.xml
+EXTRA_DIST = 				\
+	$(XMLFILES) 			\
+	$(XSLFILES)
+
+REFERENCE_DEPS = 			\
+	reference/builddate.xml 	\
+	reference/version.xml 		\
+	reference 			\
+	$(XMLFILES)			\
+	$(XSLFILES)
+
+reference/builddate.xml:
+	@LANG=C $(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
+
+reference/version.xml:
+	@echo $(FULL_VERSION) > $@
+
+build_stamp: $(REFERENCE_DEPS)
 	xsltproc --nonet --xinclude -o html/ \
                  --stringparam gtkdoc.bookname "pygtk" \
                  --stringparam gtkdoc.version ${REF_VERSION} \
-                 ${HTML_STYLE} reference/pygtk2-ref.xml
+                 $(HTML_STYLE) reference/pygtk2-ref.xml
 	python ${FIX_XREF} ${FIX_REF_INDEX_DIRS} html
 	touch $@
 
-pdf: reference ${XMLFILES}
+pdf: $(REFERENCE_DEPS)
 	xsltproc --nonet --xinclude -o pygtk-ref.fo \
-	         ${PDF_STYLE) reference/pygtk2-ref.xml
+	         $(PDF_STYLE) reference/pygtk2-ref.xml
 	pdfxmltex pygtk-ref.fo >output </dev/null
 
