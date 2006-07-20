@@ -32,7 +32,7 @@ class Coverage(object):
                       self.wrapped,
                       total))
         else:
-            fd.write("***INFO*** There are no declared %s." % self.name)
+            fd.write("***INFO*** There are no declared %s.\n" % self.name)
 
 functions_coverage = Coverage("global functions")
 methods_coverage = Coverage("methods")
