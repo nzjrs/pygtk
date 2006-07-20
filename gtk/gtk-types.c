@@ -879,8 +879,6 @@ pygtk_tree_model_row_getitem(PyGtkTreeModelRow *self, gint column)
     PyObject *ret;
 
     n_columns = gtk_tree_model_get_n_columns(self->model);
-    if (column < 0)
-	column += n_columns;
     if (column < 0 || column >= n_columns) {
 	PyErr_SetString(PyExc_IndexError, "column index out of range");
         return NULL;
@@ -905,8 +903,6 @@ pygtk_tree_model_row_setitem(PyGtkTreeModelRow *self, gint column,
     }
 
     n_columns = gtk_tree_model_get_n_columns(self->model);
-    if (column < 0)
-	column += n_columns;
     if (column < 0 || column >= n_columns) {
 	PyErr_SetString(PyExc_IndexError, "column index out of range");
         return -1;
