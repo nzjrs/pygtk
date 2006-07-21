@@ -583,6 +583,7 @@ CLEANFILES = 				\
 	build_stamp 			\
 	reference/builddate.xml		\
 	reference/version.xml 		\
+	pygtk-ref.*			\
 	$(HTML_DATA)
 
 EXTRA_DIST = 				\
@@ -590,19 +591,18 @@ EXTRA_DIST = 				\
 	$(XSLFILES)
 
 REFERENCE_DEPS = 			\
-	reference/builddate.xml 	\
 	reference/version.xml 		\
 	reference 			\
 	$(XMLFILES)			\
 	$(XSLFILES)
 
-reference/builddate.xml:
+reference/builddate.xml: $(REFERENCE_DEPS)
 	@LANG=C $(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
 
-reference/version.xml:
+reference/version.xml: $(top_srcdir)/config.h
 	@echo $(FULL_VERSION) > $@
 
-build_stamp: $(REFERENCE_DEPS)
+build_stamp: $(REFERENCE_DEPS) reference/builddate.xml
 	xsltproc --nonet --xinclude -o html/ \
                  --stringparam gtkdoc.bookname "pygtk" \
                  --stringparam gtkdoc.version ${REF_VERSION} \
@@ -610,7 +610,7 @@ build_stamp: $(REFERENCE_DEPS)
 	python ${FIX_XREF} ${FIX_REF_INDEX_DIRS} html
 	touch $@
 
-pdf: $(REFERENCE_DEPS)
+pdf: $(REFERENCE_DEPS) reference/builddate.xml
 	xsltproc --nonet --xinclude -o pygtk-ref.fo \
 	         $(PDF_STYLE) reference/pygtk2-ref.xml
 	pdfxmltex pygtk-ref.fo >output </dev/null
