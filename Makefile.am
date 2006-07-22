@@ -4,7 +4,10 @@ if BUILD_GTK
   GTK_SUBDIR = gtk
 endif
 
-SUBDIRS = codegen . $(GTK_SUBDIR) docs examples tests 
+SUBDIRS = codegen . $(GTK_SUBDIR) examples tests 
+if ENABLE_DOCS
+SUBDIRS += docs
+endif
 
 PLATFORM_VERSION = 2.0
 
