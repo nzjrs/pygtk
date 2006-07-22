@@ -670,6 +670,7 @@ class GBoxedParam(Parameter):
 
 argtypes.matcher.register_reverse("GBoxed", GBoxedParam)
 
+
 class GBoxedReturn(ReturnType):
     def get_c_type(self):
         return self.props.get('c_type')
@@ -687,6 +688,17 @@ class GBoxedReturn(ReturnType):
                                 self.props['typename'])
 
 argtypes.matcher.register_reverse_ret("GBoxed", GBoxedReturn)
+
+
+class GdkRegionPtrReturn(GBoxedReturn):
+    def write_error_return(self):
+        self.wrapper.write_code("return gdk_region_new();")
+    def write_conversion(self):
+        self.props['typecode'] = 'PYGDK_TYPE_REGION'
+        self.props['typename'] = 'GdkRegion'
+        super(GdkRegionPtrReturn, self).write_conversion()
+
+argtypes.matcher.register_reverse_ret("GdkRegion*", GdkRegionPtrReturn)
 
 
 class GdkRectanglePtrParam(Parameter):
