@@ -837,39 +837,6 @@
   (return-type "gboolean")
 )
 
-;; From /opt/gtk2/include/gtk-2.0/gdk/gdkdisplaymanager.h
-
-(define-function gdk_display_manager_get_type
-  (c-name "gdk_display_manager_get_type")
-  (return-type "GType")
-)
-
-(define-function display_manager_get
-  (c-name "gdk_display_manager_get")
-  (return-type "GdkDisplayManager*")
-)
-
-(define-method get_default_display
-  (of-object "GdkDisplayManager")
-  (c-name "gdk_display_manager_get_default_display")
-  (return-type "GdkDisplay*")
-)
-
-(define-method set_default_display
-  (of-object "GdkDisplayManager")
-  (c-name "gdk_display_manager_set_default_display")
-  (return-type "none")
-  (parameters
-    '("GdkDisplay*" "display")
-  )
-)
-
-(define-method list_displays
-  (of-object "GdkDisplayManager")
-  (c-name "gdk_display_manager_list_displays")
-  (return-type "GSList*")
-)
-
 (define-method flush
   (of-object "GdkDisplay")
   (c-name "gdk_display_flush")
@@ -918,8 +885,6 @@
   (return-type "GdkWindow*")
 )
 
-;; From gdkdisplay.h
-
 (define-method warp_pointer
   (of-object "GdkDisplay")
   (c-name "gdk_display_warp_pointer")
@@ -930,6 +895,82 @@
     '("gint" "y")
   )
 )
+
+(define-virtual get_display_name
+  (of-object "GdkDisplay")
+  (return-type "const-gchar*")
+)
+
+(define-virtual get_n_screens
+  (of-object "GdkDisplay")
+  (return-type "gint")
+)
+
+(define-virtual get_screen
+  (of-object "GdkDisplay")
+  (return-type "GdkScreen*")
+  (parameters
+    '("gint" "screen_num")
+  )
+)
+
+(define-virtual get_default_screen
+  (of-object "GdkDisplay")
+  (return-type "GdkScreen*")
+)
+
+(define-virtual closed
+  (of-object "GdkDisplay")
+  (return-type "none")
+  (parameters
+    '("gboolean" "is_error")
+  )
+)
+
+
+
+;; From /opt/gtk2/include/gtk-2.0/gdk/gdkdisplaymanager.h
+
+(define-function gdk_display_manager_get_type
+  (c-name "gdk_display_manager_get_type")
+  (return-type "GType")
+)
+
+(define-function display_manager_get
+  (c-name "gdk_display_manager_get")
+  (return-type "GdkDisplayManager*")
+)
+
+(define-method get_default_display
+  (of-object "GdkDisplayManager")
+  (c-name "gdk_display_manager_get_default_display")
+  (return-type "GdkDisplay*")
+)
+
+(define-method set_default_display
+  (of-object "GdkDisplayManager")
+  (c-name "gdk_display_manager_set_default_display")
+  (return-type "none")
+  (parameters
+    '("GdkDisplay*" "display")
+  )
+)
+
+(define-method list_displays
+  (of-object "GdkDisplayManager")
+  (c-name "gdk_display_manager_list_displays")
+  (return-type "GSList*")
+)
+
+(define-virtual display_opened
+  (of-object "GdkDisplayManager")
+  (return-type "none")
+  (parameters
+    '("GdkDisplay*" "display")
+  )
+)
+
+;;
 
 (define-function display_open_default_libgtk_only
   (c-name "gdk_display_open_default_libgtk_only")
@@ -1506,6 +1547,270 @@
   (return-type "GdkRegion*")
   (caller-owns-return #t)
 )
+
+(define-virtual create_gc
+  (of-object "GdkDrawable")
+  (return-type "GdkGC*")
+  (parameters
+    '("GdkGCValues*" "values")
+    '("GdkGCValuesMask" "mask")
+  )
+)
+
+(define-virtual draw_rectangle
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gboolean" "filled")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
+)
+
+(define-virtual draw_arc
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gboolean" "filled")
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("gint" "angle1")
+    '("gint" "angle2")
+  )
+)
+
+(define-virtual draw_polygon
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("gboolean" "filled")
+    '("GdkPoint*" "points")
+    '("gint" "npoints")
+  )
+)
+
+(define-virtual draw_text
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkFont*" "font")
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("const-gchar*" "text")
+    '("gint" "text_length")
+  )
+)
+
+(define-virtual draw_text_wc
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkFont*" "font")
+    '("GdkGC*" "gc")
+    '("gint" "x")
+    '("gint" "y")
+    '("const-GdkWChar*" "text")
+    '("gint" "text_length")
+  )
+)
+
+(define-virtual draw_drawable
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkDrawable*" "src")
+    '("gint" "xsrc")
+    '("gint" "ysrc")
+    '("gint" "xdest")
+    '("gint" "ydest")
+    '("gint" "width")
+    '("gint" "height")
+  )
+)
+
+(define-virtual draw_points
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkPoint*" "points")
+    '("gint" "npoints")
+  )
+)
+
+(define-virtual draw_segments
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkSegment*" "segs")
+    '("gint" "nsegs")
+  )
+)
+
+(define-virtual draw_lines
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkPoint*" "points")
+    '("gint" "npoints")
+  )
+)
+
+(define-virtual draw_glyphs
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("PangoFont*" "font")
+    '("gint" "x")
+    '("gint" "y")
+    '("PangoGlyphString*" "glyphs")
+  )
+)
+
+(define-virtual draw_image
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkImage*" "image")
+    '("gint" "xsrc")
+    '("gint" "ysrc")
+    '("gint" "xdest")
+    '("gint" "ydest")
+    '("gint" "width")
+    '("gint" "height")
+  )
+)
+
+(define-virtual get_depth
+  (of-object "GdkDrawable")
+  (return-type "gint")
+)
+
+(define-virtual get_size
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("gint*" "width")
+    '("gint*" "height")
+  )
+)
+
+(define-virtual set_colormap
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkColormap*" "cmap")
+  )
+)
+
+(define-virtual get_colormap
+  (of-object "GdkDrawable")
+  (return-type "GdkColormap*")
+)
+
+(define-virtual get_visual
+  (of-object "GdkDrawable")
+  (return-type "GdkVisual*")
+)
+
+(define-virtual get_screen
+  (of-object "GdkDrawable")
+  (return-type "GdkScreen*")
+)
+
+(define-virtual get_image
+  (of-object "GdkDrawable")
+  (return-type "GdkImage*")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+  )
+)
+
+(define-virtual get_clip_region
+  (of-object "GdkDrawable")
+  (return-type "GdkRegion*")
+)
+
+(define-virtual get_visible_region
+  (of-object "GdkDrawable")
+  (return-type "GdkRegion*")
+)
+
+(define-virtual get_composite_drawable
+  (of-object "GdkDrawable")
+  (return-type "GdkDrawable*")
+  (parameters
+    '("gint" "x")
+    '("gint" "y")
+    '("gint" "width")
+    '("gint" "height")
+    '("gint*" "composite_x_offset")
+    '("gint*" "composite_y_offset")
+  )
+)
+
+(define-virtual draw_pixbuf
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkPixbuf*" "pixbuf")
+    '("gint" "src_x")
+    '("gint" "src_y")
+    '("gint" "dest_x")
+    '("gint" "dest_y")
+    '("gint" "width")
+    '("gint" "height")
+    '("GdkRgbDither" "dither")
+    '("gint" "x_dither")
+    '("gint" "y_dither")
+  )
+)
+
+(define-virtual draw_glyphs_transformed
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("PangoMatrix*" "matrix")
+    '("PangoFont*" "font")
+    '("gint" "x")
+    '("gint" "y")
+    '("PangoGlyphString*" "glyphs")
+  )
+)
+
+(define-virtual draw_trapezoids
+  (of-object "GdkDrawable")
+  (return-type "none")
+  (parameters
+    '("GdkGC*" "gc")
+    '("GdkTrapezoid*" "trapezoids")
+    '("gint" "n_trapezoids")
+  )
+)
+
+(define-virtual ref_cairo_surface
+  (of-object "GdkDrawable")
+  (return-type "cairo_surface_t*")
+)
+
 
 
 
@@ -2188,6 +2493,35 @@
 )
 
 
+(define-virtual get_values
+  (of-object "GdkGC")
+  (return-type "none")
+  (parameters
+    '("GdkGCValues*" "values")
+  )
+)
+
+(define-virtual set_values
+  (of-object "GdkGC")
+  (return-type "none")
+  (parameters
+    '("GdkGCValues*" "values")
+    '("GdkGCValuesMask" "mask")
+  )
+)
+
+(define-virtual set_dashes
+  (of-object "GdkGC")
+  (return-type "none")
+  (parameters
+    '("gint" "dash_offset")
+    '("gint8[]" "dash_list")
+    '("gint" "n")
+  )
+)
+
+
+
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkimage.h
 
 (define-function gdk_image_get_type
@@ -2539,6 +2873,16 @@
   (parameters
     '("guint32" "wc")
   )
+)
+
+(define-virtual direction_changed
+  (of-object "GdkKeymap")
+  (return-type "none")
+)
+
+(define-virtual keys_changed
+  (of-object "GdkKeymap")
+  (return-type "none")
 )
 
 
@@ -3536,6 +3880,12 @@
   (of-object "GdkScreen")
   (c-name "gtk_alternative_dialog_button_order")
   (return-type "gboolean")
+)
+
+
+(define-virtual size_changed
+  (of-object "GdkScreen")
+  (return-type "none")
 )
 
 ;; From /opt/gtk2/include/gtk-2.0/gdk/gdkselection.h
@@ -5063,6 +5413,8 @@
   )
 )
 
+;; From gdk-pixbuf-animation.h
+
 (define-function pixbuf_animation_get_type
   (c-name "gdk_pixbuf_animation_get_type")
   (return-type "GType")
@@ -5076,6 +5428,18 @@
     '("const-char*" "filename")
     '("GError**" "error")
   )
+)
+
+(define-method ref
+  (of-object "GdkPixbufAnimation")
+  (c-name "gdk_pixbuf_animation_ref")
+  (return-type "GdkPixbufAnimation*")
+)
+
+(define-method unref
+  (of-object "GdkPixbufAnimation")
+  (c-name "gdk_pixbuf_animation_unref")
+  (return-type "none")
 )
 
 (define-method get_width
@@ -5111,6 +5475,42 @@
   )
 )
 
+(ifdef GDK_PIXBUF_ENABLE_BACKEND
+
+(define-method non_anim_new
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_non_anim_new")
+  (return-type "GdkPixbufAnimation*")
+)
+
+(define-virtual is_static_image
+  (of-object "GdkPixbufAnimation")
+  (return-type "gboolean")
+)
+
+(define-virtual get_static_image
+  (of-object "GdkPixbufAnimation")
+  (return-type "GdkPixbuf*")
+)
+
+(define-virtual get_size
+  (of-object "GdkPixbufAnimation")
+  (return-type "none")
+  (parameters
+    '("int*" "width")
+    '("int*" "height")
+  )
+)
+
+(define-virtual get_iter
+  (of-object "GdkPixbufAnimation")
+  (return-type "GdkPixbufAnimationIter*")
+  (parameters
+    '("const-GTimeVal*" "start_time")
+  )
+)
+)
+
 (define-function pixbuf_animation_iter_get_type
   (c-name "gdk_pixbuf_animation_iter_get_type")
   (return-type "GType")
@@ -5143,6 +5543,110 @@
   )
 )
 
+(ifdef GDK_PIXBUF_ENABLE_BACKEND
+
+(define-virtual get_delay_time
+  (of-object "GdkPixbufAnimationIter")
+  (return-type "int")
+)
+
+(define-virtual get_pixbuf
+  (of-object "GdkPixbufAnimationIter")
+  (return-type "GdkPixbuf*")
+)
+
+(define-virtual on_currently_loading_frame
+  (of-object "GdkPixbufAnimationIter")
+  (return-type "gboolean")
+)
+
+(define-virtual advance
+  (of-object "GdkPixbufAnimationIter")
+  (return-type "gboolean")
+  (parameters
+    '("const-GTimeVal*" "current_time")
+  )
+)
+)
+
+
+;; From gdk-pixbuf-core.h
+
+(define-function pixbuf_error_quark
+  (c-name "gdk_pixbuf_error_quark")
+  (return-type "GQuark")
+)
+
+(define-function pixbuf_get_type
+  (c-name "gdk_pixbuf_get_type")
+  (return-type "GType")
+)
+
+(define-method ref
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_ref")
+  (return-type "GdkPixbuf*")
+)
+
+(define-method unref
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_unref")
+  (return-type "none")
+)
+
+(define-function pixbuf_new_from_file_at_scale
+  (c-name "gdk_pixbuf_new_from_file_at_scale")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("const-char*" "filename")
+    '("int" "width")
+    '("int" "height")
+    '("gboolean" "preserve_aspect_ratio")
+    '("GError**" "error")
+  )
+)
+
+(define-method save_to_callbackv
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_save_to_callbackv")
+  (return-type "gboolean")
+  (parameters
+    '("GdkPixbufSaveFunc" "save_func")
+    '("gpointer" "user_data")
+    '("const-char*" "type")
+    '("char**" "option_keys")
+    '("char**" "option_values")
+    '("GError**" "error")
+  )
+)
+
+(define-method save_to_buffer
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_save_to_buffer")
+  (return-type "gboolean")
+  (parameters
+    '("gchar**" "buffer")
+    '("gsize*" "buffer_size")
+    '("const-char*" "type")
+    '("GError**" "error")
+  )
+  (varargs #t)
+)
+
+(define-method save_to_bufferv
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_save_to_bufferv")
+  (return-type "gboolean")
+  (parameters
+    '("gchar**" "buffer")
+    '("gsize*" "buffer_size")
+    '("const-char*" "type")
+    '("char**" "option_keys")
+    '("char**" "option_values")
+    '("GError**" "error")
+  )
+)
+
 (define-method get_option
   (of-object "GdkPixbuf")
   (c-name "gdk_pixbuf_get_option")
@@ -5151,6 +5655,35 @@
     '("const-char*" "key")
   )
 )
+
+;; From gdk-pixbuf-enum-types.h
+
+(define-function pixbuf_alpha_mode_get_type
+  (c-name "gdk_pixbuf_alpha_mode_get_type")
+  (return-type "GType")
+)
+
+(define-function colorspace_get_type
+  (c-name "gdk_colorspace_get_type")
+  (return-type "GType")
+)
+
+(define-function pixbuf_error_get_type
+  (c-name "gdk_pixbuf_error_get_type")
+  (return-type "GType")
+)
+
+(define-function interp_type_get_type
+  (c-name "gdk_interp_type_get_type")
+  (return-type "GType")
+)
+
+(define-function pixbuf_rotation_get_type
+  (c-name "gdk_pixbuf_rotation_get_type")
+  (return-type "GType")
+)
+
+
 
 (define-function pixbuf_get_formats
   (c-name "gdk_pixbuf_get_formats")
@@ -5195,6 +5728,47 @@
   (c-name "gdk_pixbuf_format_is_writable")
   (return-type "gboolean")
 )
+
+(define-method is_scalable
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_is_scalable")
+  (return-type "gboolean")
+)
+
+(define-method is_disabled
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_is_disabled")
+  (return-type "gboolean")
+)
+
+(define-method set_disabled
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_set_disabled")
+  (return-type "none")
+  (parameters
+    '("gboolean" "disabled")
+  )
+)
+
+(define-method get_license
+  (of-object "GdkPixbufFormat")
+  (c-name "gdk_pixbuf_format_get_license")
+  (return-type "gchar*")
+)
+
+(ifdef GDK_PIXBUF_ENABLE_BACKEND
+
+(define-method set_option
+  (of-object "GdkPixbuf")
+  (c-name "gdk_pixbuf_set_option")
+  (return-type "gboolean")
+  (parameters
+    '("const-gchar*" "key")
+    '("const-gchar*" "value")
+  )
+)
+)
+
 
 
 ;; From /opt/gnome/include/gtk-2.0/gdk-pixbuf/gdk-pixbuf-loader.h
@@ -5278,6 +5852,38 @@
   (return-type "GdkPixbufFormat*")
 )
 
+(define-virtual size_prepared
+  (of-object "GdkPixbufLoader")
+  (return-type "none")
+  (parameters
+    '("int" "width")
+    '("int" "height")
+  )
+)
+
+(define-virtual area_prepared
+  (of-object "GdkPixbufLoader")
+  (return-type "none")
+)
+
+(define-virtual area_updated
+  (of-object "GdkPixbufLoader")
+  (return-type "none")
+  (parameters
+    '("int" "x")
+    '("int" "y")
+    '("int" "width")
+    '("int" "height")
+  )
+)
+
+(define-virtual closed
+  (of-object "GdkPixbufLoader")
+  (return-type "none")
+)
+
+
+
 ;; From gdk-pixbuf-simple-anim.h
  
 (define-function pixbuf_simple_anim_get_type
@@ -5322,6 +5928,60 @@
     '("gboolean" "horizontal")
   )
 )
+
+;; From gdk-pixdata.h
+
+(define-method serialize
+  (of-object "GdkPixdata")
+  (c-name "gdk_pixdata_serialize")
+  (return-type "guint8*")
+  (parameters
+    '("guint*" "stream_length_p")
+  )
+)
+
+(define-method deserialize
+  (of-object "GdkPixdata")
+  (c-name "gdk_pixdata_deserialize")
+  (return-type "gboolean")
+  (parameters
+    '("guint" "stream_length")
+    '("const-guint8*" "stream")
+    '("GError**" "error")
+  )
+)
+
+(define-method from_pixbuf
+  (of-object "GdkPixdata")
+  (c-name "gdk_pixdata_from_pixbuf")
+  (return-type "gpointer")
+  (parameters
+    '("const-GdkPixbuf*" "pixbuf")
+    '("gboolean" "use_rle")
+  )
+)
+
+(define-function pixbuf_from_pixdata
+  (c-name "gdk_pixbuf_from_pixdata")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("const-GdkPixdata*" "pixdata")
+    '("gboolean" "copy_pixels")
+    '("GError**" "error")
+  )
+)
+
+(define-method to_csource
+  (of-object "GdkPixdata")
+  (c-name "gdk_pixdata_to_csource")
+  (return-type "GString*")
+  (parameters
+    '("const-gchar*" "name")
+    '("GdkPixdataDumpType" "dump_type")
+  )
+)
+
+
 
 ;;
 

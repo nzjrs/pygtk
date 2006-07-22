@@ -1,5 +1,47 @@
 2006-07-22  John Finlay  <finlay@moeraki.com>
 
+	* codegen/reversewrapper.py (VoidReturn.write_conversion) 
+	(DoubleReturn.write_conversion, GBoxedReturn.write_conversion): Use
+	failure_exception instead of failure_cleanup
+	(GtkTreePathReturn): Add.
+
+	* gtk/gdk-base.defs (get_display_name, get_n_screens, get_screen) 
+	(get_default_screen, closed): Add GdkDisplay virtual defs
+	(create_gc, draw_rectangle, draw_arc, draw_polygon, draw_text) 
+	(draw_text_wc, draw_drawable, draw_points, draw_segments) 
+	(draw_lines, draw_glyphs, draw_image, get_depth, get_size) 
+	(set_colormap, get_colormap, get_visual, get_screen, get_image) 
+	(get_clip_region, get_visible_region, get_composite_drawable) 
+	(draw_pixbuf, draw_glyphs_transformed, draw_trapezoids) 
+	(ref_cairo_surface): Add GdkDrawable virtual defs
+	(get_values, set_values, set_dashes): Add GdkGC virtual defs
+	(direction_changed, keys_changed): Add GdkKeymap virtual defs
+	(size_changed): Add GdkScreen virtual def
+	(gdk_pixbuf_animation_ref, pixbuf_animation_unref): Add
+	GdkPixbufAnimation method defs
+	(non_anim_new, is_static_image, get_static_image, get_size) 
+	(get_iter): Add GdkPixbufAnimation method and virtual defs with
+	GDK_PIXBUF_ENABLE_BACKEND ifdef
+	(get_delay_time, get_pixbuf, on_currently_loading_frame, advance): Add
+	GdkPixbufAnimationIter virtual defs with GDK_PIXBUF_ENABLE_BACKEND
+	ifdef
+	(pixbuf_error_quark, pixbuf_get_type, ref, unref)
+	(pixbuf_new_from_file_at_scale, save_to_callbackv) 
+	(save_to_buffer, save_to_bufferv): Add misc GdkPixbuf method and
+	function defs
+	(is_scalable, is_disabled, set_disabled, get_license): Add
+	GdkPixbufFormat methods defs
+	(set_option): Add GdkPixbuf method def with GDK_PIXBUF_ENABLE_BACKEND
+	ifdef
+	(size_prepared, area_prepared, area_updated, closed): Add
+	GdkPixbufLoader virtual defs
+	(serialize, deserialize, from_pixbuf, pixbuf_from_pixdata) 
+	(to_csource): Add GdkPixdata method and function defs
+
+	* gtk/gdk-2.10.defs (composited_changed): Add GdkScreen virtual def
+
+	* gtk/gdk.override (gdk_pixbuf_from_pixdata, gdk_pixdata_*): Ignore
+
 	* codegen/reversewrapper.py (GdkRegionPtrReturn): Add.
 
 2006-07-22  Gustavo J. A. M. Carneiro  <gjc@gnome.org>

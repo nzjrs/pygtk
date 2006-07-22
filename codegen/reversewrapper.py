@@ -426,7 +426,7 @@ class VoidReturn(ReturnType):
         self.wrapper.write_code(
             code=None,
             failure_expression="py_retval != Py_None",
-            failure_cleanup='PyErr_SetString(PyExc_TypeError, "retval should be None");')
+            failure_exception='PyErr_SetString(PyExc_TypeError, "retval should be None");')
 
 argtypes.matcher.register_reverse_ret('void', VoidReturn)
 argtypes.matcher.register_reverse_ret('none', VoidReturn)
@@ -578,6 +578,21 @@ class GtkTreePathParam(IntParam):
 argtypes.matcher.register_reverse("GtkTreePath*", GtkTreePathParam)
 
 
+class GtkTreePathReturn(ReturnType):
+    def get_c_type(self):
+        return self.props.get('c_type', 'GtkTreePath *')
+    def write_decl(self):
+        self.wrapper.add_declaration("GtkTreePath * retval;")
+    def write_error_return(self):
+        self.wrapper.write_code("return NULL;")
+    def write_conversion(self):
+        self.wrapper.write_code("retval = pygtk_tree_path_from_pyobject(py_retval);\n",
+                                failure_expression=('!retval'),
+                                failure_exception=('PyErr_SetString(PyExc_TypeError, "retval should be a GtkTreePath");'))
+
+argtypes.matcher.register_reverse_ret("GtkTreePath*", GtkTreePathReturn)
+
+
 class BooleanReturn(ReturnType):
     def get_c_type(self):
         return "gboolean"
@@ -640,7 +655,7 @@ class DoubleReturn(ReturnType):
         self.wrapper.write_code(
             code=None,
             failure_expression="!PyFloat_AsDouble(py_retval)",
-            failure_cleanup='PyErr_SetString(PyExc_TypeError, "retval should be a float");')
+            failure_exception='PyErr_SetString(PyExc_TypeError, "retval should be a float");')
         self.wrapper.write_code("retval = PyFloat_AsDouble(py_retval);")
 
 for argtype in ('float', 'double', 'gfloat', 'gdouble'):
@@ -682,7 +697,7 @@ class GBoxedReturn(ReturnType):
         self.wrapper.write_code(code = None,
             failure_expression=("!pyg_boxed_check(py_retval, %s)" %
                                 (self.props['typecode'],)),
-            failure_cleanup=('PyErr_SetString(PyExc_TypeError, "retval should be a %s");'
+            failure_exception=('PyErr_SetString(PyExc_TypeError, "retval should be a %s");'
                              % (self.props['typename'],)))
         self.wrapper.write_code('retval = pyg_boxed_get(py_retval, %s);' %
                                 self.props['typename'])
