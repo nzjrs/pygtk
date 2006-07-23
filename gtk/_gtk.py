@@ -20,10 +20,11 @@
 # USA
 
 from gtk import _gtkimpl
+import gtk
 
 l = locals()
 for symbol in _gtkimpl._get_symbol_names():
-    l[symbol] = _gtkimpl._get_symbol({}, symbol)
+    l[symbol] = _gtkimpl._get_symbol(gtk.__dict__, symbol)
 del l
 
 _PyGtk_API = _gtkimpl._PyGtk_API
