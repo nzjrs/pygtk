@@ -1,5 +1,49 @@
 ;; -*- scheme -*-
+; boxed definitions ...
+
+(define-boxed PaperSize
+  (in-module "Gtk")
+  (c-name "GtkPaperSize")
+  (gtype-id "GTK_TYPE_PAPER_SIZE")
+)
+
+(define-boxed RecentInfo
+  (in-module "Gtk")
+  (c-name "GtkRecentInfo")
+  (gtype-id "GTK_TYPE_RECENT_INFO")
+)
+
+(define-boxed TargetList
+  (in-module "Gtk")
+  (c-name "GtkTargetList")
+  (gtype-id "GTK_TYPE_TARGET_LIST")
+)
+
+; interface definitions ...
+
+(define-interface PrintOperationPreview
+  (in-module "Gtk")
+  (c-name "GtkPrintOperationPreview")
+  (gtype-id "GTK_TYPE_PRINT_OPERATION_PREVIEW")
+  (prerequisite "GObject")
+)
+
+(define-interface RecentChooser
+  (in-module "Gtk")
+  (c-name "GtkRecentChooser")
+  (gtype-id "GTK_TYPE_RECENT_CHOOSER")
+  (prerequisite "GtkObject")
+)
+
 ; object definitions ...
+
+(define-object Assistant
+  (in-module "Gtk")
+  (parent "GtkWindow")
+  (c-name "GtkAssistant")
+  (gtype-id "GTK_TYPE_ASSISTANT")
+)
+
 (define-object CellRendererAccel
   (in-module "Gtk")
   (parent "GtkCellRendererText")
@@ -14,10 +58,11 @@
   (gtype-id "GTK_TYPE_CELL_RENDERER_SPIN")
 )
 
-(define-boxed TargetList
+(define-object LinkButton
   (in-module "Gtk")
-  (c-name "GtkTargetList")
-  (gtype-id "GTK_TYPE_TARGET_LIST")
+  (parent "GtkButton")
+  (c-name "GtkLinkButton")
+  (gtype-id "GTK_TYPE_LINK_BUTTON")
 )
 
 (define-object PageSetup
@@ -42,12 +87,6 @@
   (implements "GtkPrintOperationPreview")
 )
 
-(define-interface PrintOperationPreview
-  (in-module "Gtk")
-  (c-name "GtkPrintOperationPreview")
-  (gtype-id "GTK_TYPE_PRINT_OPERATION_PREVIEW")
-)
-
 (define-object PrintSettings
   (in-module "Gtk")
   (parent "GObject")
@@ -55,10 +94,28 @@
   (gtype-id "GTK_TYPE_PRINT_SETTINGS")
 )
 
-(define-interface RecentChooser
+(define-object RecentChooserDialog
   (in-module "Gtk")
-  (c-name "GtkRecentChooser")
-  (gtype-id "GTK_TYPE_RECENT_CHOOSER")
+  (parent "GtkDialog")
+  (c-name "GtkRecentChooserDialog")
+  (gtype-id "GTK_TYPE_RECENT_CHOOSER_DIALOG")
+  (implements "GtkRecentChooser")
+)
+
+(define-object RecentChooserMenu
+  (in-module "Gtk")
+  (parent "GtkMenu")
+  (c-name "GtkRecentChooserMenu")
+  (gtype-id "GTK_TYPE_RECENT_CHOOSER_MENU")
+  (implements "GtkRecentChooser")
+)
+
+(define-object RecentChooserWidget
+  (in-module "Gtk")
+  (parent "GtkVBox")
+  (c-name "GtkRecentChooserWidget")
+  (gtype-id "GTK_TYPE_RECENT_CHOOSER_WIDGET")
+  (implements "GtkRecentChooser")
 )
 
 (define-object RecentFilter
@@ -82,57 +139,9 @@
   (gtype-id "GTK_TYPE_STATUS_ICON")
 )
 
-(define-object RecentChooserMenu
-  (in-module "Gtk")
-  (parent "GtkMenu")
-  (c-name "GtkRecentChooserMenu")
-  (gtype-id "GTK_TYPE_RECENT_CHOOSER_MENU")
-  (implements "GtkRecentChooser")
-)
+; pointer definitions ...
 
-(define-object LinkButton
-  (in-module "Gtk")
-  (parent "GtkButton")
-  (c-name "GtkLinkButton")
-  (gtype-id "GTK_TYPE_LINK_BUTTON")
-)
-
-(define-object RecentChooserWidget
-  (in-module "Gtk")
-  (parent "GtkVBox")
-  (c-name "GtkRecentChooserWidget")
-  (gtype-id "GTK_TYPE_RECENT_CHOOSER_WIDGET")
-  (implements "GtkRecentChooser")
-)
-
-(define-object RecentChooserDialog
-  (in-module "Gtk")
-  (parent "GtkDialog")
-  (c-name "GtkRecentChooserDialog")
-  (gtype-id "GTK_TYPE_RECENT_CHOOSER_DIALOG")
-  (implements "GtkRecentChooser")
-)
-
-(define-object Assistant
-  (in-module "Gtk")
-  (parent "GtkWindow")
-  (c-name "GtkAssistant")
-  (gtype-id "GTK_TYPE_ASSISTANT")
-)
-
-(define-boxed PaperSize
-  (in-module "Gtk")
-  (c-name "GtkPaperSize")
-  (gtype-id "GTK_TYPE_PAPER_SIZE")
-)
-
-(define-boxed RecentInfo
-  (in-module "Gtk")
-  (c-name "GtkRecentInfo")
-  (gtype-id "GTK_TYPE_RECENT_INFO")
-)
-
-;; Enumerations and flags ...
+;; Enumerations ...
 
 (define-enum AssistantPageType
   (in-module "Gtk")
@@ -157,25 +166,15 @@
   )
 )
 
-(define-enum SensitivityType
+(define-enum PageOrientation
   (in-module "Gtk")
-  (c-name "GtkSensitivityType")
-  (gtype-id "GTK_TYPE_SENSITIVITY_TYPE")
+  (c-name "GtkPageOrientation")
+  (gtype-id "GTK_TYPE_PAGE_ORIENTATION")
   (values
-    '("auto" "GTK_SENSITIVITY_AUTO")
-    '("on" "GTK_SENSITIVITY_ON")
-    '("off" "GTK_SENSITIVITY_OFF")
-  )
-)
-
-(define-enum PrintPages
-  (in-module "Gtk")
-  (c-name "GtkPrintPages")
-  (gtype-id "GTK_TYPE_PRINT_PAGES")
-  (values
-    '("all" "GTK_PRINT_PAGES_ALL")
-    '("current" "GTK_PRINT_PAGES_CURRENT")
-    '("ranges" "GTK_PRINT_PAGES_RANGES")
+    '("portrait" "GTK_PAGE_ORIENTATION_PORTRAIT")
+    '("landscape" "GTK_PAGE_ORIENTATION_LANDSCAPE")
+    '("reverse-portrait" "GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT")
+    '("reverse-landscape" "GTK_PAGE_ORIENTATION_REVERSE_LANDSCAPE")
   )
 )
 
@@ -190,15 +189,60 @@
   )
 )
 
-(define-enum PageOrientation
+(define-enum PrintDuplex
   (in-module "Gtk")
-  (c-name "GtkPageOrientation")
-  (gtype-id "GTK_TYPE_PAGE_ORIENTATION")
+  (c-name "GtkPrintDuplex")
+  (gtype-id "GTK_TYPE_PRINT_DUPLEX")
   (values
-    '("portrait" "GTK_PAGE_ORIENTATION_PORTRAIT")
-    '("landscape" "GTK_PAGE_ORIENTATION_LANDSCAPE")
-    '("reverse-portrait" "GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT")
-    '("reverse-landscape" "GTK_PAGE_ORIENTATION_REVERSE_LANDSCAPE")
+    '("simplex" "GTK_PRINT_DUPLEX_SIMPLEX")
+    '("horizontal" "GTK_PRINT_DUPLEX_HORIZONTAL")
+    '("vertical" "GTK_PRINT_DUPLEX_VERTICAL")
+  )
+)
+
+(define-enum PrintError
+  (in-module "Gtk")
+  (c-name "GtkPrintError")
+  (gtype-id "GTK_TYPE_PRINT_ERROR")
+  (values
+    '("general" "GTK_PRINT_ERROR_GENERAL")
+    '("internal-error" "GTK_PRINT_ERROR_INTERNAL_ERROR")
+    '("nomem" "GTK_PRINT_ERROR_NOMEM")
+  )
+)
+
+(define-enum PrintOperationAction
+  (in-module "Gtk")
+  (c-name "GtkPrintOperationAction")
+  (gtype-id "GTK_TYPE_PRINT_OPERATION_ACTION")
+  (values
+    '("print-dialog" "GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG")
+    '("print" "GTK_PRINT_OPERATION_ACTION_PRINT")
+    '("preview" "GTK_PRINT_OPERATION_ACTION_PREVIEW")
+    '("export" "GTK_PRINT_OPERATION_ACTION_EXPORT")
+  )
+)
+
+(define-enum PrintOperationResult
+  (in-module "Gtk")
+  (c-name "GtkPrintOperationResult")
+  (gtype-id "GTK_TYPE_PRINT_OPERATION_RESULT")
+  (values
+    '("error" "GTK_PRINT_OPERATION_RESULT_ERROR")
+    '("apply" "GTK_PRINT_OPERATION_RESULT_APPLY")
+    '("cancel" "GTK_PRINT_OPERATION_RESULT_CANCEL")
+    '("in-progress" "GTK_PRINT_OPERATION_RESULT_IN_PROGRESS")
+  )
+)
+
+(define-enum PrintPages
+  (in-module "Gtk")
+  (c-name "GtkPrintPages")
+  (gtype-id "GTK_TYPE_PRINT_PAGES")
+  (values
+    '("all" "GTK_PRINT_PAGES_ALL")
+    '("current" "GTK_PRINT_PAGES_CURRENT")
+    '("ranges" "GTK_PRINT_PAGES_RANGES")
   )
 )
 
@@ -211,41 +255,6 @@
     '("normal" "GTK_PRINT_QUALITY_NORMAL")
     '("high" "GTK_PRINT_QUALITY_HIGH")
     '("draft" "GTK_PRINT_QUALITY_DRAFT")
-  )
-)
-
-(define-enum PrintDuplex
-  (in-module "Gtk")
-  (c-name "GtkPrintDuplex")
-  (gtype-id "GTK_TYPE_PRINT_DUPLEX")
-  (values
-    '("simplex" "GTK_PRINT_DUPLEX_SIMPLEX")
-    '("horizontal" "GTK_PRINT_DUPLEX_HORIZONTAL")
-    '("vertical" "GTK_PRINT_DUPLEX_VERTICAL")
-  )
-)
-
-(define-enum Unit
-  (in-module "Gtk")
-  (c-name "GtkUnit")
-  (gtype-id "GTK_TYPE_UNIT")
-  (values
-    '("pixel" "GTK_UNIT_PIXEL")
-    '("points" "GTK_UNIT_POINTS")
-    '("inch" "GTK_UNIT_INCH")
-    '("mm" "GTK_UNIT_MM")
-  )
-)
-
-(define-enum TreeViewGridLines
-  (in-module "Gtk")
-  (c-name "GtkTreeViewGridLines")
-  (gtype-id "GTK_TYPE_TREE_VIEW_GRID_LINES")
-  (values
-    '("none" "GTK_TREE_VIEW_GRID_LINES_NONE")
-    '("horizontal" "GTK_TREE_VIEW_GRID_LINES_HORIZONTAL")
-    '("vertical" "GTK_TREE_VIEW_GRID_LINES_VERTICAL")
-    '("both" "GTK_TREE_VIEW_GRID_LINES_BOTH")
   )
 )
 
@@ -266,53 +275,6 @@
   )
 )
 
-(define-enum PrintOperationResult
-  (in-module "Gtk")
-  (c-name "GtkPrintOperationResult")
-  (gtype-id "GTK_TYPE_PRINT_OPERATION_RESULT")
-  (values
-    '("error" "GTK_PRINT_OPERATION_RESULT_ERROR")
-    '("apply" "GTK_PRINT_OPERATION_RESULT_APPLY")
-    '("cancel" "GTK_PRINT_OPERATION_RESULT_CANCEL")
-    '("in-progress" "GTK_PRINT_OPERATION_RESULT_IN_PROGRESS")
-  )
-)
-
-(define-enum PrintOperationAction
-  (in-module "Gtk")
-  (c-name "GtkPrintOperationAction")
-  (gtype-id "GTK_TYPE_PRINT_OPERATION_ACTION")
-  (values
-    '("print-dialog" "GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG")
-    '("print" "GTK_PRINT_OPERATION_ACTION_PRINT")
-    '("preview" "GTK_PRINT_OPERATION_ACTION_PREVIEW")
-    '("export" "GTK_PRINT_OPERATION_ACTION_EXPORT")
-  )
-)
-
-(define-enum PrintError
-  (in-module "Gtk")
-  (c-name "GtkPrintError")
-  (gtype-id "GTK_TYPE_PRINT_ERROR")
-  (values
-    '("general" "GTK_PRINT_ERROR_GENERAL")
-    '("internal-error" "GTK_PRINT_ERROR_INTERNAL_ERROR")
-    '("nomem" "GTK_PRINT_ERROR_NOMEM")
-  )
-)
-
-(define-enum RecentSortType
-  (in-module "Gtk")
-  (c-name "GtkRecentSortType")
-  (gtype-id "GTK_TYPE_RECENT_SORT_TYPE")
-  (values
-    '("none" "GTK_RECENT_SORT_NONE")
-    '("mru" "GTK_RECENT_SORT_MRU")
-    '("lru" "GTK_RECENT_SORT_LRU")
-    '("custom" "GTK_RECENT_SORT_CUSTOM")
-  )
-)
-
 (define-enum RecentChooserError
   (in-module "Gtk")
   (c-name "GtkRecentChooserError")
@@ -320,20 +282,6 @@
   (values
     '("not-found" "GTK_RECENT_CHOOSER_ERROR_NOT_FOUND")
     '("invalid-uri" "GTK_RECENT_CHOOSER_ERROR_INVALID_URI")
-  )
-)
-
-(define-flags RecentFilterFlags
-  (in-module "Gtk")
-  (c-name "GtkRecentFilterFlags")
-  (gtype-id "GTK_TYPE_RECENT_FILTER_FLAGS")
-  (values
-    '("uri" "GTK_RECENT_FILTER_URI")
-    '("display-name" "GTK_RECENT_FILTER_DISPLAY_NAME")
-    '("mime-type" "GTK_RECENT_FILTER_MIME_TYPE")
-    '("application" "GTK_RECENT_FILTER_APPLICATION")
-    '("group" "GTK_RECENT_FILTER_GROUP")
-    '("age" "GTK_RECENT_FILTER_AGE")
   )
 )
 
@@ -352,6 +300,29 @@
   )
 )
 
+(define-enum RecentSortType
+  (in-module "Gtk")
+  (c-name "GtkRecentSortType")
+  (gtype-id "GTK_TYPE_RECENT_SORT_TYPE")
+  (values
+    '("none" "GTK_RECENT_SORT_NONE")
+    '("mru" "GTK_RECENT_SORT_MRU")
+    '("lru" "GTK_RECENT_SORT_LRU")
+    '("custom" "GTK_RECENT_SORT_CUSTOM")
+  )
+)
+
+(define-enum SensitivityType
+  (in-module "Gtk")
+  (c-name "GtkSensitivityType")
+  (gtype-id "GTK_TYPE_SENSITIVITY_TYPE")
+  (values
+    '("auto" "GTK_SENSITIVITY_AUTO")
+    '("on" "GTK_SENSITIVITY_ON")
+    '("off" "GTK_SENSITIVITY_OFF")
+  )
+)
+
 (define-enum TextBufferTargetInfo
   (in-module "Gtk")
   (c-name "GtkTextBufferTargetInfo")
@@ -360,6 +331,46 @@
     '("buffer-contents" "GTK_TEXT_BUFFER_TARGET_INFO_BUFFER_CONTENTS")
     '("rich-text" "GTK_TEXT_BUFFER_TARGET_INFO_RICH_TEXT")
     '("text" "GTK_TEXT_BUFFER_TARGET_INFO_TEXT")
+  )
+)
+
+(define-enum TreeViewGridLines
+  (in-module "Gtk")
+  (c-name "GtkTreeViewGridLines")
+  (gtype-id "GTK_TYPE_TREE_VIEW_GRID_LINES")
+  (values
+    '("none" "GTK_TREE_VIEW_GRID_LINES_NONE")
+    '("horizontal" "GTK_TREE_VIEW_GRID_LINES_HORIZONTAL")
+    '("vertical" "GTK_TREE_VIEW_GRID_LINES_VERTICAL")
+    '("both" "GTK_TREE_VIEW_GRID_LINES_BOTH")
+  )
+)
+
+(define-enum Unit
+  (in-module "Gtk")
+  (c-name "GtkUnit")
+  (gtype-id "GTK_TYPE_UNIT")
+  (values
+    '("pixel" "GTK_UNIT_PIXEL")
+    '("points" "GTK_UNIT_POINTS")
+    '("inch" "GTK_UNIT_INCH")
+    '("mm" "GTK_UNIT_MM")
+  )
+)
+
+;; Flags ...
+
+(define-flags RecentFilterFlags
+  (in-module "Gtk")
+  (c-name "GtkRecentFilterFlags")
+  (gtype-id "GTK_TYPE_RECENT_FILTER_FLAGS")
+  (values
+    '("uri" "GTK_RECENT_FILTER_URI")
+    '("display-name" "GTK_RECENT_FILTER_DISPLAY_NAME")
+    '("mime-type" "GTK_RECENT_FILTER_MIME_TYPE")
+    '("application" "GTK_RECENT_FILTER_APPLICATION")
+    '("group" "GTK_RECENT_FILTER_GROUP")
+    '("age" "GTK_RECENT_FILTER_AGE")
   )
 )
 

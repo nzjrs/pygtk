@@ -1324,12 +1324,14 @@
   (in-module "Gtk")
   (c-name "GtkCellEditable")
   (gtype-id "GTK_TYPE_CELL_EDITABLE")
+  (prerequisite "GtkWidget")
 )
 
 (define-interface CellLayout
   (in-module "Gtk")
   (c-name "GtkCellLayout")
   (gtype-id "GTK_TYPE_CELL_LAYOUT")
+  (prerequisite "GObject")
 )
 
 (define-interface Editable
@@ -1343,6 +1345,7 @@
   (in-module "Gtk")
   (c-name "GtkFileChooser")
   (gtype-id "GTK_TYPE_FILE_CHOOSER")
+  (prerequisite "GtkWidget")
 )
 
 (define-interface TreeDragDest
@@ -1361,12 +1364,15 @@
   (in-module "Gtk")
   (c-name "GtkTreeModel")
   (gtype-id "GTK_TYPE_TREE_MODEL")
+  (prerequisite "GObject")
 )
 
 (define-interface TreeSortable
   (in-module "Gtk")
   (c-name "GtkTreeSortable")
   (gtype-id "GTK_TYPE_TREE_SORTABLE")
+  (prerequisite "GtkTreeModel")
+  (prerequisite "GObject")
 )
 
 ;; Objects ...
@@ -1624,6 +1630,7 @@
   (parent "GtkBin")
   (c-name "GtkComboBox")
   (gtype-id "GTK_TYPE_COMBO_BOX")
+  (implements "GtkCellEditable")
   (implements "GtkCellLayout")
 )
 
@@ -1632,6 +1639,7 @@
   (parent "GtkComboBox")
   (c-name "GtkComboBoxEntry")
   (gtype-id "GTK_TYPE_COMBO_BOX_ENTRY")
+  (implements "GtkCellEditable")
   (implements "GtkCellLayout")
 )
 
@@ -2262,6 +2270,8 @@
   (parent "GtkEntry")
   (c-name "GtkSpinButton")
   (gtype-id "GTK_TYPE_SPIN_BUTTON")
+  (implements "GtkEditable")
+  (implements "GtkCellEditable")
 )
 
 (define-object Statusbar
@@ -2441,6 +2451,7 @@
   (c-name "GtkTreeModelSort")
   (gtype-id "GTK_TYPE_TREE_MODEL_SORT")
   (implements "GtkTreeModel")
+  (implements "GtkTreeDragSource")
   (implements "GtkTreeSortable")
 )
 
@@ -2635,16 +2646,18 @@
   (gtype-id "GTK_TYPE_TREE_PATH")
 )
 
-(define-object FileFolder
+(define-interface FileFolder
   (in-module "Gtk")
   (c-name "GtkFileFolder")
   (gtype-id "GTK_TYPE_FILE_FOLDER")
+  (prerequisite "GObject")
 )
 
-(define-object FileSystem
+(define-interface FileSystem
   (in-module "Gtk")
   (c-name "GtkFileSystem")
   (gtype-id "GTK_TYPE_FILE_SYSTEM")
+  (prerequisite "GObject")
 )
 
 (define-object FileSystemHandle
@@ -2666,6 +2679,7 @@
   (parent "GtkOldEditable")
   (c-name "GtkText")
   (gtype-id "GTK_TYPE_TEXT")
+  (implements "GtkEditable")
 )
 
 (define-object Tree
