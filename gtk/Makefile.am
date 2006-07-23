@@ -157,3 +157,7 @@ endif
 # could use pattern rules.  Perhaps we should rename gtk-types.c.
 gtk-types.c:
 	@:
+
+
+install-exec-hook: # Remove old deprecated modules
+	-$(LIBTOOL) --mode=uninstall rm -f $(pygtkdir)/_gtk.la

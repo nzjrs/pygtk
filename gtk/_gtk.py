@@ -26,3 +26,4 @@ for symbol in _gtkimpl._get_symbol_names():
     l[symbol] = _gtkimpl._get_symbol({}, symbol)
 del l
 
+_PyGtk_API = _gtkimpl._PyGtk_API
