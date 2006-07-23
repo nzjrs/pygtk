@@ -716,6 +716,41 @@ class GdkRegionPtrReturn(GBoxedReturn):
 argtypes.matcher.register_reverse_ret("GdkRegion*", GdkRegionPtrReturn)
 
 
+class PangoFontDescriptionReturn(GBoxedReturn):
+    def write_error_return(self):
+        self.wrapper.write_code("return pango_font_description_new();")
+    def write_conversion(self):
+        self.props['typecode'] = 'PANGO_TYPE_FONT_DESCRIPTION'
+        self.props['typename'] = 'PangoFontDescription'
+        super(PangoFontDescriptionReturn, self).write_conversion()
+
+argtypes.matcher.register_reverse_ret("PangoFontDescription*",
+                                      PangoFontDescriptionReturn)
+
+
+class PangoFontMetricsReturn(GBoxedReturn):
+    def write_error_return(self):
+        self.wrapper.write_code("return pango_font_metrics_new();")
+    def write_conversion(self):
+        self.props['typecode'] = 'PANGO_TYPE_FONT_METRICS'
+        self.props['typename'] = 'PangoFontMetrics'
+        super(PangoFontMetricsReturn, self).write_conversion()
+
+argtypes.matcher.register_reverse_ret("PangoFontMetrics*",
+                                      PangoFontMetricsReturn)
+
+
+class PangoLanguageReturn(GBoxedReturn):
+    def write_error_return(self):
+        self.wrapper.write_code("return pango_language_from_string(\"\");")
+    def write_conversion(self):
+        self.props['typecode'] = 'PANGO_TYPE_LANGUAGE'
+        self.props['typename'] = 'PangoLanguage'
+        super(PangoLanguageReturn, self).write_conversion()
+
+argtypes.matcher.register_reverse_ret("PangoLanguage*", PangoLanguageReturn)
+
+
 class GdkRectanglePtrParam(Parameter):
     def get_c_type(self):
         return self.props.get('c_type').replace('const-', 'const ')
