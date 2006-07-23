@@ -42,7 +42,7 @@ if ver < (2, 11, 1):
     raise ImportError(
         "PyGTK requires PyGObject 2.11.1 or higher, but %s was found" % (ver,))
 
-from gtk import _gtkimpl
+from gtk import _gtk
 import gdk
 
 if ltihooks:
@@ -55,12 +55,11 @@ from gtk.deprecation import _Deprecated, _DeprecatedConstant
 def _init():
     import sys
 
-    init_check = _gtkimpl._get_symbol(globals(), 'init_check')
     try:
         sys_path = sys.path[:]
 
         try:
-            init_check()
+            _gtk.init_check()
         except RuntimeError, e:
             print >> sys.stderr, "WARNING: %s" % e
     finally:
@@ -70,15 +69,14 @@ def _init():
             sys.path = sys_path
 
     # install the default log handlers
-    add_log_handlers = _gtkimpl._get_symbol(globals(), 'add_log_handlers')
-    add_log_handlers()
+    _gtk.add_log_handlers()
 
 keysyms = LazyModule('keysyms', locals())
 
 _init()
 
 # CAPI
-_PyGtk_API = _gtkimpl._PyGtk_API
+_PyGtk_API = _gtk._PyGtk_API
 
 gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
@@ -123,14 +121,14 @@ del _Deprecated, _DeprecatedConstant, _gobject, _init, _lazyutils
 
 # Do this as late as possible, so programs like pyflakes can check
 # everything above
-from gtk._gtkimpl import *
+from gtk._gtk import *
 
-# For testing, so you can just turn of dynamicnamespace in gtk.override
-if hasattr(_gtkimpl, '_get_symbol_names'):
-    import gtk
-    ns = LazyNamespace(_gtkimpl, locals())
-    ns.add_submodule('glade', '_glade')
-    ns.add_submodule('_gtk', 'gtk._gtk')
-    sys.modules['gtk'] = ns
-    sys.modules['gtk.glade'] = LazyModule('_glade', {})
+# # For testing, so you can just turn of dynamicnamespace in gtk.override
+# if hasattr(_gtk, '_get_symbol_names'):
+#     import gtk
+#     ns = LazyNamespace(_gtk, locals())
+#     ns.add_submodule('glade', '_glade')
+#     ns.add_submodule('_gtk', 'gtk._gtk')
+#     sys.modules['gtk'] = ns
+#     sys.modules['gtk.glade'] = LazyModule('_glade', {})
 

@@ -23,7 +23,7 @@ import os
 import sys
 import warnings
 
-from gtk._gtkimpl import DeprecationWarning
+from gtk._gtk import DeprecationWarning
 
 def _is_pydoc():
     if sys.argv:

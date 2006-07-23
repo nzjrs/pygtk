@@ -32,11 +32,11 @@ void pylibglade_register_classes(PyObject *d);
 extern PyMethodDef pylibglade_functions[];
 
 DL_EXPORT(void)
-init_glade(void)
+initglade(void)
 {
     PyObject *m, *d;
 
-    m = Py_InitModule("_glade", pylibglade_functions);
+    m = Py_InitModule("gtk.glade", pylibglade_functions);
     d = PyModule_GetDict(m);
 
     init_pygobject();

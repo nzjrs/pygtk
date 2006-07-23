@@ -25,8 +25,6 @@ pygtkexec_LTLIBRARIES =
 pygtkdir = $(pkgpythondir)/gtk
 pygtk_PYTHON = 			\
 	__init__.py 		\
-	_gtk.py			\
-	_lazyutils.py 		\
 	compat.py		\
 	deprecation.py		\
 	keysyms.py
@@ -99,26 +97,22 @@ EXTRA_DIST += 			\
 
 gdk.defs: $(GDK_DEFS)
 	$(CREATEDEFS) $@ $(GDK_DEFS)
-gdk.defs: Makefile
 
 gtk.defs: $(GTK_DEFS)
 	$(CREATEDEFS) $@ $(GTK_DEFS)
-gtk.defs: Makefile
 
 gdk-types.defs: $(GDK_TYPES_DEFS)
 	$(CREATEDEFS) $@ $(GDK_TYPES_DEFS)
-gdk-types.defs: Makefile
 
 gtk-types.defs: $(GTK_TYPES_DEFS)
 	$(CREATEDEFS) $@ $(GTK_TYPES_DEFS)
-gtk-types.defs: Makefile
 
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
 gtk.c: gdk-types.defs gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
-_gtkimpl_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
-_gtkimpl_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtkimpl
-_gtkimpl_la_LIBADD = $(GTK_LIBS)
-_gtkimpl_la_SOURCES = 		\
+_gtk_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
+_gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
+_gtk_la_LIBADD = $(GTK_LIBS)
+_gtk_la_SOURCES = 		\
 	gtk-types.c 		\
 	gtkmodule.c 		\
 	gtkobject-support.c 	\
@@ -128,14 +122,45 @@ _gtkimpl_la_SOURCES = 		\
 	pygtkcellrenderer.c	\
 	pygtktreemodel.h 	\
 	pygtktreemodel.c
-nodist__gtkimpl_la_SOURCES = gtk.c gdk.c
+nodist__gtk_la_SOURCES = gtk.c gdk.c
 if BUILD_GTK
-pygtkexec_LTLIBRARIES += _gtkimpl.la
+pygtkexec_LTLIBRARIES += _gtk.la
 defs_DATA += $(GDK_DEFS) $(GDK_TYPES_DEFS) $(GTK_DEFS) $(GTK_TYPES_DEFS) \
 	gdk.defs gtk.defs gdk-types.defs gtk-types.defs
 endif
+
+# libglade module
+LIBGLADE_DEFS = libglade.defs
+CLEANFILES += libglade.c
+EXTRA_DIST += $(LIBGLADE_DEFS) libglade.override
+libglade.c: $(LIBGLADE_DEFS) libglade.override
+glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
+glade_la_LIBADD = $(LIBGLADE_LIBS)
+glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
+glade_la_SOURCES = libglademodule.c
+nodist_glade_la_SOURCES = libglade.c
+if BUILD_LIBGLADE
+pygtkexec_LTLIBRARIES += glade.la
+defs_DATA += $(LIBGLADE_DEFS)
+endif
+
+# gtkunixprint module
+GTKUNIXPRINT_DEFS = gtkunixprint.defs
+CLEANFILES += gtkunixprint.c
+EXTRA_DIST += $(GTKUNIXPRINT_DEFS) gtkunixprint.override
+gtkunixprint.c: $(GTKUNIXPRINT_DEFS) gtkunixprint.override
+gtkunixprint_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTKUNIXPRINT_CFLAGS)
+gtkunixprint_la_LIBADD = $(GTKUNIXPRINT_LIBS)
+gtkunixprint_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgtkunixprint
+gtkunixprint_la_SOURCES = gtkunixprintmodule.c
+nodist_gtkunixprint_la_SOURCES = gtkunixprint.c
+if BUILD_GTKUNIXPRINT
+pkgpyexec_LTLIBRARIES = gtkunixprint.la
+defs_DATA += $(GTKUNIXPRINT_DEFS)
+endif
+
 if PLATFORM_WIN32
-_gtkimpl_la_CFLAGS  += -DPLATFORM_WIN32
+_gtk_la_CFLAGS  += -DPLATFORM_WIN32
 endif
 
 
