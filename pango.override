@@ -522,29 +522,22 @@ modulename pango
 %%
 import gobject.GObject as PyGObject_Type
 %%
-ignore-glob *_get_type
+ignore-glob
+  *_get_type
+  *_ref
+  *_unref
+  *_free
 %%
 ignore
   pango_color_copy
-  pango_color_free
   pango_attribute_copy
   pango_attribute_destroy
   pango_attribute_equal
-  pango_attr_list_ref
-  pango_attr_list_unref
-  pango_coverage_ref
-  pango_coverage_unref
   pango_font_description_equal
-  pango_font_description_free
-  pango_font_descriptions_free
   pango_font_map_free_families
-  pango_font_metrics_ref
-  pango_font_metrics_unref
   pango_font_get_coverage
   pango_font_find_shaper
-  pango_glyph_string_free
   pango_layout_get_log_attrs
-  pango_tab_array_free
 %%
 ignore
   pango_context_new
@@ -552,6 +545,7 @@ ignore
   pango_glyph_string_index_to_x
   pango_glyph_string_x_to_index
   pango_break
+  pango_default_break
   pango_shape
 %%
 override pango_attr_language_new kwargs
