@@ -40,6 +40,9 @@
     '("collate" "GTK_PRINT_CAPABILITY_COLLATE")
     '("reverse" "GTK_PRINT_CAPABILITY_REVERSE")
     '("scale" "GTK_PRINT_CAPABILITY_SCALE")
+    '("generate-pdf" "GTK_PRINT_CAPABILITY_GENERATE_PDF")
+    '("generate-ps" "GTK_PRINT_CAPABILITY_GENERATE_PS")
+    '("preview" "GTK_PRINT_CAPABILITY_PREVIEW")
   )
 )
 
@@ -170,6 +173,18 @@
   (return-type "gboolean")
 )
 
+(define-method accepts_pdf
+  (of-object "GtkPrinter")
+  (c-name "gtk_printer_accepts_pdf")
+  (return-type "gboolean")
+)
+
+(define-method accepts_ps
+  (of-object "GtkPrinter")
+  (c-name "gtk_printer_accepts_ps")
+  (return-type "gboolean")
+)
+
 (define-method compare
   (of-object "GtkPrinter")
   (c-name "gtk_printer_compare")
@@ -178,18 +193,7 @@
     '("GtkPrinter*" "b")
   )
 )
-(define-method accepts_pdf
-  (of-object "GtkPrinter")
-  (c-name "gtk_printer_accepts_pdf")
-  (return-type "gboolean")
-)
- 
-(define-method accepts_ps
-  (of-object "GtkPrinter")
-  (c-name "gtk_printer_accepts_ps")
-  (return-type "gboolean")
-)
- 
+
 (define-function enumerate_printers
   (c-name "gtk_enumerate_printers")
   (return-type "none")
@@ -201,6 +205,14 @@
   )
 )
  
+(define-virtual details_acquired
+  (of-object "GtkPrinter")
+  (return-type "none")
+  (parameters
+    '("gboolean" "success")
+  )
+)
+
 
 
 
@@ -291,6 +303,16 @@
     '("GDestroyNotify" "dnotify")
     '("GError**" "error")
   )
+)
+
+(define-function print_capabilities_get_type
+  (c-name "gtk_print_capabilities_get_type")
+  (return-type "GType")
+)
+
+(define-virtual status_changed
+  (of-object "GtkPrintJob")
+  (return-type "none")
 )
 
 
