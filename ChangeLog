@@ -1,5 +1,27 @@
 2006-07-23  John Finlay  <finlay@moeraki.com>
 
+	* atk.override (AtkObjectFactory__do_create_accessible)
+	(AtkObjectFactory__proxy_do_create_accessible)
+	(AtkUtil__do_add_global_event_listener)
+	(AtkUtil__proxy_do_add_global_event_listener)
+	(AtkUtil__do_remove_global_event_listener)
+	(AtkUtil__proxy_do_remove_global_event_listener)
+	(AtkUtil__do_add_key_event_listener)
+	(AtkUtil__proxy_do_add_key_event_listener)
+	(AtkUtil__do_remove_key_event_listener)
+	(AtkUtil__proxy_do_remove_key_event_listener): Ignore.
+
+	* codegen/reversewrapper.py (StringReturn): Add const-gchar* as a
+	StringReturn match.
+
+	* codegen/codegen.py (GInterfaceWrapper.write_virtuals): Don't write
+	interface_init if no proxies.
+
+	* atk.defs: Add get_type defs from atk-enum-types.h.
+	Add virtuals for Action, Component, Document, EditableText, Hyperlink,
+	Hypertext, Image, ObjectFactory, ImplementorIface, Object, Selection,
+	StreamableContent, Table. Text, Util and Value.
+
 	* gtk/Makefile.am (libglade.c, gtkunixprint.c): Add dependencies on
 	gtk-types.defs and gdk-types.defs
 
