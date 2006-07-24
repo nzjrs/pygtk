@@ -394,10 +394,12 @@ del ctype
 class StringReturn(ReturnType):
 
     def get_c_type(self):
-        return "char *"
+        return self.props.get('c_type', 'char *').replace('const-', 'const ')
+    #return "char *"
 
     def write_decl(self):
-        self.wrapper.add_declaration("char *retval;")
+        self.wrapper.add_declaration("%s retval;" % self.get_c_type())
+        #self.wrapper.add_declaration("char *retval;")
 
     def write_error_return(self):
         self.wrapper.write_code("return NULL;")
@@ -406,7 +408,7 @@ class StringReturn(ReturnType):
         self.wrapper.add_pyret_parse_item("s", "&retval", prepend=True)
         self.wrapper.write_code("retval = g_strdup(retval);", code_sink=self.wrapper.post_return_code)
 
-for ctype in ('char*', 'gchar*'):
+for ctype in ('char*', 'gchar*', 'const-gchar*'):
     argtypes.matcher.register_reverse_ret(ctype, StringReturn)
 del ctype
 

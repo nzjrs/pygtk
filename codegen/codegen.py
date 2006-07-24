@@ -1176,7 +1176,7 @@ class GInterfaceWrapper(GObjectWrapper):
                 sys.stderr.write('Could not write interface proxy %s.%s: %s\n'
                                 % (klass, meth.name, exc_info()))
 
-        if not proxies:
+        if not proxies or not [cname for name, cname in proxies if cname]:
             return
 
         ## Write an interface init function for this object
