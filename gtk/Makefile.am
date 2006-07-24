@@ -133,7 +133,7 @@ endif
 LIBGLADE_DEFS = libglade.defs
 CLEANFILES += libglade.c
 EXTRA_DIST += $(LIBGLADE_DEFS) libglade.override
-libglade.c: $(LIBGLADE_DEFS) libglade.override
+libglade.c: $(LIBGLADE_DEFS) libglade.override gdk-types.defs gtk-types.defs
 glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
 glade_la_LIBADD = $(LIBGLADE_LIBS)
 glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
@@ -148,7 +148,8 @@ endif
 GTKUNIXPRINT_DEFS = gtkunixprint.defs
 CLEANFILES += gtkunixprint.c
 EXTRA_DIST += $(GTKUNIXPRINT_DEFS) gtkunixprint.override
-gtkunixprint.c: $(GTKUNIXPRINT_DEFS) gtkunixprint.override
+gtkunixprint.c: $(GTKUNIXPRINT_DEFS) gtkunixprint.override gdk-types.defs \
+	gtk-types.defs
 gtkunixprint_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTKUNIXPRINT_CFLAGS)
 gtkunixprint_la_LIBADD = $(GTKUNIXPRINT_LIBS)
 gtkunixprint_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgtkunixprint
