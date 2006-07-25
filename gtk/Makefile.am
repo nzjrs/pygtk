@@ -25,7 +25,8 @@ pygtkexec_LTLIBRARIES =
 pygtkdir = $(pkgpythondir)/gtk
 pygtk_PYTHON = 			\
 	__init__.py 		\
-	compat.py		\
+	_lazyutils.py		\
+	compat.py			\
 	deprecation.py		\
 	keysyms.py
 
