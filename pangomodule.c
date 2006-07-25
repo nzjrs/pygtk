@@ -63,7 +63,7 @@ initpango(void)
     m = Py_InitModule("pango", pypango_functions);
     d = PyModule_GetDict(m);
 
-    init_pygobject();
+    init_pygobject_check(2, 11, 1);
 
     /* set the default python encoding to utf-8 */
     PyUnicode_SetDefaultEncoding("utf-8");
