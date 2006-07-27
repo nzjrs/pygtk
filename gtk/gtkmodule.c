@@ -82,25 +82,6 @@ sink_gtkobject(GObject *object)
     }
 }
 
-static gboolean
-python_do_pending_calls(gpointer data)
-{
-    gboolean quit = FALSE;
-    PyGILState_STATE state;
-
-    state = pyg_gil_state_ensure();
-
-    if (PyErr_CheckSignals() == -1) {
-	PyErr_SetNone(PyExc_KeyboardInterrupt);
-	quit = TRUE;
-    }
-    if (quit && gtk_main_level() > 0)
-	gtk_main_quit();
-    
-    pyg_gil_state_release(state);
-    return TRUE;
-}
-
 static void
 pygtk_add_stock_items(PyObject *d)
 {
@@ -265,6 +246,4 @@ init_gtk(void)
     pygdk_register_classes(d);
     pygdk_add_constants(m, "GDK_");
     pygdk_add_extra_constants(m);
-    
-    gtk_timeout_add(100, python_do_pending_calls, NULL);
 }
