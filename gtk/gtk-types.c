@@ -1069,14 +1069,14 @@ pygtk_tree_model_row_iter_dealloc(PyGtkTreeModelRowIter *self)
     PyObject_DEL(self);
 }
 
-PyObject *
+static PyObject *
 pygtk_tree_model_row_iter_getiter(PyGtkTreeModelRowIter *self)
 {
     Py_INCREF(self);
     return (PyObject *)self;
 }
 
-PyObject *
+static PyObject *
 pygtk_tree_model_row_iter_next(PyGtkTreeModelRowIter *self)
 {
     PyObject *row;

@@ -581,7 +581,7 @@ _wrap_gdk_pixbuf_animation_iter_advance(PyGObject *self, PyObject *args,
 }
 %%
 override gdk_pixbuf_get_formats noargs
-PyObject *
+static PyObject *
 pygtk_make_pixbuf_format_dict(GdkPixbufFormat *format)
 {
     PyObject *item, *value;
@@ -705,10 +705,10 @@ _wrap_gdk_pixbuf_get_file_info(PyObject *self, PyObject *args,
 }
 %%
 override gdk_pixbuf_loader_get_format noargs
+static PyObject *pygtk_make_pixbuf_format_dict(GdkPixbufFormat *format);
 static PyObject *
 _wrap_gdk_pixbuf_loader_get_format(PyGObject *self)
 {
-    PyObject *pygtk_make_pixbuf_format_dict(GdkPixbufFormat *format);
     GdkPixbufFormat *format;
 
     format = gdk_pixbuf_loader_get_format(GDK_PIXBUF_LOADER(self->obj));

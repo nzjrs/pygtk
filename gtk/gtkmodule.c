@@ -43,7 +43,7 @@ void pygdk_add_constants(PyObject *module, const gchar *strip_prefix);
 extern PyMethodDef pygtk_functions[];
 extern PyMethodDef pygdk_functions[];
 
-PyObject *PyGtkDeprecationWarning;
+static PyObject *PyGtkDeprecationWarning;
 PyObject *PyGtkWarning;
 
 static struct _PyGtk_FunctionStruct functions = {
