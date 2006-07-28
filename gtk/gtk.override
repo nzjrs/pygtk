@@ -6729,13 +6729,13 @@ _wrap_gtk_clipboard_request_image(PyGObject *self, PyObject *args,
 }
 
 %%
-override gtk_print_context_get_cairo noargs
+override gtk_print_context_get_cairo_context noargs
 static PyObject *
-_wrap_gtk_print_context_get_cairo(PyGObject *self)
+_wrap_gtk_print_context_get_cairo_context(PyGObject *self)
 {
     cairo_t *ret;
 
-    ret = gtk_print_context_get_cairo(GTK_PRINT_CONTEXT(self->obj));
+    ret = gtk_print_context_get_cairo_context(GTK_PRINT_CONTEXT(self->obj));
 
     cairo_reference(ret);
     return PycairoContext_FromContext(ret, &PyGdkCairoContext_Type, NULL);
