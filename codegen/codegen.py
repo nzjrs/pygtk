@@ -1576,12 +1576,11 @@ class SourceWriter:
                     bases_str += ', PyObject_GetAttrString(m, "%s")' % baseobj.name
             bases_str += ')'
         else:
-            bases_str = ', NULL'
+            bases_str = 'NULL'
 
         self.fp.write(
-                indent_str + 'pygobject_register_class(d, "' + obj.c_name +
-                '", ' + obj.typecode + ', &Py' + obj.c_name +
-                '_Type, ' + bases_str + ');\n')
+                '%(indent)spygobject_register_class(d, "%(c_name)s", %(typecode)s, &Py%(c_name)s_Type, %(bases)s);\n'
+                % dict(indent=indent_str, c_name=obj.c_name, typecode=obj.typecode, bases=bases_str))
 
         if obj.has_new_constructor_api:
             self.fp.write(
