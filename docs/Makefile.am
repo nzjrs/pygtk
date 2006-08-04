@@ -1,7 +1,9 @@
+BUILDDIR = $(top_builddir)/docs
+
 REF_VERSION = $(PYGTK_MAJOR_VERSION).$(PYGTK_MINOR_VERSION)
 FULL_VERSION = $(REF_VERSION).$(PYGTK_MICRO_VERSION)
 
-FIX_XREF = ./fixxref.py
+FIX_XREF = $(srcdir)/fixxref.py
 FIX_REF_INDEX_DIRS = -i $(datadir)/gtk-doc/html/pygobject
 HTML_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/ref-html-style.xsl
 PDF_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/pdf-style.xsl
@@ -575,39 +577,30 @@ HTML_DATA = 						\
 
 BUILT_SOURCES = 			\
 	build_stamp 			\
-	reference/builddate.xml		\
-	reference/version.xml 		\
 	$(HTML_DATA)
 
 CLEANFILES = 				\
 	build_stamp 			\
-	reference/builddate.xml		\
-	reference/version.xml 		\
 	pygtk-ref.*			\
 	$(HTML_DATA)
 
 EXTRA_DIST = 				\
 	$(XMLFILES) 			\
-	$(XSLFILES)
+	$(XSLFILES)			\
+	$(FIX_XREF)
 
 REFERENCE_DEPS = 			\
-	reference/version.xml 		\
 	reference 			\
 	$(XMLFILES)			\
 	$(XSLFILES)
 
-reference/builddate.xml: $(REFERENCE_DEPS)
-	@LANG=C $(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
-
-reference/version.xml: $(top_srcdir)/config.h
-	@echo $(FULL_VERSION) > $@
-
-build_stamp: $(REFERENCE_DEPS) reference/builddate.xml
-	xsltproc --nonet --xinclude -o html/ \
+build_stamp: $(REFERENCE_DEPS)
+	xsltproc --nonet --xinclude -o $(BUILDDIR)/html/ \
+		 --path $(BUILDDIR)/reference:$(srcdir)/reference \
                  --stringparam gtkdoc.bookname "pygtk" \
                  --stringparam gtkdoc.version ${REF_VERSION} \
-                 $(HTML_STYLE) reference/pygtk2-ref.xml
-	python ${FIX_XREF} ${FIX_REF_INDEX_DIRS} html
+                 $(HTML_STYLE) $(srcdir)/reference/pygtk2-ref.xml
+	python ${FIX_XREF} ${FIX_REF_INDEX_DIRS} $(BUILDDIR)/html
 	touch $@
 
 pdf: $(REFERENCE_DEPS) reference/builddate.xml
