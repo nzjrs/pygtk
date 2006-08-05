@@ -31,6 +31,8 @@ class LazyModule(object):
     def __getattr__(self, attr):
         module = __import__(self._name, self._locals, {}, ' ')
         sys.modules[self._modname] = module
+        if attr == '__members__':
+            return dir(module)
         return getattr(module, attr)
 
 class _NotLoadedMarker:
