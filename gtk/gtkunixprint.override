@@ -62,6 +62,23 @@ gtk_print_capabilites_get_type (void)
 }
 #endif
 
+ 
+void
+pygtk_custom_destroy_notify(gpointer user_data)
+{
+    PyGtkCustomNotify *cunote = user_data;
+    PyGILState_STATE state;
+ 
+    g_return_if_fail(user_data);
+    state = pyg_gil_state_ensure();
+    Py_XDECREF(cunote->func);
+    Py_XDECREF(cunote->data);
+    pyg_gil_state_release(state);
+     
+    g_free(cunote);
+}
+
+
 %%
 modulename gtk.unixprint
 %%
