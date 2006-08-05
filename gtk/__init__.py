@@ -42,7 +42,11 @@ if ver < (2, 11, 1):
     raise ImportError(
         "PyGTK requires PyGObject 2.11.1 or higher, but %s was found" % (ver,))
 
-from gtk import _gtk
+if 'gtk._gtk' in sys.modules:
+    _gtk = sys.modules['gtk._gtk']
+else:
+    from gtk import _gtk
+
 import gdk
 
 if ltihooks:
@@ -117,7 +121,7 @@ FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 gdk.Warning = Warning
 
 # We don't want to export this
-del _Deprecated, _DeprecatedConstant, _gobject, _init, _lazyutils
+del _Deprecated, _DeprecatedConstant, _gobject, _init
 
 # Do this as late as possible, so programs like pyflakes can check
 # everything above

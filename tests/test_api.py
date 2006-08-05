@@ -1,3 +1,5 @@
+import os
+import sys
 import unittest
 
 from common import gobject, gtk, glade
@@ -26,3 +28,9 @@ class APITest(unittest.TestCase):
     def testGlade(self):
         self.failUnless(hasattr(glade, 'XML'))
         self.failUnless(issubclass(glade.XML, gobject.GObject))
+
+    def testReload(self):
+        # test for #349026
+        del sys.modules['gtk']
+        import gtk
+        reload(gtk)
