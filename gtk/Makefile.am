@@ -46,6 +46,8 @@ GDK_DEFS = gdk-base.defs
 GTK_TYPES_DEFS = gtk-base-types.defs
 GDK_TYPES_DEFS = gdk-base-types.defs
 
+GTK_2_10_DEFS = gdk-2.10.defs gtk-2.10.defs gtk-2.10-types.defs
+
 if HAVE_GTK_2_10
 GDK_DEFS += gdk-2.10.defs 
 GTK_DEFS += gtk-2.10.defs 
@@ -93,6 +95,7 @@ EXTRA_DIST += 			\
 	$(GDK_OVERRIDES) 	\
 	$(GTK_DEFS) 		\
 	$(GTK_TYPES_DEFS)	\
+	$(GTK_2_10_DEFS)	\
 	$(GTK_OVERRIDES)
 
 
