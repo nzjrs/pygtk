@@ -3,8 +3,6 @@ BUILDDIR = $(top_builddir)/docs
 REF_VERSION = $(PYGTK_MAJOR_VERSION).$(PYGTK_MINOR_VERSION)
 FULL_VERSION = $(REF_VERSION).$(PYGTK_MICRO_VERSION)
 
-FIX_XREF = $(srcdir)/fixxref.py
-FIX_REF_INDEX_DIRS = -i $(datadir)/gtk-doc/html/pygobject
 HTML_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/ref-html-style.xsl
 PDF_STYLE = $(PYGOBJECT_DATADIR)/pygobject/xsl/pdf-style.xsl
 
@@ -600,7 +598,7 @@ build_stamp: $(REFERENCE_DEPS)
                  --stringparam gtkdoc.bookname "pygtk" \
                  --stringparam gtkdoc.version ${REF_VERSION} \
                  $(HTML_STYLE) $(srcdir)/reference/pygtk2-ref.xml
-	python ${FIX_XREF} ${FIX_REF_INDEX_DIRS} $(BUILDDIR)/html
+	$(PYGOBJECT_FIXXREF) $(BUILDDIR)/html
 	touch $@
 
 pdf: $(REFERENCE_DEPS) reference/builddate.xml
