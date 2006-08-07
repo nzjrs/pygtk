@@ -3,6 +3,16 @@ import string
 import keyword
 import struct
 
+class ArgTypeError(Exception):
+    pass
+
+class ArgTypeNotFoundError(ArgTypeError):
+    pass
+
+class ArgTypeConfigurationError(ArgTypeError):
+    pass
+
+
 class VarList:
     """Nicely format a C variable list"""
     def __init__(self):
@@ -869,7 +879,7 @@ class ArgMatcher:
         except KeyError:
             if ptype[:8] == 'GdkEvent' and ptype[-1] == '*':
                 return self.argtypes['GdkEvent*']
-            raise
+            raise ArgTypeNotFoundError("No ArgType for %s" % (ptype,))
     def _get_reverse_common(self, ptype, registry):
         props = dict(c_type=ptype)
         try:
@@ -881,7 +891,7 @@ class ArgMatcher:
                 if ptype.startswith('GdkEvent') and ptype.endswith('*'):
                     handler = self.argtypes['GdkEvent*']
                 else:
-                    raise
+                    raise ArgTypeNotFoundError("No ArgType for %s" % (ptype,))
             if isinstance(handler, ObjectArg):
                 return registry['GObject*'], props
             elif isinstance(handler, EnumArg):
@@ -897,7 +907,7 @@ class ArgMatcher:
                 props['typename'] = handler.typename
                 return registry['GBoxed'], props
             else:
-                raise
+                raise ArgTypeNotFoundError("No ArgType for %s" % (ptype,))
     def get_reverse(self, ptype):
         return self._get_reverse_common(ptype, self.reverse_argtypes)
     def get_reverse_ret(self, ptype):

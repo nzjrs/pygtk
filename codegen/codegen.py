@@ -9,6 +9,7 @@ import definitions
 import defsparser
 import override
 import reversewrapper
+import warnings
 
 class Coverage(object):
     def __init__(self, name):
@@ -41,12 +42,13 @@ vaccessors_coverage = Coverage("virtual accessors")
 iproxies_coverage = Coverage("interface proxies")
 
 def exc_info():
+    warnings.warn("deprecated", DeprecationWarning, stacklevel=2)
     #traceback.print_exc()
     etype, value, tb = sys.exc_info()
     ret = ""
     try:
         sval = str(value)
-        if etype == KeyError:
+        if etype == argtypes.ArgTypeError:
             ret = "No ArgType for %s" % (sval,)
         else:
             ret = sval
@@ -316,7 +318,7 @@ class Wrapper:
             info.arglist.append('')
 
         if function_obj.varargs:
-            raise ValueError, "varargs functions not supported"
+            raise argtypes.ArgTypeNotFoundError("varargs functions not supported")
 
         for param in function_obj.params:
             if param.pdflt and '|' not in info.parsestr:
@@ -421,9 +423,9 @@ class Wrapper:
                     constructor))[0]
                 self.fp.write(code)
             initfunc = '_wrap_' + funcname
-        except:
+        except argtypes.ArgTypeError, ex:
             sys.stderr.write('Could not write constructor for %s: %s\n'
-                             % (self.objinfo.c_name, exc_info()))
+                             % (self.objinfo.c_name, str(ex)))
 
             initfunc = self.write_noconstructor()
         return initfunc
@@ -498,10 +500,10 @@ class Wrapper:
                                  'flags': methflags,
                                  'docstring': meth.docstring })
                 methods_coverage.declare_wrapped()
-            except:
+            except argtypes.ArgTypeError, ex:
                 methods_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write method %s.%s: %s\n'
-                                % (klass, meth.name, exc_info()))
+                                % (klass, meth.name, str(ex)))
 
         # Now try to see if there are any defined in the override
         for method_name in self.overrides.get_defines_for(klass):
@@ -520,10 +522,10 @@ class Wrapper:
                                  'flags': methflags,
                                  'docstring': meth.docstring })
                 methods_coverage.declare_wrapped()
-            except:
+            except argtypes.ArgTypeError, ex:
                 methods_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write method %s.%s: %s\n'
-                                % (klass, meth.name, exc_info()))
+                                % (klass, meth.name, str(ex)))
 
         # Add GObject virtual method accessors, for chaining to parent
         # virtuals from subclasses
@@ -574,11 +576,11 @@ class Wrapper:
                                  'flags': methflags + '|METH_CLASS',
                                  'docstring': 'NULL'})
                 vaccessors_coverage.declare_wrapped()
-            except:
+            except argtypes.ArgTypeError, ex:
                 vaccessors_coverage.declare_not_wrapped()
                 sys.stderr.write(
                     'Could not write virtual accessor method %s.%s: %s\n'
-                    % (klass, meth.name, exc_info()))
+                    % (klass, meth.name, str(ex)))
         return methods
 
     def write_virtuals(self):
@@ -617,11 +619,11 @@ class Wrapper:
                     self.fp.write(buf.flush())
                 virtuals.append((fixname(meth.name), '_wrap_' + method_name))
                 vproxies_coverage.declare_wrapped()
-            except (KeyError, ValueError):
+            except argtypes.ArgTypeError, ex:
                 vproxies_coverage.declare_not_wrapped()
                 virtuals.append((fixname(meth.name), None))
                 sys.stderr.write('Could not write virtual proxy %s.%s: %s\n'
-                                % (klass, meth.name, exc_info()))
+                                % (klass, meth.name, str(ex)))
         if virtuals:
             # Write a 'pygtk class init' function for this object,
             # except when the object type is explicitly ignored (like
@@ -705,10 +707,10 @@ class Wrapper:
                                     'field': self.get_field_accessor(cfname),
                                     'codeafter': info.get_codeafter() })
                     gettername = funcname
-                except:
+                except argtypes.ArgTypeError, ex:
                     sys.stderr.write(
                         "Could not write getter for %s.%s: %s\n"
-                        % (self.objinfo.c_name, fname, exc_info()))
+                        % (self.objinfo.c_name, fname, str(ex)))
             if gettername != '0' or settername != '0':
                 getsets.append('    { "%s", (getter)%s, (setter)%s },\n' %
                                (fixname(fname), gettername, settername))
@@ -845,10 +847,10 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
                 functions.append((func.name, '_wrap_' + funcname,
                                   methflags, func.docstring))
                 functions_coverage.declare_wrapped()
-            except:
+            except argtypes.ArgTypeError, ex:
                 functions_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write function %s: %s\n'
-                                 % (func.name, exc_info()))
+                                 % (func.name, str(ex)))
 
         # Now try to see if there are any defined in the override
         for funcname in self.overrides.get_functions():
@@ -859,10 +861,10 @@ _wrap__get_symbol(PyObject *self, PyObject *args)
                 functions.append((funcname, '_wrap_' + funcname,
                                   methflags, 'NULL'))
                 functions_coverage.declare_wrapped()
-            except:
+            except argtypes.ArgTypeError, ex:
                 functions_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write function %s: %s\n'
-                                 % (funcname, exc_info()))
+                                 % (funcname, str(ex)))
         return functions
 
     def write_functions(self, writer, prefix):
@@ -1170,11 +1172,11 @@ class GInterfaceWrapper(GObjectWrapper):
                     self.fp.write(buf.flush())
                 proxies.append((fixname(meth.name), '_wrap_' + method_name))
                 iproxies_coverage.declare_wrapped()
-            except (KeyError, ValueError):
+            except argtypes.ArgTypeError, ex:
                 iproxies_coverage.declare_not_wrapped()
                 proxies.append((fixname(meth.name), None))
                 sys.stderr.write('Could not write interface proxy %s.%s: %s\n'
-                                % (klass, meth.name, exc_info()))
+                                % (klass, meth.name, str(ex)))
 
         if not proxies or not [cname for name, cname in proxies if cname]:
             return
