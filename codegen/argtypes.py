@@ -819,7 +819,9 @@ class ArgMatcher:
         self.reverse_argtypes = {}
         self.reverse_rettypes = {}
 
-    def register(self, ptype, handler):
+    def register(self, ptype, handler, overwrite=False):
+        if not overwrite and ptype in self.argtypes:
+            return
         self.argtypes[ptype] = handler
     def register_reverse(self, ptype, handler):
         self.reverse_argtypes[ptype] = handler
