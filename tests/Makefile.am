@@ -1,17 +1,20 @@
 EXTRA_DIST = $(tests) common.py runtests.py testmodule.py leak.glade
 
 tests =  \
+	test_actiongroup.py \
 	test_api.py \
-	test_glade.py \
+	test_container.py
 	test_conversion.py \
 	test_dialog.py \
 	test_enum.py \
 	test_gdk.py \
+	test_glade.py \
+	test_liststore.py
 	test_pango.py \
 	test_radiobutton.py \
 	test_style.py \
 	test_textview.py \
-	test_container.py
+	test_treeview.py
 
 GTK_PY_FILES = __init__.py _lazyutils.py compat.py deprecation.py keysyms.py
 
