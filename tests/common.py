@@ -1,6 +1,8 @@
 import os
 import sys
 
+import gobject
+
 def importModules(buildDir, srcDir):
     # Be very careful when you change this code, it's
     # fragile and the order is really significant
@@ -14,13 +16,6 @@ def importModules(buildDir, srcDir):
     sys.argv.append('--g-fatal-warnings')
     import ltihooks
 
-    gobject = importModule('gobject', buildDir, 'gobject/gobject.la')
-    version = getattr(gobject, 'pygobject_version', None)
-    if not version:
-        raise AssertionError("gobject %r is too old" % gobject)
-    if version < (2, 10, 0):
-        raise AssertionError("gobject %r is too old, %s found" % (gobject,
-                                                                  version))
     atk = importModule('atk', buildDir)
     pango = importModule('pango', buildDir)
     gtk = importModule('gtk', buildDir, 'gtk')
