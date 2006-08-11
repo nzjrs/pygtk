@@ -575,11 +575,13 @@ HTML_DATA = 						\
 
 BUILT_SOURCES = 			\
 	build_stamp 			\
+        reference/builddate.xml         \
 	$(HTML_DATA)
 
 CLEANFILES = 				\
 	build_stamp 			\
 	pygtk-ref.*			\
+        reference/builddate.xml         \
 	$(HTML_DATA)
 
 EXTRA_DIST = 				\
@@ -594,7 +596,10 @@ REFERENCE_DEPS = 			\
 
 $(HTML_DATA): build_stamp
 
-build_stamp: $(REFERENCE_DEPS)
+reference/builddate.xml: $(REFERENCE_DEPS)
+	$(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
+
+build_stamp: $(REFERENCE_DEPS) reference/builddate.xml
 	xsltproc --nonet --xinclude -o $(BUILDDIR)/html/ \
 		 --path $(BUILDDIR)/reference:$(srcdir)/reference \
                  --stringparam gtkdoc.bookname "pygtk" \
