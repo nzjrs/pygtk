@@ -105,6 +105,14 @@ item (new in PyGTK 2.4)</refpurpose>
 	<methodname><link linkend="method-gtkaction--set-visible">set_visible</link></methodname>
 	<methodparam><parameter role="keyword">visible</parameter></methodparam>
       </methodsynopsis>
+       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkaction--set-menu-item-type">set_menu_item_type</link></methodname>
+	<methodparam><parameter role="keyword">visible</parameter></methodparam>
+      </methodsynopsis>
+       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkaction--set-tool-item-type">set_tool_item_type</link></methodname>
+	<methodparam><parameter role="keyword">visible</parameter></methodparam>
+      </methodsynopsis>
    </classsynopsis>
 
   </refsect1>
@@ -961,6 +969,128 @@ visible</simpara></listitem>
 this doesn't necessarily set the effective visibility. See the <link
 linkend="method-gtkaction--is-visible"><methodname>is_visible</methodname>()</link>
 method for more information.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaction--set-menu-item-type">
+      <title>gtk.Action.set_menu_item_type</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_menu_item_type</methodname>
+	  <methodparam><parameter role="keyword">visible</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>the type of menuitem to be created for the
+	  action</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_menu_item_type</methodname>() method is a
+      classmethod that sets the type of menuitem to be created for the
+      action to that specified by <parameter>type</parameter>. This is
+      useful when using the <link
+      linkend="class-gtkuimanager"><classname>gtk.UIManager</classname></link>
+      and you would like to use something other than a <link
+      linkend="class-gtkimagemenuitem"><classname>gtk.ImageMenuItem</classname></link>
+      (<link
+      linkend="class-gtkaction"><classname>gtk.Action</classname></link>) or
+      a <link
+      linkend="class-gtkcheckmenuitem"><classname>gtk.CheckMenuItem</classname></link>
+      (<link
+      linkend="class-gtktoogleaction"><classname>gtk.ToogleAction</classname></link>
+      or <link
+      linkend="class-gtkradioaction"><classname>gtk.RadioAction</classname></link>).</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaction--set-tool-item-type">
+      <title>gtk.Action.set_tool_item_type</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_tool_item_type</methodname>
+	  <methodparam><parameter role="keyword">visible</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">type</parameter>&nbsp;:</term>
+	  <listitem><simpara>the type of toolitem to be created for the
+	  action</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.10 and above.</para>
+      </note>
+
+      <para>The <methodname>set_tool_item_type</methodname>() method is a
+      classmethod that sets the type of toolitem to be created for the
+      action to that specified by <parameter>type</parameter>. This is
+      useful when using the <link
+      linkend="class-gtkuimanager"><classname>gtk.UIManager</classname></link>
+      and you would like to use something other than a <link
+      linkend="class-gtktoolbutton"><classname>gtk.ToolButton</classname></link>
+      (<link
+      linkend="class-gtkaction"><classname>gtk.Action</classname></link>) or
+      a <link
+      linkend="class-gtktoggletoolbutton"><classname>gtk.ToggleToolButton</classname></link>
+      (<link
+      linkend="class-gtktoogleaction"><classname>gtk.ToogleAction</classname></link>
+      or <link
+      linkend="class-gtkradioaction"><classname>gtk.RadioAction</classname></link>).</para>
+
+      <para>For example, to use a <link
+      linkend="class-gtkmenutoolbutton"><classname>gtk.MenuToolButton</classname></link>
+      in a toolbar you would subclass <link
+      linkend="class-gtkaction"><classname>gtk.Action</classname></link>:</para>
+
+      <programlisting>
+    class MenuToolAction(gtk.Action):
+        __gtype_name__ = "MenuToolAction"
+
+    gobject.type_register(MenuToolAction)
+      </programlisting>
+
+      <para>and then call <link
+      linkend="method-gtkaction--set-tool-item-type"><methodname>set_tool_item_type</methodname>()</link>:</para>
+
+      <programlisting>
+    MenuToolAction.set_tool_item_type(gtk.MenuToolButton)
+      </programlisting>
+
+      <para>You have to create, name and add an instance of
+      <parameter>MenuToolAction</parameter> to your <link
+      linkend="class-gtkactiongroup"><classname>gtk.ActionGroup</classname></link>:</para>
+
+      <programlisting>
+    actiongroup_add_action(MenuToolAction("my_menutoolaction", "_MTB_label",
+                                          "do something", None))
+      </programlisting>
+
+      <para>The ui description should reference the
+      <parameter>MenuToolAction</parameter> like:</para>
+
+      <programlisting>
+    &lt;toolitem action="my_menutoolaction"/&gt;
+      </programlisting>
+
+      <para>After the <link
+      linkend="class-gtkuimanager"><classname>gtk.UIManager</classname></link>
+      creates the toolbar including the <link
+      linkend="class-gtkmenutoolbutton"><classname>gtk.MenuToolButton</classname></link>
+      proxy for the <parameter>MenuToolAction</parameter>, you would have to
+      create and add a menu to the <link
+      linkend="class-gtkmenutoolbutton"><classname>gtk.MenuToolButton</classname></link>
+      instance.</para>
+
+      <para>This technique can be extended by subclassing <link
+      linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+      and adding custom widgets to it.</para>
 
     </refsect2>
 
