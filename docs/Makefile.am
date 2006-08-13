@@ -573,6 +573,10 @@ HTML_DATA = 						\
 	html/index.sgml					\
 	html/pygtk.devhelp
 
+CSS_FILES = style.css
+CSSdir = $(HTMLdir)
+CSS_DATA = $(CSS_FILES)
+
 BUILT_SOURCES = 			\
 	build_stamp 			\
         reference/builddate.xml         \
@@ -587,7 +591,8 @@ CLEANFILES = 				\
 EXTRA_DIST = 				\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
-	$(FIX_XREF)
+	$(FIX_XREF)                     \
+	$(CSS_FILES)
 
 REFERENCE_DEPS = 			\
 	reference 			\
