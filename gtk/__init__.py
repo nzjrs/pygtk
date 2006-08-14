@@ -65,7 +65,8 @@ def _init():
         try:
             _gtk.init_check()
         except RuntimeError, e:
-            print >> sys.stderr, "WARNING: %s" % e
+            import warnings
+            warnings.warn(str(e), _gtk.Warning)
     finally:
         # init_check calls PySys_SetArgv which calls sys.path.insert(0, ''),
         # which causes problems for pychecker, restore it if modified.
