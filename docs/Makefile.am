@@ -573,7 +573,7 @@ HTML_DATA = 						\
 	html/index.sgml					\
 	html/pygtk.devhelp
 
-CSS_FILES = style.css
+CSS_FILES = $(PYGOBJECT_PYGDOCS)/style.css
 CSSdir = $(HTMLdir)
 CSS_DATA = $(CSS_FILES)
 
@@ -591,8 +591,7 @@ CLEANFILES = 				\
 EXTRA_DIST = 				\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
-	$(FIX_XREF)                     \
-	$(CSS_FILES)
+	$(FIX_XREF)
 
 REFERENCE_DEPS = 			\
 	reference 			\
