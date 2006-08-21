@@ -602,15 +602,8 @@ $(HTML_DATA): $(XMLFILES) $(XSLFILES)
                   --stringparam gtkdoc.version ${REF_VERSION} \
                   $(HTML_STYLE) $(srcdir)/reference/pygtk2-ref.xml
 
-install-data-local:
-	@if test "$(top_builddir)" != "$(top_srcdir)"; then \
-	   cp -r $(srcdir)/html $(BUILDDIR)/html; \
-	   chmod -R +w $(BUILDDIR)/html; \
-	fi
-	@$(PYGOBJECT_FIXXREF) $(BUILDDIR)/html
-	@if test "$(top_builddir)" != "$(top_srcdir)"; then \
-	   rm -fr $(BUILDDIR)/html; \
-	fi
+install-data-hook:
+	@$(PYGOBJECT_FIXXREF) $(DESTDIR)$(HTMLdir)
 
 # pdf: $(REFERENCE_DEPS) reference/builddate.xml
 # 	xsltproc --nonet --xinclude -o pygtk-ref.fo \
