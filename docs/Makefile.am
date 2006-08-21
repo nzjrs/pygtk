@@ -612,8 +612,8 @@ install-data-local:
 	   rm -fr $(BUILDDIR)/html; \
 	fi
 
-pdf: $(REFERENCE_DEPS) reference/builddate.xml
-	xsltproc --nonet --xinclude -o pygtk-ref.fo \
-	         $(PDF_STYLE) reference/pygtk2-ref.xml
-	pdfxmltex pygtk-ref.fo >output </dev/null
+# pdf: $(REFERENCE_DEPS) reference/builddate.xml
+# 	xsltproc --nonet --xinclude -o pygtk-ref.fo \
+# 	         $(PDF_STYLE) reference/pygtk2-ref.xml
+# 	pdfxmltex pygtk-ref.fo >output </dev/null
 
