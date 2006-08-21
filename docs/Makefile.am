@@ -568,49 +568,49 @@ HTML_DATA = 						\
 	html/pygtk-reference-format.html		\
 	html/unixprint-class-reference.html		\
 	html/unixprint-constants.html			\
-	html/unixprint-functions.html			\
-	html/index.html					\
-	html/index.sgml					\
-	html/pygtk.devhelp
+	html/unixprint-functions.html
 
 CSS_FILES = $(PYGOBJECT_PYGDOCS)/style.css
 CSSdir = $(HTMLdir)
 CSS_DATA = $(CSS_FILES)
 
 BUILT_SOURCES = 			\
-	build_stamp 			\
         reference/builddate.xml         \
 	$(HTML_DATA)
 
 CLEANFILES = 				\
-	build_stamp 			\
-	pygtk-ref.*			\
         reference/builddate.xml         \
 	$(HTML_DATA)
 
 EXTRA_DIST = 				\
+	$(HTML_DATA)			\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
 	$(FIX_XREF)
 
-REFERENCE_DEPS = 			\
-	reference 			\
-	$(XMLFILES)			\
-	$(XSLFILES)
+reference/builddate.xml:
+	@$(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
 
-$(HTML_DATA): build_stamp
+# Do not add a builddate.xml dependency here, because the generated html 
+# documentation will be included in the tarball so xsltproc is not needed to 
+# install the documentation. Adding a builddate.xml dependency will force 
+# the documentation to be rebuilt when it doesn't need to be.
+$(HTML_DATA): $(XMLFILES) $(XSLFILES)
+	@xsltproc --nonet --xinclude -o $(BUILDDIR)/html/ \
+		  --path $(BUILDDIR)/reference:$(srcdir)/reference \
+                  --stringparam gtkdoc.bookname "pygtk" \
+                  --stringparam gtkdoc.version ${REF_VERSION} \
+                  $(HTML_STYLE) $(srcdir)/reference/pygtk2-ref.xml
 
-reference/builddate.xml: $(REFERENCE_DEPS)
-	$(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
-
-build_stamp: $(REFERENCE_DEPS) reference/builddate.xml
-	xsltproc --nonet --xinclude -o $(BUILDDIR)/html/ \
-		 --path $(BUILDDIR)/reference:$(srcdir)/reference \
-                 --stringparam gtkdoc.bookname "pygtk" \
-                 --stringparam gtkdoc.version ${REF_VERSION} \
-                 $(HTML_STYLE) $(srcdir)/reference/pygtk2-ref.xml
-	$(PYGOBJECT_FIXXREF) $(BUILDDIR)/html
-	touch $@
+install-data-local:
+	@if test "$(top_builddir)" != "$(top_srcdir)"; then \
+	   cp -r $(srcdir)/html $(BUILDDIR)/html; \
+	   chmod -R +w $(BUILDDIR)/html; \
+	fi
+	@$(PYGOBJECT_FIXXREF) $(BUILDDIR)/html
+	@if test "$(top_builddir)" != "$(top_srcdir)"; then \
+	   rm -fr $(BUILDDIR)/html; \
+	fi
 
 pdf: $(REFERENCE_DEPS) reference/builddate.xml
 	xsltproc --nonet --xinclude -o pygtk-ref.fo \
