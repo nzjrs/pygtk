@@ -5,11 +5,11 @@ demoimgdir = $(demodir)/images
 
 bin_SCRIPTS = pygtk-demo/pygtk-demo
 pygtk-demo/pygtk-demo: pygtk-demo/pygtk-demo.in
-	-mkdir pygtk-demo
-	sed -e s!\@PYTHON\@!@PYTHON@! \
-	    -e s!\@libdir\@!@libdir@! \
+	@mkdir -p pygtk-demo
+	@sed -e s!\@PYTHON\@!@PYTHON@! \
+	     -e s!\@libdir\@!@libdir@! \
 		< $< > $@
-	chmod a+x $@
+	@chmod a+x $@
 
 CLEANFILES = pygtk-demo/pygtk-demo
 
