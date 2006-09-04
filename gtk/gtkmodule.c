@@ -192,7 +192,7 @@ init_gtk(void)
     PyObject *m, *d, *tuple, *o;
 
     /* initialise pygobject */
-    init_pygobject_check(2, 11, 1);
+    init_pygobject_check(2, 12, 0);
     g_assert(pygobject_register_class != NULL);
     
     /* initialise pycairo */
