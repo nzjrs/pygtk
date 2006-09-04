@@ -116,3 +116,12 @@ endif
 
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
+
+doc-dist:
+	mkdir pygtk
+	cp -r docs/html/*.html pygtk
+	cp -r docs/html/*.sgml pygtk
+	cp -r docs/html/*.devhelp pygtk
+	cp -r $(PYGOBJECT_PYGDOCS)/style.css pygtk
+	tar cfz $(PACKAGE)-docs.tar.gz pygtk
+	rm -fr pygtk
