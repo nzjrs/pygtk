@@ -286,8 +286,7 @@ XMLFILES = 						\
 	reference/pygtk-unixprint-constants.xml		\
 	reference/pygtk-unixprint-functions.xml
 
-HTMLdir = $(datadir)/gtk-doc/html/pygtk
-HTML_DATA = 						\
+HTMLFILES =						\
 	html/atk-class-reference.html			\
 	html/atk-constants.html				\
 	html/class-atkaction.html			\
@@ -570,20 +569,27 @@ HTML_DATA = 						\
 	html/unixprint-constants.html			\
 	html/unixprint-functions.html
 
+
+if ENABLE_DOCS
+BUILT_HTML_FILES = $(HTMLFILES)
+else
+BUILT_HTML_FILES =
+endif
+
 CSS_FILES = $(PYGOBJECT_PYGDOCS)/style.css
+
 CSSdir = $(HTMLdir)
 CSS_DATA = $(CSS_FILES)
 
-BUILT_SOURCES = 			\
-        reference/builddate.xml         \
-	$(HTML_DATA)
+HTMLdir = $(datadir)/gtk-doc/html/pygtk
+HTML_DATA = $(HTMLFILES)
 
-CLEANFILES = 				\
-        reference/builddate.xml         \
-	$(HTML_DATA)
+BUILT_SOURCES = reference/builddate.xml $(BUILT_HTML_DATA)
+
+CLEANFILES = reference/builddate.xml $(BUILT_HTML_DATA)
 
 EXTRA_DIST = 				\
-	$(HTML_DATA)			\
+	$(HTMLFILES)			\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
 	$(FIX_XREF)
