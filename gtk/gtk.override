@@ -6891,8 +6891,9 @@ _wrap_gtk_clipboard_wait_for_rich_text(PyGObject *self, PyObject *args,
                                            buffer, &format, &length);
      
     if (ret) {
+        PyObject *py_ret;
         name = gdk_atom_name(format);
-        PyObject *py_ret = Py_BuildValue("(s#s)", ret, length, name);
+        py_ret = Py_BuildValue("(s#s)", ret, length, name);
         g_free(ret);
         g_free(name);
         return py_ret;
