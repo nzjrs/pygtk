@@ -120,3 +120,19 @@ pygtk_target_list_to_list(GtkTargetList *targets)
     return list;
 }
 
+void
+pygtk_boxed_unref_shared(PyObject *boxed)
+{
+    PyGBoxed *pyboxed;
+    g_return_if_fail(boxed != NULL && PyObject_TypeCheck(boxed, &PyGBoxed_Type));
+    pyboxed = (PyGBoxed *) boxed;
+    if (pyboxed->ob_refcnt != 1) {
+        if (!pyboxed->free_on_dealloc) {
+            pyboxed->boxed = g_boxed_copy(pyboxed->gtype,
+                                          pyboxed->boxed);
+            pyboxed->free_on_dealloc = TRUE;
+        }
+    }
+    Py_DECREF(boxed);
+}
+

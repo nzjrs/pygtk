@@ -1,3 +1,16 @@
+2006-09-16  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/pygtkcellrenderer.c (pygtk_generic_cell_renderer_activate):
+	Same fix as below.
+
+	* gtk/gtktreeview.override (pygtk_tree_selection_foreach_marshal):
+	Use pygtk_boxed_unref_shared to fix a side-effect of fixing bug
+	#347273.
+	(pygtk_tree_sortable_sort_cb): Add a similar fix.
+
+	* gtk/gtkobject-support.c (pygtk_boxed_unref_shared): Add a new
+	pygtk private API to unref a boxed type with a shared pointer.
+
 2006-09-12  John Ehresman  <jpe@wingware.com>
 
 	* gtk/gtk.override (_wrap_gtk_clipboard_wait_for_rich_text):

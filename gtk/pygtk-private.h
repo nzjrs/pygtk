@@ -70,4 +70,6 @@ GType pygdk_region_get_type (void) G_GNUC_CONST;
 #define PYGDK_TYPE_REGION (pygdk_region_get_type ())
 #endif /* GDK_TYPE_REGION */
 
+void pygtk_boxed_unref_shared(PyObject *boxed);
+
 #endif

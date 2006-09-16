@@ -250,7 +250,7 @@ pygtk_generic_cell_renderer_activate (GtkCellRenderer      *cell,
     Py_DECREF(py_ret);
 
 out:
-    Py_DECREF(py_event);
+    pygtk_boxed_unref_shared(py_event);
     Py_DECREF(py_widget);
     Py_DECREF(py_background_area);
     Py_DECREF(py_cell_area);

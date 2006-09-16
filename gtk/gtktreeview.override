@@ -579,6 +579,7 @@ _wrap_gtk_tree_selection_get_selected_rows(PyGObject *self)
 }
 %%
 override gtk_tree_selection_selected_foreach
+
 static void
 pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
                                      GtkTreePath *path,
@@ -597,17 +598,17 @@ pygtk_tree_selection_foreach_marshal(GtkTreeModel *model,
     py_path = pygtk_tree_path_to_pyobject(path);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter, FALSE, FALSE);
     if (cunote->data)
-        retobj = PyEval_CallFunction(cunote->func, "(NNNO)",
+        retobj = PyEval_CallFunction(cunote->func, "(NNOO)",
                                      py_model, py_path, py_iter,
                                      cunote->data);
     else
-        retobj = PyEval_CallFunction(cunote->func, "(NNN)",
+        retobj = PyEval_CallFunction(cunote->func, "(NNO)",
                                      py_model, py_path, py_iter);
 
     if (retobj == NULL) {
         PyErr_Print();
     }
-
+    pygtk_boxed_unref_shared(py_iter);
     Py_XDECREF(retobj);
 
     pyg_gil_state_release(state);
@@ -1124,13 +1125,14 @@ pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
     py_iter2 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter2,  FALSE, FALSE);
 
     if (cunote->data) {
-        retobj = PyEval_CallFunction(cunote->func, "(NNNO)", py_model,
+        retobj = PyEval_CallFunction(cunote->func, "(OONO)", py_model,
                                      py_iter1, py_iter2, cunote->data);
     } else {
-        retobj = PyEval_CallFunction(cunote->func, "(NNN)", py_model,
+        retobj = PyEval_CallFunction(cunote->func, "(OON)", py_model,
                                      py_iter1, py_iter2);
     }
-
+    pygtk_boxed_unref_shared(py_iter1);
+    pygtk_boxed_unref_shared(py_iter2);
     if (retobj)
         ret = PyInt_AsLong(retobj);
     if (PyErr_Occurred()) {
