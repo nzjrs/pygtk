@@ -16,12 +16,15 @@ official homepage, http://www.daa.com.au/~james/pygtk/"""
 
 from distutils.command.build import build
 from distutils.core import setup
+import glob
 import os
 import sys
 
-from dsextras import get_m4_define, getoutput, have_pkgconfig, list_files, \
+from dsextras import get_m4_define, getoutput, have_pkgconfig, \
+     pkgc_version_check, \
      GLOBAL_INC, GLOBAL_MACROS, InstallLib, InstallData, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
+
 
 if '--yes-i-know-its-not-supported' in sys.argv:
     sys.argv.remove('--yes-i-know-its-not-supported')
@@ -38,10 +41,10 @@ else:
     if not input.startswith('y'):
         raise SystemExit
 
-if sys.version_info[:3] < (2, 3, 5):
-    raise SystemExit, \
-          "Python 2.3.5 or higher is required, %d.%d.%d found" % sys.version_info[:3]
-
+    if sys.version_info[:3] < (2, 3, 5):
+        raise SystemExit, \
+              "Python 2.3.5 or higher is required, %d.%d.%d found" % sys.version_info[:3]
+    
 MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
 MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
 MICRO_VERSION = int(get_m4_define('pygtk_micro_version'))
@@ -64,7 +67,7 @@ GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('PYGTK_MICRO_VERSION', MICRO_VERSION)]
 
 if sys.platform == 'win32':
-    GLOBAL_MACROS.append(('VERSION', '\\\"%s\\\"' % VERSION))
+    GLOBAL_MACROS.append(('VERSION', '"""%s"""' % VERSION))
     GLOBAL_MACROS.append(('PLATFORM_WIN32',1))
     GLOBAL_MACROS.append(('HAVE_BIND_TEXTDOMAIN_CODESET',1))
 else:
@@ -73,6 +76,7 @@ else:
 DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
 CODEGEN_DIR = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'codegen')
 INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
+HTML_DIR = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
 
 class PyGtkInstallLib(InstallLib):
     def run(self):
@@ -143,10 +147,14 @@ pangocairo = TemplateExtension(name='pangocairo',
 
 # Gdk (template only)
 gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
-                        defs='gtk/gdk.defs', prefix='pygdk',
+                        defs=('gtk/gdk.defs',
+                              ['gtk/gdk-2.10.defs','gtk/gdk-base.defs']),
+                        prefix='pygdk',
                         register=['atk-types.defs',
                                   'pango-types.defs',
-                                  'gtk/gdk-types.defs'])
+                                  ('gtk/gdk-types.defs',
+                                   ['gtk/gdk-base-types.defs'])]
+                        )
 # Gtk+
 if pangocairo.can_build():
     gtk_pkc_name=('gtk+-2.0','pycairo')
@@ -154,6 +162,24 @@ if pangocairo.can_build():
 else:
     gtk_pkc_name='gtk+-2.0'
     gtk_pkc_version=GTK_REQUIRED
+
+if pkgc_version_check('gtk+-2.0', '2.10.0'):
+    gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-2.10.defs','gtk/gtk-base.defs'])
+    gtk_pkc_register=['pango-types.defs',
+                      ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
+                      ('gtk/gtk-types.defs',['gtk/gtk-base-types.defs',
+                                             'gtk/gtk-2.10-types.defs'])]
+    libglade_pkc_register=[('gtk/gtk-types.defs',
+                            ['gtk/gtk-base-types.defs',
+                             'gtk/gtk-2.10-types.defs']),
+                           'gtk/libglade.defs']
+else:
+    gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-base.defs'])
+    gtk_pkc_register=['pango-types.defs',
+                      ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
+                      ('gtk/gtk-types.defs',['gtk/gtk-base-types.defs'])]
+    libglade_pkc_register=[('gtk/gtk-types.defs',['gtk/gtk-base-types.defs']),
+                           'gtk/libglade.defs']
 
 gtk = TemplateExtension(name='gtk', pkc_name=gtk_pkc_name,
                         pkc_version=gtk_pkc_version,
@@ -165,11 +191,10 @@ gtk = TemplateExtension(name='gtk', pkc_name=gtk_pkc_name,
                                  'gtk/pygtkcellrenderer.c',
                                  'gtk/gdk.c',
                                  'gtk/gtk.c'],
-                        register=['pango-types.defs',
-                                  'gtk/gdk-types.defs',
-                                  'gtk/gtk-types.defs'],
+                        register=gtk_pkc_register,
                         override='gtk/gtk.override',
-                        defs='gtk/gtk.defs')
+                        defs=gtk_pkc_defs
+                        )
 gtk.templates.append(gdk_template)
 
 # Libglade
@@ -179,13 +204,13 @@ libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
                              defs='gtk/libglade.defs',
                              sources=['gtk/libglademodule.c',
                                       'gtk/libglade.c'],
-                             register=['gtk/gtk-types.defs',
-                                       'gtk/libglade.defs'],
+                             register=libglade_pkc_register,
                              override='gtk/libglade.override')
 
 data_files = []
 ext_modules = []
 py_modules = []
+packages = ['codegen']
 
 if not have_pkgconfig():
     print "Error, could not find pkg-config"
@@ -215,9 +240,17 @@ if gtk.can_build():
     ext_modules.append(gtk)
     data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
     data_files.append((DEFS_DIR, ('gtk/gdk.defs', 'gtk/gdk-types.defs',
+                                  'gtk/gdk-base.defs',
+                                  'gtk/gdk-base-types.defs',
                                   'gtk/gtk.defs', 'gtk/gtk-types.defs',
+                                  'gtk/gtk-2.10.defs',
+                                  'gtk/gtk-2.10-types.defs',
+                                  'gtk/gtk-base.defs',
+                                  'gtk/gtk-base-types.defs',
                                   'gtk/gtk-extrafuncs.defs')))
-    py_modules += ['gtk.compat', 'gtk.keysyms']
+    data_files.append((HTML_DIR, glob.glob('docs/html/*.html')))
+    py_modules += ['gtk.compat', 'gtk.deprecation', 'gtk.keysyms',
+                   'gtk._lazyutils']
 
 if libglade.can_build():
     ext_modules.append(libglade)
@@ -272,6 +305,7 @@ setup(name="pygtk",
       description = doclines[0],
       long_description = "\n".join(doclines[2:]),
       py_modules=py_modules,
+      packages=packages,
       ext_modules=ext_modules,
       data_files=data_files,
       scripts = ["pygtk_postinstall.py"],
