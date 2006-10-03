@@ -451,7 +451,8 @@ static PyObject *
 _wrap_gtk_text_buffer_insert_with_tags(PyGObject *self, PyObject *args)
 {
     PyObject *first, *py_iter;
-    gint len, i, text_len, start_offset;
+    gint len, i, start_offset;
+    Py_ssize_t text_len;
     gchar *text;
     GtkTextIter *iter, start;
 
@@ -506,7 +507,8 @@ static PyObject *
 _wrap_gtk_text_buffer_insert_with_tags_by_name(PyGObject *self, PyObject *args)
 {
     PyObject *first, *py_iter;
-    gint len, i, text_len, start_offset;
+    gint len, i, start_offset;
+    Py_ssize_t text_len;
     gchar *text;
     GtkTextIter *iter, start;
 
@@ -587,7 +589,7 @@ _wrap_gtk_text_buffer_create_tag(PyGObject *self, PyObject *args, PyObject *kwar
 
     /* set tag properties if any */
     if (kwargs) {
-        gint i = 0;
+        Py_ssize_t i = 0;
         PyObject *prop, *val;
 
         while (PyDict_Next(kwargs, &i, &prop, &val)) {
@@ -742,7 +744,8 @@ _wrap_gtk_text_buffer_set_text(PyGObject *self, PyObject *args, PyObject *kwargs
 {
     char *text;
     static char *kwlist[] = { "text", "len", NULL };
-    int len, oldlen = -1;
+    Py_ssize_t len;
+    int oldlen = -1;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "s#|i:GtkTextBuffer.set_text", kwlist,
@@ -787,7 +790,8 @@ _wrap_gtk_text_buffer_insert(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "iter", "text", "len", NULL };
     PyObject *py_iter;
     char *text;
-    int len, oldlen = -1;
+    Py_ssize_t len;
+    int oldlen = -1;
     GtkTextIter *iter = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Os#|i:GtkTextBuffer.insert",
@@ -821,7 +825,8 @@ _wrap_gtk_text_buffer_insert_at_cursor(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "text", "len", NULL };
     char *text;
-    int len, oldlen = -1;
+    Py_ssize_t len;
+    int oldlen = -1;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "s#|i:GtkTextBuffer.insert_at_cursor",
@@ -850,7 +855,8 @@ _wrap_gtk_text_buffer_insert_interactive(PyGObject *self, PyObject *args,
     static char *kwlist[] = { "iter", "text", "default_editable", "len", NULL };
     PyObject *py_iter;
     char *text;
-    int len, default_editable, ret, oldlen = -1;
+    int default_editable, ret, oldlen = -1;
+    Py_ssize_t len;
     GtkTextIter *iter = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -890,7 +896,8 @@ _wrap_gtk_text_buffer_insert_interactive_at_cursor(PyGObject *self, PyObject *ar
 {
     static char *kwlist[] = { "text", "default_editable", "len", NULL };
     char *text;
-    int len, default_editable, ret, oldlen = -1;
+    Py_ssize_t len;
+    int default_editable, ret, oldlen = -1;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "s#i|i:GtkTextBuffer.insert_interactive_at_cursor",
@@ -1303,7 +1310,7 @@ _wrap_gtk_text_buffer_deserialize(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "content_buffer", "format", "iter", "data",
                               NULL };
-    gsize length;
+    Py_ssize_t length;
     PyObject *py_format = NULL, *py_iter;
     GdkAtom format;
     GError *error = NULL;
@@ -1313,7 +1320,7 @@ _wrap_gtk_text_buffer_deserialize(PyGObject *self, PyObject *args,
     GtkTextIter *iter = NULL;
  
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "O!OOs#k:GtkTextBuffer.deserialize",
+                                     "O!OOs#:GtkTextBuffer.deserialize",
                                      kwlist, &PyGtkTextBuffer_Type,
                                      &content_buffer, &py_format, &py_iter,
                                      &data, &length))
@@ -1353,7 +1360,7 @@ _wrap_gtk_text_buffer_serialize(PyGObject *self, PyObject *args,
     GtkTextIter *start = NULL, *end = NULL;
  
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "O!OOs#k:GtkTextBuffer.serialize",
+                                     "O!OOO:GtkTextBuffer.serialize",
                                      kwlist, &PyGtkTextBuffer_Type,
                                      &content_buffer, &py_format, &py_start,
                                      &py_end))
@@ -1379,7 +1386,7 @@ _wrap_gtk_text_buffer_serialize(PyGObject *self, PyObject *args,
     ret = gtk_text_buffer_serialize(GTK_TEXT_BUFFER(self->obj),
                                       GTK_TEXT_BUFFER(content_buffer->obj),
                                       format, start, end, &length);
-    return PyString_FromStringAndSize(ret, length);
+    return PyString_FromStringAndSize((char *) ret, (Py_ssize_t) length);
 }
 %%
 override gtk_text_buffer_register_deserialize_format kwargs
@@ -1405,7 +1412,7 @@ pygtk_text_buffer_register_deserialize_format_cb(GtkTextBuffer *register_buf,
     py_register_buf = pygobject_new((GObject*)register_buf);
     py_content_buf = pygobject_new((GObject*)content_buf);
     py_iter = pyg_boxed_new(GTK_TYPE_TEXT_ITER, iter, TRUE, TRUE);
-    py_data = PyString_FromStringAndSize(data, length);
+    py_data = PyString_FromStringAndSize((char *) data, length);
     if (cunote->data) {
         retobj = PyEval_CallFunction(cunote->func, "(NNNNiO)",
                                      py_register_buf, py_content_buf,
@@ -1500,7 +1507,7 @@ pygtk_text_buffer_register_serialize_format_cb(GtkTextBuffer *register_buf,
     }
 
     if (retobj != NULL) {
-        PyString_AsStringAndSize(retobj, (gchar**)&ret, length);
+        PyString_AsStringAndSize(retobj, (gchar**)&ret, (Py_ssize_t*) length);
         Py_DECREF(retobj);
     } else {
         PyErr_Print();

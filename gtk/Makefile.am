@@ -173,6 +173,7 @@ endif
 	($(PYTHON) $(top_srcdir)/codegen/codegen.py \
 	   $(PYGTK_CODEGEN_DEFINES) \
 	    -I $(srcdir) \
+	    --py_ssize_t-clean \
 	    --register $(top_srcdir)/pango-types.defs \
 	    --register $(top_srcdir)/atk-types.defs \
 	    --register gdk-types.defs \

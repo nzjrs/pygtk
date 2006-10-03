@@ -1330,8 +1330,10 @@ class SourceWriter:
         self.prefix = prefix
         self.fp = fp
 
-    def write(self):
-        self.write_headers()
+    def write(self, py_ssize_t_clean=False):
+        argtypes.py_ssize_t_clean = py_ssize_t_clean
+
+        self.write_headers(py_ssize_t_clean)
         self.write_imports()
         self.write_type_declarations()
         self.write_body()
@@ -1344,11 +1346,28 @@ class SourceWriter:
             self.write_enums()
         self.write_extension_init()
         self.write_registers()
+        
+        argtypes.py_ssize_t_clean = False
 
-    def write_headers(self):
+    def write_headers(self, py_ssize_t_clean):
         self.fp.write('/* -- THIS FILE IS GENERATED - DO NOT EDIT */')
         self.fp.write('/* -*- Mode: C; c-basic-offset: 4 -*- */\n\n')
+        if py_ssize_t_clean:
+            self.fp.write('#define PY_SSIZE_T_CLEAN\n')
         self.fp.write('#include <Python.h>\n\n\n')
+        if py_ssize_t_clean:
+            self.fp.write('''
+
+#if PY_VERSION_HEX < 0x02050000
+typedef int Py_ssize_t;
+#define PY_SSIZE_T_MAX INT_MAX
+#define PY_SSIZE_T_MIN INT_MIN
+typedef inquiry lenfunc;
+typedef intargfunc ssizeargfunc;
+typedef intobjargproc ssizeobjargproc;
+#endif
+
+''')
         self.fp.write(self.overrides.get_headers())
         self.fp.resetline()
         self.fp.write('\n\n')
@@ -1632,8 +1651,9 @@ def main(argv):
     errorfilename = None
     opts, args = getopt.getopt(argv[1:], "o:p:r:t:D:I:",
                         ["override=", "prefix=", "register=", "outfilename=",
-                         "load-types=", "errorfilename="])
+                         "load-types=", "errorfilename=", "py_ssize_t-clean"])
     defines = {} # -Dkey[=val] options
+    py_ssize_t_clean = False
     for opt, arg in opts:
         if opt in ('-o', '--override'):
             o = override.Overrides(arg)
@@ -1660,6 +1680,8 @@ def main(argv):
                 defines[nameval[0]] = None
         elif opt == '-I':
             defsparser.include_path.insert(0, arg)
+        elif opt == '--py_ssize_t-clean':
+            py_ssize_t_clean = True
     if len(args) < 1:
         print >> sys.stderr, usage
         return 1
@@ -1673,7 +1695,7 @@ def main(argv):
 
     register_types(p)
     sw = SourceWriter(p, o, prefix, FileOutput(sys.stdout, outfilename))
-    sw.write()
+    sw.write(py_ssize_t_clean)
 
     functions_coverage.printstats()
     methods_coverage.printstats()

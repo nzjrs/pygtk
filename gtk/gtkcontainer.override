@@ -833,20 +833,20 @@ _wrap_gtk_container_tp_iter(PyGObject *self)
 }
 %%
 override-slot GtkContainer.tp_as_sequence
-static int
+static Py_ssize_t
 _wrap_gtk_container_sq_length(PyGObject *self)
 {
     return g_list_length(gtk_container_get_children(GTK_CONTAINER(self->obj)));
 }
 
 static PySequenceMethods _wrap_gtk_container_tp_as_sequence = {
-    (inquiry)_wrap_gtk_container_sq_length,
-    (binaryfunc)0,
-    (intargfunc)0,
-    (intargfunc)0,
-    (intintargfunc)0,
-    (intobjargproc)0,
-    (intintobjargproc)0
+    (lenfunc)_wrap_gtk_container_sq_length,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
 };
 %%
 override-slot GtkContainer.tp_as_number

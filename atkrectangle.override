@@ -88,13 +88,13 @@ _wrap_atk_rectangle_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
 }
 %%
 override-slot AtkRectangle.tp_as_sequence
-static int
+static Py_ssize_t
 _wrap_atk_rectangle_length(PyGBoxed *self)
 {
     return 4;
 }
 static PyObject *
-_wrap_atk_rectangle_getitem(PyGBoxed *self, int pos)
+_wrap_atk_rectangle_getitem(PyGBoxed *self, Py_ssize_t pos)
 {
     AtkRectangle *rect;
 
@@ -115,7 +115,7 @@ _wrap_atk_rectangle_getitem(PyGBoxed *self, int pos)
     }
 }
 static int
-_wrap_atk_rectangle_setitem(PyGBoxed *self, int pos, PyObject *value)
+_wrap_atk_rectangle_setitem(PyGBoxed *self, Py_ssize_t pos, PyObject *value)
 {
     AtkRectangle *rect;
     gint val;
@@ -141,13 +141,15 @@ _wrap_atk_rectangle_setitem(PyGBoxed *self, int pos, PyObject *value)
     return 0;
 }
 static PySequenceMethods _wrap_atk_rectangle_tp_as_sequence = {
-    (inquiry)_wrap_atk_rectangle_length,
-    (binaryfunc)0,
-    (intargfunc)0,
-    (intargfunc)_wrap_atk_rectangle_getitem,
-    (intintargfunc)0,
-    (intobjargproc)_wrap_atk_rectangle_setitem,
-    (intintobjargproc)0
+    (lenfunc)_wrap_atk_rectangle_length, /* sq_length */
+    0,                          /* sq_concat */
+    0,                          /* sq_repeat */
+    (ssizeargfunc)_wrap_atk_rectangle_getitem, /* sq_item */
+    0,                          /* sq_slice */
+    (ssizeobjargproc)_wrap_atk_rectangle_setitem, /* sq_ass_item */
+    0,                          /* sq_contains */
+    0,                          /* sq_inplace_concat */
+    0                           /* sq_inplace_repeat */
 };
 %%
 override-attr AtkRectangle.x

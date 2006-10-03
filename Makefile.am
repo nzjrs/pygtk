@@ -106,6 +106,7 @@ endif
 .defs.c:
 	(cd $(srcdir)\
 	 && $(PYTHON) codegen/codegen.py \
+	    --py_ssize_t-clean \
 	    --register pango-types.defs \
 	    --register atk-types.defs \
 	    --register gtk/gtk-base-types.defs \

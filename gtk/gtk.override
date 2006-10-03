@@ -567,7 +567,8 @@ _wrap_gtk_selection_data_set(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "type", "format", "data", NULL };
     PyObject *py_type;
     GdkAtom type;
-    int format, length;
+    int format;
+    Py_ssize_t length;
     guchar *data;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
@@ -1274,7 +1275,8 @@ _wrap_gtk_editable_insert_text(PyGObject *self, PyObject *args,
 {
     static char *kwlist[] = { "text", "position", NULL };
     char *text;
-    int len, position=0;
+    Py_ssize_t len;
+    int position=0;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "s#|i:GtkEditable.insert_text",
@@ -1979,13 +1981,13 @@ _wrap_gtk_image_menu_item_new(PyGObject *self, PyObject *args,PyObject *kwargs)
 }
 %%
 override-slot GtkRequisition.tp_as_sequence
-static int
+static Py_ssize_t
 _wrap_gtk_requisition_length(PyGBoxed *self)
 {
     return 2;
 }
 static PyObject *
-_wrap_gtk_requisition_getitem(PyGBoxed *self, int pos)
+_wrap_gtk_requisition_getitem(PyGBoxed *self, Py_ssize_t pos)
 {
     GtkRequisition *requisition;
 
@@ -2004,7 +2006,7 @@ _wrap_gtk_requisition_getitem(PyGBoxed *self, int pos)
     }
 }
 static int
-_wrap_gtk_requisition_setitem(PyGBoxed *self, int pos, PyObject *value)
+_wrap_gtk_requisition_setitem(PyGBoxed *self, Py_ssize_t pos, PyObject *value)
 {
     GtkRequisition *requisition;
     gint val;
@@ -2028,13 +2030,13 @@ _wrap_gtk_requisition_setitem(PyGBoxed *self, int pos, PyObject *value)
     return 0;
 }
 static PySequenceMethods _wrap_gtk_requisition_tp_as_sequence = {
-    (inquiry)_wrap_gtk_requisition_length,
-    (binaryfunc)0,
-    (intargfunc)0,
-    (intargfunc)_wrap_gtk_requisition_getitem,
-    (intintargfunc)0,
-    (intobjargproc)_wrap_gtk_requisition_setitem,
-    (intintobjargproc)0
+    (lenfunc)_wrap_gtk_requisition_length,
+    0,
+    0,
+    (ssizeargfunc)_wrap_gtk_requisition_getitem,
+    0,
+    (ssizeobjargproc)_wrap_gtk_requisition_setitem,
+    0,
 };
 %%
 override-attr GtkRequisition.width
@@ -4188,7 +4190,8 @@ _wrap_gtk_ui_manager_add_ui_from_string(PyGObject *self, PyObject *args, PyObjec
 {
     static char *kwlist[] = { "buffer", NULL };
     char *buffer;
-    int length, ret;
+    Py_ssize_t length;
+    int ret;
     GError *error = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:GtkUIManager.add_ui_from_string",
@@ -4362,7 +4365,7 @@ _wrap_gtk_cell_layout_set_attributes(PyGObject *self, PyObject *args,
 {
     PyObject *py_cell, *key, *item;
     GtkCellRenderer *cell;
-    gint i = 0;
+    Py_ssize_t i = 0;
 
     if (!PyArg_ParseTuple(args, "O!:GtkCellLayout.set_attributes",
                           &PyGtkCellRenderer_Type, &py_cell))
@@ -6819,7 +6822,7 @@ clipboard_request_rich_text_cb(GtkClipboard *clipboard,
     data = (PyObject *) user_data;
 
     if (text) {
-        py_text = PyString_FromString(text);
+        py_text = PyString_FromString((char *) text);
     } else {
         py_text = Py_None;
         Py_INCREF(Py_None);
@@ -6893,7 +6896,7 @@ _wrap_gtk_clipboard_wait_for_rich_text(PyGObject *self, PyObject *args,
     if (ret) {
         PyObject *py_ret;
         name = gdk_atom_name(format);
-        py_ret = Py_BuildValue("(s#s)", ret, length, name);
+        py_ret = Py_BuildValue("(s#s)", ret, (Py_ssize_t) length, name);
         g_free(ret);
         g_free(name);
         return py_ret;
@@ -7118,7 +7121,7 @@ _wrap_gtk_recent_chooser_get_uris(PyGObject *self)
 {
     gchar **uris;
     PyObject *py_uris;
-    guint length, i;
+    gsize length, i;
 
     uris = gtk_recent_chooser_get_uris(GTK_RECENT_CHOOSER(self->obj),
                                         &length);
@@ -7324,7 +7327,7 @@ _wrap_gtk_recent_info_get_applications(PyGObject *self)
 {
     gchar **apps;
     PyObject *py_apps;
-    guint length, i;
+    gsize length, i;
 
     apps = gtk_recent_info_get_applications(pyg_boxed_get(self, GtkRecentInfo),
                                             &length);
@@ -7344,7 +7347,7 @@ _wrap_gtk_recent_info_get_groups(PyGObject *self)
 {
     gchar **groups;
     PyObject *py_groups;
-    guint length, i;
+    gsize length, i;
 
     groups = gtk_recent_info_get_groups(pyg_boxed_get(self, GtkRecentInfo),
                                         &length);
@@ -8064,7 +8067,8 @@ _wrap_GtkEditable__do_insert_text(PyObject *cls, PyObject *args, PyObject *kwarg
     gpointer klass;
     static char *kwlist[] = { "self", "text", "position", NULL };
     PyGObject *self;
-    int text_len, position;
+    Py_ssize_t text_len;
+    int position;
     char *text;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!s#i:GtkEditable.do_insert_text", kwlist,
@@ -8095,7 +8099,8 @@ _wrap_GtkEditable__do_do_insert_text(PyObject *cls, PyObject *args, PyObject *kw
     gpointer klass;
     static char *kwlist[] = { "self", "text", "position", NULL };
     PyGObject *self;
-    int text_len, position;
+    Py_ssize_t text_len;
+    int position;
     char *text;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!s#i:GtkEditable.do_do_insert_text", kwlist,

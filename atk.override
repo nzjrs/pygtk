@@ -27,6 +27,7 @@ headers
 #include <atk/atk-enum-types.h>
 #include <atk/atknoopobjectfactory.h>
 #include <atk/atknoopobject.h>
+
 %%
 include
   atkrectangle.override
@@ -61,7 +62,7 @@ _wrap_atk_relation_new (PyGObject *self, PyObject *args, PyObject *kwargs)
     PyObject *py_targets;
     
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "Oi#:relation_new", kwlist,
+				     "Oi:relation_new", kwlist,
 				     &py_targets, &relationship))
 	return -1;
 
@@ -402,7 +403,7 @@ _wrap_atk_text_get_text_after_offset(PyGObject *self, PyObject *args,
 
     text = atk_text_get_text_after_offset(ATK_TEXT(self->obj),
                                           offset, boundary, &start, &end);
-    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+    return Py_BuildValue("(s#ii)", text, (Py_ssize_t) (end - start), start, end);
 }
 %%
 override atk_text_get_text_at_offset kwargs
@@ -427,7 +428,7 @@ _wrap_atk_text_get_text_at_offset(PyGObject *self, PyObject *args,
 
     text = atk_text_get_text_at_offset(ATK_TEXT(self->obj),
                                        offset, boundary, &start, &end);
-    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+    return Py_BuildValue("(s#ii)", text, (Py_ssize_t) (end - start), start, end);
 }
 %%
 override atk_text_get_text_before_offset kwargs
@@ -452,7 +453,7 @@ _wrap_atk_text_get_text_before_offset(PyGObject *self, PyObject *args,
 
     text = atk_text_get_text_before_offset(ATK_TEXT(self->obj),
                                            offset, boundary, &start, &end);
-    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+    return Py_BuildValue("(s#ii)", text, (Py_ssize_t) (end - start), start, end);
 }
 %%
 override atk_text_get_character_extents kwargs
@@ -592,7 +593,7 @@ _wrap_atk_text_get_selection(PyGObject *self, PyObject *args,
 
     text = atk_text_get_selection(ATK_TEXT(self->obj),
                                   selection_num, &start, &end);
-    return Py_BuildValue("(s#ii)", text, end-start, start, end);
+    return Py_BuildValue("(s#ii)", text, (Py_ssize_t) (end - start), start, end);
 }
 %%
 override atk_text_get_range_extents kwargs

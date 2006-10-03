@@ -80,7 +80,7 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
     GtkTreeViewColumn *tvc;
     gchar *title = NULL;
     GtkCellRenderer *cell = NULL;
-    gint i = 0;
+    Py_ssize_t i = 0;
 
     if (!PyArg_ParseTuple(args, "|zO:GtkTreeViewColumn.__init__", &title,
                           &py_cell))
@@ -340,7 +340,7 @@ _wrap_gtk_tree_view_insert_column_with_attributes(PyGObject *self, PyObject *arg
     GtkCellRenderer *cell;
     PyObject *py_cell, *key, *item;
     const char *title;
-    gint i = 0;
+    Py_ssize_t i = 0;
 
     if (!PyArg_ParseTuple(args,
                           "isO!:GtkTreeView.insert_column_with_attributes",
@@ -979,7 +979,7 @@ static PyNumberMethods _wrap_gtk_tree_model_tp_as_number = {
 };
 %%
 override-slot GtkTreeModel.tp_as_mapping
-static int
+static Py_ssize_t
 _wrap_gtk_tree_model_tp_length(PyGObject *self)
 {
     return gtk_tree_model_iter_n_children(GTK_TREE_MODEL(self->obj), NULL);
@@ -1075,7 +1075,7 @@ _wrap_gtk_tree_model_tp_setitem(PyGObject *self, PyObject *item,
 }
 
 static PyMappingMethods _wrap_gtk_tree_model_tp_as_mapping = {
-    (inquiry)_wrap_gtk_tree_model_tp_length,
+    (lenfunc)_wrap_gtk_tree_model_tp_length,
     (binaryfunc)_wrap_gtk_tree_model_tp_getitem,
     (objobjargproc)_wrap_gtk_tree_model_tp_setitem
 };

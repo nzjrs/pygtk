@@ -159,7 +159,7 @@ _wrap_gdk_text_extents(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "text", NULL };
     gchar *text;
-    gint length;
+    Py_ssize_t length;
     gint lbearing, rbearing, width, ascent, descent;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:GdkFont.extents",
@@ -1365,7 +1365,8 @@ _wrap_gdk_bitmap_create_from_data(PyObject *self, PyObject *args, PyObject *kwar
     GdkDrawable *drawable = NULL;
     gchar *data;
     GdkBitmap *ret;
-    int data_len, width, height, rowstride;
+    Py_ssize_t data_len;
+    int width, height, rowstride;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,"Os#ii:bitmap_create_from_data", kwlist, &py_drawable, &data, &data_len, &width, &height))
         return NULL;
@@ -1394,7 +1395,8 @@ static PyObject *
 _wrap_gdk_pixmap_create_from_data(PyObject *self, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = { "drawable", "data", "width", "height", "depth", "fg", "bg", NULL };
-    int data_len, width, height, depth;
+    Py_ssize_t data_len;
+    int width, height, depth;
     GdkPixmap *ret;
     PyObject *py_fg, *py_bg;
     GdkColor *fg = NULL, *bg = NULL;

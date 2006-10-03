@@ -167,7 +167,7 @@ _wrap_gdk_pixbuf_save(PyGObject *self, PyObject *args,
 
     if (py_options != NULL) {
         guint len;
-        gint pos = 0, i = 0;
+        Py_ssize_t pos = 0, i = 0;
         PyObject *key, *value;
         
         len = PyDict_Size(py_options);
@@ -221,10 +221,10 @@ pixbuf_save_func(const gchar *buf,
     PyObject *ret;
 
     if (data->user_data)
-        ret = PyObject_CallFunction(data->callback, "s#O", buf, (int) count, data->user_data);
+        ret = PyObject_CallFunction(data->callback, "s#O", buf, (Py_ssize_t) count, data->user_data);
 
     else
-        ret = PyObject_CallFunction(data->callback, "s#", buf, (int) count);
+        ret = PyObject_CallFunction(data->callback, "s#", buf, (Py_ssize_t) count);
     
     if (ret == NULL) {
         PyErr_Print();
@@ -256,8 +256,8 @@ _wrap_gdk_pixbuf_save_to_callback(PyGObject *self, PyObject *args,
     }
 
     if (py_options != NULL) {
-        guint len;
-        gint pos = 0, i = 0;
+        Py_ssize_t len;
+        Py_ssize_t pos = 0, i = 0;
         PyObject *key, *value;
         
         len = PyDict_Size(py_options);
@@ -305,8 +305,9 @@ _wrap_gdk_pixbuf_new_from_data(PyObject *self, PyObject *args,
     const gchar *data;
     GdkColorspace colorspace;
     gboolean has_alpha;
-    gint data_len, bits_per_sample, width, height, rowstride;
-    gint required_len;
+    Py_ssize_t data_len;
+    gint bits_per_sample, width, height, rowstride;
+    Py_ssize_t required_len;
     guchar *data_copy;
     GdkPixbuf *pixbuf;
     PyObject *ret;
@@ -320,8 +321,8 @@ _wrap_gdk_pixbuf_new_from_data(PyObject *self, PyObject *args,
     required_len = height*rowstride;
     if (data_len < required_len) {
 	PyErr_Format(PyExc_ValueError, 
-		      "data length (%d) is less then required by the other parameters (%d)", 
-		      data_len, required_len);
+		      "data length (%ld) is less then required by the other parameters (%ld)", 
+		      (long int) data_len, (long int) required_len);
 	return NULL;
     }
     data_copy = g_try_malloc(required_len);
@@ -488,7 +489,8 @@ _wrap_gdk_pixbuf_loader_write(PyGObject *self,
                               PyObject *kwargs)
 {
     static char *kwlist[] = { "buf", "count", NULL };
-    int buf_len, count = -1, ret;
+    Py_ssize_t buf_len;
+    int count = -1, ret;
     guchar *buf;
     GError *error = NULL;
 

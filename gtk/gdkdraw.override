@@ -69,7 +69,8 @@ _wrap_gdk_draw_text(PyGObject *self, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = { "font", "gc", "x", "y", "text",NULL};
     PyGObject *gc;
     PyObject *font;
-    int x, y, len;
+    int x, y;
+    Py_ssize_t len;
     char *text;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "OO!iis#:GdkDrawable.draw_text", kwlist,
@@ -206,7 +207,8 @@ _wrap_gdk_draw_rgb_image(PyGObject *self, PyObject *args, PyObject *kwargs)
                               "rgb_buf", "rowstride", "xdith", "ydith", NULL };
     PyGObject *gc;
     PyObject *py_dith;
-    gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0, len;
+    gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0;
+    Py_ssize_t len;
     GdkRgbDither dith;
     guchar *rgb_buf;
 
@@ -251,7 +253,8 @@ _wrap_gdk_draw_rgb_32_image(PyGObject *self, PyObject *args, PyObject *kwargs)
                               "rgb_buf", "rowstride", "xdith", "ydith", NULL };
     PyGObject *gc;
     PyObject *py_dith;
-    gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0, len;
+    gint x, y, width, height, rowstride = -1, xdith = 0, ydith = 0;
+    Py_ssize_t len;
     GdkRgbDither dith;
     guchar *rgb_buf;
 
@@ -296,7 +299,8 @@ _wrap_gdk_draw_gray_image(PyGObject *self, PyObject *args, PyObject *kwargs)
                               "buf", "rowstride", NULL };
     PyGObject *gc;
     PyObject *py_dith;
-    gint x, y, width, height, rowstride = -1, len;
+    gint x, y, width, height, rowstride = -1;
+    Py_ssize_t len;
     GdkRgbDither dith;
     guchar *buf;
 
@@ -333,7 +337,8 @@ _wrap_gdk_draw_indexed_image(PyGObject *self, PyObject *args, PyObject *kwargs)
                               "buf", "rowstride", "colors", NULL };
     PyGObject *gc;
     PyObject *py_dith;
-    gint x, y, width, height, rowstride = -1, len;
+    gint x, y, width, height, rowstride = -1;
+    Py_ssize_t len;
     GdkRgbDither dith;
     guchar *buf;
     PyObject *pycolors;

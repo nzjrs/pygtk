@@ -3,6 +3,8 @@ import string
 import keyword
 import struct
 
+py_ssize_t_clean = False
+
 class ArgTypeError(Exception):
     pass
 
@@ -128,7 +130,10 @@ class UCharArg(ArgType):
             info.varlist.add('guchar', '*' + pname + ' = "' + pdflt + '"')
         else:
             info.varlist.add('guchar', '*' + pname)
-        info.varlist.add('int', pname + '_len')
+        if py_ssize_t_clean:
+            info.varlist.add('Py_ssize_t', pname + '_len')
+        else:
+            info.varlist.add('int', pname + '_len')
         info.arglist.append(pname)
         if pnull:
             info.add_parselist('z#', ['&' + pname, '&' + pname + '_len'],
