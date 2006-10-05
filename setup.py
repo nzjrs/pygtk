@@ -127,14 +127,16 @@ atk = TemplateExtension(name='atk', pkc_name='atk',
                         sources=['atkmodule.c', 'atk.c'],
                         register=['atk-types.defs'],
                         override='atk.override',
-                        defs='atk.defs')
+                        defs='atk.defs',
+                        py_ssize_t_clean=True)
 # Pango
 pango = TemplateExtension(name='pango', pkc_name='pango',
                           pkc_version=PANGO_REQUIRED,
                           sources=['pango.c', 'pangomodule.c'],
                           register=['pango-types.defs'],
                           override='pango.override',
-                          defs='pango.defs')
+                          defs='pango.defs',
+                          py_ssize_t_clean=True)
 # Pangocairo
 pangocairo = TemplateExtension(name='pangocairo',
                                pkc_name=('pycairo', 'pangocairo'),
@@ -143,7 +145,8 @@ pangocairo = TemplateExtension(name='pangocairo',
                                sources=['pangocairo.c', 'pangocairomodule.c'],
                                register=['pango-types.defs'],
                                override='pangocairo.override',
-                               defs='pangocairo.defs')
+                               defs='pangocairo.defs',
+                               py_ssize_t_clean=True)
 
 # Gdk (template only)
 gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
@@ -153,8 +156,8 @@ gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
                         register=['atk-types.defs',
                                   'pango-types.defs',
                                   ('gtk/gdk-types.defs',
-                                   ['gtk/gdk-base-types.defs'])]
-                        )
+                                   ['gtk/gdk-base-types.defs'])],
+                        py_ssize_t_clean=True)
 # Gtk+
 if pangocairo.can_build():
     gtk_pkc_name=('gtk+-2.0','pycairo')
@@ -193,8 +196,8 @@ gtk = TemplateExtension(name='gtk', pkc_name=gtk_pkc_name,
                                  'gtk/gtk.c'],
                         register=gtk_pkc_register,
                         override='gtk/gtk.override',
-                        defs=gtk_pkc_defs
-                        )
+                        defs=gtk_pkc_defs,
+                        py_ssize_t_clean=True)
 gtk.templates.append(gdk_template)
 
 # Libglade
@@ -205,7 +208,8 @@ libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
                              sources=['gtk/libglademodule.c',
                                       'gtk/libglade.c'],
                              register=libglade_pkc_register,
-                             override='gtk/libglade.override')
+                             override='gtk/libglade.override',
+                             py_ssize_t_clean=True)
 
 data_files = []
 ext_modules = []
