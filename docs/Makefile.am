@@ -563,7 +563,6 @@ HTMLFILES =						\
 	html/pango-markup-language.html			\
 	html/pygtk.devhelp				\
 	html/pygtk-introduction.html			\
-	html/pygtk-reference-copyright.html		\
 	html/pygtk-reference-format.html		\
 	html/unixprint-class-reference.html		\
 	html/unixprint-constants.html			\
