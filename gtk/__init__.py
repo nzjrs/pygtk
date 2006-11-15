@@ -71,7 +71,7 @@ def _init():
         # init_check calls PySys_SetArgv which calls sys.path.insert(0, ''),
         # which causes problems for pychecker, restore it if modified.
         if sys.path != sys_path:
-            sys.path = sys_path
+            sys.path[:] = sys_path
 
     # install the default log handlers
     _gtk.add_log_handlers()
