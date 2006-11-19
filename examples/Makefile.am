@@ -83,6 +83,7 @@ demo_PYTHON = \
 	pygtk-demo/demos/textview.py		\
 	pygtk-demo/demos/tree_store.py		\
 	pygtk-demo/demos/treemodel.py		\
+	pygtk-demo/demos/statusicon.py		\
 	pygtk-demo/demos/ui_manager.py
 
 demoimg_DATA = \
