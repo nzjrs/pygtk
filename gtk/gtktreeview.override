@@ -2149,11 +2149,11 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
     py_path = pygtk_tree_path_to_pyobject(path);
     py_iter = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter,  FALSE, FALSE);
     if (cunote->data)
-        retobj = PyEval_CallFunction(cunote->func, "(NNNO)",
+        retobj = PyEval_CallFunction(cunote->func, "(NNOO)",
                                      py_model, py_path, py_iter,
                                      cunote->data);
     else
-        retobj = PyEval_CallFunction(cunote->func, "(NNN)",
+        retobj = PyEval_CallFunction(cunote->func, "(NNO)",
                                      py_model, py_path, py_iter);
 
     if (retobj != NULL) {
@@ -2162,7 +2162,7 @@ pygtk_tree_foreach_marshal(GtkTreeModel *model,
     } else {
         ret = TRUE;
     }
-
+    pygtk_boxed_unref_shared(py_iter);
     pyg_gil_state_release(state);
     return ret;
 }

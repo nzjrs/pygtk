@@ -1,3 +1,10 @@
+2006-11-25  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* gtk/gtktreeview.override (pygtk_tree_foreach_marshal): Use
+	pygtk_boxed_unref_shared to unref py_iter.  We need this because
+	the application may decided to keep a copy of the iterator passed
+	in to a gtk_tree_model_foreach callback.
+
 2006-11-19  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
 	* examples/Makefile.am (demo_PYTHON),
