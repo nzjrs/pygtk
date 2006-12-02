@@ -520,12 +520,12 @@ class Wrapper:
                                { 'name':  method_name,
                                  'cname': '_wrap_' + c_name,
                                  'flags': methflags,
-                                 'docstring': meth.docstring })
+                                 'docstring': 'NULL' })
                 methods_coverage.declare_wrapped()
             except argtypes.ArgTypeError, ex:
                 methods_coverage.declare_not_wrapped()
                 sys.stderr.write('Could not write method %s.%s: %s\n'
-                                % (klass, meth.name, str(ex)))
+                                % (klass, method_name, str(ex)))
 
         # Add GObject virtual method accessors, for chaining to parent
         # virtuals from subclasses
