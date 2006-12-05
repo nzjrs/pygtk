@@ -175,7 +175,8 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    return 0;
 	} else if (!strcmp(attr, "string")) {
 	    STRING_CHECK();
-	    event->key.string = PyString_AsString(value);
+            g_free(event->key.string);
+	    event->key.string = g_strdup(PyString_AsString(value));
 	    return 0;
 	} else if (!strcmp(attr, "hardware_keycode")) {
 	    INT_CHECK();
