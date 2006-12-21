@@ -14,9 +14,10 @@ codegen_PYTHON = \
 	docextract.py \
 	docgen.py \
 	h2def.py \
+	createdefs.py \
 	mergedefs.py \
 	mkskel.py \
 	override.py \
 	scmexpr.py
 
-EXTRA_DIST = README.defs pygtk-codegen-$(PLATFORM_VERSION).in createdefs.py
+EXTRA_DIST = README.defs pygtk-codegen-$(PLATFORM_VERSION).in
