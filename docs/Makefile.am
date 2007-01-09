@@ -286,7 +286,7 @@ XMLFILES = 						\
 	reference/pygtk-unixprint-constants.xml		\
 	reference/pygtk-unixprint-functions.xml
 
-HTMLFILES =						\
+HTML_FILES =						\
 	html/atk-class-reference.html			\
 	html/atk-constants.html				\
 	html/class-atkaction.html			\
@@ -569,49 +569,64 @@ HTMLFILES =						\
 	html/unixprint-functions.html
 
 
-if ENABLE_DOCS
-BUILT_HTML_FILES = $(HTMLFILES)
-else
-BUILT_HTML_FILES =
-endif
 
 CSS_FILES = $(PYGOBJECT_PYGDOCS)/style.css
 
-CSSdir = $(HTMLdir)
+TARGET_DIR = $(datadir)/gtk-doc/html/pygtk
+CSSdir = $(TARGET_DIR)
 CSS_DATA = $(CSS_FILES)
 
-HTMLdir = $(datadir)/gtk-doc/html/pygtk
-HTML_DATA = $(HTMLFILES)
-
-BUILT_SOURCES = reference/builddate.xml $(BUILT_HTML_DATA)
-
-CLEANFILES = reference/builddate.xml $(BUILT_HTML_DATA)
 
 EXTRA_DIST = 				\
-	$(HTMLFILES)			\
+	$(HTML_FILES)			\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
 	$(FIX_XREF)
 
+install-data-local:
+	installfiles=`echo $(srcdir)/html/*`; \
+	if test "$$installfiles" = '$(srcdir)/html/*'; \
+	then echo '-- Nothing to install' ; \
+	else \
+	  $(mkinstalldirs) $(DESTDIR)$(TARGET_DIR); \
+	  for i in $$installfiles; do \
+	    echo '-- Installing '$$i ; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR); \
+	  done; \
+	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
+	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR) || :; \
+	fi
+
+install-data-hook:
+	@$(PYGOBJECT_FIXXREF) $(DESTDIR)$(TARGET_DIR)
+
+uninstall-local:
+	rm -f $(DESTDIR)$(TARGET_DIR)/*
+
+if ENABLE_DOCS
+
+BUILT_SOURCES = reference/builddate.xml $(HTML_FILES)
+DISTCLEANFILES = reference/builddate.xml $(HTML_FILES)
+
 reference/builddate.xml:
 	@$(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
+
 
 # Do not add a builddate.xml dependency here, because the generated html 
 # documentation will be included in the tarball so xsltproc is not needed to 
 # install the documentation. Adding a builddate.xml dependency will force 
 # the documentation to be rebuilt when it doesn't need to be.
-$(HTML_DATA): $(XMLFILES) $(XSLFILES)
+$(HTML_FILES): $(XMLFILES) $(XSLFILES)
 	@xsltproc --nonet --xinclude -o $(BUILDDIR)/html/ \
 		  --path $(BUILDDIR)/reference:$(srcdir)/reference \
                   --stringparam gtkdoc.bookname "pygtk" \
                   --stringparam gtkdoc.version ${REF_VERSION} \
                   $(HTML_STYLE) $(srcdir)/reference/pygtk2-ref.xml
 
-install-data-hook:
-	@$(PYGOBJECT_FIXXREF) $(DESTDIR)$(HTMLdir)
-
 # pdf: $(REFERENCE_DEPS) reference/builddate.xml
 # 	xsltproc --nonet --xinclude -o pygtk-ref.fo \
 # 	         $(PDF_STYLE) reference/pygtk2-ref.xml
 # 	pdfxmltex pygtk-ref.fo >output </dev/null
 
+
+endif
