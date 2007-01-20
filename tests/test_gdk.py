@@ -47,6 +47,15 @@ class GdkTest(unittest.TestCase):
                                     1,
                                     [0xdeadbe, 0xbebabe])
 
+    def _collect(self):
+        cnt = 0
+        while True:
+            x = gc.collect()
+            cnt += x
+            if x:
+                break
+        return cnt
+
     def testDisplay(self):
         while gc.collect():
             pass
@@ -54,22 +63,11 @@ class GdkTest(unittest.TestCase):
         display = gtk.gdk.Display(None)
         del display
 
-        cnt = 0
-        while True:
-            x = gc.collect()
-            cnt += x
-            if x:
-                break
-        self.assertEquals(cnt, 1)
-        
-        display = gtk.gdk.Display(None)
-        display.close()
-        del display
+        self.assertEquals(self._collect(), 1)
 
-        cnt = 0
-        while True:
-            x = gc.collect()
-            cnt += x
-            if x:
-                break
-        self.assertEquals(cnt, 1)
+        display = gtk.gdk.Display(None)
+        self.assertEquals(display.__grefcount__, 1)
+        display.close()
+        self.assertEquals(display.__grefcount__, 1)
+        del display
+        self.assertEquals(self._collect(), 1)
