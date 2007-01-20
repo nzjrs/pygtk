@@ -46,3 +46,13 @@ class GdkTest(unittest.TestCase):
                                     '\x00\x01',
                                     1,
                                     [0xdeadbe, 0xbebabe])
+
+    def testDisplay(self):
+        gc.collect()
+        display = gtk.gdk.Display(None)
+        del display
+        self.assertEquals(gc.collect(), 1)
+        display = gtk.gdk.Display(None)
+        display.close()
+        del display
+        #self.assertEquals(gc.collect(), 1)
