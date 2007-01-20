@@ -1,5 +1,11 @@
 2007-01-20  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
 
+	* gtk/gdk.override (_wrap_gdk_display_close): Force keeping of a
+	reference to the display GObject even when we close() it.
+
+	* tests/test_gdk.py (GdkTest.testDisplay): Johan's unit test with
+	minor modifications.
+
 	* gtk/gdk.override (_wrap_gdk_display_close): Override and make it
 	aware that calling gdk_display_close unrefs the GdkDisplay.
 

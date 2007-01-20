@@ -48,11 +48,28 @@ class GdkTest(unittest.TestCase):
                                     [0xdeadbe, 0xbebabe])
 
     def testDisplay(self):
-        gc.collect()
+        while gc.collect():
+            pass
+
         display = gtk.gdk.Display(None)
         del display
-        self.assertEquals(gc.collect(), 1)
+
+        cnt = 0
+        while True:
+            x = gc.collect()
+            cnt += x
+            if x:
+                break
+        self.assertEquals(cnt, 1)
+        
         display = gtk.gdk.Display(None)
         display.close()
         del display
-        #self.assertEquals(gc.collect(), 1)
+
+        cnt = 0
+        while True:
+            x = gc.collect()
+            cnt += x
+            if x:
+                break
+        self.assertEquals(cnt, 1)

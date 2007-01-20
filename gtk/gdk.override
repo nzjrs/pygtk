@@ -1483,11 +1483,11 @@ override gdk_display_close noargs
 static PyObject *
 _wrap_gdk_display_close(PyGObject *self)
 {
-    if (self->obj) {
-        gdk_display_close(GDK_DISPLAY(self->obj));
-        self->obj = NULL;
+    GdkDisplay *display = GDK_DISPLAY(self->obj);
+    if (self->obj && !display->closed) {
+        g_object_ref(self->obj);
+        gdk_display_close(display);
     }
-    
     Py_INCREF(Py_None);
     return Py_None;
 }
