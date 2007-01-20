@@ -1477,3 +1477,17 @@ _wrap_gdk_screen_set_font_options(PyGObject *self, PyObject *args,
     Py_INCREF(Py_None);
     return Py_None;
 }
+
+%%
+override gdk_display_close noargs
+static PyObject *
+_wrap_gdk_display_close(PyGObject *self)
+{
+    if (self->obj) {
+        gdk_display_close(GDK_DISPLAY(self->obj));
+        self->obj = NULL;
+    }
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
