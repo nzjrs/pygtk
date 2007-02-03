@@ -397,12 +397,9 @@ _wrap_gtk_container_child_get(PyGObject *self, PyObject *args)
 
         item = pyg_value_as_pyobject(&value, TRUE);
         PyTuple_SetItem(tuple, i-1, item);
-        Py_INCREF(item);
 
         g_value_unset(&value);
     }
-
-    Py_INCREF(tuple);
     return tuple;
 }
 %%
