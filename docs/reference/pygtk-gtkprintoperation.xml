@@ -453,18 +453,18 @@
 settings = None
 
 def do_print():
-  print = gtk.PrintOperation()
+  print_op = gtk.PrintOperation()
 
   if settings != None: 
-    print.set_print_settings(settings)
+    print_op.set_print_settings(settings)
 
-  print.connect("begin_print", begin_print)
-  print.connect("draw_page", draw_page)
+  print_op.connect("begin_print", begin_print)
+  print_op.connect("draw_page", draw_page)
 
-  res = print.run(gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG, main_window)
+  res = print_op.run(gtk.PRINT_OPERATION_ACTION_PRINT_DIALOG, main_window)
 
   if res == gtk.PRINT_OPERATION_RESULT_APPLY:
-      settings = print.get_print_settings()
+      settings = print_op.get_print_settings()
 </programlisting>
 </example>
 
