@@ -102,17 +102,22 @@ class ActionGroupTest(unittest.TestCase):
         uimanager.remove_ui(self.merge_id0)
         uimanager.remove_action_group(ag0)
 
-        gc.collect()             # Clean out unreachable objects
+        if gobject.pygobject_version >= (2,13):
+            ag0ref = ag0.weak_ref()
+            del ag0
+            self.assertEqual(ag0ref(), None)
+        else:
+            gc.collect()             # Clean out unreachable objects
 
-        del ag0
-        self.assertEqual(gc.collect(), 1) # Collect just the ActionGroup
+            del ag0
+            self.assertEqual(gc.collect(), 1) # Collect just the ActionGroup
 
-        uimanager.ensure_update()
-        self.assertEqual(gc.collect(), 6) # Now the GtkActions have lost their last
-                                 # GObject reference; they should be collected.
-                                 # We have a ToggleAction, an Action and a
-                                 # RadioAction, plus self.cb is bound in three
-                                 # closures.
+            uimanager.ensure_update()
+            self.assertEqual(gc.collect(), 6) # Now the GtkActions have lost their last
+                                     # GObject reference; they should be collected.
+                                     # We have a ToggleAction, an Action and a
+                                     # RadioAction, plus self.cb is bound in three
+                                     # closures.
 
         gtk.main_quit()
 

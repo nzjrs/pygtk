@@ -1,7 +1,7 @@
 import unittest
 import gc
 
-from common import gtk
+from common import gtk, gobject
 
 class CallOnDel:
     def __init__(self, callback):
@@ -52,7 +52,7 @@ class GdkTest(unittest.TestCase):
         while True:
             x = gc.collect()
             cnt += x
-            if x:
+            if x == 0:
                 break
         return cnt
 
@@ -61,13 +61,23 @@ class GdkTest(unittest.TestCase):
             pass
 
         display = gtk.gdk.Display(None)
-        del display
-
-        self.assertEquals(self._collect(), 1)
+        if gobject.pygobject_version >= (2,13):
+            dispref = display.weak_ref()
+            del display
+            self.assertEqual(dispref(), None)
+        else:
+            del display
+            self.assertEquals(self._collect(), 1)
 
         display = gtk.gdk.Display(None)
         self.assertEquals(display.__grefcount__, 1)
         display.close()
         self.assertEquals(display.__grefcount__, 1)
-        del display
-        self.assertEquals(self._collect(), 1)
+
+        if gobject.pygobject_version >= (2,13):
+            dispref = display.weak_ref()
+            del display
+            self.assertEqual(dispref(), None)
+        else:
+            del display
+            self.assertEquals(self._collect(), 1)
