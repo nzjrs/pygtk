@@ -667,12 +667,7 @@ class DoubleReturn(ReturnType):
     def write_error_return(self):
         self.wrapper.write_code("return -G_MAXFLOAT;")
     def write_conversion(self):
-        self.wrapper.write_code(
-            code=None,
-            failure_expression="!PyFloat_AsDouble(py_retval)",
-            failure_exception=
-            'PyErr_SetString(PyExc_TypeError, "retval should be a float");')
-        self.wrapper.write_code("retval = PyFloat_AsDouble(py_retval);")
+        self.wrapper.add_pyret_parse_item("d", "&retval", prepend=True)
 
 for argtype in ('float', 'double', 'gfloat', 'gdouble'):
     argtypes.matcher.register_reverse(argtype, DoubleParam)
