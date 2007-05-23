@@ -297,10 +297,11 @@ class ReverseWrapper(object):
             self.write_code('py_retval = Py_BuildValue("(N)", py_retval);')
         if len(self.pyret_parse_items) > 0:
             ## Parse return values using PyArg_ParseTuple
+            params = ["py_retval",
+                      '"%s"' % "".join([format for format, param in self.pyret_parse_items])]
+            params.extend([param for format, param in self.pyret_parse_items if param])
             self.write_code(code=None, failure_expression=(
-                '!PyArg_ParseTuple(py_retval, "%s", %s)' % (
-                "".join([format for format, param in self.pyret_parse_items]),
-                ", ".join([param for format, param in self.pyret_parse_items]))))
+                '!PyArg_ParseTuple(%s)' % (', '.join(params),)))
 
         if DEBUG_MODE:
             self.declarations.writeln("/* end declarations */")
@@ -425,10 +426,7 @@ class VoidReturn(ReturnType):
         self.wrapper.write_code("return;")
 
     def write_conversion(self):
-        self.wrapper.write_code(
-            code=None,
-            failure_expression="py_retval != Py_None",
-            failure_exception='PyErr_SetString(PyExc_TypeError, "retval should be None");')
+        self.wrapper.add_pyret_parse_item("", "", prepend=True)
 
 argtypes.matcher.register_reverse_ret('void', VoidReturn)
 argtypes.matcher.register_reverse_ret('none', VoidReturn)
