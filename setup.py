@@ -168,7 +168,8 @@ else:
 
 if pkgc_version_check('gtk+-2.0', '2.10.0'):
     gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-2.10.defs','gtk/gtk-base.defs'])
-    gtk_pkc_register=['pango-types.defs',
+    gtk_pkc_register=['atk-types.defs',
+                      'pango-types.defs',
                       ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
                       ('gtk/gtk-types.defs',['gtk/gtk-base-types.defs',
                                              'gtk/gtk-2.10-types.defs'])]
@@ -178,7 +179,8 @@ if pkgc_version_check('gtk+-2.0', '2.10.0'):
                            'gtk/libglade.defs']
 else:
     gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-base.defs'])
-    gtk_pkc_register=['pango-types.defs',
+    gtk_pkc_register=['atk-types.defs',
+                      'pango-types.defs',
                       ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
                       ('gtk/gtk-types.defs',['gtk/gtk-base-types.defs'])]
     libglade_pkc_register=[('gtk/gtk-types.defs',['gtk/gtk-base-types.defs']),
