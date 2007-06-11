@@ -291,17 +291,25 @@ class ReverseWrapper(object):
 
         sink.indent()
 
-        if len(self.pyret_parse_items) == 1:
-            ## if retval is one item only, pack it in a tuple so we
-            ## can use PyArg_ParseTuple as usual..
-            self.write_code('py_retval = Py_BuildValue("(N)", py_retval);')
-        if len(self.pyret_parse_items) > 0:
-            ## Parse return values using PyArg_ParseTuple
-            params = ["py_retval",
-                      '"%s"' % "".join([format for format, param in self.pyret_parse_items])]
-            params.extend([param for format, param in self.pyret_parse_items if param])
-            self.write_code(code=None, failure_expression=(
-                '!PyArg_ParseTuple(%s)' % (', '.join(params),)))
+        if self.pyret_parse_items == [("", "")]:
+            ## special case when there are no return parameters
+            self.write_code(
+                code=None,
+                failure_expression='py_retval != Py_None',
+                failure_exception=('PyErr_SetString(PyExc_TypeError, '
+                                   '"virtual method should return None");'))
+        else:    
+            if len(self.pyret_parse_items) == 1:
+                ## if retval is one item only, pack it in a tuple so we
+                ## can use PyArg_ParseTuple as usual..
+                self.write_code('py_retval = Py_BuildValue("(N)", py_retval);')
+            if len(self.pyret_parse_items) > 0:
+                ## Parse return values using PyArg_ParseTuple
+                params = ["py_retval",
+                          '"%s"' % "".join([format for format, param in self.pyret_parse_items])]
+                params.extend([param for format, param in self.pyret_parse_items if param])
+                self.write_code(code=None, failure_expression=(
+                    '!PyArg_ParseTuple(%s)' % (', '.join(params),)))
 
         if DEBUG_MODE:
             self.declarations.writeln("/* end declarations */")
