@@ -88,6 +88,7 @@ class ReverseWrapper(object):
         self.declarations = MemoryCodeSink()
         self.post_return_code = MemoryCodeSink()
         self.body = MemoryCodeSink()
+        self.check_exception_code = MemoryCodeSink()
         self.cleanup_actions = []
         self.pyargv_items = []
         self.pyargv_optional_items = []
@@ -265,8 +266,10 @@ class ReverseWrapper(object):
         if self.method_name is None:
             self.write_code("py_retval = PyObject_Call(%s, %s);"
                             % (self.called_pyobj, py_args),
-                            cleanup="Py_DECREF(py_retval);",
-                            failure_expression="!py_retval")
+                            cleanup="Py_XDECREF(py_retval);")
+            self.check_exception_code.flush_to(self.body)
+            self.write_code(None, failure_expression="!py_retval")
+
         else:
             self.add_declaration("PyObject *py_method;")
             self.write_code("py_method = PyObject_GetAttrString(%s, \"%s\");"
@@ -275,8 +278,9 @@ class ReverseWrapper(object):
                             failure_expression="!py_method")
             self.write_code("py_retval = PyObject_CallObject(py_method, %s);"
                             % (py_args,),
-                            cleanup="Py_DECREF(py_retval);",
-                            failure_expression="!py_retval")
+                            cleanup="Py_XDECREF(py_retval);")
+            self.check_exception_code.flush_to(self.body)
+            self.write_code(None, failure_expression="!py_retval")
 
         ## -- Handle the return value --
 
@@ -782,6 +786,17 @@ class GdkRectanglePtrParam(Parameter):
 
 argtypes.matcher.register_reverse("GdkRectangle*", GdkRectanglePtrParam)
 argtypes.matcher.register_reverse('GtkAllocation*', GdkRectanglePtrParam)
+
+
+class GErrorParam(Parameter):
+    def get_c_type(self):
+        return self.props.get('c_type').replace('**', ' **')
+    def convert_c2py(self):
+        self.wrapper.write_code(code=None,
+            failure_expression=("pyg_gerror_exception_check(%s)" % self.name),
+                                code_sink=self.wrapper.check_exception_code)
+
+argtypes.matcher.register_reverse('GError**', GErrorParam)
 
 
 class PyGObjectMethodParam(Parameter):
