@@ -579,12 +579,8 @@ class BoxedArg(ArgType):
                '    return pyg_boxed_new(%(typecode)s, %(ret)s, %(copy)s, TRUE);'
     def write_return(self, ptype, ownsreturn, info):
         if ptype[-1] == '*':
-            decl_type = self.typename
+            info.varlist.add(self.typename, '*ret')
             ret = 'ret'
-            if ptype[:6] == 'const-':
-                decl_type = 'const ' + self.typename
-                ret = '(%s*) ret' % (self.typename,)
-            info.varlist.add(decl_type, '*ret')
         else:
             info.varlist.add(self.typename, 'ret')
             ret = '&ret'

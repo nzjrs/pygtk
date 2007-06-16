@@ -37,7 +37,7 @@ pkginclude_HEADERS = pygtk.h
 # linker flags
 common_ldflags = -module -avoid-version
 if PLATFORM_WIN32
-common_ldflags += -no-undefined -shrext ".pyd"
+common_ldflags += -no-undefined
 endif
 
 # gtk module
@@ -115,7 +115,7 @@ gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
 gtk.c: gdk-types.defs gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
 _gtk_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
 _gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
-_gtk_la_LIBADD = $(GTK_LIBS) $(PYTHON_LIBS)
+_gtk_la_LIBADD = $(GTK_LIBS)
 _gtk_la_SOURCES = 		\
 	gtk-types.c 		\
 	gtkmodule.c 		\
@@ -139,7 +139,7 @@ CLEANFILES += libglade.c
 EXTRA_DIST += $(LIBGLADE_DEFS) libglade.override
 libglade.c: $(LIBGLADE_DEFS) libglade.override gdk-types.defs gtk-types.defs
 glade_la_CFLAGS = $(LIBGLADE_CFLAGS)
-glade_la_LIBADD = $(LIBGLADE_LIBS) $(PYTHON_LIBS)
+glade_la_LIBADD = $(LIBGLADE_LIBS)
 glade_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initglade
 glade_la_SOURCES = libglademodule.c
 nodist_glade_la_SOURCES = libglade.c
