@@ -3127,26 +3127,7 @@ override-attr GtkTooltips.tips_data_list
 static PyObject *
 _wrap_gtk_tooltips__get_tips_data_list(PyGObject *self, void *closure)
 {
-    GList *list = GTK_TOOLTIPS(self->obj)->tips_data_list;
-    gint         i, length;
-    PyObject    *pylist;
-    GList *iter;
-
-    length = g_list_length(list);
-    pylist = PyList_New(length);
-
-    i = 0;
-    for (iter = list; iter; iter = iter->next) {
-        GtkTooltipsData *data = (GtkTooltipsData*)iter->data;
-        PyObject *item = Py_BuildValue("NNss",
-                               pygobject_new((GObject *)data->tooltips),
-                               pygobject_new((GObject *)data->widget),
-                               data->tip_text,
-                               data->tip_private);
-        PyList_SetItem(pylist, i, item);
-        Py_INCREF(item);
-    }
-    return pylist;
+    return PyList_New(0);
 }
 %%
 override-attr GtkAdjustment.value
