@@ -1454,6 +1454,11 @@ typedef intobjargproc ssizeobjargproc;
             'void\n' + self.prefix +
             '_add_constants(PyObject *module, const gchar *strip_prefix)\n{\n')
 
+        self.fp.write(
+            '#ifdef VERSION\n'
+            '    PyModule_AddStringConstant(module, "__version__", VERSION);\n'
+            '#endif\n')
+
         for enum in self.get_enums():
             if enum.typecode is None:
                 for nick, value in enum.values:
