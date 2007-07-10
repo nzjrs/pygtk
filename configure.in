@@ -3,14 +3,14 @@ AC_PREREQ(2.52)
 
 dnl the pygtk version number
 m4_define(pygtk_major_version, 2)
-m4_define(pygtk_minor_version, 10)
-m4_define(pygtk_micro_version, 5)
+m4_define(pygtk_minor_version, 11)
+m4_define(pygtk_micro_version, 0)
 m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
 
 dnl versions of packages we require ...
 m4_define(glib_required_version,       2.8.0)
-m4_define(pango_required_version,      1.10.0)
-m4_define(atk_required_version,        1.8.0)
+m4_define(pango_required_version,      1.16.0)
+m4_define(atk_required_version,        1.12.0)
 m4_define(gtk_required_version,        2.8.0)
 m4_define(libglade_required_version,   2.5.0)
 m4_define(gtkunixprint_required_version,  2.9.0)
@@ -220,6 +220,19 @@ if test $have_pycairo; then
   AM_CONDITIONAL(HAVE_GTK_2_10, $have_gtk_210)
   AC_SUBST(HAVE_GTK_2_10)
   AC_DEFINE([HAVE_GTK_2_10], [$have_gtk_210], [If Gtk 2.10 was found])
+  
+  dnl check for gtk 2.12
+  PKG_CHECK_MODULES(GTK212, gtk+-2.0 >= 2.11.6,
+	  HAVE_GTK_212="yes", HAVE_GTK_212="no")
+  
+  if test "x$HAVE_GTK_212" = "xyes"; then
+     gtk_version="2.12"	
+     have_gtk_212=true
+  fi
+	
+  AM_CONDITIONAL(HAVE_GTK_2_12, $have_gtk_212)
+  AC_SUBST(HAVE_GTK_2_12)
+  AC_DEFINE([HAVE_GTK_2_12], [$have_gtk_212], [If Gtk 2.12 was found])
 
   dnl libglade
   PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= libglade_required_version],

@@ -322,6 +322,12 @@
   (return-type "gint")
 )
 
+(define-method get_alpha
+  (of-object "AtkComponent")
+  (c-name "atk_component_get_alpha")
+  (return-type "gdouble")
+)
+
 (define-virtual add_focus_handler
   (of-object "AtkComponent")
   (return-type "guint")
@@ -443,6 +449,11 @@
   )
 )
 
+(define-virtual get_alpha
+  (of-object "AtkComponent")
+  (return-type "gdouble")
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkdocument.h
@@ -464,6 +475,32 @@
   (return-type "gpointer")
 )
 
+(define-method get_attributes
+  (of-object "AtkDocument")
+  (c-name "atk_document_get_attributes")
+  (return-type "AtkAttributeSet*")
+)
+
+(define-method get_attribute_value
+  (of-object "AtkDocument")
+  (c-name "atk_document_get_attribute_value")
+  (return-type "const-gchar*")
+  (parameters
+    '("const-gchar*" "attribute_name")
+  )
+)
+
+(define-method set_attribute_value
+  (of-object "AtkDocument")
+  (c-name "atk_document_set_attribute_value")
+  (return-type "gboolean")
+  (parameters
+    '("const-gchar*" "attribute_name")
+    '("const-gchar*" "attribute_value")
+  )
+)
+
+
 (define-virtual get_document_type
   (of-object "AtkDocument")
   (return-type "const-gchar*")
@@ -472,6 +509,28 @@
 (define-virtual get_document
   (of-object "AtkDocument")
   (return-type "gpointer")
+)
+
+(define-virtual get_document_attributes
+  (of-object "AtkDocument")
+  (return-type "AtkAttributeSet*")
+)
+
+(define-virtual get_document_attribute_value
+  (of-object "AtkDocument")
+  (return-type "G_CONST_RETURNgchar*")
+  (parameters
+    '("const-gchar*" "attribute_name")
+  )
+)
+
+(define-virtual set_document_attribute
+  (of-object "AtkDocument")
+  (return-type "gboolean")
+  (parameters
+    '("const-gchar*" "attribute_name")
+    '("const-gchar*" "attribute_value")
+  )
 )
 
 
@@ -706,6 +765,13 @@
   (return-type "gboolean")
 )
 
+(define-method get_attributes
+  (of-object "AtkObject")
+  (c-name "atk_object_get_attributes")
+  (return-type "AtkAttributeSet*")
+)
+
+
 (define-virtual get_uri
   (of-object "AtkHyperlink")
   (return-type "gchar*")
@@ -755,6 +821,31 @@
 (define-virtual link_activated
   (of-object "AtkHyperlink")
   (return-type "none")
+)
+
+(define-virtual get_attributes
+  (of-object "AtkObject")
+  (return-type "AtkAttributeSet*")
+)
+
+
+
+;; From atkhyperlinkimpl.h
+
+(define-function atk_hyperlink_impl_get_type
+  (c-name "atk_hyperlink_impl_get_type")
+  (return-type "GType")
+)
+
+(define-method get_hyperlink
+  (of-object "AtkHyperlinkImpl")
+  (c-name "atk_hyperlink_impl_get_hyperlink")
+  (return-type "AtkHyperlink*")
+)
+
+(define-virtual get_hyperlink
+  (of-object "AtkHyperlinkImpl")
+  (return-type "AtkHyperlink*")
 )
 
 
@@ -1439,6 +1530,15 @@
   (return-type "GPtrArray*")
 )
  
+(define-method add_target
+  (of-object "AtkRelation")
+  (c-name "atk_relation_add_target")
+  (return-type "none")
+  (parameters
+    '("AtkObject*" "target")
+  )
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkrelationset.h
@@ -1504,7 +1604,17 @@
     '("AtkRelationType" "relationship")
   )
 )
- 
+
+(define-method add_relation_by_type
+  (of-object "AtkRelationSet")
+  (c-name "atk_relation_set_add_relation_by_type")
+  (return-type "none")
+  (parameters
+    '("AtkRelationType" "relationship")
+    '("AtkObject*" "target")
+  )
+)
+
 
 
 ;; From /usr/include/atk-1.0/atk/atkselection.h
@@ -1784,6 +1894,15 @@
   )
 )
 
+(define-method get_uri
+  (of-object "AtkStreamableContent")
+  (c-name "atk_streamable_content_get_uri")
+  (return-type "gchar*")
+  (parameters
+    '("const-gchar*" "mime_type")
+  )
+)
+
 (define-virtual get_n_mime_types
   (of-object "AtkStreamableContent")
   (return-type "gint")
@@ -1800,6 +1919,14 @@
 (define-virtual get_stream
   (of-object "AtkStreamableContent")
   (return-type "GIOChannel*")
+  (parameters
+    '("const-gchar*" "mime_type")
+  )
+)
+
+(define-virtual get_uri
+  (of-object "AtkStreamableContent")
+  (return-type "G_CONST_RETURNgchar*")
   (parameters
     '("const-gchar*" "mime_type")
   )
@@ -2962,6 +3089,15 @@
   )
 )
 
+(define-method get_minimum_increment
+  (of-object "AtkValue")
+  (c-name "atk_value_get_minimum_increment")
+  (return-type "none")
+  (parameters
+    '("GValue*" "value")
+  )
+)
+
 (define-virtual get_current_value
   (of-object "AtkValue")
   (return-type "none")
@@ -2991,6 +3127,14 @@
   (return-type "gboolean")
   (parameters
     '("const-GValue*" "value")
+  )
+)
+
+(define-virtual get_minimum_increment
+  (of-object "AtkValue")
+  (return-type "none")
+  (parameters
+    '("GValue*" "value")
   )
 )
 
