@@ -130,5 +130,22 @@ class ActionGroupTest(unittest.TestCase):
     def cb(self, action):
         return
 
+
+class ActionTest(unittest.TestCase):
+    def testActionSubclass(self):
+
+        class MyAction(gtk.Action):
+            __gtype_name__ = 'MyAction'
+            def __init__(self):
+                self._activated = False
+                gtk.Action.__init__(self, "name", "label", "tooltip", "stock_id")
+            def do_activate(self):
+                self._activated = True
+        
+        myaction = MyAction()
+        myaction.activate()
+        self.assertEqual(myaction._activated, True)
+        
+
 if __name__ == '__main__':
     unittest.main()
