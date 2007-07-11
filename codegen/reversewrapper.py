@@ -93,6 +93,7 @@ class ReverseWrapper(object):
         self.pyargv_items = []
         self.pyargv_optional_items = []
         self.pyret_parse_items = [] # list of (format_spec, parameter)
+        self.code_sinks_stack = [self.body]
 
     def set_call_target(self, called_pyobj, method_name=None):
         assert called_pyobj is not None
@@ -122,6 +123,14 @@ class ReverseWrapper(object):
             self.pyret_parse_items.insert(0, (format_specifier, parameter))
         else:
             self.pyret_parse_items.append((format_specifier, parameter))
+
+
+    def push_code_sink(self, code_sink):
+        self.code_sinks_stack.insert(0, code_sink)
+
+    def pop_code_sink(self):
+        return self.code_sinks_stack.pop(0)
+
 
     def write_code(self, code,
                    cleanup=None,
@@ -153,7 +162,7 @@ class ReverseWrapper(object):
                       parses the python method return value.
         '''
         if code_sink is None:
-            code_sink = self.body
+            code_sink = self.code_sinks_stack[0]
         if code is not None:
             code_sink.writeln(code)
         if failure_expression is not None:
@@ -171,7 +180,13 @@ class ReverseWrapper(object):
                 code_sink.writeln(failure_cleanup)
             for cleanup_action in self.cleanup_actions:
                 code_sink.writeln(cleanup_action)
-            self.return_type.write_error_return()
+
+            self.push_code_sink(code_sink)
+            try:
+                self.return_type.write_error_return()
+            finally:
+                self.pop_code_sink()
+
             code_sink.unindent()
             code_sink.writeln("}")
         if cleanup is not None:
