@@ -3320,3 +3320,129 @@ _wrap_gtk_tree_store_set_column_types(PyGObject *self, PyObject *args)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_tree_view_convert_widget_to_bin_window_coords args
+static PyObject*
+_wrap_gtk_tree_view_convert_widget_to_bin_window_coords(PyGObject *self,
+                                                        PyObject *args,
+                                                        PyObject *kwargs)
+{
+    static char *kwlist[] = { "widget_x", "widget_y", NULL };
+    gint widget_x, widget_y, window_x = 0, window_y = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                        "ii:GtkTreeView.convert_widget_to_bin_window_coords",
+                        kwlist, &widget_x, &widget_y))
+        return NULL;
+    
+    gtk_tree_view_convert_widget_to_bin_window_coords(GTK_TREE_VIEW(self->obj),
+                                          widget_x, widget_y,
+                                          &window_x, &window_y);
+    
+    return Py_BuildValue("(ii)", window_x, window_y);
+}
+%%
+override gtk_tree_view_convert_widget_to_tree_coords args
+static PyObject*
+_wrap_gtk_tree_view_convert_widget_to_tree_coords(PyGObject *self,
+                                                  PyObject *args,
+                                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "widget_x", "widget_y", NULL };
+    gint widget_x, widget_y, tree_x = 0, tree_y = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                        "ii:GtkTreeView.convert_widget_to_tree_coords",
+                        kwlist, &widget_x, &widget_y))
+        return NULL;
+    
+    gtk_tree_view_convert_widget_to_tree_coords(GTK_TREE_VIEW(self->obj),
+                                                widget_x, widget_y,
+                                                &tree_x, &tree_y);
+    
+    return Py_BuildValue("(ii)", tree_x, tree_y);
+}
+%%
+override gtk_tree_view_convert_tree_to_widget_coords args
+static PyObject*
+_wrap_gtk_tree_view_convert_tree_to_widget_coords(PyGObject *self,
+                                                  PyObject *args,
+                                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "tree_x", "tree_y", NULL };
+    gint tree_x, tree_y, widget_x = 0, widget_y = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                        "ii:GtkTreeView.convert_tree_to_widget_coords",
+                        kwlist, &tree_x, &tree_y))
+        return NULL;
+    
+    gtk_tree_view_convert_tree_to_widget_coords(GTK_TREE_VIEW(self->obj),
+                                                tree_x, tree_y,
+                                                &widget_x, &widget_y);
+    
+    return Py_BuildValue("(ii)", widget_x, widget_y);
+}
+%%
+override gtk_tree_view_convert_tree_to_bin_window_coords args
+static PyObject*
+_wrap_gtk_tree_view_convert_tree_to_bin_window_coords(PyGObject *self,
+                                                      PyObject *args,
+                                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "tree_x", "tree_y", NULL };
+    gint tree_x, tree_y, window_x = 0, window_y = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                        "ii:GtkTreeView.convert_tree_to_bin_window_coords",
+                        kwlist, &tree_x, &tree_y))
+        return NULL;
+    
+    gtk_tree_view_convert_tree_to_bin_window_coords(GTK_TREE_VIEW(self->obj),
+                                                    tree_x, tree_y,
+                                                    &window_x, &window_y);
+    
+    return Py_BuildValue("(ii)", window_x, window_y);
+}
+%%
+override gtk_tree_view_convert_bin_window_to_widget_coords args
+static PyObject*
+_wrap_gtk_tree_view_convert_bin_window_to_widget_coords(PyGObject *self,
+                                                        PyObject *args,
+                                                        PyObject *kwargs)
+{
+    static char *kwlist[] = { "window_x", "window_y", NULL };
+    gint window_x, window_y, widget_x = 0, widget_y = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                        "ii:GtkTreeView.convert_bin_window_to_widget_coords",
+                        kwlist, &window_x, &window_y))
+        return NULL;
+    
+    gtk_tree_view_convert_bin_window_to_widget_coords(GTK_TREE_VIEW(self->obj),
+                                                      window_x, window_y,
+                                                      &widget_x, &widget_y);
+    
+    return Py_BuildValue("(ii)", widget_x, widget_y);
+}
+%%
+override gtk_tree_view_convert_bin_window_to_tree_coords args
+static PyObject*
+_wrap_gtk_tree_view_convert_bin_window_to_tree_coords(PyGObject *self,
+                                                      PyObject *args,
+                                                      PyObject *kwargs)
+{
+    static char *kwlist[] = { "window_x", "window_y", NULL };
+    gint window_x, window_y, tree_x = 0, tree_y = 0;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                        "ii:GtkTreeView.convert_bin_window_to_tree_coords",
+                        kwlist, &window_x, &window_y))
+        return NULL;
+    
+    gtk_tree_view_convert_bin_window_to_tree_coords(GTK_TREE_VIEW(self->obj),
+                                                    window_x, window_y,
+                                                    &tree_x, &tree_y);
+    
+    return Py_BuildValue("(ii)", tree_x, tree_y);
+}
