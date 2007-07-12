@@ -148,6 +148,20 @@ linkend="method-gtkimage--clear">clear</link></methodname>
     <methodname><link linkend="function-gtk--image-new-from-animation">gtk.image_new_from_icon_name</link></methodname>
     <methodparam><parameter role="keyword">icon_name</parameter></methodparam>
     <methodparam><parameter role="keyword">size</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--image-new-from-pixmap">gtk.image_new_from_pixmap</link></methodname>
+    <methodparam><parameter role="keyword">pixmap</parameter></methodparam>
+    <methodparam><parameter role="keyword">mask</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--image-new-from-image">gtk.image_new_from_image</link></methodname>
+    <methodparam><parameter role="keyword">image</parameter></methodparam>
+    <methodparam><parameter role="keyword">mask</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--image-new-from-file">gtk.image_new_from_file</link></methodname>
+    <methodparam><parameter role="keyword">filename</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--image-new-from-pixbuf">gtk.image_new_from_pixbuf</link></methodname>
+    <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
   </methodsynopsis></programlisting>
 
   </refsect1>
@@ -1157,6 +1171,172 @@ icon will be updated appropriately. The "icon-name" and "icon-size"
 properties are also set by this function.</para>
 
     </refsect2>
+    
+    <refsect2 id="function-gtk--image-new-from-pixmap">
+      <title>gtk.image_new_from_pixmap</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.image_new_from_pixmap</methodname>
+	  <methodparam><parameter
+			 role="keyword">pixmap</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">mask</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">pixmap</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">mask</parameter>&nbsp;:</term>
+	  <listitem><simpara>the bitmap that is the transparency mask.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+widget.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <function>gtk.image_new_from_pixmap</function>() function
+returns a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> object
+displaying pixmap with a mask. A <link
+linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link> 
+is a server-side image buffer in the pixel format of the current display.</para>
+
+    </refsect2>
+    
+    <refsect2 id="function-gtk--image-new-from-image">
+      <title>gtk.image_new_from_image</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.image_new_from_image</methodname>
+	  <methodparam><parameter
+			 role="keyword">image</parameter></methodparam>
+	  <methodparam><parameter
+			 role="keyword">mask</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">image</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkimage"><classname>gtk.gdk.Image</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">mask</parameter>&nbsp;:</term>
+	  <listitem><simpara>the bitmap that is the transparency mask.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+widget.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <function>gtk.image_new_from_image</function>() function
+returns a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> object
+displaying an image with a mask. A <link
+linkend="class-gdkimage"><classname>gtk.gdk.Image</classname></link> 
+is a client-side image buffer in the pixel format of the current display.</para>
+
+    </refsect2>
+    
+    <refsect2 id="function-gtk--image-new-from-file">
+      <title>gtk.image_new_from_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.image_new_from_file</methodname>
+	  <methodparam><parameter
+			 role="keyword">filename</parameter></methodparam>
+	  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+	  <listitem><simpara>a filename</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+widget.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <function>gtk.image_new_from_file</function>() function
+returns a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> object
+displaying the file filename. If the file isn't found or can't be loaded, 
+the resulting <link linkend="class-gtkimage"><classname>gtk.Image</classname></link> 
+will display a "broken image" icon. This function never returns None, 
+it always returns a valid <link linkend="class-gtkimage"><classname>gtk.Image</classname>
+</link> widget.</para>
+      <para>If the file contains an animation, the image will contain an animation.</para>
+      <para>If you need to detect failures to load the file, use <link
+linkend="function-gdk--pixbuf-new-from-file">gtk.gdk.pixbuf_new_from_file</link> 
+to load the file yourself, then create the <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> 
+from the pixbuf. (Or for animations, use <link
+linkend="constructor-gdkpixbufanimation">gtk.gdk.PixbufAnimation</link>.
+The storage type (<link
+linkend="method-gtkimage--get-storage-type">get_storage_type</link>) 
+of the returned image is not defined, it will be whatever is appropriate 
+for displaying the file.</para>
+
+    </refsect2><refsect2 id="function-gtk--image-new-from-pixbuf">
+      <title>gtk.image_new_from_pixbuf</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.image_new_from_pixbuf</methodname>
+	  <methodparam><parameter
+			 role="keyword">pixbuf</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">pixbuf</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gdkpixbuf"><classname>gtk.gdk.Pixbuf</classname></link>
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+widget.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <function>gtk.image_new_from_pixbuf</function>() function
+returns a new <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> object
+displaying pixbuf</para>
+      <para>Note that this function just creates a <link
+linkend="class-gtkimage"><classname>gtk.Image</classname></link> from the pixbuf. The 
+<link linkend="class-gtkimage"><classname>gtk.Image</classname></link> 
+created will not react to state changes. Should you want that, you should use 
+<link linkend="function-gtk--image-new-from-icon-set">gtk.image_new_from_icon_set</link>
+      </para>
+     </refsect2>
+ 
 
   </refsect1>
 
