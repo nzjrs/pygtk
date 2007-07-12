@@ -487,6 +487,37 @@ END NOT IMPLEMENTED -->
       <methodsynopsis language="python">
         <methodname><link linkend="method-gtktreeview--set-enable-tree-lines">set_enable_tree_lines</link></methodname>
         <methodparam><parameter role="keyword">enabled</parameter></methodparam>      </methodsynopsis>
+      
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--convert-widget-to-bin-window-coords">convert_widget_to_bin_window_coords</link></methodname>
+        <methodparam><parameter role="keyword">widget_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">widget_y</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--convert-widget-to-tree-coords">convert_widget_to_tree_coords</link></methodname>
+        <methodparam><parameter role="keyword">widget_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">widget_y</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--convert-tree-to-widget-coords">convert_tree_to_widget_coords</link></methodname>
+        <methodparam><parameter role="keyword">tree_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">tree_y</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--convert-tree-to-bin-window-coords">convert_tree_to_bin_window_coords</link></methodname>
+        <methodparam><parameter role="keyword">tree_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">tree_y</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--convert-bin-window-to-widget-coords">convert_bin_window_to_widget_coords</link></methodname>
+        <methodparam><parameter role="keyword">window_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">window_y</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--convert-bin-window-to-tree-coords">convert_bin_window_to_tree_coords</link></methodname>
+        <methodparam><parameter role="keyword">window_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">window_y</parameter></methodparam>
+    </methodsynopsis>
 
     </classsynopsis>
 
@@ -3485,6 +3516,209 @@ treeview. If no valid paths are available this method returns
       <para>Sets whether to draw lines interconnecting the expanders.  This
       does not have any visible effects for lists.</para>
 
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--convert-widget-to-bin-window-coords">
+        <title>gtk.TreeView.convert_widget_to_bin_window_coords</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>convert_widget_to_bin_window_coords</methodname>
+            <methodparam><parameter role="keyword">widget_x</parameter></methodparam>
+            <methodparam><parameter role="keyword">widget_y</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">widget_x</parameter>&nbsp;:</term>
+                <listitem><simpara>X coordinate relative to the widget.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">widget_y</parameter>&nbsp;:</term>
+                <listitem><simpara>Y coordinate relative to the widget.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>A tuple containing the bin_window X and Y coordinates.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Converts widget coordinates to coordinates for the bin_window (see <methodname><link
+            linkend="method-gtktreeview--get-bin-window">get_bin_window</link></methodname>).
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--convert-widget-to-tree-coords">
+        <title>gtk.TreeView.convert_widget_to_tree_coords</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>convert_widget_to_tree_coords</methodname>
+            <methodparam><parameter role="keyword">widget_x</parameter></methodparam>
+            <methodparam><parameter role="keyword">widget_y</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">widget_x</parameter>&nbsp;:</term>
+                <listitem><simpara>X coordinate relative to the widget.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">widget_y</parameter>&nbsp;:</term>
+                <listitem><simpara>Y coordinate relative to the widget.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>A tuple containing the tree X and Y coordinates.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Converts widget coordinates to coordinates for the tree (the full scrollable area of the tree).
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--convert-tree-to-widget-coords">
+        <title>gtk.TreeView.convert_tree_to_widget_coords</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>convert_tree_to_widget_coords</methodname>
+            <methodparam><parameter role="keyword">tree_x</parameter></methodparam>
+            <methodparam><parameter role="keyword">tree_y</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">tree_x</parameter>&nbsp;:</term>
+                <listitem><simpara>X coordinate relative to the tree.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">tree_y</parameter>&nbsp;:</term>
+                <listitem><simpara>Y coordinate relative to the tree.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>A tuple containing the widget X and Y coordinates.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Converts tree coordinates (coordinates in full scrollable area of the tree) to widget coordinates.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--convert-tree-to-bin-window-coords">
+        <title>gtk.TreeView.convert_tree_to_bin_window_coords</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>convert_tree_to_bin_window_coords</methodname>
+            <methodparam><parameter role="keyword">tree_x</parameter></methodparam>
+            <methodparam><parameter role="keyword">tree_y</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">tree_x</parameter>&nbsp;:</term>
+                <listitem><simpara>X coordinate relative to the tree.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">tree_y</parameter>&nbsp;:</term>
+                <listitem><simpara>Y coordinate relative to the tree.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>A tuple containing the bin window X and Y coordinates.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Converts tree coordinates (coordinates in full scrollable area of the tree) to bin_window coordinates.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--convert-bin-window-to-widget-coords">
+        <title>gtk.TreeView.convert_bin_window_to_widget_coords</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>convert_bin_window_to_widget_coords</methodname>
+            <methodparam><parameter role="keyword">window_x</parameter></methodparam>
+            <methodparam><parameter role="keyword">window_y</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">window_x</parameter>&nbsp;:</term>
+                <listitem><simpara>X coordinate relative to the bin window.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">window_y</parameter>&nbsp;:</term>
+                <listitem><simpara>Y coordinate relative to the bin window.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>A tuple containing the widget X and Y coordinates.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Converts bin window coordinates (see <methodname><link
+            linkend="method-gtktreeview--get-bin-window">get_bin_window</link></methodname>)
+            to widget relative coordinates.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtktreeview--convert-bin-window-to-tree-coords">
+        <title>gtk.TreeView.convert_bin_window_to_tree_coords</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>convert_bin_window_to_tree_coords</methodname>
+            <methodparam><parameter role="keyword">window_x</parameter></methodparam>
+            <methodparam><parameter role="keyword">window_y</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">window_x</parameter>&nbsp;:</term>
+                <listitem><simpara>X coordinate relative to the bin window.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">window_y</parameter>&nbsp;:</term>
+                <listitem><simpara>Y coordinate relative to the bin window.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>A tuple containing the tree X and Y coordinates.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Converts bin window coordinates (see <methodname><link
+            linkend="method-gtktreeview--get-bin-window">get_bin_window</link></methodname>)
+            to the tree (the full scrollable area of the tree).
+        </para>
     </refsect2>
 
   </refsect1>
