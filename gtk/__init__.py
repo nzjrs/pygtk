@@ -50,8 +50,11 @@ else:
 import gdk
 
 if ltihooks:
-    ltihooks.uninstall()
-    del ltihooks
+    try:
+        ltihooks.uninstall()
+        del ltihooks
+    except:
+        pass
 
 from gtk._lazyutils import LazyNamespace, LazyModule
 from gtk.deprecation import _Deprecated, _DeprecatedConstant
