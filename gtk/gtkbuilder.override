@@ -1,0 +1,124 @@
+/* -*- Mode: C; c-basic-offset: 4 -*-
+ * pygtk- Python bindings for the GTK toolkit.
+ * Copyright (C) 2007  Gian Mario Tagliaretti
+ *
+ *   gtkbuilder.override: overrides for various builder functions.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+
+%%
+headers
+
+typedef struct{
+    PyObject    *obj;
+    PyObject    *data;
+} PyGCustomSignalNotify;
+
+%%
+override gtk_builder_connect_signals kwargs
+static void
+connect_many(GtkBuilder *builder, GObject *obj,
+	     const gchar *signal_name, const gchar *handler_name,
+	     GObject *connect_object, GConnectFlags flags, gpointer user_data)
+{
+    PyGCustomSignalNotify   *notify = user_data;
+    PyObject                *handler_dict = notify->obj;
+    PyObject                *tuple, *self;
+    GClosure                *closure = NULL;
+
+    tuple = PyMapping_GetItemString(handler_dict, (gchar *)handler_name);
+    if (!tuple) {
+	PyErr_Clear();	
+        tuple = PyObject_GetAttrString(handler_dict, (gchar *)handler_name);
+        if (!tuple) {
+            PyErr_Clear();
+            return;
+        }
+    }
+    
+    if (PyTuple_Check(tuple)) {
+	PyObject *callback = PyTuple_GetItem(tuple, 0);
+	PyObject *extra = PySequence_GetSlice(tuple, 1, PyTuple_Size(tuple));
+	PyObject *other = NULL;
+
+	if (connect_object)
+	    other = pygobject_new((GObject *)connect_object);
+
+	closure = pyg_closure_new(callback, extra, other);
+	Py_DECREF(extra);
+    } else if (PyCallable_Check(tuple)) {
+	PyObject *other = NULL;
+
+	if (connect_object)
+	    other = pygobject_new((GObject *)connect_object);
+
+	closure = pyg_closure_new(tuple, notify->data, other);
+    } else {
+	g_warning("handler for `%s' not callable or a tuple", handler_name);
+	Py_DECREF(tuple);
+	return;
+    }
+    Py_DECREF(tuple);
+    self = pygobject_new(obj);
+    g_signal_connect_closure(obj, signal_name, closure, flags);
+    pygobject_watch_closure(self, closure);
+    Py_DECREF(self);
+}
+
+static PyObject *
+_wrap_gtk_builder_connect_signals(PyGObject *self, PyObject *args,
+                                  PyObject *kwargs)
+{
+    static char *kwlist[] = { "object", "user_data", NULL };
+    PyGCustomSignalNotify   notify;
+    PyObject                *object, *user_data = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "O|O:GtkBuilder.connect_signals", kwlist,
+				     &object, &user_data))
+	return NULL;
+
+    notify.obj = object;
+    notify.data = user_data;
+
+    gtk_builder_connect_signals_full(GTK_BUILDER(self->obj),
+                                     connect_many,
+                                     &notify);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+%%
+override gtk_builder_get_objects noargs
+static PyObject *
+_wrap_gtk_builder_get_objects(PyGObject *self)
+{
+    GSList *l, *objects;
+    PyObject *pyobjects;
+
+    pyobjects = PyList_New(0);
+    objects = gtk_builder_get_objects(GTK_BUILDER(self->obj));
+    for (l = objects; l; l = l->next)
+    {
+        PyObject *item = pygobject_new((GObject *)l->data);
+        PyList_Append(pyobjects, item);
+        Py_DECREF(item);
+    }
+    g_slist_free(objects);
+
+    return pyobjects;
+}

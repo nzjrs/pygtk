@@ -76,6 +76,7 @@ GDK_OVERRIDES = \
 
 GTK_OVERRIDES = 		\
 	gtk.override 		\
+	gtkbuilder.override 	\
 	gtkclist.override 	\
 	gtkcontainer.override 	\
 	gtkctree.override 	\
