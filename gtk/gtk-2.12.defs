@@ -442,6 +442,72 @@
 
 
 
+;; From gtkiconview.h
+
+(define-method convert_widget_to_bin_window_coords
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_convert_widget_to_bin_window_coords")
+  (return-type "none")
+  (parameters
+    '("gint" "wx")
+    '("gint" "wy")
+    '("gint*" "bx")
+    '("gint*" "by")
+  )
+)
+
+(define-method set_tooltip_item
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_tooltip_item")
+  (return-type "none")
+  (parameters
+    '("GtkTooltip*" "tooltip")
+    '("GtkTreePath*" "path")
+  )
+)
+
+(define-method set_tooltip_cell
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_tooltip_cell")
+  (return-type "none")
+  (parameters
+    '("GtkTooltip*" "tooltip")
+    '("GtkTreePath*" "path")
+    '("GtkCellRenderer*" "cell")
+  )
+)
+
+(define-method get_tooltip_context
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_tooltip_context")
+  (return-type "gboolean")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+    '("gboolean" "keyboard_tip")
+    '("GtkTreeModel**" "model")
+    '("GtkTreePath**" "path")
+    '("GtkTreeIter*" "iter")
+  )
+)
+
+(define-method set_tooltip_column
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_set_tooltip_column")
+  (return-type "none")
+  (parameters
+    '("gint" "column")
+  )
+)
+
+(define-method get_tooltip_column
+  (of-object "GtkIconView")
+  (c-name "gtk_icon_view_get_tooltip_column")
+  (return-type "gint")
+)
+
+
+
 ;; From gtkliststore.h
 
 (define-method set_valuesv
@@ -453,6 +519,28 @@
     '("gint*" "columns")
     '("GValue*" "values")
     '("gint" "n_values")
+  )
+)
+
+
+
+;; From gtkmenutoolbutton.h
+
+(define-method set_arrow_tooltip_text
+  (of-object "GtkMenuToolButton")
+  (c-name "gtk_menu_tool_button_set_arrow_tooltip_text")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "text")
+  )
+)
+
+(define-method set_arrow_tooltip_markup
+  (of-object "GtkMenuToolButton")
+  (c-name "gtk_menu_tool_button_set_arrow_tooltip_markup")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "markup")
   )
 )
 
@@ -877,6 +965,28 @@
 
 
 
+;; From gtktoolitem.h
+
+(define-method set_tooltip_text
+  (of-object "GtkToolItem")
+  (c-name "gtk_tool_item_set_tooltip_text")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "text")
+  )
+)
+
+(define-method set_tooltip_markup
+  (of-object "GtkToolItem")
+  (c-name "gtk_tool_item_set_tooltip_markup")
+  (return-type "none")
+  (parameters
+    '("const-gchar*" "markup")
+  )
+)
+
+
+
 ;; From gtktreestore.h
 
 (define-method set_valuesv
@@ -1007,7 +1117,62 @@
   (return-type "gint")
 )
 
+(define-method is_rubber_banding_active
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_is_rubber_banding_active")
+  (return-type "gboolean")
+)
 
+(define-method get_tooltip_context
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_tooltip_context")
+  (return-type "gboolean")
+  (parameters
+    '("gint*" "x")
+    '("gint*" "y")
+    '("gboolean" "keyboard_tip")
+    '("GtkTreeModel**" "model")
+    '("GtkTreePath**" "path")
+    '("GtkTreeIter*" "iter")
+  )
+)
+
+(define-method set_tooltip_column
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_set_tooltip_column")
+  (return-type "none")
+  (parameters
+    '("gint" "column")
+  )
+)
+
+(define-method get_tooltip_column
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_get_tooltip_column")
+  (return-type "gint")
+)
+
+(define-method set_tooltip_row
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_set_tooltip_row")
+  (return-type "none")
+  (parameters
+    '("GtkTooltip*" "tooltip")
+    '("GtkTreePath*" "path")
+  )
+)
+
+(define-method set_tooltip_cell
+  (of-object "GtkTreeView")
+  (c-name "gtk_tree_view_set_tooltip_cell")
+  (return-type "none")
+  (parameters
+    '("GtkTooltip*" "tooltip")
+    '("GtkTreePath*" "path")
+    '("GtkTreeViewColumn*" "column")
+    '("GtkCellRenderer*" "cell")
+  )
+)
 
 ;; From gtkvolumebutton.h
 
@@ -1100,6 +1265,12 @@
     '("const-GdkColor*" "primary")
     '("const-GdkColor*" "secondary")
   )
+)
+
+(define-method get_has_tooltip
+  (of-object "GtkWidget")
+  (c-name "gtk_widget_get_has_tooltip")
+  (return-type "gboolean")
 )
 
 
