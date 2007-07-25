@@ -194,6 +194,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkrequisition.xml		\
 	reference/pygtk-gtkruler.xml			\
 	reference/pygtk-gtkscale.xml			\
+	reference/pygtk-gtkscalebutton.xml		\
 	reference/pygtk-gtkscrollbar.xml		\
 	reference/pygtk-gtkscrolledwindow.xml		\
 	reference/pygtk-gtkselectiondata.xml		\
@@ -467,6 +468,7 @@ HTML_FILES =						\
 	html/class-gtkrequisition.html			\
 	html/class-gtkruler.html			\
 	html/class-gtkscale.html			\
+	html/class-gtkscalebutton.html			\
 	html/class-gtkscrollbar.html			\
 	html/class-gtkscrolledwindow.html		\
 	html/class-gtkselectiondata.html		\
