@@ -1082,3 +1082,60 @@ _wrap_GtkContainer__do_get_child_property(PyObject *cls, PyObject *args, PyObjec
     g_value_unset(&value);
     return py_value;
 }
+
+%%
+override GtkContainer__do_forall kwargs
+
+typedef struct {
+    PyObject *callback;
+    PyObject *callback_data;
+} PyGtkContainerPyCallbackData;
+
+static void
+_wrap_GtkContainer__do_forall_callback(GtkWidget *child, PyGtkContainerPyCallbackData *data)
+{
+    PyObject *pychild = pygobject_new((GObject *) child);
+    PyObject *result;
+
+    result = PyObject_CallFunctionObjArgs(data->callback, pychild, data->callback_data, NULL);
+    /* Just discard it. */
+    Py_DECREF(result);
+}
+
+static PyObject *
+_wrap_GtkContainer__do_forall(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    gpointer klass;
+    static char *kwlist[] = { "self", "include_internals", "callback", "callback_data", NULL };
+    PyGObject *self;
+    char include_internals;
+    PyObject *callback;
+    PyObject *callback_data = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!bO|O:GtkContainer.forall", kwlist,
+                                     &PyGtkContainer_Type, &self,
+                                     &include_internals,
+                                     &callback, &callback_data))
+        return NULL;
+
+    klass = g_type_class_ref(pyg_type_from_object(cls));
+    if (GTK_CONTAINER_CLASS(klass)->forall) {
+	PyGtkContainerPyCallbackData *data = g_new(PyGtkContainerPyCallbackData, 1);
+	data->callback = callback;
+	data->callback_data = callback_data;
+
+	GTK_CONTAINER_CLASS(klass)->forall(GTK_CONTAINER(self->obj),
+					   include_internals,
+					   (GtkCallback)_wrap_GtkContainer__do_forall_callback,
+					   data);
+	g_free(data);
+        g_type_class_unref(klass);
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "virtual method GtkContainer.forall not implemented");
+        g_type_class_unref(klass);
+        return NULL;
+    }
+}

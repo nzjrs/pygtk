@@ -41,6 +41,23 @@ MyContainer.install_child_property(1,
                                     'Dumb Prop',
                                     'Dumb Property for testing purposes',
                                     '', gobject.PARAM_READWRITE))
+
+class MyAlignment(gtk.Alignment):
+
+    def __init__(self, caption):
+        self.caption = gtk.Label()
+        self.caption.set_markup('<b>%s</b>' % gobject.markup_escape_text(caption))
+
+        gtk.Alignment.__init__(self)
+
+        self.caption.set_parent(self)
+
+    def do_forall(self, include_internals, callback, callback_data):
+        callback(self.caption, callback_data)
+        gtk.Alignment.do_forall(self, include_internals, callback, callback_data)
+
+# FIXME: Why is it needed?
+gobject.type_register(MyAlignment)
     
 class ContainerTest(unittest.TestCase):
 
@@ -51,6 +68,15 @@ class ContainerTest(unittest.TestCase):
         v = 'dumb value'
         obj.child_set_property(label, 'dumb_prop', v)
         self.assertEqual(v, obj.child_get_property(label, 'dumb_prop'))
+
+    def testSuperclassForAll(self):
+        alignment = MyAlignment('test')
+        label = gtk.Label('foo')
+        alignment.add(label)
+        alignment.show_all()
+
+        self.assert_(label.flags() & gtk.VISIBLE)
+        self.assert_(alignment.caption.flags() & gtk.VISIBLE)
 
 if __name__ == '__main__':
     unittest.main()
