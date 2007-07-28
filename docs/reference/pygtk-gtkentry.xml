@@ -140,6 +140,14 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
         <methodname><link linkend="method-gtkentry--get-inner-border">get_inner_border</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkentry--set-cursor-hadjustment">set_cursor_hadjustment</link></methodname>
+        <methodparam><parameter role="keyword">adjustment</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkentry--get-cursor-hadjustment">get_cursor_hadjustment</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -150,8 +158,20 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
 <synopsis>+-- <link linkend="class-gobject">gobject.GObject</link>
   +-- <link linkend="class-gtkobject">gtk.Object</link>
     +-- <link linkend="class-gtkwidget">gtk.Widget</link>
-      +-- <link linkend="class-gtkentry">gtk.Entry</link> (implements <link linkend="class-gtkeditable">gtk.Editable</link>, <link linkend="class-gtkcelleditable">gtk.CellEditable</link>)
+      +-- <link linkend="class-gtkentry">gtk.Entry</link>
 </synopsis>
+
+    <refsect1>
+		<title>Implemented Interfaces</title>
+		<para>
+			<link linkend="class-gtkentry"><classname>gtk.Entry</classname></link>
+			implements 
+			<link linkend="class-gtkbuildable"><classname>gtk.Buildable</classname></link>
+            <link linkend="class-atkimplementor"><classname>atk.ImplementorIFace</classname></link>
+            <link linkend="class-gtkeditable"><classname>gtk.Editable</classname></link>
+            <link linkend="class-gtkcelleditable"><classname>gtk.CellEditable</classname></link>
+		</para>
+	</refsect1>
 
   </refsect1>
 
@@ -238,6 +258,15 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
               <entry>The position of the opposite end of the selection from
               the cursor as a character index. Allowed values: [0,65535]
               Default value: 0.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"shadow-type"</entry>
+              <entry>Read/Write</entry>
+              <entry>Which kind of shadow to draw around the entry when
+              GtkEntry:has-frame is set to <literal>True</literal>.
+              Default value: gtk.SHADOW_IN
+              Available in GTK+ 2.12 and above.</entry>
             </row>
 
             <row valign="top">
@@ -1098,6 +1127,65 @@ pango layout</simpara></listitem>
       the value of the entry's "inner-border" property. See <link
       linkend="method-gtkentry--set-inner-border"><methodname>set_inner_border</methodname>()</link>
       for more information.</para>
+ 
+    </refsect2>
+
+    <refsect2 id="method-gtkentry--set-cursor-hadjustment">
+      <title>gtk.Entry.set_cursor_hadjustment</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_cursor_hadjustment</methodname>
+        <methodparam><parameter role="keyword">adjustment</parameter></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">adjustment</parameter>&nbsp;:</term>
+          <listitem><simpara>An adjustment which should be adjusted when
+          the cursor is moved, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+ 
+      <para>
+        The <methodname>set_cursor_hadjustment</methodname>() method hooks up an adjustment
+        to the cursor position in an entry, so that when the cursor is moved, the adjustment
+        is scrolled to show that position. See
+        <link linkend="method-gtkscrolledwindow--get-hadjustment">gtk.ScrolledWindow.get_hadjustment</link>
+        for a typical way of obtaining the adjustment.
+        The adjustment has to be in pixel units and in the same coordinate system as the entry.
+      </para>
+ 
+    </refsect2>
+ 
+    <refsect2 id="method-gtkentry--get-cursor-hadjustment">
+      <title>gtk.Entry.get_cursor_hadjustment</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_cursor_hadjustment</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The horizontal cursor adjustment, or
+          <literal>None</literal> if none has been set.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+ 
+      <para>
+        The <methodname>get_cursor_hadjustment</methodname>() method retrieves the horizontal
+        cursor adjustment for the entry. See
+        <link linkend="method-gtkentry--set-cursor-hadjustment">set_cursor_hadjustment</link>.
+      </para>
  
     </refsect2>
  
