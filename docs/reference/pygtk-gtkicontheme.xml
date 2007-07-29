@@ -56,6 +56,16 @@
 	<methodparam><parameter role="keyword">flags</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkicontheme--choose-icon">choose_icon</link></methodname>
+	<methodparam><parameter role="keyword">icon_names</parameter></methodparam>
+	<methodparam><parameter role="keyword">size</parameter></methodparam>
+	<methodparam><parameter role="keyword">flags</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkicontheme--list-contexts">list_contexts</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkicontheme--list-icons">list_icons</link></methodname>
 	<methodparam><parameter role="keyword">context</parameter><initializer>None</initializer></methodparam>
       </methodsynopsis>
@@ -587,6 +597,76 @@ method.</para>
 
       <para>This method raise the GError exception if an error occurs during
 rendering of the icon.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkicontheme--choose-icon">
+      <title>gtk.IconTheme.choose_icon</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>choose_icon</methodname>
+	  <methodparam><parameter role="keyword">icon_names</parameter></methodparam>
+	  <methodparam><parameter role="keyword">size</parameter></methodparam>
+	  <methodparam><parameter role="keyword">flags</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon_names</parameter>&nbsp;:</term>
+	  <listitem><simpara>A list or tuple of icon names to lookup.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">size</parameter>&nbsp;:</term>
+	  <listitem><simpara>The desired icon size.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">flags</parameter>&nbsp;:</term>
+	  <listitem><simpara>the flags modifying the behavior of the icon
+	  lookup</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A <link linkend="class-gtkiconinfo"><classname>gtk.IconInfo</classname></link>.
+      structure containing information about the icon, or <literal>None</literal>
+      if the icon wasn't found.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>
+        The <methodname>choose_icon</methodname>() method looks up a named icon and
+        returns a structure containing information such as the filename of the icon.
+        The icon can then be rendered into a pixbuf using
+        <methodname><link linkend="method-gtkiconinfo--load-icon">gtk.IconInfo.load_icon</link></methodname>.
+        <methodname><link linkend="method-gtkicontheme--load-icon">load_icon</link></methodname>
+        combines these two steps if all you need is the pixbuf.)
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkicontheme--list-contexts">
+      <title>gtk.IconTheme.list_contexts</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>list_contexts</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A list holding the names of all the
+      contexts in the theme. </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>list_contexts</methodname>() method gets the list of contexts
+      available within the current hierarchy of icon themes</para>
 
     </refsect2>
 
