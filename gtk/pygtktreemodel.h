@@ -20,6 +20,8 @@
  * USA
  */
 
+#include <Python.h>
+
 #include <gtk/gtktreemodel.h>
 
 #define PYGTK_TYPE_GENERIC_TREE_MODEL            (pygtk_generic_tree_model_get_type())
@@ -48,3 +50,7 @@ PyGtkGenericTreeModel * pygtk_generic_tree_model_new      (void);
 void                    pygtk_generic_tree_model_invalidate_iters(PyGtkGenericTreeModel *);
 gboolean                pygtk_generic_tree_model_iter_is_valid(PyGtkGenericTreeModel *,
                                                                GtkTreeIter *);
+PyObject *              pygtk_generic_tree_model_get_user_data(PyGtkGenericTreeModel *,
+                                                               GtkTreeIter *);
+GtkTreeIter             pygtk_generic_tree_model_create_tree_iter(PyGtkGenericTreeModel *,
+                                                                  PyObject *);

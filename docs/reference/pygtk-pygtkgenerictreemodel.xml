@@ -30,6 +30,14 @@ linkend="constructor-gtkgenerictreemodel">gtk.GenericTreeModel</link></methodnam
         <methodname><link linkend="method-gtkgenerictreemodel--iter-is-valid">iter_is_valid</link></methodname>
         <methodparam><parameter role="keyword">iter</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkgenerictreemodel--get-user-data">get_user_data</link></methodname>
+        <methodparam><parameter role="keyword">iter</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkgenerictreemodel--create-tree-iter">create_tree_iter</link></methodname>
+        <methodparam><parameter role="keyword">user_data</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -271,6 +279,67 @@ objects for the custom tree model.</para>
 linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
 specified by <parameter>iter</parameter> is valid for the custom tree
 model.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkgenerictreemodel--get-user-data">
+      <title>gtk.GenericTreeModel.get_user_data</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_user_data</methodname>
+	  <methodparam><parameter
+			 role="keyword">iter</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>
+	  created by this tree model.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>Python object reference that is wrapped by this
+	      <classname>gtk.TreeIter</classname>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <warning>
+        <para>This method should be treated as protected.  It should only
+        be used by derived classes.</para>
+      </warning>
+
+      <para><classname>gtk.GenericTreeModel</classname> transparently wraps arbitrary Python objects to instances of <link linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>. E.g. you return anything from <methodname>on_get_iter</methodname> and the model wraps the value, so <methodname>get_iter</methodname> method returns a <classname>gtk.TreeIter</classname>. This method allows to retrieve the Python object used to construct given iterator.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkgenerictreemodel--create-tree-iter">
+      <title>gtk.GenericTreeModel.create_tree_iter</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>create_tree_iter</methodname>
+	  <methodparam><parameter
+			 role="keyword">user_data</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">user_data</parameter>&nbsp;:</term>
+	  <listitem><simpara>a Python object, the same you would return from
+	      e.g. <methodname>on_get_iter</methodname>.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link
+	  linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <warning>
+        <para>This method should be treated as protected.  It should only
+        be used by derived classes.</para>
+      </warning>
+
+      <para><classname>gtk.GenericTreeModel</classname> transparently wraps arbitrary Python objects to instances of <link linkend="class-gtktreeiter"><classname>gtk.TreeIter</classname></link>. E.g. you return anything from <methodname>on_get_iter</methodname> and the model wraps the value, so <methodname>get_iter</methodname> method returns a <classname>gtk.TreeIter</classname>. This method allows you to perform this wrapping explicitly, not just from a predefined set of methods.</para>
 
     </refsect2>
 

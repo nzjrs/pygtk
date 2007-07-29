@@ -20,6 +20,7 @@ EXTRA_DIST = \
 	gobject/properties.py	\
 	gobject/signal.py	\
 	gtk/bin.py		\
+	gtk/customtreemodel.py	\
 	gtk/filechooser.py	\
 	gtk/scrollable.py	\
 	gtk/sizegroup.py	\

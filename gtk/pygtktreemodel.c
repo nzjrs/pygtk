@@ -24,7 +24,6 @@
 #endif
 
 #include "pygtktreemodel.h"
-#include <Python.h>
 #include "pygtk-private.h"
 
 /* define this to print out debug messages */
@@ -800,4 +799,43 @@ pygtk_generic_tree_model_iter_is_valid(PyGtkGenericTreeModel *tree_model,
     g_return_val_if_fail(tree_model != NULL, FALSE);
 
     return VALID_ITER(iter, tree_model);
+}
+
+PyObject *
+pygtk_generic_tree_model_get_user_data(PyGtkGenericTreeModel *tree_model,
+                                       GtkTreeIter *iter)
+{
+    g_return_val_if_fail(tree_model != NULL, NULL);
+
+    if (VALID_ITER(iter, tree_model)) {
+        /* Py_INCREF and NULL checking is done at _wrap_*() level. */
+        return iter->user_data;
+    }
+    else {
+        g_warning("iter is not valid for the tree model");
+        return NULL;
+    }
+}
+
+GtkTreeIter
+pygtk_generic_tree_model_create_tree_iter(PyGtkGenericTreeModel *tree_model,
+                                          PyObject *user_data)
+{
+    GtkTreeIter  iter;
+
+    if (tree_model != NULL) {
+	iter.user_data = user_data;
+	iter.stamp = PYGTK_GENERIC_TREE_MODEL(tree_model)->stamp;
+
+	/* Otherwise, caller is supposed to hold a reference somewhere. */
+	if (PYGTK_GENERIC_TREE_MODEL(tree_model)->leak_references)
+	    Py_INCREF(user_data);
+    }
+    else {
+	/* FIXME: I guess this is still not enough. */
+	iter.user_data = NULL;
+	iter.stamp = 0;
+    }
+
+    return iter;
 }
