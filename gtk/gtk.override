@@ -8393,3 +8393,81 @@ _wrap_gtk_cell_layout_get_cells(PyGObject *self)
 
     return py_cells;
 }
+%%
+override gtk_icon_theme_list_contexts noargs
+static PyObject *
+_wrap_gtk_icon_theme_list_contexts(PyGObject *self)
+{
+    GList   *contexts;
+    int i;
+    guint len;
+    PyObject *py_contexts;
+
+    contexts = gtk_icon_theme_list_contexts(GTK_ICON_THEME(self->obj));
+    len = g_list_length(contexts);
+
+    py_contexts = PyTuple_New(len);
+
+    for (i = 0; i < len; i++) {
+        char *name = (char *)g_list_nth_data(contexts, i);
+
+        PyTuple_SetItem(py_contexts, i, PyString_FromString(name));
+    }
+    g_list_foreach(contexts, (GFunc)g_free, NULL);
+    g_list_free(contexts);
+
+    return py_contexts;
+}
+%%
+override gtk_icon_theme_choose_icon kwargs
+static PyObject *
+_wrap_gtk_icon_theme_choose_icon(PyGObject *self, PyObject *args,
+                                 PyObject *kwargs)
+{
+    static char         *kwlist[] = { "icon_names", "size", "flags", NULL };
+    int                 i, len;
+    gint                size;
+    PyObject            *py_icons, *py_flags = NULL;
+    gchar               **icon_names;
+    GtkIconLookupFlags  flags;
+    GtkIconInfo         *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,
+                                     "OiO:GtkIconTheme.choose_icon",
+                                     kwlist, &py_icons, &size, &py_flags))
+        return NULL;
+
+    if (!PySequence_Check(py_icons) || (len = PySequence_Size(py_icons)) < 0) {
+        PyErr_SetString(PyExc_ValueError,
+                        "icon_names should be a sequence of strings");
+        return NULL;
+    }
+    
+    if (pyg_flags_get_value(GTK_TYPE_ICON_LOOKUP_FLAGS,
+                            py_flags, (gpointer)&flags))
+        return NULL;
+
+    icon_names = g_new(gchar *, len + 1);
+    for (i = 0; i < len; i++) {
+        PyObject *item = PySequence_GetItem(py_icons, i);
+        if (!item) {
+            g_free(icon_names);
+            return NULL;
+        }
+        if (!PyString_Check(item)) {
+            PyErr_SetString(PyExc_TypeError, "icon must be a string");
+            g_free(icon_names);
+            Py_DECREF(item);
+            return NULL;
+        }
+        icon_names[i] = PyString_AsString(item);
+        Py_DECREF(item);
+    }
+    icon_names[len] = NULL;
+
+    ret = gtk_icon_theme_choose_icon(GTK_ICON_THEME(self->obj),
+                                     (const gchar **)icon_names, size, flags);
+
+    g_free(icon_names);
+    return pyg_boxed_new(GTK_TYPE_ICON_INFO, ret, TRUE, TRUE);
+}
