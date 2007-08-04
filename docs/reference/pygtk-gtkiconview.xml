@@ -223,6 +223,31 @@ PyGTK 2.6)</refpurpose>
     <methodname><link linkend="method-gtkiconview--create-drag-icon">create_drag_icon</link></methodname>
     <methodparam><parameter role="keyword">path</parameter></methodparam>
   </methodsynopsis>
+    
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkiconview--convert-widget-to-bin-window-coords">convert_widget_to_bin_window_coords</link></methodname>
+        <methodparam><parameter role="keyword">widget_x</parameter></methodparam>
+        <methodparam><parameter role="keyword">widget_y</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkiconview--set-tooltip-cell">set_tooltip_cell</link></methodname>
+        <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+        <methodparam><parameter role="keyword">path</parameter></methodparam>
+        <methodparam><parameter role="keyword">cell</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkiconview--set-tooltip-column">set_tooltip_column</link></methodname>
+        <methodparam><parameter role="keyword">column</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkiconview--get-tooltip-column">get_tooltip_column</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkiconview--set-tooltip-item">set_tooltip_item</link></methodname>
+        <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+        <methodparam><parameter role="keyword">path</parameter></methodparam>
+    </methodsynopsis>
 </classsynopsis>
 
 </refsect1>
@@ -2026,6 +2051,167 @@ representation of the item at the location specified by
 <parameter>path</parameter>. The return image can be used for a drag
 icon.</para>
 
+    </refsect2>
+    
+    <refsect2 id="method-gtkiconview--convert-widget-to-bin-window-coords">
+        <title>gtk.IconView.convert_widget_to_bin_window_coords</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>convert_widget_to_bin_window_coords</methodname>
+            <methodparam><parameter role="keyword">widget_x</parameter></methodparam>
+            <methodparam><parameter role="keyword">widget_y</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">widget_x</parameter>&nbsp;:</term>
+                <listitem><simpara>X coordinate relative to the widget.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">widget_y</parameter>&nbsp;:</term>
+                <listitem><simpara>Y coordinate relative to the widget.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>A tuple containing the bin_window X and Y coordinates.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Converts widget coordinates to coordinates for the bin_window, as expected by e.g.
+            <methodname><link linkend="method-gtkiconview--get-path-at-pos">get_path_at_pos</link></methodname>.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-tooltip-cell">
+        <title>gtk.IconView.set_tooltip_cell</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_cell</methodname>
+            <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+            <methodparam><parameter role="keyword">path</parameter></methodparam>
+            <methodparam><parameter role="keyword">cell</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">tooltip</parameter>&nbsp;:</term>
+                <listitem><simpara>A tooltip.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+                <listitem><simpara>A path.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">cell</parameter>&nbsp;:</term>
+                <listitem><simpara>A cell renderer or <literal>None</literal>.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>set_tooltip_cell</methodname>() method sets the tip area of
+            <parameter>tooltip</parameter> to the area which <parameter>cell</parameter>
+            occupies in the item pointed to by <parameter>path</parameter>.
+            See also <methodname><link linkend="method-gtktooltip--set-tip-area">gtk.Tooltip.set_tip_area</link></methodname>().
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-tooltip-column">
+        <title>gtk.IconView.set_tooltip_column</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_column</methodname>
+            <methodparam><parameter role="keyword">column</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">column</parameter>&nbsp;:</term>
+                <listitem><simpara>An integer, which is a valid column number
+                for icon_view's model</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            If you only plan to have simple (text-only) tooltips on full items,
+            you can use this function to have GtkIconView handle these automatically
+            for you. column should be set to the column in icon_view's model containing
+            the tooltip texts, or -1 to disable this feature.
+        </para>
+        <para>
+            When enabled, GtkWidget::has-tooltip will be set to <literal>True</literal>
+            and icon_view will connect a GtkWidget::query-tooltip signal handler.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-tooltip-column">
+        <title>gtk.IconView.get_tooltip_column</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_tooltip_column</methodname>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>The index of the tooltip column that is currently being used,
+                or -1 if this is disabled.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>get_tooltip_column</methodname>() method returns the column of
+            icon_view's model which is being used for displaying tooltips on icon_view's rows.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-tooltip-item">
+        <title>gtk.IconView.set_tooltip_item</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_cell</methodname>
+            <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+            <methodparam><parameter role="keyword">path</parameter></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">tooltip</parameter>&nbsp;:</term>
+                <listitem><simpara>A tooltip.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+                <listitem><simpara>A path.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>set_tooltip_item</methodname>() method sets the tip area of
+            <parameter>tooltip</parameter> to be the area covered by the item at
+            <parameter>path</parameter>. See also
+            <methodname><link linkend="method-gtktooltip--set-tip-area">gtk.Tooltip.set_tip_area</link></methodname>().
+        </para>
     </refsect2>
 
    </refsect1>
