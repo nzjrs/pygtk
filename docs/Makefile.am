@@ -241,15 +241,16 @@ XMLFILES = 						\
 	reference/pygtk-gtkuimanager.xml		\
 	reference/pygtk-gtkvbox.xml			\
 	reference/pygtk-gtkvbuttonbox.xml		\
-	reference/pygtk-gtkwidget.xml			\
 	reference/pygtk-gtkviewport.xml			\
-	reference/pygtk-gtkwindowgroup.xml		\
-	reference/pygtk-gtkwindow.xml			\
+	reference/pygtk-gtkvolumebutton.xml		\
 	reference/pygtk-gtkvpaned.xml			\
 	reference/pygtk-gtkvruler.xml			\
 	reference/pygtk-gtkvscale.xml			\
 	reference/pygtk-gtkvscrollbar.xml		\
 	reference/pygtk-gtkvseparator.xml		\
+	reference/pygtk-gtkwidget.xml			\
+	reference/pygtk-gtkwindowgroup.xml		\
+	reference/pygtk-gtkwindow.xml			\
 	reference/pygtk-hierarchy.xml			\
 	reference/pygtk-introduction.xml		\
 	reference/pygtk-pangoattribute.xml		\
@@ -514,15 +515,16 @@ HTML_FILES =						\
 	html/class-gtkuimanager.html			\
 	html/class-gtkvbox.html				\
 	html/class-gtkvbuttonbox.html			\
-	html/class-gtkwidget.html			\
 	html/class-gtkviewport.html			\
-	html/class-gtkwindowgroup.html			\
-	html/class-gtkwindow.html			\
+	html/class-gtkvolumebutton.html			\
 	html/class-gtkvpaned.html			\
 	html/class-gtkvruler.html			\
 	html/class-gtkvscale.html			\
 	html/class-gtkvscrollbar.html			\
 	html/class-gtkvseparator.html			\
+	html/class-gtkwidget.html			\
+	html/class-gtkwindowgroup.html			\
+	html/class-gtkwindow.html			\
 	html/class-hierarchy.html			\
 	html/class-pangoattribute.html			\
 	html/class-pangoattriterator.html		\
