@@ -225,6 +225,7 @@ XMLFILES = 						\
 	reference/pygtk-gtktoolbar.xml			\
 	reference/pygtk-gtktoolbutton.xml		\
 	reference/pygtk-gtktoolitem.xml			\
+	reference/pygtk-gtktooltip.xml			\
 	reference/pygtk-gtktooltips.xml			\
 	reference/pygtk-gtktreedragdest.xml		\
 	reference/pygtk-gtktreedragsource.xml		\
@@ -499,6 +500,7 @@ HTML_FILES =						\
 	html/class-gtktoolbar.html			\
 	html/class-gtktoolbutton.html			\
 	html/class-gtktoolitem.html			\
+	html/class-gtktooltip.html			\
 	html/class-gtktooltips.html			\
 	html/class-gtktreedragdest.html			\
 	html/class-gtktreedragsource.html		\
