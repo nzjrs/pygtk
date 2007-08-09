@@ -1125,10 +1125,10 @@ pygtk_tree_sortable_sort_cb(GtkTreeModel *model, GtkTreeIter *iter1,
     py_iter2 = pyg_boxed_new(GTK_TYPE_TREE_ITER, iter2,  FALSE, FALSE);
 
     if (cunote->data) {
-        retobj = PyEval_CallFunction(cunote->func, "(OOOO)", py_model,
+        retobj = PyEval_CallFunction(cunote->func, "(NOOO)", py_model,
                                      py_iter1, py_iter2, cunote->data);
     } else {
-        retobj = PyEval_CallFunction(cunote->func, "(OOO)", py_model,
+        retobj = PyEval_CallFunction(cunote->func, "(NOO)", py_model,
                                      py_iter1, py_iter2);
     }
     pygtk_boxed_unref_shared(py_iter1);
