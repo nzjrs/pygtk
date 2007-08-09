@@ -6444,24 +6444,30 @@ _wrap_GtkCellRenderer__do_get_size(PyObject *cls, PyObject *args, PyObject *kwar
     gpointer klass;
     static char *kwlist[] = { "self", "widget", "cell_area", NULL };
     PyGObject *self, *widget;
-    PyObject *py_cell_area;
+    PyObject *py_cell_area = Py_None;
     gint x, y, width, height;
-    GdkRectangle cell_area;
+    GdkRectangle cell_area, *cell_area_ptr;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!O!OO!:GtkContainer.get_child_property", kwlist,
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!O!|O:GtkCellRenderer.do_get_size", kwlist,
                                      &PyGtkCellRenderer_Type, &self,
                                      &PyGtkWidget_Type, &widget,
                                      &py_cell_area))
         return NULL;
 
-    if (!pygdk_rectangle_from_pyobject(py_cell_area, &cell_area))
-        return NULL;
+    if (py_cell_area == Py_None) {
+	cell_area_ptr = NULL;
+    }
+    else {
+	if (!pygdk_rectangle_from_pyobject(py_cell_area, &cell_area))
+	    return NULL;
+	cell_area_ptr = &cell_area;
+    }
 
     klass = g_type_class_ref(pyg_type_from_object(cls));
     if (GTK_CELL_RENDERER_CLASS(klass)->get_size)
         GTK_CELL_RENDERER_CLASS(klass)->get_size(GTK_CELL_RENDERER(self->obj),
                                                  GTK_WIDGET(widget->obj),
-                                                 &cell_area,
+                                                 cell_area_ptr,
                                                  &x, &y, &width, &height);
     else {
         PyErr_SetString(PyExc_NotImplementedError, "virtual method GtkContainer.get_child_property not implemented");
