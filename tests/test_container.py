@@ -58,7 +58,23 @@ class MyAlignment(gtk.Alignment):
 
 # FIXME: Why is it needed?
 gobject.type_register(MyAlignment)
-    
+
+class FocusContainer(gtk.HBox):
+
+    # Just call super.
+    def do_set_focus_child(self, widget):
+        gtk.HBox.do_set_focus_child(self, widget)
+
+gobject.type_register(FocusContainer)
+
+class FocusWindow(gtk.Window):
+
+    # Just call super.
+    def do_set_focus(self, focus):
+        gtk.Window.do_set_focus(self, focus)
+
+gobject.type_register(FocusWindow)
+
 class ContainerTest(unittest.TestCase):
 
     def testChildProperties(self):
@@ -77,6 +93,25 @@ class ContainerTest(unittest.TestCase):
 
         self.assert_(label.flags() & gtk.VISIBLE)
         self.assert_(alignment.caption.flags() & gtk.VISIBLE)
+
+    def testFocusSignalHandlers(self):
+        button = gtk.Button()
+        container = FocusContainer()
+        window = FocusWindow()
+        container.add(button)
+        window.add(container)
+        window.show_all()
+
+        button.grab_focus()
+        self.assert_(button.is_focus())
+
+        window.set_focus(None)
+        self.assert_(window.get_focus() is None)
+
+        window.set_focus(button)
+        self.assert_(window.get_focus() == button)
+
+        window.destroy()
 
 if __name__ == '__main__':
     unittest.main()
