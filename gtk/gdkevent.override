@@ -350,7 +350,8 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    char *tmp;
 	    STRING_CHECK();
 	    tmp = PyString_AsString(value);
-	    strncpy(event->client.data.b, tmp, 20);
+	    strncpy((char *) &event->client.data, tmp,
+                    sizeof(event->client.data));
 	    return 0;
 	}
 	break;
@@ -730,7 +731,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
         if (!strcmp(attr, "data_format"))
             return PyInt_FromLong(event->client.data_format);
         if (!strcmp(attr, "data"))
-            return PyString_FromStringAndSize(event->client.data.b, 20);
+            return PyString_FromStringAndSize((char *) &event->client.data,
+                                              sizeof(event->client.data));
         break;
     case GDK_VISIBILITY_NOTIFY: /*GdkEventVisibility        visibility*/
         if (!strcmp(attr, "__members__"))
