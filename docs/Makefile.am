@@ -598,13 +598,23 @@ install-data-local:
 	if test "$$installfiles" = '$(srcdir)/html/*'; \
 	then echo '-- Nothing to install' ; \
 	else \
-	  $(mkinstalldirs) $(DESTDIR)$(TARGET_DIR); \
+	  $(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) \
+			$(DESTDIR)$(TARGET_DIR)/icons \
+			$(DESTDIR)$(TARGET_DIR)/cursors; \
 	  for i in $$installfiles; do \
 	    echo '-- Installing '$$i ; \
 	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR); \
 	  done; \
 	  echo '-- Installing $(srcdir)/html/index.sgml' ; \
 	  $(INSTALL_DATA) $(srcdir)/html/index.sgml $(DESTDIR)$(TARGET_DIR) || :; \
+	  for i in $(srcdir)/icons/*; do \
+	    echo '-- Installing '$$i ; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR)/icons; \
+	  done; \
+	  for i in $(srcdir)/cursors/*; do \
+	    echo '-- Installing '$$i ; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR)/cursors; \
+	  done; \
 	fi
 
 install-data-hook:
