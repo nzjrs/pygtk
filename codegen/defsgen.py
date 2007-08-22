@@ -197,7 +197,7 @@ class ObjDef(object):
 split_prefix_pat = re.compile('([A-Z]+[a-z]*)([A-Za-z0-9]+)')
 
 get_type_pat = re.compile(r'''^\s*(GType|GtkType)\s+
-([a-z]\w+_get_type)\s*\(void\).*$''', re.VERBOSE | re.MULTILINE)
+([a-z]\w+_get_type)\s*(\(void\)|\(\)).*$''', re.VERBOSE | re.MULTILINE)
 
 defkeys = 'GBoxed GInterface GObject gpointer GEnum GFlags'
 
