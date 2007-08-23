@@ -107,16 +107,16 @@ EXTRA_DIST += 			\
 	$(GTK_OVERRIDES)
 
 
-gdk.defs: $(GDK_DEFS)
+gdk.defs: $(GDK_DEFS) Makefile
 	$(CREATEDEFS) $@ $(GDK_DEFS)
 
-gtk.defs: $(GTK_DEFS)
+gtk.defs: $(GTK_DEFS) Makefile
 	$(CREATEDEFS) $@ $(GTK_DEFS)
 
-gdk-types.defs: $(GDK_TYPES_DEFS)
+gdk-types.defs: $(GDK_TYPES_DEFS) Makefile
 	$(CREATEDEFS) $@ $(GDK_TYPES_DEFS)
 
-gtk-types.defs: $(GTK_TYPES_DEFS)
+gtk-types.defs: $(GTK_TYPES_DEFS) Makefile
 	$(CREATEDEFS) $@ $(GTK_TYPES_DEFS)
 
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
