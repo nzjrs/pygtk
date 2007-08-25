@@ -119,10 +119,12 @@ snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
 
 doc-dist:
-	mkdir pygtk
+	mkdir -p pygtk/icons pygtk/cursors
 	cp -r docs/html/*.html pygtk
 	cp -r docs/html/*.sgml pygtk
 	cp -r docs/html/*.devhelp pygtk
 	cp -r $(PYGOBJECT_PYGDOCS)/style.css pygtk
+	cp -r docs/icons/* pygtk/icons
+	cp -r docs/cursors/* pygtk/cursors
 	tar cfz $(PACKAGE)-docs.tar.gz pygtk
 	rm -fr pygtk
