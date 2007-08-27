@@ -947,6 +947,16 @@
   )
 )
 
+(ifdef HAVE_GTK_2_12
+(define-virtual reorder_tab
+  (of-object "GtkNotebook")
+  (return-type "gboolean")
+  (parameters
+    '("GtkDirectionType" "direction")
+    '("gboolean" "move_to_last")
+  )
+))
+(ifndef HAVE_GTK_2_12
 (define-virtual reorder_tab
   (of-object "GtkNotebook")
   (return-type "none")
@@ -954,7 +964,8 @@
     '("GtkDirectionType" "direction")
     '("gboolean" "move_to_last")
   )
-)
+))
+
 
 (define-virtual insert_page
   (of-object "GtkNotebook")

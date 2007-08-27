@@ -13545,20 +13545,20 @@
     '("GtkNotebookTab" "type")
   )
 )
-(define-virtual change_current_page
-  (of-object "GtkNotebook")
-  (return-type "none")
-  (parameters
-    '("gint" "offset")
-  )
-)
-(define-virtual move_focus_out
-  (of-object "GtkNotebook")
-  (return-type "none")
-  (parameters
-    '("GtkDirectionType" "direction")
-  )
-)
+
+(ifdef HAVE_GTK_2_12
+ (define-virtual change_current_page
+   (of-object "GtkNotebook")
+   (return-type "gboolean")
+   (parameters
+    '("gint" "offset"))))
+(ifndef HAVE_GTK_2_12
+ (define-virtual change_current_page
+   (of-object "GtkNotebook")
+   (return-type "none")
+   (parameters
+    '("gint" "offset"))))
+
 
 ;; From /opt/gtk2/include/gtk-2.0/gtk/gtkobject.h
 
@@ -15605,6 +15605,16 @@
   )
 )
 
+(ifdef HAVE_GTK_2_12
+(define-virtual scroll_child
+  (of-object "GtkScrolledWindow")
+  (return-type "gboolean")
+  (parameters
+    '("GtkScrollType" "scroll")
+    '("gboolean" "horizontal")
+  )
+))
+(ifndef HAVE_GTK_2_12
 (define-virtual scroll_child
   (of-object "GtkScrolledWindow")
   (return-type "none")
@@ -15612,7 +15622,8 @@
     '("GtkScrollType" "scroll")
     '("gboolean" "horizontal")
   )
-)
+))
+
 (define-virtual move_focus_out
   (of-object "GtkScrolledWindow")
   (return-type "none")
