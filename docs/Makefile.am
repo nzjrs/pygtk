@@ -588,6 +588,7 @@ CSS_DATA = $(CSS_FILES)
 
 
 EXTRA_DIST = 				\
+	icons cursors			\
 	$(HTML_FILES)			\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
@@ -621,7 +622,7 @@ install-data-hook:
 	@$(PYGOBJECT_FIXXREF) $(DESTDIR)$(TARGET_DIR)
 
 uninstall-local:
-	rm -f $(DESTDIR)$(TARGET_DIR)/*
+	rm -rf $(DESTDIR)$(TARGET_DIR)/*
 
 if ENABLE_DOCS
 
