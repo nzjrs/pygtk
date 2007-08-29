@@ -23,18 +23,17 @@ class TestLanguage(unittest.TestCase):
 
 class TestFontDescription(unittest.TestCase):
     def testStr(self):
-        font = pango.FontDescription('monospace 10')
-        self.assertEqual(str(font), 'monospace 10')
+        fontdescr = pango.FontDescription('monospace 10')
+        self.assertEqual(str(fontdescr), 'monospace 10')
 
     def testHash(self):
-        font = pango.FontDescription('monospace 10')
-        font2 = pango.FontDescription('monospace 10')
-        self.assertNotEqual(hash(font), hash(font2))
-        # FIXME: How to test this properly?
+        fontdescr = pango.FontDescription('monospace 10')
+        fontdescr2 = pango.FontDescription('monospace 10')
+        self.assertEqual(hash(fontdescr), hash(fontdescr2))
 
     def testEquals(self):
-        font = pango.FontDescription('monospace 10')
-        font2 = pango.FontDescription('monospace 10')
-        font3 = pango.FontDescription('monospace 12')
-        self.assertEqual(font, font2)
-        self.assertNotEqual(font, font3)
+        fontdescr = pango.FontDescription('monospace 10')
+        fontdescr2 = pango.FontDescription('monospace 10')
+        fontdescr3 = pango.FontDescription('monospace 12')
+        self.assertEqual(fontdescr, fontdescr2)
+        self.assertNotEqual(fontdescr, fontdescr3)

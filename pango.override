@@ -2037,10 +2037,10 @@ _wrap_pango_font_description_tp_str(PyObject *self)
 }
 %%
 override-slot PangoFontDescription.tp_hash
-static PyObject *
+static int
 _wrap_pango_font_description_tp_hash(PyObject *self)
 {
-    return _wrap_pango_font_description_hash(self);
+    return pango_font_description_hash(pyg_boxed_get(self, PangoFontDescription));
 }
 %%
 override-slot PangoFontDescription.tp_compare
