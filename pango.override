@@ -2021,3 +2021,49 @@ _wrap_pango_attr_letter_spacing_new(PyObject *self, PyObject *args,
     return pypango_attr_new(pango_attr_letter_spacing_new(spacing),
                             start, end);
 }
+%%
+override-slot PangoColor.tp_str
+static PyObject *
+_wrap_pango_color_tp_str(PyObject *self)
+{
+    return _wrap_pango_color_to_string(self);
+}
+%%
+override-slot PangoFontDescription.tp_str
+static PyObject *
+_wrap_pango_font_description_tp_str(PyObject *self)
+{
+    return _wrap_pango_font_description_to_string(self);
+}
+%%
+override-slot PangoFontDescription.tp_hash
+static PyObject *
+_wrap_pango_font_description_tp_hash(PyObject *self)
+{
+    return _wrap_pango_font_description_hash(self);
+}
+%%
+override-slot PangoFontDescription.tp_compare
+static int
+_wrap_pango_font_description_tp_compare(PyObject *self, PyObject *other)
+{
+    PangoFontDescription *font1, *font2;
+    
+    if (!pyg_boxed_check(other, PANGO_TYPE_FONT_DESCRIPTION))
+	return -1;
+
+    font1 = pyg_boxed_get(self, PangoFontDescription);
+    font2 = pyg_boxed_get(other, PangoFontDescription);
+
+    if (pango_font_description_equal(font1, font2))
+	return 0;
+
+    return -1;
+}
+%%
+override-slot PangoLanguage.tp_str
+static PyObject *
+_wrap_pango_language_tp_str(PyObject *self)
+{
+    return _wrap_pango_language_to_string(self);
+}
