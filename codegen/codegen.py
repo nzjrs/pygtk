@@ -321,7 +321,7 @@ class Wrapper:
             raise argtypes.ArgTypeNotFoundError("varargs functions not supported")
 
         for param in function_obj.params:
-            if param.pdflt and '|' not in info.parsestr:
+            if param.pdflt != None and '|' not in info.parsestr:
                 info.add_parselist('|', [], [])
             handler = argtypes.matcher.get(param.ptype)
             handler.write_param(param.ptype, param.pname, param.pdflt,

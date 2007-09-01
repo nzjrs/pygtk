@@ -95,7 +95,7 @@ class NoneArg(ArgType):
 
 class StringArg(ArgType):
     def write_param(self, ptype, pname, pdflt, pnull, info):
-        if pdflt:
+        if pdflt != None:
             if pdflt != 'NULL': pdflt = '"' + pdflt + '"'
             info.varlist.add('char', '*' + pname + ' = ' + pdflt)
         else:
