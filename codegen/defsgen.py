@@ -608,6 +608,7 @@ def main(args):
     gobj.g_object_class_list_properties.restype = ctypes.POINTER(ctypes.POINTER(GParamSpec))
     gobj.g_object_interface_list_properties.restype = ctypes.POINTER(ctypes.POINTER(GParamSpec))
     gobj.GObject = gobj.g_type_from_name('GObject')
+    gobj.g_object_new(gobj.GObject, None)
 
     defs = {}
     for key in defkeys.split():
