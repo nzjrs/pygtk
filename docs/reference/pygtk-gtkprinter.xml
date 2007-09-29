@@ -39,6 +39,10 @@ END NOT IMPLEMENTED -->
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprinter--get-capabilities">get_capabilities</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
         <methodname><link linkend="method-gtkprinter--get-description">get_description</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
@@ -52,6 +56,14 @@ END NOT IMPLEMENTED -->
       </methodsynopsis>
       <methodsynopsis language="python">
         <methodname><link linkend="method-gtkprinter--get-job-count">get_job_count</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprinter--has-details">has_details</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprinter--request-details">request_details</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
@@ -367,6 +379,39 @@ END NOT IMPLEMENTED -->
       the description of the printer.</para>
 
     </refsect2>
+    
+    <refsect2 id="method-gtkprinter--get-capabilities">
+      <title>gtkunixprint.Printer.get_capabilities</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_capabilities</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the printer's capabilities.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>get_capabilities</methodname>() method returns
+      the printer's capabilities.</para>
+      
+      <para>This is useful when you're using GtkPrintUnixDialog's
+      manual-capabilities setting and need to know which settings the
+      printer can handle and which you must handle yourself.</para>
+      
+      <para>This will return 0 unless the printer's details are available,
+      see <link linkend="method-gtkprinter--has-details">gtkunixprint.Printer.has_details</link>()
+      and <link linkend="method-gtkprinter--request-details">gtkunixprint.Printer.request_details</link>().
+      </para>
+
+    </refsect2>
 
     <refsect2 id="method-gtkprinter--get-location">
       <title>gtkunixprint.Printer.get_location</title>
@@ -437,6 +482,52 @@ END NOT IMPLEMENTED -->
 
       <para>The <methodname>get_job_count</methodname>() method returns the
       number of jobs currently queued on the printer.</para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkprinter--has-details">
+      <title>gtkunixprint.Printer.has_details</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>has_details</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if printer details
+          are available</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>has_details</methodname>() method returns
+      whether the printer details are available.</para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkprinter--request-details">
+      <title>gtkunixprint.Printer.request_details</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>request_details</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>request_details</methodname>() method requests
+      the printer details. When the details are available,
+      the GtkPrinter::details-acquired signal will be emitted on printer.</para>
 
     </refsect2>
 

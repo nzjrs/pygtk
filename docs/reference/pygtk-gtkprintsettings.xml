@@ -272,7 +272,19 @@
         <methodname><link linkend="method-gtkprintsettings--set-output-bin">set_output_bin</link></methodname>
         <methodparam><parameter role="keyword">output_bin</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintsettings--to-file">to_file</link></methodname>
+        <methodparam><parameter role="keyword">file_name</parameter></methodparam>
+      </methodsynopsis>
 </classsynopsis>
+
+<programlisting>
+<emphasis role="bold">Functions</emphasis>
+
+<methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--print-settings-new-from-file">gtk.print_settings_new_from_file</link></methodname>
+    <methodparam><parameter role="keyword">file_name</parameter></methodparam>
+  </methodsynopsis></programlisting>
 
   </refsect1>
 
@@ -1949,6 +1961,69 @@
 
     </refsect2>
 
+    <refsect2 id="method-gtkprintsettings--to-file">
+      <title>gtk.PrintSettings.to_file</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>to_file</methodname>
+        <methodparam><parameter role="keyword">file_name</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+          <listitem><simpara>the file to save to.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> on sucess.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>This function saves the print settings from settings to <parameter>file_name</parameter>.</para>
+
+    </refsect2>
+
   </refsect1>
 
+  <refsect1>
+    <title>Functions</title>
+
+    <refsect2 id="function-gtk--print-settings-new-from-file">
+      <title>gtk.print_settings_new_from_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.print_settings_new_from_file</methodname>
+	  <methodparam><parameter
+			 role="keyword">file_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">file_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the filename to read the settings from.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the restored
+      <link linkend="class-gtkprintsettings"><classname>gtk.PrintSettings</classname></link>
+      </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <note>
+        <para>This function is available in PyGTK 2.12 and above.</para>
+      </note>
+      
+      <para>Reads the print settings from filename. Returns a new
+      <link linkend="class-gtkprintsettings"><classname>gtk.PrintSettings</classname></link>
+      object with the restored settings, or <literal>None</literal> if an error occurred. See
+      <methodname><link linkend="method-gtkprintsettings--to-file">gtk.PrintSettings.to_file</link></methodname>().</para>
+
+    </refsect2>
+
+  </refsect1>
 </refentry>
