@@ -310,12 +310,21 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
 	      button on the notebook pops up a menu that you can use to go
 	      to a page.  Default value: <literal>False</literal>.</entry>
 	    </row>
-            <row valign="top">
-              <entry>"group-id"</entry>
-              <entry>Read-Write</entry>
-              <entry>Group ID for tabs drag and drop. Allowed values: >=
-              -1. Default value: -1.</entry>
-            </row>
+        
+        <!-- HOLD THE DISPLAY OF THIS PROPERTY
+        <row valign="top">
+          <entry>"group"</entry>
+          <entry>Read-Write</entry>
+          <entry>Group for tabs drag and drop.</entry>
+        </row>
+        END HOLD -->
+        
+        <row valign="top">
+          <entry>"group-id"</entry>
+          <entry>Read-Write</entry>
+          <entry>Group ID for tabs drag and drop. Allowed values: >=
+          -1. Default value: -1.</entry>
+        </row>
 
 	    <row valign="top">
 	      <entry>"homogeneous"</entry>
@@ -586,6 +595,29 @@ linkend="signal-gtknotebook--change-current-page">change-current-page</link>"</t
           </methodsynopsis>
         </listitem>
       </varlistentry>
+
+      <varlistentry>
+        <term>"<link
+linkend="signal-gtknotebook--create-window">create-window</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>notebook</parameter>
+            </methodparam>
+            <methodparam><parameter>page</parameter>
+            </methodparam>
+            <methodparam><parameter>x</parameter>
+            </methodparam>
+            <methodparam><parameter>y</parameter>
+            </methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>"<link
 linkend="signal-gtknotebook--focus-tab">focus-tab</link>"</term>
@@ -2103,6 +2135,64 @@ any)</simpara></listitem>
 
       <para>The "change-current-page" signal is emitted when the page
 forward or page backward request is issued.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtknotebook--create-window">
+      <title>The "create-window" gtk.Notebook Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>notebook</parameter></methodparam>
+	  <methodparam><parameter>page</parameter></methodparam>
+      <methodparam><parameter>x</parameter></methodparam>
+      <methodparam><parameter>y</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>notebook</parameter>&nbsp;:</term>
+	  <listitem><simpara>the notebook that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>page</parameter>&nbsp;:</term>
+	  <listitem><simpara>the tab of notebook that is being detached
+      </simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><parameter>x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the X coordinate where the drop happens
+      </simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><parameter>y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the Y coordinate where the drop happens
+      </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The "create-window" signal is emitted when a
+      detachable tab is dropped on the root window.</para>
+
+      <para>A handler for this signal can create a window containing
+      a notebook where the tab will be attached. It is also responsible
+      for moving/resizing the window and adding the necessary properties
+      to the notebook (e.g. the <link linkend="properties-gtknotebook">GtkNotebook:group-id</link> ).</para>
 
     </refsect2>
 

@@ -222,6 +222,23 @@ linkend="signal-gtkmenushell--move-current">move-current</link>"</term>
       </varlistentry>
       <varlistentry>
         <term>"<link
+linkend="signal-gtkmenushell--move-selected">move-selected</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>menushell</parameter>
+            </methodparam>
+            <methodparam><parameter>distance</parameter>
+            </methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link
 linkend="signal-gtkmenushell--selection-done">selection-done</link>"</term>
         <listitem>
           <methodsynopsis
@@ -786,6 +803,50 @@ item.</simpara>
 	  </listitem>
 	</varlistentry>
       </variablelist>
+
+    </refsect2>
+    
+    <refsect2 id="signal-gtkmenushell--move-selected">
+      <title>The "move-selected" gtk.MenuShell Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>menushell</parameter></methodparam>
+	  <methodparam><parameter>distance</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>menushell</parameter>&nbsp;:</term>
+	  <listitem><simpara>the menushell that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>distance</parameter>&nbsp;:</term>
+	  <listitem><simpara>+1 to move to the next item,
+      -1 to move to the previous</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.12 and above.</para>
+      </note>
+
+      <para>The "move-selected" signal is emitted to move the selection to another item.</para>
 
     </refsect2>
 

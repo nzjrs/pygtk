@@ -96,6 +96,10 @@
         <methodname><link linkend="method-gtkpagesetup--get-page-height">get_page_height</link></methodname>
         <methodparam><parameter role="keyword">unit</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkpagesetup--to-file">to_file</link></methodname>
+        <methodparam><parameter role="keyword">file_name</parameter></methodparam>
+      </methodsynopsis>
 </classsynopsis>
 
 <programlisting>
@@ -106,6 +110,9 @@
     <methodparam><parameter role="keyword">parent</parameter></methodparam>
     <methodparam><parameter role="keyword">page_setup</parameter></methodparam>
     <methodparam><parameter role="keyword">settings</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--page-setup-new-from-file">gtk.page_setup_new_from_file</link></methodname>
+    <methodparam><parameter role="keyword">file_name</parameter></methodparam>
   </methodsynopsis></programlisting>
 
   </refsect1>
@@ -760,6 +767,34 @@
 
     </refsect2>
 
+    <refsect2 id="method-gtkpagesetup--to-file">
+      <title>gtk.PageSetup.to_file</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>to_file</methodname>
+        <methodparam><parameter role="keyword">file_name</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">file_name</parameter>&nbsp;:</term>
+          <listitem><simpara>the file to save to</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>True on success.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>to_file</methodname>() method
+      saves the information from setup to <parameter>file_name</parameter>.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -809,6 +844,38 @@
 
       <para>Note that this function may use a recursive mainloop to show the
       page setup dialog.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--page-setup-new-from-file">
+      <title>gtk.page_setup_new_from_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.page_setup_new_from_file</methodname>
+	  <methodparam><parameter
+			 role="keyword">file_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">parent</parameter>&nbsp;:</term>
+	  <listitem><simpara>transient parent, or
+	  <literal>None</literal></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The restored <link
+	  linkend="class-gtkpagesetup"><classname>gtk.PageSetup</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <note>
+        <para>This function is available in PyGTK 2.12 and above.</para>
+      </note>
+      
+      <para>Reads the page setup from the file file_name. Returns a new
+      <link linkend="class-gtkpagesetup"><classname>gtk.PageSetup</classname></link>
+      object with the restored page setup, or None if an error occurred. See
+      <link linkend="method-gtkpagesetup--to-file">gtk.PageSetup.to_file</link>.</para>
 
     </refsect2>
 
