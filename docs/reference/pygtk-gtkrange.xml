@@ -70,6 +70,31 @@ linkend="method-gtkrange--set-value">set_value</link></methodname>
 	<methodname><link
 linkend="method-gtkrange--get-value">get_value</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-fill-level">get_fill_level</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-fill-level">set_fill_level</link></methodname>
+        <methodparam><parameter role="keyword">fill_level</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-restrict-to-fill-level">get_restrict_to_fill_level</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-restrict-to-fill-level">set_restrict_to_fill_level</link></methodname>
+        <methodparam><parameter role="keyword">restrict_to_fill_level</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-show-fill-level">get_show_fill_level</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-show-fill-level">set_show_fill_level</link></methodname>
+        <methodparam><parameter role="keyword">show_fill_level</parameter></methodparam>
+    </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -106,6 +131,14 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
 	      linkend="class-gtkadjustment"><classname>gtk.Adjustment</classname></link>
 	      that contains the current value of this range object</entry>
 	    </row>
+        
+        <row valign="top">
+	      <entry>"fill-level"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The fill level (e.g. prebuffering of a network stream).
+          See <methodname><link linkend="method-gtkrange--set-fill-level">gtk.Range.set_fill_level</link></methodname>().
+          Default value: 1.79769e+308. Available in GTK+ 2.12.</entry>
+	    </row>
 
 	    <row valign="top">
 	      <entry>"inverted"</entry>
@@ -120,6 +153,15 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
           <entry>The sensitivity policy for the stepper that points to the
           adjustment's lower side</entry>
         </row>
+        
+        <row valign="top">
+	      <entry>"restrict-to-fill-level"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The restrict-to-fill-level property controls whether slider movement is restricted to
+          an upper boundary set by the fill level. See
+          <methodname><link linkend="method-gtkrange--get-restrict-to-fill-level">gtk.Range.get_restrict_to_fill_level</link></methodname>().
+          Default value: True. Available in GTK+ 2.12.</entry>
+	    </row>
 
 	    <row valign="top">
 	      <entry>"update-policy"</entry>
@@ -128,6 +170,14 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
 	      <literal>gtk.UPDATE_CONTINUOUS</literal>,
 	      <literal>gtk.UPDATE_DISCONTINUOUS</literal>,
 	      <literal>gtk.UPDATE_DELAYED</literal>.</entry>
+	    </row>
+        
+        <row valign="top">
+	      <entry>"show-fill-level"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The show-fill-level property controls whether fill level indicator graphics are displayed on the trough. See gtk_range_set_show_fill_level().
+          <methodname><link linkend="method-gtkrange--set-show-fill-level">gtk.Range.set_show_fill_level</link></methodname>().
+          Default value: False. Available in GTK+ 2.12.</entry>
 	    </row>
 
 	  </tbody>
@@ -589,6 +639,155 @@ range.</simpara></listitem>
       <para>The <methodname>get_value</methodname>() method gets the current
 value of the range.</para>
 
+    <refsect2 id="method-gtkrange--set-fill-level">
+        <title>gtk.Range.set_fill_level</title>
+
+        <programlisting><methodsynopsis language="python">
+        <methodname>set_fill_level</methodname>
+        <methodparam><parameter role="keyword">fill_level</parameter></methodparam>
+        </methodsynopsis></programlisting>
+        
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">fill_level</parameter>&nbsp;:</term>
+                <listitem><simpara>the new position of the fill level indicator.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+
+        <para>
+            The <methodname>set_fill_level</methodname>() method sets
+            the new position of the fill level indicator.
+        </para>
+        
+        <para>
+            The "fill level" is probably best described by its most prominent use case,
+            which is an indicator for the amount of pre-buffering in a streaming media
+            player. In that use case, the value of the range would indicate the current
+            play position, and the fill level would be the position up to which the
+            file/stream has been downloaded.
+        </para>
+        
+        <para>
+            This amount of prebuffering can be displayed on the range's trough and is
+            themeable separately from the trough. To enable fill level display, use
+            <methodname><link linkend="method-gtkrange--set-show-fill-level">gtk.Range.set_show_fill_level</link></methodname>().
+            The range defaults to not showing the fill level.
+        </para>
+        
+        <para>
+            Additionally, it's possible to restrict the range's slider position to values
+            which are smaller than the fill level. This is controller by
+            <methodname><link linkend="method-gtkrange--set-restrict-to-fill-level">gtk.Range.set_restrict_to_fill_level</link></methodname>()
+            and is by default enabled.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-fill-level">
+        <title>gtk.Range.get_fill_level</title>
+
+        <programlisting><methodsynopsis language="python">
+        <methodname>get_fill_level</methodname>
+        <methodparam></methodparam></methodsynopsis></programlisting>
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>The current fill level.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <para>
+            The <methodname>get_fill_level</methodname>() method gets the current
+            position of the fill level indicator.
+        </para>
+    </refsect2></refsect2>
+    
+    <refsect2 id="method-gtkrange--set-restrict-to-fill-level">
+        <title>gtk.Range.set_restrict_to_fill_level</title>
+
+        <programlisting><methodsynopsis language="python">
+        <methodname>set_restrict_to_fill_level</methodname>
+        <methodparam><parameter role="keyword">restrict_to_fill_level</parameter></methodparam>
+        </methodsynopsis></programlisting>
+        
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">restrict_to_fill_level</parameter>&nbsp;:</term>
+                <listitem><simpara>Whether the fill level restricts slider movement.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+
+        <para>
+            The <methodname>set_restrict_to_fill_level</methodname>() method sets
+            whether the slider is restricted to the fill level. See
+            <methodname><link linkend="method-gtkrange--set-fill-level">gtk.Range.set_fill_level</link></methodname>()
+            for a general description of the fill level concept.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-restrict-to-fill-level">
+        <title>gtk.Range.get_restrict_to_fill_level</title>
+
+        <programlisting><methodsynopsis language="python">
+        <methodname>get_restrict_to_fill_level</methodname>
+        <methodparam></methodparam></methodsynopsis></programlisting>
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara><literal>True</literal> if range is
+                restricted to the fill level.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <para>
+            The <methodname>get_restrict_to_fill_level</methodname>() method gets
+            whether the range is restricted to the fill level.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtkrange--set-show-fill-level">
+        <title>gtk.Range.set_show_fill_level</title>
+
+        <programlisting><methodsynopsis language="python">
+        <methodname>set_show_fill_level</methodname>
+        <methodparam><parameter role="keyword">show_fill_level</parameter></methodparam>
+        </methodsynopsis></programlisting>
+        
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">show_fill_level</parameter>&nbsp;:</term>
+                <listitem><simpara>Whether a fill level indicator graphics is shown.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+
+        <para>
+            The <methodname>set_show_fill_level</methodname>() method sets
+            whether a graphical fill level is show on the trough. See
+            <methodname><link linkend="method-gtkrange--set-fill-level">gtk.Range.set_fill_level</link></methodname>()
+            for a general description of the fill level concept.
+        </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-show-fill-level">
+        <title>gtk.Range.get_show_fill_level</title>
+
+        <programlisting><methodsynopsis language="python">
+        <methodname>get_show_fill_level</methodname>
+        <methodparam></methodparam></methodsynopsis></programlisting>
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara><literal>True</literal> if range shows the
+                fill level.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <para>
+            The <methodname>get_show_fill_level</methodname>() method gets
+            whether the range displays the fill level graphically.
+        </para>
     </refsect2>
 
   </refsect1>
