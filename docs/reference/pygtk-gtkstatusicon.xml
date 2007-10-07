@@ -86,6 +86,14 @@
         <methodparam><parameter role="keyword">area</parameter></methodparam>
         <methodparam><parameter role="keyword">orientation</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--get-screen">get_screen</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-screen">set_screen</link></methodname>
+        <methodparam><parameter role="keyword">screen</parameter></methodparam>
+      </methodsynopsis>
 </classsynopsis>
 
 <programlisting>
@@ -137,6 +145,15 @@
           <entry>if <literal>True</literal> the status icon is
           blinking. Default value: <literal>False</literal>.</entry>
         </row>
+        
+        <row valign="top">
+          <entry>"embedded"</entry>
+          <entry>Read-Write</entry>
+          <entry><literal>True</literal> if the status icon is
+          embedded in a notification area.
+          Default value: <literal>False</literal>.
+          This property is available in GTK+ 2.12 and above.</entry>
+        </row>
 
         <row valign="top">
           <entry>"file"</entry>
@@ -150,6 +167,14 @@
           <entry>Read-Write</entry>
           <entry>The name of the icon from the icon theme. Default value:
           <literal>None</literal>.</entry>
+        </row>
+        
+        <row valign="top">
+          <entry>"orientation"</entry>
+          <entry>Read-Write</entry>
+          <entry>The orientation of the tray in which the statusicon is embedded.
+          Default value: gtk.ORIENTATION_HORIZONTAL.
+          This property is available in GTK+ 2.12 and above.</entry>
         </row>
 
         <row valign="top">
@@ -755,6 +780,56 @@
       menus.</para>
       
       <para>Note that some platforms do not provide this information.</para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkstatusicon--get-screen">
+      <title>gtk.StatusIcon.get_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_screen</methodname>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gdkscreen">
+          <classname>gtk.gdk.Screen</classname></link>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>Returns the <link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+      associated with status_icon.</para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkstatusicon--set-screen">
+      <title>gtk.StatusIcon.set_screen</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_screen</methodname>
+        <methodparam><parameter role="keyword">screen</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gdkscreen">
+          <classname>gtk.gdk.Screen</classname></link>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>Sets the <link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+      where status_icon is displayed; if the icon is already mapped, it will be unmapped,
+      and then remapped on the new screen.</para>
 
     </refsect2>
 
