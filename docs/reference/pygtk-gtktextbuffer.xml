@@ -472,6 +472,11 @@ linkend="method-gtktextbuffer--end-user-action">backspace</link></methodname>
         <methodparam><parameter role="keyword">iter</parameter></methodparam>
         <methodparam><parameter role="keyword">data</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktextbuffer--add-mark">add_mark</link></methodname>
+        <methodparam><parameter role="keyword">mark</parameter></methodparam>
+        <methodparam><parameter role="keyword">where</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -3371,6 +3376,40 @@ deleted.</para>
             or <link
             linkend="method-gtktextbuffer--register-deserialize-tagset"><methodname>gtk.TextBuffer.register_deserialize_tagset()</methodname></link>
             methods beforehand.</para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtktextbuffer--add-mark">
+      <title>gtk.TextBuffer.add_mark</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>add_mark</methodname>
+        <methodparam><parameter role="keyword">mark</parameter></methodparam>
+        <methodparam><parameter role="keyword">where</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">mark</parameter>&nbsp;:</term>
+          <listitem><simpara>the <link
+          linkend="class-gtktextmark"><classname>gtk.TextMark</classname></link>
+          to add</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">where</parameter>&nbsp;:</term>
+          <listitem><simpara>the location to place mark.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>Adds the <parameter>mark</parameter> at position <parameter>where</parameter>.
+      The mark must not be added to another buffer, and if its name is not <literal>None</literal>
+      then there must not be another mark in the buffer with the same name.</para>
+      
+      <para>Emits the "mark_set" signal as notification of the mark's initial placement.</para>
 
     </refsect2>
 

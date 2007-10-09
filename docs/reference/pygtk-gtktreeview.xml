@@ -518,6 +518,46 @@ END NOT IMPLEMENTED -->
         <methodparam><parameter role="keyword">window_x</parameter></methodparam>
         <methodparam><parameter role="keyword">window_y</parameter></methodparam>
     </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-level-indentation">get_level_indentation</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-level-indentation">set_level_indentation</link></methodname>
+        <methodparam><parameter role="keyword">indentation</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-show-expanders">get_show_expanders</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-show-expanders">set_show_expanders</link></methodname>
+        <methodparam><parameter role="keyword">enabled</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--get-tooltip-column">get_tooltip_column</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-tooltip-column">set_tooltip_column</link></methodname>
+        <methodparam><parameter role="keyword">column</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--is-rubber-banding-active">is_rubber_banding_active</link></methodname>
+        <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-tooltip-cell">set_tooltip_cell</link></methodname>
+        <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+        <methodparam><parameter role="keyword">path</parameter></methodparam>
+        <methodparam><parameter role="keyword">column</parameter></methodparam>
+        <methodparam><parameter role="keyword">cell</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktreeview--set-tooltip-row">set_tooltip_row</link></methodname>
+        <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+        <methodparam><parameter role="keyword">path</parameter></methodparam>
+    </methodsynopsis>
 
     </classsynopsis>
 
@@ -3718,6 +3758,282 @@ treeview. If no valid paths are available this method returns
             Converts bin window coordinates (see <methodname><link
             linkend="method-gtktreeview--get-bin-window">get_bin_window</link></methodname>)
             to the tree (the full scrollable area of the tree).
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--get-level-indentation">
+        <title>gtk.TreeView.get_level_indentation</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_level_indentation</methodname>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>the amount of extra indentation for child levels in tree_view.
+                A return value of 0 means that this feature is disabled.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Returns the amount, in pixels, of extra indentation for child levels in tree_view.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--set-level-indentation">
+        <title>gtk.TreeView.set_level_indentation</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_level_indentation</methodname>
+            <methodparam><parameter role="keyword">indentation</parameter></methodparam>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">indentation</parameter>&nbsp;:</term>
+                <listitem><simpara>the amount, in pixels, of extra indentation in tree_view.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Sets the amount of extra indentation for child levels to use in tree_view
+            in addition to the default indentation. The value should be specified in pixels,
+            a value of 0 disables this feature and in this case only the default indentation
+            will be used. This does not have any visible effects for lists.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--get-show-expanders">
+        <title>gtk.TreeView.get_show_expanders</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_show_expanders</methodname>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara><literal>True</literal> if expanders are drawn
+                in tree_view, <literal>False</literal> otherwise.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Returns whether or not expanders are drawn in tree_view.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--set-show-expanders">
+        <title>gtk.TreeView.set_show_expanders</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_show_expanders</methodname>
+            <methodparam><parameter role="keyword">enabled</parameter></methodparam>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">indentation</parameter>&nbsp;:</term>
+                <listitem><simpara><literal>True</literal> to enable expander drawing, <literal>False</literal> otherwise.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Sets whether to draw and enable expanders and indent child rows in tree_view.
+            When disabled there will be no expanders visible in trees and there will be
+            no way to expand and collapse rows by default. Also note that hiding the expanders
+            will disable the default indentation. You can set a custom indentation in this case using
+            gtk_tree_view_set_level_indentation().
+            This does not have any visible effects for lists.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--get-tooltip-column">
+        <title>gtk.TreeView.get_tooltip_column</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_tooltip_column</methodname>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara>the index of the tooltip column that is currently
+                being used, or -1 if this is disabled.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Returns the column of tree_view's model which is being used for
+            displaying tooltips on tree_view's rows.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--set-tooltip-column">
+        <title>gtk.TreeView.set_tooltip_column</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_column</methodname>
+            <methodparam><parameter role="keyword">column</parameter></methodparam>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">column</parameter>&nbsp;:</term>
+                <listitem><simpara>an integer, which is a valid column number
+                for tree_view's model</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            If you only plan to have simple (text-only) tooltips on full rows, you can
+            use this function to have GtkTreeView handle these automatically for you.
+            column should be set to the column in tree_view's model containing the
+            tooltip texts, or -1 to disable this feature.
+        </para>
+        <para>
+            When enabled, GtkWidget::has-tooltip will be set to <literal>True</literal>
+            and tree_view will connect a GtkWidget::query-tooltip signal handler.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--is-rubber-banding-active">
+        <title>gtk.TreeView.is_rubber_banding_active</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>is_rubber_banding_active</methodname>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                <listitem><simpara><literal>True</literal> if a rubber banding
+                operation is currently being done in tree_view.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Returns whether a rubber banding operation is currently being done in tree_view.
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--set-tooltip-cell">
+        <title>gtk.TreeView.set_tooltip_cell</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_cell</methodname>
+            <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+            <methodparam><parameter role="keyword">path</parameter></methodparam>
+            <methodparam><parameter role="keyword">column</parameter></methodparam>
+            <methodparam><parameter role="keyword">cell</parameter></methodparam>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">tooltip</parameter>&nbsp;:</term>
+                <listitem><simpara>a <classname><link linkend="class-gtktooltip">gtk.Tooltip</link></classname>.
+                </simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+                <listitem><simpara>a tree path or <literal>None</literal>.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">column</parameter>&nbsp;:</term>
+                <listitem><simpara>a <classname><link linkend="class-gtktreeviewcolumn">gtk.TreeViewColumn</link></classname>
+                or <literal>None</literal>.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">cell</parameter>&nbsp;:</term>
+                <listitem><simpara>a <classname><link linkend="class-gtkcellrenderer">gtk.CellRenderer</link></classname>
+                or <literal>None</literal>.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Sets the tip area of tooltip to the area path, column and cell have in common.
+            For example if path is <literal>None</literal> and column is set, the tip
+            area will be set to the full area covered by column.
+            
+            <!-- FIXME the following method is missing
+            See also gtk_tooltip_set_tip_area().
+            -->
+        </para>
+    </refsect2>
+    
+    <refsect2 id="method-gtktreeview--set-tooltip-row">
+        <title>gtk.TreeView.set_tooltip_row</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_row</methodname>
+            <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
+            <methodparam><parameter role="keyword">path</parameter></methodparam>
+            <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">tooltip</parameter>&nbsp;:</term>
+                <listitem><simpara>a <classname><link linkend="class-gtktooltip">gtk.Tooltip</link></classname>.
+                </simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+                <listitem><simpara>a tree path.</simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            Sets the tip area of tooltip to be the area covered by the row at path.
+            
+            <!-- FIXME the following method is missing
+            See also gtk_tooltip_set_tip_area().
+            -->
         </para>
     </refsect2>
 
