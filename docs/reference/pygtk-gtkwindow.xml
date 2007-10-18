@@ -472,6 +472,18 @@ linkend="method-gtkwindow--present-with-time">present_with_time</link></methodna
         <methodname><link linkend="method-gtkwindow--get-group">get_group</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwindow--set-opacity">set_opacity</link></methodname>
+        <methodparam><parameter role="keyword">opacity</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwindow--get-opacity">get_opacity</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwindow--set-startup-id">set_startup_id</link></methodname>
+        <methodparam><parameter role="keyword">startup_id</parameter></methodparam>
+      </methodsynopsis>
      </classsynopsis>
 
     <programlisting>
@@ -654,6 +666,16 @@ and above.</entry>
 windows are not usable while this one is up). Default value:
 <literal>False</literal>.</entry>
 	    </row>
+        
+        <row valign="top">
+	      <entry>"opacity"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The requested opacity of the window. See
+          <methodname><link linkend="method-gtkwindow--set-opacity">gtk.Window.set_opacity</link></methodname>()
+          for more details about window opacity.
+          Allowed values: [0,1] Default value: 1.
+          Available in GTK+ 2.12.</entry>
+	    </row>
 
 	    <row valign="top">
 	      <entry>"resizable"</entry>
@@ -691,6 +713,16 @@ and above.</entry>
 	      <entry>If <literal>True</literal>, the window should not be
 in the task bar. Default value: <literal>False</literal>. Available in GTK+
 2.2 and above.</entry>
+	    </row>
+        
+        <row valign="top">
+	      <entry>"startup-id"</entry>
+	      <entry>Write</entry>
+	      <entry>The :startup-id is a write-only property for setting window's
+          startup notification identifier. See
+          <methodname><link linkend="method-gtkwindow--set-startup-id">gtk.Window.set_startup_id</link></methodname>()
+          for more details. Default value: NULL.
+          Available in GTK+ 2.12 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -3757,6 +3789,96 @@ method.</para>
       or the default group, if the window does not have an explicit window
       group.</para>
 
+    </refsect2>
+    
+    <refsect2 id="method-gtkwindow--set-opacity">
+      <title>gtk.Window.set_opacity</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_opacity</methodname>
+        <methodparam><parameter role="keyword">opacity</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">opacity</parameter>&nbsp;:</term>
+          <listitem><simpara>desired opacity, between 0 and 1.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>
+        Request the windowing system to make window partially transparent, with
+        opacity 0 being fully transparent and 1 fully opaque. (Values of the
+        opacity parameter are clamped to the [0,1] range.) On X11 this has any
+        effect only on X screens with a compositing manager running.
+        See <methodname><link linkend="method-gtkwidget--is-composited">gtk.Widget.is_composited</link></methodname>().
+        On Windows it should work always.
+      </para>
+      <para>        
+        Note that setting a window's opacity after the window has been shown causes it to flicker once on Windows.
+      </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkwindow--get-opacity">
+      <title>gtk.Window.get_opacity</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_opacity</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the requested opacity for this window.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>Fetches the requested opacity for this window. See
+      <methodname><link linkend="method-gtkwindow--set-opacity">gtk.Window.set_opacity</link></methodname>().</para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwindow--set-startup-id">
+      <title>gtk.Window.set_startup_id</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_startup_id</methodname>
+        <methodparam><parameter role="keyword">startup_id</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">startup_id</parameter>&nbsp;:</term>
+          <listitem><simpara>a string with startup-notification identifier</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>
+        Startup notification identifiers are used by desktop environment to track
+        application startup, to provide user feedback and other features. This
+        function changes the corresponding property on the underlying GdkWindow.
+        Normally, startup identifier is managed automatically and you should only
+        use this function in special cases like transferring focus from other processes.
+        You should use this function before calling
+        <methodname><link linkend="method-gtkwindow--present">gtk.Window.present</link></methodname>()
+        or any equivalent function generating a window map event.
+      </para>
+      <para>        
+        This function is only useful on X11, not with other GTK+ targets.
+      </para>
     </refsect2>
 
   </refsect1>

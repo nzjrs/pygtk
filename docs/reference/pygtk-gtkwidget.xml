@@ -855,7 +855,7 @@ linkend="method-gtkwidget--set-activate-signal">set_activate_signal</link></meth
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
-linkend="method-gtkwidget--set-activate-signal">set_scroll_adjustments_signal</link></methodname>
+linkend="method-gtkwidget--set-set-scroll-adjustments-signal">set_set_scroll_adjustments_signal</link></methodname>
 	<methodparam><parameter
 		       role="keyword">signal_name</parameter></methodparam>
       </methodsynopsis>
@@ -882,9 +882,57 @@ linkend="method-gtkwidget--set-activate-signal">set_scroll_adjustments_signal</l
         <methodparam><parameter role="keyword">offset_y</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-	<methodname><link
-linkend="method-gtkwidget--get-activate-signal">get_activate_signal</link></methodname>
-	<methodparam></methodparam>
+        <methodname><link linkend="method-gtkwidget--get-activate-signal">get_activate_signal</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--error-bell">error_bell</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--get-has-tooltip">get_has_tooltip</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--get-tooltip-markup">get_tooltip_markup</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--get-tooltip-text">get_tooltip_text</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--get-tooltip-window">get_tooltip_window</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--keynav-failed">keynav_failed</link></methodname>
+        <methodparam><parameter role="keyword">direction</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--modify-cursor">modify_cursor</link></methodname>
+        <methodparam><parameter role="keyword">primary</parameter></methodparam>
+        <methodparam><parameter role="keyword">secondary</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--set-has-tooltip">set_has_tooltip</link></methodname>
+        <methodparam><parameter role="keyword">has_tooltip</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--set-tooltip-markup">set_tooltip_markup</link></methodname>
+        <methodparam><parameter role="keyword">markup</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--set-tooltip-text">set_tooltip_text</link></methodname>
+        <methodparam><parameter role="keyword">text</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--set-tooltip-window">set_tooltip_window</link></methodname>
+        <methodparam><parameter role="keyword">window</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--trigger-tooltip-query">trigger_tooltip_query</link></methodname>
+        <methodparam></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -1015,6 +1063,20 @@ widget</entry>
 	      <entry>If <literal>True</literal>, the widget has the input
 focus</entry>
 	    </row>
+        
+        <row valign="top">
+	      <entry>"has-tooltip"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Enables or disables the emission of GtkWidget::query-tooltip on widget.
+          A value of <literal>True</literal> indicates that widget can have a tooltip,
+          in this case the widget will be queried using GtkWidget::query-tooltip to
+          determine whether it will provide a tooltip or not. Note that setting this
+          property to <literal>True</literal> for the first time will change the event
+          masks of the GdkWindows of this widget to include leave-notify and motion-notify events.
+          This cannot and will not be undone when the property is set to <literal>False</literal> again.
+          Default value: <literal>False</literal>.
+          This property is available in GTK+ 2.12 and above.</entry>
+	    </row>
 
 	    <row valign="top">
 	      <entry>"height-request"</entry>
@@ -1072,6 +1134,33 @@ input</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The style of the widget, which contains information
 about how it will look (colors etc).</entry>
+	    </row>
+        
+        <row valign="top">
+	      <entry>"tooltip-markup"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Sets the text of tooltip to be the given string, which is marked up
+          with the Pango text markup language. Also see 
+          <methodname><link linkend="method-gtktooltip--set-markup">gtk.Tooltip.set_markup</link>().</methodname>
+          This is a convenience property which will take care of getting the tooltip
+          shown if the given string is not <literal>None</literal>: GtkWidget:has-tooltip
+          will automatically be set to <literal>True</literal> and there will be taken
+          care of GtkWidget::query-tooltip in the default signal handler.
+          Default value: <literal>None</literal>
+          This property is available in GTK+ 2.12 and above.</entry>
+	    </row>
+        
+        <row valign="top">
+	      <entry>"tooltip-text"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Sets the text of tooltip to be the given string. Also see
+          <methodname><link linkend="method-gtktooltip--set-markup">gtk.Tooltip.set_text</link>().</methodname>
+          This is a convenience property which will take care of getting the tooltip shown
+          if the given string is not <literal>None</literal>: GtkWidget:has-tooltip will
+          automatically be set to <literal>None</literal> and there will be taken care
+          of GtkWidget::query-tooltip in the default signal handler.
+          Default value: <literal>None</literal>.
+          This property is available in GTK+ 2.12 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -1506,6 +1595,18 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term>"<link linkend="signal-gtkwidget--drag-failed">drag-failed</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>widget</parameter></methodparam>
+            <methodparam><parameter>drag_context</parameter></methodparam>
+            <methodparam><parameter>result</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>"<link linkend="signal-gtkwidget--drag-leave">drag-leave</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
@@ -1684,6 +1785,17 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term>"<link linkend="signal-gtkwidget--keynav-failed">keynav-failed</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>widget</parameter></methodparam>
+            <methodparam><parameter>direction</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>"<link linkend="signal-gtkwidget--leave-notify-event">leave-notify-event</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
@@ -1797,6 +1909,20 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>widget</parameter></methodparam>
             <methodparam><parameter>event</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkwidget--query-tooltip">query-tooltip</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>widget</parameter></methodparam>
+            <methodparam><parameter>x</parameter></methodparam>
+            <methodparam><parameter>y</parameter></methodparam>
+            <methodparam><parameter>keyboard_mode</parameter></methodparam>
+            <methodparam><parameter>tooltip</parameter></methodparam>
             <methodparam><parameter>user_param1</parameter></methodparam>
             <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
@@ -6216,11 +6342,11 @@ method.</para>
 
     </refsect2>
 
-     <refsect2 id="method-gtkwidget--set-scroll-adjustments-signal">
-      <title>gtk.Widget.set_scroll_adjustments_signal</title>
+     <refsect2 id="method-gtkwidget--set-set-scroll-adjustments-signal">
+      <title>gtk.Widget.set_set_scroll_adjustments_signal</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>set_scroll_adjustments_signal</methodname>
+	  <methodname>set_set_scroll_adjustments_signal</methodname>
 	  <methodparam><parameter role="keyword">signal_name</parameter></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
@@ -6426,6 +6552,387 @@ method.</para>
       method for more information.</para>
 
     </refsect2>
+    
+    <refsect2 id="method-gtkwidget--error-bell">
+        <title>gtk.Widget.error_bell</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>error_bell</methodname>
+            <methodparam></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>error_bell</methodname>() method
+            notifies the user about an input-related error on this widget. If the
+            GtkSettings:gtk-error-bell setting is <literal>True</literal>, it calls
+            <link linkend="method-gdkwindow--beep"><methodname>gtk.gdk.Window.beep</methodname>()</link>,
+            otherwise it does nothing. Note that the effect of
+            <link linkend="method-gdkwindow--beep"><methodname>gtk.gdk.Window.beep</methodname>()</link>
+            can be configured in many ways, depending on the windowing backend and
+            the desktop environment or window manager that is used.
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--get-has-tooltip">
+        <title>gtk.Widget.get_has_tooltip</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_has_tooltip</methodname>
+            <methodparam></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>the current value of has-tooltip on widget.</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>get_has_tooltip</methodname>() method
+            returns the current value of the has-tooltip property.
+            See <link linkend="properties-gtkwidget">GtkWidget:has-tooltip</link>
+            for more information.
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--get-tooltip-markup">
+        <title>gtk.Widget.get_tooltip_markup</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_tooltip_markup</methodname>
+            <methodparam></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>the tooltip text, or
+                        <literal>None</literal>.</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>get_tooltip_markup</methodname>() method
+            gets the contents of the tooltip for widget.
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--get-tooltip-text">
+        <title>gtk.Widget.get_tooltip_text</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_tooltip_text</methodname>
+            <methodparam></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>the tooltip text, or
+                        <literal>None</literal>.</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>get_tooltip_text</methodname>() method
+            gets the contents of the tooltip for widget.
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--get-tooltip-window">
+        <title>gtk.Widget.get_tooltip_window</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_tooltip_window</methodname>
+            <methodparam></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>the <link linkend="class-gtkwindow"><classname>gtk.Window</classname>
+                        </link> of the current tooltip.</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>get_tooltip_text</methodname>() method
+            returns the <link linkend="class-gtkwindow"><classname>gtk.Window</classname></link>
+            of the current tooltip. This can be the
+            <link linkend="class-gtkwindow"><classname>gtk.Window</classname></link>
+            created by default, or the custom tooltip window set using
+            <link linkend="method-gtkwidget--set-tooltip-window"><methodname>gtk.Widget.set_tooltip_window</methodname></link>().
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--keynav-failed">
+        <title>gtk.Widget.keynav_failed</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>keynav_failed</methodname>
+            <methodparam><parameter role="keyword">direction</parameter></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><parameter role="keyword">direction</parameter>&nbsp;:</term>
+                        <listitem><simpara>direction of focus movement.</simpara></listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara><literal>True</literal> if stopping keyboard
+                        navigation is fine, <literal>False</literal>  if the emitting
+                        widget should try to handle the keyboard navigation
+                        attempt in its parent container(s).</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>keynav_failed</methodname>() should be called whenever keyboard
+            navigation within a single widget hits a boundary. The function emits
+            the GtkWidget::keynav-changed signal on the widget and its return value
+            should be interpreted in a way similar to the return value of
+            <methodname><link linkend="method-gtkwidget--child-focus">gtk.Widget.child_focus</link></methodname>():
+        </para>
+        <para>
+            When <literal>True</literal> is returned, stay in the widget, the failed
+            keyboard navigation is Ok and/or there is nowhere we can/should move the focus to.
+        </para>
+        <para>
+            When <literal>False</literal> is returned, the caller should continue with
+            keyboard navigation outside the widget, e.g. by calling gtk_widget_child_focus()
+            on the widget's toplevel.
+        </para>
+        <para>
+            The default ::keynav-failed handler returns <literal>True</literal> for
+            gtk.DIR_TAB_FORWARD and gtk.DIR_TAB_BACKWARD. For the other values of
+            GtkDirectionType, it looks at the GtkSettings:gtk-keynav-cursor-only"
+            setting and returns <literal>False</literal> if the setting is <literal>True</literal>
+            This way the entire user interface becomes cursor-navigatable on input
+            devices such as mobile phones which only have cursor keys but no tab key.
+        </para>
+        <para>
+            Whenever the default handler returns <literal>True</literal>, it also
+            calls <methodname><link linkend="method-gtkwidget--error-bell">gtk.Widget.error_bell</link></methodname>()
+            to notify the user of the failed keyboard navigation.
+        </para>
+        <para>
+            A use case for providing an own implementation of ::keynav-failed (either
+            by connecting to it or by overriding it) would be a row of GtkEntry
+            widgets where the user should be able to navigate the entire row with
+            the cursor keys, as e.g. known from user interfaces that require entering license keys.
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--modify-cursor">
+        <title>gtk.Widget.modify_cursor</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>modify_cursor</methodname>
+            <methodparam><parameter role="keyword">primary</parameter></methodparam>
+            <methodparam><parameter role="keyword">secondary</parameter></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><parameter role="keyword">primary</parameter>&nbsp;:</term>
+                        <listitem><simpara>the color to use for primary cursor (does not
+                        need to be allocated), or <literal>None</literal> to undo the effect
+                        of previous calls to of
+                        <methodname><link linkend="method-gtkwidget--modify-cursor">gtk.Widget.modify_cursor</link>
+                        </methodname>().</simpara></listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><parameter role="keyword">secondary</parameter>&nbsp;:</term>
+                        <listitem><simpara>the color to use for secondary cursor (does not
+                        need to be allocated), or <literal>None</literal> to undo the effect
+                        of previous calls to of
+                        <methodname><link linkend="method-gtkwidget--modify-cursor">gtk.Widget.modify_cursor</link>
+                        </methodname>().</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>modify_cursor</methodname>() sets the cursor color to
+            use in a widget, overriding the GtkWidget:cursor-color and
+            GtkWidget:secondary-cursor-color style properties. All other style
+            values are left untouched. See also <methodname>
+            <link linkend="method-gtkwidget--modify-style">gtk.Widget.modify_style</link></methodname>().
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--set-has-tooltip">
+        <title>gtk.Widget.set_has_tooltip</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_has_tooltip</methodname>
+            <methodparam><parameter role="keyword">has_tooltip</parameter></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><parameter role="keyword">has_tooltip</parameter>&nbsp;:</term>
+                        <listitem><simpara>whether or not widget has a tooltip.</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>set_has_tooltip</methodname>() sets the has-tooltip
+            property on widget to <parameter>has_tooltip</parameter>. See
+            GtkWidget:has-tooltip for more information.
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--set-tooltip-markup">
+        <title>gtk.Widget.set_tooltip_markup</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_markup</methodname>
+            <methodparam><parameter role="keyword">markup</parameter></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><parameter role="keyword">markup</parameter>&nbsp;:</term>
+                        <listitem><simpara>the contents of the tooltip for widget, or
+                        <literal>None</literal></simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>set_tooltip_markup</methodname>() sets markup as the
+            contents of the tooltip, which is marked up with the Pango text markup language.
+            This function will take care of setting GtkWidget:has-tooltip to
+            <literal>True</literal> and of the default handler for the GtkWidget::query-tooltip signal.
+            See also the GtkWidget:tooltip-markup property and
+            <methodname><link linkend="method-gtktooltip--set-markup">gtk.Tooltip.set_markup</link></methodname>().
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--set-tooltip-text">
+        <title>gtk.Widget.set_tooltip_text</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_text</methodname>
+            <methodparam><parameter role="keyword">text</parameter></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><parameter role="keyword">text</parameter>&nbsp;:</term>
+                        <listitem><simpara>the contents of the tooltip for widget, or
+                        <literal>None</literal></simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>set_tooltip_text</methodname>() sets <parameter>text</parameter>
+            as the contents of the tooltip. This function will take care of setting
+            GtkWidget:has-tooltip to <literal>True</literal> and of the default handler
+            for the GtkWidget::query-tooltip signal. See also the GtkWidget:tooltip-text
+            property and <methodname><link linkend="method-gtktooltip--set-text">gtk.Tooltip.set_text</link></methodname>().
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--set-tooltip-window">
+        <title>gtk.Widget.set_tooltip_window</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>set_tooltip_window</methodname>
+            <methodparam><parameter role="keyword">custom_window</parameter></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><parameter role="keyword">custom_window</parameter>&nbsp;:</term>
+                        <listitem><simpara>a
+                        <link linkend="class-gtkwindow"><classname>gtk.Window</classname></link>,
+                        or <literal>None</literal></simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>set_tooltip_window</methodname>() replaces the
+            default, usually yellow, window used for displaying tooltips with
+            <parameter>custom_window</parameter>. GTK+ will take care of showing
+            and hiding custom_window at the right moment, to behave likewise as
+            the default tooltip window. If custom_window is <literal>None</literal>,
+            the default tooltip window will be used.            
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--trigger-tooltip-query">
+        <title>gtk.Widget.trigger_tooltip_query</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>trigger_tooltip_query</methodname>
+            <methodparam></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>trigger_tooltip_query</methodname>() triggers a tooltip
+            query on the display where the toplevel of widget is located. See
+            <methodname><link linkend="function-gtk--tooltip-trigger-tooltip-query">gtk.tooltip_trigger_tooltip_query</link>
+            </methodname>() for more information.
+        </para>
+
+    </refsect2>
+
 
   </refsect1>
 
@@ -7610,6 +8117,60 @@ completed. A typical reason to connect to this signal is to undo things done
 in a "drag-begin" handler.</para>
 
     </refsect2>
+    
+    <refsect2 id="signal-gtkwidget--drag-failed">
+      <title>The "drag-failed" gtk.Widget Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>widget</parameter></methodparam>
+	  <methodparam><parameter>drag_context</parameter></methodparam>
+      <methodparam><parameter>result</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>the widget that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>drag_context</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link
+linkend="class-gdkdragcontext"><classname>gtk.gdk.DragContext</classname></link></simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><parameter>result</parameter>&nbsp;:</term>
+	  <listitem><simpara>the result of the drag operation.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara><literal>True</literal> if the failed drag operation
+    has been already handled.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The "drag-failed" signal is emitted on the drag source when a drag has failed.
+      The signal handler may hook custom code to handle a failed DND operation based
+      on the type of error, it returns <literal>True</literal> is the failure has been
+      already handled (not showing the default "drag operation failed" animation),
+      otherwise it returns <literal>False</literal>.</para>
+
+    </refsect2>
 
     <refsect2 id="signal-gtkwidget--drag-leave">
       <title>The "drag-leave" gtk.Widget Signal</title>
@@ -8332,6 +8893,53 @@ any)</simpara></listitem>
 key on the keyboard.</para>
 
     </refsect2>
+    
+    <refsect2 id="signal-gtkwidget--keynav-failed">
+      <title>The "keynav-failed" gtk.Widget Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>widget</parameter></methodparam>
+	  <methodparam><parameter>direction</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>the widget that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>direction</parameter>&nbsp;:</term>
+	  <listitem><simpara>the direction of movement.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara><literal>True</literal> if stopping keyboard navigation is fine,
+    <literal>False</literal> if the emitting widget should try to handle the keyboard
+    navigation attempt in its parent container(s).</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The "key-press-event" signal gets emitted if keyboard navigation fails.
+      See <methodname><link linkend="method-gtkwidget--keynav-failed">gtk.Widget.keynav_failed</link>
+      </methodname>() for details.</para>
+
+    </refsect2>
 
     <refsect2 id="signal-gtkwidget--key-release-event">
       <title>The "key-release-event" gtk.Widget Signal</title>
@@ -8883,6 +9491,77 @@ any)</simpara></listitem>
       <para>The "proximity-out-event" (available for devices like touch
 screens or graphics tablets) is emitted when the pen leaves the tablet or
 when the user's finger leaves the screen.</para>
+
+    </refsect2>
+    
+    <refsect2 id="signal-gtkwidget--query-tooltip">
+      <title>The "query-tooltip" gtk.Widget Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>widget</parameter></methodparam>
+	  <methodparam><parameter>x</parameter></methodparam>
+      <methodparam><parameter>y</parameter></methodparam>
+      <methodparam><parameter>keyboard_mode</parameter></methodparam>
+      <methodparam><parameter>tooltip</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>the widget that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>x</parameter>&nbsp;:</term>
+	  <listitem><simpara>the x coordinate of the cursor position where the request
+      has been emitted, relative to widget->window</simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><parameter>y</parameter>&nbsp;:</term>
+	  <listitem><simpara>the y coordinate of the cursor position where the request
+      has been emitted, relative to widget->window</simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><parameter>keyboard_mode</parameter>&nbsp;:</term>
+	  <listitem><simpara><literal>True</literal> if the tooltip was trigged
+      using the keyboard</simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><parameter>tooltip</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gtktooltip"><classname>gtk.Tooltip</classname>
+      </link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+    <varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara><literal>True</literal> if tooltip should be shown right now,
+    <literal>False</literal> otherwise.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>The "query-tooltip" signal is emitted when the GtkSettings:gtk-tooltip-timeout
+      has expired with the cursor hovering "above" widget; or emitted when widget
+      got focus in keyboard mode.
+      Using the given coordinates, the signal handler should determine whether a
+      tooltip should be shown for widget. If this is the case <literal>True</literal>
+      should be returned, <literal>False</literal> otherwise. Note that if
+      <parameter>keyboard_mode</parameter> is <literal>True</literal>, the values
+      of x and y are undefined and should not be used.
+      The signal handler is free to manipulate tooltip with the therefore destined function calls.</para>
 
     </refsect2>
 
