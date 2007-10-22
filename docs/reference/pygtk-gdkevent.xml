@@ -100,6 +100,10 @@ linkend="function-gdk--get-show-events">gtk.gdk.get_show_events</link></methodna
 linkend="function-gdk--event-handler-set">gtk.gdk.event_handler_set</link></methodname>
 	<methodparam><parameter>func</parameter></methodparam>
 	<methodparam><parameter>data</parameter><initializer>None</initializer></methodparam>
+      </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--event-request-motions">gtk.gdk.event_request_motions</link></methodname>
+	<methodparam><parameter>event</parameter></methodparam>
       </methodsynopsis></programlisting>
 
   </refsect1>
@@ -2446,6 +2450,40 @@ returns the setting of the internal debug events flag.</para>
       linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
       and <parameter>user_data</parameter> is
       <parameter>data</parameter>.</para>
+
+    </refsect2>
+    
+    <refsect2 id="function-gdk--event-request-motions">
+      <title>gtk.gdk.event_request_motions</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.event_request_motions</methodname>
+	  <methodparam><parameter>event</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>event</parameter>&nbsp;:</term>
+	  <listitem><simpara>a valid <link
+      linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>
+      </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.event_request_motions</function>() function
+      request more motion notifies if event is a motion notify hint event.
+      This function should be used instead of <methodname><link
+      linkend="method-gdkwindow--get-pointer">gtk.gdk.Window.get_pointer</link></methodname>() to
+      request further motion notifies, because it also works for extension
+      events where motion notifies are provided for devices other than the core pointer.
+      </para>
+
+      <!-- FIXME Coordinate extraction, processing and requesting more motion events from a
+      gtk.gdk.MOTION_NOTIFY event usually works like this:-->
 
     </refsect2>
 

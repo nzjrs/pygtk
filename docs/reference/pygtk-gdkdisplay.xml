@@ -119,6 +119,10 @@ END NOT IMPLEMENTED -->
 	<methodparam><parameter role="keyword">distance</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkdisplay--supports-cursor-alpha">supports_composite</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link linkend="method-gdkdisplay--supports-cursor-alpha">supports_cursor_alpha</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
@@ -850,6 +854,35 @@ set this, it is a global user-configured setting.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gdkdisplay--supports-composite">
+      <title>gtk.gdk.Display.supports_composite</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>supports_composite</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>True</literal> if windows may be composited.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>supports_composite</methodname>() method
+returns <literal>True</literal> if <link linkend="method-gdkwindow--set-composite">
+<methodname>gtk.gdk.Window.set_composite</methodname></link>() can be used to redirect
+drawing on the window using compositing.
+    </para>
+      <para>
+        Currently this only works on X11 with XComposite and XDamage extensions available.
+    </para>
+
+    </refsect2>
+    
     <refsect2 id="method-gdkdisplay--supports-cursor-alpha">
       <title>gtk.gdk.Display.supports_cursor_alpha</title>
 

@@ -588,12 +588,17 @@ linkend="function-gdk--get-display-arg-name">gtk.gdk.get_display_arg_name</link>
 	<methodparam></methodparam>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
-linkend="function-gdk--gdk-pango-context-get-for-screen">gtk.gdk.gdk_pango_context_get_for_screen</link></methodname>
+linkend="function-gdk--pango-context-get-for-screen">gtk.gdk.pango_context_get_for_screen</link></methodname>
 	<methodparam><parameter
 		       role="keyword">screen</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
 	<methodname><link
-linkend="function-gdk--gdk-pango-context-get">gtk.gdk.gdk_pango_context_get</link></methodname>
+linkend="function-gdk--pango-context-get">gtk.gdk.pango_context_get</link></methodname>
+  </methodsynopsis><methodsynopsis language="python">
+	<methodname><link
+linkend="function-gdk--x11-display-get-startup-notification-id">gtk.gdk.x11_display_get_startup_notification_id</link></methodname>
+  <methodparam><parameter
+		       role="keyword">display</parameter></methodparam>
   </methodsynopsis></programlisting>
 
     </refsect2>
@@ -1463,11 +1468,11 @@ returns the display name specified in the command line arguments, if any or
 
     </refsect2>
 
-    <refsect2 id="function-gdk--gdk-pango-context-get-for-screen">
-      <title>gtk.gdk.gdk_pango_context_get_for_screen</title>
+    <refsect2 id="function-gdk--pango-context-get-for-screen">
+      <title>gtk.gdk.pango_context_get_for_screen</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>gtk.gdk.gdk_pango_context_get_for_screen</methodname>
+	  <methodname>gtk.gdk.pango_context_get_for_screen</methodname>
 	  <methodparam><parameter
 			 role="keyword">screen</parameter></methodparam>
 	</methodsynopsis></programlisting>
@@ -1490,7 +1495,7 @@ object</simpara></listitem>
       </note>
 
       <para>The
-<function>gtk.gdk.gdk_pango_context_get_for_screen</function>() function
+<function>gtk.gdk.pango_context_get_for_screen</function>() function
 creates a new <link
 linkend="class-pangocontext"><classname>pango.Context</classname></link>
 object for the <link
@@ -1503,11 +1508,11 @@ the widget you intend to render text onto.</para>
 
     </refsect2>
 
-    <refsect2 id="function-gdk--gdk-pango-context-get">
-      <title>gtk.gdk.gdk_pango_context_get</title>
+    <refsect2 id="function-gdk--pango-context-get">
+      <title>gtk.gdk.pango_context_get</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>gtk.gdk.gdk_pango_context_get</methodname>
+	  <methodname>gtk.gdk.pango_context_get</methodname>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -1522,13 +1527,44 @@ for the default display.</simpara></listitem>
         <para>This function is available in PyGTK 2.8 and above</para>
       </note>
 
-      <para>The <function>gtk.gdk.gdk_pango_context_get</function>()
+      <para>The <function>gtk.gdk.pango_context_get</function>()
 function creates a new <link
 linkend="class-pangocontext"><classname>pango.Context</classname></link> for
 the default display. Normally you should use the <link
 linkend="method-gtkwidget--get-pango-context"><methodname>get_pango_context</methodname>()</link>
 method instead of this function, to get the appropriate Pango context for
 the widget you intend to render text onto.</para>
+
+    </refsect2>
+    
+    <refsect2 id="function-gdk--x11-display-get-startup-notification-id">
+      <title>gtk.gdk.x11_display_get_startup_notification_id</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.x11_display_get_startup_notification_id</methodname>
+	  <methodparam><parameter
+			 role="keyword">display</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link
+linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the startup notification ID for <parameter>display</parameter>
+      </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.12 and above</para>
+      </note>
+
+      <para>The
+<function>gtk.gdk.x11_display_get_startup_notification_id</function>() function
+gets the startup notification ID for a display.</para>
 
     </refsect2>
 
