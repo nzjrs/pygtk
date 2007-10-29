@@ -274,6 +274,15 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
       </methodsynopsis>
     </classsynopsis>
 
+<programlisting>
+<emphasis role="bold">Functions</emphasis>
+ 
+<methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--notebook-set-window-creation-hook">gtk.notebook_set_window_creation_hook</link></methodname>
+    <methodparam><parameter role="keyword">func</parameter></methodparam>
+    <methodparam><parameter role="keyword">data</parameter></methodparam>
+  </methodsynopsis></programlisting>
+
   </refsect1>
 
   <refsect1>
@@ -778,6 +787,44 @@ that can be grouped into several functional areas. The typical example is
 the user preferences dialog in some applications. For example, a notebook
 page can be setup for each of font selection, color selection, formating,
 etc.</para>
+    
+    <title>GtkNotebook as GtkBuildable</title>
+    
+    <para>
+          The <link linkend="class-gtknotebook"><classname>gtk.Notebook</classname></link>
+          implementation of the <link linkend="class-gtkbuildable"><classname>gtk.Buildable</classname></link>
+          interface supports placing children into tabs by specifying "tab" as the
+          "type" attribute of a &#60;child&#62; element. Note that the content of the
+          tab must be created before the tab can be filled. A tab child can be specified
+          without specifying a &#60;child&#62; type attribute.
+    </para>
+    
+    <refsect2 id="gtkbuilder-ui-definition-fragment-with-gtknotebook">
+            <title>A UI definition fragment with gtk.Notebook</title>
+<programlisting>
+<![CDATA[
+<object class="GtkNotebook">
+  <child>
+    <object class="GtkLabel" id="notebook-content">
+      <property name="label">Content</property>
+    </object>
+  </child>
+  <child type="tab">
+    <object class="GtkLabel" id="notebook-tab">
+      <property name="label">Tab</property>
+    </object>
+  </child>
+</object>
+]]>
+</programlisting>
+            <para>
+                Beyond this general structure, several object classes define their own XML DTD
+                fragments for filling in the ANY placeholders in the DTD above. Note that a
+                custom element in a &#60;child&#62; element gets parsed by the custom tag handler of
+                the parent object, while a custom element in an &#60;object&#62; element gets parsed
+                by the custom tag handler of the object.
+            </para>
+        </refsect2>
 
   </refsect1>
 
@@ -2101,6 +2148,71 @@ to the end of the list.</para>
 
     </refsect2>
 
+  </refsect1>
+
+  <refsect1>
+    <title>Functions</title>
+                                                                              
+    <refsect2 id="function-gtk--notebook-set-window-creation-hook">
+      <title>gtk.notebook_set_window_creation_hook</title>
+                                                                              
+      <programlisting><methodsynopsis language="python">
+          <methodname>gtk.notebook_set_window_creation_hook</methodname>
+          <methodparam><parameter
+                         role="keyword">func</parameter></methodparam>
+          <methodparam><parameter
+                         role="keyword">data</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">func</parameter>&nbsp;:</term>
+          <listitem><simpara> a function to call when a tab is dropped
+          in an empty area.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">data</parameter>&nbsp;:</term>
+          <listitem><simpara> data to pass to
+<parameter>func</parameter></simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.10 and above.</para>
+      </note>
+                                                                              
+      <para>The <function>gtk.notebook_set_window_creation_hook</function>
+function installs a global function (specified by
+<parameter>func</parameter>) used to create a window when a detached tab
+is dropped in an empty area.</para>
+
+      <para>The signature of the callback function
+<parameter>func</parameter> is:</para>
+
+      <programlisting>
+def func(source, page, x, y, user_data)
+</programlisting>
+
+      <para>where <parameter>source</parameter> is the
+      <link linkend="class-gtknotebook"><classname>gtk.Notebook</classname></link>
+      of the drag operation, <parameter>page</parameter> is the child
+      <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> affected,
+      <parameter>x</parameter> is the X coordinate where the drop happens,
+      <parameter>y</parameter> is the Y coordinate where the drop happens,
+      <parameter>user_data</parameter> is the user data to pass to <parameter>func</parameter>.
+      
+      </para>
+      
+      <para>
+        This function is used by
+        <link linkend="class-gtknotebook"><classname>gtk.Notebook</classname></link>
+        when a detachable tab is dropped in the root window,
+        it's used to create a window containing a notebook where the tab will be attached.
+        This function will also be responsible of moving/resizing the window and adding the
+        necessary properties to the notebook (i.e.: group-id). If the
+        function returns <literal>None</literal>, the drag will be cancelled.
+      </para>
+    </refsect2>
+                                                                              
   </refsect1>
 
   <refsect1>
