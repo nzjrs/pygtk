@@ -915,7 +915,7 @@ _wrap_GtkContainer__proxy_do_forall (GtkContainer *container,
     data->func_data = callback_data;
     PyObject_Repr(self);
     PyObject_Repr(py_func);
-    py_func_data = PyCObject_FromVoidPtr(data, NULL);
+    py_func_data = PyCObject_FromVoidPtr(data, g_free);
     if (!PyObject_CallMethod(self, "do_forall", "ONN", 
 			     include_internals ? Py_True : Py_False, py_func,
 			     py_func_data))
