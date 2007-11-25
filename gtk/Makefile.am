@@ -138,7 +138,7 @@ nodist__gtk_la_SOURCES = gtk.c gdk.c
 if BUILD_GTK
 pygtkexec_LTLIBRARIES += _gtk.la
 defs_DATA += $(GDK_DEFS) $(GDK_TYPES_DEFS) $(GTK_DEFS) $(GTK_TYPES_DEFS) \
-	gdk.defs gtk.defs gdk-types.defs gtk-types.defs
+	gdk.defs gtk.defs gdk-types.defs gtk-types.defs gtk-extrafuncs.defs
 endif
 
 # libglade module
