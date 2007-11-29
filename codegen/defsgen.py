@@ -489,7 +489,7 @@ class DefsWriter:
 
 # ---------- ctypes support classes for gobject library functions ----------
 
-GType = ctypes.c_uint
+GType = ctypes.c_ulong
 
 class GTypeClass(ctypes.Structure):
     _fields_ = [('g_type', GType)]
