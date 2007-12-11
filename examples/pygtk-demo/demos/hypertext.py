@@ -46,8 +46,8 @@ class HypertextDemo(gtk.Window):
 
     # Links can be activated by pressing Enter.
     def key_press_event(self, text_view, event):
-        if (event.keyval == gtk.gdk.Return or
-            event.keyval == gtk.gdk.KP_Enter):
+        if (event.keyval == gtk.keysyms.Return or
+            event.keyval == gtk.keysyms.KP_Enter):
             buffer = text_view.get_buffer()
             iter = buffer.get_iter_at_mark(buffer.get_insert())
             self.follow_if_link(text_view, iter)
