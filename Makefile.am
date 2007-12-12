@@ -22,7 +22,9 @@ EXTRA_DIST = 				\
 	PKG-INFO 			\
 	PKG-INFO.in 			\
 	setup.py 			\
-	THREADS
+	THREADS				\
+	m4/jhflags.m4			\
+	m4/python.m4
 
 INCLUDES = 				\
 	$(PYTHON_INCLUDES) 		\
