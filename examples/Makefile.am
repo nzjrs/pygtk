@@ -51,6 +51,7 @@ EXTRA_DIST = \
 	ide/dialogs.py		\
 	pango/utf8-demo.py	\
 	pango/pangocairo-simple.py \
+	pango/extentdemo.py	\
 	simple/README		\
 	simple/dnd.py		\
 	simple/dndpixmap.py	\
