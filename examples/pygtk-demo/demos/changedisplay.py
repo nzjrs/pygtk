@@ -335,7 +335,7 @@ class ChangeDisplayDemo(gtk.Dialog):
         '''
         model, iter = selection.get_selected()
         if iter:
-            self.current_screen = model.get(iter, SCREEN_COLUMN_SCREEN)
+            self.current_screen = model.get(iter, SCREEN_COLUMN_SCREEN)[0]
         else:
             self.current_screen = None;
 
