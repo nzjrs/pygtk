@@ -122,10 +122,9 @@ snap:
 
 release-tag:
 	@ROOT=`svn info --xml|egrep ^"<url>"|cut -d\> -f2|cut -d\< -f1`; \
-	VERSION=`grep define\ VERSION config.h|cut -d\" -f2`;\
-	SVNVERSION=`echo $$VERSION|sed s/\\\./_/g`;\
-	  echo "* Tagging $$VERSION"; \
-          svn cp -m "Tag $$VERSION" \
+	SVNVERSION=`echo $(VERSION)|sed s/\\\./_/g`;\
+	  echo "* Tagging $(VERSION)"; \
+          svn cp -m "Tag $(VERSION)" \
               $$ROOT \
               svn+ssh://svn.gnome.org/svn/pygtk/tags/PYGTK_$$SVNVERSION
 
