@@ -120,6 +120,15 @@ endif
 snap:
 	$(MAKE) dist distdir=$(PACKAGE)-SNAP-`date +"%Y%m%d"`
 
+release-tag:
+	@ROOT=`svn info --xml|egrep ^"<url>"|cut -d\> -f2|cut -d\< -f1`; \
+	VERSION=`grep define\ VERSION config.h|cut -d\" -f2`;\
+	SVNVERSION=`echo $$VERSION|sed s/\\\./_/g`;\
+	  echo "* Tagging $$VERSION"; \
+          svn cp -m "Tag $$VERSION" \
+              $$ROOT \
+              svn+ssh://svn.gnome.org/svn/pygtk/tags/PYGTK_$$SVNVERSION
+
 doc-dist:
 	mkdir -p pygtk/icons pygtk/cursors
 	cp -r docs/html/*.html pygtk
