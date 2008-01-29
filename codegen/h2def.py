@@ -281,9 +281,9 @@ class DefsWriter:
             for func in filter.functions + filter.methods.values():
                 self._functions[func.c_name] = func
             for obj in filter.objects + filter.boxes + filter.interfaces:
-                self._objects[obj.c_name] = func
+                self._objects[obj.c_name] = obj
             for obj in filter.enums:
-                self._enums[obj.c_name] = func
+                self._enums[obj.c_name] = obj
 
     def write_def(self, deffile):
         buf = open(deffile).read()
