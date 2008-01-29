@@ -30,7 +30,7 @@
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkuimanager--insert-action-group">insert_action_group</link></methodname>
 	<methodparam><parameter role="keyword">action_group</parameter></methodparam>
-	<methodparam><parameter role="keyword">pos</parameter></methodparam>
+	<methodparam><parameter role="keyword">pos</parameter><initializer>-1</initializer></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkuimanager--remove-action-group">remove_action_group</link></methodname>
@@ -541,7 +541,7 @@ items.</para>
       <programlisting><methodsynopsis language="python">
 	  <methodname>insert_action_group</methodname>
 	  <methodparam><parameter role="keyword">action_group</parameter></methodparam>
-	  <methodparam><parameter role="keyword">pos</parameter></methodparam>
+	  <methodparam><parameter role="keyword">pos</parameter><initializer>-1</initializer></methodparam>
 	</methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
@@ -561,6 +561,7 @@ items.</para>
 
       <note>
 	<para>This method is available in PyGTK 2.4 and above.</para>
+	<para><parameter>pos</parameter> has default value since PyGTK 2.12.</para>
       </note>
 
       <para>The <methodname>insert_action_group</methodname>() method
@@ -568,8 +569,9 @@ inserts the <link
 linkend="class-gtkactiongroup"><classname>gtk.ActionGroup</classname></link>
 specified by <parameter>action_group</parameter> into the list of associated
 action groups at the position specified by
-<parameter>pos</parameter>. Actions in earlier groups hide actions with the
-same name in later groups.</para>
+<parameter>pos</parameter>. If <parameter>pos</parameter> is negative, new
+action group is inserted at the end of the list. Actions in earlier groups
+hide actions with the same name in later groups.</para>
 
     </refsect2>
 
