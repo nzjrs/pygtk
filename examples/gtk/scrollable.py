@@ -88,7 +88,7 @@ class Layout(gtk.Container):
     # GtkWidget
 
     def do_realize(self):
-        self.set_flags(self.flags() | gtk.REALIZED)
+        self.set_flags(gtk.REALIZED)
 
         self.window = gdk.Window(
             self.get_parent_window(),
@@ -142,7 +142,7 @@ class Layout(gtk.Container):
         return False
 
     def do_map(self):
-        self.set_flags(self.flags() | gtk.MAPPED)
+        self.set_flags(gtk.MAPPED)
         for child in self._children:
             flags = child.widget.flags()
             if flags & gtk.VISIBLE:

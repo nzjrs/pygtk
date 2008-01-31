@@ -34,7 +34,7 @@ class PyGtkWidget(gtk.Widget):
         # then draw on
 
         # First set an internal flag telling that we're realized
-        self.set_flags(self.flags() | gtk.REALIZED)
+        self.set_flags(gtk.REALIZED)
 
         # Create a new gdk.Window which we can draw on.
         # Also say that we want to receive exposure events by setting
