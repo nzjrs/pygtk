@@ -191,9 +191,12 @@ _wrap_gdk_pixbuf_save(PyGObject *self, PyObject *args,
         option_keys[len] = NULL;
         option_values[len] = NULL;
     }
+
+    pyg_begin_allow_threads;
     gdk_pixbuf_savev(GDK_PIXBUF(self->obj), filename, type,
                      option_keys, option_values, &error);
-        
+    pyg_end_allow_threads;
+
     g_free(option_keys);
     g_free(option_values);
  
