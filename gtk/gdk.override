@@ -922,6 +922,23 @@ _wrap_gdk_display_manager_list_displays(PyGObject *self)
     return py_list;
 }
 %%
+override gdk_screen_new noargs
+static int
+_wrap_gdk_screen_new (PyGObject *self)
+{
+    self->obj = (GObject *)gdk_screen_get_default();
+    if (!self->obj) {
+	PyErr_SetString(PyExc_RuntimeError,
+			"could not get default display");
+	return -1;
+    }
+
+    g_object_ref(self->obj);
+
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
 override gdk_screen_list_visuals noargs
 static PyObject *
 _wrap_gdk_screen_list_visuals(PyGObject *self)
