@@ -19,6 +19,7 @@ EXTRA_DIST = \
 	gobject/editable-interface.py \
 	gobject/properties.py	\
 	gobject/signal.py	\
+	gtk/application.py		\
 	gtk/bin.py		\
 	gtk/customtreemodel.py	\
 	gtk/filechooser.py	\
