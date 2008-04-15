@@ -178,7 +178,7 @@ PKG_CHECK_MODULES(PYCAIRO, [pycairo >= pycairo_required_version],
         have_pycairo=true, have_pycairo=false)
 AC_SUBST(PYCAIRO_CFLAGS)
 AC_SUBST(PYCAIRO_LIBS)
-if test $have_pycairo; then
+if test "x$have_pycairo" = "xtrue"; then
   PYGTK_CODEGEN_DEFINES="-DHAVE_PYCAIRO $PYGTK_CODEGEN_DEFINES";
   AC_DEFINE([HAVE_PYCAIRO], [1], [Define to 1 if pycairo is available])
 
@@ -277,6 +277,16 @@ if test $have_pycairo; then
 else
   AC_MSG_RESULT(no)
   AC_MSG_RESULT(not checking for gtk due to missing pycairo)
+  AM_CONDITIONAL(BUILD_PANGOCAIRO, false)
+  AM_CONDITIONAL(BUILD_GTK, false)
+  AM_CONDITIONAL(HAVE_GTK_2_10, false)
+  AM_CONDITIONAL(HAVE_GTK_2_12, false)
+  AM_CONDITIONAL(BUILD_LIBGLADE, false)
+  AM_CONDITIONAL(BUILD_GTKUNIXPRINT, false)
+  have_pangocairo=false
+  have_gtk=false
+  have_libglade=false
+  have_gtkunixprint=false
 fi
 
 dnl Check for GDK target
@@ -342,12 +352,12 @@ AC_OUTPUT
 echo
 echo "The following modules will be built:"
 echo
-$have_atk               && echo     atk
-$have_pango             && echo     pango
-$have_pangocairo        && echo     pangocairo
-$have_gtk               && echo     gtk with $gtk_version API
-$have_libglade          && echo     gtk.glade
-$have_gtkunixprint      && echo     gtk.unixprint
+$have_atk && echo     atk
+$have_pango && echo     pango
+$have_pangocairo && echo     pangocairo
+$have_gtk && echo     gtk with $gtk_version API
+$have_libglade && echo     gtk.glade
+$have_gtkunixprint && echo     gtk.unixprint
 echo
 
 if test ! $have_atk || ! $have_pango || \
@@ -355,10 +365,10 @@ if test ! $have_atk || ! $have_pango || \
         ! $have_pangocairo || ! $have_gtkunixprint; then
   echo "The following modules will NOT be built:"
   echo
-  $have_atk               || echo     atk
-  $have_pango             || echo     pango
-  $have_pangocairo        || echo     pangocairo
-  $have_gtk               || echo     gtk
-  $have_libglade          || echo     gtk.glade
-  $have_gtkunixprint      || echo     gtk.unixprint
+  $have_atk || echo     atk
+  $have_pango || echo     pango
+  $have_pangocairo || echo     pangocairo
+  $have_gtk || echo     gtk
+  $have_libglade || echo     gtk.glade
+  $have_gtkunixprint || echo     gtk.unixprint
 fi
