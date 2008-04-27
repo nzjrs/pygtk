@@ -69,6 +69,18 @@ class Tests(unittest.TestCase):
         c = gtk.gdk.Color(pixel=0xffffffffL)
         self.assertEqual(c.pixel, 0xffffffffL)
 
+        c = gtk.gdk.Color('red')
+        self.assertEqual(c.red, 65535)
+        self.assertEqual(c.green, 0)
+        self.assertEqual(c.blue, 0)
+
+        c = gtk.gdk.Color('#ff0000')
+        self.assertEqual(c.red, 65535)
+        self.assertEqual(c.green, 0)
+        self.assertEqual(c.blue, 0)
+
+        self.assertRaises(TypeError, lambda: gtk.gdk.Color([]))
+
     def testUIntArg(self):
         child = gtk.DrawingArea()
         table = gtk.Table(2, 2, False)
