@@ -513,6 +513,26 @@ _wrap_gdk_region_get_clipbox(PyGObject *self)
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &rect, TRUE, TRUE);
 }
 %%
+override gdk_region_get_rectangles noargs
+static PyObject *
+_wrap_gdk_region_get_rectangles(PyGObject *self)
+{
+    GdkRectangle    *rect;
+    gint            n_rect, i;
+    PyObject        *py_rects;
+
+    gdk_region_get_rectangles(pyg_boxed_get(self, GdkRegion), &rect, &n_rect);
+
+    py_rects = PyList_New(n_rect);    
+    
+    for (i = 0; i < n_rect; i++)
+	PyList_SetItem(py_rects, i, pyg_boxed_new(GDK_TYPE_RECTANGLE,
+						   &rect[i], TRUE, TRUE));
+
+    g_free(rect);
+    return py_rects;
+}
+%%
 override-attr GdkDevice.axes
 static PyObject *
 _wrap_gdk_device__get_axes(PyGObject *self, void *closure)
