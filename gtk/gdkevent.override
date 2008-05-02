@@ -480,11 +480,14 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
     case GDK_DESTROY: break;
     case GDK_EXPOSE:            /*GdkEventExpose            expose*/
         if (!strcmp(attr, "__members__"))
-            return Py_BuildValue("[sssss]",
+            return Py_BuildValue("[ssssss]",
                                  "type", "window", "send_event",
-                                 "area", "count");
+                                 "area", "region", "count");
         if (!strcmp(attr, "area"))
             return pyg_boxed_new(GDK_TYPE_RECTANGLE, &event->expose.area,
+                                 TRUE, TRUE);
+	if (!strcmp(attr, "region"))
+            return pyg_boxed_new(PYGDK_TYPE_REGION, &event->expose.region,
                                  TRUE, TRUE);
         if (!strcmp(attr, "count"))
             return PyInt_FromLong(event->expose.count);
