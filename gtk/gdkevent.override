@@ -186,6 +186,10 @@ _wrap_gdk_event_tp_setattr(PyObject *self, char *attr, PyObject *value)
 	    INT_CHECK();
 	    event->key.group = PyInt_AsLong(value);
 	    return 0;
+	} else if (!strcmp(attr, "is_modifier")) {
+	    INT_CHECK();
+	    event->key.is_modifier = PyInt_AsLong(value);
+	    return 0;
 	}
         break;
     case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
@@ -568,7 +572,7 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
             return Py_BuildValue("[sssssssss]",
                                  "type", "window", "send_event",
                                  "time", "state", "keyval", "string",
-				 "hardware_keycode", "group");
+				 "hardware_keycode", "group", "is_modifier");
         if (!strcmp(attr, "time"))
             return PyInt_FromLong(event->key.time);
         if (!strcmp(attr, "state"))
@@ -583,6 +587,8 @@ _wrap_gdk_event_tp_getattr(PyObject *self, char *attr)
             return PyInt_FromLong(event->key.hardware_keycode);
         if (!strcmp(attr, "group"))
             return PyInt_FromLong(event->key.group);
+        if (!strcmp(attr, "is_modifier"))
+            return PyInt_FromLong(event->key.is_modifier);
         break;
     case GDK_ENTER_NOTIFY:      /*GdkEventCrossing          crossing*/
     case GDK_LEAVE_NOTIFY:      /*GdkEventCrossing          crossing*/
