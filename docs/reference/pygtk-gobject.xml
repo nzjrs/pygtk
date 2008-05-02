@@ -803,7 +803,22 @@ still to be run will not be invoked.</para>
 	</varlistentry>
       </variablelist>
 
-      <para>The chain() method does something.</para>
+      <para>The chain() method calls the superclass signal handler.
+      Normally, when you override the default signal handler for a widget
+you're subclassing, your handler will get called in place of the handler
+set up by the superclass.  If you want to call the superclass's handler,
+too, you can use the chain() method to chain up.
+      </para>
+      
+      <para>
+	For instance, a gtk.Button draws itself inside its default
+"expose-event" signal handler.  If you subclass gtk.Button and override
+the default handler for the "expose-event" signal in your subclass, then
+the gtk.Button's default "expose-event" signal handler will no longer
+get called when the widget redraws (and so the widget would be blank
+instead of a button).  If you chain up with chain() then the gtk.Button
+'s default handler will get called and the button will get drawn.
+      </para>
 
     </refsect2>
 
