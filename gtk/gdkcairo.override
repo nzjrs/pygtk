@@ -127,16 +127,20 @@ _wrap_gdk_cairo_region(PyObject *self, PyObject *args, PyObject *kwargs)
 
 #if GTK_CHECK_VERSION(2, 9, 3)
 static PyObject *
-_wrap_gdk_cairo_set_source_pixmap(PyObject *self, PyObject *args, PyObject *kwargs)
+_wrap_gdk_cairo_set_source_pixmap(PyObject *self, PyObject *args,
+                                  PyObject *kwargs)
 {
     static char *kwlist[] = { "pixmap", "pixmap_x", "pixmap_y", NULL };
     PyGObject *pixmap;
     double pixmap_x, pixmap_y;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!dd:cairo_set_source_pixmap", kwlist,
-                                     &PyGdkPixmap_Type, &pixmap, &pixmap_x, &pixmap_y))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O!dd:cairo_set_source_pixmap", kwlist,
+                                     &PyGdkDrawable_Type, &pixmap,
+                                     &pixmap_x, &pixmap_y))
         return NULL;
-    gdk_cairo_set_source_pixmap(PycairoContext_GET(self), GDK_PIXMAP(pixmap->obj),
+    gdk_cairo_set_source_pixmap(PycairoContext_GET(self),
+                                GDK_DRAWABLE(pixmap->obj),
                                 pixmap_x, pixmap_y);
     Py_INCREF(Py_None);
     return Py_None;
