@@ -5770,6 +5770,80 @@ _wrap_gtk_about_dialog_get_artists(PyGObject *self)
     return ret;
 }
 %%
+override gtk_show_about_dialog kwargs
+static PyObject *
+_wrap_gtk_show_about_dialog(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+	GtkWindow *parent;
+	PyGObject *py_window = NULL;
+	GtkWidget *dialog;
+	GObjectClass *klass;
+
+	if (!PyArg_ParseTuple (args, "O:Gtk.show_about_dialog", &py_window))
+		return NULL;
+
+	if (py_window == NULL || (PyObject*)py_window == Py_None)
+		parent = NULL;
+	else
+		parent = GTK_WINDOW (py_window->obj);
+
+	dialog = gtk_about_dialog_new ();
+
+	g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+
+	if (kwargs) {
+		Py_ssize_t pos = 0;
+		PyObject *py_prop_name;
+		PyObject *py_prop_value;
+
+		while (PyDict_Next (kwargs, &pos, &py_prop_name, &py_prop_value)) {
+			GParamSpec *pspec;
+			const gchar *property_name;
+			GValue property_gvalue = { 0, };
+
+			property_name = PyString_AsString (py_prop_name);
+
+			klass = G_OBJECT_CLASS (GTK_ABOUT_DIALOG_GET_CLASS(dialog));
+
+			pspec = g_object_class_find_property (klass, property_name);
+			if (!pspec) {
+				PyErr_Format(PyExc_TypeError,
+				             "Gtk.AboutDialog doesn't support property `%s'",
+				             property_name);
+				goto arg_error;
+			}
+
+			g_value_init (&property_gvalue, G_PARAM_SPEC_VALUE_TYPE(pspec));
+			if (pyg_param_gvalue_from_pyobject(&property_gvalue, py_prop_value, pspec) < 0) {
+				PyErr_Format(PyExc_TypeError,
+				             "could not convert value for property `%s'",
+				             property_name);
+				g_value_unset (&property_gvalue);
+				goto arg_error;
+			}
+
+			g_object_set_property (G_OBJECT (dialog), property_name, &property_gvalue);
+			g_value_unset (&property_gvalue);
+		}
+	}
+
+	if (parent) {
+		gtk_window_set_transient_for (GTK_WINDOW (dialog), parent);
+		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
+	}
+
+	gtk_window_present (GTK_WINDOW (dialog));
+
+	Py_INCREF(Py_None);
+	return Py_None;
+
+arg_error:
+	if (dialog)
+		gtk_widget_destroy (dialog);
+
+	return NULL;
+}
+%%
 override gtk_selection_data_set_uris kwargs
 static PyObject *
 _wrap_gtk_selection_data_set_uris(PyGBoxed *self, PyObject *args,
