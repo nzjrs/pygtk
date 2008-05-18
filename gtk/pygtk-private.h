@@ -61,6 +61,15 @@ int       _pygtk_tree_model_set_row(GtkTreeModel *model, GtkTreeIter *iter,
 				    PyObject *items);
 int       _pygtk_tree_model_remove_row(GtkTreeModel *model, GtkTreeIter *iter);
 
+/* A boxed type for GdkRegion until one gets into gtk+ itself. */
+#ifdef GDK_TYPE_REGION
+#define PYGDK_TYPE_REGION  GDK_TYPE_REGION 
+#else
+GType pygdk_region_get_type (void) G_GNUC_CONST;
+
+#define PYGDK_TYPE_REGION (pygdk_region_get_type ())
+#endif /* GDK_TYPE_REGION */
+
 void pygtk_boxed_unref_shared(PyObject *boxed);
 
 #endif
