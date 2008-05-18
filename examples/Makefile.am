@@ -83,6 +83,7 @@ demo_PYTHON = \
 	pygtk-demo/demos/print_editor.py	\
 	pygtk-demo/demos/sizegroup.py		\
 	pygtk-demo/demos/stock_browser.py	\
+	pygtk-demo/demos/textscroll.py		\
 	pygtk-demo/demos/textview.py		\
 	pygtk-demo/demos/tree_store.py		\
 	pygtk-demo/demos/treemodel.py		\
