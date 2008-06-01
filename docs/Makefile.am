@@ -584,8 +584,6 @@ CSS_FILES = $(PYGOBJECT_PYGDOCS)/style.css
 
 TARGET_DIR = $(datadir)/gtk-doc/html/pygtk
 CSSdir = $(TARGET_DIR)
-CSS_DATA = $(CSS_FILES)
-
 
 EXTRA_DIST = 				\
 	icons cursors			\
@@ -628,6 +626,8 @@ if ENABLE_DOCS
 
 BUILT_SOURCES = reference/builddate.xml $(HTML_FILES)
 DISTCLEANFILES = reference/builddate.xml $(HTML_FILES)
+
+CSS_DATA = $(CSS_FILES)
 
 reference/builddate.xml:
 	@$(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
