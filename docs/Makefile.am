@@ -184,6 +184,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkradiotoolbutton.xml		\
 	reference/pygtk-gtkrange.xml			\
 	reference/pygtk-gtkrcstyle.xml			\
+	reference/pygtk-gtkrecentaction.xml		\
 	reference/pygtk-gtkrecentchooserdialog.xml	\
 	reference/pygtk-gtkrecentchoosermenu.xml	\
 	reference/pygtk-gtkrecentchooserwidget.xml	\
@@ -460,6 +461,7 @@ HTML_FILES =						\
 	html/class-gtkradiotoolbutton.html		\
 	html/class-gtkrange.html			\
 	html/class-gtkrcstyle.html			\
+	html/class-gtkrecentaction.html			\
 	html/class-gtkrecentchooserdialog.html		\
 	html/class-gtkrecentchooser.html		\
 	html/class-gtkrecentchoosermenu.html		\
