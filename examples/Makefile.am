@@ -85,6 +85,7 @@ demo_PYTHON = \
 	pygtk-demo/demos/stock_browser.py	\
 	pygtk-demo/demos/textscroll.py		\
 	pygtk-demo/demos/textview.py		\
+	pygtk-demo/demos/tooltip.py		\
 	pygtk-demo/demos/tree_store.py		\
 	pygtk-demo/demos/treemodel.py		\
 	pygtk-demo/demos/statusicon.py		\
