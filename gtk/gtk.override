@@ -8547,3 +8547,19 @@ _wrap_gtk_bin__set_child(PyGObject *self, PyGObject *value, void *closure)
 
     return 0;
 }
+%%
+define GtkFileChooserDialog.get_action noargs
+/* This is a Workaround to solve a problem in the __mro__ of FileChooserDialog,
+ * without this method a gtk.Widget method  with the same name will be called
+ * which will always return None, see bug 534042.
+ */
+static PyObject *
+_wrap_gtk_file_chooser_dialog_get_action(PyGObject *self)
+{
+   gint ret;
+
+   ret = gtk_file_chooser_get_action(GTK_FILE_CHOOSER(self->obj));
+
+   return pyg_enum_from_gtype(GTK_TYPE_FILE_CHOOSER_ACTION, ret);
+
+}

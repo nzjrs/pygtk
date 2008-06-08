@@ -15,7 +15,8 @@ tests =  \
 	test_radiobutton.py \
 	test_style.py \
 	test_textview.py \
-	test_treeview.py
+	test_treeview.py \
+	test_filechooserdialog.py
 
 GTK_PY_FILES = __init__.py _lazyutils.py compat.py deprecation.py keysyms.py
 
