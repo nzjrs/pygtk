@@ -1601,12 +1601,10 @@ _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
         pygobject_construct(self,
                             "label", stock, "use-stock", TRUE,
                             "use-underline", TRUE, NULL);
-    else if (text)
+    else
         pygobject_construct(self,
                             "label", text, "use-underline",
                             PyObject_IsTrue(py_use_underline), NULL);
-    else
-        pygobject_construct(self, NULL);
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkButton object");
         return -1;

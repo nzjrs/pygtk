@@ -4,6 +4,7 @@ tests =  \
 	test_actiongroup.py \
 	test_api.py \
 	test_bin.py \
+	test_button.py \
 	test_container.py
 	test_conversion.py \
 	test_dialog.py \
