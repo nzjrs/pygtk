@@ -8283,15 +8283,23 @@ _wrap_gtk_action_set_menu_item_type(PyObject *cls,
 				     &py_menu_item_type))
 	return NULL;
 
-     if ((gtype = pyg_type_from_object(cls)) == 0)
-         return NULL;
-     if ((menu_item_type = pyg_type_from_object(py_menu_item_type)) == 0)
-         return NULL;
-     klass = (GtkActionClass *) g_type_class_ref(gtype);
-     klass->menu_item_type = menu_item_type;
-     g_type_class_unref(klass);
-     Py_INCREF(Py_None);
-     return Py_None;
+    if ((gtype = pyg_type_from_object(cls)) == 0)
+        return NULL;
+
+    if (!PyType_Check(py_menu_item_type)
+        || !PyType_IsSubtype((PyTypeObject *) py_menu_item_type, &PyGtkMenuItem_Type)) {
+        PyErr_SetString(PyExc_TypeError, "argument must be a subtype of gtk.MenuItem");
+        return NULL;
+    }
+
+    if ((menu_item_type = pyg_type_from_object(py_menu_item_type)) == 0)
+        return NULL;
+
+    klass = (GtkActionClass *) g_type_class_ref(gtype);
+    klass->menu_item_type = menu_item_type;
+    g_type_class_unref(klass);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 %%
@@ -8311,15 +8319,23 @@ _wrap_gtk_action_set_tool_item_type(PyObject *cls,
 				     &py_tool_item_type))
 	return NULL;
 
-     if ((gtype = pyg_type_from_object(cls)) == 0)
-         return NULL;
-     if ((tool_item_type = pyg_type_from_object(py_tool_item_type)) == 0)
-         return NULL;
-     klass = (GtkActionClass *) g_type_class_ref(gtype);
-     klass->toolbar_item_type = tool_item_type;
-     g_type_class_unref(klass);
-     Py_INCREF(Py_None);
-     return Py_None;
+    if ((gtype = pyg_type_from_object(cls)) == 0)
+        return NULL;
+
+    if (!PyType_Check(py_tool_item_type)
+        || !PyType_IsSubtype((PyTypeObject *) py_tool_item_type, &PyGtkToolItem_Type)) {
+        PyErr_SetString(PyExc_TypeError, "argument must be a subtype of gtk.ToolItem");
+        return NULL;
+    }
+
+    if ((tool_item_type = pyg_type_from_object(py_tool_item_type)) == 0)
+        return NULL;
+
+    klass = (GtkActionClass *) g_type_class_ref(gtype);
+    klass->toolbar_item_type = tool_item_type;
+    g_type_class_unref(klass);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 %%
 override gtk_accel_map_foreach kwargs

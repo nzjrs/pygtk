@@ -145,6 +145,28 @@ class ActionTest(unittest.TestCase):
         myaction = MyAction()
         myaction.activate()
         self.assertEqual(myaction._activated, True)
+
+    def testSetItemClasses(self):
+
+        class MyAction(gtk.Action):
+            def __init__(self):
+                gtk.Action.__init__(self, 'name', 'label', None, None)
+
+        def set_menu_item_type(type):
+            MyAction.set_menu_item_type(type)
+
+        def set_tool_item_type(type):
+            MyAction.set_tool_item_type(type)
+
+        self.assertRaises(TypeError, lambda: set_menu_item_type(None))
+        self.assertRaises(TypeError, lambda: set_menu_item_type(gtk.Button))
+        set_menu_item_type(gtk.ImageMenuItem)
+        self.assert_(isinstance(MyAction().create_menu_item(), gtk.ImageMenuItem))
+
+        self.assertRaises(TypeError, lambda: set_tool_item_type(None))
+        self.assertRaises(TypeError, lambda: set_tool_item_type(gtk.Button))
+        set_tool_item_type(gtk.SeparatorToolItem)
+        self.assert_(isinstance(MyAction().create_tool_item(), gtk.SeparatorToolItem))
         
 
 if __name__ == '__main__':
