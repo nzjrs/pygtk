@@ -163,28 +163,15 @@ class TooltipDemo(gtk.Window):
         return True
     
     def query_tooltip_tree_view_cb(self, widget, x, y, keyboard_tip, tooltip):
-        model = widget.get_model()
-        
-        if keyboard_tip:
-            # Keyboard mode
-            ret = widget.get_cursor()
-    
-            if not ret[0]:
-                return False
+        if not widget.get_tooltip_context(x, y, keyboard_tip):
+            return False
         else:
-            coords = widget.convert_widget_to_bin_window_coords(x, y)
-    
-            # Mouse mode
-            tp =  widget.get_path_at_pos(coords[0], coords[1])
-            if not tp:
-                return False
-    
-        iter = model.get_iter(tp[0])
-        value = model.get(iter, 0)
-    
-        tooltip.set_markup("<b>Path %s:</b> %s" %(tp[0][0], value[0]))
-    
-        return True
+            model, path, iter = widget.get_tooltip_context(x, y, keyboard_tip)
+
+            value = model.get(iter, 0)
+            tooltip.set_markup("<b>Path %s:</b> %s" %(path[0], value[0]))
+            widget.set_tooltip_row(tooltip, path)
+            return True
     
     def query_tooltip_drawing_area_cb(self, widget, x, y, keyboard_tip,
                                       tooltip, data=None):
