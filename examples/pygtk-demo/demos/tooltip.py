@@ -96,6 +96,24 @@ class TooltipDemo(gtk.Window):
         button.props.tooltip_text = "Header"
 
         box.pack_start(tree_view, False, False, 2)
+
+        # Add an IconView for some more testing
+        iconview = gtk.IconView()
+        iconview.props.has_tooltip = True
+        iconview.connect("query-tooltip", self.query_tooltip_icon_view_cb)
+        
+        model = gtk.ListStore(str, gtk.gdk.Pixbuf)
+        iconview.set_model(model)
+        iconview.set_text_column(0)
+        iconview.set_pixbuf_column(1)
+        
+        pixbuf1 = iconview.render_icon(gtk.STOCK_APPLY,gtk.ICON_SIZE_BUTTON)
+        model.append(['Apply', pixbuf1])
+        
+        pixbuf2 = iconview.render_icon(gtk.STOCK_CANCEL,gtk.ICON_SIZE_BUTTON)
+        model.append(['Cancel', pixbuf2])
+        
+        box.pack_start(iconview, False, False, 2)
         
         # And a text view for Matthias
         buffer = gtk.TextBuffer()
@@ -172,7 +190,18 @@ class TooltipDemo(gtk.Window):
             tooltip.set_markup("<b>Path %s:</b> %s" %(path[0], value[0]))
             widget.set_tooltip_row(tooltip, path)
             return True
+
+    def query_tooltip_icon_view_cb(self, widget, x, y, keyboard_tip, tooltip):
+        if not widget.get_tooltip_context(x, y, keyboard_tip):
+            return False
+        else:
+            model, path, iter = widget.get_tooltip_context(x, y, keyboard_tip)
     
+            value = model.get(iter, 0)
+            tooltip.set_markup("<b>Path %s:</b> %s" %(path[0], value[0]))
+            widget.set_tooltip_item(tooltip, path)
+            return True
+
     def query_tooltip_drawing_area_cb(self, widget, x, y, keyboard_tip,
                                       tooltip, data=None):
         if keyboard_tip:
