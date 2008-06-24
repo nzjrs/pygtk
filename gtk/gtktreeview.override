@@ -987,7 +987,7 @@ _wrap_gtk_tree_model_tp_length(PyGObject *self)
 static PyObject *
 _wrap_gtk_tree_model_tp_getitem(PyGObject *self, PyObject *item)
 {
-    GtkTreePath *path;
+    GtkTreePath *path = NULL;
     GtkTreeIter iter;
     PyObject *ret = NULL;
 
@@ -1000,17 +1000,24 @@ _wrap_gtk_tree_model_tp_getitem(PyGObject *self, PyObject *item)
 	int value = PyInt_AsLong(item);
 
 	if (value < 0) {
-	    /* Since value is always negative at this point,
+            PyObject *inverse;
+
+            /* Since value is always negative at this point,
 	     * we need to do an invertion.
 	     */
-	    value = _wrap_gtk_tree_model_tp_length(self) - -value;
-	    
-	    Py_DECREF(item);
-	    item = PyInt_FromLong(value);
+            value = _wrap_gtk_tree_model_tp_length(self) - -value;
+            inverse = PyInt_FromLong(value);
+            if (!inverse)
+                return NULL;
+
+            path = pygtk_tree_path_from_pyobject(inverse);
+            Py_DECREF(inverse);
 	}
     }
-    
-    path = pygtk_tree_path_from_pyobject(item);
+
+    if (!path)
+        path = pygtk_tree_path_from_pyobject(item);
+
     if (!path) {
         PyErr_SetString(PyExc_TypeError,
                         "could not parse subscript as a tree path");
@@ -1034,23 +1041,29 @@ _wrap_gtk_tree_model_tp_setitem(PyGObject *self, PyObject *item,
     if (pyg_boxed_check(item, GTK_TYPE_TREE_ITER)) {
         iter = pyg_boxed_get(item, GtkTreeIter);
     } else {
-        GtkTreePath *path;
+        GtkTreePath *path = NULL;
 
 	if (PyInt_Check(item)) {
 	    int value = PyInt_AsLong(item);
 
 	    if (value < 0) {
-		/* Since value is always negative at this point,
+                PyObject *inverse;
+
+                /* Since value is always negative at this point,
 		 * we need to do an invertion.
 		 */
-		value = _wrap_gtk_tree_model_tp_length(self) - -value;
-	    
-		Py_DECREF(item);
-		item = PyInt_FromLong(value);
+                value = _wrap_gtk_tree_model_tp_length(self) - -value;
+                inverse = PyInt_FromLong(value);
+                if (!inverse)
+                    return -1;
+
+                path = pygtk_tree_path_from_pyobject(inverse);
+                Py_DECREF(inverse);
 	    }
 	}
 
-	path = pygtk_tree_path_from_pyobject(item);
+        if (!path)
+            path = pygtk_tree_path_from_pyobject(item);
 
         if (!path) {
             PyErr_SetString(PyExc_TypeError,

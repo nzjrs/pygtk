@@ -32,5 +32,23 @@ class ListStoreTest(unittest.TestCase):
         store.set_default_sort_func(None)
         self.failIf(store.has_default_sort_func())
 
+    # Two tests for bug 537459.  Since it is a memory corruption, we
+    # use a large loop count hoping to trigger a segfault.
+
+    def testNegativeIndexGet(self):
+        store = gtk.ListStore(int)
+        for i in range(200):
+            store.append((i,))
+            self.assertEqual(store[-1][0], i)
+
+    def testNegativeIndexSet(self):
+        store = gtk.ListStore(int)
+        for i in range(200):
+            store.append((i,))
+            del store[-1]
+            self.assert_(len(store) == 0)
+
+
+
 if __name__ == '__main__':
     unittest.main()
