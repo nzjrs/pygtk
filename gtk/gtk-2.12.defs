@@ -241,6 +241,10 @@
   (return-type "guint")
   (parameters
     '("const-gchar*" "buffer")
+    ; Note: this is preserved for backward compatibility, but dropped
+    ; from documentation as confusing.  Length must be in _bytes in
+    ; UTF-8 representation_.  See also bug #475263 for similar
+    ; confusing design mistake in gtk.glade.xml_new_from_buffer().
     '("gsize" "length" (default "-1"))
     '("GError**" "error")
   )
