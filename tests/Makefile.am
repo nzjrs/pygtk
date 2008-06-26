@@ -13,6 +13,7 @@ tests =  \
 	test_glade.py \
 	test_liststore.py
 	test_pango.py \
+	test_plug.py \
 	test_radiobutton.py \
 	test_style.py \
 	test_textview.py \
