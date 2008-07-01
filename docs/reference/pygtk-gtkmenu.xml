@@ -674,12 +674,17 @@ associating popup menus with a widget and a submenu with a menuitem.</para>
       <para>The signature of <parameter>detach</parameter> is:</para>
 
       <programlisting>
-def detach_cb(widget, menu):
+def detach_cb(menu, widget):
 </programlisting>
 
-      <para>where <parameter>widget</parameter> is the
-<parameter>attach_widget</parameter> and <parameter>menu</parameter> is the
-menu being detached.</para>
+      <para>where <parameter>menu</parameter> is the
+menu being detached and <parameter>widget</parameter> is the
+<parameter>attach_widget</parameter>.</para>
+
+      <note>
+	<para>For historical reasons, arguments for <parameter>detach</parameter>
+	  callback are swapped compared to GTK+ C API.</para>
+      </note>
 
     </refsect2>
 
