@@ -247,6 +247,10 @@ def clean_func(buf):
     buf = string.replace(buf, 'G_CONST_RETURN ', 'const-')
     buf = string.replace(buf, 'const ', 'const-')
 
+    #strip GSEAL macros from the middle of function declarations:
+    pat = re.compile(r"""GSEAL""", re.VERBOSE)
+    buf = pat.sub('', buf)
+
     return buf
 
 proto_pat=re.compile(r"""
