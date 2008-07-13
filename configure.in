@@ -169,6 +169,18 @@ if test -n "$export_dynamic"; then
   PANGO_LIBS=`echo $PANGO_LIBS | sed -e "s/$export_dynamic//"`
 fi
 
+dnl codegen from PyGObject
+AC_SUBST([CODEGENDIR])
+
+AC_MSG_CHECKING([for codegen])
+CODEGENDIR=`$PKG_CONFIG --variable codegendir pygobject-2.0`
+
+if test -z $CODEGENDIR; then
+  AC_MSG_ERROR([unable to find PyGObject codegen])
+else
+  AC_MSG_RESULT($CODEGENDIR)
+fi
+
 dnl pycairo
 PYGTK_CODEGEN_DEFINES=""
 AC_SUBST([PYGTK_CODEGEN_DEFINES])
@@ -338,13 +350,11 @@ fi
 AC_CONFIG_FILES(
   Makefile
   pygtk-2.0.pc
-  codegen/Makefile
   gtk/Makefile
   docs/Makefile
   docs/reference/entities.docbook
   examples/Makefile
   tests/Makefile
-  codegen/pygtk-codegen-2.0
   pygtk.spec
   PKG-INFO)
 AC_OUTPUT

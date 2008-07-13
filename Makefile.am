@@ -4,7 +4,7 @@ if BUILD_GTK
   GTK_SUBDIR = gtk
 endif
 
-SUBDIRS = codegen . $(GTK_SUBDIR) examples tests docs
+SUBDIRS = . $(GTK_SUBDIR) examples tests docs
 
 PLATFORM_VERSION = 2.0
 
@@ -107,7 +107,7 @@ endif
 # code generator
 .defs.c:
 	(cd $(srcdir)\
-	 && $(PYTHON) codegen/codegen.py \
+	 && $(PYTHON) $(CODEGENDIR)/codegen.py \
 	    --py_ssize_t-clean \
 	    --register pango-types.defs \
 	    --register atk-types.defs \

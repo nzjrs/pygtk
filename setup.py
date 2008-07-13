@@ -4,7 +4,6 @@
 #
 # TODO:
 # pygtk.spec(.in)
-# install *.pyc for codegen
 #
 """Python Bindings for the GTK Widget Set.
 
@@ -74,7 +73,6 @@ else:
     GLOBAL_MACROS.append(('VERSION', '"%s"' % VERSION))
 
 DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
-CODEGEN_DIR = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'codegen')
 INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
 HTML_DIR = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
 
@@ -109,9 +107,6 @@ class PyGtkInstallData(InstallData):
         InstallData.run(self)
 
     def install_templates(self):
-        file = self.install_template('codegen/pygtk-codegen-2.0.in',
-                                     os.path.join(self.install_dir, 'bin'))
-        os.chmod(file, 0755)
         self.install_template('pygtk-2.0.pc.in',
                               os.path.join(self.install_dir,
                                            'lib','pkgconfig'))
@@ -216,7 +211,7 @@ libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
 data_files = []
 ext_modules = []
 py_modules = []
-packages = ['codegen']
+packages = []
 
 if not have_pkgconfig():
     print "Error, could not find pkg-config"

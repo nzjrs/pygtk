@@ -61,7 +61,7 @@ GTK_DEFS += gtk-2.12.defs
 GTK_TYPES_DEFS += gtk-2.12-types.defs
 endif
 
-CREATEDEFS = $(PYTHON) $(top_srcdir)/codegen/createdefs.py
+CREATEDEFS = $(PYTHON) $(CODEGENDIR)/createdefs.py
 
 GDK_OVERRIDES = \
 	gdk.override 		\
@@ -178,7 +178,7 @@ endif
 
 
 .defs.c: 
-	($(PYTHON) $(top_srcdir)/codegen/codegen.py \
+	($(PYTHON) $(CODEGENDIR)/codegen.py \
 	   $(PYGTK_CODEGEN_DEFINES) \
 	    -I $(srcdir) \
 	    --py_ssize_t-clean \
