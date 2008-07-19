@@ -588,7 +588,8 @@ TARGET_DIR = $(datadir)/gtk-doc/html/pygtk
 CSSdir = $(TARGET_DIR)
 
 EXTRA_DIST = 				\
-	icons cursors			\
+	icons/*.png			\
+	cursors/*.png			\
 	$(HTML_FILES)			\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
