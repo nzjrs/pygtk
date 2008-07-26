@@ -48,6 +48,7 @@ GDK_TYPES_DEFS = gdk-base-types.defs
 
 GTK_2_10_DEFS = gdk-2.10.defs gtk-2.10.defs gtk-2.10-types.defs
 GTK_2_12_DEFS = gdk-2.12.defs gtk-2.12.defs gtk-2.12-types.defs
+GTK_2_14_DEFS = gdk-2.14.defs gtk-2.14.defs gtk-2.14-types.defs
 
 if HAVE_GTK_2_10
 GDK_DEFS += gdk-2.10.defs 
@@ -59,6 +60,13 @@ if HAVE_GTK_2_12
 GDK_DEFS += gdk-2.12.defs 
 GTK_DEFS += gtk-2.12.defs 
 GTK_TYPES_DEFS += gtk-2.12-types.defs
+endif
+
+
+if HAVE_GTK_2_14
+GDK_DEFS += gdk-2.14.defs 
+GTK_DEFS += gtk-2.14.defs 
+GTK_TYPES_DEFS += gtk-2.14-types.defs
 endif
 
 CREATEDEFS = $(PYTHON) $(CODEGENDIR)/createdefs.py
@@ -104,6 +112,8 @@ EXTRA_DIST += 			\
 	$(GTK_DEFS) 		\
 	$(GTK_TYPES_DEFS)	\
 	$(GTK_2_10_DEFS)	\
+	$(GTK_2_12_DEFS)	\
+	$(GTK_2_14_DEFS)	\
 	$(GTK_OVERRIDES)
 
 
