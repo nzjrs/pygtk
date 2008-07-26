@@ -29,6 +29,7 @@
     </methodsynopsis>
     <methodsynopsis language="python">
         <methodname><link linkend="method-gtkbuilder--connect-signals">connect_signals</link></methodname>
+        <methodparam><parameter role="keyword">object</parameter></methodparam>
         <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
     </methodsynopsis>
     <!-- NOT YET IMPLEMENTED <methodsynopsis language="python">
@@ -395,7 +396,19 @@
                 and tries to match them with the signal handler names given in the interface description.
                 The callbacks referenced by each matched key or attribute are connected to their matching signals.
             </para>
-        </refsect2>
+
+	    <para>
+	        For each of handlers that cannot be found, a <classname>RuntimeWarning</classname>
+	        is issued.  Also, if there is at least one such missing handler,
+		<methodname>connect_signals</methodname> will return a list of their names,
+		else return value is None.
+	    </para>
+
+	    <note>
+	        <para><classname>RuntimeWarning</classname> and return value for missing
+		  handlers was added in PyGTK 2.14.</para>
+	    </note>
+	</refsect2>
 
         <refsect2 id="method-gtkbuilder--get-object">
             <title>gtk.Builder.get_object</title>
