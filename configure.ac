@@ -202,7 +202,7 @@ if test "x$have_pycairo" = "xtrue"; then
                      [pycairo micro version])
 
   dnl pangocairo
-  PKG_CHECK_MODULES(PANGOCAIRO, 
+  PKG_CHECK_MODULES(PANGOCAIRO,
           [pangocairo >= pango_required_version,
            pycairo >= pycairo_required_version],
 	  have_pangocairo=true, have_pangocairo=false)
@@ -213,7 +213,7 @@ if test "x$have_pycairo" = "xtrue"; then
   AC_SUBST(PANGOCAIRO_CFLAGS)
   AC_SUBST(PANGOCAIRO_LIBS)
   AM_CONDITIONAL(BUILD_PANGOCAIRO, $have_pangocairo)
-  
+
   if test -n "$export_dynamic"; then
     PANGOCAIRO_LIBS=`echo $PANGOCAIRO_LIBS | sed -e "s/$export_dynamic//"`
   fi
@@ -237,48 +237,49 @@ if test "x$have_pycairo" = "xtrue"; then
   PKG_CHECK_MODULES(GTK210, gtk+-2.0 >= 2.10.0,
 	  HAVE_GTK_210="yes", HAVE_GTK_210="no")
   if test "x$HAVE_GTK_210" = "xyes"; then
-     gtk_version="2.10"	
+     gtk_version="2.10"
      have_gtk_210=true
   else
      AC_MSG_RESULT(no)
      gtk_version="2.8"
      have_gtk_210=false
   fi
-	
+
   AM_CONDITIONAL(HAVE_GTK_2_10, $have_gtk_210)
   AC_SUBST(HAVE_GTK_2_10)
   AC_DEFINE([HAVE_GTK_2_10], [$have_gtk_210], [If Gtk 2.10 was found])
-  
+
   dnl check for gtk 2.12
   PKG_CHECK_MODULES(GTK212, gtk+-2.0 >= 2.11.6,
 	  HAVE_GTK_212="yes", HAVE_GTK_212="no")
-  
+
   if test "x$HAVE_GTK_212" = "xyes"; then
-     gtk_version="2.12"	
+     gtk_version="2.12"
      have_gtk_212=true
      PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DHAVE_GTK_2_12"
   else
      AC_MSG_RESULT(no)
      have_gtk_212=false
   fi
-	
+
   AM_CONDITIONAL(HAVE_GTK_2_12, $have_gtk_212)
   AC_SUBST(HAVE_GTK_2_12)
   AC_DEFINE([HAVE_GTK_2_12], [$have_gtk_212], [If Gtk 2.12 was found])
 
   dnl check for gtk 2.14
-  PKG_CHECK_MODULES(GTK214, gtk+-2.0 >= 2.13.4,
+  PKG_CHECK_MODULES(GTK214, [gtk+-2.0 >= 2.13.4,
+                             pygobject-2.0 >= 2.15.3],
 	  HAVE_GTK_214="yes", HAVE_GTK_214="no")
-  
+
   if test "x$HAVE_GTK_214" = "xyes"; then
-     gtk_version="2.14"	
+     gtk_version="2.14"
      have_gtk_214=true
      PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DHAVE_GTK_2_14"
   else
      AC_MSG_RESULT(no)
      have_gtk_214=false
   fi
-	
+
   AM_CONDITIONAL(HAVE_GTK_2_14, $have_gtk_214)
   AC_SUBST(HAVE_GTK_2_14)
   AC_DEFINE([HAVE_GTK_2_14], [$have_gtk_214], [If Gtk 2.14 was found])
