@@ -109,6 +109,14 @@ objects since these colors will be allocated when an attempt is made to use
 the <link linkend="class-gtkstyle"><classname>gtk.Style</classname></link>
 object.</para>
 
+    <para>
+      Starting with PyGTK 2.14 <classname>gtk.gdk.Color</classname> objects are properly
+      comparable.  By Python rules, colors (being mutable) are now unhashable.  If you
+      need to use them as dictionary keys, use string representation instead.  You can
+      convert string representation to <classname>gtk.gdk.Color</classname> objects using
+      the constructor.
+    </para>
+
   </refsect1>
 
   <refsect1 id="constructor-gdkcolor">
@@ -128,6 +136,11 @@ object.</para>
 	<methodparam><parameter
 		       role="keyword">pixel</parameter>
 	  <initializer>0</initializer></methodparam>
+    </constructorsynopsis></programlisting>
+    <programlisting><constructorsynopsis language="python">
+	<methodname>gtk.gdk.Color</methodname>
+	<methodparam><parameter
+		       role="keyword">spec</parameter></methodparam>
       </constructorsynopsis></programlisting>
     <variablelist>
       <varlistentry>
@@ -151,12 +164,20 @@ object.</para>
 colormap</simpara></listitem>
       </varlistentry>
       <varlistentry>
+	<term><parameter role="keyword">spec</parameter>&nbsp;:</term>
+	<listitem><simpara>String containing color specification</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
 	<listitem><simpara>a new <link
 linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
 object</simpara></listitem>
       </varlistentry>
     </variablelist>
+
+    <note>
+      <para>Second form of the constructor is available in PyGTK 2.14 and above.</para>
+    </note>
 
     <para>Creates a new <link
 linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link> object
@@ -165,6 +186,9 @@ with the color component values specified by <parameter>red</parameter>,
 0) and using the pixel value specified by <parameter>pixel</parameter>. The
 value of <parameter>pixel</parameter> will be overwritten when the color is
 allocated.</para>
+
+    <para>Second form of the constructor is analogous to
+      <link linkend="function-gdk--color-parse"><function>gtk.gdk.color_parse</function></link>.</para>
 
   </refsect1>
   

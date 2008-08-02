@@ -101,6 +101,18 @@ holds the position and size of a rectangle. The position is specified by the
 "x" and "y" attributes and the size, by the "width" and "height"
 attributes.</para>
 
+    <para>
+      Starting with PyGTK 2.14 <classname>gtk.gdk.Rectangle</classname> objects are
+      properly comparable.  By Python rules, rectangles (being mutable) are now
+      unhashable.  If you need to use them as dictionary keys, convert rectangle objects
+      to tuples first.  You can convert such tuples back
+      to <classname>gtk.gdk.Rectangle</classname> using the following code:
+    </para>
+
+    <programlisting>
+  rectangle = gtk.gdk.Rectangle(*tuple)
+    </programlisting>
+
   </refsect1>
 
   <refsect1 id="constructor-gdkrectangle">

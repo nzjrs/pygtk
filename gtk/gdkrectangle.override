@@ -214,3 +214,36 @@ _wrap_gdk_rectangle_union(PyGObject *self, PyObject *args,
                             
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &dest, TRUE, TRUE);
 }
+%%
+override-slot GdkRectangle.tp_richcompare
+static PyObject *
+_wrap_gdk_rectangle_tp_richcompare(PyObject *self, PyObject *other, int op)
+{
+    PyObject *result;
+
+    if (PyObject_TypeCheck(self, &PyGdkRectangle_Type)
+        && PyObject_TypeCheck(other, &PyGdkRectangle_Type)) {
+        GdkRectangle *rect1 = pyg_boxed_get(self, GdkRectangle);
+        GdkRectangle *rect2 = pyg_boxed_get(other, GdkRectangle);
+
+        switch (op) {
+        case Py_EQ:
+            result = (rect1->x == rect2->x && rect1->y == rect2->y
+                      && rect1->width == rect2->width && rect1->height == rect2->height
+                      ? Py_True : Py_False);
+            break;
+        case Py_NE:
+            result = (rect1->x != rect2->x || rect1->y != rect2->y
+                      || rect1->width != rect2->width || rect1->height != rect2->height
+                      ? Py_True : Py_False);
+            break;
+        default:
+            result = Py_NotImplemented;
+        }
+    }
+    else
+        result = Py_NotImplemented;
+
+    Py_INCREF(result);
+    return result;
+}

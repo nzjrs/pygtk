@@ -125,6 +125,12 @@ linkend="function-gdk--region-rectangle">gtk.gdk.region_rectangle</link></method
     linkend="method-gdkgc--set-clip-region"><methodname>gtk.gdk.GC.set_clip_region</methodname>()</link>
     method).</para>
 
+    <para>
+      Starting with PyGTK 2.14 <classname>gtk.gdk.Region</classname> objects are
+      properly comparable.  By Python rules, regions (being mutable) are now
+      unhashable.
+    </para>
+
   </refsect1>
 
   <refsect1 id="constructor-gdkregion">
@@ -227,6 +233,11 @@ object</simpara></listitem>
       <para>The <methodname>equal</methodname>() method returns True if the
       region specified by <parameter>other</parameter> is equal to this
       region.</para>
+
+      <note>
+        <para>Since PyGTK 2.14 Python comparison operator (<literal>==</literal>) can be
+	  used for the same result.</para>
+      </note>
 
     </refsect2>
 

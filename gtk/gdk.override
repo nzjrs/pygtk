@@ -534,6 +534,37 @@ _wrap_gdk_region_get_rectangles(PyGObject *self)
     return py_rects;
 }
 %%
+override-slot GdkRegion.tp_richcompare
+static PyObject *
+_wrap_pygdk_region_tp_richcompare(PyObject *self, PyObject *other, int op)
+{
+    PyObject *result;
+
+    if (PyObject_TypeCheck(self, &PyGdkRegion_Type)
+        && PyObject_TypeCheck(other, &PyGdkRegion_Type)) {
+        GdkRegion *region1 = pyg_boxed_get(self, GdkRegion);
+        GdkRegion *region2 = pyg_boxed_get(other, GdkRegion);
+
+        switch (op) {
+        case Py_EQ:
+            result = (gdk_region_equal(region1, region2)
+                      ? Py_True : Py_False);
+            break;
+        case Py_NE:
+            result = (!gdk_region_equal(region1, region2)
+                      ? Py_True : Py_False);
+            break;
+        default:
+            result = Py_NotImplemented;
+        }
+    }
+    else
+        result = Py_NotImplemented;
+
+    Py_INCREF(result);
+    return result;
+}
+%%
 override-attr GdkDevice.axes
 static PyObject *
 _wrap_gdk_device__get_axes(PyGObject *self, void *closure)
