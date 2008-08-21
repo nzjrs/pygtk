@@ -1,4 +1,62 @@
-pygtk-2.12.1 03-january-2007
+pygtk-2.13.0 21-August-2008
+    - GtkBuilder.add_from_string set the default length to -1 (Johan)
+    - UIManager.insert_action_group add default -1 to `pos' argument (Paul)
+    - Some tweaks to h2defs (Olivier Crete)
+    - Fix the use of flags in examples (Nathaniel Smith)
+    - GdkPixbuf.save detach from python interpreter while saving (Paul)
+    - Create GdkScreen instance using get_default() (Yevgen Muntyan, #444974)
+    - Add an application example (Johan)
+    - Fix several bugs wrt 'y_root' caused by copy-paste (Paul, #519631)
+    - Unbreak pango/cairo dependency chains (Johan Euphrosine, Johan, #528217)
+    - Add a GdkColor constructor similar to what gtk.gdk.color_parse() does.
+      Raise with useful message in case of wrong arguments (Paul, #527718)
+    - Wrap gdk_region_get_rectangles (Gian, #517099)
+    - cairo_set_source_pixmap should accept any	drawable (Gian, #491256)
+    - GdkEvent wrap is_modifier for key press/release, (Gian, #367970)
+    - Wrap the requisition field of GtkWidget (Gian, #369311)
+    - Wrap GtkBorder fields (Gian, #484030)
+    - Wrap region field for expose event (Gian, #495933)
+    - Wrap set_tip_area of GtkTooltip (Gian, #485171)
+    - Wrap gdk_notify_startup_complete_with_id (Gian, #454985)
+    - Wrap gtk_widget_set_has_tooltip (Gian, #524987)
+    - gtk.gdk.DragContext.set_icon_widget allow mask to be NULL (Gian #497781)
+    - Add new textscroll example (Yevgen Muntyan, #522047)
+    - Allocate the right amount of memory for PySignalWatchSource
+      (Owen Taylor, #534083)
+    - Move CSS_DATA variable inside the if ENABLE_DOCS block. Makes make work
+      if --enable-docs=no is specified and pygobject docs are not available.
+      (Björn Lindqvist, #536077)
+    - Allow None in GtkRecentAction constructor params (Gian, #536882)
+    - Allow None in gtk.recent_action_new_for_manager params (Gian)
+    - Ship tooltip.py example in pygtk-demo (Gian)
+    - Deprecate gtk.FileSelection (Johan)
+    - Add a gtk.FileChooserDialog get_action method to workaround an issue with
+      the same mothos of gtk.Widget being called (Gian, #534042)
+    - Wrap gtk.show_about_dialog() (Christopher Aillon, #167603)
+    - Fix 'use_underline' being ignored if neither 'text' nor 'stock' is set
+      in GtkButton constructor (Paul, #524187)
+    - Wrap gtk.TreeView.get_tooltip_context (Gian, #530145)
+    - Check that argument is a subclass of gtk.MenuItem or gtk.ToolItem
+      correspondingly (Paul, #533644)
+    - Wrap gtk.IconView.get_tooltip_context (Gian, #539743)
+    - GtkTreeModel get|set fix logic in negative index branch to avoid refcount
+      corruption (Paul, #537459)
+    - GtkPlug fix to work also with integer 'socket_id' argument (Paul, #539365)
+    - Strip GSEAL out from codegen, to avoid us thinking that there are many
+      functions called GSEAL (Murray Cumming)
+    - Move codegen to pygobject (Paul)
+    - CellRenderer.do_start_editing mark return value as optional (Paul #542583)
+    - Modulename should be gtk.glade, not just glade (Johan)
+    - Add GTK+ 2.14 API in PyGTK (Gian, #544777)
+    - Rename configure.in in configure.ac
+    - Fix signal connection in GtkBuilder (Paul, 543768)
+    - Types with well-defined equality semantics are not properly
+      comparable (Paul, 527212)
+    - gtk.CellViewset_background_color accept None (Paul, #546733)
+    - gtk.Widget.get_snapshot accept None and default to None
+      (Björn Lindqvist, Gian, #548349)
+
+pygtk-2.12.1 03-january-2008
     - Fix TreeView coordinate wrappers (Jeremey Katz, #479012)
     - Allow None in tooltip methods (Gian)
     - Mention how to build documentation (Björn Lindqvist, #479379)
@@ -46,11 +104,11 @@ pygtk-2.11.0 27-august-2007
 
 pygtk-2.10.4 4-februrary-2007
     - Documentation build fixes (John Finlay, Gustavo)
-    - Return NULL on error in TextBuffer.register_serialize_format 
+    - Return NULL on error in TextBuffer.register_serialize_format
       (Paolo Borelli)
     - Do not overwrite sys.argv (JP Calderone)
     - Add status icon example (Nikos Kouremenos)
-    - Make it possible to remove rows in the gtk.TreeModel.foreach 
+    - Make it possible to remove rows in the gtk.TreeModel.foreach
       callback (Gustavo)
     - Code generator fix for %define (#381389, Manish Singh)
     - Duplicate GdkEvent.string member when setting it (#382428,
@@ -96,7 +154,7 @@ pygtk-2.9.4 4-august-2006
     - Code generator fixes (Gustavo, Johan, John, Yevgen Muntyan, Gustavo)
     - Add more gtk+ 2.10 API (#337011, John, Sebastian Pölsterl)
     - Don't copy treeiters in callbacks (#347273, John, Stefano Maggiolo)
-    - Provide full information for GtkTreeSelection.set_select_function 
+    - Provide full information for GtkTreeSelection.set_select_function
       (#340475 John, Wouter Bolsterlee)
     - Export less symbols and reduce the size of the libraries (#347825,
       Rafael Espíndola)
@@ -104,7 +162,7 @@ pygtk-2.9.4 4-august-2006
     - Much improved interface/virtual method support (John)
     - Remove evil 100ms timeout timer (#348937, Gustavo)
 
-pygtk-2.9.3 12-july-2006 
+pygtk-2.9.3 12-july-2006
     - Update to latest gtk+ 2.10 API changes (#345447, #345623, Newren, Peters)
     - Many more new gtk+ 2.10 APIs wrapped (Finlay)
     - Wrap gtk_widget_class_find_style_property (Finlay)
@@ -211,7 +269,7 @@ pygtk-2.8.3:  09-january-2006
         - Bug fixes (Bob Gibbs, Johan, Gustavo)
 	- Size group example (Johan)
 	- Plug mem leaks (Gustavo)
-	- Build cairo on win32 (Cedric) 
+	- Build cairo on win32 (Cedric)
 
 pygtk-2.8.2:  09-october-2005
 	- GIOChannel thread fix (Johan, Ole Andre Vadla Ravnås)
@@ -235,7 +293,7 @@ pygtk-2.8.0:  03-september-2005
 
 pygtk-2.7.4:  24-august-2005
 	- Container.do_forall implementable in subclasses (Johan)
-	- Bug fixes (John Finlay, Christian Persch, Christopher Allion, 
+	- Bug fixes (John Finlay, Christian Persch, Christopher Allion,
                  Johan, Gustavo)
 	- Build fixes (Stepan Kasal, John Ehresman, Johan)
 
@@ -247,7 +305,7 @@ pygtk-2.7.3:  10-august-2005
 pygtk-2.7.2:  02-august-2005
 	- Subclass/type registration bug fixes (Gustavo)
 	- Allow gobject to be initialized twice (Yevgen Muntyan)
-	- Deprecating warning bug fixes (Mark McLoughlin) 
+	- Deprecating warning bug fixes (Mark McLoughlin)
 	- Bug fixes (Sebastien Bacher, Gustavo, Johan, Manish)
 
 pygtk-2.7.1:  21-july-2005
@@ -273,9 +331,9 @@ pygtk-2.7.0:  10-july-2005
 	- Support for specifying GType name (Johan)
 	- GtkContainer iterator support (Johan)
 	- Support for subclasses that implements scrolling (Gustavo, Johan)
-	- Bug fixes/Misc fixes (Steve Chaplin, Tim Evans, John Finlay, 
-          Cedric Gustin, Edward Hervey, Christian Kirbach, Tuure Laurinolli, 
-          Benjamin Otte, Manish Singh, Gian Mario Tagliaretti, 
+	- Bug fixes/Misc fixes (Steve Chaplin, Tim Evans, John Finlay,
+          Cedric Gustin, Edward Hervey, Christian Kirbach, Tuure Laurinolli,
+          Benjamin Otte, Manish Singh, Gian Mario Tagliaretti,
           Fernando San Martin Woerner)
 
 pygtk-2.6.2:  9-may-2005
@@ -283,14 +341,14 @@ pygtk-2.6.2:  9-may-2005
 	- guint/gsize as longs (Gustavo)
 	- Check for exceptions in child_watch (Mark McLoughlin)
 	- Bug fixes (Johan, Manish Singh, John Finaly)
-    
+
 pygtk-2.6.1:  15-march-2005
 	- GtkListStore.insert optimization (Johan)
 	- GtkTreeStore/GtkListStore.reorder leak fix (Johan, Richard Hult)
 	- GParamSpec bug fix (Johan)
 	- Code generator improvements (Anders Carlsson, Johan, Doug Quale)
 	- GCC4 build fixes
-	
+
 pygtk-2.6.0:  07-march-2005
 	- win32 fixes (Cedric Gustin)
 	- remove unnecessary casting (Manish Singh)
@@ -320,7 +378,7 @@ pygtk-2.5.2:  10-january-2005
 	- 2.6 merge (Johan, Gian Mario Tagliaretti)
 	- Bug fixes (Adam Hooper, John Finlay, Gustavo, Johan, Tim Evans)
 	- Build system improvens (Johan)
-	
+
 pygtk-2.5.1:   23-december-2004
 	- Remove API removed in Gtk+ 2.6.0 (Gustavo, Johan)
 	- Implement pango.LayoutIter (John)
@@ -363,7 +421,7 @@ pygtk-2.3.94:  21-july-2004
 	- bug fixed (Gustavo, Johan, John, Lorenzo)
 	- small enum additions for gazpacho (Johan)
 	- rename GMainLoop, GMainContext back to MainLoop and MainContext
- 
+
 pygtk-2.3.93:  19-july-2004
 	- GtkTreeView updates (John Finlay)
 	- New examples (Johan)
@@ -380,8 +438,8 @@ pygtk-2.3.93:  19-july-2004
 pygtk-2.3.92:  22-may-2004
 	- Deprecate old function (John Finlay)
 	- Add missing 2.4 api for pango, gdk and gtk (John Finlay):
-	  PangoAttrList, PangoFontset, PangoFontFamily, 
-          GdkWindow, GdkPixbuf, GdkPixbufLoader, GtkClipboard, 
+	  PangoAttrList, PangoFontset, PangoFontFamily,
+          GdkWindow, GdkPixbuf, GdkPixbufLoader, GtkClipboard,
           GtkTreeView, GtkTreeModel, GtkToolbar
 	- Reference counting fixes (John)
 	- gobject type registration improvements (Gustavo)
@@ -401,13 +459,13 @@ pygtk-2.3.91:  16-april-2004
 
 pygtk-2.3.90:  30-march-2004
 	- Merge in changes for Gtk+ 2.4 (Johan, Xavier)
-	- GtkUIManager, GtkFileChooser, GtkTreeModelFilter,    
-          GtkActionGroup, GtkAction, GtkToolbar etc  
-	- Export GParamSpec in GObject and support style properties  
-	- Distutils win32 fixes (Cedric Gustin)  
-	- Fix mainloop related warnings (bug 136731, bug 136705)  
-	- Updated examples (Johan)  
-	- gdk.atom_intern (Gustavo)  
+	- GtkUIManager, GtkFileChooser, GtkTreeModelFilter,
+          GtkActionGroup, GtkAction, GtkToolbar etc
+	- Export GParamSpec in GObject and support style properties
+	- Distutils win32 fixes (Cedric Gustin)
+	- Fix mainloop related warnings (bug 136731, bug 136705)
+	- Updated examples (Johan)
+	- gdk.atom_intern (Gustavo)
 	- Code generator fixes (Xavier)
 
 pygtk-2.2.0:  11-march-2004
@@ -416,15 +474,15 @@ pygtk-2.2.0:  11-march-2004
 	- Better and more flexible support for TreeModel and TreeView API
           (Don Allingham, Benjamin Cama, John Ehresman, Johan,
            jkluebs@luebsphoto.com)
-	- Better support for gtk.gdk.Pixbuf integration with 
+	- Better support for gtk.gdk.Pixbuf integration with
           Numerical arrays (Tim Evans)
-	- Better support for Pygtk generation tools (codegen, m4 macros, 
+	- Better support for Pygtk generation tools (codegen, m4 macros,
           h2def, Makefile.am ...) (James, Jon Willeke, Xavier, Johan)
 	- Removed gtkgl bindings (James)
 	- Added gtk.gdk.Eventkey.hardware_code (Johan)
 	- Added gtk.binding_entry_remove and gtk.accel_group_connect (Gustavo)
 	- Don't allow reading non readable properties (James)
-	- And lots of bug fixes: gdk.event_get_axis (Seth Nickell), 
+	- And lots of bug fixes: gdk.event_get_axis (Seth Nickell),
           distutils (Alif Wahid), mem leaks, gtk.Menu.popup (Gustavo)
 
 pygtk-2.0.0:  1-September-2003
@@ -473,7 +531,7 @@ pygtk-1.99.15:  08-February-2003
 	- Code generator improvements (Jeremy Katz)
 	- Threading fixes (Lots of people)
 	- API additions to GtkTextBuffer, GtkTextView and GtkFileSelection
-	- GMainLoop/GMainContext support, you can now run input_add, 
+	- GMainLoop/GMainContext support, you can now run input_add,
 	  timeout_add without importing gtk.
 	- libglade now support passing in an instance to signal_autoconnect
 	- pygtk.py import speedup.
@@ -500,7 +558,7 @@ pygtk-1.99.14:  27-December-2002
         - Improved threading support.
         - Api additions for GdkEvents, TreeSelection, GtkTooltips, libglade,
           GtkContainer.
-        
+
 pygtk-1.99.13:  24-August-2002
 	- Support parallel install with pygtk >= 0.6.10
 	- fix initial reference handling for derived GObjects.  This
@@ -958,7 +1016,7 @@ pygtk-0.4.2:  22-April-1998
           python 1.4 and 1.5.x.  It defaults to installing scripts the
           $(prefix)/lib/site-python, with $(prefix)/lib/python$(version) as
           a backup, and shared modules in $(prefix)/lib/python$(version)
-          /site-packages with $(prefix)/lib/python$(version)/lib-dynload and 
+          /site-packages with $(prefix)/lib/python$(version)/lib-dynload and
           $(prefix)/lib/python$(version)/sharedmodules as backup locations.
           It also checks that the directory is in python's search path before
           making the choice.
