@@ -581,19 +581,21 @@ HTML_FILES =						\
 	html/unixprint-functions.html
 
 
-
 CSS_FILES = $(PYGOBJECT_PYGDOCS)/style.css
 
 TARGET_DIR = $(datadir)/gtk-doc/html/pygtk
 CSSdir = $(TARGET_DIR)
 
 EXTRA_DIST = 				\
-	icons/*.png			\
-	cursors/*.png			\
+	cursors icons			\
 	$(HTML_FILES)			\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
 	$(FIX_XREF)
+
+dist-hook:
+	rm -rf `find $(distdir)/cursors -name .svn`
+	rm -rf `find $(distdir)/icons -name .svn`
 
 install-data-local:
 	installfiles=`echo $(srcdir)/html/*`; \
@@ -636,9 +638,9 @@ reference/builddate.xml:
 	@$(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
 
 
-# Do not add a builddate.xml dependency here, because the generated html 
-# documentation will be included in the tarball so xsltproc is not needed to 
-# install the documentation. Adding a builddate.xml dependency will force 
+# Do not add a builddate.xml dependency here, because the generated html
+# documentation will be included in the tarball so xsltproc is not needed to
+# install the documentation. Adding a builddate.xml dependency will force
 # the documentation to be rebuilt when it doesn't need to be.
 $(HTML_FILES): $(XMLFILES) $(XSLFILES)
 	@xsltproc --nonet --xinclude -o $(BUILDDIR)/html/ \
