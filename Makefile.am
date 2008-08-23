@@ -8,22 +8,25 @@ SUBDIRS = . $(GTK_SUBDIR) examples tests docs
 
 PLATFORM_VERSION = 2.0
 
+bin_SCRIPTS = pygtk-codegen-$(PLATFORM_VERSION)
+
 CLEANFILES = 
-EXTRA_DIST = 				\
-	ChangeLog.pre-2-0		\
-	ChangeLog.pre-2-6		\
-	config.h.win32 			\
-	MANIFEST.in 			\
-	MAPPING 			\
-	pygtk.spec 			\
-	pygtk.spec.in 			\
-	pygtk-$(PLATFORM_VERSION).pc.in \
-	pygtk_postinstall.py 		\
-	PKG-INFO 			\
-	PKG-INFO.in 			\
-	setup.py 			\
-	THREADS				\
-	m4/jhflags.m4			\
+EXTRA_DIST = 					\
+	ChangeLog.pre-2-0			\
+	ChangeLog.pre-2-6			\
+	config.h.win32 				\
+	MANIFEST.in 				\
+	MAPPING 				\
+	pygtk.spec 				\
+	pygtk.spec.in 				\
+	pygtk-$(PLATFORM_VERSION).pc.in 	\
+	pygtk-codegen-$(PLATFORM_VERSION).in	\
+	pygtk_postinstall.py 			\
+	PKG-INFO 				\
+	PKG-INFO.in 				\
+	setup.py 				\
+	THREADS					\
+	m4/jhflags.m4				\
 	m4/python.m4
 
 INCLUDES = 				\
