@@ -221,6 +221,58 @@ _wrap_gdk_color_tp_richcompare(PyObject *self, PyObject *other, int op)
     return result;
 }
 %%
+override-slot GdkColor.tp_repr
+static int
+pygdk_color_to_string_smart(char *buffer, int length, GdkColor *color)
+{
+    /* We use g_snprintf() because PyString_FromFormat() doesn't support %0Nx-like formats
+     * (i.e. with leading zeros).
+     *
+     * Note that numbers here are used so that there is no off-by-one errors in
+     * 'eval(repr(color))', i.e. so that 'eval(repr(color)) == color'.  See
+     * pango_color_parse() for justification of these numbers.  Three-nibble color
+     * components are deemed unimportant.
+     */
+    if (color->red % 0x1111 == 0 && color->green % 0x1111 == 0 && color->blue % 0x1111 == 0) {
+        return g_snprintf(buffer, length, "#%01x%01x%01x",
+                          color->red / 0x1111, color->green / 0x1111, color->blue / 0x1111);
+    }
+    else if (color->red % 0x0101 == 0 && color->green % 0x0101 == 0 && color->blue % 0x0101 == 0) {
+        return g_snprintf(buffer, length, "#%02x%02x%02x",
+                          color->red / 0x0101, color->green / 0x0101, color->blue / 0x0101);
+    }
+    else {
+        return g_snprintf(buffer, length, "#%04x%04x%04x",
+                          color->red, color->green, color->blue);
+    }
+}
+static PyObject *
+_wrap_gdk_color_tp_repr(PyGBoxed *self)
+{
+    static char buffer[0x40];
+    int length = 0;
+
+    length += g_snprintf(buffer + length, sizeof buffer - length, "%s('", self->ob_type->tp_name);
+    length += pygdk_color_to_string_smart(buffer + length, sizeof buffer - length,
+                                          pyg_boxed_get(self, GdkColor));
+    length += g_snprintf(buffer + length, sizeof buffer - length, "')");
+
+    return PyString_FromStringAndSize(buffer, length);
+}
+%%
+override-slot GdkColor.tp_str
+static PyObject *
+_wrap_gdk_color_tp_str(PyGBoxed *self)
+{
+    /* gtk.gdk.Color has a meaningful informal representation, so we define both __repr__
+     * and __str__, unlike for most other types.
+     */
+    static char buffer[1 + 4*3 + 1];  /* # + at most 4 digits per component + \0 */
+    int length = pygdk_color_to_string_smart(buffer, sizeof buffer, pyg_boxed_get(self, GdkColor));
+
+    return PyString_FromStringAndSize(buffer, length);
+}
+%%
 override gdk_colormap_query_color kwargs
 static PyObject *
 _wrap_gdk_colormap_query_color(PyGObject *self, PyObject *args,

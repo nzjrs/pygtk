@@ -247,3 +247,12 @@ _wrap_gdk_rectangle_tp_richcompare(PyObject *self, PyObject *other, int op)
     Py_INCREF(result);
     return result;
 }
+%%
+override-slot GdkRectangle.tp_repr
+static PyObject *
+_wrap_gdk_rectangle_tp_repr(PyGBoxed *self)
+{
+    GdkRectangle *rect = pyg_boxed_get(self, GdkRectangle);
+    return PyString_FromFormat("%s(%d, %d, %d, %d)", self->ob_type->tp_name,
+                               rect->x, rect->y, rect->width, rect->height);
+}

@@ -23,6 +23,18 @@ class Tests(unittest.TestCase):
             {} [gtk.gdk.Rectangle()] = 'must raise'
         self.assertRaises(TypeError, dict_key)
 
+    def test_repr(self):
+        for rectangle in self._test_rectangle_list():
+            self.assertEqual(rectangle, eval(repr(rectangle)))
+
+    def _test_rectangle_list(self):
+        return [gtk.gdk.Rectangle(),
+                gtk.gdk.Rectangle(0, 0, 100, 100),
+                gtk.gdk.Rectangle(-10, 10, 30, 50),
+                gtk.gdk.Rectangle(-100, -100, 20, 25),
+                gtk.gdk.Rectangle(0, 0, 0, 20),
+                gtk.gdk.Rectangle(1, 1, 20, 0)]
+
 
 if __name__ == '__main__':
     unittest.main()

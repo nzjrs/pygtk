@@ -1920,6 +1920,17 @@ method. The masks are:</para>
     <para><literal>gtk.gdk.ALL_EVENTS_MASK</literal> is a combination of all
 the event masks.</para>
 
+    <para>
+      Starting with PyGTK 2.14 <classname>gtk.gdk.Event</classname> objects have custom
+      support for <function>repr</function> Python function.  Text representation will
+      include event type and a few most important event attributes,
+      e.g. <literal>x</literal>, <literal>y</literal> and <literal>button</literal>
+      for <literal>gtk.gdk.BUTTON_PRESS</literal> events.  However, round-tripping
+      through <literal>eval(repr(event))</literal> is not possible: representation string
+      uses <literal>&lt;...&gt;</literal> form.
+    </para>
+
+
   </refsect1>
 
   <refsect1 id="constructor-gdkevent">

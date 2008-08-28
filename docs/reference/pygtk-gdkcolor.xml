@@ -117,6 +117,16 @@ object.</para>
       the constructor.
     </para>
 
+    <para>
+      Also beginning with PyGTK 2.14 <classname>gtk.gdk.Color</classname> objects have
+      custom support for <function>str</function> and <function>repr</function> Python
+      functions.  For any color it holds that:
+    </para>
+
+    <programlisting>
+  color == eval(repr(color))
+    </programlisting>
+
   </refsect1>
 
   <refsect1 id="constructor-gdkcolor">
@@ -220,6 +230,13 @@ allocated.</para>
                 where r, g and b are hex digits representing the red,
                 green and blue components respectively.
             </para>
+
+            <note>
+                <para>Starting with PyGTK 2.14 you can also
+                use <literal>str(color)</literal> code.  However, that can return a
+                shorter (3, 6 or 12 hexadecimal digits) string if shorter version means
+                the same for the constructor.</para>
+            </note>
         </refsect2>
     </refsect1>
 

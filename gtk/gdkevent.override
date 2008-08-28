@@ -918,3 +918,156 @@ _wrap_gdk_event_free(PyObject *self)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override-slot GdkEvent.tp_repr
+static PyObject *
+_wrap_gdk_event_tp_repr(PyGObject *self)
+{
+    static char buffer[0x400];
+    int length = 0;
+
+    GdkEvent *event = pyg_boxed_get(self, GdkEvent);
+    GEnumValue *type = g_enum_get_value(g_type_class_peek(GDK_TYPE_EVENT_TYPE), event->type);
+
+    length += g_snprintf(buffer + length, sizeof buffer - length, "<%s at %p: %s",
+                         self->ob_type->tp_name, self, type ? type->value_name : "UNKNOWN TYPE");
+
+    /* Depending on event type we will append values of some most important attributes to
+     * representation string.  In any case, this information is not enough to reconstruct
+     * the event object (and in any case gtk.gdk.Event is incapable of doing so),
+     * therefore the <...> syntax.
+     */
+    switch(event->type) {
+    case GDK_NOTHING: break;
+    case GDK_DELETE: break;
+    case GDK_DESTROY: break;
+    case GDK_EXPOSE:
+        {
+            length += g_snprintf(buffer + length, sizeof buffer - length, " area=[%d, %d, %d, %d]",
+                                 event->expose.area.x, event->expose.area.y,
+                                 event->expose.area.width, event->expose.area.height);
+            break;
+        }
+    case GDK_MOTION_NOTIFY:
+        {
+            length += g_snprintf(buffer + length, sizeof buffer - length, " x=%.2f, y=%.2f",
+                                 event->motion.x, event->motion.y);
+            break;
+        }
+    case GDK_BUTTON_PRESS:
+    case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
+        {
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " x=%.2f, y=%.2f, button=%d",
+                                 event->button.x, event->button.y, event->button.button);
+            break;
+        }
+    case GDK_KEY_PRESS:
+    case GDK_KEY_RELEASE:
+        {
+            const gchar *key = gdk_keyval_name(event->key.keyval);
+
+            if (key)
+                length += g_snprintf(buffer + length, sizeof buffer - length, " keyval=%s", key);
+            else
+                length += g_snprintf(buffer + length, sizeof buffer - length,
+                                     " keyval=%d", event->key.keyval);
+            break;
+        }
+    case GDK_ENTER_NOTIFY:
+    case GDK_LEAVE_NOTIFY:
+        {
+            GEnumValue *mode = g_enum_get_value(g_type_class_peek(GDK_TYPE_CROSSING_MODE),
+                                                event->crossing.mode);
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " x=%.2f, y=%.2f, mode=%s",
+                                 event->crossing.x, event->crossing.y,
+                                 mode ? mode->value_name : "UNKNOWN");
+            break;
+        }
+    case GDK_FOCUS_CHANGE: break;
+    case GDK_CONFIGURE:
+        {
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " x=%d, y=%d, width=%d, height=%d",
+                                 event->configure.x, event->configure.y,
+                                 event->configure.width, event->configure.height);
+            break;
+        }
+    case GDK_MAP: break;
+    case GDK_UNMAP: break;
+    case GDK_PROPERTY_NOTIFY:
+        {
+            length += g_snprintf(buffer + length, sizeof buffer - length, " atom=%s",
+                                 gdk_atom_name(event->property.atom));
+            break;
+        }
+    case GDK_SELECTION_CLEAR:
+    case GDK_SELECTION_REQUEST:
+    case GDK_SELECTION_NOTIFY:
+        {
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " selection=%s, target=%s, property=%s",
+                                 gdk_atom_name(event->selection.selection),
+                                 gdk_atom_name(event->selection.target),
+                                 gdk_atom_name(event->selection.property));
+            break;
+        }
+    case GDK_PROXIMITY_IN: break;
+    case GDK_PROXIMITY_OUT: break;
+    case GDK_DRAG_ENTER: break;
+    case GDK_DRAG_LEAVE: break;
+    case GDK_DRAG_MOTION: break;
+    case GDK_DRAG_STATUS: break;
+    case GDK_DROP_START: break;
+    case GDK_DROP_FINISHED: break;
+    case GDK_CLIENT_EVENT: break;
+    case GDK_VISIBILITY_NOTIFY:
+        {
+            GEnumValue *state = g_enum_get_value(g_type_class_peek(GDK_TYPE_VISIBILITY_STATE),
+                                                event->visibility.state);
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " state=%s", state ? state->value_name : "UNKNOWN");
+            break;
+        }
+    case GDK_NO_EXPOSE: break;
+    case GDK_SCROLL:
+        {
+            GEnumValue *direction = g_enum_get_value(g_type_class_peek(GDK_TYPE_SCROLL_DIRECTION),
+                                                     event->scroll.direction);
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " x=%.2f, y=%.2f, direction=%s",
+                                 event->scroll.x, event->scroll.y,
+                                 direction ? direction->value_name : "UNKNOWN");
+            break;
+        }
+    case GDK_WINDOW_STATE: break;
+    case GDK_SETTING:
+        {
+            GEnumValue *action = g_enum_get_value(g_type_class_peek(GDK_TYPE_SETTING_ACTION),
+                                                  event->setting.action);
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " action=%s, name=%s",
+                                 action ? action->value_name : "UNKNOWN",
+                                 event->setting.name);
+            break;
+        }
+    case GDK_OWNER_CHANGE:
+        {
+            GEnumValue *reason = g_enum_get_value(g_type_class_peek(GDK_TYPE_OWNER_CHANGE),
+                                                  event->owner_change.reason);
+            length += g_snprintf(buffer + length, sizeof buffer - length,
+                                 " reason=%s, selection=%s",
+                                 reason ? reason->value_name : "UNKNOWN",
+                                 gdk_atom_name(event->owner_change.selection));
+            break;
+        }
+    default:
+        break;
+    }
+
+    length += g_snprintf(buffer + length, sizeof buffer - length, ">");
+    return PyString_FromStringAndSize(buffer, length);
+}

@@ -55,6 +55,25 @@ class Tests(unittest.TestCase):
             {} [gtk.gdk.Color()] = 'must raise'
         self.assertRaises(TypeError, dict_key)
 
+    def test_repr(self):
+        for color in self._test_color_list():
+            self.assertEqual(color, eval(repr(color)))
+
+    def test_str(self):
+        for color in self._test_color_list():
+            self.assertEqual(color, gtk.gdk.Color(str(color)))
+
+    def _test_color_list(self):
+        return [gtk.gdk.Color(),
+                gtk.gdk.Color(10, 20, 30),
+                gtk.gdk.Color(65535, 65535, 65535),
+                gtk.gdk.Color('red'),
+                gtk.gdk.Color('#aaa'),
+                gtk.gdk.Color('#f0a000'),
+                gtk.gdk.Color('#123abcdef'),
+                gtk.gdk.Color('#123412341234'),
+                gtk.gdk.Color('#fedcfedcfedc')]
+
 
 if __name__ == '__main__':
     unittest.main()

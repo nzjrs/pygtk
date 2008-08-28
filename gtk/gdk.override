@@ -503,6 +503,20 @@ _wrap_gdk_cursor_new(PyGBoxed *self, PyObject *args, PyObject *kwargs)
     return 0;
 }
 %%
+override-slot GdkCursor.tp_repr
+static PyObject *
+_wrap_gdk_cursor_tp_repr(PyGObject *self)
+{
+    GdkCursor *cursor = pyg_boxed_get(self, GdkCursor);
+    GEnumValue *type = g_enum_get_value(g_type_class_peek(GDK_TYPE_CURSOR_TYPE), cursor->type);
+
+    /* We use <...> syntax because gtk.gdk.Cursor objects are generally impossible to
+     * reconstruct with eval(repr(...))  round-trip. */
+    return PyString_FromFormat("<%s at %p: %s>",
+                               self->ob_type->tp_name, self,
+                               type ? type->value_name : "UNKNOWN TYPE");
+}
+%%
 override gdk_region_get_clipbox noargs
 static PyObject *
 _wrap_gdk_region_get_clipbox(PyGObject *self)
