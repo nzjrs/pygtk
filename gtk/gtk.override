@@ -1069,8 +1069,6 @@ static gboolean
 pygtk_main_watch_prepare(GSource *source,
 			 int     *timeout)
 {
-    PySignalWatchSource *real_source = (PySignalWatchSource *)source;
-
     /* Python only invokes signal handlers from the main thread,
      * so if a thread other than the main thread receives the signal
      * from the kernel, PyErr_CheckSignals() from that thread will
@@ -1087,24 +1085,27 @@ pygtk_main_watch_prepare(GSource *source,
 #endif
 
 #ifdef HAVE_PYSIGNAL_SETWAKEUPFD
-    if (real_source->fds[0] != 0)
-	return FALSE;
+    {
+        PySignalWatchSource *real_source = (PySignalWatchSource *)source;
 
-    /* Unfortunately we need to create a new pipe here instead of
-     * reusing the pipe inside the GMainContext.
-     * Ideally an api should be added to GMainContext which allows us
-     * to reuse that pipe which would suit us perfectly fine.     
-     */
-    if (pipe(real_source->fds) < 0)
-	g_error("Cannot create main loop pipe: %s\n",
-		g_strerror(errno));
+        if (real_source->fds[0] != 0)
+            return FALSE;
 
-    real_source->fd.fd = real_source->fds[0];
-    real_source->fd.events = G_IO_IN | G_IO_HUP | G_IO_ERR;
-    g_source_add_poll(source, &real_source->fd);
+        /* Unfortunately we need to create a new pipe here instead of
+         * reusing the pipe inside the GMainContext.  Ideally an api
+         * should be added to GMainContext which allows us to reuse
+         * that pipe which would suit us perfectly fine.
+         */
+        if (pipe(real_source->fds) < 0)
+            g_error("Cannot create main loop pipe: %s\n",
+                    g_strerror(errno));
 
-    PySignal_SetWakeupFd(real_source->fds[1]);
+        real_source->fd.fd = real_source->fds[0];
+        real_source->fd.events = G_IO_IN | G_IO_HUP | G_IO_ERR;
+        g_source_add_poll(source, &real_source->fd);
 
+        PySignal_SetWakeupFd(real_source->fds[1]);
+    }
 #else /* !HAVE_PYSIGNAL_SETWAKEUPFD */
     /* If we're using 2.5 or an earlier version of python we
      * will default to a timeout every second, be aware,
