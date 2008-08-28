@@ -1,5 +1,5 @@
-#!/usr/bin/env python2.4
-# -*- coding:utf8 -*-
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # I, Adam Olsen, am the original author of this work.  I hereby
 # donate it into the public domain, and relinquish any rights I
