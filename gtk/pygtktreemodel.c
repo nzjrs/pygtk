@@ -821,7 +821,7 @@ GtkTreeIter
 pygtk_generic_tree_model_create_tree_iter(PyGtkGenericTreeModel *tree_model,
                                           PyObject *user_data)
 {
-    GtkTreeIter  iter;
+    GtkTreeIter  iter = {0,};
 
     if (tree_model != NULL) {
 	iter.user_data = user_data;
