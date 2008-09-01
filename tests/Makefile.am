@@ -20,7 +20,8 @@ tests =						\
 	test_rectangle.py			\
 	test_style.py				\
 	test_textview.py			\
-	test_treeview.py
+	test_treeview.py			\
+	test_accel_closures.py
 
 GTK_PY_FILES = __init__.py _lazyutils.py compat.py deprecation.py keysyms.py
 
@@ -36,4 +37,4 @@ check-local: $(top_srcdir)/gtk/__init__.py
 	     rm -f $(top_builddir)/gtk/$${gtk_py}*; \
            done \
 	fi
-	@rm -fr *.pyc 
+	@rm -fr *.pyc
