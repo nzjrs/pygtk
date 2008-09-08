@@ -511,7 +511,10 @@ linkend="function-gdk--threads-enter">gtk.gdk.threads_enter</link></methodname>
 	<methodname><link
 linkend="function-gdk--threads-leave">gtk.gdk.threads_leave</link></methodname>
 	<methodparam></methodparam>
-  </methodsynopsis><methodsynopsis language="python">
+  </methodsynopsis><synopsis language="python">
+	  <varname><link
+linkend="function-gdk--lock">gtk.gdk.lock</link></varname>
+  </synopsis><methodsynopsis language="python">
 	<methodname><link
 linkend="function-gdk--threads-init">gtk.gdk.threads_init</link></methodname>
 	<methodparam></methodparam>
@@ -963,6 +966,24 @@ linkend="function-gdk--threads-enter"><function>gtk.gdk.threads_enter</function>
 function. See the <link
 linkend="function-gdk--threads-init"><function>gtk.gtk.threads_init</function>()</link> 
 function for more information about threading.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--lock">
+      <title>gtk.gdk.lock</title>
+
+      <programlisting><synopsis language="python">
+	  <varname>gtk.gdk.lock</varname>
+	</synopsis></programlisting>
+
+      <para>
+	The <varname>gtk.gdk.lock</varname> constant is a context manager that calls
+	<link linkend="function-gdk--threads-enter"><function>gtk.gdk.threads_enter</function></link>
+	and <link linkend="function-gdk--threads-leave"><function>gtk.gdk.threads_leave</function></link>
+	in its <function>__enter__</function> and <function>__exit__</function> methods
+	correspondingly. It is intended to be used in <literal>with</literal> statement,
+	new in Python 2.5. Read statement description for details.
+      </para>
 
     </refsect2>
 

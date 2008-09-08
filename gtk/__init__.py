@@ -90,6 +90,13 @@ gdk.INPUT_READ      = _gobject.IO_IN | _gobject.IO_HUP | _gobject.IO_ERR
 gdk.INPUT_WRITE     = _gobject.IO_OUT | _gobject.IO_HUP
 gdk.INPUT_EXCEPTION = _gobject.IO_PRI
 
+# Python 2.5+ context manager, usable through 'with' keyword.
+class _Lock(object):
+    __enter__ = gdk.threads_enter
+    def __exit__(*ignored):
+        gdk.threads_leave()
+gdk.lock = _Lock()
+
 # old names compatibility ...
 idle_add       = _Deprecated(_gobject, 'idle_add', 'idle_add', 'gobject')
 idle_remove    = _Deprecated(_gobject, 'source_remove', 'idle_remove', 'gobject')
@@ -125,13 +132,13 @@ FALSE = _DeprecatedConstant(False, 'gtk.FALSE', 'False')
 gdk.Warning = Warning
 
 # We don't want to export this
-del _Deprecated, _DeprecatedConstant, _gobject, _init
+del _Deprecated, _DeprecatedConstant, _gobject, _init, _Lock
 
 # Do this as late as possible, so programs like pyflakes can check
 # everything above
 from gtk._gtk import *
 
-# # For testing, so you can just turn of dynamicnamespace in gtk.override
+# # For testing, so you can just turn off dynamicnamespace in gtk.override
 # if hasattr(_gtk, '_get_symbol_names'):
 #     import gtk
 #     ns = LazyNamespace(_gtk, locals())
@@ -139,4 +146,3 @@ from gtk._gtk import *
 #     ns.add_submodule('_gtk', 'gtk._gtk')
 #     sys.modules['gtk'] = ns
 #     sys.modules['gtk.glade'] = LazyModule('_glade', {})
-
