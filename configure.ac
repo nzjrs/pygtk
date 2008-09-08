@@ -143,6 +143,22 @@ AC_SUBST(PYGOBJECT_INCLUDEDIR)
 PYGOBJECT_DATADIR=`$PKG_CONFIG --variable=datadir pygobject-2.0`
 AC_SUBST(PYGOBJECT_DATADIR)
 
+
+dnl PyGObject defs
+AC_SUBST(PYGOBJECT_DEFSDIR)
+PYGOBJECT_DEFSDIR=`$PKG_CONFIG --variable defsdir pygobject-2.0`
+
+AC_MSG_CHECKING([for gio-types.defs])
+if test -n "$PYGOBJECT_DEFSDIR" && test -e "$PYGOBJECT_DEFSDIR/gio-types.defs"; then
+  AM_CONDITIONAL(HAVE_GIO_TYPES_DEFS, true)
+  AC_MSG_RESULT($PYGOBJECT_DEFSDIR/gio-types.defs)
+else
+  AM_CONDITIONAL(HAVE_GIO_TYPES_DEFS, false)
+  AC_MSG_RESULT(no)
+fi
+
+
+dnl Documentation
 PYGOBJECT_FIXXREF="$PYTHON `$PKG_CONFIG --variable=fixxref pygobject-2.0`"
 AC_SUBST(PYGOBJECT_FIXXREF)
 

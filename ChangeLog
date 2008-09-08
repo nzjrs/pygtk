@@ -1,3 +1,18 @@
+2008-09-08  Paul Pogonyshev  <pogonyshev@gmx.net>
+
+	Bug 550754 – need to import GIO types from PyGObject package
+
+	* configure.ac: Determine if `gio-types.defs' is installed as part
+	of PyGObject.
+
+	* gtk/Makefile.am: Use it to register GIO types if installed.
+
+	* gtk/gdk.override: Make gio.AppLaunchContext import conditional.
+	Add conditional import of gio.Icon.
+
+	* gtk/gtk.override: Make gio.MountOperation import conditional.
+	Add conditional imports of gio.File and gio.Icon.
+
 2008-09-02  Gian Mario Tagliaretti  <gianmt@gnome.org>
 
 	* gtk/gtk-2.14.defs: comment out for a while gtk_selection_data_get_data

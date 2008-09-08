@@ -187,11 +187,17 @@ _gtk_la_CFLAGS  += -DPLATFORM_WIN32
 endif
 
 
+extra_codegen_args =
+
+if HAVE_GIO_TYPES_DEFS
+extra_codegen_args += --register $(PYGOBJECT_DEFSDIR)/gio-types.defs
+endif
+
 .defs.c: 
 	($(PYTHON) $(CODEGENDIR)/codegen.py \
 	   $(PYGTK_CODEGEN_DEFINES) \
 	    -I $(srcdir) \
-	    --py_ssize_t-clean \
+	    --py_ssize_t-clean $(extra_codegen_args) \
 	    --register $(top_srcdir)/pango-types.defs \
 	    --register $(top_srcdir)/atk-types.defs \
 	    --register gdk-types.defs \
