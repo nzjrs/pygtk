@@ -104,6 +104,31 @@ pygtk_util_pyobject_as_double(PyObject *obj, gdouble *value, const char *argumen
     return TRUE;
 }
 
+static gboolean
+_main_quit(GIOChannel* source, GIOCondition condition, gpointer data)
+{
+    gtk_main_quit();
+    return FALSE;
+}
+
+static int _loop(void)
+{
+    PyGILState_STATE gstate;
+    GIOChannel* channel;
+
+    /* Watch for input on stdin */
+    channel = g_io_channel_unix_new(fileno(stdin));
+    g_io_add_watch(channel, G_IO_IN, _main_quit, NULL);
+    g_io_channel_unref(channel);
+
+    /* Start the main loop */
+    gstate = PyGILState_Ensure();
+    gtk_main();
+    PyGILState_Release(gstate);
+
+    return 0;
+}
+
 %%
 include 
   gtkbuilder.override
@@ -433,6 +458,31 @@ _wrap_gtk_init_check(PyGObject *self, PyObject *args)
 	g_free(argv);
     }
 
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+define set_interactive
+static PyObject *
+_wrap_set_interactive(PyGObject *self, PyObject *args)
+{
+    int flag = 1;
+    if (!PyArg_ParseTuple(args, "|i", &flag)) return NULL;
+    if (flag)
+    {
+        if (PyOS_InputHook == NULL) {
+            PyOS_InputHook = _loop;
+        }
+        else if (PyOS_InputHook != _loop)
+            PyErr_Warn(PyExc_RuntimeWarning, "PyOS_InputHook is not available for interactive use of PyGTK");
+    }
+    else
+    {
+        if (PyOS_InputHook == _loop)
+            PyOS_InputHook = NULL;
+        else if (PyOS_InputHook != NULL)
+            PyErr_Warn(PyExc_RuntimeWarning, "PyOS_InputHook was set by a module other than PyGTK");
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }

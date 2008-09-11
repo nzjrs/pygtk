@@ -138,6 +138,9 @@ del _Deprecated, _DeprecatedConstant, _gobject, _init, _Lock
 # everything above
 from gtk._gtk import *
 
+# Make PyGTK interactive
+set_interactive(1)
+
 # # For testing, so you can just turn off dynamicnamespace in gtk.override
 # if hasattr(_gtk, '_get_symbol_names'):
 #     import gtk
