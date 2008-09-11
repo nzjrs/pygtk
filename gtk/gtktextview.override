@@ -218,6 +218,27 @@ _wrap_gtk_text_iter_copy(PyGBoxed *self)
                          TRUE, TRUE);
 }
 %%
+define GtkTextIter.assign kwargs
+static PyObject *
+_wrap_gtk_text_iter_assign(PyGBoxed *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "other", NULL };
+    PyGBoxed *other;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:gtk.TextIter.assign",
+                                     kwlist, &other))
+        return NULL;
+    if (!pyg_boxed_check(other, GTK_TYPE_TEXT_ITER)) {
+        PyErr_SetString(PyExc_TypeError, "other must be a GtkTextIter");
+        return NULL;
+    }
+
+    *pyg_boxed_get(self, GtkTextIter) = *pyg_boxed_get(other, GtkTextIter);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 override gtk_text_iter_get_slice kwargs
 static PyObject *
 _wrap_gtk_text_iter_get_slice(PyGBoxed *self, PyObject *args, PyObject *kwargs)
