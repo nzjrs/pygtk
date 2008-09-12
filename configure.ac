@@ -283,8 +283,7 @@ if test "x$have_pycairo" = "xtrue"; then
   AC_DEFINE([HAVE_GTK_2_12], [$have_gtk_212], [If Gtk 2.12 was found])
 
   dnl check for gtk 2.14
-  PKG_CHECK_MODULES(GTK214, [gtk+-2.0 >= 2.13.8,
-                             pygobject-2.0 >= 2.15.4],
+  PKG_CHECK_MODULES(GTK214, gtk+-2.0 >= 2.13.8,
 	  HAVE_GTK_214="yes", HAVE_GTK_214="no")
 
   if test "x$HAVE_GTK_214" = "xyes"; then
