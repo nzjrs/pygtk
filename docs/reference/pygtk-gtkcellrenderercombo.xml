@@ -92,7 +92,26 @@ above.</entry>
     <para><link linkend="signal-prototypes-gtkobject">gtk.Object Signal Prototypes</link></para>
     <para><link linkend="signal-prototypes-gtkcellrenderer">gtk.CellRenderer Signal Prototypes</link></para>
     <para><link linkend="signal-prototypes-gtkcellrenderertext">gtk.CellRendererText Signal Prototypes</link></para>
-</refsect1>
+    
+    <variablelist>
+      <varlistentry>
+        <term>"<link
+linkend="signal-gtkcellrenderercombo--changed">changed</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>combo</parameter></methodparam>
+	    <methodparam><parameter>path_string</parameter></methodparam>
+	    <methodparam><parameter>new_iter</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
 
   <refsect1>
     <title>Description</title>
@@ -143,5 +162,65 @@ the <link
 linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link>.</para>
 
   </refsect1>
+<refsect1>
+    <title>Signals</title>
 
+    <refsect2 id="signal-gtkcellrenderercombo--changed">
+      <title>The "changed" gtk.Calendar Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>combo</parameter></methodparam>
+	  <methodparam><parameter>path_string</parameter></methodparam>
+	  <methodparam><parameter>new_iter</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>combo</parameter>&nbsp;:</term>
+	  <listitem><simpara>the object on which the signal is emitted </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>path_string</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string of the path identifying the edited cell
+	  (relative to the tree view model) </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>new_iter</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new iter selected in the combo box
+	  (relative to the combo box model) </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The "changed" signal is emitted each time after the user selected an item in
+	the combo box, either by using the mouse or the arrow keys. Contrary to GtkComboBox,
+        GtkCellRendererCombo::changed is not emitted for changes made to a selected item in
+	the entry. The argument new_iter corresponds to the newly selected item in the combo
+	box and it is relative to the GtkTreeModel set via the model property on GtkCellRendererCombo.
+      </para>
+      <para>
+	Note that as soon as you change the model displayed in the tree view, the tree view will
+	immediately cease the editing operating. This means that you most probably want to refrain
+	from changing the model until the combo cell renderer emits the edited or editing_canceled signal.
+      </para>
+      <note>
+	  <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+    </refsect2>
+  </refsect1>
 </refentry>

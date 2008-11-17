@@ -141,13 +141,25 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkentry--get-cursor-hadjustment">get_cursor_hadjustment</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
         <methodname><link linkend="method-gtkentry--set-cursor-hadjustment">set_cursor_hadjustment</link></methodname>
         <methodparam><parameter role="keyword">adjustment</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-        <methodname><link linkend="method-gtkentry--get-cursor-hadjustment">get_cursor_hadjustment</link></methodname>
+        <methodname><link linkend="method-gtkentry--get-override-mode">get_override_mode</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkentry--set-override-mode">set_override_mode</link></methodname>
+        <methodparam><parameter role="keyword">override</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkentry--get-text-length">get_text_length</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>      
     </classsynopsis>
 
   </refsect1>
@@ -245,6 +257,14 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
             </row>
 
             <row valign="top">
+              <entry>"override-mode"</entry>
+              <entry>Read/Write</entry>
+              <entry>If text is overwritten when typing in the GtkEntry.
+	      Default value: <literal>False</literal>.
+	      Available in GTK+ 2.14 and above.</entry>
+            </row>
+
+            <row valign="top">
               <entry>"scroll-offset"</entry>
               <entry>Read</entry>
               <entry>The number of pixels of the entry scrolled off the
@@ -273,6 +293,13 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
               <entry>"text"</entry>
               <entry>Read/Write</entry>
               <entry>The contents of the entry. Default value: "".</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"text-length"</entry>
+              <entry>Read</entry>
+              <entry>The length of the text in the GtkEntry. Allowed values: [0,65535].
+	      Default value: 0. Available in GTK+ 2.14 and above.</entry>
             </row>
 
             <row valign="top">
@@ -1185,6 +1212,83 @@ pango layout</simpara></listitem>
         The <methodname>get_cursor_hadjustment</methodname>() method retrieves the horizontal
         cursor adjustment for the entry. See
         <link linkend="method-gtkentry--set-cursor-hadjustment">set_cursor_hadjustment</link>.
+      </para>
+ 
+    </refsect2>
+
+    <refsect2 id="method-gtkentry--set-override-mode">
+      <title>gtk.Entry.set_override_mode</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_override_mode</methodname>
+        <methodparam><parameter role="keyword">override</parameter></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">override</parameter>&nbsp;:</term>
+          <listitem><simpara>new value.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+ 
+      <para>
+        The <methodname>set_override_mode</methodname>() method sets whether the text
+	is overwritten when typing in the GtkEntry.
+      </para>
+ 
+    </refsect2>
+ 
+    <refsect2 id="method-gtkentry--get-override-mode">
+      <title>gtk.Entry.get_override_mode</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_override_mode</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>whether the text is overwritten when typing.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+ 
+      <para>
+        The <methodname>get_override_mode</methodname>() method gets the value set by
+	<methodname><link linkend="method-gtkentry--set-override-mode">gtk.Entry.set_override_mode</link></methodname>().
+      </para>
+ 
+    </refsect2>
+ 
+    <refsect2 id="method-gtkentry--get-text-length">
+      <title>gtk.Entry.get_text_length</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_text_length</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+ 
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the current number of characters in GtkEntry, or 0 if there are none.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+ 
+      <para>
+        The <methodname>get_text_length</methodname>() method retrieves the current length of the text in entry.
       </para>
  
     </refsect2>

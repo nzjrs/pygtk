@@ -60,6 +60,28 @@ linkend="method-gtkcalendar--set-display-options">set_display_options</link></me
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtkcalendar--get-detail-height-rows">get_detail_height_rows</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkcalendar--set-detail-height-rows">set_detail_height_rows</link></methodname>
+	<methodparam><parameter
+		       role="keyword">rows</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkcalendar--get-detail-width-chars">get_detail_width_chars</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+linkend="method-gtkcalendar--set-detail-width-chars">set_detail_width_chars</link></methodname>
+	<methodparam><parameter
+		       role="keyword">chars</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtkcalendar--display-options">display_options</link></methodname>
 	<methodparam><parameter
 		       role="keyword">flags</parameter></methodparam>
@@ -128,6 +150,22 @@ unselect the currently selected day).</entry>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"detail-height-rows"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Height of a detail cell, in rows. A value of 0 allows any width.
+                 See gtk_calendar_set_detail_func(). Allowed values: [0,127].
+                 Default value: 0 .This property is available in GTK+ 2.14 and above.</entry>
+	    </row>
+	    
+	    <row valign="top">
+	      <entry>"detail-width-chars"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Width of a detail cell, in characters. A value of 0 allows any width.
+	      See gtk_calendar_set_detail_func(). Allowed values: [0,127] Default value: 0.
+              This property is available in GTK+ 2.14 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"month"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The selected month (as a number between 0 and 11).</entry>
@@ -145,6 +183,15 @@ changed.</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>True</literal>, day names are
 displayed.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"show-details"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Determines whether details are shown directly in the widget,
+              or if they are available only as tooltip. When this property is set days
+              with details are marked. Default value: <literal>True</literal>.
+              This property is available in GTK+ 2.14 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -615,6 +662,108 @@ default Sunday.</simpara>
 
       <para>The display options can be removed by passing 0 as the value of
 <parameter>flags</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcalendar--get-detail-height-rows">
+      <title>gtk.Calendar.get_detail_height_rows</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_detail_height_rows</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The height of detail cells, in rows.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+        The <methodname>get_detail_height_rows</methodname>() method
+        queries the height of detail cells, in rows. See the "detail-width-chars" property.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcalendar--set-detail-height-rows">
+      <title>gtk.Calendar.set_detail_height_rows</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_detail_height_rows</methodname>
+	  <methodparam><parameter
+			 role="keyword">rows</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">rows</parameter>&nbsp;:</term>
+	  <listitem><simpara>detail height in rows.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+        The <methodname>set_detail_height_rows</methodname>() method
+        updates the height of detail cells. See the "detail-height-rows" property.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcalendar--get-detail-width-chars">
+      <title>gtk.Calendar.get_detail_width_chars</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_detail_width_chars</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The width of detail cells, in characters.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+        The <methodname>get_detail_width_chars</methodname>() method
+        queries the width of detail cells, in characters. See the "detail-width-chars" property.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcalendar--set-detail-width-chars">
+      <title>gtk.Calendar.set_detail_width_chars</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_detail_width_chars</methodname>
+	  <methodparam><parameter
+			 role="keyword">chars</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">chars</parameter>&nbsp;:</term>
+	  <listitem><simpara>detail width in characters.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+        The <methodname>set_detail_width_chars</methodname>() method
+        updates the width of detail cells. See the "detail-width-chars" property.
+      </para>
 
     </refsect2>
 

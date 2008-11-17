@@ -43,6 +43,14 @@
 	<methodparam><parameter role="keyword">column_span</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkcombobox--get-button-sensitivity">get_button_sensitivity</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkcombobox--set-button-sensitivity">set_button_sensitivity</link></methodname>
+	<methodparam><parameter role="keyword">sensitivity</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcombobox--get-active">get_active</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
       <methodsynopsis language="python">
@@ -202,6 +210,14 @@ END NOT IMPLEMENTED -->
 	    </row>
 
 	    <row valign="top">
+	      <entry>"button-sensitivity"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Whether the dropdown button is sensitive when the model is empty.
+	      Default value: gtk.SENSITIVITY_AUTO. Available in
+	      GTK+ 2.14 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"column-span-column"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The TreeModel column containing the column span values.
@@ -330,6 +346,37 @@ END NOT IMPLEMENTED -->
     <variablelist>
       <varlistentry>
         <term>"<link linkend="signal-gtkcombobox--changed">changed</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>combobox</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkcombobox--move-active">move-active</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>combobox</parameter></methodparam>
+	    <methodparam><parameter>scroll_type</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkcombobox--popdown">popdown</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>combobox</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkcombobox--popup">popup</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>combobox</parameter></methodparam>
@@ -600,6 +647,61 @@ indicates the column in the associated <link
 linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link> row
 that contains an integer that indicates how many columns the item should
 span.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcombobox--get-button-sensitivity">
+      <title>gtk.ComboBox.get_button_sensitivity</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_button_sensitivity</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>gtk.SENSITIVITY_ON if the dropdown button is sensitive when
+	  the model is empty, gtk.SENSITIVITY_OFF  if the button is always insensitive
+	  or gtk.SENSITIVITY_AUTO if it is only sensitive as long as the model
+	  has one item to be selected.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_button_sensitivity</methodname>() method returns whether
+	the combo box sets the dropdown button sensitive or not when there are no items in the model.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcombobox--set-button-sensitivity">
+      <title>gtk.ComboBox.set_button_sensitivity</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_button_sensitivity</methodname>
+	  <methodparam><parameter role="keyword">sensitivity</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">sensitivity</parameter>&nbsp;:</term>
+	  <listitem><simpara>specify the sensitivity of the dropdown button.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>set_button_sensitivity</methodname>() method sets whether the
+	dropdown button of the combo box should be always sensitive (gtk.SENSITIVITY_ON),
+	never sensitive (gtk.SENSITIVITY_OFF) or only if there is at least one item to
+	display (gtk.SENSITIVITY_AUTO).
+      </para>
 
     </refsect2>
 
@@ -1307,6 +1409,123 @@ any)</simpara></listitem>
 
       <para>The "changed" signal is emitted when a new item in the combo box
 is selected.</para>
+
+    </refsect2>
+    
+    <refsect2 id="signal-gtkcombobox--move-active">
+      <title>The "move-active" gtk.ComboBox Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>combobox</parameter></methodparam>
+	  <methodparam><parameter>scroll_type</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>combobox</parameter>&nbsp;:</term>
+	  <listitem><simpara>the combo box that received the
+	  signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>scroll_type</parameter>&nbsp;:</term>
+	  <listitem><simpara>a
+	  <xref linkend="gtk-scroll-type-constants" endterm="gtk-scroll-type-constants-title">GtkScrollType</xref>
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+	  with the <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+	  method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The "move-active" signal is a keybinding signal which gets emitted to move the active selection.</para>
+
+    </refsect2>
+    
+    <refsect2 id="signal-gtkcombobox--popdown">
+      <title>The "popdown" gtk.ComboBox Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>combobox</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>combobox</parameter>&nbsp;:</term>
+	  <listitem><simpara>the combo box that received the
+	  signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+	  with the <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+	  method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The "popdown" signal is a keybinding signal which gets emitted to popdown
+      the combo box list. The default bindings for this signal are Alt+Up and Escape.</para>
+
+    </refsect2>
+    
+    <refsect2 id="signal-gtkcombobox--popup">
+      <title>The "popup" gtk.ComboBox Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>combobox</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>combobox</parameter>&nbsp;:</term>
+	  <listitem><simpara>the combo box that received the
+	  signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+	  with the <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+	  method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The "popup" signal is a keybinding signal which gets emitted to popup
+      the combo box list. The default bindings for this signal are Alt+Down.</para>
 
     </refsect2>
 
