@@ -82,6 +82,11 @@ linkend="method-gtkmenuitem--set-accel-path">set_accel_path</link></methodname>
 	<methodparam><parameter
 		       role="keyword">accel_path</parameter></methodparam>
       </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmenuitem--get-accel-path">get_accel_path</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -124,6 +129,25 @@ linkend="method-gtkmenuitem--set-accel-path">set_accel_path</link></methodname>
             <colspec column="3" colwidth="4in"/>
                 <tbody>
                     <row valign="top">
+                        <entry>"accel-path"</entry>
+                        <entry>Read-Write</entry>
+                        <entry>Sets the accelerator path of the menu item, through
+			which runtime changes of the menu item's accelerator caused
+			by the user can be identified and saved to persistant storage.
+			Default value: <literal>None</literal>.
+			Available in GTK+ 2.14.
+			</entry>
+                    </row>
+		    <row valign="top">
+                        <entry>"right-justified"</entry>
+                        <entry>Read-Write</entry>
+                        <entry>Sets whether the menu item appears justified at the
+			right side of a menu bar.
+			Default value: <literal>False</literal>.
+			Available in GTK+ 2.14.
+			</entry>
+                    </row>
+		    <row valign="top">
                         <entry>"submenu"</entry>
                         <entry>Read-Write</entry>
                         <entry>The submenu attached to the menu item, or
@@ -176,6 +200,15 @@ linkend="method-gtkmenuitem--set-accel-path">set_accel_path</link></methodname>
               <entry>Read</entry>
               <entry>Space between icon and label. Allowed values: >= 0.
               Default value: 5</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"width-chars"</entry>
+              <entry>Read</entry>
+              <entry>The minimum desired width of the menu item in characters.
+	      Allowed values: >= 0. Default value: 12.
+	      Available in GTK+ 2.14.
+	      </entry>
             </row>
 
 	  </tbody>
@@ -560,6 +593,28 @@ method for a more convenient variant of this function. This method is a
 convenience wrapper that handles calling <link
 linkend="method-gtkwidget--set-accel-path"><methodname>gtk.Widget.set_accel_path</methodname>()</link> 
 with the appropriate accelerator group for the menu item.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenuitem--get-accel-path">
+      <title>gtk.MenuItem.get_accel_path</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_accel_path</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the accelerator path corresponding to this menu
+	  item's functionality, or <literal>None</literal> if not set </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The <methodname>get_accel_path</methodname>() method gets the accelerator
+	path that was previously set on menu_item.
+      </para>
 
     </refsect2>
 

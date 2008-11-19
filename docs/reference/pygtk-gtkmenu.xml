@@ -69,6 +69,12 @@ linkend="method-gtkmenu--set-accel-path">set_accel_path</link></methodname>
 	<methodparam><parameter
 		       role="keyword">accel_path</parameter></methodparam>
       </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmenu--get-accel-path">get_accel_path</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkmenu--attach-to-widget">attach_to_widget</link></methodname>
@@ -137,6 +143,12 @@ linkend="method-gtkmenu--reorder-child">reorder_child</link></methodname>
 	<methodparam><parameter
 		       role="keyword">monitor_num</parameter></methodparam>
       </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkmenu--get-monitor">get_monitor</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
     </classsynopsis>
 
   </refsect1>
@@ -179,6 +191,47 @@ linkend="method-gtkmenu--reorder-child">reorder_child</link></methodname>
 	  <colspec column="2" colwidth="1in"/>
 	  <colspec column="3" colwidth="4in"/>
 	  <tbody>
+
+	    <row valign="top">
+	      <entry>"accel-group"</entry>
+	      <entry>Read/Write</entry>
+	      <entry>The accel group holding accelerators for the menu.
+	      Available in GTK+ 2.14.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"accel-path"</entry>
+	      <entry>Read/Write</entry>
+	      <entry>An accel path used to conveniently construct accel paths of
+	      child items. Default value: <literal>None</literal>.
+	      Available in GTK+ 2.14.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"active"</entry>
+	      <entry>Read/Write</entry>
+	      <entry>The index of the currently selected menu item, or -1 if no menu
+	      item is selected. Allowed values: >= -1. Default value: -1.
+	      Available in GTK+ 2.14.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"attach-widget"</entry>
+	      <entry>Read/Write</entry>
+	      <entry>The widget the menu is attached to. Setting this property attaches
+	      the menu without a GtkMenuDetachFunc. If you need to use a detacher,
+	      use <methodname><link linkend="method-gtkmenu--attach-to-widget">gtk.Menu.attach_to_widget</link></methodname>()
+	      directly.
+	      Available in GTK+ 2.14.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"monitor"</entry>
+	      <entry>Read/Write</entry>
+	      <entry>The monitor the menu will be popped up on.
+	      Allowed values: >= -1. Default value: -1.
+	      Available in GTK+ 2.14.</entry>
+	    </row>
 
 	    <row valign="top">
 	      <entry>"tearoff-state"</entry>
@@ -635,6 +688,30 @@ items enables the user to change their accelerators at runtime.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkmenu--get-accel-path">
+      <title>gtk.Menu.get_accel_path</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_accel_path</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the accelerator path set on the menu.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_accel_path</methodname>() method returns
+	the accelerator path set on the menu.
+      </para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkmenu--attach-to-widget">
       <title>gtk.Menu.attach_to_widget</title>
 
@@ -963,6 +1040,31 @@ the menu should not appear on the same monitor as the pointer. This
 information can't be reliably inferred from the coordinates returned by a
 menu positioning function, since, for very long menus, these coordinates may
 extend beyond the monitor boundaries or even the screen boundaries.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenu--get-monitor">
+      <title>gtk.Menu.get_monitor</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_monitor</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the number of the monitor on which the menu should
+	  be popped up or -1, if no monitor has been set </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_monitor</methodname>() method returns
+	the number of the monitor on which to show the menu.
+      </para>
 
     </refsect2>
 

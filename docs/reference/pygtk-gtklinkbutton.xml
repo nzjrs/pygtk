@@ -25,8 +25,16 @@
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+        <methodname><link linkend="method-gtklinkbutton--get-visited">get_visited</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
         <methodname><link linkend="method-gtklinkbutton--set-uri">set_uri</link></methodname>
         <methodparam><parameter role="keyword">uri</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtklinkbutton--set-visited">set_visited</link></methodname>
+        <methodparam><parameter role="keyword">visited</parameter></methodparam>
       </methodsynopsis>
     </classsynopsis>
 
@@ -86,6 +94,14 @@
 	      <entry>Read-Write</entry>
 	      <entry>The URI bound to this button. Available in GTK+
 	      2.10.</entry>
+	    </row>
+	    
+	    <row valign="top">
+	      <entry>"visited"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The 'visited' state of this button. A visited link is drawn
+	      in a different color. Default value: <literal>False</literal>.
+	      Available in GTK+ 2.14.</entry>
 	    </row>
 
 	  </tbody>
@@ -225,6 +241,35 @@
       constructor.</para>
 
     </refsect2>
+  
+    <refsect2 id="method-gtklinkbutton--get-visited">
+      <title>gtk.LinkButton.get_visited</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_visited</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the link has been visited,
+	  <literal>False</literal> otherwise </simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_visited</methodname>() method retrieves the 'visited'
+	state of the URI where the GtkLinkButton points. The button becomes visited
+	when it is clicked. If the URI is changed on the button, the 'visited'
+	state is unset again. 
+      </para>
+
+    </refsect2>
 
     <refsect2 id="method-gtklinkbutton--set-uri">
       <title>gtk.LinkButton.set_uri</title>
@@ -249,6 +294,36 @@
       specified by <parameter>uri</parameter> as the URI the <link
       linkend="class-gtklinkbutton"><classname>gtk.LinkButton</classname></link>
       points to.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklinkbutton--set-visited">
+      <title>gtk.LinkButton.set_visited</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_visited</methodname>
+        <methodparam><parameter role="keyword">visited</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">visited</parameter>&nbsp;:</term>
+          <listitem><simpara>the new 'visited' state.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>set_visited</methodname>() method setsthe 'visited' state
+	of the URI where the
+	<link linkend="class-gtklinkbutton"><classname>gtk.LinkButton</classname></link>
+	points. See
+	<methodname><link linkend="method-gtklinkbutton--get-visited">gtk.LinkButton.get_visited</link></methodname>()
+	for more details.
+      </para>
 
     </refsect2>
 
