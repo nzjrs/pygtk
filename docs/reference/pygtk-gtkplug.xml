@@ -32,7 +32,14 @@ linkend="method-gtkplug--construct">construct</link></methodname>
 	<methodname><link
 linkend="method-gtkplug--get-id">get_id</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtksocket--get-plug-window">get_plug_window</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
+    
+    
 
     <programlisting>
 <emphasis role="bold">Functions</emphasis>
@@ -82,6 +89,13 @@ linkend="method-gtkplug--get-id">get_id</link></methodname>
                     Default value: <literal>False</literal>
                     Available in GTK+ 2.12.</entry>
                 </row>
+		<row valign="top">
+		    <entry>"socket-window"</entry>
+		    <entry>Read</entry>
+		    <entry>The window of the socket the plug is embedded in.
+		    Available in GTK+ 2.14.
+		    </entry>
+		</row>
                 </tbody>
             </tgroup>
         </informaltable>
@@ -224,6 +238,28 @@ linkend="class-gtkplug"><classname>gtk.Plug</classname></link> widget, which
 can be used to embed this window inside another window, for instance with
 <link
 linkend="method-gtksocket--add-id"><methodname>gtk.Socket.add_id</methodname>()</link>.</para>
+
+    </refsect2>
+
+  <refsect2 id="method-gtksocket--get-plug-window">
+      <title>gtk.Socket.get_plug_window</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_plug_window</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the window of the plug if available, or
+	  <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The <methodname>get_plug_window</methodname>() method retrieves the
+	window of the plug. Use this to check if the plug has been created
+	inside of the socket.
+      </para>
 
     </refsect2>
 
