@@ -21,23 +21,11 @@
         <methodparam></methodparam>
       </constructorsynopsis>
       <methodsynopsis language="python">
-        <methodname><link linkend="method-gtkstatusicon--set-from-pixbuf">set_from_pixbuf</link></methodname>
-        <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
-      </methodsynopsis>
-      <methodsynopsis language="python">
-        <methodname><link linkend="method-gtkstatusicon--set-from-file">set_from_file</link></methodname>
-        <methodparam><parameter role="keyword">filename</parameter></methodparam>
-      </methodsynopsis>
-      <methodsynopsis language="python">
-        <methodname><link linkend="method-gtkstatusicon--set-from-stock">set_from_stock</link></methodname>
-        <methodparam><parameter role="keyword">stock_id</parameter></methodparam>
-      </methodsynopsis>
-      <methodsynopsis language="python">
-        <methodname><link linkend="method-gtkstatusicon--set-from-icon-name">set_from_icon_name</link></methodname>
-        <methodparam><parameter role="keyword">icon_name</parameter></methodparam>
-      </methodsynopsis>
-      <methodsynopsis language="python">
         <methodname><link linkend="method-gtkstatusicon--get-storage-type">get_storage_type</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--get-gicon">get_gicon</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
@@ -54,6 +42,10 @@
       </methodsynopsis>
       <methodsynopsis language="python">
         <methodname><link linkend="method-gtkstatusicon--get-size">get_size</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--get-x11-window-id">get_x11_window_id</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
@@ -94,6 +86,26 @@
         <methodname><link linkend="method-gtkstatusicon--set-screen">set_screen</link></methodname>
         <methodparam><parameter role="keyword">screen</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-from-pixbuf">set_from_pixbuf</link></methodname>
+        <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-from-file">set_from_file</link></methodname>
+        <methodparam><parameter role="keyword">filename</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-from-stock">set_from_stock</link></methodname>
+        <methodparam><parameter role="keyword">stock_id</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-from-icon-name">set_from_icon_name</link></methodname>
+        <methodparam><parameter role="keyword">icon_name</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-from-gicon">set_from_gicon</link></methodname>
+        <methodparam><parameter role="keyword">gicon</parameter></methodparam>
+      </methodsynopsis>
 </classsynopsis>
 
 <programlisting>
@@ -104,6 +116,9 @@
     <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--status-icon-new-from-file">gtk.status_icon_new_from_file</link></methodname>
+    <methodparam><parameter role="keyword">filename</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--status-icon-new-from-gicon">gtk.status_icon_new_from_gicon</link></methodname>
     <methodparam><parameter role="keyword">filename</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--status-icon-new-from-stock">gtk.status_icon_new_from_stock</link></methodname>
@@ -160,6 +175,14 @@
           <entry>Write</entry>
           <entry>Filename to load and display. Default value:
           <literal>None</literal>.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"gicon"</entry>
+          <entry>Read-Write</entry>
+          <entry>The GIcon displayed in the GtkStatusIcon. For themed icons,
+          the image will be updated automatically if the theme changes.</entry>
+          Available from GTK+ 2.14.
         </row>
 
         <row valign="top">
@@ -438,6 +461,31 @@
 
     </refsect2>
 
+    <refsect2 id="method-gtkstatusicon--set-from-gicon">
+      <title>gtk.StatusIcon.set_from_gicon</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_from_gicon</methodname>
+        <methodparam><parameter role="keyword">gicon</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">gicon</parameter>&nbsp;:</term>
+          <listitem><simpara>a gio.Icon()</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14  and above.</para>
+      </note>
+
+      <para>Makes <parameter>status_icon</parameter> display the <parameter>gio.Icon()</parameter>
+      See <methodname><link linkend="function-gtk--status-icon-new-from-gicon">gtk.status_icon_new_from_gicon</link></methodname>()
+      for details</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkstatusicon--get-storage-type">
       <title>gtk.StatusIcon.get_storage_type</title>
 
@@ -465,6 +513,71 @@
       linkend="class-gtkstatusicon"><classname>gtk.StatusIcon</classname></link>
       has no image data, the return value will be
       <literal>gtk.IMAGE_EMPTY</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--get-gicon">
+      <title>gtk.StatusIcon.get_gicon</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_gicon</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the displayed icon, or <literal>None</literal>
+          if the image is empty.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+        Retrieves the gio.Icon() being displayed by the
+        <link linkend="class-gtkstatusicon"><classname>gtk.StatusIcon</classname></link>.
+        The storage type of the status icon must be gtk.IMAGE_EMPTY or gtk.IMAGE_GICON.
+        If this method fails, icon is left unchanged;
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--get-x11-window-id">
+      <title>gtk.StatusIcon.get_x11_window_id</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_x11_window_id</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>An 32 bit unsigned integer identifier for the
+          underlying X11 Window.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+        This function is only useful on the X11/freedesktop.org platform. It
+        returns a window ID for the widget in the underlying status icon
+        implementation. This is useful for the Galago notification service,
+        which can send a window ID in the protocol in order for the server
+        to position notification windows pointing to a status icon reliably.
+      </para>
+      <para>
+        This function is not intended for other use cases which are more likely
+        to be met by one of the non-X11 specific methods,
+        such as
+        <methodname><link linkend="function-gtk--status-icon-position-menu">gtk.status_icon_position_menu</link></methodname>().
+      </para>
 
     </refsect2>
 
@@ -888,6 +1001,33 @@
       by <parameter>filename</parameter>.  The image will be scaled down to
       fit in the available space in the notification area, if
       necessary.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--status-icon-new-from-gicon">
+      <title>gtk.status_icon_new_from_gicon</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.status_icon_new_from_gicon</methodname>
+	  <methodparam><parameter
+			 role="keyword">gicon</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">gicon</parameter>&nbsp;:</term>
+	  <listitem><simpara></simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link
+	  linkend="class-gtkstatusicon"><classname>gtk.StatusIcon</classname></link></simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+        Creates a status icon displaying a gio.Icon(). If the icon is a
+        themed icon, it will be updated when the theme changes.
+      </para>
 
     </refsect2>
 
