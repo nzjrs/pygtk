@@ -26,7 +26,7 @@ pygtkdir = $(pkgpythondir)/gtk
 pygtk_PYTHON = 			\
 	__init__.py 		\
 	_lazyutils.py		\
-	compat.py			\
+	compat.py		\
 	deprecation.py		\
 	keysyms.py
 
@@ -43,12 +43,22 @@ endif
 # gtk module
 GTK_DEFS = gtk-base.defs
 GDK_DEFS = gdk-base.defs
+GTKUNIXPRINT_DEFS = gtkunixprint-base.defs
 GTK_TYPES_DEFS = gtk-base-types.defs
 GDK_TYPES_DEFS = gdk-base-types.defs
+GTKUNIXPRINT_TYPES_DEFS = gtkunixprint-base-types.defs
 
 GTK_2_10_DEFS = gdk-2.10.defs gtk-2.10.defs gtk-2.10-types.defs
-GTK_2_12_DEFS = gdk-2.12.defs gtk-2.12.defs gtk-2.12-types.defs
-GTK_2_14_DEFS = gdk-2.14.defs gtk-2.14.defs gtk-2.14-types.defs
+GTK_2_12_DEFS =
+	gdk-2.12.defs		\
+	gtk-2.12.defs		\
+	gtk-2.12-types.defs	\
+	gtkunixprint-2.12.defs
+GTK_2_14_DEFS =
+	gdk-2.14.defs		\
+	gtk-2.14.defs		\
+	gtk-2.14-types.defs 	\
+	gtkunixprint-2.14.defs
 
 if HAVE_GTK_2_10
 GDK_DEFS += gdk-2.10.defs 
@@ -60,6 +70,7 @@ if HAVE_GTK_2_12
 GDK_DEFS += gdk-2.12.defs 
 GTK_DEFS += gtk-2.12.defs 
 GTK_TYPES_DEFS += gtk-2.12-types.defs
+GTKUNIXPRINT_DEFS += gtkunixprint-2.12.defs
 endif
 
 
@@ -67,6 +78,7 @@ if HAVE_GTK_2_14
 GDK_DEFS += gdk-2.14.defs 
 GTK_DEFS += gtk-2.14.defs 
 GTK_TYPES_DEFS += gtk-2.14-types.defs
+GTKUNIXPRINT_DEFS += gtkunixprint-2.14.defs
 endif
 
 CREATEDEFS = $(PYTHON) $(CODEGENDIR)/createdefs.py
@@ -129,6 +141,12 @@ gdk-types.defs: $(GDK_TYPES_DEFS) Makefile
 gtk-types.defs: $(GTK_TYPES_DEFS) Makefile
 	$(CREATEDEFS) $@ $(GTK_TYPES_DEFS)
 
+gtkunixprint.defs: $(GTKUNIXPRINT_DEFS) Makefile
+	$(CREATEDEFS) $@ $(GTKUNIXPRINT_DEFS)
+
+gtkunixprint-types.defs: $(GTKUNIXPRINT_TYPES_DEFS) Makefile
+	$(CREATEDEFS) $@ $(GTKUNIXPRINT_TYPES_DEFS)
+
 gdk.c: gdk-types.defs gdk.defs $(GDK_OVERRIDES)
 gtk.c: gdk-types.defs gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
 _gtk_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
@@ -167,11 +185,22 @@ defs_DATA += $(LIBGLADE_DEFS)
 endif
 
 # gtkunixprint module
-GTKUNIXPRINT_DEFS = gtkunixprint.defs
-CLEANFILES += gtkunixprint.c
-EXTRA_DIST += $(GTKUNIXPRINT_DEFS) gtkunixprint.override
-gtkunixprint.c: $(GTKUNIXPRINT_DEFS) gtkunixprint.override gdk-types.defs \
-	gtk-types.defs
+CLEANFILES +=			\
+	gtkunixprint.c 		\
+	gtkunixprint.defs 	\
+	gtkunixprint-types.defs
+		
+
+EXTRA_DIST +=				\
+	$(GTKUNIXPRINT_DEFS)		\
+	$(GTKUNIXPRINT_TYPES_DEFS)	\
+	gtkunixprint.override
+
+gtkunixprint.c:						\
+	 gtkunixprint-types.defs gtkunixprint.defs	\
+		gtkunixprint.override gdk-types.defs	\
+		gtk-types.defs
+
 gtkunixprint_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTKUNIXPRINT_CFLAGS)
 gtkunixprint_la_LIBADD = $(GTKUNIXPRINT_LIBS)
 gtkunixprint_la_LDFLAGS = $(common_ldflags) -export-symbols-regex initgtkunixprint
@@ -179,7 +208,7 @@ gtkunixprint_la_SOURCES = gtkunixprintmodule.c
 nodist_gtkunixprint_la_SOURCES = gtkunixprint.c
 if BUILD_GTKUNIXPRINT
 pkgpyexec_LTLIBRARIES = gtkunixprint.la
-defs_DATA += $(GTKUNIXPRINT_DEFS)
+defs_DATA += $(GTKUNIXPRINT_DEFS) $(GTKUNIXPRINT_TYPES_DEFS)
 endif
 
 if PLATFORM_WIN32
