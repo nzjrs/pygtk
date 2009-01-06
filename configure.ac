@@ -15,7 +15,7 @@ m4_define(gtk_required_version,        2.8.0)
 m4_define(libglade_required_version,   2.5.0)
 m4_define(gtkunixprint_required_version,  2.9.0)
 m4_define(pycairo_required_version,    1.0.2) dnl or 1.1.7
-m4_define(pygobject_required_version,  2.15.5)
+m4_define(pygobject_required_version,  2.14.0)
 
 AC_INIT(pygtk, pygtk_version,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=pygtk])
@@ -143,22 +143,6 @@ AC_SUBST(PYGOBJECT_INCLUDEDIR)
 PYGOBJECT_DATADIR=`$PKG_CONFIG --variable=datadir pygobject-2.0`
 AC_SUBST(PYGOBJECT_DATADIR)
 
-
-dnl PyGObject defs
-AC_SUBST(PYGOBJECT_DEFSDIR)
-PYGOBJECT_DEFSDIR=`$PKG_CONFIG --variable defsdir pygobject-2.0`
-
-AC_MSG_CHECKING([for gio-types.defs])
-if test -n "$PYGOBJECT_DEFSDIR" && test -e "$PYGOBJECT_DEFSDIR/gio-types.defs"; then
-  AM_CONDITIONAL(HAVE_GIO_TYPES_DEFS, true)
-  AC_MSG_RESULT($PYGOBJECT_DEFSDIR/gio-types.defs)
-else
-  AM_CONDITIONAL(HAVE_GIO_TYPES_DEFS, false)
-  AC_MSG_RESULT(no)
-fi
-
-
-dnl Documentation
 PYGOBJECT_FIXXREF="$PYTHON `$PKG_CONFIG --variable=fixxref pygobject-2.0`"
 AC_SUBST(PYGOBJECT_FIXXREF)
 
@@ -283,7 +267,8 @@ if test "x$have_pycairo" = "xtrue"; then
   AC_DEFINE([HAVE_GTK_2_12], [$have_gtk_212], [If Gtk 2.12 was found])
 
   dnl check for gtk 2.14
-  PKG_CHECK_MODULES(GTK214, gtk+-2.0 >= 2.13.8,
+  PKG_CHECK_MODULES(GTK214, [gtk+-2.0 >= 2.13.6,
+                             pygobject-2.0 >= 2.15.3],
 	  HAVE_GTK_214="yes", HAVE_GTK_214="no")
 
   if test "x$HAVE_GTK_214" = "xyes"; then
