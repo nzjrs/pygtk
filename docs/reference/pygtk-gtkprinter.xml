@@ -67,15 +67,23 @@ END NOT IMPLEMENTED -->
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprinter--is-accepting-jobs">is_accepting_jobs</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
         <methodname><link linkend="method-gtkprinter--is-active">is_active</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-        <methodname><link linkend="method-gtkprinter--is-virtual">is_virtual</link></methodname>
+        <methodname><link linkend="method-gtkprinter--is-default">is_default</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-        <methodname><link linkend="method-gtkprinter--is-default">is_default</link></methodname>
+        <methodname><link linkend="method-gtkprinter--is-paused">is_paused</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprinter--is-virtual">is_virtual</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
@@ -115,10 +123,18 @@ END NOT IMPLEMENTED -->
 	  <tbody>
 
             <row valign="top">
-              <entry>"accepts-pdf"</entry>
+              <entry>"accepting-jobs"</entry>
+              <entry>Read</entry>
+              <entry>This property is <literal>True</literal> if the printer
+              is accepting jobs. Default value: <literal>True</literal>.
+              Available in GTK+ 2.14.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"accepts-ps"</entry>
               <entry>Read-Write-Construct Only</entry>
               <entry>if <literal>True</literal> this printer can accept
-              PDF. Available in GTK+ 2.10.</entry>
+              PostScript. Available in GTK+ 2.10.</entry>
             </row>
 
             <row valign="top">
@@ -170,6 +186,15 @@ END NOT IMPLEMENTED -->
 	      <entry>Read-Write-Construct Only</entry>
 	      <entry>The name of the printer.  Default value:
 	      <literal>None</literal>. Available in GTK+ 2.10.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"paused"</entry>
+	      <entry>Read</entry>
+	      <entry>This property is <literal>True</literal> if this printer is paused. A paused
+              printer still accepts jobs, but it does not print them.
+              Default value: <literal>False</literal>
+              Available in GTK+ 2.14.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -531,6 +556,30 @@ END NOT IMPLEMENTED -->
 
     </refsect2>
 
+    <refsect2 id="method-gtkprinter--is-accepting-jobs">
+      <title>gtkunixprint.Printer.is_accepting_jobs</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>is_accepting_jobs</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if printer is accepting jobs.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>is_accepting_jobs</methodname>() method returns
+      whether the printer is accepting jobs</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkprinter--is-active">
       <title>gtkunixprint.Printer.is_active</title>
 
@@ -553,6 +602,31 @@ END NOT IMPLEMENTED -->
       <para>The <methodname>is_active</methodname>() method returns
       <literal>True</literal> if the printer is currently active (i.e.
       accepts new jobs).</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprinter--is-paused">
+      <title>gtkunixprint.Printer.is_paused</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>is_paused</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the printer is paused.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>is_paused</methodname>() method returns
+      whether the printer is currently paused. A paused printer still accepts
+      jobs, but it is not printing them.</para>
 
     </refsect2>
 
