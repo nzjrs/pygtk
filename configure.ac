@@ -79,7 +79,6 @@ AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
 AC_MSG_CHECKING([for PySignal_SetWakeupFd in Python.h])
 py_prefix=`$PYTHON -c "import sys; print sys.prefix"`
-PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
 old_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="-Wall -Werror $PYTHON_INCLUDES"
 AC_TRY_COMPILE([#include <Python.h>],
