@@ -20,7 +20,7 @@
  * USA
  */
 
-#include <gtk/gtkcellrenderer.h>
+#include <gtk/gtk.h>
 
 #define PYGTK_TYPE_GENERIC_CELL_RENDERER            (pygtk_generic_cell_renderer_get_type())
 #define PYGTK_GENERIC_CELL_RENDERER(object)         (G_TYPE_CHECK_INSTANCE_CAST((object), PYGTK_TYPE_GENERIC_CELL_RENDERER, PyGtkGenericCellRenderer))

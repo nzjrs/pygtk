@@ -22,7 +22,7 @@
 
 #include <Python.h>
 
-#include <gtk/gtktreemodel.h>
+#include <gtk/gtk.h>
 
 #define PYGTK_TYPE_GENERIC_TREE_MODEL            (pygtk_generic_tree_model_get_type())
 #define PYGTK_GENERIC_TREE_MODEL(object)         (G_TYPE_CHECK_INSTANCE_CAST((object), PYGTK_TYPE_GENERIC_TREE_MODEL, PyGtkGenericTreeModel))

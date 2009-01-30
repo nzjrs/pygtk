@@ -27,10 +27,7 @@
 #include <pygobject.h>
 #include <pygtk.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkprinter.h>
-#include <gtk/gtkprintjob.h>
-#include <gtk/gtkpagesetupunixdialog.h>
-#include <gtk/gtkprintunixdialog.h>
+#include <gtk/gtkunixprint.h>
 
 # include <pycairo.h>
 Pycairo_CAPI_t *Pycairo_CAPI;
