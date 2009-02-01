@@ -1379,6 +1379,7 @@ _wrap_gtk_text_buffer_serialize(PyGObject *self, PyObject *args,
     guint8 *ret;
     PyGObject *content_buffer;
     GtkTextIter *start = NULL, *end = NULL;
+    PyObject *py_retval;
  
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
                                      "O!OOO:GtkTextBuffer.serialize",
@@ -1407,7 +1408,9 @@ _wrap_gtk_text_buffer_serialize(PyGObject *self, PyObject *args,
     ret = gtk_text_buffer_serialize(GTK_TEXT_BUFFER(self->obj),
                                       GTK_TEXT_BUFFER(content_buffer->obj),
                                       format, start, end, &length);
-    return PyString_FromStringAndSize((char *) ret, (Py_ssize_t) length);
+    py_retval = PyString_FromStringAndSize((char *) ret, (Py_ssize_t) length);
+    g_free(ret);
+    return py_retval;
 }
 %%
 override gtk_text_buffer_register_deserialize_format kwargs
@@ -1529,6 +1532,7 @@ pygtk_text_buffer_register_serialize_format_cb(GtkTextBuffer *register_buf,
 
     if (retobj != NULL) {
         PyString_AsStringAndSize(retobj, (gchar**)&ret, (Py_ssize_t*) length);
+        ret = g_memdup(ret, *length);
         Py_DECREF(retobj);
     } else {
         PyErr_Print();
