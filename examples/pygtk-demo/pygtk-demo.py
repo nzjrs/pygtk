@@ -203,6 +203,8 @@ class PyGtkDemo(gtk.Window):
         module_name  = model.get_value(iter, MODULE_COLUMN)
         func_name    = model.get_value(iter, FUNC_COLUMN)
         italic_value = model.get_value(iter, ITALIC_COLUMN)
+        if module_name is None:  # a "category" row is activated
+            return True
         try:
             self.module_cache[module_name].present()
         except KeyError:
@@ -221,7 +223,8 @@ class PyGtkDemo(gtk.Window):
             return False
 
         name = model.get_value(iter, MODULE_COLUMN)
-        self.load_module(name)
+        if name is not None:
+            self.load_module(name)
 
     def window_closed_cb (self, window, model, path):
         iter = model.get_iter(path)
@@ -306,7 +309,6 @@ class PyGtkDemo(gtk.Window):
 
     def load_module(self, name):
         self.clear_buffers()
-        if name is None: return
         module = getattr(demos, name)
         if module.__doc__:
             self.insert_documentation(module)

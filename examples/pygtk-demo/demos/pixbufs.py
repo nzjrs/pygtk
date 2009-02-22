@@ -69,7 +69,7 @@ class PixbufsDemo(gtk.Window):
             da.connect("expose_event", self.expose_cb)
             self.add(da)
 
-            self.timeout_id = gtk.timeout_add(FRAME_DELAY, self.timeout)
+            self.timeout_id = gobject.timeout_add(FRAME_DELAY, self.timeout)
 
             self.show_all()
 
@@ -120,7 +120,7 @@ class PixbufsDemo(gtk.Window):
 
     def cleanup_callback(self, win):
         if self.timeout_id is not None:
-            gtk.timeout_remove(self.timeout_id)
+            gobject.source_remove(self.timeout_id)
             self.timeout_id = None
 
     def timeout(self):
