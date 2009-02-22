@@ -98,12 +98,11 @@ define GdkPixbuf.get_pixels_array noargs
 static PyObject *
 _wrap_gdk_pixbuf_get_pixels_array(PyGObject *self)
 {
-
-
 #ifdef HAVE_NUMPY
     GdkPixbuf *pixbuf = GDK_PIXBUF(self->obj);
     PyArrayObject *array;
     int dims[3] = { 0, 0, 3 };
+    int rowstride;
 
     if (!have_numpy())
 	return NULL;
@@ -117,7 +116,12 @@ _wrap_gdk_pixbuf_get_pixels_array(PyGObject *self)
     if (array == NULL)
         return NULL;
 
-    array->strides[0] = gdk_pixbuf_get_rowstride(pixbuf);
+    rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+    if (rowstride != array->strides[0]) {
+	/* pixbuf data is not contiguous */
+	array->strides[0] = rowstride;
+	array->flags &= ~CONTIGUOUS;
+    }
     /* the array holds a ref to the pixbuf pixels through this wrapper*/
     Py_INCREF(self);
     array->base = (PyObject *)self;
