@@ -933,6 +933,14 @@ linkend="method-gtkwidget--set-set-scroll-adjustments-signal">set_set_scroll_adj
         <methodname><link linkend="method-gtkwidget--trigger-tooltip-query">trigger_tooltip_query</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--get-snapshot">get_snapshot</link></methodname>
+        <methodparam><parameter role="keyword">clip_rect</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkwidget--get-window">get_window</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
 <programlisting>
@@ -1323,6 +1331,14 @@ right-to-left and left-to-right text.</entry>
               2.10 and above.</entry>
             </row>
 
+            <row valign="top">
+              <entry>"window"</entry>
+              <entry>Read</entry>
+              <entry>The "window" property is the widget's window if it is
+	      realized, <literal>None</literal> otherwise.
+	      This property is available in GTK+ 2.14 and above.</entry>
+            </row>
+
 	  </tbody>
 	</tgroup>
       </informaltable>
@@ -1484,6 +1500,17 @@ by the widget. This attribute is writeable in PyGTK 2.4.</entry>
       </varlistentry>
       <varlistentry>
         <term>"<link linkend="signal-gtkwidget--configure-event">configure-event</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>widget</parameter></methodparam>
+            <methodparam><parameter>event</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkwidget--damage-event">delete-event</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>widget</parameter></methodparam>
@@ -6688,7 +6715,7 @@ method.</para>
         </note>
 
         <para>
-            The <methodname>get_tooltip_text</methodname>() method
+            The <methodname>get_tooltip_window</methodname>() method
             returns the <link linkend="class-gtkwindow"><classname>gtk.Window</classname></link>
             of the current tooltip. This can be the
             <link linkend="class-gtkwindow"><classname>gtk.Window</classname></link>
@@ -6937,6 +6964,92 @@ method.</para>
             query on the display where the toplevel of widget is located. See
             <methodname><link linkend="function-gtk--tooltip-trigger-tooltip-query">gtk.tooltip_trigger_tooltip_query</link>
             </methodname>() for more information.
+        </para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--get-snapshot">
+        <title>gtk.Widget.get_snapshot</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_snapshot</methodname>
+            <methodparam><parameter role="keyword">clip_rect</parameter></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><parameter role="keyword">clip_rect</parameter>&nbsp;:</term>
+                        <listitem><simpara>a <link linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
+			or <literal>None</literal>.</simpara></listitem>
+                    </varlistentry>
+                    <varlistentry>
+                        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>The <link linkend="class-gdkpixmap">
+			<classname>gtk.gdk.PixmapWindow</classname></link>
+			snapshot of the widget.</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.14 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>get_snapshot</methodname>() method
+            creates a <link linkend="class-gdkpixmap"><classname>gtk.gdk.Pixmap</classname></link>
+            of the contents of the widget and its children.
+	</para>
+	<para>
+	    Works even if the widget is obscured. The depth and visual of the resulting pixmap
+	    is dependent on the widget being snapshot and likely differs from those of a
+	    target widget displaying the pixmap. The function
+	    <link linkend="method-gdkpixbuf--get-from-drawable"><methodname>gtk.gdk.Pixbuf.get_from_drawable</methodname></link>()
+	    can be used to convert the pixmap to a visual independant representation.
+        </para>
+	<para>
+	    The snapshot area used by this function is the widget's allocation
+	    plus any extra space occupied by additional windows belonging to
+	    this widget (such as the arrows of a spin button). Thus, the resulting
+	    snapshot pixmap is possibly larger than the allocation.
+	</para>
+	<para>
+	    If clip_rect is non-<literal>None</literal>, the resulting pixmap is shrunken
+	    to match the specified clip_rect. The (x,y) coordinates of clip_rect are
+	    interpreted widget relative. If width or height of clip_rect are 0 or negative,
+	    the width or height of the resulting pixmap will be shrunken by the respective amount.
+	    For instance a clip_rect { +5, +5, -10, -10 } will chop off 5 pixels at each side
+	    of the snapshot pixmap. If non-NULL, clip_rect will contain the exact widget-relative
+	    snapshot coordinates upon return. A clip_rect of { -1, -1, 0, 0 } can be used to preserve
+	    the auto-grown snapshot area and use clip_rect as a pure output parameter.
+	</para>
+	<para>
+	    The returned pixmap can be <literal>None</literal>, if the resulting clip_area was empty.
+	</para>
+
+    </refsect2>
+    
+    <refsect2 id="method-gtkwidget--get-window">
+        <title>gtk.Widget.get_window</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>get_window</methodname>
+            <methodparam></methodparam>
+            </methodsynopsis></programlisting>
+                <variablelist>
+                    <varlistentry>
+                        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>the widget's <link linkend="class-gtkwindow"><classname>gtk.Window</classname>
+                        </link>.</simpara></listitem>
+                    </varlistentry>
+                </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.14 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>get_window</methodname>() method
+            returns the widget's <link linkend="class-gtkwindow"><classname>gtk.Window</classname></link>
+	    if it is realized, <literal>None</literal> otherwise.
         </para>
 
     </refsect2>
@@ -7643,6 +7756,56 @@ any)</simpara></listitem>
 
       <para>The "configure-event" signal is emitted when the widget's window
 is allocated a size and width.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkwidget--damage-event">
+      <title>The "damage-event" gtk.Widget Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>widget</parameter></methodparam>
+	  <methodparam><parameter>event</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>widget</parameter>&nbsp;:</term>
+	  <listitem><simpara>the widget that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>event</parameter>&nbsp;:</term>
+	  <listitem><simpara>the event that triggered the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara><literal>True</literal> to stop other handlers
+	from being invoked for the event. <literal>False</literal> to
+	propagate the event further.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The "damage-event" signal is emitted when a redirected window belonging
+	to widget gets drawn into. The region/area members of the event shows
+	what area of the redirected drawable was drawn into.
+      </para>
 
     </refsect2>
 

@@ -113,6 +113,10 @@
         <methodname><link linkend="method-gtkclipboard--wait-is-rich-text-available">wait_is_rich_text_available</link></methodname>
         <methodparam><parameter role="keyword">buffer</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkclipboard--wait-is-uris-available">wait_is_uris_available</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -1182,6 +1186,43 @@ since it doesn't need to retrieve the actual image data.</para>
       <para>This method is a little faster than calling <link
       linkend="method-gtkclipboard--wait-for-rich-text"><methodname>wait_for_rich_text()</methodname></link>
       since it doesn't need to retrieve the actual text.</para>
+ 
+    </refsect2>
+ 
+    <refsect2 id="method-gtkclipboard--wait-is-uris-available">
+      <title>gtk.Clipboard.wait_is_uris_available</title>
+ 
+      <programlisting><methodsynopsis language="python">
+        <methodname>wait_is_uris_available</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+                                                                                
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if is there is an URI list
+	  available, <literal>False</literal>
+          otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+ 
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+ 
+      <para>
+	The <methodname>wait_is_uris_available</methodname>()
+	method Test to see if there is a list of URIs available to be pasted This
+	is done by requesting the TARGETS atom and checking if it contains the URI targets.
+	This function waits for the data to be received using the main loop, so events,
+	timeouts, etc, may be dispatched during the wait.
+      </para>
+       
+      <!-- NOT IMPLEMENTED
+      <para>This method is a little faster than calling <link
+      linkend="method-gtkclipboard- -wait-for-uris"><methodname>gtk.Clipboard.wait_for_uris</methodname></link>()
+      since it doesn't need to retrieve the actual text.</para>
+      -->
  
     </refsect2>
  
