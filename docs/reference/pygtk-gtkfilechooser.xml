@@ -206,6 +206,42 @@
 	<methodname><link linkend="method-gtkfilechooser--get-do-overwrite-confirmation">get_do_overwrite_confirmation</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--get-current-folder-file">get_current_folder_file</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--get-file">get_file</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <!-- NOT IMPLEMENTED
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser- -get-files">get_files</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      -->
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--get-preview-file">get_preview_file</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--select-file">select_file</link></methodname>
+	<methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--set-current-folder-file">set_current_folder_file</link></methodname>
+	<methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--set-file">set_file</link></methodname>
+	<methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkfilechooser--unselect-file">unselect_file</link></methodname>
+	<methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -2115,6 +2151,273 @@ method for more information.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkfilechooser--get-current-folder-file">
+      <title>gtk.FileChooser.get_current_folder_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_current_folder_file</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The <link linkend="class-giofile">
+	  <classname>gio.File</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_current_folder_file</methodname>() method returns
+	the current folder of chooser as <link linkend="class-giofile"><classname>gio.File</classname></link>.
+	See <link linkend="method-gtkfilechooser--get-current-folder-uri">gtk.FileChooser.get_current_folder_uri</link>().
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooser--get-file">
+      <title>gtk.FileChooser.get_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_file</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A selected <link linkend="class-giofile">
+	  <classname>gio.File</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_file</methodname>() method returns
+	the <link linkend="class-giofile"><classname>gio.File</classname></link>
+	for the currently selected file in the file selector.
+	If multiple files are selected, one of the files will be returned at random. 
+      </para>
+      <para>
+	If the file chooser is in folder mode, this function returns the selected folder.
+      </para>
+
+    </refsect2>
+    
+    <!-- NOT IMPLEMENTED
+    <refsect2 id="method-gtkfilechooser- -get-files">
+      <title>gtk.FileChooser.get_files</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_files</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A list containing a  <link linkend="class-giofile">
+	  <classname>gio.File</classname></link> for each selected file and subfolder
+	  in the current folder.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_files</methodname>() method returns
+	Lists all the selected files and subfolders in the current folder of chooser as
+	<link linkend="class-giofile"><classname>gio.File</classname></link>. An internal function, see
+	<link linkend="method-gtkfilechooser- -get-uris">gtk.FileChooser.get_uris</link>().
+      </para>
+
+    </refsect2> -->
+
+    <refsect2 id="method-gtkfilechooser--get-preview-file">
+      <title>gtk.FileChooser.get_preview_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_preview_file</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The <link linkend="class-giofile">
+	  <classname>gio.File</classname></link> for the file to preview,
+	  or <literal>None</literal> if no file is selected.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_preview_file</methodname>() method returns
+	the <link linkend="class-giofile"><classname>gio.File</classname></link>
+	that should be previewed in a custom preview Internal function, see
+	<link linkend="method-gtkfilechooser--get-preview-uri">gtk.FileChooser.get_preview_uri</link>().
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooser--select-file">
+      <title>gtk.FileChooser.select_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>select_file</methodname>
+	  <methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">file</parameter>&nbsp;:</term>
+	  <listitem><simpara>the file to select.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>True</literal> if both the folder could be changed
+	  and the path was selected successfully,
+	  <literal>False</literal> otherwise. </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>select_file</methodname>() method
+	selects the file referred to by file. An internal function. See
+	<link linkend="method-gtkfilechooser--select-uri">gtk.FileChooser.select_uri</link>().
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooser--set-current-folder-file">
+      <title>gtk.FileChooser.set_current_folder_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_current_folder_file</methodname>
+	  <methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">file</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link linkend="class-giofile"><classname>gio.File</classname></link>
+	  for the new folder.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>True</literal> if the folder could be changed
+	  successfully, <literal>False</literal> otherwise.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>set_current_folder_file</methodname>() method
+	sets the current folder for chooser from a
+	<link linkend="class-giofile"><classname>gio.File</classname></link>.
+	Internal function, see
+	<link linkend="method-gtkfilechooser--set-current-folder-uri">gtk.FileChooser.set_current_folder_uri</link>().
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooser--set-file">
+      <title>gtk.FileChooser.set_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_file</methodname>
+	  <methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">file</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link linkend="class-giofile"><classname>gio.File</classname></link>
+	  to set as current.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>True</literal> if both the folder could be changed
+	  and the file selected successfully, <literal>False</literal> otherwise.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>set_file</methodname>() method
+	Sets file as the current filename for the file chooser, by changing to the
+	file's parent folder and actually selecting the file in list.
+	If the chooser is in gtk.FILE_CHOOSER_ACTION_SAVE mode, the file's base
+	name will also appear in the dialog's file name entry. 
+      </para>
+      <para>
+	If the file name isn't in the current folder of chooser, then the current
+	folder of chooser will be changed to the folder containing filename.
+	This is equivalent to a sequence of
+	<link linkend="method-gtkfilechooser--unselect-all">gtk.FileChooser.unselect_all</link>()
+	followed by <link linkend="method-gtkfilechooser--select-filename">gtk.FileChooser.select_filename</link>().
+      </para>
+      <para>
+	Note that the file must exist, or nothing will be done except for the directory change.
+      </para>
+      <para>
+	If you are implementing a File/Save As... dialog, you should use this function
+	if you already have a file name to which the user may save; for example,
+	when the user opens an existing file and then does File/Save As... on it.
+	If you don't have a file name already — for example, if the user just created a
+	new file and is saving it for the first time, do not call this function. Instead,
+	use something similar to this:
+      </para>
+<programlisting>
+if (document_is_new):
+    # the user just created a new document
+    chooser.set_current_folder_file(default_file_for_saving)
+    chooser.set_current_name("Untitled document")
+else:
+    # the user edited an existing document
+    chooser.set_file(existing_file)
+</programlisting>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkfilechooser--unselect-file">
+      <title>gtk.FileChooser.unselect_file</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>unselect_file</methodname>
+	  <methodparam><parameter role="keyword">file</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">file</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-giofile"><classname>gio.File</classname></link>.
+	  </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>unselect_file</methodname>() method
+	unselects the file referred to by file. If the file is not in the current
+	directory, does not exist, or is otherwise not currently selected, does nothing.
+      </para>
+
+    </refsect2>
+    
   </refsect1>
 
   <refsect1>
