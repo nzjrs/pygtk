@@ -128,6 +128,12 @@ linkend="method-gtkimage--get-pixel-size">get_pixel_size</link></methodname>
 linkend="method-gtkimage--clear">clear</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkimage--set-from-gicon">set_from_gicon</link></methodname>
+	<methodparam><parameter role="keyword">gicon</parameter></methodparam>
+	<methodparam><parameter role="keyword">size</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
 <programlisting>
@@ -162,6 +168,10 @@ linkend="method-gtkimage--clear">clear</link></methodname>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="function-gtk--image-new-from-pixbuf">gtk.image_new_from_pixbuf</link></methodname>
     <methodparam><parameter role="keyword">pixbuf</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="function-gtk--image-new-from-gicon">gtk.image_new_from_gicon</link></methodname>
+    <methodparam><parameter role="keyword">gicon</parameter></methodparam>
+    <methodparam><parameter role="keyword">size</parameter></methodparam>
   </methodsynopsis></programlisting>
 
   </refsect1>
@@ -1008,6 +1018,37 @@ existing image.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkimage--set-from-gicon">
+      <title>gtk.Image.set_from_gicon</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_from_gicon</methodname>
+          <methodparam><parameter role="keyword">icon</parameter></methodparam>
+          <methodparam><parameter role="keyword">size</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon</parameter>&nbsp;:</term>
+	  <listitem><simpara>an icon</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">size</parameter>&nbsp;:</term>
+	  <listitem><simpara>an icon size</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	For the <methodname>set_from_gicon</methodname>() method see
+	<methodname><link linkend="function-gtk--image-new-from-gicon">gtk.image_new_from_gicon</link></methodname>()
+	for details.
+      </para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -1352,6 +1393,44 @@ linkend="class-gtkimage"><classname>gtk.Image</classname></link> from the pixbuf
 <link linkend="class-gtkimage"><classname>gtk.Image</classname></link> 
 created will not react to state changes. Should you want that, you should use 
 <link linkend="function-gtk--image-new-from-icon-set">gtk.image_new_from_icon_set</link>
+      </para>
+     </refsect2>
+    
+    <refsect2 id="function-gtk--image-new-from-gicon">
+      <title>gtk.image_new_from_gicon</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.image_new_from_gicon</methodname>
+	  <methodparam><parameter role="keyword">gicon</parameter></methodparam>
+	  <methodparam><parameter role="keyword">size</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">gicon</parameter>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gioicon"><classname>gio.Icon</classname></link>
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">size</parameter>&nbsp;:</term>
+	  <listitem><simpara>a stock icon size.
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a new <link linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+	  displaying the themed icon.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <function>gtk.image_new_from_pixbuf</function>() function returns
+      a new <link linkend="class-gtkimage"><classname>gtk.Image</classname></link>
+      displaying an icon from the current icon theme. If the icon name isn't known,
+      a "broken image" icon will be displayed instead. If the current icon theme is
+      changed, the icon will be updated appropriately.
       </para>
      </refsect2>
  

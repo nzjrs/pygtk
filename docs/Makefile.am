@@ -162,6 +162,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkmenu.xml			\
 	reference/pygtk-gtkmessagedialog.xml		\
 	reference/pygtk-gtkmisc.xml			\
+        reference/pygtk-gtkmountoperation.xml		\
 	reference/pygtk-gtknotebook.xml			\
 	reference/pygtk-gtkobject.xml			\
 	reference/pygtk-gtkoptionmenu.xml		\
@@ -439,6 +440,7 @@ HTML_FILES =						\
 	html/class-gtkmenutoolbutton.html		\
 	html/class-gtkmessagedialog.html		\
 	html/class-gtkmisc.html				\
+        html/class-gtkmountoperation.html		\
 	html/class-gtknotebook.html			\
 	html/class-gtkobject.html			\
 	html/class-gtkoptionmenu.html			\
