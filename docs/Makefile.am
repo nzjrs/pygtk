@@ -589,7 +589,7 @@ TARGET_DIR = $(datadir)/gtk-doc/html/pygtk
 CSSdir = $(TARGET_DIR)
 
 EXTRA_DIST = 				\
-	cursors icons			\
+	cursors icons images		\
 	$(HTML_FILES)			\
 	$(XMLFILES) 			\
 	$(XSLFILES)			\
@@ -598,6 +598,7 @@ EXTRA_DIST = 				\
 dist-hook:
 	rm -rf `find $(distdir)/cursors -name .svn`
 	rm -rf `find $(distdir)/icons -name .svn`
+	rm -rf `find $(distdir)/images -name .svn`
 
 install-data-local:
 	installfiles=`echo $(srcdir)/html/*`; \
@@ -606,6 +607,7 @@ install-data-local:
 	else \
 	  $(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) \
 			$(DESTDIR)$(TARGET_DIR)/icons \
+			$(DESTDIR)$(TARGET_DIR)/images \
 			$(DESTDIR)$(TARGET_DIR)/cursors; \
 	  for i in $$installfiles; do \
 	    echo '-- Installing '$$i ; \
@@ -616,6 +618,10 @@ install-data-local:
 	  for i in $(srcdir)/icons/*; do \
 	    echo '-- Installing '$$i ; \
 	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR)/icons; \
+	  done; \
+	  for i in $(srcdir)/images/*; do \
+	    echo '-- Installing '$$i ; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR)/images; \
 	  done; \
 	  for i in $(srcdir)/cursors/*; do \
 	    echo '-- Installing '$$i ; \

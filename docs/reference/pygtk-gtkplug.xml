@@ -34,7 +34,11 @@ linkend="method-gtkplug--get-id">get_id</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
       
       <methodsynopsis language="python">
-	<methodname><link linkend="method-gtksocket--get-plug-window">get_plug_window</link></methodname>
+	<methodname><link linkend="method-gtksocket--get-embedded">get_embedded</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtksocket--get-socket-window">get_socket_window</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
     </classsynopsis>
@@ -240,25 +244,54 @@ can be used to embed this window inside another window, for instance with
 linkend="method-gtksocket--add-id"><methodname>gtk.Socket.add_id</methodname>()</link>.</para>
 
     </refsect2>
-
-  <refsect2 id="method-gtksocket--get-plug-window">
-      <title>gtk.Socket.get_plug_window</title>
+    
+    <refsect2 id="method-gtksocket--get-embedded">
+      <title>gtk.Socket.get_embedded</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>get_plug_window</methodname>
+	  <methodname>get_embedded</methodname>
 	  <methodparam></methodparam>  </methodsynopsis></programlisting>
       <variablelist>
 	<varlistentry>
 	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>the window of the plug if available, or
+	  <listitem><simpara><literal>True</literal> if the plug is embedded in
+	  a socket.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <note>
+	  <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+      
+      <para>
+	The <methodname>get_embedded</methodname>() method determines whether
+	the plug is embedded in a socket.
+      </para>
+
+    </refsect2>
+
+
+  <refsect2 id="method-gtksocket--get-socket-window">
+      <title>gtk.Socket.get_socket_window</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_socket_window</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the window of the socket if available, or
 	  <literal>None</literal>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
+      
+      <note>
+	  <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
 
       <para>
-	The <methodname>get_plug_window</methodname>() method retrieves the
-	window of the plug. Use this to check if the plug has been created
-	inside of the socket.
+	The <methodname>get_socket_window</methodname>() method retrieves the
+	socket the plug is embedded in.
       </para>
 
     </refsect2>
