@@ -33,7 +33,8 @@ XMLFILES = 						\
 	reference/pygtk-atktable.xml			\
 	reference/pygtk-atktext.xml			\
 	reference/pygtk-atkvalue.xml			\
-	reference/pygtk-gdkatom.xml			\
+	reference/pygtk-gdkapplaunchcontext.xml		\
+        reference/pygtk-gdkatom.xml			\
 	reference/pygtk-gdkcairocontext.xml		\
 	reference/pygtk-gdk-classes.xml			\
 	reference/pygtk-gdkcolormap.xml			\
@@ -321,6 +322,7 @@ HTML_FILES =						\
 	html/class-atktext.html				\
 	html/class-atkvalue.html			\
 	html/class-gdkatom.html				\
+        html/class-gdkapplaunchcontext.html		\
 	html/class-gdkcairocontext.html			\
 	html/class-gdkcolor.html			\
 	html/class-gdkcolormap.html			\
