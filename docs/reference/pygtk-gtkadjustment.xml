@@ -74,6 +74,72 @@ linkend="method-gtkadjustment--set-value">set_value</link></methodname>
 	<methodparam><parameter
 		       role="keyword">value</parameter></methodparam>
       </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--configure">configure</link></methodname>
+	<methodparam><parameter
+		       role="keyword">value</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">lower</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">upper</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">step_increment</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">page_increment</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">page_size</parameter></methodparam>
+      </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--get-lower">get_lower</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--set-lower">set_lower</link></methodname>
+	<methodparam><parameter role="keyword">lower</parameter></methodparam>
+      </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--get-page-increment">get_page_increment</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--set-page-increment">set_page_increment</link></methodname>
+	<methodparam><parameter role="keyword">page_increment</parameter></methodparam>
+      </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--get-page-size">get_page_size</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--set-page-size">set_page_size</link></methodname>
+	<methodparam><parameter role="keyword">page_size</parameter></methodparam>
+      </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--get-step-increment">get_step_increment</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--set-step-increment">set_step_increment</link></methodname>
+	<methodparam><parameter role="keyword">step_increment</parameter></methodparam>
+      </methodsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--get-upper">get_upper</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkadjustment--set-upper">set_upper</link></methodname>
+	<methodparam><parameter role="keyword">upper</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -506,7 +572,6 @@ page. A "changed" signal will be emitted if the value is changed.</para>
 
     </refsect2>
 
-
     <refsect2 id="method-gtkadjustment--get-value">
       <title>gtk.Adjustment.get_value</title>
 
@@ -545,6 +610,294 @@ value of the adjustment.</para>
 
       <para>The <methodname>set_value</methodname>() method sets the value
 of the adjustment to the specified <parameter>value</parameter>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkadjustment--get-lower">
+      <title>gtk.Adjustment.get_lower</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_lower</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The current minimum value of the adjustment.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>get_lower</methodname>() method gets the current minimum
+      value of the adjustment.</para>
+
+    </refsect2>
+
+
+    <refsect2 id="method-gtkadjustment--set-lower">
+      <title>gtk.Adjustment.set_lower</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_lower</methodname>
+	  <methodparam><parameter role="keyword">lower</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">lower</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new minimum value</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>set_lower</methodname>() method sets the minimum value of the adjustment. 
+      </para>
+      
+      <para>
+	When setting multiple adjustment properties via their individual setters,
+	multiple "changed" signals will be emitted. However, since the emission of the
+	"changed" signal is tied to the emission of the "GObject::notify"
+	signals of the changed properties, it's possible to compress the "changed"
+	signals into one by calling gobject.Gobject.freeze_notify() and gobject.Gobject.thaw_notify()
+	around the calls to the individual setters.
+      </para>
+      
+      <para>
+	Alternatively, using
+	<link linkend="method-gtkadjustment--configure">gtk.Adjustment.configure</link>()
+	has the same effect of compressing "changed" emissions.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkadjustment--get-page-increment">
+      <title>gtk.Adjustment.get_page_increment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_page_increment</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The current page increment of the adjustment.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>get_page_increment</methodname>() method gets the current page
+      increment of the adjustment.</para>
+
+    </refsect2>
+
+
+    <refsect2 id="method-gtkadjustment--set-page-increment">
+      <title>gtk.Adjustment.set_page_increment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_page_increment</methodname>
+	  <methodparam><parameter role="keyword">page_increment</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">page_increment</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new page increment value</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+      
+      <para>
+	The <methodname>set_page_increment</methodname>() method sets the page increment of the adjustment. 
+      </para>
+      
+      <para>
+	See
+	<link linkend="method-gtkadjustment--get-lower">gtk.Adjustment.get_lower</link>()
+	about how to compress multiple emissions of the "changed" signal when setting multiple adjustment properties.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkadjustment--get-page-size">
+      <title>gtk.Adjustment.get_page_size</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_page_size</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The current page size of the adjustment.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>get_page_size</methodname>() method gets the current page
+      size of the adjustment.</para>
+
+    </refsect2>
+
+
+    <refsect2 id="method-gtkadjustment--set-page-size">
+      <title>gtk.Adjustment.set_page_size</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_page_size</methodname>
+	  <methodparam><parameter role="keyword">page_size</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">page_size</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new page size value</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+      
+      <para>
+	The <methodname>set_page_size</methodname>() method sets the page size of the adjustment. 
+      </para>
+      
+      <para>
+	See
+	<link linkend="method-gtkadjustment--get-lower">gtk.Adjustment.get_lower</link>()
+	about how to compress multiple emissions of the "changed" signal when setting multiple adjustment properties.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkadjustment--get-step-increment">
+      <title>gtk.Adjustment.get_step_increment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_step_increment</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The current step increment of the adjustment.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>get_step_increment</methodname>() method gets the current step
+      increment of the adjustment.</para>
+
+    </refsect2>
+
+
+    <refsect2 id="method-gtkadjustment--set-step-increment">
+      <title>gtk.Adjustment.set_step_increment</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_step_increment</methodname>
+	  <methodparam><parameter role="keyword">step_increment</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">step_increment</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new step increment value</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+      
+      <para>
+	The <methodname>set_step_increment</methodname>() method sets the step increment of the adjustment. 
+      </para>
+      
+      <para>
+	See
+	<link linkend="method-gtkadjustment--get-lower">gtk.Adjustment.get_lower</link>()
+	about how to compress multiple emissions of the "changed" signal when setting multiple adjustment properties.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkadjustment--get-upper">
+      <title>gtk.Adjustment.get_upper</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_upper</methodname>
+	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The current minimum value of the adjustment.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>get_upper</methodname>() method gets the current minimum
+      value of the adjustment.</para>
+
+    </refsect2>
+
+
+    <refsect2 id="method-gtkadjustment--set-upper">
+      <title>gtk.Adjustment.set_upper</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_upper</methodname>
+	  <methodparam><parameter role="keyword">upper</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">upper</parameter>&nbsp;:</term>
+	  <listitem><simpara>the new maximum value</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>set_upper</methodname>() method sets the maximum value of the adjustment. 
+      </para>
+      
+      <para>
+	Note that values will be restricted by upper - page-size if the page-size property is nonzero. 
+      </para>
+      
+      <para>
+	See
+	<link linkend="method-gtkadjustment--get-lower">gtk.Adjustment.get_lower</link>()
+	about how to compress multiple emissions of the "changed" signal when setting multiple adjustment properties.
+      </para>
 
     </refsect2>
 

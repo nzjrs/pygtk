@@ -81,6 +81,12 @@
 	<methodname><link linkend="method-gtkicontheme--get-icon-sizes">get_icon_sizes</link></methodname>
 	<methodparam><parameter role="keyword">icon_name</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkicontheme--lookup-by-gicon">lookup_by_gicon</link></methodname>
+	<methodparam><parameter role="keyword">icon</parameter></methodparam>
+	<methodparam><parameter role="keyword">size</parameter></methodparam>
+	<methodparam><parameter role="keyword">flags</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -780,6 +786,51 @@ available in.</simpara></listitem>
 tuple containing the sizes available for the icon named by
 <parameter>icon_name</parameter>. A size of -1 means the icon is
 scalable. If the icon is not found an empty tuple is returned.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkicontheme--lookup-by-gicon">
+      <title>gtk.IconTheme.lookup_by_gicon</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>lookup_by_gicon</methodname>
+	  <methodparam><parameter role="keyword">icon</parameter></methodparam>
+	  <methodparam><parameter role="keyword">size</parameter></methodparam>
+	  <methodparam><parameter role="keyword">flags</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">icon</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link linkend="class-gioicon"><classname>gio.Icon</classname></link>
+	  to lookup</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">size</parameter>&nbsp;:</term>
+	  <listitem><simpara>The desired icon size.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">flags</parameter>&nbsp;:</term>
+	  <listitem><simpara>the flags modifying the behavior of the icon
+	  lookup</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A <link linkend="class-gtkiconinfo"><classname>gtk.IconInfo</classname></link>.
+      structure containing information about the icon, or <literal>None</literal>
+      if the icon wasn't found.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+        The <methodname>lookup_by_gicon</methodname>() method Looks up an icon
+	and returns a structure containing information such as the filename of
+	the icon. The icon can then be rendered into a pixbuf using
+	<methodname><link linkend="method-gtkiconinfo--load-icon">gtk.IconInfo.load_icon</link></methodname>().
+      </para>
 
     </refsect2>
 

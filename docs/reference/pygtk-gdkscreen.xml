@@ -110,6 +110,18 @@
 	<methodname><link linkend="method-gdkscreen--get-rgba-visual">get_rgba_visual</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkscreen--get-monitor-height-mm">get_monitor_height_mm</link></methodname>
+	<methodparam><parameter role="keyword">monitor_num</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkscreen--get-monitor-width-mm">get_monitor_width_mm</link></methodname>
+	<methodparam><parameter role="keyword">monitor_num</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gdkscreen--get-monitor-plug-name">get_monitor_plug_name</link></methodname>
+	<methodparam><parameter role="keyword">monitor_num</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -149,6 +161,18 @@
     <variablelist>
       <varlistentry>
         <term>"<link linkend="signal-gdkscreen--size-changed">size-changed</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>screen</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+    <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gdkscreen--monitors-changed">monitors-changed</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>screen</parameter></methodparam>
@@ -870,6 +894,95 @@ screen.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gdkscreen--get-monitor-height-mm">
+      <title>gtk.gdk.Screen.get_monitor_height_mm</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_monitor_height_mm</methodname>
+	  <methodparam><parameter role="keyword">monitor_num</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">monitor_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>Number of the monitor.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The height of the monitor, or -1 if not available.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_monitor_height_mm</methodname>() method gets the height
+	in millimeters of the specified monitor.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkscreen--get-monitor-width-mm">
+      <title>gtk.gdk.Screen.get_monitor_width_mm</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_monitor_width_mm</methodname>
+	  <methodparam><parameter role="keyword">monitor_num</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">monitor_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>Number of the monitor.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The width of the monitor, or -1 if not available.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_monitor_width_mm</methodname>() method gets the width
+	in millimeters of the specified monitor.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gdkscreen--get-monitor-plug-name">
+      <title>gtk.gdk.Screen.get_monitor_plug_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_monitor_plug_name</methodname>
+	  <methodparam><parameter role="keyword">monitor_num</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">monitor_num</parameter>&nbsp;:</term>
+	  <listitem><simpara>Number of the monitor.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A newly-allocated string containing the name of the monitor,
+	  or <literal>None</literal> if the name cannot be determined.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>get_monitor_plug_name</methodname>() method returns the output
+	name of the specified monitor. Usually something like VGA, DVI, or TV, not the
+	actual product name of the display device.
+      </para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -1023,6 +1136,46 @@ height of a screen changes.</para>
 
     </refsect2>
 
+    <refsect2 id="signal-gdkscreen--monitor-changed">
+      <title>The "monitor-changed" gtk.gdk.Screen Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>screen</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>screen</parameter>&nbsp;:</term>
+	  <listitem><simpara>the screen that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The "monitor-changed" signal is emitted when the number, size or position
+	of the monitors attached to the screen change.
+      </para>
+      <para>
+	Only for X for now. Future implementations for Win32 and OS X may be a possibility.
+      </para>
+      
+
+    </refsect2>
   </refsect1>
 
 </refentry>
