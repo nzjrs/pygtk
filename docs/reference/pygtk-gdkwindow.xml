@@ -686,6 +686,24 @@ linkend="method-gdkwindow--input-shape-combine-region">input_shape_combine_regio
             <methodname><link linkend="method-gdkwindow--set-startup-id">set_startup_id</link></methodname>
             <methodparam><parameter role="keyword">startup_id</parameter></methodparam>
         </methodsynopsis>
+      
+      <!-- NOT IMPLEMENTED
+        <methodsynopsis language="python">
+            <methodname><link linkend="method-gdkwindow- -redirect-to-drawable">redirect_to_drawable</link></methodname>
+            <methodparam><parameter role="keyword">drawable</parameter></methodparam>
+	    <methodparam><parameter role="keyword">src_x</parameter></methodparam>
+	    <methodparam><parameter role="keyword">src_y</parameter></methodparam>
+	    <methodparam><parameter role="keyword">dest_x</parameter></methodparam>
+	    <methodparam><parameter role="keyword">dest_y</parameter></methodparam>
+	    <methodparam><parameter role="keyword">width</parameter></methodparam>
+	    <methodparam><parameter role="keyword">height</parameter></methodparam>
+        </methodsynopsis>      
+        END NOT IMPLEMENTED -->
+	
+	<methodsynopsis language="python">
+            <methodname><link linkend="method-gdkwindow--remove-redirection">remove_redirection</link></methodname>
+            <methodparam></methodparam>
+        </methodsynopsis>
     </classsynopsis>
 
     <programlisting>
@@ -4398,6 +4416,104 @@ the window</simpara></listitem>
 
         <note>
             <para>This method is available in PyGTK 2.12 and above.</para>
+        </note>
+
+        <para>
+            When using GTK+, typically you should use
+            <methodname><link linkend="method-gtkwindow--set-startup-id">gtk.Window.set_startup_id</link></methodname>()
+            instead of this low-level function.
+        </para>
+
+    </refsect2>
+    
+    <!-- NOT IMPLEMENTED
+    <refsect2 id="method-gdkwindow- -redirect-to-drawable">
+      <title>gtk.gdk.Window.redirect_to_drawable</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>redirect_to_drawable</methodname>
+	  <methodparam><parameter role="keyword">drawable</parameter></methodparam>
+	  <methodparam><parameter role="keyword">src_x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">src_y</parameter></methodparam>
+	  <methodparam><parameter role="keyword">dest_x</parameter></methodparam>
+	  <methodparam><parameter role="keyword">dest_y</parameter></methodparam>
+	  <methodparam><parameter role="keyword">width</parameter></methodparam>
+	  <methodparam><parameter role="keyword">height</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">drawable</parameter>&nbsp;:</term>
+	  <listitem><simpara><link linkend="class-gdkdrawable"><classname>gtk.gdk.Drawable</classname></link>.
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">src_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>x position in window</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">src_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>y position in window</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">dest_x</parameter>&nbsp;:</term>
+	  <listitem><simpara>x position in drawable</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">dest_y</parameter>&nbsp;:</term>
+	  <listitem><simpara>y position in drawable </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">width</parameter>&nbsp;:</term>
+	  <listitem><simpara>width of redirection </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter
+	  role="keyword">height</parameter>&nbsp;:</term>
+	  <listitem><simpara>height of redirection </simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>
+	The <methodname>input_shape_combine_region</methodname>() method redirects drawing
+	into window so that drawing to the window in the rectangle specified by src_x, src_y, width
+	and height is also drawn into drawable at dest_x, dest_y. 
+      </para>
+      <para>
+	Only drawing between
+	<methodname><link linkend="method-gdkwindow--begin-paint-region">gtk.gdk.Window.begin_paint_region</link></methodname>()
+	or
+	<methodname><link linkend="method-gdkwindow--begin-paint-region">gtk.gdk.Window.begin_paint_rect</link></methodname>()
+	and
+	<methodname><link linkend="method-gdkwindow--end-paint">gtk.gdk.Window.end_paint</link></methodname>()
+	is redirected.
+      </para>
+
+    </refsect2>
+    END NOT IMPLEMENTED -->
+    
+    <refsect2 id="method-gdkwindow--remove-redirection">
+        <title>gtk.gdk.Window.remove_redirection</title>
+
+        <programlisting><methodsynopsis language="python">
+        <methodname>remove_redirection</methodname>
+        <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+        
+        <variablelist>
+        </variablelist>
+
+        <note>
+            <para>This method is available in PyGTK 2.14 and above.</para>
         </note>
 
         <para>
