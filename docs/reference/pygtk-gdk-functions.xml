@@ -550,7 +550,24 @@ linkend="function-gdk--rgb-get-visual">gtk.gdk.rgb_get_visual</link></methodname
 linkend="function-gdk--selection-owner-get">gtk.gdk.selection_owner_get</link></methodname>
 	<methodparam><parameter
 		       role="keyword">selection</parameter></methodparam>
-  </methodsynopsis><methodsynopsis language="python">
+  </methodsynopsis>
+  
+  <methodsynopsis language="python">
+	<methodname><link linkend="function-gdk--selection-owner-get-for-display">gtk.gdk.selection_owner_get_for_display</link></methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+	<methodparam><parameter role="keyword">selection</parameter></methodparam>
+  </methodsynopsis>
+  
+  <methodsynopsis language="python">
+	<methodname><link linkend="function-gdk--selection-owner-set-for-display">gtk.gdk.selection_owner_set_for_display</link></methodname>
+	<methodparam><parameter role="keyword">display</parameter></methodparam>
+	<methodparam><parameter role="keyword">owner</parameter></methodparam>
+	<methodparam><parameter role="keyword">selection</parameter></methodparam>
+	<methodparam><parameter role="keyword">time</parameter></methodparam>
+	<methodparam><parameter role="keyword">send_event</parameter></methodparam>
+  </methodsynopsis>
+  
+  <methodsynopsis language="python">
 	<methodname><link
 linkend="function-gdk--selection-send-notify">gtk.gdk.selection_send_notify</link></methodname>
 	<methodparam><parameter
@@ -1279,6 +1296,99 @@ a selection owner for this window, and if it is a window known to the
 current application. Note that the return value may be owned by a different
 process if a foreign window was previously created for that window, but a
 new foreign window will never be created by this call.</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--selection-owner-get-for-display">
+      <title>gtk.gdk.selection_owner_get_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.selection_owner_get_for_display</methodname>
+	  <methodparam><parameter role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter role="keyword">selection</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>.
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">selection</parameter>&nbsp;:</term>
+	  <listitem><simpara>an atom indentifying a selection.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>If there is a selection owner for this window, and it is
+	  a window known to the current process, the
+	  <link linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link> that
+	  owns the selection or <literal>None</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The <function>gtk.gdk.selection_owner_get_for_display</function>() function
+	determine the owner of the given selection. 
+      </para>
+      <para>
+	Note that the return value may be owned by a different process if a foreign
+	window was previously created for that window, but a new foreign window will
+	never be created by this call.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="function-gdk--selection-owner-set-for-display">
+      <title>gtk.gdk.selection_owner_set_for_display</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.selection_owner_set_for_display</methodname>
+	  <methodparam><parameter role="keyword">display</parameter></methodparam>
+	  <methodparam><parameter role="keyword">owner</parameter></methodparam>
+	  <methodparam><parameter role="keyword">selection</parameter></methodparam>
+	  <methodparam><parameter role="keyword">timw</parameter></methodparam>
+	  <methodparam><parameter role="keyword">send_event</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">display</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link>.
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">owner</parameter>&nbsp;:</term>
+	  <listitem><simpara>A <link linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+	  or <literal>None</literal> to indicate that the owner for the given should be unset. 
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">selection</parameter>&nbsp;:</term>
+	  <listitem><simpara>an atom indentifying a selection.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">time</parameter>&nbsp;:</term>
+	  <listitem><simpara>timestamp to use when setting the selection. If this is
+	  older than the timestamp given last time the owner was set for the given
+	  selection, the request will be ignored.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">send_event</parameter>&nbsp;:</term>
+	  <listitem><simpara>if <literal>True</literal>, and the new owner is different
+	  from the current owner, the current owner will be sent a SelectionClear
+	  event.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara><literal>True</literal> if the selection owner was successfully
+	  changed to owner, otherwise <literal>False</literal>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The <function>gtk.gdk.selection_owner_set_for_display</function>() function
+	sets the <link linkend="class-gdkwindow"><classname>gtk.gdk.Window</classname></link>
+	owner as the current owner of the selection selection.
+      </para>
 
     </refsect2>
 
