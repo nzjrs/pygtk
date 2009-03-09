@@ -160,6 +160,22 @@ linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname
     <para><link linkend="signal-prototypes-gtkwidget">gtk.Widget Signal Prototypes</link></para>
     <para><link linkend="signal-prototypes-gtkcontainer">gtk.Container Signal Prototypes</link></para>
     <para><link linkend="signal-prototypes-gtkfilechooser">gtk.FileChooser Signal Prototypes</link></para>
+    
+    <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gtkfilechooserbutton--file-set">file-set</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>filechooserbutton</parameter>
+            </methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+    </variablelist>
   </refsect1>
 
   <refsect1>
@@ -452,6 +468,48 @@ should be set to.</para>
 
     </refsect2>
 
+  </refsect1><refsect1>
+    <title>Signals</title>
+
+    <refsect2 id="signal-gtkfilechooserbutton--file-set">
+      <title>The "file-set" gtk.FileChooserButton Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>filechooserbutton</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>filechooserbutton</parameter>&nbsp;:</term>
+	  <listitem><simpara>the filechooserbutton that received the signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified with the
+	  <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+	  method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This signal is available in GTK+ 2.12 and above.</para>
+      </note>
+
+      <para>
+	  The "file-set" signal is emitted when the user selects a file. 
+      </para>
+      <para>
+	  Note that this signal is only emitted when the user changes the file.
+      </para>
+
+    </refsect2>
   </refsect1>
 
 </refentry>
