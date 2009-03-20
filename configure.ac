@@ -15,7 +15,7 @@ m4_define(gtk_required_version,        2.8.0)
 m4_define(libglade_required_version,   2.5.0)
 m4_define(gtkunixprint_required_version,  2.9.0)
 m4_define(pycairo_required_version,    1.0.2) dnl or 1.1.7
-m4_define(pygobject_required_version,  2.15.5)
+m4_define(pygobject_required_version,  2.16.1)
 
 AC_INIT(pygtk, pygtk_version,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=pygtk])
@@ -297,6 +297,23 @@ if test "x$have_pycairo" = "xtrue"; then
   AM_CONDITIONAL(HAVE_GTK_2_14, $have_gtk_214)
   AC_SUBST(HAVE_GTK_2_14)
   AC_DEFINE([HAVE_GTK_2_14], [$have_gtk_214], [If Gtk 2.14 was found])
+
+  dnl check for gtk 2.16
+  PKG_CHECK_MODULES(GTK216, gtk+-2.0 >= 2.16.0,
+	  HAVE_GTK_216="yes", HAVE_GTK_216="no")
+
+  if test "x$HAVE_GTK_216" = "xyes"; then
+     gtk_version="2.16"
+     have_gtk_216=true
+     PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DHAVE_GTK_2_16"
+  else
+     AC_MSG_RESULT(no)
+     have_gtk_216=false
+  fi
+
+  AM_CONDITIONAL(HAVE_GTK_2_16, $have_gtk_216)
+  AC_SUBST(HAVE_GTK_2_16)
+  AC_DEFINE([HAVE_GTK_2_16], [$have_gtk_216], [If Gtk 2.16 was found])
 
   dnl libglade
   PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= libglade_required_version],

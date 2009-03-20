@@ -81,6 +81,12 @@ GTK_TYPES_DEFS += gtk-2.14-types.defs
 GTKUNIXPRINT_DEFS += gtkunixprint-2.14.defs
 endif
 
+if HAVE_GTK_2_16
+GDK_DEFS += gdk-2.16.defs 
+GTK_DEFS += gtk-2.16.defs 
+GTK_TYPES_DEFS += gtk-2.16-types.defs
+endif
+
 CREATEDEFS = $(PYTHON) $(CODEGENDIR)/createdefs.py
 
 GDK_OVERRIDES = \
