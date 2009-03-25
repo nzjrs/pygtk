@@ -23,6 +23,59 @@
 %%
 headers
 
+static gboolean
+pylist_to_strv (PyObject *list,
+                char   ***strvp)
+{
+    int i, len;
+    char **ret;
+
+    *strvp = NULL;
+
+    if (list == Py_None)
+        return TRUE;
+
+    if (!PySequence_Check (list))
+    {
+        PyErr_Format (PyExc_TypeError,
+		      "argument must be a list or tuple of strings");
+        return FALSE;
+    }
+
+    if ((len = PySequence_Size (list)) < 0)
+        return FALSE;
+
+    ret = g_new (char*, len + 1);
+    for (i = 0; i <= len; ++i)
+        ret[i] = NULL;
+
+    for (i = 0; i < len; ++i)
+    {
+        PyObject *item = PySequence_GetItem (list, i);
+
+        if (!item)
+        {
+            g_strfreev (ret);
+            return FALSE;
+        }
+
+        if (!PyString_Check (item))
+        {
+            Py_DECREF (item);
+            g_strfreev (ret);
+            PyErr_Format (PyExc_TypeError,
+			  "argument must be a list of strings");
+            return FALSE;
+        }
+
+        ret[i] = g_strdup (PyString_AsString (item));
+        Py_DECREF (item);
+    }
+
+    *strvp = ret;
+    return TRUE;
+}
+
 typedef struct{
     PyObject    *obj;
     PyObject    *data;
@@ -159,4 +212,70 @@ _wrap_gtk_builder_get_objects(PyGObject *self)
     g_slist_free(objects);
 
     return pyobjects;
+}
+
+%%
+override gtk_builder_add_objects_from_file kwargs
+static PyObject *
+_wrap_gtk_builder_add_objects_from_file(PyGObject *self,
+					PyObject *args,
+					PyObject *kwargs)
+{
+    static char *kwlist[] = { "filename", "object_ids", NULL };
+    const gchar *filename;
+    PyObject *py_obj_ids;
+    char **object_ids;
+    guint ret;
+    GError *error = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "sO:GtkBuilder.add_objects_from_file",
+				     kwlist, &filename, &py_obj_ids))
+        return NULL;
+
+    if (!pylist_to_strv (py_obj_ids, &object_ids))
+        return NULL;
+
+    ret = gtk_builder_add_objects_from_file (GTK_BUILDER (self->obj),
+					     filename, object_ids, &error);
+    g_strfreev (object_ids);
+    
+    if (pyg_error_check(&error))
+        return NULL;
+    
+    return PyInt_FromLong(ret);
+}
+
+%%
+override gtk_builder_add_objects_from_string kwargs
+static PyObject *
+_wrap_gtk_builder_add_objects_from_string(PyGObject *self,
+					  PyObject *args,
+					  PyObject *kwargs)
+{
+    static char *kwlist[] = { "buffer", "object_ids", NULL };
+    const gchar *buffer;
+    gsize lenght = -1;
+    PyObject *py_obj_ids;
+    char **object_ids;
+    guint ret;
+    GError *error = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+				     "sO:GtkBuilder.add_objects_from_string",
+				     kwlist, &buffer, &py_obj_ids))
+        return NULL;
+
+    if (!pylist_to_strv (py_obj_ids, &object_ids))
+        return NULL;
+
+    ret = gtk_builder_add_objects_from_string (GTK_BUILDER (self->obj),
+					       buffer, lenght,
+					       object_ids, &error);
+    g_strfreev (object_ids);
+    
+    if (pyg_error_check(&error))
+        return NULL;
+    
+    return PyInt_FromLong(ret);
 }
