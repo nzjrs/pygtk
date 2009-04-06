@@ -228,16 +228,16 @@ if pango.can_build():
         data_files.append((DEFS_DIR, ('pangocairo.defs',)))
         GLOBAL_MACROS.append(('HAVE_PYCAIRO',1))
 if gtk.can_build():
-    if '--disable-numeric' in sys.argv:
-        sys.argv.remove('--disable-numeric')
+    if '--disable-numpy' in sys.argv:
+        sys.argv.remove('--disable-numpy')
     else:
         try:
-            import Numeric
-            Numeric # pyflakes
+            import numpy
+            numpy # pyflakes
             GLOBAL_MACROS.append(('HAVE_NUMPY', 1))
         except ImportError:
-            print ('* Numeric module could not be found, '
-                   'will build without Numeric support.')
+            print ('* numpy module could not be found, '
+                   'will build without numpy support.')
     ext_modules.append(gtk)
     data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
     data_files.append((DEFS_DIR, ('gtk/gdk.defs', 'gtk/gdk-types.defs',

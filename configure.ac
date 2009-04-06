@@ -367,18 +367,27 @@ case $gdk_target in
 esac
 
 
-dnl checks to see if Numeric Python is installed.
+dnl checks to see if numpy is installed.
 AC_ARG_ENABLE(numpy,
   AC_HELP_STRING([--disable-numpy], [Disable numeric python features]),,
   enable_numpy=yes)
 
 if test "x$enable_numpy" != xno; then
   save_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
-  AC_CHECK_HEADER([Numeric/arrayobject.h],
-    [AC_DEFINE(HAVE_NUMPY,,[whether to include numeric python support])],,
-    [#include <Python.h>])
-  CPPFLAGS="$save_CPPFLAGS"
+  numpy_INCLUDES=`$PYTHON -c "import numpy; print numpy.get_include()" 2> /dev/null`
+  if test "x$numpy_INCLUDES" = "x"; then
+    AC_MSG_WARN([Could not find a valid numpy installation, disabling.])
+    enable_numpy=no
+  else
+    CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES -I$numpy_INCLUDES"
+    AC_CHECK_HEADER([numpy/arrayobject.h],
+      [AC_DEFINE(HAVE_NUMPY,,[whether to include numeric python support])],
+      [enable_numpy=no],
+      [#include <Python.h>])
+    if test "x$enable_numpy" != "xno"; then
+      CPPFLAGS="$save_CPPFLAGS -I$numpy_INCLUDES"
+    fi
+  fi
 fi
 
 
@@ -419,11 +428,11 @@ $have_pangocairo && echo     pangocairo
 $have_gtk && echo     gtk with $gtk_version API
 $have_libglade && echo     gtk.glade
 $have_gtkunixprint && echo     gtk.unixprint
-echo
 
 if test ! $have_atk || ! $have_pango || \
         ! $have_gtk || ! $have_libglade || \
         ! $have_pangocairo || ! $have_gtkunixprint; then
+  echo
   echo "The following modules will NOT be built:"
   echo
   $have_atk || echo     atk
@@ -433,3 +442,7 @@ if test ! $have_atk || ! $have_pango || \
   $have_libglade || echo     gtk.glade
   $have_gtkunixprint || echo     gtk.unixprint
 fi
+
+echo
+echo "Numpy support: $enable_numpy"
+echo
