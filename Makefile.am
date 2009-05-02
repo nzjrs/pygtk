@@ -44,10 +44,6 @@ pkgconfig_DATA += pygtk-$(PLATFORM_VERSION).pc
 defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
-# python
-pyexec_LTLIBRARIES =
-noinst_PYTHON = ltihooks.py
-
 # pygtk scripts
 pkgpythondir = $(pyexecdir)/gtk-2.0
 
@@ -141,3 +137,10 @@ doc-dist:
 	cp -r docs/cursors/* pygtk/cursors
 	tar cfz $(PACKAGE)-docs.tar.gz pygtk
 	rm -fr pygtk
+
+
+all: $(pkgpyexec_LTLIBRARIES:.la=.so)
+clean-local:
+	rm -f $(pkgpyexec_LTLIBRARIES:.la=.so)
+.la.so:
+	$(LN_S) .libs/$@ $@ || true

@@ -7,28 +7,18 @@ def importModules(buildDir, srcDir):
     # Be very careful when you change this code, it's
     # fragile and the order is really significant
 
-    # ltihooks
-    sys.path.insert(0, srcDir)
     # atk, pango
     sys.path.insert(0, buildDir)
     # _gtk, keysyms, glade
     sys.path.insert(0, os.path.join(buildDir, 'gtk'))
     sys.argv.append('--g-fatal-warnings')
-    import ltihooks
 
     atk = importModule('atk', buildDir)
     pango = importModule('pango', buildDir)
     gtk = importModule('gtk', buildDir, 'gtk')
     gdk = importModule('gtk.gdk', buildDir, '_gdk.la')
 
-    # gtk/__init__.py removes the ltihooks, readd them
-    import gtk
-
-    ltihooks.install()
     glade = importModule('gtk.glade', buildDir)
-
-    ltihooks.uninstall()
-    del ltihooks
 
     globals().update(locals())
 

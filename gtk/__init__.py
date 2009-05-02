@@ -22,14 +22,6 @@
 
 import sys
 
-# this can go when things are a little further along
-try:
-    import ltihooks
-    # pyflakes
-    ltihooks
-except ImportError:
-    ltihooks = None
-
 # For broken embedded programs which forgot to call Sys_SetArgv
 if not hasattr(sys, 'argv'):
     sys.argv = []
@@ -48,13 +40,6 @@ else:
     from gtk import _gtk
 
 import gdk
-
-if ltihooks:
-    try:
-        ltihooks.uninstall()
-        del ltihooks
-    except:
-        pass
 
 from gtk._lazyutils import LazyNamespace, LazyModule
 from gtk.deprecation import _Deprecated, _DeprecatedConstant

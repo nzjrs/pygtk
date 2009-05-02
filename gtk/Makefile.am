@@ -195,7 +195,7 @@ CLEANFILES +=			\
 	gtkunixprint.c 		\
 	gtkunixprint.defs 	\
 	gtkunixprint-types.defs
-		
+
 
 EXTRA_DIST +=				\
 	$(GTKUNIXPRINT_DEFS)		\
@@ -248,3 +248,9 @@ endif
 gtk-types.c:
 	@:
 
+
+all: $(pygtkexec_LTLIBRARIES:.la=.so) $(pkgpyexec_LTLIBRARIES:.la=.so)
+clean-local:
+	rm -f $(pygtkexec_LTLIBRARIES:.la=.so) $(pkgpyexec_LTLIBRARIES:.la=.so)
+.la.so:
+	$(LN_S) .libs/$@ $@ || true
