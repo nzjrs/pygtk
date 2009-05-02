@@ -1188,7 +1188,7 @@ pygtk_main_watch_dispatch(GSource    *source,
 }
 
 static void
-pygtk_signal_watch_finalize(GSource *source)
+pygtk_main_watch_finalize(GSource *source)
 {
     PySignalWatchSource *real_source = (PySignalWatchSource*)source;
 
@@ -1196,8 +1196,17 @@ pygtk_signal_watch_finalize(GSource *source)
 	if (real_source->fds[0] != 0)
 	    close(real_source->fds[0]);
 	
-	if (real_source->fds[1] != 0)
-	    close(real_source->fds[1]);
+	if (real_source->fds[1] != 0) {
+#if HAVE_PYSIGNAL_SETWAKEUPFD
+            int  wakeup_fd = PySignal_SetWakeupFd(-1);
+            if (wakeup_fd != real_source->fds[1]) {
+                /* Probably should never happen. */
+                PySignal_SetWakeupFd(wakeup_fd);
+            }
+#endif
+
+            close(real_source->fds[1]);
+        }
     }
 }
 
@@ -1206,7 +1215,7 @@ static GSourceFuncs pygtk_main_watch_funcs =
     pygtk_main_watch_prepare,
     pygtk_main_watch_check,
     pygtk_main_watch_dispatch,
-    pygtk_signal_watch_finalize
+    pygtk_main_watch_finalize
 };
 
 static GSource *
@@ -1227,6 +1236,7 @@ _wrap_gtk_main(PyObject *self)
     main_watch = pygtk_main_watch_new();
     pyg_begin_allow_threads;
     g_source_attach(main_watch, NULL);
+    g_source_unref(main_watch);
     gtk_main();
     g_source_destroy(main_watch);
     pyg_end_allow_threads;
