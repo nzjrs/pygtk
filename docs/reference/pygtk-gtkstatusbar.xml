@@ -46,6 +46,14 @@ linkend="method-gtkstatusbar--pop">pop</link></methodname>
       </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
+linkend="method-gtkstatusbar--remove-message">remove_message</link></methodname>
+	<methodparam><parameter
+		       role="keyword">context_id</parameter></methodparam>
+	<methodparam><parameter
+		       role="keyword">message_id</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
 linkend="method-gtkstatusbar--remove">remove</link></methodname>
 	<methodparam><parameter
 		       role="keyword">context_id</parameter></methodparam>
@@ -310,7 +318,7 @@ identifier</simpara></listitem>
 specified by <parameter>text</parameter> with the specified
 <parameter>context_id</parameter> onto a statusbar's stack and returns a
 message id that that can be used with the <link
-linkend="method-gtkstatusbar--remove"><methodname>remove</methodname>()</link>
+linkend="method-gtkstatusbar--remove-message"><methodname>remove_message</methodname>()</link>
 method.</para>
 
     </refsect2>
@@ -337,11 +345,11 @@ statusbar's stack.</para>
 
     </refsect2>
 
-    <refsect2 id="method-gtkstatusbar--remove">
-      <title>gtk.Statusbar.remove</title>
+    <refsect2 id="method-gtkstatusbar--remove-message">
+      <title>gtk.Statusbar.remove_message</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>remove</methodname>
+	  <methodname>remove_message</methodname>
 	  <methodparam><parameter
 			 role="keyword">context_id</parameter></methodparam>
 	  <methodparam><parameter
@@ -360,10 +368,27 @@ role="keyword">message_id</parameter>&nbsp;:</term>
 	</varlistentry>
       </variablelist>
 
-      <para>The <methodname>remove</methodname>() method removes the message
+      <para>The <methodname>remove_message</methodname>() method removes the message
 with the specified <parameter>message_id</parameter> and
 <parameter>context_id</parameter> from the statusbar's message stack.</para>
 
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusbar--remove">
+      <title>gtk.Statusbar.remove</title>
+
+      <warning>
+	<para>This method is deprecated in PyGTK 2.18 and above</para>
+      </warning>
+
+      <para>This method calls either
+        <link linkend="method-gtkcontainer--remove">gtk.Container.remove</link>
+        or <link linkend="method-gtkstatusbar--remove-message">gtk.Statusbar.remove_message</link>
+        depending on parameters.  The second option is for compatibility only and will be
+        eventually removed.  New code should use <literal>remove</literal> only to remove
+        widgets (as in <literal>gtk.Container</literal> method).  To remove messages, use
+        <link linkend="method-gtkstatusbar--remove-message">gtk.Statusbar.remove_message</link>
+        directly.</para>
     </refsect2>
 
     <refsect2 id="method-gtkstatusbar--set-has-resize-grip">

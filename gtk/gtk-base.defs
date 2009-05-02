@@ -16589,7 +16589,20 @@
   )
 )
 
+;; Weird c-name is not used, it is overriden.  See the next entry.
 (define-method remove
+  (of-object "GtkStatusbar")
+  (c-name "gtk_statusbar_remove_compatibility")
+  (return-type "none")
+  (parameters
+    '("guint" "context_id")
+    '("guint" "message_id")
+  )
+  (deprecated "use gtk.Statusbar.remove_message")
+)
+
+;; Renamed because it hides gtk.Container.remove, see bug #564587.
+(define-method remove_message
   (of-object "GtkStatusbar")
   (c-name "gtk_statusbar_remove")
   (return-type "none")
