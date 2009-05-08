@@ -113,6 +113,12 @@ _wrap_gtk_tree_view_column_new(PyGObject *self, PyObject*args, PyObject*kwargs)
                 g_object_unref(tvc);
                 return -1;
             }
+
+            if (PyBool_Check(item)) {
+                g_warning("column number is a boolean, but will be interpreted "
+                          "as an integer; this is likely not what you intended");
+            }
+
             gtk_tree_view_column_add_attribute(tvc, cell, attr,
                                                PyInt_AsLong(item));
         }
