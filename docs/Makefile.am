@@ -633,9 +633,6 @@ install-data-local:
 	  done; \
 	fi
 
-install-data-hook:
-	@$(PYGOBJECT_FIXXREF) -i $(PYGOBJECT_PYGDOCS) $(DESTDIR)$(TARGET_DIR)
-
 uninstall-local:
 	rm -rf $(DESTDIR)$(TARGET_DIR)/*
 
@@ -645,6 +642,9 @@ BUILT_SOURCES = reference/builddate.xml $(HTML_FILES)
 DISTCLEANFILES = reference/builddate.xml $(HTML_FILES)
 
 CSS_DATA = $(CSS_FILES)
+
+install-data-hook:
+	@$(PYGOBJECT_FIXXREF) -i $(PYGOBJECT_PYGDOCS) $(DESTDIR)$(TARGET_DIR)
 
 reference/builddate.xml:
 	@$(PYTHON) -c 'import datetime; print datetime.date.today()' > $@
