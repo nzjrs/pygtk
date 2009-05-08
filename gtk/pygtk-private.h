@@ -52,7 +52,18 @@ typedef struct {
     gpointer array;
 } PyGtkStyleHelper_Object;
 
+/* helper object for the rc-style helper */
+typedef struct {
+    PyObject_HEAD
+    GtkRcStyle *rc_style; /* parent style */
+    enum {RC_STYLE_COLOUR_ARRAY, RC_STYLE_STRING_ARRAY} type;
+    gpointer array;
+    GtkRcFlags is_set_flag; /* ignored for RC_STYLE_STRING_ARRAY */
+} PyGtkRcStyleHelper_Object;
+
 PyObject *_pygtk_style_helper_new(GtkStyle *style, int type, gpointer array);
+PyObject *_pygtk_rc_style_helper_new(GtkRcStyle *rc_style, int type, gpointer array,
+                                     GtkRcFlags is_set_flag);
 
 PyObject *_pygtk_tree_model_row_new(GtkTreeModel *model, GtkTreeIter *iter);
 PyObject *_pygtk_tree_model_row_iter_new(GtkTreeModel *model,

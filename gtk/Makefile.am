@@ -107,6 +107,7 @@ GTK_OVERRIDES = 		\
 	gtkcontainer.override 	\
 	gtkctree.override 	\
 	gtkiconview.override 	\
+	gtkrcstyle.override 	\
 	gtkstyle.override 	\
 	gtktextview.override 	\
 	gtktoolbar.override 	\

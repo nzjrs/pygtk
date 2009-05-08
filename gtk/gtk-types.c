@@ -64,9 +64,10 @@ PyGdkAtom_New(GdkAtom atom)
 }
 
 
-/* style helper code */
+/* style & rc-style helper code */
 #define NUM_STATES 5
 staticforward PyTypeObject PyGtkStyleHelper_Type;
+staticforward PyTypeObject PyGtkRcStyleHelper_Type;
 
 PyObject *
 _pygtk_style_helper_new(GtkStyle *style, int type, gpointer array)
@@ -222,6 +223,155 @@ static PyTypeObject PyGtkStyleHelper_Type = {
     (reprfunc)0,
     0,
     &pygtk_style_helper_seqmethods,
+    0,
+    (hashfunc)0,
+    (ternaryfunc)0,
+    (reprfunc)0,
+    (getattrofunc)0,
+    (setattrofunc)0,
+    0,
+    Py_TPFLAGS_DEFAULT,
+    NULL
+};
+
+PyObject *
+_pygtk_rc_style_helper_new(GtkRcStyle *rc_style, int type, gpointer array, GtkRcFlags is_set_flag)
+{
+    PyGtkRcStyleHelper_Object *self;
+
+    self = (PyGtkRcStyleHelper_Object *)PyObject_NEW(PyGtkRcStyleHelper_Object,
+                                                     &PyGtkRcStyleHelper_Type);
+    if (self == NULL)
+	return NULL;
+
+    self->rc_style = g_object_ref(rc_style);
+    self->type = type;
+    self->array = array;
+    self->is_set_flag = is_set_flag;
+    return (PyObject *)self;
+}
+
+static void
+pygtk_rc_style_helper_dealloc(PyGtkRcStyleHelper_Object *self)
+{
+    g_object_unref(self->rc_style);
+    PyObject_DEL(self);
+}
+
+static Py_ssize_t
+pygtk_rc_style_helper_length(PyGtkRcStyleHelper_Object *self)
+{
+    return NUM_STATES;
+}
+
+static PyObject *
+pygtk_rc_style_helper_getitem(PyGtkRcStyleHelper_Object *self, Py_ssize_t pos)
+{
+    if (pos < 0) pos += NUM_STATES;
+    if (pos < 0 || pos >= NUM_STATES) {
+	PyErr_SetString(PyExc_IndexError, "index out of range");
+	return NULL;
+    }
+    switch (self->type) {
+    case RC_STYLE_STRING_ARRAY:
+	{
+	    gchar **array = (gchar **)self->array;
+	    if (array[pos])
+		return PyString_FromString(array[pos]);
+	    else {
+		Py_INCREF(Py_None);
+		return Py_None;
+	    }
+	}
+    case RC_STYLE_COLOUR_ARRAY:
+        if (self->rc_style->color_flags[pos] & self->is_set_flag) {
+            GdkColor *array = (GdkColor *)self->array;
+            return pyg_boxed_new(GDK_TYPE_COLOR, &array[pos], TRUE, TRUE);
+        }
+        else {
+            Py_INCREF(Py_None);
+            return Py_None;
+        }
+    }
+    g_assert_not_reached();
+    return NULL;
+}
+
+static int
+pygtk_rc_style_helper_setitem(PyGtkRcStyleHelper_Object *self, Py_ssize_t pos,
+                              PyObject *value)
+{
+    extern PyTypeObject PyGdkGC_Type;
+    extern PyTypeObject PyGdkPixmap_Type;
+
+    if (pos < 0) pos += NUM_STATES;
+    if (pos < 0 || pos >= NUM_STATES) {
+	PyErr_SetString(PyExc_IndexError, "index out of range");
+	return -1;
+    }
+    switch (self->type) {
+    case RC_STYLE_STRING_ARRAY:
+	{
+            gchar **array = (gchar **)self->array;
+            gchar *string;
+	    PyObject *as_string;
+
+	    if (value == Py_None)
+                string = NULL;
+	    else if ((as_string = PyObject_Str(value)) != NULL) {
+		string = g_strdup(PyString_AsString(as_string));
+		Py_DECREF(as_string);
+	    }
+            else
+                return -1;
+
+            g_free(array[pos]);
+            array[pos] = string;
+	    return 0;
+	}
+    case RC_STYLE_COLOUR_ARRAY:
+        if (value == Py_None) {
+            self->rc_style->color_flags[pos] &= ~self->is_set_flag;
+            return 0;
+        }
+        if (pyg_boxed_check(value, GDK_TYPE_COLOR)) {
+	    GdkColor *array = (GdkColor *)self->array;
+	    array[pos] = *pyg_boxed_get(value, GdkColor);
+            self->rc_style->color_flags[pos] |= self->is_set_flag;
+	    return 0;
+        }
+        else {
+            PyErr_SetString(PyExc_TypeError, "can only assign a gtk.gdk.Color or None");
+            return -1;
+	}
+    }
+    g_assert_not_reached();
+    return -1;
+}
+
+static PySequenceMethods pygtk_rc_style_helper_seqmethods = {
+    (lenfunc)pygtk_rc_style_helper_length,
+    0,
+    0,
+    (ssizeargfunc)pygtk_rc_style_helper_getitem,
+    0,
+    (ssizeobjargproc)pygtk_rc_style_helper_setitem,
+    0,
+};
+static PyTypeObject PyGtkRcStyleHelper_Type = {
+    PyObject_HEAD_INIT(NULL)
+    0,
+    "gtk.GtkRcStyleHelper",
+    sizeof(PyGtkRcStyleHelper_Object),
+    0,
+    (destructor)pygtk_rc_style_helper_dealloc,
+    (printfunc)0,
+    (getattrfunc)0,
+    (setattrfunc)0,
+    (cmpfunc)0,
+    (reprfunc)0,
+    0,
+    &pygtk_rc_style_helper_seqmethods,
     0,
     (hashfunc)0,
     (ternaryfunc)0,
@@ -1352,11 +1502,13 @@ void
 _pygtk_register_boxed_types(PyObject *moddict)
 {
     PyGtkStyleHelper_Type.ob_type = &PyType_Type;
+    PyGtkRcStyleHelper_Type.ob_type = &PyType_Type;
     PyGdkAtom_Type.ob_type = &PyType_Type;
     PyGtkTreeModelRow_Type.ob_type = &PyType_Type;
     PyGtkTreeModelRowIter_Type.ob_type = &PyType_Type;
 
     PyType_Ready(&PyGtkStyleHelper_Type);
+    PyType_Ready(&PyGtkRcStyleHelper_Type);
     PyType_Ready(&PyGdkAtom_Type);
     PyType_Ready(&PyGtkTreeModelRow_Type);
     PyType_Ready(&PyGtkTreeModelRowIter_Type);
