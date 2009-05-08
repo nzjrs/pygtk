@@ -18,5 +18,14 @@ class TestGdkEvent(unittest.TestCase):
         event.window = win2.window
         self.assertEqual(event.window, win2.window)
 
+    # Bug #408658.
+    def testEventTime(self):
+        event = gtk.gdk.Event(gtk.gdk.MOTION_NOTIFY)
+        event.time = 0x80000000
+
+        # According to GTK+ source files, 'time' field is always of
+        # 'guint32' type, so we must always have overflow here.
+        self.assert_(event.time == -0x80000000)
+
 if __name__ == '__main__':
     unittest.main()
