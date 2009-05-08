@@ -22,7 +22,51 @@
 	<methodparam></methodparam>
       </methodsynopsis>
     </classsynopsis>
+  </refsect1>
 
+  <refsect1>
+    <title>Attributes</title>
+
+    <note>
+      <para>All attributes are available in PyGTK 2.16 and above.</para>
+    </note>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+	<tgroup cols="3">
+	<?dbhtml cellpadding="5"?>
+	  <colspec column="1" colwidth="1in"/>
+	  <colspec column="2" colwidth="1in"/>
+	  <colspec column="3" colwidth="4in"/>
+	  <tbody>
+
+	    <row valign="top">
+	      <entry>"left"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The width of the left border margin.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"right"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The width of the right border margin.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"top"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The width of the bottom border margin.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"bottom"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The width of the bottom border margin.</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </blockquote>
   </refsect1>
 
   <refsect1>
@@ -45,6 +89,64 @@ linkend="method-gtkborder--copy"><methodname>copy</methodname>()</link> and
 <link
 linkend="method-gtkborder--free"><methodname>free</methodname>()</link>.</para>
 
+    <para>Starting with PyGTK 2.16 you can also
+      treat <link linkend="class-gtkborder"><classname>gtk.Border</classname></link>
+      objects as sequences of 4 integer values.  E.g. you can convert to a tuple or read
+      and assign individual values by index.</para>
+  </refsect1>
+
+  <refsect1 id="constructor-gtkborder">
+    <title>Constructor</title>
+
+    <programlisting><constructorsynopsis language="python">
+	<methodname>gtk.Border</methodname>
+	<methodparam><parameter
+		       role="keyword">left</parameter>
+	  <initializer>0</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">right</parameter>
+	  <initializer>0</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">top</parameter>
+	  <initializer>0</initializer></methodparam>
+	<methodparam><parameter
+		       role="keyword">bottom</parameter>
+	  <initializer>0</initializer></methodparam>
+      </constructorsynopsis></programlisting>
+    <variablelist>
+      <varlistentry>
+	<term><parameter role="keyword">left</parameter>&nbsp;:</term>
+	<listitem><simpara>the width of the left margin</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter role="keyword">right</parameter>&nbsp;:</term>
+	<listitem><simpara>the width of the right margin</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter role="keyword">top</parameter>&nbsp;:</term>
+	<listitem><simpara>the width of the top margin</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><parameter role="keyword">bottom</parameter>&nbsp;:</term>
+	<listitem><simpara>the width of the bottom margin</simpara></listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara>a new <link
+linkend="class-gdkrectangle"><classname>gtk.gdk.Rectangle</classname></link>
+object</simpara></listitem>
+      </varlistentry>
+    </variablelist>
+
+    <note>
+      <para>This constructor is available in PyGTK 2.16 and above.</para>
+    </note>
+
+    <para>Creates a
+      new <link linkend="class-gtkborder"><classname>gtk.Border</classname></link> with
+      the attributes specified
+      by <parameter>left</parameter>, <parameter>right</parameter>, <parameter>top</parameter>
+      and <parameter>bottom</parameter>. Any unspecified attributes default to 0.</para>
   </refsect1>
 
   <refsect1>

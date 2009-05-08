@@ -102,6 +102,7 @@ GDK_OVERRIDES = \
 
 GTK_OVERRIDES = 		\
 	gtk.override 		\
+	gtkborder.override	\
 	gtkbuilder.override 	\
 	gtkclist.override 	\
 	gtkcontainer.override 	\
