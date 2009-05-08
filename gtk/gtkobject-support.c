@@ -123,6 +123,10 @@ pygtk_target_list_to_list(GtkTargetList *targets)
 void
 pygtk_boxed_unref_shared(PyObject *boxed)
 {
+    if (boxed == Py_None) {
+        Py_DECREF(Py_None);
+        return;
+    }
     PyGBoxed *pyboxed;
     g_return_if_fail(boxed != NULL && PyObject_TypeCheck(boxed, &PyGBoxed_Type));
     pyboxed = (PyGBoxed *) boxed;
