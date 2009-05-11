@@ -51,6 +51,10 @@ linkend="constructor-gdkcolor">gtk.gdk.Color</link></methodname>
   <refsect1>
     <title>Attributes</title>
 
+    <note>
+      <para>Floating-point attributes are available in PyGTK 2.16 and above.</para>
+    </note>
+
     <blockquote role="properties">
       <informaltable pgwide="1" frame="none">
 	<tgroup cols="3">
@@ -84,11 +88,31 @@ linkend="constructor-gdkcolor">gtk.gdk.Color</link></methodname>
 	      <entry>The value of the blue component of the color</entry>
 	    </row>
 
+	    <row valign="top">
+	      <entry>"red_float"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The value of the red component of the color as a float in the range 0.0--1.0</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"green_float"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The value of the green component of the color as a float in the range 0.0--1.0</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"blue_float"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The value of the blue component of the color as a float in the range 0.0--1.0</entry>
+	    </row>
+
 	</tbody>
       </tgroup>
       </informaltable>
     </blockquote>
 
+    <para>For details on how assignment to <literal>*_float</literal> attributes work,
+      see <link linkend="constructor-gdkcolor">constructor documentation</link>.</para>
   </refsect1>
 
   <refsect1>
@@ -189,6 +213,12 @@ object</simpara></listitem>
       <para>Second form of the constructor is available in PyGTK 2.14 and above.</para>
     </note>
 
+    <note>
+      <para><parameter>red</parameter>, <parameter>green</parameter>
+      and <parameter>blue</parameter> can be floating-point numbers since PyGTK
+      2.16.</para>
+    </note>
+
     <para>Creates a new <link
 linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link> object
 with the color component values specified by <parameter>red</parameter>,
@@ -199,6 +229,26 @@ allocated.</para>
 
     <para>Second form of the constructor is analogous to
       <link linkend="function-gdk--color-parse"><function>gtk.gdk.color_parse</function></link>.</para>
+
+    <para>Starting with PyGTK 2.16, <parameter>red</parameter>, <parameter>green</parameter> and
+      <parameter>blue</parameter> parameters can also be floating-point numbers in the
+      range 0.0--1.0.  Either all specified values must be integers or floats -- mixing is
+      not allowed as this would be too error-prone.  Values outside the valid range
+      0.0--1.0 are clamped, so e.g. 3.14 is the same as 1.0.</para>
+
+    <para>Note that internally values are still stored as integers, so values of
+      corresponding <literal>*_float</literal> attribute will not necessarily be the same
+      as the value used as argument for the constructor.  They will be as close as
+      permitted by 16-bit color component storage used by <classname>GdkColor</classname>
+      though.</para>
+
+    <para>All of the following expressions create a bright green color:</para>
+
+    <programlisting>
+  gtk.gdk.Color(0, 65535, 0)
+  gtk.gdk.Color(green=1.0)
+  gtk.gdk.Color('#0f0')
+    </programlisting>
 
   </refsect1>
   

@@ -15,6 +15,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.green, 2)
         self.assertEqual(c.blue, 3)
 
+        c = gtk.gdk.Color(1.0, 0.7, 0.2)
+        self.assertAlmostEqual(c.red_float, 1.0, 4)
+        self.assertAlmostEqual(c.green_float, 0.7, 4)
+        self.assertAlmostEqual(c.blue_float, 0.2, 4)
+
+        # Mixing integers and floats is not allowed.
+        self.assertRaises(TypeError, lambda: gtk.gdk.Color(0, 0.5))
+
         c = gtk.gdk.Color(pixel=0xffff)
         self.assertEqual(c.pixel, 0xffff)
 
@@ -35,6 +43,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(c.blue, 0)
 
         self.assertRaises(TypeError, lambda: gtk.gdk.Color([]))
+
+    def test_float_attribute(self):
+        c = gtk.gdk.Color(0, 10000, 65535)
+        self.assertAlmostEqual(c.red_float, 0.0)
+        self.assertAlmostEqual(c.green_float, 10000.0 / 65535.0)
+        self.assertAlmostEqual(c.blue_float, 1.0)
+
+        c.red_float = 0.57
+        self.assert_(c.red == int(0.57 * 65535) or c.red == int(0.57 * 65535) + 1)
+        self.assertAlmostEqual(c.red_float, 0.57, 4)
+
+        c.green = 12345
+        self.assertAlmostEqual(c.green_float, 12345.0 / 65535.0)
 
     def test_equal(self):
         self.assertEqual(gtk.gdk.Color(0, 0, 0), gtk.gdk.Color(0, 0, 0))
