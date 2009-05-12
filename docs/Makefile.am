@@ -667,4 +667,8 @@ $(HTML_FILES): $(XMLFILES) $(XSLFILES)
 # 	pdfxmltex pygtk-ref.fo >output </dev/null
 
 
+else
+
+install-data-hook:
+
 endif
