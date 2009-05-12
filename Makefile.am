@@ -14,6 +14,7 @@ CLEANFILES =
 EXTRA_DIST = 					\
 	ChangeLog.pre-2-0			\
 	ChangeLog.pre-2-6			\
+	ChangeLog.pre-2-16			\
 	config.h.win32 				\
 	MANIFEST.in 				\
 	MAPPING 				\
@@ -28,6 +29,9 @@ EXTRA_DIST = 					\
 	THREADS					\
 	m4/jhflags.m4				\
 	m4/python.m4
+
+BUILT_EXTRA_DIST = 		\
+	ChangeLog
 
 INCLUDES = 				\
 	$(PYTHON_INCLUDES) 		\
@@ -137,6 +141,35 @@ doc-dist:
 	cp -r docs/cursors/* pygtk/cursors
 	tar cfz $(PACKAGE)-docs.tar.gz pygtk
 	rm -fr pygtk
+
+
+distclean-local:
+	if test $(srcdir) = .; then :; else \
+	    rm -f $(BUILT_EXTRA_DIST); \
+	fi
+
+dist-hook: $(BUILT_EXTRA_DIST)
+	files='$(BUILT_EXTRA_DIST)'; \
+	for f in $$files; do \
+	  if test -f $$f; then d=.; else d=$(srcdir); fi; \
+	  rm -f $(distdir)/$$f && cp $$d/$$f $(distdir) || exit 1; done
+
+
+.PHONY: ChangeLog
+
+ChangeLog:
+	@echo Creating $@
+	@if test -d "$(srcdir)/.git"; then \
+	  (GIT_DIR=$(top_srcdir)/.git ./missing --run git log PYGTK_2_15_0^^.. --stat) | fmt --split-only > $@.tmp \
+	  && mv -f $@.tmp $@ \
+	  || ($(RM) $@.tmp; \
+	      echo Failed to generate ChangeLog, your ChangeLog may be outdated >&2; \
+	      (test -f $@ || echo git-log is required to generate this file >> $@)); \
+	else \
+	  test -f $@ || \
+	  (echo A git checkout and git-log is required to generate ChangeLog >&2 && \
+	  echo A git checkout and git-log is required to generate this file >> $@); \
+	fi
 
 
 all: $(pkgpyexec_LTLIBRARIES:.la=.so)
