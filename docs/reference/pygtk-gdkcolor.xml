@@ -44,7 +44,12 @@ linkend="constructor-gdkcolor">gtk.gdk.Color</link></methodname>
 <methodsynopsis language="python">
 	<methodname><link linkend="function-gdk--color-parse">gtk.gdk.color_parse</link></methodname>
 	<methodparam><parameter role="keyword">spec</parameter></methodparam>
-      </methodsynopsis></programlisting>
+      </methodsynopsis><methodsynopsis language="python">
+      <methodname><link linkend="function-gdk--color-from-hsv">gtk.gdk.color_from_hsv</link></methodname>
+      <methodparam><parameter role="keyword">hue</parameter></methodparam>
+      <methodparam><parameter role="keyword">saturation</parameter></methodparam>
+      <methodparam><parameter role="keyword">value</parameter></methodparam>
+    </methodsynopsis></programlisting>
 
   </refsect1>
 
@@ -52,7 +57,7 @@ linkend="constructor-gdkcolor">gtk.gdk.Color</link></methodname>
     <title>Attributes</title>
 
     <note>
-      <para>Floating-point attributes are available in PyGTK 2.16 and above.</para>
+      <para>Floating-point and HSV attributes are available in PyGTK 2.16 and above.</para>
     </note>
 
     <blockquote role="properties">
@@ -106,6 +111,24 @@ linkend="constructor-gdkcolor">gtk.gdk.Color</link></methodname>
 	      <entry>The value of the blue component of the color as a float in the range 0.0--1.0</entry>
 	    </row>
 
+	    <row valign="top">
+	      <entry>"hue"</entry>
+	      <entry>Read</entry>
+	      <entry>The hue (in HSV colorspace) of the color as a float in the range 0.0--1.0</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"saturation"</entry>
+	      <entry>Read</entry>
+	      <entry>The saturation (in HSV colorspace) of the color as a float in the range 0.0--1.0</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"value"</entry>
+	      <entry>Read</entry>
+	      <entry>The value (in HSV colorspace) of the color as a float in the range 0.0--1.0</entry>
+	    </row>
+
 	</tbody>
       </tgroup>
       </informaltable>
@@ -150,6 +173,17 @@ object.</para>
     <programlisting>
   color == eval(repr(color))
     </programlisting>
+
+    <para>
+      PyGTK 2.16 introduces several ways of using floating-point numbers for
+      creating <link linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+      objects or setting their individual components.  In all cases it was decided to
+      silently clamp input values to valid range, rather than being strict and e.g. raise
+      an exception.  The rationale is that floating-point arithmetics are imprecise, so
+      you could end with a computed value slightly larger than maximum or a little smaller
+      than minimum valid value.  To simplify using new features, such "slightly off"
+      values are just clamped without any warning.
+    </para>
 
   </refsect1>
 
@@ -332,6 +366,68 @@ linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link> is
       <para>This function raise the ValueError (TypeError prior to PyGTK
 2.4) exception if unable to parse the color specification</para>
 
+    </refsect2>
+
+    <refsect2 id="function-gdk--color-from-hsv">
+      <title>gtk.gdk.color_from_hsv</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>gtk.gdk.color_from_hsv</methodname>
+	  <methodparam><parameter role="keyword">hue</parameter></methodparam>
+	  <methodparam><parameter role="keyword">saturation</parameter></methodparam>
+	  <methodparam><parameter role="keyword">value</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">hue</parameter>&nbsp;:</term>
+	  <listitem><simpara>Hue of the desired color as a float in range
+	      0.0--1.0</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">saturation</parameter>&nbsp;:</term>
+	  <listitem><simpara>Saturation of the desired color as a float in range
+	      0.0--1.0</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter role="keyword">value</parameter>&nbsp;:</term>
+	  <listitem><simpara>Value of the desired color as a float in range
+	      0.0--1.0</simpara></listitem>
+	</varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+              object</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <function>gtk.gdk.color_from_hsv</function>() method returns
+        the <link linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+        specified by the HSV parameters.  All three parameters are mandatory and should be
+        floats from 0.0 to 1.0.  The range requirement, however, is not strict, see
+        below.</para>
+
+      <para>As hue goes from 0 to 1 color goes roughly as red → yellow → green → cyan →
+        blue → magenta → red.  Because of the "circular" nature, this parameter wraps
+        around, so only fractional part matters.  E.g. -4.2 or 1.8 are the same as 0.8.
+        Saturation determines how intense a color is, with 0.0 meaning pure gray and 1.0
+        -- fully intense color.  Value determines how light a color is, with 0.0 standing
+        for fully black and 1.0 for completely white color.  Both saturation and value are
+        clamped to valid range (see rationale at the top of the page).</para>
+
+      <para>Note that internal storage is still integers, so values of
+        corresponding <literal>hue</literal>, <literal>saturation</literal>
+        and <literal>value</literal> attributes of the returned object will not
+        necessarily be equal to the value used as argument for this functions.  They will
+        be as close as permitted by 16-bit color component storage used
+        by <classname>GdkColor</classname> though.</para>
+
+      <para>For more details read about <ulink url="http://en.wikipedia.org/wiki/HSL_and_HSV">HSV
+          colorspace</ulink>.</para>
     </refsect2>
 
   </refsect1>

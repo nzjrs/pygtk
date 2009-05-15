@@ -139,6 +139,44 @@ _wrap_gdk_color_new(PyGBoxed *self,
 }
 
 %%
+define color_from_hsv
+static PyObject *
+_wrap_color_from_hsv (PyObject *ignored, PyObject *args, PyObject*kwargs)
+{
+    static char *kwlist[] = { "hue", "saturation", "value", NULL };
+    gdouble hue, saturation, value;
+    gdouble red, green, blue;
+    GdkColor color;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "ddd:gtk.gdk.color_from_hsv", kwlist,
+                                     &hue, &saturation, &value))
+        return NULL;
+
+    /* See documentation of the class for rationale. */
+
+    hue -= floor(hue);
+
+    if (saturation > 1.0)
+        saturation = 1.0;
+    else if (saturation < 0.0)
+        saturation = 0.0;
+
+    if (value > 1.0)
+        value = 1.0;
+    else if (value < 0.0)
+        value = 0.0;
+
+    gtk_hsv_to_rgb(hue, saturation, value,
+                   &red, &green, &blue);
+
+    color.red = red * 65535.0;
+    color.green = green * 65535.0;
+    color.blue = blue * 65535.0;
+
+    return pyg_boxed_new(GDK_TYPE_COLOR, &color, TRUE, TRUE);
+}
+
+%%
 override-attr GdkColor.red
 static int
 _wrap_gdk_color__set_red(PyObject *self, PyObject *value, void *closure)
@@ -249,6 +287,51 @@ _wrap_gdk_color__set_blue_float(PyObject *self, PyObject *value, void *closure)
         pyg_boxed_get(self, GdkColor)->blue = MIN(MAX(0.0, blue), 1.0) * 65535.0;
         return 0;
     }
+}
+%%
+override-attr GdkColor.hue
+
+static PyObject *
+_wrap_gdk_color__get_hue(PyObject *self, void *closure)
+{
+    GdkColor *color = pyg_boxed_get(self, GdkColor);
+    gdouble red = color->red / 65535.0;
+    gdouble green = color->green / 65535.0;
+    gdouble blue = color->blue / 65535.0;
+    gdouble hue;
+
+    gtk_rgb_to_hsv(red, green, blue, &hue, NULL, NULL);
+    return PyFloat_FromDouble(hue);
+}
+%%
+override-attr GdkColor.saturation
+
+static PyObject *
+_wrap_gdk_color__get_saturation(PyObject *self, void *closure)
+{
+    GdkColor *color = pyg_boxed_get(self, GdkColor);
+    gdouble red = color->red / 65535.0;
+    gdouble green = color->green / 65535.0;
+    gdouble blue = color->blue / 65535.0;
+    gdouble saturation;
+
+    gtk_rgb_to_hsv(red, green, blue, NULL, &saturation, NULL);
+    return PyFloat_FromDouble(saturation);
+}
+%%
+override-attr GdkColor.value
+
+static PyObject *
+_wrap_gdk_color__get_value(PyObject *self, void *closure)
+{
+    GdkColor *color = pyg_boxed_get(self, GdkColor);
+    gdouble red = color->red / 65535.0;
+    gdouble green = color->green / 65535.0;
+    gdouble blue = color->blue / 65535.0;
+    gdouble value;
+
+    gtk_rgb_to_hsv(red, green, blue, NULL, NULL, &value);
+    return PyFloat_FromDouble(value);
 }
 %%
 override gdk_color_parse kwargs

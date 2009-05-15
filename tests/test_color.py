@@ -44,7 +44,10 @@ class Tests(unittest.TestCase):
 
         self.assertRaises(TypeError, lambda: gtk.gdk.Color([]))
 
-    def test_float_attribute(self):
+    def test_color_from_hsv(self):
+        self.assertEqual(gtk.gdk.Color('red'), gtk.gdk.color_from_hsv(0.0, 1.0, 1.0))
+
+    def test_float_attributes(self):
         c = gtk.gdk.Color(0, 10000, 65535)
         self.assertAlmostEqual(c.red_float, 0.0)
         self.assertAlmostEqual(c.green_float, 10000.0 / 65535.0)
@@ -56,6 +59,22 @@ class Tests(unittest.TestCase):
 
         c.green = 12345
         self.assertAlmostEqual(c.green_float, 12345.0 / 65535.0)
+
+    def test_hue(self):
+        self.assertAlmostEqual(gtk.gdk.Color('red').hue, 0 * 1.0 / 6)
+        self.assertAlmostEqual(gtk.gdk.Color('yellow').hue, 1 * 1.0 / 6)
+        self.assertAlmostEqual(gtk.gdk.Color('green').hue, 2 * 1.0 / 6)
+        self.assertAlmostEqual(gtk.gdk.Color('cyan').hue, 3 * 1.0 / 6)
+        self.assertAlmostEqual(gtk.gdk.Color('blue').hue, 4 * 1.0 / 6)
+        self.assertAlmostEqual(gtk.gdk.Color('magenta').hue, 5 * 1.0 / 6)
+
+    def test_saturation(self):
+        self.assertAlmostEqual(gtk.gdk.Color('red').saturation, 1.0)
+        self.assertAlmostEqual(gtk.gdk.Color('gray').saturation, 0.0)
+
+    def test_value(self):
+        self.assertAlmostEqual(gtk.gdk.Color('black').value, 0.0)
+        self.assertAlmostEqual(gtk.gdk.Color('white').value, 1.0)
 
     def test_equal(self):
         self.assertEqual(gtk.gdk.Color(0, 0, 0), gtk.gdk.Color(0, 0, 0))
