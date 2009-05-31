@@ -2048,6 +2048,8 @@ _wrap_gtk_radio_menu_item_new(PyGObject *self, PyObject *args,
 %%
 new-constructor GTK_TYPE_RADIO_MENU_ITEM
 %%
+new-constructor GTK_TYPE_IMAGE_MENU_ITEM
+%%
 override gtk_image_menu_item_new kwargs
 static int
 _wrap_gtk_image_menu_item_new(PyGObject *self, PyObject *args,PyObject *kwargs)
@@ -2064,24 +2066,20 @@ _wrap_gtk_image_menu_item_new(PyGObject *self, PyObject *args,PyObject *kwargs)
     if (pygobject_check(py_accel_group, &PyGtkAccelGroup_Type))
         accel_group = GTK_ACCEL_GROUP(pygobject_get(py_accel_group));
 
-    if (stock_id)
-        self->obj = (GObject *)gtk_image_menu_item_new_from_stock(stock_id,
-                                                                  accel_group);
+    if (stock_id) {
+        pygobject_construct(self,
+                            "label", stock_id,
+                            "use-stock", TRUE,
+                            "accel-group", accel_group,
+                            NULL);
+    }
     else
-        self->obj = (GObject *)gtk_image_menu_item_new();
+        pygobject_construct(self, NULL);
 
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkImageMenuItem object");
         return -1;
     }
-
-    if (pyg_type_from_object((PyObject *) self) != GTK_TYPE_IMAGE_MENU_ITEM) {
-        PyErr_SetString(PyExc_RuntimeError, "__gobject_init__ must be used "
-                        "when subclassing gtk.ImageMenuItem");
-        return -1;
-    }
-
-    pygobject_register_wrapper((PyObject *)self);
     return 0;
 }
 %%
