@@ -7549,7 +7549,8 @@ _wrap_gtk_recent_info_get_application_info(PyGObject *self, PyObject *args,
                                                &time_);
     if (ret) {
         py_ret = Py_BuildValue("(sii)", app_exec, count, time_);
-        g_free(app_exec);
+        /* Note that we mustn't free 'app_exec' even though it's not
+         * 'const'.  See bug #585458. */
     } else {
         py_ret = Py_None;
     }
