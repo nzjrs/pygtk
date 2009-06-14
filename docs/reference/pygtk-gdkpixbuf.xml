@@ -29,6 +29,12 @@ linkend="constructor-gdkpixbuf">gtk.gdk.Pixbuf</link></methodname>
 	<methodparam><parameter
 		       role="keyword">height</parameter></methodparam>
       </constructorsynopsis>
+      
+      <methodsynopsis language="python">
+	<methodname><link inkend="method-gdkpixbuf--apply-embedded-orientation">apply_embedded_orientation</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gdkpixbuf--render-to-drawable">render_to_drawable</link></methodname>
@@ -662,6 +668,36 @@ completely yourself. The size of the image is specified by
 
   <refsect1>
     <title>Methods</title>
+
+    <refsect2 id="method-gdkpixbuf--apply-embedded-orientation">
+      <title>gtk.gdk.Pixbuf.apply_embedded_orientation</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>apply_embedded_orientation</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A newly-created pixbuf.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+      
+      <note>
+        <para>This method was available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>
+        The <methodname>apply_embedded_orientation</methodname>() method takes an existing
+        pixbuf and checks for the presence of an associated "orientation" option,
+        which may be provided by the jpeg loader (which reads the exif orientation tag)
+        or the tiff loader (which reads the tiff orientation tag, and compensates it for
+        the partial transforms performed by libtiff). If an orientation option/tag is present,
+        the appropriate transform will be performed so that the pixbuf is oriented correctly.
+      </para>
+
+    </refsect2>
 
     <refsect2 id="method-gdkpixbuf--render-to-drawable">
       <title>gtk.gdk.Pixbuf.render_to_drawable</title>
