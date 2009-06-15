@@ -13,6 +13,7 @@
   (of-object "PangoColor")
   (c-name "pango_color_copy")
   (return-type "PangoColor*")
+  (caller-owns-return #t)
 )
 
 (define-method free
@@ -48,6 +49,7 @@
   (of-object "PangoAttribute")
   (c-name "pango_attribute_copy")
   (return-type "PangoAttribute*")
+  (caller-owns-return #t)
 )
 
 (define-method destroy
@@ -291,6 +293,7 @@
   (of-object "PangoAttrList")
   (c-name "pango_attr_list_copy")
   (return-type "PangoAttrList*")
+  (caller-owns-return #t)
 )
 
 (define-method insert
@@ -335,6 +338,7 @@
   (of-object "PangoAttrList")
   (c-name "pango_attr_list_filter")
   (return-type "PangoAttrList*")
+  (caller-owns-return #t)
   (parameters
     '("PangoAttrFilterFunc" "func")
     '("gpointer" "data")
@@ -345,6 +349,7 @@
   (of-object "PangoAttrList")
   (c-name "pango_attr_list_get_iterator")
   (return-type "PangoAttrIterator*")
+  (caller-owns-return #t)
 )
 
 (define-method range
@@ -367,6 +372,7 @@
   (of-object "PangoAttrIterator")
   (c-name "pango_attr_iterator_copy")
   (return-type "PangoAttrIterator*")
+  (caller-owns-return #t)
 )
 
 (define-method destroy
@@ -527,6 +533,7 @@
   (of-object "PangoContext")
   (c-name "pango_context_load_font")
   (return-type "PangoFont*")
+  (caller-owns-return #t)
   (parameters
     '("const-PangoFontDescription*" "desc")
   )
@@ -536,6 +543,7 @@
   (of-object "PangoContext")
   (c-name "pango_context_load_fontset")
   (return-type "PangoFontset*")
+  (caller-owns-return #t)
   (parameters
     '("const-PangoFontDescription*" "desc")
     '("PangoLanguage*" "language")
@@ -702,6 +710,7 @@
   (of-object "PangoCoverage")
   (c-name "pango_coverage_copy")
   (return-type "PangoCoverage*")
+  (caller-owns-return #t)
 )
 
 (define-method get
@@ -906,6 +915,7 @@
   (of-object "PangoFontDescription")
   (c-name "pango_font_description_copy")
   (return-type "PangoFontDescription*")
+  (caller-owns-return #t)
 )
 
 (define-method copy_static
@@ -1252,6 +1262,7 @@
   (of-object "PangoFontFace")
   (c-name "pango_font_face_describe")
   (return-type "PangoFontDescription*")
+  (caller-owns-return #t)
 )
 
 (define-method get_face_name
@@ -1279,12 +1290,14 @@
   (of-object "PangoFont")
   (c-name "pango_font_describe")
   (return-type "PangoFontDescription*")
+  (caller-owns-return #t)
 )
 
 (define-method get_coverage
   (of-object "PangoFont")
   (c-name "pango_font_get_coverage")
   (return-type "PangoCoverage*")
+  (caller-owns-return #t)
   (parameters
     '("PangoLanguage*" "language")
   )
@@ -1304,6 +1317,7 @@
   (of-object "PangoFont")
   (c-name "pango_font_get_metrics")
   (return-type "PangoFontMetrics*")
+  (caller-owns-return #t)
   (parameters
     '("PangoLanguage*" "language" (null-ok) (default "NULL"))
   )
@@ -1424,6 +1438,7 @@
   (of-object "PangoFontMap")
   (c-name "pango_font_map_load_font")
   (return-type "PangoFont*")
+  (caller-owns-return #t)
   (parameters
     '("PangoContext*" "context")
     '("const-PangoFontDescription*" "desc")
@@ -1434,6 +1449,7 @@
   (of-object "PangoFontMap")
   (c-name "pango_font_map_load_fontset")
   (return-type "PangoFontset*")
+  (caller-owns-return #t)
   (parameters
     '("PangoContext*" "context")
     '("const-PangoFontDescription*" "desc")
@@ -1498,6 +1514,7 @@
   (of-object "PangoFontset")
   (c-name "pango_fontset_get_font")
   (return-type "PangoFont*")
+  (caller-owns-return #t)
   (parameters
     '("guint" "wc")
   )
@@ -1507,6 +1524,7 @@
   (of-object "PangoFontset")
   (c-name "pango_fontset_get_metrics")
   (return-type "PangoFontMetrics*")
+  (caller-owns-return #t)
 )
 
 (define-method foreach
@@ -1613,6 +1631,7 @@
   (of-object "PangoGlyphItem")
   (c-name "pango_glyph_item_split")
   (return-type "PangoGlyphItem*")
+  (caller-owns-return #t)
   (parameters
     '("const-char*" "text")
     '("int" "split_index")
@@ -1674,6 +1693,7 @@
   (of-object "PangoGlyphString")
   (c-name "pango_glyph_string_copy")
   (return-type "PangoGlyphString*")
+  (caller-owns-return #t)
 )
 
 (define-method free
@@ -1784,6 +1804,7 @@
   (of-object "PangoItem")
   (c-name "pango_item_copy")
   (return-type "PangoItem*")
+  (caller-owns-return #t)
 )
 
 (define-method free
@@ -1796,6 +1817,7 @@
   (of-object "PangoItem")
   (c-name "pango_item_split")
   (return-type "PangoItem*")
+  (caller-owns-return #t)
   (parameters
     '("int" "split_index")
     '("int" "split_offset")
@@ -1824,6 +1846,7 @@
   (of-object "PangoLayout")
   (c-name "pango_layout_copy")
   (return-type "PangoLayout*")
+  (caller-owns-return #t)
 )
 
 (define-method get_context
@@ -2024,6 +2047,7 @@
   (of-object "PangoLayout")
   (c-name "pango_layout_get_tabs")
   (return-type "PangoTabArray*")
+  (caller-owns-return #t)
 )
 
 (define-method set_single_paragraph_mode
@@ -2287,6 +2311,7 @@
   (of-object "PangoLayout")
   (c-name "pango_layout_get_iter")
   (return-type "PangoLayoutIter*")
+  (caller-owns-return #t)
 )
 
 (define-method free
@@ -2805,6 +2830,7 @@
   (of-object "PangoTabArray")
   (c-name "pango_tab_array_copy")
   (return-type "PangoTabArray*")
+  (caller-owns-return #t)
 )
 
 (define-method free
@@ -2879,6 +2905,7 @@
   (of-object "PangoMatrix")
   (c-name "pango_matrix_copy")
   (return-type "PangoMatrix*")
+  (caller-owns-return #t)
 )
 
 (define-method free
