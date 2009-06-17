@@ -34,13 +34,20 @@ _wrap_gtk_window_list_toplevels(PyGObject *self)
 
     list = gtk_window_list_toplevels();
 
+    /* See bug #574259.  We temporarily reference each window.  After
+     * the list is created, windows will be referenced from PyGTK
+     * wrappers, so we remove the temporary refs. */
+    g_list_foreach(list, (GFunc) g_object_ref, NULL);
+    
     if ((py_list = PyList_New(0)) == NULL) {
+        g_list_foreach(list, (GFunc) g_object_unref, NULL);
         g_list_free(list);
         return NULL;
     }
     for (tmp = list; tmp != NULL; tmp = tmp->next) {
         gtk_obj = pygobject_new(G_OBJECT(tmp->data));
         if (gtk_obj == NULL) {
+            g_list_foreach(list, (GFunc) g_object_unref, NULL);
             g_list_free(list);
             Py_DECREF(py_list);
             return NULL;
@@ -48,6 +55,8 @@ _wrap_gtk_window_list_toplevels(PyGObject *self)
         PyList_Append(py_list, gtk_obj);
         Py_DECREF(gtk_obj);
     }
+
+    g_list_foreach(list, (GFunc) g_object_unref, NULL);
     g_list_free(list);
     return py_list;
 }
