@@ -5301,9 +5301,11 @@
   (return-type "GdkPixbuf*")
   (parameters
     '("gboolean" "substitute_color")
-    '("guchar" "r")
-    '("guchar" "g")
-    '("guchar" "b")
+    ;; Bug #586094: actually 'guchar' in function declaration, but
+    ;; really means '8-bit integer'.
+    '("guint8" "r")
+    '("guint8" "g")
+    '("guint8" "b")
   )
 )
 
