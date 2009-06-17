@@ -246,4 +246,16 @@ init_gtk(void)
     pygdk_register_classes(d);
     pygdk_add_constants(m, "GDK_");
     pygdk_add_extra_constants(m);
+
+#if defined(GDK_WINDOWING_X11)
+    PyModule_AddStringConstant(m, "WINDOWING", "x11");
+#elif defined(GDK_WINDOWING_WIN32)
+    PyModule_AddStringConstant(m, "WINDOWING", "win32");
+#elif defined(GDK_WINDOWING_QUARTZ)
+    PyModule_AddStringConstant(m, "WINDOWING", "quartz");
+#elif defined(GDK_WINDOWING_DIRECTFB)
+    PyModule_AddStringConstant(m, "WINDOWING", "directfb");
+#else
+    PyModule_AddStringConstant(m, "WINDOWING", "?");
+#endif
 }
