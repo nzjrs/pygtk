@@ -540,7 +540,6 @@ ignore
   pango_layout_get_log_attrs
 %%
 ignore
-  pango_context_set_font_map
   pango_glyph_string_index_to_x
   pango_glyph_string_x_to_index
   pango_break
@@ -2065,12 +2064,4 @@ static PyObject *
 _wrap_pango_language_tp_str(PyObject *self)
 {
     return _wrap_pango_language_to_string(self);
-}
-%%
-override pango_context_new kwargs
-static int
-_wrap_pango_context_new(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    PyErr_SetString(PyExc_TypeError, "pango.Context cannot be instantiated directly");
-    return -1;
 }

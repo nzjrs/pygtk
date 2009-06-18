@@ -16,6 +16,18 @@ rendering.</refpurpose>
       <ooclass><classname>pango.Context</classname></ooclass>
       <ooclass><classname><link
 linkend="class-gobject">gobject.GObject</link></classname></ooclass>
+      <constructorsynopsis language="python">
+	<methodname><link linkend="constructor-pangocontext">pango.Context</link></methodname>
+	<methodparam></methodparam>
+      </constructorsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-pangocontext--get-font-map">get_font_map</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-pangocontext--set-font-map">set_font_map</link></methodname>
+	<methodparam><parameter role="keyword">font_map</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-pangocontext--list-families">list_families</link></methodname>
@@ -122,8 +134,84 @@ method.</para>
 
   </refsect1>
 
+  <refsect1 id="constructor-pangocontext">
+    <title>Constructor</title>
+
+    <programlisting><constructorsynopsis language="python">
+	<methodname>pango.Context</methodname>
+    </constructorsynopsis></programlisting>
+    <variablelist>
+      <varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	<listitem><simpara>a new <link linkend="class-pangocontext"><classname>pango.Context</classname></link>
+            <emphasis>without</emphasis> an associated font map</simpara></listitem>
+      </varlistentry>
+    </variablelist>
+
+    <note>
+      <para>Constructor is available in PyGTK 2.16 and above.</para>
+    </note>
+
+    <para>Creates a new PangoContext initialized to default values.</para>
+
+    <para>This constructor is not particularly useful as it should always be followed by a
+      call to <link linkend="method-pangocontext--set-font-map">set_font_map</link>
+      method.  Method <link linkend="method-pangofontmap--create-context">pango.FontMap.create_context</link>
+      does these two steps together and hence users are recommended to use that.</para>
+
+    <para>If you are using Pango as part of a higher-level system, that system may have
+      it's own way of create a <link linkend="class-pangocontext">pango.Context</link>.
+      For instance, the GTK+ toolkit has, among others,
+      <link linkend="function-gdk--pango-context-get-for-screen">gtk.gdk.pango_context_get_for_screen</link>
+      and <link linkend="method-gtkwidget--get-pango-context">gtk.Widget.get_pango_context</link>.
+      Use those instead.
+    </para>
+  </refsect1>
+
   <refsect1>
     <title>Methods</title>
+
+    <refsect2 id="method-pangocontext--get-font-map">
+      <title>pango.Context.get_font_map</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_font_map</methodname>
+	  <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the font map for the
+              <link linkend="class-pangocontext"><classname>pango.Context</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="method-pangocontext--set-font-map">
+      <title>pango.Context.get_font_map</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_font_map</methodname>
+	  <methodparam><parameter role="keyword">font_map</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">font_map</parameter>&nbsp;:</term>
+	  <listitem><simpara>the <link linkend="class-pangofontmap"><classname>pango.FontMap</classname>
+                to set</link> object</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>Sets the font map to be searched when fonts are looked-up in this
+        context. This is only for internal use by Pango backends,
+        a <link linkend="class-pangocontext"><classname>pango.Context</classname></link>
+        obtained via one of the recommended methods should already have a suitable font
+        map.</para>
+    </refsect2>
 
     <refsect2 id="method-pangocontext--list-families">
       <title>pango.Context.list_families</title>

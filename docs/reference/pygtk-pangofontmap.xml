@@ -17,6 +17,10 @@ particular rendering system.</refpurpose>
       <ooclass><classname><link
 linkend="class-gobject">gobject.GObject</link></classname></ooclass>
       <methodsynopsis language="python">
+	<methodname><link linkend="method-pangofontmap--create-context">create_context</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-pangofontmap--load-font">load_font</link></methodname>
 	<methodparam><parameter
@@ -71,6 +75,40 @@ object in <literal>PyGTK</literal>.</para>
 
   <refsect1>
     <title>Methods</title>
+
+    <refsect2 id="method-pangofontmap--create-context">
+      <title>pango.FontMap.create_context</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>create_context</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the newly allocated
+              <link linkend="class-pangocontext"><classname>pango.Context</classname></link>.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>Creates
+        a <link linkend="class-pangocontext"><classname>pango.Context</classname></link>
+        connected to fontmap. This is equivalent to calling the class
+        constructor followed
+        by <link linkend="method-pangocontext--set-font-map">pango.Context.set_font_map</link>.</para>
+
+      <para>If you are using Pango as part of a higher-level system, that system may have
+        it's own way of create a <link linkend="class-pangocontext">pango.Context</link>.
+        For instance, the GTK+ toolkit has, among others,
+        <link linkend="function-gdk--pango-context-get-for-screen">gtk.gdk.pango_context_get_for_screen</link>
+        and <link linkend="method-gtkwidget--get-pango-context">gtk.Widget.get_pango_context</link>.
+        Use those instead.
+      </para>
+    </refsect2>
 
     <refsect2 id="method-pangofontmap--load-font">
       <title>pango.FontMap.load_font</title>
