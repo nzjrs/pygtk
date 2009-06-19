@@ -37,8 +37,3 @@ class TestFontDescription(unittest.TestCase):
         fontdescr3 = pango.FontDescription('monospace 12')
         self.assertEqual(fontdescr, fontdescr2)
         self.assertNotEqual(fontdescr, fontdescr3)
-
-
-class Tests(unittest.TestCase):
-    def testPangoContextConstructor(self):
-        self.assertRaises(TypeError, pango.Context)
