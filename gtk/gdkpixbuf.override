@@ -768,3 +768,42 @@ _wrap_gdk_pixbuf_get_from_drawable2(PyObject *self,
     /* pygobject_new handles NULL checking */
     return pygobject_new((GObject *)ret);
 }
+%%
+override gdk_pixbuf_add_alpha kwargs
+/* Old declaration accepted characters as 'r', 'g' and 'b' arguments.
+ * However, that is flawed, as GTK+ in this case meant '8-bit
+ * integers', not 'characters'.  Override is needed to provide
+ * backward compatibility for already existing uses. */
+static PyObject *
+_wrap_gdk_pixbuf_add_alpha(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "substitute_color", "r", "g", "b", NULL };
+    int substitute_color, r, g, b;
+    PyObject *py_ret;
+    GdkPixbuf *ret;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"iiii:gdk.Pixbuf.add_alpha", kwlist,
+                                     &substitute_color, &r, &g, &b)) {
+        /* Backward compatibility. */
+        PyObject *exc_type, *exc_value, *exc_traceback;
+
+        PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
+
+        if (!PyArg_ParseTupleAndKeywords(args, kwargs,"iccc:gdk.Pixbuf.add_alpha", kwlist,
+                                         &substitute_color, &r, &g, &b)) {
+            PyErr_Restore(exc_type, exc_value, exc_traceback);
+            return NULL;
+        }
+
+        Py_XDECREF(exc_type);
+        Py_XDECREF(exc_value);
+        Py_XDECREF(exc_traceback);
+    }
+    
+    ret = gdk_pixbuf_add_alpha(GDK_PIXBUF(self->obj), substitute_color, r, g, b);
+    
+    py_ret = pygobject_new((GObject *)ret);
+    if (ret != NULL)
+        g_object_unref(ret);
+    return py_ret;
+}
