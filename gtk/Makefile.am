@@ -49,16 +49,23 @@ GDK_TYPES_DEFS = gdk-base-types.defs
 GTKUNIXPRINT_TYPES_DEFS = gtkunixprint-base-types.defs
 
 GTK_2_10_DEFS = gdk-2.10.defs gtk-2.10.defs gtk-2.10-types.defs
+
 GTK_2_12_DEFS =
 	gdk-2.12.defs		\
 	gtk-2.12.defs		\
 	gtk-2.12-types.defs	\
 	gtkunixprint-2.12.defs
+
 GTK_2_14_DEFS =
 	gdk-2.14.defs		\
 	gtk-2.14.defs		\
 	gtk-2.14-types.defs 	\
 	gtkunixprint-2.14.defs
+
+GTK_2_16_DEFS =
+	gdk-2.16.defs		\
+	gtk-2.16.defs		\
+	gtk-2.16-types.defs
 
 if HAVE_GTK_2_10
 GDK_DEFS += gdk-2.10.defs 
@@ -117,13 +124,14 @@ GTK_OVERRIDES = 		\
 	gtkwidget.override 	\
 	gtkwindow.override
 
-CLEANFILES += 			\
-	gtk.c 			\
+CLEANFILES +=			\
+	gtk.c			\
 	gdk.c			\
 	gtk.defs		\
 	gtk-types.defs		\
 	gdk.defs		\
-	gdk-types.defs
+	gdk-types.defs		\
+	gen-gtk.c
 
 EXTRA_DIST += 			\
 	gtk-extrafuncs.defs	\
@@ -135,6 +143,7 @@ EXTRA_DIST += 			\
 	$(GTK_2_10_DEFS)	\
 	$(GTK_2_12_DEFS)	\
 	$(GTK_2_14_DEFS)	\
+        $(GTK_2_16_DEFS)	\
 	$(GTK_OVERRIDES)
 
 
