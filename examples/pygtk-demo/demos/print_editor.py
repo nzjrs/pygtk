@@ -133,8 +133,8 @@ def save_file(save_filename):
 def do_save_as(action):
     dialog = gtk.FileChooserDialog("Select file",
                                    main_window,
-                                   (gtk.FILE_CHOOSER_ACTION_SAVE,
-                                    gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                   gtk.FILE_CHOOSER_ACTION_SAVE,
+                                   (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
     dialog.set_default_response(gtk.RESPONSE_OK)
     response = dialog.run()
