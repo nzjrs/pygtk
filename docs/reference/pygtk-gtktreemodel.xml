@@ -1207,10 +1207,12 @@ at. It may not be a valid location anymore.</para>
 	<varlistentry>
 	  <term><parameter
 role="keyword">new_order</parameter>&nbsp;:</term>
-	  <listitem><simpara>a sequence of integers containing the new
-indexes of the children, i.e. the former child <literal>n</literal> is now
-at the position specified by
-<parameter>new_order</parameter><literal>[n]</literal>.</simpara></listitem>
+	  <listitem><simpara>a sequence of integers containing the old
+	  indexes of the children in the new order, i.e. the child nodes
+	  have been rearranged so that the <parameter>treemodel</parameter>
+	  node that was at position index
+	  <parameter>new_order</parameter><literal>[i]</literal> is now at
+	  position index <literal>i</literal>.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -1565,16 +1567,19 @@ any)</simpara></listitem>
       </variablelist>
 
       <para>The "rows-reordered" signal is emitted when the
-<parameter>treemodel</parameter> child rows of the row specified by
-<parameter>path</parameter> and pointed to by <parameter>iter</parameter>
-are reordered. <parameter>new_order</parameter> is an array of node index
-numbers representing the new order of the rows. The value of
-<parameter>new_order</parameter> cannot be retrieved in PyGTK because it is
-passed as an opaque pointer (<link
-linkend="class-gobjectgpointer"><classname>gobject.GPointer</classname></link>)
-value. <parameter>iter</parameter> may be <literal>None</literal> and
-<parameter>path</parameter> an empty tuple to indicate that the top level
-rows were reordered.</para>
+      <parameter>treemodel</parameter> child rows of the row specified by
+      <parameter>path</parameter> and pointed to by
+      <parameter>iter</parameter> are reordered. The child nodes have been
+      rearranged so that the <parameter>treemodel</parameter> node that was
+      at position index
+      <parameter>new_order</parameter><literal>[i]</literal> is now at
+      position index <literal>i</literal>. The value of
+      <parameter>new_order</parameter> cannot be directly retrieved in PyGTK
+      because it is passed as an opaque pointer (<link
+      linkend="class-gobjectgpointer"><classname>gobject.GPointer</classname></link>)
+      value. <parameter>iter</parameter> may be <literal>None</literal> and
+      <parameter>path</parameter> an empty tuple to indicate that the top
+      level rows were reordered.</para>
 
     </refsect2>
 
