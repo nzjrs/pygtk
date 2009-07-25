@@ -20,7 +20,7 @@ import os
 import sys
 
 from dsextras import get_m4_define, getoutput, have_pkgconfig, \
-     pkgc_version_check, \
+     pkgc_version_check, getoutput, \
      GLOBAL_INC, GLOBAL_MACROS, InstallLib, InstallData, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
 
@@ -56,6 +56,7 @@ PANGO_REQUIRED    = get_m4_define('pango_required_version')
 GTK_REQUIRED      = get_m4_define('gtk_required_version')
 LIBGLADE_REQUIRED = get_m4_define('libglade_required_version')
 PYCAIRO_REQUIRED  = get_m4_define('pycairo_required_version')
+PYGOBJECT_REQUIRED = get_m4_define('pygobject_required_version')
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
@@ -117,16 +118,18 @@ PyGtkBuild.user_options.append(('enable-threading', None,
                                 'enable threading support'))
 
 # Atk
-atk = TemplateExtension(name='atk', pkc_name='atk',
-                        pkc_version=ATK_REQUIRED,
+atk = TemplateExtension(name='atk', 
+                        pkc_name=('pygobject-2.0','atk'),
+                        pkc_version=(PYGOBJECT_REQUIRED, ATK_REQUIRED),
                         sources=['atkmodule.c', 'atk.c'],
                         register=['atk-types.defs'],
                         override='atk.override',
                         defs='atk.defs',
                         py_ssize_t_clean=True)
 # Pango
-pango = TemplateExtension(name='pango', pkc_name='pango',
-                          pkc_version=PANGO_REQUIRED,
+pango = TemplateExtension(name='pango', 
+                          pkc_name=('pygobject-2.0','pango'),
+                          pkc_version=(PYGOBJECT_REQUIRED, PANGO_REQUIRED),
                           sources=['pango.c', 'pangomodule.c'],
                           register=['pango-types.defs'],
                           override='pango.override',
@@ -145,13 +148,21 @@ pangocairo = TemplateExtension(name='pangocairo',
 
 # Gdk (template only)
 gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
-                        defs=('gtk/gdk.defs',
-                              ['gtk/gdk-2.10.defs','gtk/gdk-base.defs']),
+                        defs=('gtk/gdk.defs',[
+                                    'gtk/gdk-2.16.defs',
+                                    'gtk/gdk-2.14.defs',
+                                    'gtk/gdk-2.12.defs',
+                                    'gtk/gdk-2.10.defs',
+                                    'gtk/gdk-base.defs']),
                         prefix='pygdk',
                         register=['atk-types.defs',
                                   'pango-types.defs',
-                                  ('gtk/gdk-types.defs',
-                                   ['gtk/gdk-base-types.defs'])],
+                                  ('gtk/gdk-types.defs',[
+                                    'gtk/gdk-2.16.defs',
+                                    'gtk/gdk-2.14.defs',
+                                    'gtk/gdk-2.12.defs',
+                                    'gtk/gdk-2.10.defs',
+                                    'gtk/gdk-base.defs'])],
                         py_ssize_t_clean=True)
 # Gtk+
 if pangocairo.can_build():
@@ -161,18 +172,34 @@ else:
     gtk_pkc_name='gtk+-2.0'
     gtk_pkc_version=GTK_REQUIRED
 
-if pkgc_version_check('gtk+-2.0', '2.10.0'):
-    gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-2.10.defs','gtk/gtk-base.defs'])
-    gtk_pkc_register=['atk-types.defs',
+if pkgc_version_check('gtk+-2.0', '2.16.0'):
+    pygobject_defsdir = getoutput('pkg-config --variable=defsdir pygobject-2.0')
+
+    gtk_pkc_defs=('gtk/gtk.defs',[
+                                'gtk/gtk-2.16.defs',
+                                'gtk/gtk-2.14.defs',
+                                'gtk/gtk-2.12.defs',
+                                'gtk/gtk-2.10.defs',
+                                'gtk/gtk-base.defs'])
+    gtk_pkc_register=['%s/gio-types.defs' % pygobject_defsdir,
+                      'atk-types.defs',
                       'pango-types.defs',
                       ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
-                      ('gtk/gtk-types.defs',['gtk/gtk-base-types.defs',
-                                             'gtk/gtk-2.10-types.defs'])]
-    libglade_pkc_register=[('gtk/gtk-types.defs',
-                            ['gtk/gtk-base-types.defs',
-                             'gtk/gtk-2.10-types.defs']),
+                      ('gtk/gtk-types.defs',[
+                                'gtk/gtk-2.16-types.defs',
+                                'gtk/gtk-2.14-types.defs',
+                                'gtk/gtk-2.12-types.defs',
+                                'gtk/gtk-2.10-types.defs',
+                                'gtk/gtk-base-types.defs'])]
+    libglade_pkc_register=[('gtk/gtk-types.defs',[
+                                'gtk/gtk-2.16-types.defs',
+                                'gtk/gtk-2.14-types.defs',
+                                'gtk/gtk-2.12-types.defs',
+                                'gtk/gtk-2.10-types.defs',
+                                'gtk/gtk-base-types.defs']),
                            'gtk/libglade.defs']
 else:
+    raise SystemExit
     gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-base.defs'])
     gtk_pkc_register=['atk-types.defs',
                       'pango-types.defs',
@@ -244,6 +271,12 @@ if gtk.can_build():
                                   'gtk/gdk-base.defs',
                                   'gtk/gdk-base-types.defs',
                                   'gtk/gtk.defs', 'gtk/gtk-types.defs',
+                                  'gtk/gtk-2.16.defs',
+                                  'gtk/gtk-2.16-types.defs',
+                                  'gtk/gtk-2.14.defs',
+                                  'gtk/gtk-2.14-types.defs',
+                                  'gtk/gtk-2.12.defs',
+                                  'gtk/gtk-2.12-types.defs',
                                   'gtk/gtk-2.10.defs',
                                   'gtk/gtk-2.10-types.defs',
                                   'gtk/gtk-base.defs',
