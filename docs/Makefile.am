@@ -34,7 +34,7 @@ XMLFILES = 						\
 	reference/pygtk-atktext.xml			\
 	reference/pygtk-atkvalue.xml			\
 	reference/pygtk-gdkapplaunchcontext.xml		\
-        reference/pygtk-gdkatom.xml			\
+	reference/pygtk-gdkatom.xml			\
 	reference/pygtk-gdkcairocontext.xml		\
 	reference/pygtk-gdk-classes.xml			\
 	reference/pygtk-gdkcolormap.xml			\
@@ -72,6 +72,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkaccessible.xml		\
 	reference/pygtk-gtkactiongroup.xml		\
 	reference/pygtk-gtkaction.xml			\
+	reference/pygtk-gtkactivatable.xml		\
 	reference/pygtk-gtkadjustment.xml		\
 	reference/pygtk-gtkalignment.xml		\
 	reference/pygtk-gtkarrow.xml			\
@@ -163,7 +164,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkmenu.xml			\
 	reference/pygtk-gtkmessagedialog.xml		\
 	reference/pygtk-gtkmisc.xml			\
-        reference/pygtk-gtkmountoperation.xml		\
+	reference/pygtk-gtkmountoperation.xml		\
 	reference/pygtk-gtknotebook.xml			\
 	reference/pygtk-gtkobject.xml			\
 	reference/pygtk-gtkoptionmenu.xml		\
@@ -228,7 +229,7 @@ XMLFILES = 						\
 	reference/pygtk-gtktoolbar.xml			\
 	reference/pygtk-gtktoolbutton.xml		\
 	reference/pygtk-gtktoolitem.xml			\
-        reference/pygtk-gtktoolshell.xml		\
+	reference/pygtk-gtktoolshell.xml		\
 	reference/pygtk-gtktooltip.xml			\
 	reference/pygtk-gtktooltips.xml			\
 	reference/pygtk-gtktreedragdest.xml		\
@@ -322,7 +323,7 @@ HTML_FILES =						\
 	html/class-atktext.html				\
 	html/class-atkvalue.html			\
 	html/class-gdkatom.html				\
-        html/class-gdkapplaunchcontext.html		\
+	html/class-gdkapplaunchcontext.html		\
 	html/class-gdkcairocontext.html			\
 	html/class-gdkcolor.html			\
 	html/class-gdkcolormap.html			\
@@ -355,6 +356,7 @@ HTML_FILES =						\
 	html/class-gtkaccessible.html			\
 	html/class-gtkactiongroup.html			\
 	html/class-gtkaction.html			\
+	html/class-gtkactivatable.html			\
 	html/class-gtkadjustment.html			\
 	html/class-gtkalignment.html			\
 	html/class-gtkarrow.html			\
@@ -443,7 +445,7 @@ HTML_FILES =						\
 	html/class-gtkmenutoolbutton.html		\
 	html/class-gtkmessagedialog.html		\
 	html/class-gtkmisc.html				\
-        html/class-gtkmountoperation.html		\
+	html/class-gtkmountoperation.html		\
 	html/class-gtknotebook.html			\
 	html/class-gtkobject.html			\
 	html/class-gtkoptionmenu.html			\
@@ -507,7 +509,7 @@ HTML_FILES =						\
 	html/class-gtktoolbar.html			\
 	html/class-gtktoolbutton.html			\
 	html/class-gtktoolitem.html			\
-        html/class-gtktoolshell.html			\
+	html/class-gtktoolshell.html			\
 	html/class-gtktooltip.html			\
 	html/class-gtktooltips.html			\
 	html/class-gtktreedragdest.html			\
