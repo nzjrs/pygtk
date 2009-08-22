@@ -322,11 +322,31 @@ linkend="signal-gtkdialog--response">response</link>"</term>
     <para>The <link
     linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link> boxes
     are created with a call to <link
-    linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>()
+    linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname></link>()
     that sets the dialog title, some convenient flags, and adds simple
     buttons.  In a newly created dialog, the two primary areas of the window
     can be accessed as the vbox and action_area attributes, as can be seen
-    from the example, below. A modal dialog (that is, one which freezes the
+    from the example, below.</para>
+    
+<programlisting>
+import gtk
+
+label = gtk.Label("Nice label")
+dialog = gtk.Dialog("My dialog",
+                   None,
+                   gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                   (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+                    gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+dialog.vbox.pack_start(label)
+label.show()
+checkbox = gtk.CheckButton("Useless checkbox")
+dialog.action_area.pack_end(checkbox)
+checkbox.show()
+response = dialog.run()
+dialog.destroy()
+</programlisting>
+
+    <para>A modal dialog (that is, one which freezes the
     rest of the application from user input), can be created by passing the
     <literal>gtk.DIALOG_MODAL</literal> flag to the <link
     linkend="constructor-gtkdialog"><methodname>gtk.Dialog</methodname>()</link>
