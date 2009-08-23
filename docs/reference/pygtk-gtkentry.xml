@@ -211,13 +211,22 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
             </row>
 
             <row valign="top">
+              <entry>"caps-lock-warning"</entry>
+              <entry>Read/Write</entry>
+              <entry>Whether password entries will show a warning when Caps Lock is on.
+	      Note that the warning is shown using a secondary icon, and thus does not work
+	      if you are using the secondary icon position for some other purpose. Default value: <literal>True</literal>.
+	      This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
               <entry>"cursor-position"</entry>
               <entry>Read</entry>
               <entry>The current position of the insertion cursor as a
               character index. Allowed values: [0,65535]. Default value:
               0</entry>
             </row>
-
 
             <row valign="top">
               <entry>"editable"</entry>
@@ -234,6 +243,17 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
             </row>
 
             <row valign="top">
+              <entry>"im-module"</entry>
+              <entry>Read/Write</entry>
+              <entry>Which IM (input method) module should be used for this entry. See
+	      <link linkend="class-gtkimcontext"><classname>gtk.IMContext</classname></link>.
+	      Setting this to a non-<literal>None</literal> value overrides the system-wide
+	      IM module setting. See the <link linkend="class-gtksettings"><classname>gtk.Settings</classname></link>
+	      "gtk-im-module" property. Default value: <literal>None</literal>.
+	      This property is available in GTK+ 2.16 and above.</entry>
+            </row>
+
+            <row valign="top">
               <entry>"inner-border"</entry>
               <entry>Read/Write</entry>
               <entry>The text area's border between the text and the frame
@@ -246,6 +266,15 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
               <entry>The character to use when masking entry contents (when
               "visibility" is <literal>False</literal>). Default value:
               '*'.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"invisible-char-set"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		Whether the invisible char has been set for the GtkEntry.
+		Default value: <literal>False</literal> This property is available in GTK+ 2.16 and above.
+	      </entry>
             </row>
 
             <row valign="top">
@@ -265,11 +294,227 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
             </row>
 
             <row valign="top">
+              <entry>"primary-icon-activatable"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		Whether the primary icon is activatable.
+		GTK+ emits the "icon-press" and "icon-release" signals only on sensitive, activatable icons.
+		Sensitive, but non-activatable icons can be used for purely informational purposes.
+		Default value: <literal>False</literal>
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-gicon"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The <link linkend="class-gioicon"><classname>gio.Icon</classname></link>
+		to use for the primary icon for the entry.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-name"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The icon name to use for the primary icon for the entry.
+		Default value: <literal>None</literal>
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-pixbuf"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		A pixbuf to use as the primary icon for the entry.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-sensitive"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		Whether the primary icon is sensitive.
+		An insensitive icon appears grayed out. GTK+ does not emit the
+		"icon-press" and "icon-release" signals and does not allow DND from insensitive icons.
+		An icon should be set insensitive if the action that would trigger when
+		clicked is currently not available. Default value: <literal>True</literal>
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-stock"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The stock id to use for the primary icon for the entry.
+		Default value: <literal>None</literal>
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-storage-type"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The representation which is used for the primary icon of the entry.
+		Default value: gtk.IMAGE_EMPTY
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-tooltip-markup"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The contents of the tooltip on the primary icon, which is marked
+		up with the Pango text markup language.
+		Also see gtk_entry_set_icon_tooltip_markup(). ##FIXME
+		Default value: <literal>None</literal>.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"primary-icon-tooltip-text"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The contents of the tooltip on the primary icon.
+		Also see gtk_entry_set_icon_tooltip_text(). ##FIXME
+		Default value: <literal>None</literal>.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"progress-fraction"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The current fraction of the task that's been completed.
+		Allowed values: [0,1] Default value: 0
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"progress-pulse-step"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The fraction of total entry width to move the progress bouncing block
+		for each call to gtk_entry_progress_pulse(). ##FIXME
+		Allowed values: [0,1] Default value: 0.1
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
               <entry>"scroll-offset"</entry>
               <entry>Read</entry>
               <entry>The number of pixels of the entry scrolled off the
               screen to the left. Allowed values: >= 0 Default value:
               0.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-activatable"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		Whether the secondary icon is activatable.
+		GTK+ emits the "icon-press" and "icon-release" signals only on sensitive, activatable icons.
+		Sensitive, but non-activatable icons can be used for purely informational purposes.
+		Default value: <literal>False</literal>
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-gicon"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The <link linkend="class-gioicon"><classname>gio.Icon</classname></link>
+		to use for the secondary icon for the entry.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-name"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The icon name to use for the secondary icon for the entry.
+		Default value: <literal>None</literal>.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-pixbuf"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		A pixbuf to use as the secondary icon for the entry.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-sensitive"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		Whether the secondary icon is sensitive.
+		An insensitive icon appears grayed out. GTK+ does not emit the
+		"icon-press" and "icon-release" signals and does not allow DND from insensitive icons.
+		An icon should be set insensitive if the action that would trigger when
+		clicked is currently not available.
+		Default value: <literal>True</literal>.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-stock"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The stock id to use for the secondary icon for the entry.
+		Default value: <literal>None</literal>.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-storage-type"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The representation which is used for the secondary icon of the entry.
+		Default value: gtk.IMAGE_EMPTY
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-tooltip-markup"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The contents of the tooltip on the secondary icon, which is marked
+		up with the Pango text markup language.
+		Also see gtk_entry_set_icon_tooltip_markup(). ##FIXME
+		Default value: <literal>None</literal>.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"secondary-icon-tooltip-text"</entry>
+              <entry>Read/Write</entry>
+              <entry>
+		The contents of the tooltip on the secondary icon.
+		Also see gtk_entry_set_icon_tooltip_text(). #àFIXME
+		Default value: <literal>None</literal>.
+		This property is available in GTK+ 2.16 and above.
+	      </entry>
             </row>
 
             <row valign="top">
@@ -356,10 +601,28 @@ linkend="method-gtkentry--get-completion">get_completion</link></methodname>
         <tbody>
 
         <row valign="top">
+          <entry>"icon-prelight"</entry>
+          <entry>Read</entry>
+          <entry>The prelight style property determines whether activatable icons
+	  prelight on mouseover. Default value: <literal>True</literal>
+          This property is available in GTK+ 2.16 and above.</entry>
+        </row>
+
+        <row valign="top">
           <entry>"inner-border"</entry>
           <entry>Read</entry>
           <entry>Sets the text area's border between the text and the frame
           This property is available in GTK+ 2.10 and above.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"state-hint"</entry>
+          <entry>Read</entry>
+          <entry>
+	    Indicates whether to pass a proper widget state when drawing the shadow
+	    and the widget background. Default value: <literal>False</literal>.
+	    This property is available in GTK+ 2.16 and above.
+	  </entry>
         </row>
 
         </tbody>
@@ -445,6 +708,44 @@ linkend="signal-gtkentry--delete-from-cursor">delete-from-cursor</link>"</term>
             <methodparam><parameter>delete_type</parameter>
             </methodparam>
             <methodparam><parameter>count</parameter>
+            </methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link
+linkend="signal-gtkentry--icon-press">icon-press</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>entry</parameter>
+            </methodparam>
+            <methodparam><parameter>icon_pos</parameter>
+            </methodparam>
+            <methodparam><parameter>event</parameter>
+            </methodparam>
+            <methodparam><parameter>user_param1</parameter>
+            </methodparam>
+            <methodparam><parameter>...</parameter>
+            </methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link
+linkend="signal-gtkentry--icon-press">icon-release</link>"</term>
+        <listitem>
+          <methodsynopsis
+	    language="python"><methodname>callback</methodname>
+            <methodparam><parameter>entry</parameter>
+            </methodparam>
+            <methodparam><parameter>icon_pos</parameter>
+            </methodparam>
+            <methodparam><parameter>event</parameter>
             </methodparam>
             <methodparam><parameter>user_param1</parameter>
             </methodparam>
@@ -1512,6 +1813,101 @@ any)</simpara></listitem>
 	  <simpara>  gtk.DELETE_WHITESPACE</simpara>
 	</listitem>
       </itemizedlist>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkentry--icon-press">
+      <title>The "icon-press" gtk.Entry Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>entry</parameter></methodparam>
+	  <methodparam><parameter>icon_pos</parameter></methodparam>
+	  <methodparam><parameter>event</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>entry</parameter>&nbsp;:</term>
+	  <listitem><simpara>the entry that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>icon_pos</parameter>&nbsp;:</term>
+	  <listitem><simpara>The position of the clicked icon.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>event</parameter>&nbsp;:</term>
+	  <listitem>The button press event.<simpara>
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The "icon-press" signal is emitted when an activatable icon is clicked.
+      </para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtkentry--icon-release">
+      <title>The "icon-release" gtk.Entry Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>callback</methodname>
+	  <methodparam><parameter>entry</parameter></methodparam>
+	  <methodparam><parameter>icon_pos</parameter></methodparam>
+	  <methodparam><parameter>event</parameter></methodparam>
+	  <methodparam><parameter>user_param1</parameter></methodparam>
+	  <methodparam><parameter>...</parameter></methodparam>
+	</methodsynopsis></programlisting>
+
+      <variablelist>
+	<varlistentry>
+	  <term><parameter>entry</parameter>&nbsp;:</term>
+	  <listitem><simpara>the entry that received the
+signal</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>icon_pos</parameter>&nbsp;:</term>
+	  <listitem><simpara>The position of the clicked icon.</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>event</parameter>&nbsp;:</term>
+	  <listitem>The button press event.<simpara>
+	  </simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified
+with the <link
+linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+method</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><parameter>...</parameter>&nbsp;:</term>
+	  <listitem><simpara>additional user parameters (if
+any)</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The "icon-press" signal is emitted when the button release from a mouse
+	click over an activatable icon.
+      </para>
 
     </refsect2>
 
