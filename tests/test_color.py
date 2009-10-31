@@ -47,6 +47,12 @@ class Tests(unittest.TestCase):
     def test_color_from_hsv(self):
         self.assertEqual(gtk.gdk.Color('red'), gtk.gdk.color_from_hsv(0.0, 1.0, 1.0))
 
+    # See bug #594347.
+    def test_color_from_hsv_kwargs(self):
+        self.assertEqual(gtk.gdk.Color('black'), gtk.gdk.color_from_hsv(hue=0.0,
+                                                                        saturation=0.0,
+                                                                        value=0.0))
+
     def test_float_attributes(self):
         c = gtk.gdk.Color(0, 10000, 65535)
         self.assertAlmostEqual(c.red_float, 0.0)
