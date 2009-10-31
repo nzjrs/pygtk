@@ -1,3 +1,4 @@
+;; -*- scheme -*-
 ;; From /opt/gnome-devel/include/pango-1.0/pango/pangocairo.h
 
 (define-interface CairoFontMap
@@ -41,6 +42,7 @@
   (of-object "PangoCairoFontMap")
   (c-name "pango_cairo_font_map_create_context")
   (return-type "PangoContext*")
+  (caller-owns-return #t)
 )
 
 (define-function update_context
@@ -89,6 +91,7 @@
 (define-function create_layout
   (c-name "pango_cairo_create_layout")
   (return-type "PangoLayout*")
+  (caller-owns-return #t)
   (parameters
     '("cairo_t*" "cr")
   )
