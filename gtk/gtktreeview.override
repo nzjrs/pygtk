@@ -1231,6 +1231,91 @@ _wrap_gtk_tree_sortable_set_default_sort_func(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
+override _wrap_GtkTree_Sortable__do_get_sort_column_id noargs
+static PyObject *
+_wrap_GtkTreeSortable__do_set_sort_column_id(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    GtkTreeSortableIface *iface;
+    PyGObject *self;
+    gint sort_column_id;
+    GtkSortType order;
+
+    iface = g_type_interface_peek(g_type_class_peek(pyg_type_from_object(cls)), GTK_TYPE_TREE_SORTABLE);
+    if (iface->get_sort_column_id)
+        iface->get_sort_column_id(GTK_TREE_SORTABLE(self->obj), &sort_column_id, &order);
+    else {
+        PyErr_SetString(PyExc_NotImplementedError, "interface method gtk.TreeSortable.get_sort_column_id not implemented");
+        return NULL;
+    }
+
+    return Py_BuildValue("(iN)", sort_column_id, pyg_enum_from_gtype(GTK_TYPE_SORT_TYPE, order));
+}
+%%
+override GtkTreeSortable__proxy_do_get_sort_column_id
+static gboolean
+_wrap_GtkTreeSortable__proxy_do_get_sort_column_id(GtkTreeSortable *self, gint *sort_column_id, GtkSortType *order)
+{
+    PyGILState_STATE __py_state;
+    PyObject *py_self;
+    PyObject *py_retval;
+    PyObject *py_method;
+    gint py_sort_column_id;
+    PyObject *py_order;
+
+    __py_state = pyg_gil_state_ensure();
+    py_self = pygobject_new((GObject *) self);
+    if (!py_self) {
+        if (PyErr_Occurred())
+            PyErr_Print();
+        pyg_gil_state_release(__py_state);
+        return FALSE;
+    }
+    
+    py_method = PyObject_GetAttrString(py_self, "do_get_sort_column_id");
+    if (!py_method) {
+        if (PyErr_Occurred())
+            PyErr_Print();
+        Py_DECREF(py_self);
+        pyg_gil_state_release(__py_state);
+        return FALSE;
+    }
+    py_retval = PyObject_CallObject(py_method, NULL);
+    if (!py_retval) {
+        if (PyErr_Occurred())
+            PyErr_Print();
+        Py_XDECREF(py_retval);
+        Py_DECREF(py_method);
+        Py_DECREF(py_self);
+        pyg_gil_state_release(__py_state);
+        return FALSE;
+    }
+    if (!PyArg_ParseTuple(py_retval, "iO", &py_sort_column_id, &py_order)) {
+        PyErr_Print();
+        Py_XDECREF(py_retval);
+        Py_DECREF(py_method);
+        Py_DECREF(py_self);
+        pyg_gil_state_release(__py_state);
+        return FALSE;
+    }
+    if (sort_column_id)
+        *sort_column_id = py_sort_column_id;
+    if (order && pyg_enum_get_value(GTK_TYPE_SORT_TYPE, py_order, (gint *) order)) {
+        PyErr_Print();
+        Py_XDECREF(py_retval);
+        Py_DECREF(py_method);
+        Py_DECREF(py_self);
+        pyg_gil_state_release(__py_state);
+        return FALSE;
+    }
+
+    Py_XDECREF(py_retval);
+    Py_DECREF(py_method);
+    Py_DECREF(py_self);
+    pyg_gil_state_release(__py_state);
+
+    return py_order >= 0;
+}
+%%
 ignore gtk_list_store_newv
 %%
 new-constructor GTK_TYPE_LIST_STORE
