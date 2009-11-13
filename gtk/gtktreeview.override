@@ -1231,15 +1231,18 @@ _wrap_gtk_tree_sortable_set_default_sort_func(PyGObject *self, PyObject *args)
     return Py_None;
 }
 %%
-override _wrap_GtkTree_Sortable__do_get_sort_column_id noargs
+override GtkTreeSortable__do_get_sort_column_id kwargs
 static PyObject *
-_wrap_GtkTreeSortable__do_set_sort_column_id(PyObject *cls, PyObject *args, PyObject *kwargs)
+_wrap_GtkTreeSortable__do_get_sort_column_id(PyObject *cls, PyObject *args, PyObject *kwargs)
 {
+    static char *kwlist[] = { "self", NULL };
     GtkTreeSortableIface *iface;
     PyGObject *self;
     gint sort_column_id;
     GtkSortType order;
 
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!:gtk.TreeSortable.do_get_sort_column_id", kwlist, &PyGtkTreeSortable_Type, &self))
+        return NULL;
     iface = g_type_interface_peek(g_type_class_peek(pyg_type_from_object(cls)), GTK_TYPE_TREE_SORTABLE);
     if (iface->get_sort_column_id)
         iface->get_sort_column_id(GTK_TREE_SORTABLE(self->obj), &sort_column_id, &order);
