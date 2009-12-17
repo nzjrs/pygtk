@@ -125,6 +125,24 @@ _wrap_gdk_cairo_region(PyObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 
+static PyObject *
+_wrap_gdk_cairo_reset_clip(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "cr", "drawable", NULL };
+    PyGObject *drawable;
+    PycairoContext *cr;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O!O!:gtk.gdk.CairoContext.reset_clip", kwlist,
+				     &PycairoContext_Type, &cr, &PyGdkDrawable_Type,
+				     &drawable))
+        return NULL;
+    
+    gdk_cairo_reset_clip(cr->ctx, GDK_DRAWABLE(drawable->obj));
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 #if GTK_CHECK_VERSION(2, 9, 3)
 static PyObject *
 _wrap_gdk_cairo_set_source_pixmap(PyObject *self, PyObject *args,
@@ -152,6 +170,7 @@ static PyMethodDef _PyGdkCairoContext_methods[] = {
     { "set_source_color", (PyCFunction)_wrap_gdk_cairo_set_source_color, METH_VARARGS|METH_KEYWORDS },
     { "rectangle", (PyCFunction)_wrap_gdk_cairo_rectangle, METH_VARARGS|METH_KEYWORDS },
     { "region", (PyCFunction)_wrap_gdk_cairo_region, METH_VARARGS|METH_KEYWORDS },
+    { "reset_clip", (PyCFunction)_wrap_gdk_cairo_reset_clip, METH_VARARGS|METH_KEYWORDS },
 #if GTK_CHECK_VERSION(2, 9, 3)
     { "set_source_pixmap", (PyCFunction)_wrap_gdk_cairo_set_source_pixmap, METH_VARARGS|METH_KEYWORDS },
 #endif
@@ -214,6 +233,7 @@ ignore
   gdk_cairo_rectangle
   gdk_cairo_region
   gdk_cairo_set_source_pixmap
+  gdk_cairo_reset_clip
 
 %%
 init
