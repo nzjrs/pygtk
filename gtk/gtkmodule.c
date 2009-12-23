@@ -77,8 +77,7 @@ static void
 sink_gtkobject(GObject *object)
 {
     if (GTK_OBJECT_FLOATING(object)) {
-	g_object_ref(object);
-	gtk_object_sink(GTK_OBJECT(object));
+	g_object_ref_sink(object);
     }
 }
 

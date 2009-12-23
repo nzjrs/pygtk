@@ -45,7 +45,7 @@ PyGdkWindow_New(GdkWindow *win)
     if (self == NULL)
 	return NULL;
     self->obj = win;
-    gdk_window_ref(self->obj);
+    g_object_ref(self->obj);
     return (PyObject *)self;
 }
 #endif
@@ -387,10 +387,10 @@ static PyTypeObject PyGtkRcStyleHelper_Type = {
 static void
 PyGdkWindow_Dealloc(PyGdkWindow_Object *self)
 {
-    if (gdk_window_get_type(self->obj) == GDK_WINDOW_PIXMAP)
-	gdk_pixmap_unref(self->obj);
+    if (gdk_drawable_get_type(self->obj) == GDK_WINDOW_PIXMAP)
+	g_object_unref(self->obj);
     else
-	gdk_window_unref(self->obj);
+	g_object_unref(self->obj);
     PyObject_DEL(self);
 }
 
@@ -412,7 +412,7 @@ static PyObject *
 PyGdkWindow_Repr(PyGdkWindow_Object *self)
 {
     char buf[100];
-    if (gdk_window_get_type(self->obj) == GDK_WINDOW_PIXMAP)
+    if (gdk_drawable_get_type(self->obj) == GDK_WINDOW_PIXMAP)
 	sprintf(buf, "<GdkPixmap at %lx>", (long)PyGdkWindow_Get(self));
     else
 	sprintf(buf, "<GdkWindow at %lx>", (long)PyGdkWindow_Get(self));
@@ -535,7 +535,7 @@ PyGdkWindow_NewGC(PyGdkWindow_Object *self, PyObject *args, PyObject *kws)
 	return NULL;
     gc = gdk_gc_new_with_values(PyGdkWindow_Get(self), &values, mask);
     value = PyGdkGC_New(gc);
-    gdk_gc_unref(gc);
+    g_object_unref(gc);
     return value;
 }
 
@@ -794,11 +794,11 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key)
 			     "height", "parent", "pointer", "pointer_state",
 			     "toplevel", "type", "width", "x", "xid", "y");
     if (!strcmp(key, "width")) {
-	gdk_window_get_size(win, &x, NULL);
+	gdk_drawable_get_size(win, &x, NULL);
 	return PyInt_FromLong(x);
     }
     if (!strcmp(key, "height")) {
-	gdk_window_get_size(win, NULL, &y);
+	gdk_drawable_get_size(win, NULL, &y);
 	return PyInt_FromLong(y);
     }
     if (!strcmp(key, "x")) {
@@ -810,7 +810,7 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key)
 	return PyInt_FromLong(y);
     }
     if (!strcmp(key, "colormap"))
-	return PyGdkColormap_New(gdk_window_get_colormap(win));
+	return PyGdkColormap_New(gdk_drawable_get_colormap(win));
     if (!strcmp(key, "pointer")) {
 	gdk_window_get_pointer(win, &x, &y, NULL);
 	return Py_BuildValue("(ii)", x, y);
@@ -847,7 +847,7 @@ PyGdkWindow_GetAttr(PyGdkWindow_Object *self, char *key)
 	return ret;
     }
     if (!strcmp(key, "type"))
-	return PyInt_FromLong(gdk_window_get_type(win));
+	return PyInt_FromLong(gdk_drawable_get_type(win));
     if (!strcmp(key, "depth")) {
 	gdk_window_get_geometry(win, NULL, NULL, NULL, NULL, &x);
 	return PyInt_FromLong(x);

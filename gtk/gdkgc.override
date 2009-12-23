@@ -277,7 +277,7 @@ _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
     gc = gdk_gc_new_with_values(GDK_DRAWABLE(self->obj), &values, mask);
     pygc = pygobject_new((GObject *)gc);
-    gdk_gc_unref(gc);
+    g_object_unref(gc);
     return pygc;
 }
 %%
