@@ -65,6 +65,12 @@ linkend="method-gtkstyle--lookup-icon-set">lookup_icon_set</link></methodname>
 	<methodparam><parameter
 		       role="keyword">stock_id</parameter></methodparam>
       </methodsynopsis>
+
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkstyle--lookup-color">lookup_color</link></methodname>
+	<methodparam><parameter role="keyword">color_name</parameter></methodparam>
+      </methodsynopsis>
+
       <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkstyle--render-icon">render_icon</link></methodname>
@@ -1066,6 +1072,35 @@ linkend="class-gtkiconfactory"><classname>gtk.IconFactory</classname></link>
 list associated with the style and the default icon factory for the stock
 icon specified by <parameter>stock_id</parameter>. If the stock icon iconset
 is found it is returned.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstyle--lookup-color">
+      <title>gtk.Style.lookup_color</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>lookup_color</methodname>
+	  <methodparam><parameter role="keyword">color_name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">color_name</parameter>&nbsp;:</term>
+	  <listitem><simpara>the name of the logical color to look up</simpara></listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>a <link linkend="class-gdkcolor"><classname>gtk.gdk.Color</classname></link>
+	  on succes, <literal>None</literal> otherwise.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The <methodname>lookup_color</methodname>() method looks up <parameter>color_name</parameter>
+	in the style's logical color mappings, filling in color and returning <literal>True</literal>
+	if found, otherwise returning <literal>Flase</literal>.
+	Do not cache the found mapping, because it depends on the GtkStyle and might
+	change when a theme switch occurs.
+      </para>
 
     </refsect2>
 
