@@ -231,3 +231,21 @@ _wrap_gtk_enumerate_printers(PyGObject *self, PyObject *args, PyObject *kwargs)
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_printer_list_papers noargs
+static PyObject*
+_wrap_gtk_printer_list_papers(PyGObject *self)
+{
+    GList *list;
+    PyObject *ret;
+
+    list = gtk_printer_list_papers(GTK_PRINTER(self->obj));
+
+    if (list) {
+        PYLIST_FROMGLIST(ret, list, pygobject_new(list_item), NULL, NULL);
+        return ret;
+    } else {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+}
