@@ -128,6 +128,32 @@
 
 
 
+;; From gdk-pixbuf-core.h
+
+(define-function pixbuf_new_from_stream
+  (c-name "gdk_pixbuf_new_from_stream")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("GInputStream*" "stream")
+    '("GCancellable*" "cancellable" (null-ok) (default "NULL"))
+    '("GError**" "error")
+  )
+)
+
+(define-function pixbuf_new_from_stream_at_scale
+  (c-name "gdk_pixbuf_new_from_stream_at_scale")
+  (return-type "GdkPixbuf*")
+  (parameters
+    '("GInputStream*" "stream")
+    '("gint" "width" (default "-1"))
+    '("gint" "height" (default "-1"))
+    '("gboolean" "preserve_aspect_ratio" (default "1"))
+    '("GCancellable*" "cancellable" (null-ok) (default "NULL"))
+    '("GError**" "error")
+  )
+)
+
+
 (ifdef GDK_TARGET_X11
  
 ;; From gdkx.h
