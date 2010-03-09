@@ -1319,6 +1319,236 @@ _wrap_GtkTreeSortable__proxy_do_get_sort_column_id(GtkTreeSortable *self, gint *
     return py_order >= 0;
 }
 %%
+override GtkTreeSortable__do_set_sort_func
+static PyObject *
+_wrap_GtkTreeSortable__do_set_sort_func(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "self", "sort_column_id", "func", "user_data", NULL };
+    GtkTreeSortableIface *iface;
+    PyGObject *self;
+    gint sort_column_id;
+    PyObject *func;
+    PyObject *user_data;
+    PyGtkCustomNotify *func_wrapper;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!iO|O:gtk.TreeSortable.do_set_sort_func", kwlist,
+                                     &PyGtkTreeSortable_Type, &self,
+                                     &sort_column_id, &func, &user_data))
+        return NULL;
+
+    if (!PyCallable_Check(func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+
+    iface = g_type_interface_peek(g_type_class_peek(pyg_type_from_object(cls)), GTK_TYPE_TREE_SORTABLE);
+    if (!iface->set_sort_func) {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "interface method gtk.TreeSortable.set_sort_func not implemented");
+        return NULL;
+    }
+
+    func_wrapper = g_new(PyGtkCustomNotify, 1);
+    func_wrapper->func = func;
+    Py_INCREF(func_wrapper->func);
+    func_wrapper->data = user_data;
+    Py_XINCREF(func_wrapper->data);
+
+    iface->set_sort_func(GTK_TREE_SORTABLE(self->obj), sort_column_id,
+                         pygtk_tree_sortable_sort_cb, func_wrapper, pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override GtkTreeSortable__do_set_default_sort_func
+static PyObject *
+_wrap_GtkTreeSortable__do_set_default_sort_func(PyObject *cls, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "self", "func", "user_data", NULL };
+    GtkTreeSortableIface *iface;
+    PyGObject *self;
+    PyObject *func;
+    PyObject *user_data;
+    PyGtkCustomNotify *func_wrapper;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
+                                     "O!iO|O:gtk.TreeSortable.do_set_default_sort_func", kwlist,
+                                     &PyGtkTreeSortable_Type, &self,
+                                     &func, &user_data))
+        return NULL;
+
+    if (!PyCallable_Check(func)) {
+        PyErr_SetString(PyExc_TypeError, "func must be a callable object");
+        return NULL;
+    }
+
+    iface = g_type_interface_peek(g_type_class_peek(pyg_type_from_object(cls)), GTK_TYPE_TREE_SORTABLE);
+    if (!iface->set_default_sort_func) {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "interface method gtk.TreeSortable.set_default_sort_func not implemented");
+        return NULL;
+    }
+
+    func_wrapper = g_new(PyGtkCustomNotify, 1);
+    func_wrapper->func = func;
+    Py_INCREF(func_wrapper->func);
+    func_wrapper->data = user_data;
+    Py_XINCREF(func_wrapper->data);
+
+    iface->set_default_sort_func(GTK_TREE_SORTABLE(self->obj),
+                                 pygtk_tree_sortable_sort_cb, func_wrapper, pygtk_custom_destroy_notify);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override GtkTreeSortable__proxy_do_set_sort_func
+
+typedef struct {
+  GtkTreeIterCompareFunc func;
+  gpointer               data;
+  GDestroyNotify         destroy;
+} _PyGTKIterCompareFuncWrapper;
+
+static PyObject *
+_pygtk_tree_iter_compare_func_wrapper__call(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "model", "iter1", "iter2", NULL };
+
+    PyObject *py_model;
+    PyObject *py_iter1;
+    PyObject *py_iter2;
+    _PyGTKIterCompareFuncWrapper *wrapper;
+    int result;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O!O!", kwlist,
+                                     &PyGtkTreeModel_Type, &py_model,
+                                     &PyGtkTreeIter_Type, &py_iter1,
+                                     &PyGtkTreeIter_Type, &py_iter2))
+        return NULL;
+
+    wrapper = (_PyGTKIterCompareFuncWrapper *) PyCObject_AsVoidPtr(self);
+    result = (*wrapper->func) (GTK_TREE_MODEL(((PyGObject *) py_model)->obj),
+                               pyg_boxed_get(py_iter1, GtkTreeIter),
+                               pyg_boxed_get(py_iter2, GtkTreeIter),
+                               wrapper->data);
+
+    return PyInt_FromLong(result);
+}
+
+static void
+_pygtk_tree_iter_compare_func_wrapper__destroy(void *wrapper_)
+{
+    _PyGTKIterCompareFuncWrapper *wrapper = (_PyGTKIterCompareFuncWrapper *) wrapper_;
+
+    if (wrapper->destroy)
+        (*wrapper->destroy) (wrapper->data);
+
+    g_slice_free(_PyGTKIterCompareFuncWrapper, wrapper);
+}
+
+static PyObject *
+_wrap_tree_iter_compare_func(GtkTreeIterCompareFunc func, gpointer data, GDestroyNotify destroy)
+{
+    static PyMethodDef wrapper_method
+        = { "_iter_compare", (PyCFunction) _pygtk_tree_iter_compare_func_wrapper__call,
+            METH_VARARGS | METH_KEYWORDS, NULL };
+
+    _PyGTKIterCompareFuncWrapper *wrapper;
+    PyObject *py_wrapper;
+    PyObject *result;
+
+    if (!func) {
+        if (destroy)
+            (*destroy) (data);
+
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+
+    wrapper = g_slice_new(_PyGTKIterCompareFuncWrapper);
+    wrapper->func = func;
+    wrapper->data = data;
+    wrapper->destroy = destroy;
+
+    py_wrapper = PyCObject_FromVoidPtr(wrapper, _pygtk_tree_iter_compare_func_wrapper__destroy);
+    if (!py_wrapper) {
+        _pygtk_tree_iter_compare_func_wrapper__destroy(wrapper);
+        return NULL;
+    }
+
+    result = PyCFunction_New(&wrapper_method, py_wrapper);
+    Py_DECREF(py_wrapper);
+
+    return result;
+}
+
+static void
+_do_proxy_do_set_sort_func(GtkTreeSortable *self, gboolean default_,
+                           gint sort_column_id,
+                           GtkTreeIterCompareFunc func,
+                           gpointer data,
+                           GDestroyNotify destroy)
+{
+    PyGILState_STATE py_state = pyg_gil_state_ensure ();
+    PyObject *py_self = NULL;
+    PyObject *py_func = NULL;
+    PyObject *result = NULL;
+
+    py_self = pygobject_new(G_OBJECT(self));
+    if (!py_self)
+        goto error;
+
+    py_func = _wrap_tree_iter_compare_func(func, data, destroy);
+    if (!py_func)
+        goto error;
+
+    if (default_)
+        result = PyObject_CallMethod(py_self, "do_set_default_sort_func", "O", py_func);
+    else
+        result = PyObject_CallMethod(py_self, "do_set_sort_func", "iO", sort_column_id, py_func);
+
+    if (!result)
+        goto error;
+
+ done:
+    Py_XDECREF(py_self);
+    Py_XDECREF(py_func);
+    Py_XDECREF(result);
+  
+    pyg_gil_state_release (py_state);
+
+    return;
+
+ error:
+    if (PyErr_Occurred ())
+        PyErr_Print ();
+
+    goto done;
+}
+
+static void
+_wrap_GtkTreeSortable__proxy_do_set_sort_func(GtkTreeSortable *self,
+                                              gint sort_column_id,
+                                              GtkTreeIterCompareFunc func,
+                                              gpointer data,
+                                              GDestroyNotify destroy)
+{
+    _do_proxy_do_set_sort_func(self, FALSE, sort_column_id, func, data, destroy);
+}
+%%
+override GtkTreeSortable__proxy_do_set_default_sort_func
+static void
+_wrap_GtkTreeSortable__proxy_do_set_default_sort_func(GtkTreeSortable *self,
+                                                      GtkTreeIterCompareFunc func,
+                                                      gpointer data,
+                                                      GDestroyNotify destroy)
+{
+    _do_proxy_do_set_sort_func(self, TRUE, 0, func, data, destroy);
+}
+
+%%
 ignore gtk_list_store_newv
 %%
 new-constructor GTK_TYPE_LIST_STORE
