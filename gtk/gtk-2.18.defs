@@ -245,6 +245,95 @@
 
 
 
+;; From gtkhsv.h
+
+(define-function gtk_hsv_get_type
+  (c-name "gtk_hsv_get_type")
+  (return-type "GType")
+)
+
+(define-function gtk_hsv_new
+  (c-name "gtk_hsv_new")
+  (is-constructor-of "GtkHsv")
+  (return-type "GtkWidget*")
+)
+
+(define-method set_color
+  (of-object "GtkHSV")
+  (c-name "gtk_hsv_set_color")
+  (return-type "none")
+  (parameters
+    '("double" "h")
+    '("double" "s")
+    '("double" "v")
+  )
+)
+
+(define-method get_color
+  (of-object "GtkHSV")
+  (c-name "gtk_hsv_get_color")
+  (return-type "none")
+  (parameters
+    '("gdouble*" "h")
+    '("gdouble*" "s")
+    '("gdouble*" "v")
+  )
+)
+
+(define-method set_metrics
+  (of-object "GtkHSV")
+  (c-name "gtk_hsv_set_metrics")
+  (return-type "none")
+  (parameters
+    '("gint" "size")
+    '("gint" "ring_width")
+  )
+)
+
+(define-method get_metrics
+  (of-object "GtkHSV")
+  (c-name "gtk_hsv_get_metrics")
+  (return-type "none")
+  (parameters
+    '("gint*" "size")
+    '("gint*" "ring_width")
+  )
+)
+
+(define-method is_adjusting
+  (of-object "GtkHSV")
+  (c-name "gtk_hsv_is_adjusting")
+  (return-type "gboolean")
+)
+
+(define-function hsv_to_rgb
+  (c-name "gtk_hsv_to_rgb")
+  (return-type "none")
+  (parameters
+    '("gdouble" "h")
+    '("gdouble" "s")
+    '("gdouble" "v")
+    '("gdouble*" "r")
+    '("gdouble*" "g")
+    '("gdouble*" "b")
+  )
+)
+
+(define-function rgb_to_hsv
+  (c-name "gtk_rgb_to_hsv")
+  (return-type "none")
+  (parameters
+    '("gdouble" "r")
+    '("gdouble" "g")
+    '("gdouble" "b")
+    '("gdouble*" "h")
+    '("gdouble*" "s")
+    '("gdouble*" "v")
+  )
+)
+
+
+
 ;; From gtkiconview.h
 
 (define-method set_item_padding
