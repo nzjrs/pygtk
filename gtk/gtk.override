@@ -8734,3 +8734,16 @@ _wrap_gtk_message_dialog__get_label(PyObject *self, void *closure)
     /* pygobject_new handles NULL checking */
     return pygobject_new((GObject *)ret);
 }
+%%
+override gtk_hsv_get_color noargs
+static PyObject *
+_wrap_gtk_hsv_get_color(PyGObject *self)
+{
+    gdouble h, s, v;
+
+    if (!gtk_hsv_get_color(GTK_HSV(self->obj), &h, &s, &v)) {
+       return Py_BuildValue ("()");
+    }
+
+    return Py_BuildValue("(ddd)", h, s, v);
+}
