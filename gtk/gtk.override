@@ -8747,3 +8747,16 @@ _wrap_gtk_hsv_get_color(PyGObject *self)
 
     return Py_BuildValue("(ddd)", h, s, v);
 }
+%%
+override gtk_hsv_get_metrics noargs
+static PyObject *
+_wrap_gtk_hsv_get_metrics(PyGObject *self)
+{
+    gint size, ring_width;
+
+    if (!gtk_hsv_get_metrics(GTK_HSV(self->obj), &size, &ring_width)) {
+       return Py_BuildValue ("()");
+    }
+
+    return Py_BuildValue("(ii)", size, ring_width);
+}
