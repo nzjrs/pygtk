@@ -8741,9 +8741,7 @@ _wrap_gtk_hsv_get_color(PyGObject *self)
 {
     gdouble h, s, v;
 
-    if (!gtk_hsv_get_color(GTK_HSV(self->obj), &h, &s, &v)) {
-       return Py_BuildValue ("()");
-    }
+    gtk_hsv_get_color(GTK_HSV(self->obj), &h, &s, &v);
 
     return Py_BuildValue("(ddd)", h, s, v);
 }
@@ -8754,9 +8752,25 @@ _wrap_gtk_hsv_get_metrics(PyGObject *self)
 {
     gint size, ring_width;
 
-    if (!gtk_hsv_get_metrics(GTK_HSV(self->obj), &size, &ring_width)) {
-       return Py_BuildValue ("()");
-    }
+    gtk_hsv_get_metrics(GTK_HSV(self->obj), &size, &ring_width);
 
     return Py_BuildValue("(ii)", size, ring_width);
+}
+%%
+override gtk_hsv_to_rgb kwargs
+static PyObject *
+_wrap_gtk_hsv_to_rgb(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "h", "s", "v", NULL };
+    gdouble h=0, s=0, v=0;
+    gdouble r, g, b;
+    
+    if (!PyArg_ParseTupleAndKeywords(args,kwargs,
+                                     "ddd:gtk.hsv_to_rgb",
+                                     kwlist, &h, &s, &v))
+        return NULL;
+    
+    gtk_hsv_to_rgb(h, s, v, &r, &g, &b);
+
+    return Py_BuildValue("(ddd)", r, g, b);
 }
