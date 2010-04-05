@@ -8774,3 +8774,26 @@ _wrap_gtk_hsv_to_rgb(PyGObject *self, PyObject *args, PyObject *kwargs)
 
     return Py_BuildValue("(ddd)", r, g, b);
 }
+%%
+override gtk_cell_renderer_get_alignment noargs
+static PyObject *
+_wrap_gtk_cell_renderer_get_alignment(PyGObject *self)
+{
+    gfloat xalign, yalign;
+
+    gtk_cell_renderer_get_alignment(GTK_CELL_RENDERER(self->obj),
+                                    &xalign, &yalign);
+
+    return Py_BuildValue("(dd)", xalign, yalign);
+}
+%%
+override gtk_cell_renderer_get_padding noargs
+static PyObject *
+_wrap_gtk_cell_renderer_get_padding(PyGObject *self)
+{
+    gint xpad, ypad;
+
+    gtk_cell_renderer_get_padding(GTK_CELL_RENDERER(self->obj), &xpad, &ypad);
+
+    return Py_BuildValue("(ii)", xpad, ypad);
+}
