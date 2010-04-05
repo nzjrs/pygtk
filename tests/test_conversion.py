@@ -52,6 +52,23 @@ class Tests(unittest.TestCase):
             self.assertEqual(entry.get_property('invisible_char'),
                              valid_value, valid_value)
 
+    def testColorCreation(self):
+        """ Test GdkColor creation """
+
+        c = gtk.gdk.Color(1, 2, 3)
+        self.assertEqual(c.red, 1)
+        self.assertEqual(c.green, 2)
+        self.assertEqual(c.blue, 3)
+
+        c = gtk.gdk.Color(pixel=0xffff)
+        self.assertEqual(c.pixel, 0xffff)
+
+        c = gtk.gdk.Color(pixel=0xffffL)
+        self.assertEqual(c.pixel, 0xffff)
+
+        c = gtk.gdk.Color(pixel=0xffffffffL)
+        self.assertEqual(c.pixel, 0xffffffffL)
+
     def testUIntArg(self):
         child = gtk.DrawingArea()
         table = gtk.Table(2, 2, False)
