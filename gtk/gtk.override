@@ -8797,3 +8797,26 @@ _wrap_gtk_cell_renderer_get_padding(PyGObject *self)
 
     return Py_BuildValue("(ii)", xpad, ypad);
 }
+%%
+override gtk_widget_set_allocation kwargs
+static PyObject *
+_wrap_gtk_widget_set_allocation(PyGObject *self,
+                                PyObject *args,
+                                PyObject *kwargs)
+{
+    static char *kwlist[] = { "allocation", NULL };
+    PyObject *py_allocation;
+    GdkRectangle allocation = { 0, 0, 0, 0 };
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,"O:Gtk.Widget.set_allocation",
+                                     kwlist, &py_allocation))
+        return NULL;
+
+    if (!pygdk_rectangle_from_pyobject(py_allocation, &allocation))
+        return NULL;
+    
+    gtk_widget_set_allocation(GTK_WIDGET(self->obj), &allocation);
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
