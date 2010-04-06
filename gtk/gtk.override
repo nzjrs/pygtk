@@ -8820,3 +8820,30 @@ _wrap_gtk_widget_set_allocation(PyGObject *self,
     Py_INCREF(Py_None);
     return Py_None;
 }
+%%
+override gtk_clipboard_wait_for_uris noargs
+static PyObject *
+_wrap_gtk_clipboard_wait_for_uris(PyGObject *self)
+{
+    gchar **uris = NULL, **tmp;
+    PyObject *ret;
+    int i = 0, j;
+
+    uris = gtk_clipboard_wait_for_uris(GTK_CLIPBOARD(self->obj));
+
+    if (uris) {
+        tmp = uris;
+        while (*tmp)
+            tmp++, i++;
+
+        ret = PyTuple_New(i);
+        for (j = 0; j < i; j++)
+            PyTuple_SetItem(ret, j, PyString_FromString(uris[j]));
+
+        g_strfreev(uris);
+
+        return ret;
+    }
+    Py_INCREF(Py_None);
+    return Py_None;
+}
