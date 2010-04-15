@@ -2,13 +2,7 @@
 #
 # setup.py - distutils configuration for pygtk
 #
-"""Python Bindings for the GTK Widget Set.
-
-PyGTK is a set of bindings for the GTK widget set. It provides an object
-oriented interface that is slightly higher level than the C one. It
-automatically does all the type casting and reference counting that you
-would have to do normally with the C API. You can find out more on the
-official homepage, http://www.daa.com.au/~james/pygtk/"""
+"""Python Bindings for the GTK Widget Set."""
 
 from distutils.command.build import build
 from distutils.core import setup
@@ -68,10 +62,6 @@ if sys.platform == 'win32':
 else:
     raise SystemExit("Error: distutils build only supported on windows")
 
-DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
-INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
-HTML_DIR = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
-
 if sys.version_info[:3] < MIN_PYTHON_VERSION:
     raise SystemExit("Python %s or higher is required, %s found" % (
         ".".join(map(str,MIN_PYTHON_VERSION)),
@@ -80,6 +70,8 @@ if sys.version_info[:3] < MIN_PYTHON_VERSION:
 if not have_pkgconfig():
     raise SystemExit("Error, could not find pkg-config")
 
+DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
+INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
 PYGOBJECT_DEFSDIR = getoutput('pkg-config --variable=defsdir pygobject-2.0')
 
 class PyGtkInstallLib(InstallLib):
@@ -262,7 +254,6 @@ if gtk.can_build():
     data_files.append((DEFS_DIR, gtk_types_defs))
     data_files.append((DEFS_DIR, ('gtk/gdk-base-types.defs',
                                   'gtk/gtk-extrafuncs.defs')))
-    data_files.append((HTML_DIR, glob.glob('docs/html/*.html')))
     py_modules += ['gtk.compat', 'gtk.deprecation', 'gtk.keysyms',
                    'gtk._lazyutils']
 

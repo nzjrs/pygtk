@@ -8,13 +8,14 @@ import distutils.sysconfig
 import distutils.file_util
 import distutils.errors
 
-PYGOBJECT_XSL_DIR = os.path.join('share', 'pygobject','xsl')
-PYGOBJECT_HTML_DIR = os.path.join('share', 'gtk-doc', 'html', 'pygobject')
-HTML_DIR = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
+pkgconfig_file = os.path.normpath(
+    os.path.join(sys.prefix,
+                 'lib/pkgconfig/pygtk-2.0.pc'))
 
 prefix_pattern=re.compile("^prefix=.*")
 exec_pattern=re.compile("^exec\s.*")
 codegendir_pattern=re.compile("^codegendir=.*")
+version_pattern=re.compile("Version: ([0-9]+\.[0-9]+\.[0-9]+)")
 
 def replace_prefix(s):
     if prefix_pattern.match(s):
@@ -28,29 +29,15 @@ def replace_prefix(s):
            '/gtk-2.0/codegen' + '\n')
     return s
 
-def copy_pygobject_css():
-    # Copy style.css from pygobject docs to pygtk docs
+def get_doc_url(pkgconfig_file, base_url):
     try:
-        distutils.file_util.copy_file(
-            os.path.normpath(os.path.join(sys.prefix, PYGOBJECT_HTML_DIR,
-                                          'style.css')),
-            os.path.normpath(os.path.join(sys.prefix,HTML_DIR)))
-    except distutils.errors.DistutilsFileError:
-        # probably pygobject has not been installed yet
-        pass
-        
-    
-
-def html_fixxref():
-    sys.path.insert(0, os.path.normpath(os.path.join(sys.prefix,
-                                                     PYGOBJECT_XSL_DIR)))
-    try:
-        import fixxref
-        fixxref.scan_index_dir(fixxref.DOCDIR)
-        fixxref.fix_xrefs(os.path.normpath(os.path.join(sys.prefix,
-                                                        HTML_DIR)))
-    except ImportError, e:
-        pass
+        f = open(pkgconfig_file).read()
+        ver = version_pattern.search(f).groups()[0]
+        majv,minv,micv = ver.split('.')
+        doc_url = "%s/%s.%s/" % (base_url,majv,minv)
+    except:
+        doc_url = base_url + "/stable/"
+    return doc_url
 
 # TODO : Check that shortcuts are created system-wide when the user
 # has admin rights (hint: see pywin32 postinstall)
@@ -61,21 +48,22 @@ def create_shortcuts():
     pygtk_shortcuts = os.path.join(progs_folder, 'PyGTK')
     if not os.path.isdir(pygtk_shortcuts):
         os.mkdir(pygtk_shortcuts)
-       
+
+    # link to specific documentation version by parsing the
+    # pkgconfig file
+    doc_url = get_doc_url(pkgconfig_file,
+                          "http://library.gnome.org/devel/pygtk")
     pygtk_doc_link=os.path.join(pygtk_shortcuts,
                                     'PyGTK Documentation.lnk')
     if os.path.isfile(pygtk_doc_link):   
         os.remove(pygtk_doc_link)
-    
-    create_shortcut(os.path.join(sys.prefix,'share','gtk-doc','html',
-                                 'pygtk','index.html'),
-                    'PyGTK Documentation', pygtk_doc_link)
+    create_shortcut(doc_url,'PyGTK Documentation',pygtk_doc_link)
    
     homepage_link = os.path.join(pygtk_shortcuts,
                                  "PyGTK Home.lnk")
     if os.path.isfile(homepage_link):   
         os.remove(homepage_link)
-    create_shortcut("http://www.pygtk.org",'PyGTK Homepage', homepage_link)
+    create_shortcut("http://www.pygtk.org",'PyGTK Homepage',homepage_link)
 
 def remove_shortcuts():
     pygtk_shortcuts = os.path.join(
@@ -90,19 +78,11 @@ def remove_shortcuts():
 
 if len(sys.argv) == 2:
     if sys.argv[1] == "-install":
-        filenames=['lib/pkgconfig/pygtk-2.0.pc']
-        for filename in filenames: 
-            pkgconfig_file = os.path.normpath(
-                os.path.join(sys.prefix,filename))
-
-            lines=open(pkgconfig_file).readlines()
-            open(pkgconfig_file, 'w').writelines(map(replace_prefix,lines))
-        copy_pygobject_css()
-        html_fixxref()
+        # fixup the pkgconfig file
+        lines=open(pkgconfig_file).readlines()
+        open(pkgconfig_file, 'w').writelines(map(replace_prefix,lines))
         # TODO: Add an installer option for shortcut creation 
-        # create_shortcuts()
+        create_shortcuts()
         print __doc__
     elif sys.argv[1] == "-remove":
-        # remove_shortcuts()
-        os.remove(os.path.normpath(
-            os.path.join(sys.prefix,HTML_DIR,'style.css')))
+        remove_shortcuts()
