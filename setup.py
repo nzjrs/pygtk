@@ -2,9 +2,6 @@
 #
 # setup.py - distutils configuration for pygtk
 #
-# TODO:
-# pygtk.spec(.in)
-#
 """Python Bindings for the GTK Widget Set.
 
 PyGTK is a set of bindings for the GTK widget set. It provides an object
@@ -20,7 +17,7 @@ import os
 import sys
 
 from dsextras import get_m4_define, getoutput, have_pkgconfig, \
-     pkgc_version_check, \
+     pkgc_version_check, getoutput, \
      GLOBAL_INC, GLOBAL_MACROS, InstallLib, InstallData, BuildExt, \
      PkgConfigExtension, Template, TemplateExtension
 
@@ -38,12 +35,10 @@ else:
     print '*'*70
     input = raw_input('Not supported, ok [y/N]? ')
     if not input.startswith('y'):
-        raise SystemExit
+        raise SystemExit("Aborted")
 
-    if sys.version_info[:3] < (2, 3, 5):
-        raise SystemExit, \
-              "Python 2.3.5 or higher is required, %d.%d.%d found" % sys.version_info[:3]
-    
+MIN_PYTHON_VERSION = (2, 3, 5)
+
 MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
 MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
 MICRO_VERSION = int(get_m4_define('pygtk_micro_version'))
@@ -56,6 +51,7 @@ PANGO_REQUIRED    = get_m4_define('pango_required_version')
 GTK_REQUIRED      = get_m4_define('gtk_required_version')
 LIBGLADE_REQUIRED = get_m4_define('libglade_required_version')
 PYCAIRO_REQUIRED  = get_m4_define('pycairo_required_version')
+PYGOBJECT_REQUIRED = get_m4_define('pygobject_required_version')
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
@@ -70,11 +66,21 @@ if sys.platform == 'win32':
     GLOBAL_MACROS.append(('PLATFORM_WIN32',1))
     GLOBAL_MACROS.append(('HAVE_BIND_TEXTDOMAIN_CODESET',1))
 else:
-    GLOBAL_MACROS.append(('VERSION', '"%s"' % VERSION))
+    raise SystemExit("Error: distutils build only supported on windows")
 
 DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
 INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
 HTML_DIR = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
+
+if sys.version_info[:3] < MIN_PYTHON_VERSION:
+    raise SystemExit("Python %s or higher is required, %s found" % (
+        ".".join(map(str,MIN_PYTHON_VERSION)),
+                     ".".join(map(str,sys.version_info[:3]))))
+
+if not have_pkgconfig():
+    raise SystemExit("Error, could not find pkg-config")
+
+PYGOBJECT_DEFSDIR = getoutput('pkg-config --variable=defsdir pygobject-2.0')
 
 class PyGtkInstallLib(InstallLib):
     def run(self):
@@ -113,20 +119,51 @@ class PyGtkInstallData(InstallData):
 
 class PyGtkBuild(build):
     enable_threading = 1
+
 PyGtkBuild.user_options.append(('enable-threading', None,
                                 'enable threading support'))
 
+###################################################################
+# FOR A NEW RELEASE, YOU USUALLY ONLY NEED TO CHANGE THE FOLLOWING
+# These defs are registered with many modules...
+gdk_defs = [
+    'gtk/gdk-2.18.defs',
+    'gtk/gdk-2.16.defs',
+    'gtk/gdk-2.14.defs',
+    'gtk/gdk-2.12.defs',
+    'gtk/gdk-2.10.defs',
+    'gtk/gdk-base.defs']
+gtk_defs = [
+    'gtk/gtk-2.18.defs',
+    'gtk/gtk-2.16.defs',
+    'gtk/gtk-2.14.defs',
+    'gtk/gtk-2.12.defs',
+    'gtk/gtk-2.10.defs',
+    'gtk/gtk-base.defs']
+gtk_types_defs = [
+    'gtk/gtk-2.18-types.defs',
+    'gtk/gtk-2.16-types.defs',
+    'gtk/gtk-2.14-types.defs',
+    'gtk/gtk-2.12-types.defs',
+    'gtk/gtk-2.10-types.defs',
+    'gtk/gtk-base-types.defs']
+gtk_extra_defs = [
+    'gtk/gtk-extrafuncs.defs']
+####################################################################
+
 # Atk
-atk = TemplateExtension(name='atk', pkc_name='atk',
-                        pkc_version=ATK_REQUIRED,
+atk = TemplateExtension(name='atk', 
+                        pkc_name=('pygobject-2.0','atk'),
+                        pkc_version=(PYGOBJECT_REQUIRED, ATK_REQUIRED),
                         sources=['atkmodule.c', 'atk.c'],
                         register=['atk-types.defs'],
                         override='atk.override',
                         defs='atk.defs',
                         py_ssize_t_clean=True)
 # Pango
-pango = TemplateExtension(name='pango', pkc_name='pango',
-                          pkc_version=PANGO_REQUIRED,
+pango = TemplateExtension(name='pango', 
+                          pkc_name=('pygobject-2.0','pango'),
+                          pkc_version=(PYGOBJECT_REQUIRED, PANGO_REQUIRED),
                           sources=['pango.c', 'pangomodule.c'],
                           register=['pango-types.defs'],
                           override='pango.override',
@@ -145,41 +182,25 @@ pangocairo = TemplateExtension(name='pangocairo',
 
 # Gdk (template only)
 gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
-                        defs=('gtk/gdk.defs',
-                              ['gtk/gdk-2.10.defs','gtk/gdk-base.defs']),
+                        defs=('gtk/gdk.defs',gdk_defs),
                         prefix='pygdk',
                         register=['atk-types.defs',
                                   'pango-types.defs',
-                                  ('gtk/gdk-types.defs',
-                                   ['gtk/gdk-base-types.defs'])],
+                                  ('gtk/gdk-types.defs',gdk_defs)],
                         py_ssize_t_clean=True)
 # Gtk+
-if pangocairo.can_build():
-    gtk_pkc_name=('gtk+-2.0','pycairo')
-    gtk_pkc_version=(GTK_REQUIRED,PYCAIRO_REQUIRED)
-else:
-    gtk_pkc_name='gtk+-2.0'
-    gtk_pkc_version=GTK_REQUIRED
+gtk_pkc_name=('gtk+-2.0','pycairo')
+gtk_pkc_version=(GTK_REQUIRED,PYCAIRO_REQUIRED)
 
-if pkgc_version_check('gtk+-2.0', '2.10.0'):
-    gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-2.10.defs','gtk/gtk-base.defs'])
-    gtk_pkc_register=['atk-types.defs',
-                      'pango-types.defs',
-                      ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
-                      ('gtk/gtk-types.defs',['gtk/gtk-base-types.defs',
-                                             'gtk/gtk-2.10-types.defs'])]
-    libglade_pkc_register=[('gtk/gtk-types.defs',
-                            ['gtk/gtk-base-types.defs',
-                             'gtk/gtk-2.10-types.defs']),
-                           'gtk/libglade.defs']
-else:
-    gtk_pkc_defs=('gtk/gtk.defs',['gtk/gtk-base.defs'])
-    gtk_pkc_register=['atk-types.defs',
-                      'pango-types.defs',
-                      ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
-                      ('gtk/gtk-types.defs',['gtk/gtk-base-types.defs'])]
-    libglade_pkc_register=[('gtk/gtk-types.defs',['gtk/gtk-base-types.defs']),
-                           'gtk/libglade.defs']
+gtk_pkc_defs=('gtk/gtk.defs',gtk_defs)
+gtk_pkc_register=['%s/gio-types.defs' % PYGOBJECT_DEFSDIR,
+                  'atk-types.defs',
+                  'pango-types.defs',
+                  ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
+                  ('gtk/gtk-types.defs',gtk_types_defs)]
+libglade_pkc_register=[('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
+                       ('gtk/gtk-types.defs',gtk_types_defs),
+                       'gtk/libglade.defs']
 
 gtk = TemplateExtension(name='gtk', pkc_name=gtk_pkc_name,
                         pkc_version=gtk_pkc_version,
@@ -213,10 +234,6 @@ ext_modules = []
 py_modules = []
 packages = []
 
-if not have_pkgconfig():
-    print "Error, could not find pkg-config"
-    raise SystemExit
-
 if atk.can_build():
     ext_modules.append(atk)
     data_files.append((DEFS_DIR, ('atk.defs', 'atk-types.defs')))
@@ -240,14 +257,10 @@ if gtk.can_build():
                    'will build without numpy support.')
     ext_modules.append(gtk)
     data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
-    data_files.append((DEFS_DIR, ('gtk/gdk.defs', 'gtk/gdk-types.defs',
-                                  'gtk/gdk-base.defs',
-                                  'gtk/gdk-base-types.defs',
-                                  'gtk/gtk.defs', 'gtk/gtk-types.defs',
-                                  'gtk/gtk-2.10.defs',
-                                  'gtk/gtk-2.10-types.defs',
-                                  'gtk/gtk-base.defs',
-                                  'gtk/gtk-base-types.defs',
+    data_files.append((DEFS_DIR, gdk_defs))
+    data_files.append((DEFS_DIR, gtk_defs))
+    data_files.append((DEFS_DIR, gtk_types_defs))
+    data_files.append((DEFS_DIR, ('gtk/gdk-base-types.defs',
                                   'gtk/gtk-extrafuncs.defs')))
     data_files.append((HTML_DIR, glob.glob('docs/html/*.html')))
     py_modules += ['gtk.compat', 'gtk.deprecation', 'gtk.keysyms',
@@ -315,3 +328,8 @@ setup(name="pygtk",
                 'install_data': PyGtkInstallData,
                 'build_ext': BuildExt,
                 'build': PyGtkBuild})
+
+print 
+print "Finished building %s" % (", ".join([m.name for m in ext_modules]))
+print
+

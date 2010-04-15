@@ -90,7 +90,7 @@ def remove_shortcuts():
 
 if len(sys.argv) == 2:
     if sys.argv[1] == "-install":
-        filenames=['lib/pkgconfig/pygtk-2.0.pc','bin/pygtk-codegen-2.0']
+        filenames=['lib/pkgconfig/pygtk-2.0.pc']
         for filename in filenames: 
             pkgconfig_file = os.path.normpath(
                 os.path.join(sys.prefix,filename))
