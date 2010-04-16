@@ -27,6 +27,7 @@ EXTRA_DIST = 					\
 	PKG-INFO.in 				\
 	setup.py 				\
 	THREADS					\
+	README.win32					\
 	m4/jhflags.m4				\
 	m4/python.m4
 
