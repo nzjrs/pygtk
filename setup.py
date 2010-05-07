@@ -164,8 +164,7 @@ pango = TemplateExtension(name='pango',
 # Pangocairo
 pangocairo = TemplateExtension(name='pangocairo',
                                pkc_name=('pycairo', 'pangocairo'),
-                               pkc_version=(PYCAIRO_REQUIRED,
-                                            PANGO_REQUIRED),
+                               pkc_version=(PYCAIRO_REQUIRED, PANGO_REQUIRED),
                                sources=['pangocairo.c', 'pangocairomodule.c'],
                                register=['pango-types.defs'],
                                override='pangocairo.override',
@@ -181,9 +180,6 @@ gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
                                   ('gtk/gdk-types.defs',gdk_defs)],
                         py_ssize_t_clean=True)
 # Gtk+
-gtk_pkc_name=('gtk+-2.0','pycairo')
-gtk_pkc_version=(GTK_REQUIRED,PYCAIRO_REQUIRED)
-
 gtk_pkc_defs=('gtk/gtk.defs',gtk_defs)
 gtk_pkc_register=['%s/gio-types.defs' % PYGOBJECT_DEFSDIR,
                   'atk-types.defs',
@@ -194,8 +190,8 @@ libglade_pkc_register=[('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
                        ('gtk/gtk-types.defs',gtk_types_defs),
                        'gtk/libglade.defs']
 
-gtk = TemplateExtension(name='gtk', pkc_name=gtk_pkc_name,
-                        pkc_version=gtk_pkc_version,
+gtk = TemplateExtension(name='gtk', pkc_name=('gtk+-2.0','pycairo'),
+                        pkc_version=(GTK_REQUIRED, PYCAIRO_REQUIRED),
                         output='gtk._gtk',
                         sources=['gtk/gtkmodule.c',
                                  'gtk/gtkobject-support.c',
@@ -226,16 +222,6 @@ ext_modules = []
 py_modules = []
 packages = []
 
-if atk.can_build():
-    ext_modules.append(atk)
-    data_files.append((DEFS_DIR, ('atk.defs', 'atk-types.defs')))
-if pango.can_build():
-    ext_modules.append(pango)
-    data_files.append((DEFS_DIR, ('pango.defs', 'pango-types.defs')))
-    if pangocairo.can_build():
-        ext_modules.append(pangocairo)
-        data_files.append((DEFS_DIR, ('pangocairo.defs',)))
-        GLOBAL_MACROS.append(('HAVE_PYCAIRO',1))
 if gtk.can_build():
     if '--disable-numpy' in sys.argv:
         sys.argv.remove('--disable-numpy')
@@ -245,8 +231,8 @@ if gtk.can_build():
             numpy # pyflakes
             GLOBAL_MACROS.append(('HAVE_NUMPY', 1))
         except ImportError:
-            print ('* numpy module could not be found, '
-                   'will build without numpy support.')
+            print '* numpy module could not be found, will build without numpy support.'
+
     ext_modules.append(gtk)
     data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
     data_files.append((DEFS_DIR, gdk_defs))
@@ -257,9 +243,29 @@ if gtk.can_build():
     py_modules += ['gtk.compat', 'gtk.deprecation', 'gtk.keysyms',
                    'gtk._lazyutils']
 
-if libglade.can_build():
-    ext_modules.append(libglade)
-    data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
+    if atk.can_build():
+        ext_modules.append(atk)
+        data_files.append((DEFS_DIR, ('atk.defs', 'atk-types.defs')))
+    else:
+        raise SystemExit("ERROR: Nothing to do, atk could not be built and is essential.")
+
+    if pango.can_build():
+        ext_modules.append(pango)
+        data_files.append((DEFS_DIR, ('pango.defs', 'pango-types.defs')))
+        if pangocairo.can_build():
+            ext_modules.append(pangocairo)
+            data_files.append((DEFS_DIR, ('pangocairo.defs',)))
+            GLOBAL_MACROS.append(('HAVE_PYCAIRO',1))
+        else:
+            raise SystemExit("ERROR: Nothing to do, pangocairo could not be built and is essential.")
+    else:
+        raise SystemExit("ERROR: Nothing to do, pango could not be built and is essential.")
+
+    if libglade.can_build():
+        ext_modules.append(libglade)
+        data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
+else:
+    raise SystemExit("ERROR: Nothing to do, gtk could not be built and is essential.")
 
 # Threading support
 if '--disable-threading' in sys.argv:
