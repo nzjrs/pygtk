@@ -89,7 +89,8 @@ demo_PYTHON = \
 	pygtk-demo/demos/tree_store.py		\
 	pygtk-demo/demos/treemodel.py		\
 	pygtk-demo/demos/statusicon.py		\
-	pygtk-demo/demos/ui_manager.py
+	pygtk-demo/demos/ui_manager.py		\
+	pygtk-demo/demos/infobar.py
 
 demoimg_DATA = \
 	pygtk-demo/demos/images/alphatest.png		\
