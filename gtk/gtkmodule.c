@@ -59,7 +59,7 @@ static void
 sink_gtkwindow(GObject *object)
 {
     if (object->ref_count == 1
-	&& GTK_WINDOW(object)->has_user_ref_count) {
+	&& GTK_WINDOW(object)->_g_sealed__has_user_ref_count) {
 	g_object_ref(object);
     }
 }
@@ -68,7 +68,7 @@ static void
 sink_gtkinvisible(GObject *object)
 {
     if (object->ref_count == 1
-	&& GTK_INVISIBLE(object)->has_user_ref_count) {
+	&& GTK_INVISIBLE(object)->_g_sealed__has_user_ref_count) {
 	g_object_ref(object);
     }
 }
