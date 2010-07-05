@@ -594,7 +594,7 @@ _wrap_gtk_text_buffer_create_tag(PyGObject *self, PyObject *args, PyObject *kwar
         return NULL;
     }
 
-    table = GTK_TEXT_TAG_TABLE(GTK_TEXT_BUFFER(self->obj)->tag_table);
+    table = gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(self->obj));
     if (tag_name && table && g_hash_table_lookup(table->hash, tag_name)) {
         gchar buf[512];
         g_snprintf(buf, sizeof(buf),
