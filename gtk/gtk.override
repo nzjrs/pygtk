@@ -8702,24 +8702,6 @@ _wrap_gtk_icon_theme_choose_icon(PyGObject *self, PyObject *args,
     return pyg_boxed_new(GTK_TYPE_ICON_INFO, ret, TRUE, TRUE);
 }
 %%
-override-attr GtkBin.child
-static int
-_wrap_gtk_bin__set_child(PyGObject *self, PyGObject *value, void *closure)
-{
-    if (!pygobject_check(value, &PyGtkWidget_Type) &&
-	(PyObject*)value != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "must be a GtkWidget object");
-	return -1;
-    }
-
-    if ((PyObject*)value == Py_None)
-	GTK_BIN(self->obj)->child = NULL;
-    else
-	GTK_BIN(self->obj)->child = g_object_ref(GTK_WIDGET(value->obj));
-
-    return 0;
-}
-%%
 define GtkFileChooserDialog.get_action noargs
 /* This is a Workaround to solve a problem in the __mro__ of FileChooserDialog,
  * without this method a gtk.Widget method  with the same name will be called
