@@ -92,7 +92,7 @@ _wrap_gtk_widget_get_allocation(PyGObject *self)
 {
     GtkAllocation allocation;
 
-    allocation = GTK_WIDGET(self->obj)->allocation;
+    gtk_widget_get_allocation(GTK_WIDGET(self->obj), &allocation);
     return pyg_boxed_new(GDK_TYPE_RECTANGLE, &allocation, TRUE, TRUE);
 }
 %%
@@ -328,12 +328,15 @@ override-attr GtkWidget.window
 static int
 _wrap_gtk_widget__set_window(PyGObject *self, PyGObject *value, void *closure)
 {
+    GdkWindow *window;
+
     if (!pygobject_check(value, &PyGdkWindow_Type)) {
 	PyErr_SetString(PyExc_TypeError, "must be a GdkWindow object");
 	return -1;
     }
 
-    GTK_WIDGET(self->obj)->window = g_object_ref(GDK_WINDOW(value->obj));
+    window = g_object_ref(GDK_WINDOW(value->obj));
+    gtk_widget_set_window(GTK_WIDGET(self->obj), window);
 
     return 0;
 }
@@ -342,12 +345,15 @@ override-attr GtkWidget.allocation
 static int
 _wrap_gtk_widget__set_allocation(PyGObject *self, PyObject *value, void *closure)
 {
+    GtkAllocation allocation;
+
     if (!pygobject_check(value, &PyGdkRectangle_Type)) {
 	PyErr_SetString(PyExc_TypeError, "must be a GdkRectangle object");
 	return -1;
     }
 
-    pygdk_rectangle_from_pyobject(value, &GTK_WIDGET(self->obj)->allocation);
+    gtk_widget_get_allocation(GTK_WIDGET(self->obj), &allocation);
+    pygdk_rectangle_from_pyobject(value, &allocation);
 
     return 0;
 }
