@@ -8718,36 +8718,6 @@ _wrap_gtk_file_chooser_dialog_get_action(PyGObject *self)
 
 }
 %%
-override-attr GtkMessageDialog.image
-static PyObject *
-_wrap_gtk_message_dialog__get_image(PyObject *self, void *closure)
-{
-    GtkWidget *ret;
-    
-    if (PyErr_Warn(PyExc_DeprecationWarning,
-                   "use set_image() instead") < 0)
-        return NULL;
-    
-    ret = GTK_MESSAGE_DIALOG(pygobject_get(self))->image;
-    /* pygobject_new handles NULL checking */
-    return pygobject_new((GObject *)ret);
-}
-%%
-override-attr GtkMessageDialog.label
-static PyObject *
-_wrap_gtk_message_dialog__get_label(PyObject *self, void *closure)
-{
-    GtkWidget *ret;
-    
-    if (PyErr_Warn(PyExc_DeprecationWarning,
-                   "use set_markup() instead") < 0)
-        return NULL;
-
-    ret = GTK_MESSAGE_DIALOG(pygobject_get(self))->label;
-    /* pygobject_new handles NULL checking */
-    return pygobject_new((GObject *)ret);
-}
-%%
 override gtk_hsv_get_color noargs
 static PyObject *
 _wrap_gtk_hsv_get_color(PyGObject *self)
