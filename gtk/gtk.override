@@ -105,6 +105,21 @@ pygtk_util_pyobject_as_double(PyObject *obj, gdouble *value, const char *argumen
 }
 
 static gboolean
+pygtk_util_set_pyobject_prop_from_double(PyGObject *obj, PyObject *val_obj, const char *argument_name_and_property_name)
+{
+    double d;
+
+    if (pygtk_util_pyobject_as_double(val_obj, &d, argument_name_and_property_name)) {
+        g_object_set(
+            G_OBJECT(obj->obj),
+            argument_name_and_property_name, d,
+            NULL);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+static gboolean
 _main_quit(GIOChannel* source, GIOCondition condition, gpointer data)
 {
     gtk_main_quit();
@@ -3239,7 +3254,7 @@ _wrap_gtk_adjustment__set_value(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!pygtk_util_pyobject_as_double(value, &adjustment->value, "value"))
+    if (!pygtk_util_set_pyobject_prop_from_double(self, value, "value"))
         return -1;
     gtk_adjustment_value_changed(adjustment);
     return 0;
@@ -3252,7 +3267,7 @@ _wrap_gtk_adjustment__set_lower(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!pygtk_util_pyobject_as_double(value, &adjustment->lower, "lower"))
+    if (!pygtk_util_set_pyobject_prop_from_double(self, value, "lower"))
         return -1;
     gtk_adjustment_changed(adjustment);
     return 0;
@@ -3265,7 +3280,7 @@ _wrap_gtk_adjustment__set_upper(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!pygtk_util_pyobject_as_double(value, &adjustment->upper, "upper"))
+    if (!pygtk_util_set_pyobject_prop_from_double(self, value, "upper"))
         return -1;
     gtk_adjustment_changed(adjustment);
     return 0;
@@ -3278,8 +3293,8 @@ _wrap_gtk_adjustment__set_step_increment(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!pygtk_util_pyobject_as_double(value, &adjustment->step_increment,
-                                       "step_increment"))
+    if (!pygtk_util_set_pyobject_prop_from_double(self,
+                                       value, "step-increment"))
         return -1;
     gtk_adjustment_changed(adjustment);
     return 0;
@@ -3292,8 +3307,8 @@ _wrap_gtk_adjustment__set_page_increment(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!pygtk_util_pyobject_as_double(value, &adjustment->page_increment,
-                                       "page_increment"))
+    if (!pygtk_util_set_pyobject_prop_from_double(self,
+                                        value, "page-increment"))
         return -1;
     gtk_adjustment_changed(adjustment);
     return 0;
@@ -3306,7 +3321,8 @@ _wrap_gtk_adjustment__set_page_size(PyGObject *self, PyObject *value,
 {
     GtkAdjustment *adjustment = GTK_ADJUSTMENT(self->obj);
 
-    if (!pygtk_util_pyobject_as_double(value, &adjustment->page_size, "page_size"))
+    if (!pygtk_util_set_pyobject_prop_from_double(self,
+                                        value, "page-size"))
         return -1;
     gtk_adjustment_changed(adjustment);
     return 0;
@@ -3321,35 +3337,50 @@ _wrap_gtk_adjustment_set_all(PyGObject *self,
     static char *kwlist[] = { "value", "lower", "upper", "step_increment",
 			      "page_increment", "page_size", NULL };
     GtkAdjustment *adj = GTK_ADJUSTMENT(self->obj);
-    double *value = &adj->value, *lower = &adj->lower, *upper = &adj->upper;
-    double *step_increment = &adj->step_increment;
-    double *page_increment = &adj->page_increment;
-    double *page_size = &adj->page_size;
-    double old_value = *value, old_lower = *lower, old_upper = *upper;
-    double old_step_increment = *step_increment;
-    double old_page_increment = *page_increment;
-    double old_page_size = *page_size;
+    double value;
+    double lower;
+    double upper;
+    double step_increment;
+    double page_increment;
+    double page_size;
+
+    g_object_get (G_OBJECT(adj),
+            "value", &value,
+            "lower", &lower,
+            "upper", &upper,
+            "step-increment", &step_increment,
+            "page-increment", &page_increment,
+            "page-size", &page_size,
+            NULL);
+
+    double old_value = value, old_lower = lower, old_upper = upper;
+    double old_step_increment = step_increment;
+    double old_page_increment = page_increment;
+    double old_page_size = page_size;
 
     if (!PyArg_ParseTupleAndKeywords(args, kwargs,
 				     "|dddddd:gtk_adjustment_set_all",
 				     kwlist,
-				     value, lower, upper, step_increment,
-				     page_increment, page_size)) {
-        adj->value = old_value;
-        adj->lower = old_lower;
-        adj->upper = old_upper;
-        adj->step_increment = old_step_increment;
-        adj->page_increment = old_page_increment;
-        adj->page_size = old_page_size;
+				     &value, &lower, &upper, &step_increment,
+				     &page_increment, &page_size)) {
+        g_object_set (G_OBJECT(adj),
+                "value", old_value,
+                "lower", old_lower,
+                "upper", old_upper,
+                "step-increment", old_step_increment,
+                "page-increment", old_page_increment,
+                "page-size", old_page_size,
+                NULL);
         return NULL;
     }
     
-    if (adj->value != old_value)
+    if (gtk_adjustment_get_value(adj) != old_value)
         gtk_adjustment_value_changed(adj);
-    if (adj->lower != old_lower || adj->upper != old_upper
-	|| adj->step_increment != old_step_increment
-	|| adj->page_increment != old_page_increment
-	|| adj->page_size != old_page_size)
+    if (gtk_adjustment_get_lower(adj) != old_lower
+    || gtk_adjustment_get_upper(adj) != old_upper
+	|| gtk_adjustment_get_step_increment(adj) != old_step_increment
+	|| gtk_adjustment_get_page_increment(adj) != old_page_increment
+	|| gtk_adjustment_get_page_size(adj) != old_page_size)
         gtk_adjustment_changed(adj);
 
     Py_INCREF(Py_None);
