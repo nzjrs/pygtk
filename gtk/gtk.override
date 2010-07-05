@@ -611,10 +611,12 @@ override-attr GtkSelectionData.data
 static PyObject *
 _wrap_gtk_selection_data__get_data(PyGObject *self, void *closure)
 {
-    if (pyg_boxed_get(self, GtkSelectionData)->length >= 0) {
+    GtkSelectionData *data = pyg_boxed_get(self, GtkSelectionData);
+
+    if (gtk_selection_data_get_length(data) >= 0) {
         return PyString_FromStringAndSize(
-	    (char*)pyg_boxed_get(self, GtkSelectionData)->data,
-	    pyg_boxed_get(self, GtkSelectionData)->length);
+	    (char*)gtk_selection_data_get_data(data),
+	    gtk_selection_data_get_length(data));
     } else {
         Py_INCREF(Py_None);
         return Py_None;
