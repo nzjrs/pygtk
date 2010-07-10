@@ -259,8 +259,6 @@ ignore
   gtk_input_remove
   gtk_key_snooper_install
   gtk_key_snooper_remove
-  gtk_list_item_new_with_label
-  gtk_list_remove_items_no_unref
   gtk_menu_append
   gtk_menu_bar_append
   gtk_menu_bar_insert
@@ -1670,31 +1668,6 @@ _wrap_gtk_radio_button_get_group(PyGObject *self) {
     return py_list;
 }
 %%
-override gtk_list_item_new kwargs
-static int
-_wrap_gtk_list_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "label", NULL };
-    gchar *text = NULL;
-
-    if (PyErr_Warn(PyExc_DeprecationWarning, "use gtk.TreeView") < 0)
-        return -1;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|z:GtkListItem.__init__",
-                                     kwlist, &text))
-        return -1;
-    if (text)
-        self->obj = (GObject *)gtk_list_item_new_with_label(text);
-    else
-        self->obj = (GObject *)gtk_list_item_new();
-    if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkListItem object");
-        return -1;
-    }
-    pygobject_register_wrapper((PyObject *)self);
-    return 0;
-}
-%%
 override gtk_menu_item_new kwargs
 static int
 _wrap_gtk_menu_item_new(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -2029,154 +2002,6 @@ _wrap_gtk_notebook_query_tab_label_packing(PyGObject *self, PyObject *args,
                                          &expand, &fill, &pack_type);
     return Py_BuildValue("(iiN)", expand, fill,
 			 pyg_enum_from_gtype(GTK_TYPE_PACK_TYPE, pack_type));
-}
-%%
-override gtk_list_insert_items kwargs
-static PyObject *
-_wrap_gtk_list_insert_items(PyGObject *self, PyObject *args,
-                            PyObject *kwargs)
-{
-    static char *kwlist[] = { "items", "position", NULL };
-    PyObject *py_items;
-    GList *items = NULL;
-    int position, len, i;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!i:GtkList.insert_items",
-                                     kwlist, &PyList_Type, &py_items,
-                                     &position))
-        return NULL;
-    len = PyList_Size(py_items);
-    for (i = 0; i < len; i++) {
-        PyObject *item = PyList_GetItem(py_items, i);
-        if (!pygobject_check(item, &PyGtkListItem_Type)) {
-            PyErr_SetString(PyExc_TypeError, "list item not a GtkListItem");
-            g_list_free(items);
-            return NULL;
-        }
-        items = g_list_append(items, pygobject_get(item));
-    }
-    gtk_list_insert_items(GTK_LIST(self->obj), items, position);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override gtk_list_append_items kwargs
-static PyObject *
-_wrap_gtk_list_append_items(PyGObject *self, PyObject *args,
-                            PyObject *kwargs)
-{
-    static char *kwlist[] = { "items", NULL };
-    PyObject *py_items;
-    GList *items = NULL;
-    int len, i;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkList.append_items",
-                                     kwlist, &PyList_Type, &py_items))
-        return NULL;
-    len = PyList_Size(py_items);
-    for (i = 0; i < len; i++) {
-        PyObject *item = PyList_GetItem(py_items, i);
-        if (!pygobject_check(item, &PyGtkListItem_Type)) {
-            PyErr_SetString(PyExc_TypeError, "list item not a GtkListItem");
-            g_list_free(items);
-            return NULL;
-        }
-        items = g_list_append(items, pygobject_get(item));
-    }
-    gtk_list_append_items(GTK_LIST(self->obj), items);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override gtk_list_prepend_items kwargs
-static PyObject *
-_wrap_gtk_list_prepend_items(PyGObject *self, PyObject *args,
-                             PyObject *kwargs)
-{
-    static char *kwlist[] = { "items", NULL };
-    PyObject *py_items;
-    GList *items = NULL;
-    int len, i;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkList.preppend_items",
-                                     kwlist, &PyList_Type, &py_items))
-        return NULL;
-    len = PyList_Size(py_items);
-    for (i = 0; i < len; i++) {
-        PyObject *item = PyList_GetItem(py_items, i);
-        if (!pygobject_check(item, &PyGtkListItem_Type)) {
-            PyErr_SetString(PyExc_TypeError, "list item not a GtkListItem");
-            g_list_free(items);
-            return NULL;
-        }
-        items = g_list_append(items, pygobject_get(item));
-    }
-    gtk_list_prepend_items(GTK_LIST(self->obj), items);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override gtk_list_remove_items kwargs
-static PyObject *
-_wrap_gtk_list_remove_items(PyGObject *self, PyObject *args,
-                            PyObject *kwargs)
-{
-    static char *kwlist[] = { "items", NULL };
-    PyObject *py_items;
-    GList *items = NULL;
-    int len, i;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!:GtkList.remove_items",
-                                     kwlist, &PyList_Type, &py_items))
-        return NULL;
-    len = PyList_Size(py_items);
-    for (i = 0; i < len; i++) {
-        PyObject *item = PyList_GetItem(py_items, i);
-        if (!pygobject_check(item, &PyGtkListItem_Type)) {
-            PyErr_SetString(PyExc_TypeError, "list item not a GtkListItem");
-            g_list_free(items);
-            return NULL;
-        }
-        items = g_list_append(items, pygobject_get(item));
-    }
-    gtk_list_remove_items(GTK_LIST(self->obj), items);
-    g_list_free(items);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
-override-attr GtkList.selection
-static PyObject *
-_wrap_gtk_list__get_selection(PyGObject *self, void *closure)
-{
-    GList *selection;
-    PyObject *item, *ret = PyList_New(0);
-
-    if (ret == NULL)
-        return NULL;
-
-    for (selection = GTK_LIST(self->obj)->selection; selection != NULL;
-         selection = selection->next) {
-        item = pygobject_new((GObject *) GTK_LIST_ITEM(selection->data));
-
-        if (!item) {
-            Py_DECREF(ret);
-            return NULL;
-        }
-
-        PyList_Append(ret, item);
-        Py_DECREF(item);
-    }
-    return ret;
-}
-%%
-override gtk_list_get_selection noargs
-static PyObject *
-_wrap_gtk_list__get_selection(PyGObject *self, void *closure);
-static PyObject *
-_wrap_gtk_list_get_selection(PyGObject *self)
-{
-    return _wrap_gtk_list__get_selection(self, NULL);
 }
 %%
 override gtk_color_selection_get_current_color noargs
