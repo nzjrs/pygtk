@@ -3221,32 +3221,6 @@ _wrap_gtk_im_context_get_surrounding(PyGObject *self)
     return Py_None;
 }
 %%
-override-attr GtkTooltips.active_tips_data
-static PyObject *
-_wrap_gtk_tooltips__get_active_tips_data(PyGObject *self, void *closure)
-{
-    GtkTooltips *tips = GTK_TOOLTIPS(self->obj);
-    GtkTooltipsData *data = tips->active_tips_data;
-
-    if (data == NULL) {
-        Py_INCREF(Py_None);
-        return Py_None;
-    }
-
-    return Py_BuildValue("NNss",
-                         pygobject_new((GObject *)data->tooltips),
-                         pygobject_new((GObject *)data->widget),
-                         data->tip_text,
-                         data->tip_private);
-}
-%%
-override-attr GtkTooltips.tips_data_list
-static PyObject *
-_wrap_gtk_tooltips__get_tips_data_list(PyGObject *self, void *closure)
-{
-    return PyList_New(0);
-}
-%%
 override-attr GtkAdjustment.value
 static int
 _wrap_gtk_adjustment__set_value(PyGObject *self, PyObject *value,
@@ -3656,33 +3630,6 @@ _wrap_gtk_scrolled_window_get_policy(PyGObject *self)
     return Py_BuildValue("(NN)",
 			 pyg_enum_from_gtype(GTK_TYPE_POLICY_TYPE, hscrollbar_policy),
 			 pyg_enum_from_gtype(GTK_TYPE_POLICY_TYPE, vscrollbar_policy));
-}
-%%
-override gtk_tooltips_data_get kwargs
-static PyObject *
-_wrap_gtk_tooltips_data_get(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "widget", NULL };
-    PyGObject *widget;
-    GtkTooltipsData *data;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-				     "O!:GtkTooltips.data_get",
-				     kwlist, &PyGtkWidget_Type, &widget))
-        return NULL;
-
-    data = gtk_tooltips_data_get(GTK_WIDGET(widget->obj));
-
-    if (!data) {
-	Py_INCREF(Py_None);
-	return Py_None;
-    }
-
-    return Py_BuildValue("NNss",
-			 pygobject_new((GObject *)data->tooltips),
-			 pygobject_new((GObject *)data->widget),
-			 data->tip_text,
-			 data->tip_private);
 }
 %%
 override gtk_tooltips_data_get1 kwargs
@@ -5435,24 +5382,6 @@ _wrap_gtk_scale_get_layout_offsets(PyGObject *self)
     gtk_scale_get_layout_offsets(GTK_SCALE(self->obj), &x, &y);
 
     return Py_BuildValue("(ii)", x, y);
-}
-%%
-override gtk_tooltips_get_info_from_tip_window noargs
-static PyObject *
-_wrap_gtk_tooltips_get_info_from_tip_window(PyGObject *self)
-{
-    gboolean ret;
-    GtkWidget *widget;
-    GtkTooltips *tooltips;
-
-    ret = gtk_tooltips_get_info_from_tip_window(GTK_WINDOW(self->obj),
-						&tooltips, &widget);
-    if (ret)
-	return Py_BuildValue("(NN)",
-			     pygobject_new((GObject *)tooltips),
-			     pygobject_new((GObject *)widget));
-    Py_INCREF(Py_None);
-    return Py_None;
 }
 %%
 override gtk_menu_item_toggle_size_request noargs
