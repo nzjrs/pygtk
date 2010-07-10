@@ -10,7 +10,7 @@ import distutils.errors
 
 pkgconfig_file = os.path.normpath(
     os.path.join(sys.prefix,
-                 'lib/pkgconfig/pygtk-2.0.pc'))
+                 'lib/pkgconfig/pygtk-3.0.pc'))
 
 prefix_pattern=re.compile("^prefix=.*")
 exec_pattern=re.compile("^exec\s.*")
@@ -26,7 +26,7 @@ def replace_prefix(s):
     if codegendir_pattern.match(s):
         s=('codegendir='
            +distutils.sysconfig.get_python_lib().replace("\\","/")+
-           '/gtk-2.0/codegen' + '\n')
+           '/gtk-3.0/codegen' + '\n')
     return s
 
 def get_doc_url(pkgconfig_file, base_url):

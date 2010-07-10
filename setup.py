@@ -43,11 +43,11 @@ GOBJECT_REQUIRED  = get_m4_define('glib_required_version')
 ATK_REQUIRED      = get_m4_define('atk_required_version')
 PANGO_REQUIRED    = get_m4_define('pango_required_version')
 GTK_REQUIRED      = get_m4_define('gtk_required_version')
-LIBGLADE_REQUIRED = get_m4_define('libglade_required_version')
+#LIBGLADE_REQUIRED = get_m4_define('libglade_required_version')
 PYCAIRO_REQUIRED  = get_m4_define('pycairo_required_version')
 PYGOBJECT_REQUIRED = get_m4_define('pygobject_required_version')
 
-PYGTK_SUFFIX = '2.0'
+PYGTK_SUFFIX = '3.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
 
 GLOBAL_INC += ['.', 'gtk']
@@ -105,7 +105,7 @@ class PyGtkInstallData(InstallData):
         InstallData.run(self)
 
     def install_templates(self):
-        self.install_template('pygtk-2.0.pc.in',
+        self.install_template('pygtk-3.0.pc.in',
                               os.path.join(self.install_dir,
                                            'lib','pkgconfig'))
 
@@ -189,11 +189,11 @@ gtk_pkc_register=['%s/gio-types.defs' % PYGOBJECT_DEFSDIR,
                   'pango-types.defs',
                   ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
                   ('gtk/gtk-types.defs',gtk_types_defs)]
-libglade_pkc_register=[('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
-                       ('gtk/gtk-types.defs',gtk_types_defs),
-                       'gtk/libglade.defs']
+#libglade_pkc_register=[('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
+#                       ('gtk/gtk-types.defs',gtk_types_defs),
+#                       'gtk/libglade.defs']
 
-gtk = TemplateExtension(name='gtk', pkc_name=('gtk+-2.0','pycairo'),
+gtk = TemplateExtension(name='gtk', pkc_name=('gtk+-3.0','pycairo'),
                         pkc_version=(GTK_REQUIRED, PYCAIRO_REQUIRED),
                         output='gtk._gtk',
                         sources=['gtk/gtkmodule.c',
@@ -210,15 +210,15 @@ gtk = TemplateExtension(name='gtk', pkc_name=('gtk+-2.0','pycairo'),
 gtk.templates.append(gdk_template)
 
 # Libglade
-libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
-                             pkc_version=LIBGLADE_REQUIRED,
-                             output='gtk.glade',
-                             defs='gtk/libglade.defs',
-                             sources=['gtk/libglademodule.c',
-                                      'gtk/libglade.c'],
-                             register=libglade_pkc_register,
-                             override='gtk/libglade.override',
-                             py_ssize_t_clean=True)
+#libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
+#                             pkc_version=LIBGLADE_REQUIRED,
+#                             output='gtk.glade',
+#                             defs='gtk/libglade.defs',
+#                             sources=['gtk/libglademodule.c',
+#                                      'gtk/libglade.c'],
+#                             register=libglade_pkc_register,
+#                             override='gtk/libglade.override',
+#                             py_ssize_t_clean=True)
 
 data_files = []
 ext_modules = []
@@ -264,9 +264,9 @@ if gtk.can_build():
     else:
         raise SystemExit("ERROR: Nothing to do, pango could not be built and is essential.")
 
-    if libglade.can_build():
-        ext_modules.append(libglade)
-        data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
+#    if libglade.can_build():
+#        ext_modules.append(libglade)
+#        data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
 else:
     raise SystemExit("ERROR: Nothing to do, gtk could not be built and is essential.")
 
