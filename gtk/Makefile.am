@@ -147,7 +147,6 @@ GTK_OVERRIDES = 		\
 	gtkbuilder.override 	\
 	gtkclist.override 	\
 	gtkcontainer.override 	\
-	gtkctree.override 	\
 	gtkiconview.override 	\
 	gtkrcstyle.override 	\
 	gtkstatusbar.override	\
