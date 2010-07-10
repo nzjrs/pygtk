@@ -1463,19 +1463,6 @@ _wrap_gtk_menu_popup(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-override gtk_pixmap_get noargs
-static PyObject *
-_wrap_gtk_pixmap_get(PyGObject *self)
-{
-    GdkPixmap *pixmap;
-    GdkBitmap *mask;
-
-    gtk_pixmap_get(GTK_PIXMAP(self->obj), &pixmap, &mask);
-    return Py_BuildValue("(NN)", pygobject_new((GObject *)pixmap),
-                         pygobject_new((GObject *)mask));
-}
-
-%%
 override gtk_button_new kwargs
 static int
 _wrap_gtk_button_new(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -5118,39 +5105,6 @@ _wrap_gtk_table_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 }
 %%
 new-constructor GTK_TYPE_TABLE
-%%
-override gtk_pixmap_new kwargs
-static int
-_wrap_gtk_pixmap_new(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "pixmap", "mask", NULL };
-    PyGObject *pixmap, *py_mask;
-    GdkPixmap *mask = NULL;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!O:GtkPixmap.__init__",
-                                     kwlist, &PyGdkPixmap_Type, &pixmap, &py_mask))
-        return -1;
-    if (PyErr_Warn(PyExc_DeprecationWarning, "use GtkImage") < 0)
-        return -1;
-    if (py_mask && pygobject_check(py_mask, &PyGdkPixmap_Type))
-        mask = GDK_PIXMAP(py_mask->obj);
-    else if ((PyObject *)py_mask != Py_None) {
-        PyErr_SetString(PyExc_TypeError, "mask should be a GdkPixmap or None");
-        return -1;
-    }
-
-    pygobject_construct(self, NULL);
-    if (!self->obj) {
-        PyErr_SetString(PyExc_RuntimeError, "could not create GtkPixmap object");
-        return -1;
-    }
-
-    gtk_pixmap_set(GTK_PIXMAP(self->obj), GDK_PIXMAP(pixmap->obj), mask);
-
-    return 0;
-}
-%%
-new-constructor GTK_TYPE_PIXMAP
 %%
 override gtk_plug_new kwargs
 static int
