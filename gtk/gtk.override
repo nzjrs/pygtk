@@ -966,7 +966,7 @@ _wrap_gtk_binding_entry_add_signal(PyGObject *self, PyObject *args)
         case G_TYPE_UCHAR:
         case G_TYPE_INT:
         case G_TYPE_UINT:
-        case G_TYPE_BOOL:
+        case G_TYPE_BOOLEAN:
         case G_TYPE_ENUM:
         case G_TYPE_FLAGS:
         case G_TYPE_LONG:
@@ -1019,7 +1019,7 @@ _wrap_gtk_binding_entry_add_signal(PyGObject *self, PyObject *args)
         default:
             errmsg = g_strdup_printf("GtkBindingSet.add_signal unsupported "
                                      "type %10s for arg[%u]",
-                                     gtk_type_name(arg->arg_type), i+1);
+                                     g_type_name(arg->arg_type), i+1);
             PyErr_SetString(PyExc_TypeError, errmsg);
             g_free(errmsg);
             goto arg_error;
