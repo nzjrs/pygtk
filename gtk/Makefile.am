@@ -83,50 +83,42 @@ GTK_2_22_DEFS =
 	gtk-2.22.defs		\
 	gtk-2.22-types.defs
 
-if HAVE_GTK_2_10
+# GTK_2_10
 GDK_DEFS += gdk-2.10.defs 
 GTK_DEFS += gtk-2.10.defs 
 GTK_TYPES_DEFS += gtk-2.10-types.defs
-endif
 
-if HAVE_GTK_2_12
+# GTK_2_12
 GDK_DEFS += gdk-2.12.defs 
 GTK_DEFS += gtk-2.12.defs 
 GTK_TYPES_DEFS += gtk-2.12-types.defs
 GTKUNIXPRINT_DEFS += gtkunixprint-2.12.defs
-endif
 
-
-if HAVE_GTK_2_14
+# GTK_2_14
 GDK_DEFS += gdk-2.14.defs 
 GTK_DEFS += gtk-2.14.defs 
 GTK_TYPES_DEFS += gtk-2.14-types.defs
 GTKUNIXPRINT_DEFS += gtkunixprint-2.14.defs
-endif
 
-if HAVE_GTK_2_16
+# GTK_2_16
 GDK_DEFS += gdk-2.16.defs 
 GTK_DEFS += gtk-2.16.defs 
 GTK_TYPES_DEFS += gtk-2.16-types.defs
-endif
 
-if HAVE_GTK_2_18
+# GTK_2_18
 GDK_DEFS += gdk-2.18.defs 
 GTK_DEFS += gtk-2.18.defs 
 GTK_TYPES_DEFS += gtk-2.18-types.defs
-endif
 
-if HAVE_GTK_2_20
+# GTK_2_20
 GDK_DEFS += gdk-2.20.defs 
 GTK_DEFS += gtk-2.20.defs 
 GTK_TYPES_DEFS += gtk-2.20-types.defs
-endif
 
-if HAVE_GTK_2_22
+# GTK_2_22
 GDK_DEFS += gdk-2.22.defs
 GTK_DEFS += gtk-2.22.defs
 GTK_TYPES_DEFS += gtk-2.22-types.defs
-endif
 
 CREATEDEFS = $(PYTHON) $(CODEGENDIR)/createdefs.py
 

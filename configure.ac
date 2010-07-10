@@ -239,6 +239,7 @@ if test "x$have_pycairo" = "xtrue"; then
           HAVE_GTK="yes", HAVE_GTK="no")
   if test "x$HAVE_GTK" = "xyes"; then
      have_gtk=true
+     gtk_version="3.0.0"
   else
      have_gtk=false
      AC_MSG_RESULT(no)
@@ -249,49 +250,6 @@ if test "x$have_pycairo" = "xtrue"; then
   if test -n "$export_dynamic"; then
     GTK_LIBS=`echo $GTK_LIBS | sed -e "s/$export_dynamic//"`
   fi
-
-  have_gtk_210=true
-  AM_CONDITIONAL(HAVE_GTK_2_10, $have_gtk_210)
-  AC_SUBST(HAVE_GTK_2_10)
-  AC_DEFINE([HAVE_GTK_2_10], [$have_gtk_210], [If Gtk 2.10 was found])
-  have_gtk_212=true
-  AM_CONDITIONAL(HAVE_GTK_2_12, $have_gtk_212)
-  AC_SUBST(HAVE_GTK_2_12)
-  AC_DEFINE([HAVE_GTK_2_12], [$have_gtk_212], [If Gtk 2.12 was found])
-  have_gtk_214=true
-  AM_CONDITIONAL(HAVE_GTK_2_14, $have_gtk_214)
-  AC_SUBST(HAVE_GTK_2_14)
-  AC_DEFINE([HAVE_GTK_2_14], [$have_gtk_214], [If Gtk 2.14 was found])
-  have_gtk_216=true
-  AM_CONDITIONAL(HAVE_GTK_2_16, $have_gtk_216)
-  AC_SUBST(HAVE_GTK_2_16)
-  AC_DEFINE([HAVE_GTK_2_16], [$have_gtk_216], [If Gtk 2.16 was found])
-  have_gtk_218=true
-  AM_CONDITIONAL(HAVE_GTK_2_18, $have_gtk_218)
-  AC_SUBST(HAVE_GTK_2_18)
-  AC_DEFINE([HAVE_GTK_2_18], [$have_gtk_218], [If Gtk 2.18 was found])
-  have_gtk_220=true
-  AM_CONDITIONAL(HAVE_GTK_2_20, $have_gtk_220)
-  AC_SUBST(HAVE_GTK_2_20)
-  AC_DEFINE([HAVE_GTK_2_20], [$have_gtk_220], [If Gtk 2.20 was found])
-  gtk_version="3.0.0"
-
-  dnl check for gtk 2.22
-  PKG_CHECK_MODULES(GTK222, gtk+-2.0 >= 2.21.0,
-	  HAVE_GTK_222="yes", HAVE_GTK_222="no")
-
-  if test "x$HAVE_GTK_222" = "xyes"; then
-     gtk_version="2.22"
-     have_gtk_222=true
-     PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DHAVE_GTK_2_22"
-  else
-     AC_MSG_RESULT(no)
-     have_gtk_222=false
-  fi
-
-  AM_CONDITIONAL(HAVE_GTK_2_22, $have_gtk_222)
-  AC_SUBST(HAVE_GTK_2_22)
-  AC_DEFINE([HAVE_GTK_2_22], [$have_gtk_222], [If Gtk 2.22 was found])
 
   dnl libglade
   have_libglade=false
@@ -312,13 +270,6 @@ else
   AC_MSG_RESULT(not checking for gtk due to missing pycairo)
   AM_CONDITIONAL(BUILD_PANGOCAIRO, false)
   AM_CONDITIONAL(BUILD_GTK, false)
-  AM_CONDITIONAL(HAVE_GTK_2_10, false)
-  AM_CONDITIONAL(HAVE_GTK_2_12, false)
-  AM_CONDITIONAL(HAVE_GTK_2_14, false)
-  AM_CONDITIONAL(HAVE_GTK_2_16, false)
-  AM_CONDITIONAL(HAVE_GTK_2_18, false)
-  AM_CONDITIONAL(HAVE_GTK_2_20, false)
-  AM_CONDITIONAL(HAVE_GTK_2_22, false)
   AM_CONDITIONAL(BUILD_LIBGLADE, false)
   AM_CONDITIONAL(BUILD_GTKUNIXPRINT, false)
   have_pangocairo=false
@@ -414,7 +365,7 @@ if test ! $have_atk || ! $have_pango || \
   $have_atk || echo     atk
   $have_pango || echo     pango
   $have_pangocairo || echo     pangocairo
-  $have_g || echo     gtk
+  $have_gtk || echo     gtk
   $have_libglade || echo     gtk.glade
   $have_gtkunixprint || echo     gtk.unixprint
 fi
