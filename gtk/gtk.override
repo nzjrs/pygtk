@@ -962,16 +962,16 @@ _wrap_gtk_binding_entry_add_signal(PyGObject *self, PyObject *args)
 
         arg->arg_type = arg_type;
         switch (GTK_FUNDAMENTAL_TYPE(arg->arg_type)) {
-        case GTK_TYPE_CHAR:
-        case GTK_TYPE_UCHAR:
-        case GTK_TYPE_INT:
-        case GTK_TYPE_UINT:
-        case GTK_TYPE_BOOL:
-        case GTK_TYPE_ENUM:
-        case GTK_TYPE_FLAGS:
-        case GTK_TYPE_LONG:
-        case GTK_TYPE_ULONG:
-            arg->arg_type = GTK_TYPE_LONG;
+        case G_TYPE_CHAR:
+        case G_TYPE_UCHAR:
+        case G_TYPE_INT:
+        case G_TYPE_UINT:
+        case G_TYPE_BOOL:
+        case G_TYPE_ENUM:
+        case G_TYPE_FLAGS:
+        case G_TYPE_LONG:
+        case G_TYPE_ULONG:
+            arg->arg_type = G_TYPE_LONG;
             item = PyTuple_GET_ITEM(args, i+1);
             if (!PyInt_Check(item)) {
                 errmsg = g_strdup_printf("GtkBindingSet.add_signal "
@@ -982,9 +982,9 @@ _wrap_gtk_binding_entry_add_signal(PyGObject *self, PyObject *args)
             }
             arg->d.long_data = (glong)PyInt_AsLong(item);
             break;
-        case GTK_TYPE_FLOAT:
-        case GTK_TYPE_DOUBLE:
-            arg->arg_type = GTK_TYPE_DOUBLE;
+        case G_TYPE_FLOAT:
+        case G_TYPE_DOUBLE:
+            arg->arg_type = G_TYPE_DOUBLE;
             item = PyTuple_GET_ITEM(args, i+1);
             if (!PyFloat_Check(item)) {
                 errmsg = g_strdup_printf("GtkBindingSet.add_signal "
@@ -995,10 +995,10 @@ _wrap_gtk_binding_entry_add_signal(PyGObject *self, PyObject *args)
             }
             arg->d.double_data = (gdouble)PyFloat_AsDouble(item);
             break;
-        case GTK_TYPE_STRING:
-            arg->arg_type = GTK_TYPE_STRING;
+        case G_TYPE_STRING:
+            arg->arg_type = G_TYPE_STRING;
             if (arg->arg_type != GTK_TYPE_IDENTIFIER)
-                arg->arg_type = GTK_TYPE_STRING;
+                arg->arg_type = G_TYPE_STRING;
             item = PyTuple_GET_ITEM(args, i+1);
             if (!PyString_Check(item)) {
                 errmsg = g_strdup_printf("GtkBindingSet.add_signal arg[%u] "
