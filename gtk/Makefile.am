@@ -145,7 +145,6 @@ GTK_OVERRIDES = 		\
 	gtk.override 		\
 	gtkborder.override	\
 	gtkbuilder.override 	\
-	gtkclist.override 	\
 	gtkcontainer.override 	\
 	gtkiconview.override 	\
 	gtkrcstyle.override 	\
