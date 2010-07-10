@@ -66,13 +66,6 @@ _wrap_gdk_gc_new(PyGObject *self, PyObject *args, PyObject *kwargs)
 	PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
 	return -1;
     }
-    if (pyg_boxed_check(font, GDK_TYPE_FONT)) {
-	mask |= GDK_GC_FONT;
-	values.font = pyg_boxed_get(font, GdkFont);
-    } else if (font != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
-	return -1;
-    }
     if (function != -1) {
 	mask |= GDK_GC_FUNCTION;
 	values.function = function;
@@ -197,13 +190,6 @@ _wrap_gdk_gc_new_with_values(PyGObject *self, PyObject *args, PyObject *kwargs)
         values.background = *pyg_boxed_get(background, GdkColor);
     } else if (background != Py_None) {
         PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
-        return NULL;
-    }
-    if (pyg_boxed_check(font, GDK_TYPE_FONT)) {
-        mask |= GDK_GC_FONT;
-        values.font = pyg_boxed_get(font, GdkFont);
-    } else if (font != Py_None) {
-        PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
         return NULL;
     }
     if (function != -1) {
@@ -340,13 +326,6 @@ _wrap_gdk_gc_set_values(PyGObject *self, PyObject *args, PyObject *kwargs)
 	values.background = *pyg_boxed_get(background, GdkColor);
     } else if (background != Py_None) {
 	PyErr_SetString(PyExc_TypeError, "background must be a GdkColor");
-	return NULL;
-    }
-    if (pyg_boxed_check(font, GDK_TYPE_FONT)) {
-	mask |= GDK_GC_FONT;
-	values.font = pyg_boxed_get(font, GdkFont);
-    } else if (font != Py_None) {
-	PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
 	return NULL;
     }
     if (function != -1) {
@@ -560,11 +539,6 @@ _wrap_gdk_gc_tp_setattro(PyGObject *self, PyObject *py_attr, PyObject *value)
             return 0;
         } else if (!strcmp(attr, "background")) {
             gdk_gc_set_background(gc, c);
-            return 0;
-        }
-    } else if (pyg_boxed_check(value, GDK_TYPE_FONT)) {
-        if (!strcmp(attr, "font")) {
-            gdk_gc_set_font(gc, pyg_boxed_get(value, GdkFont));
             return 0;
         }
     } else if (pygobject_check(value, &PyGdkWindow_Type) || value == Py_None) {

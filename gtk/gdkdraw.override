@@ -62,31 +62,6 @@ _wrap_gdk_draw_polygon(PyGObject *self, PyObject *args, PyObject *kwargs)
     return Py_None;
 }
 %%
-override gdk_draw_text kwargs
-static PyObject *
-_wrap_gdk_draw_text(PyGObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "font", "gc", "x", "y", "text",NULL};
-    PyGObject *gc;
-    PyObject *font;
-    int x, y;
-    Py_ssize_t len;
-    char *text;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "OO!iis#:GdkDrawable.draw_text", kwlist,
-                                     &font, &PyGdkGC_Type, &gc,
-                                     &x, &y, &text, &len))
-        return NULL;
-    if (!pyg_boxed_check(font, GDK_TYPE_FONT)) {
-        PyErr_SetString(PyExc_TypeError, "font must be a GdkFont");
-        return NULL;
-    }
-    gdk_draw_text(GDK_DRAWABLE(self->obj), pyg_boxed_get(font, GdkFont),
-                  GDK_GC(gc->obj), x, y, text, len);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
 override gdk_draw_points kwargs
 static PyObject *
 _wrap_gdk_draw_points(PyGObject *self, PyObject *args, PyObject *kwargs)

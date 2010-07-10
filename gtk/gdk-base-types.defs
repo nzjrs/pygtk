@@ -204,19 +204,6 @@
   (release-func "gdk_event_free")
 )
 
-(define-boxed Font
-  (in-module "Gdk")
-  (c-name "GdkFont")
-  (gtype-id "GDK_TYPE_FONT")
-  (copy-func "gdk_font_ref")
-  (release-func "gdk_font_unref")
-  (fields
-    '("GdkFontType" "type")
-    '("gint" "ascent")
-    '("gint" "descent")
-  )
-)
-
 (define-boxed Color
   (in-module "Gdk")
   (c-name "GdkColor")
@@ -474,16 +461,6 @@
     '("new" "GDK_SETTING_ACTION_NEW")
     '("changed" "GDK_SETTING_ACTION_CHANGED")
     '("deleted" "GDK_SETTING_ACTION_DELETED")
-  )
-)
-
-(define-enum FontType
-  (in-module "Gdk")
-  (c-name "GdkFontType")
-  (gtype-id "GDK_TYPE_FONT_TYPE")
-  (values
-    '("font" "GDK_FONT_FONT")
-    '("fontset" "GDK_FONT_FONTSET")
   )
 )
 

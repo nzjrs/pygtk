@@ -158,24 +158,6 @@ _wrap_gdk_fontset_load(PyObject *self, PyObject *args, PyObject *kwargs)
                          FALSE, TRUE);
 }
 %%
-override gdk_text_extents kwargs
-static PyObject *
-_wrap_gdk_text_extents(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "text", NULL };
-    gchar *text;
-    Py_ssize_t length;
-    gint lbearing, rbearing, width, ascent, descent;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s#:GdkFont.extents",
-                                     kwlist, &text, &length))
-        return NULL;
-    gdk_text_extents(pyg_boxed_get(self, GdkFont), text, length,
-                     &lbearing, &rbearing, &width, &ascent, &descent);
-    return Py_BuildValue("(iiiii)", lbearing, rbearing, width,
-                         ascent, descent);
-}
-%%
 override gdk_pixmap_create_from_xpm kwargs
 static PyObject *
 _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
