@@ -142,22 +142,6 @@ _wrap_gdk_threads_enter(PyObject *self)
     return Py_None;
 }
 %%
-override gdk_fontset_load kwargs
-static PyObject *
-_wrap_gdk_fontset_load(PyObject *self, PyObject *args, PyObject *kwargs)
-{
-    static char *kwlist[] = { "fontset_name", NULL };
-    char *fontset_name;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s:fontset_load", kwlist,
-                                     &fontset_name))
-        return NULL;
-
-    /* pyg_boxed_new handles NULL checking */
-    return pyg_boxed_new(GDK_TYPE_FONT, gdk_fontset_load(fontset_name),
-                         FALSE, TRUE);
-}
-%%
 override gdk_pixmap_create_from_xpm kwargs
 static PyObject *
 _wrap_gdk_pixmap_create_from_xpm(PyObject *self, PyObject *args,
