@@ -912,67 +912,6 @@ _wrap_gtk_combo_set_popdown_strings(PyGObject *self, PyObject *args,
     return Py_None;
 }
 %%
-override gtk_curve_get_vector kwargs
-static PyObject *
-_wrap_gtk_curve_get_vector(PyGObject *self, PyObject *args,
-                           PyObject *kwargs)
-{
-    static char *kwlist[] = { "size", NULL };
-    int size = -1, i;
-    gfloat *vector;
-    PyObject *ret;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,
-                                     "|i:GtkCurve.get_vector", kwlist,
-                                     &size))
-        return NULL;
-    if (size < 0) size = GTK_CURVE(self->obj)->num_points;
-    vector = g_new(gfloat, size);
-    gtk_curve_get_vector(GTK_CURVE(self->obj), size, vector);
-    ret = PyTuple_New(size);
-    for (i = 0; i < size; i++)
-        PyTuple_SetItem(ret, i, PyFloat_FromDouble(vector[i]));
-    g_free(vector);
-    return ret;
-}
-%%
-override gtk_curve_set_vector kwargs
-static PyObject *
-_wrap_gtk_curve_set_vector(PyGObject *self, PyObject *args,
-                           PyObject *kwargs)
-{
-    static char *kwlist[] = { "vector", NULL };
-    PyObject *seq;
-    int size, i;
-    gfloat *vector;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkCurve.set_vector",
-                                     kwlist, &seq))
-        return NULL;
-    if (!PySequence_Check(seq)) {
-        PyErr_SetString(PyExc_TypeError, "1st argument is not a sequence");
-        return NULL;
-    }
-    size = PySequence_Length(seq);
-    vector = g_new(gfloat, size);
-    for (i = 0; i < size; i++) {
-        PyObject *item = PySequence_GetItem(seq, i);
-
-        Py_DECREF(item);
-        item = PyNumber_Float(item); /* item has a ref now */
-        if (item == NULL) {
-            g_free(vector);
-            return NULL;
-        }
-        vector[i] = PyFloat_AsDouble(item);
-        Py_DECREF(item);
-    }
-    gtk_curve_set_vector(GTK_CURVE(self->obj), size, vector);
-    g_free(vector);
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-%%
 override gtk_binding_entry_add_signal
 static PyObject *
 _wrap_gtk_binding_entry_add_signal(PyGObject *self, PyObject *args)
