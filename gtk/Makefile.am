@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = 1.7
 
-PLATFORM_VERSION = 2.0
+PLATFORM_VERSION = 3.0
 
 CLEANFILES =
 EXTRA_DIST = 
@@ -14,8 +14,8 @@ defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
 # python scripts & extension modules
-pkgpythondir = $(pyexecdir)/gtk-2.0
-pkgpyexecdir = $(pyexecdir)/gtk-2.0
+pkgpythondir = $(pyexecdir)/gtk-$(PLATFORM_VERSION)
+pkgpyexecdir = $(pyexecdir)/gtk-$(PLATFORM_VERSION)
 
 # gtk python extension modules
 pygtkexecdir = $(pkgpyexecdir)/gtk

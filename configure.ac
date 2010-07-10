@@ -335,8 +335,7 @@ fi
 
 AC_CONFIG_FILES(
   Makefile
-  pygtk-2.0.pc
-  pygtk-codegen-2.0
+  pygtk-3.0.pc
   gtk/Makefile
   docs/Makefile
   docs/reference/entities.docbook

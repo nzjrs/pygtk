@@ -6,9 +6,7 @@ endif
 
 SUBDIRS = . $(GTK_SUBDIR) examples tests docs
 
-PLATFORM_VERSION = 2.0
-
-bin_SCRIPTS = pygtk-codegen-$(PLATFORM_VERSION)
+PLATFORM_VERSION = 3.0
 
 CLEANFILES = 
 EXTRA_DIST = 					\
@@ -21,7 +19,6 @@ EXTRA_DIST = 					\
 	pygtk.spec 				\
 	pygtk.spec.in 				\
 	pygtk-$(PLATFORM_VERSION).pc.in 	\
-	pygtk-codegen-$(PLATFORM_VERSION).in	\
 	pygtk_postinstall.py 			\
 	PKG-INFO 				\
 	PKG-INFO.in 				\
@@ -50,10 +47,10 @@ defsdir = $(pkgdatadir)/$(PLATFORM_VERSION)/defs
 defs_DATA =
 
 # pygtk scripts
-pkgpythondir = $(pyexecdir)/gtk-2.0
+pkgpythondir = $(pyexecdir)/gtk-$(PLATFORM_VERSION)
 
 # pygtk extension modules
-pkgpyexecdir = $(pyexecdir)/gtk-2.0
+pkgpyexecdir = $(pyexecdir)/gtk-$(PLATFORM_VERSION)
 pkgpyexec_LTLIBRARIES =
 
 # linker flags
