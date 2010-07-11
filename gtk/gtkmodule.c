@@ -76,7 +76,7 @@ sink_gtkinvisible(GObject *object)
 static void
 sink_gtkobject(GObject *object)
 {
-    if (GTK_OBJECT_FLOATING(object)) {
+    if (g_object_is_floating(object)) {
 	g_object_ref_sink(object);
     }
 }
