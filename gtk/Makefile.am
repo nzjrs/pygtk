@@ -41,84 +41,47 @@ common_ldflags += -no-undefined
 endif
 
 # gtk module
-GTK_DEFS = gtk-base.defs
-GDK_DEFS = gdk-base.defs
-GTKUNIXPRINT_DEFS = gtkunixprint-base.defs
-GTK_TYPES_DEFS = gtk-base-types.defs
-GDK_TYPES_DEFS = gdk-base-types.defs
-GTKUNIXPRINT_TYPES_DEFS = gtkunixprint-base-types.defs
-
-GTK_2_10_DEFS = gdk-2.10.defs gtk-2.10.defs gtk-2.10-types.defs
-
-GTK_2_12_DEFS =
-	gdk-2.12.defs		\
+GTK_DEFS =				\
+	gtk-base.defs		\
+	gtk-2.10.defs		\
 	gtk-2.12.defs		\
-	gtk-2.12-types.defs	\
-	gtkunixprint-2.12.defs
-
-GTK_2_14_DEFS =
-	gdk-2.14.defs		\
 	gtk-2.14.defs		\
-	gtk-2.14-types.defs 	\
-	gtkunixprint-2.14.defs
-
-GTK_2_16_DEFS =
-	gdk-2.16.defs		\
 	gtk-2.16.defs		\
-	gtk-2.16-types.defs
-
-GTK_2_18_DEFS =
-	gdk-2.18.defs		\
 	gtk-2.18.defs		\
-	gtk-2.18-types.defs
-
-GTK_2_20_DEFS =
-	gdk-2.20.defs		\
 	gtk-2.20.defs		\
-	gtk-2.20-types.defs	\
+	gtk-2.22.defs
+
+GDK_DEFS =				\
+	gdk-base.defs		\
+	gdk-2.10.defs		\
+	gdk-2.12.defs		\
+	gdk-2.14.defs		\
+	gdk-2.16.defs		\
+	gdk-2.18.defs		\
+	gdk-2.20.defs		\
+	gdk-2.22.defs
+
+GTKUNIXPRINT_DEFS =			\
+	gtkunixprint-base.defs	\
+	gtkunixprint-2.12.defs	\
+	gtkunixprint-2.14.defs	\
 	gtkunixprint-2.20.defs
 
-GTK_2_22_DEFS =
-	gdk-2.22.defs		\
-	gtk-2.22.defs		\
+GTK_TYPES_DEFS =		\
+	gtk-base-types.defs	\
+	gtk-2.10-types.defs	\
+	gtk-2.12-types.defs	\
+	gtk-2.14-types.defs	\
+	gtk-2.16-types.defs	\
+	gtk-2.18-types.defs	\
+	gtk-2.20-types.defs	\
 	gtk-2.22-types.defs
 
-# GTK_2_10
-GDK_DEFS += gdk-2.10.defs 
-GTK_DEFS += gtk-2.10.defs 
-GTK_TYPES_DEFS += gtk-2.10-types.defs
+GDK_TYPES_DEFS =		\
+	gdk-base-types.defs
 
-# GTK_2_12
-GDK_DEFS += gdk-2.12.defs 
-GTK_DEFS += gtk-2.12.defs 
-GTK_TYPES_DEFS += gtk-2.12-types.defs
-GTKUNIXPRINT_DEFS += gtkunixprint-2.12.defs
-
-# GTK_2_14
-GDK_DEFS += gdk-2.14.defs 
-GTK_DEFS += gtk-2.14.defs 
-GTK_TYPES_DEFS += gtk-2.14-types.defs
-GTKUNIXPRINT_DEFS += gtkunixprint-2.14.defs
-
-# GTK_2_16
-GDK_DEFS += gdk-2.16.defs 
-GTK_DEFS += gtk-2.16.defs 
-GTK_TYPES_DEFS += gtk-2.16-types.defs
-
-# GTK_2_18
-GDK_DEFS += gdk-2.18.defs 
-GTK_DEFS += gtk-2.18.defs 
-GTK_TYPES_DEFS += gtk-2.18-types.defs
-
-# GTK_2_20
-GDK_DEFS += gdk-2.20.defs 
-GTK_DEFS += gtk-2.20.defs 
-GTK_TYPES_DEFS += gtk-2.20-types.defs
-
-# GTK_2_22
-GDK_DEFS += gdk-2.22.defs
-GTK_DEFS += gtk-2.22.defs
-GTK_TYPES_DEFS += gtk-2.22-types.defs
+GTKUNIXPRINT_TYPES_DEFS =	\
+	gtkunixprint-base-types.defs
 
 CREATEDEFS = $(PYTHON) $(CODEGENDIR)/createdefs.py
 
@@ -164,13 +127,6 @@ EXTRA_DIST += 			\
 	$(GDK_OVERRIDES) 	\
 	$(GTK_DEFS) 		\
 	$(GTK_TYPES_DEFS)	\
-	$(GTK_2_10_DEFS)	\
-	$(GTK_2_12_DEFS)	\
-	$(GTK_2_14_DEFS)	\
-	$(GTK_2_16_DEFS)	\
-	$(GTK_2_18_DEFS)	\
-	$(GTK_2_20_DEFS)	\
-	$(GTK_2_22_DEFS)	\
 	$(GTK_OVERRIDES)
 
 
@@ -197,21 +153,29 @@ gtk.c: gdk-types.defs gtk-types.defs gtk.defs gdk-types.defs $(GTK_OVERRIDES)
 _gtk_la_CFLAGS = $(PYCAIRO_CFLAGS) $(GTK_CFLAGS)
 _gtk_la_LDFLAGS = $(common_ldflags) -export-symbols-regex init_gtk
 _gtk_la_LIBADD = $(GTK_LIBS)
-_gtk_la_SOURCES = 		\
-	gtk-types.c 		\
-	gtkmodule.c 		\
+_gtk_la_SOURCES = 			\
+	gtk-types.c 			\
+	gtkmodule.c 			\
 	gtkobject-support.c 	\
-	pygtk.h 		\
-	pygtk-private.h 	\
+	pygtk.h 				\
+	pygtk-private.h 		\
 	pygtkcellrenderer.h 	\
-	pygtkcellrenderer.c	\
-	pygtktreemodel.h 	\
+	pygtkcellrenderer.c		\
+	pygtktreemodel.h 		\
 	pygtktreemodel.c
 nodist__gtk_la_SOURCES = gtk.c gdk.c
 if BUILD_GTK
 pygtkexec_LTLIBRARIES += _gtk.la
-defs_DATA += $(GDK_DEFS) $(GDK_TYPES_DEFS) $(GTK_DEFS) $(GTK_TYPES_DEFS) \
-	gdk.defs gtk.defs gdk-types.defs gtk-types.defs gtk-extrafuncs.defs
+defs_DATA += 				\
+	$(GDK_DEFS)				\
+	$(GDK_TYPES_DEFS)		\
+	$(GTK_DEFS)				\
+	$(GTK_TYPES_DEFS)		\
+	gdk.defs				\
+	gtk.defs				\
+	gdk-types.defs			\
+	gtk-types.defs			\
+	gtk-extrafuncs.defs
 endif
 
 # libglade module
