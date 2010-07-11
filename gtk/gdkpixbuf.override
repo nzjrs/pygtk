@@ -48,7 +48,7 @@ _wrap_gdk_pixbuf_render_pixmap_and_mask(PyGObject *self, PyObject *args,
 
     if (mask) {
         pymask = pygobject_new((GObject *) mask);
-        gdk_bitmap_unref(mask);
+        g_object_unref(mask);
     } else {
         Py_INCREF(Py_None);
         pymask = Py_None;
