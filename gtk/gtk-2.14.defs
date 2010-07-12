@@ -729,6 +729,9 @@
   (return-type "gint")
 )
 
+;
+; RuntimeError: write_return not implemented for UCharArg
+;
 ;(define-method get_data
 ;  (of-object "GtkSelectionData")
 ;  (c-name "gtk_selection_data_get_data")
@@ -834,6 +837,11 @@
 
 ;; From gtktoolshell.h
 
+(define-function gtk_tool_shell_get_type
+  (c-name "gtk_tool_shell_get_type")
+  (return-type "GType")
+)
+
 (define-method get_icon_size
   (of-object "GtkToolShell")
   (c-name "gtk_tool_shell_get_icon_size")
@@ -889,8 +897,6 @@
   (return-type "none")
 )
 
-
-
 ;; From gtktreeselection.h
 
 (define-method get_select_function
@@ -939,4 +945,21 @@
   (of-object "GtkWindowGroup")
   (c-name "gtk_window_group_list_windows")
   (return-type "GList*")
+)
+
+;; From gtklinkbutton.h
+
+(define-method get_visited
+  (of-object "GtkLinkButton")
+  (c-name "gtk_link_button_get_visited")
+  (return-type "gboolean")
+)
+
+(define-method set_visited
+  (of-object "GtkLinkButton")
+  (c-name "gtk_link_button_set_visited")
+  (return-type "none")
+  (parameters
+    '("gboolean" "visited")
+  )
 )
