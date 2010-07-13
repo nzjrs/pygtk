@@ -56,32 +56,6 @@ static struct _PyGtk_FunctionStruct functions = {
 };
 
 static void
-sink_gtkwindow(GObject *object)
-{
-    if (object->ref_count == 1
-	&& GTK_WINDOW(object)->_g_sealed__has_user_ref_count) {
-	g_object_ref(object);
-    }
-}
-
-static void
-sink_gtkinvisible(GObject *object)
-{
-    if (object->ref_count == 1
-	&& GTK_INVISIBLE(object)->_g_sealed__has_user_ref_count) {
-	g_object_ref(object);
-    }
-}
-
-static void
-sink_gtkobject(GObject *object)
-{
-    if (g_object_is_floating(object)) {
-	g_object_ref_sink(object);
-    }
-}
-
-static void
 pygtk_add_stock_items(PyObject *d)
 {
     GSList *stock_ids, *cur;
@@ -193,8 +167,10 @@ init_gtk(void)
 {
     PyObject *m, *d, *tuple, *o;
 
-    /* initialise pygobject */
-    init_pygobject_check(2, 12, 0);
+    /* initialise pygobject
+    2.22 is needed because this removes the need to register custom
+    sink functions for GtkWindow, GtkInvisible and GtkObject */
+    init_pygobject_check(2, 21, 0);
     g_assert(pygobject_register_class != NULL);
     
     /* initialise pycairo */
@@ -204,10 +180,6 @@ init_gtk(void)
     /* initialise pygtk */
     gtk_type_init(0);
 
-    pygobject_register_sinkfunc(GTK_TYPE_WINDOW, sink_gtkwindow);
-    pygobject_register_sinkfunc(GTK_TYPE_INVISIBLE, sink_gtkinvisible);
-    pygobject_register_sinkfunc(GTK_TYPE_OBJECT, sink_gtkobject);
-	
     m = Py_InitModule("gtk._gtk", pygtk_functions);
     d = PyModule_GetDict(m);
 
