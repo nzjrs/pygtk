@@ -12,7 +12,7 @@ class Bin(gtk.Container):
         self.child = child
 
     def do_remove(self, child):
-        widget_was_visible = child.flags() & gtk.VISIBLE
+        widget_was_visible = child.get_visible()
         child.unparent()
         self.child = None
 
