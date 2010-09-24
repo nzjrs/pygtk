@@ -352,7 +352,7 @@ if test "x$have_pycairo" = "xtrue"; then
   AC_DEFINE([HAVE_GTK_2_20], [$have_gtk_220], [If Gtk 2.20 was found])
 
   dnl check for gtk 2.22
-  PKG_CHECK_MODULES(GTK222, gtk+-2.0 >= 2.21.0,
+  PKG_CHECK_MODULES(GTK222, gtk+-2.0 >= 2.22.0,
 	  HAVE_GTK_222="yes", HAVE_GTK_222="no")
 
   if test "x$HAVE_GTK_222" = "xyes"; then
