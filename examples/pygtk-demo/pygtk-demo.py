@@ -90,7 +90,7 @@ class PyGtkDemo(gtk.Window):
 
     def __init__(self):
         gtk.Window.__init__(self)
-        self.set_title("PyGTK+ Code Demos")
+        self.set_title("PyGTK Code Demos")
         self.connect('destroy', lambda w: gtk.main_quit())
         self.set_default_size(800, 400)
 
@@ -317,4 +317,7 @@ class PyGtkDemo(gtk.Window):
         self.insert_source(source)
 
 if __name__ == '__main__':
+    print "PyGTK Demo",
+    print "(gtk: v%d.%d.%d, " % gtk.gtk_version,
+    print "pygtk: v%d.%d.%d)" % gtk.pygtk_version
     PyGtkDemo().run()
