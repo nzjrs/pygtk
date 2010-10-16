@@ -72,6 +72,17 @@ GTK_2_18_DEFS =
 	gtk-2.18.defs		\
 	gtk-2.18-types.defs
 
+GTK_2_20_DEFS =
+	gdk-2.20.defs		\
+	gtk-2.20.defs		\
+	gtk-2.20-types.defs	\
+	gtkunixprint-2.20.defs
+
+GTK_2_22_DEFS =
+	gdk-2.22.defs		\
+	gtk-2.22.defs		\
+	gtk-2.22-types.defs
+
 if HAVE_GTK_2_10
 GDK_DEFS += gdk-2.10.defs 
 GTK_DEFS += gtk-2.10.defs 
@@ -103,6 +114,18 @@ if HAVE_GTK_2_18
 GDK_DEFS += gdk-2.18.defs 
 GTK_DEFS += gtk-2.18.defs 
 GTK_TYPES_DEFS += gtk-2.18-types.defs
+endif
+
+if HAVE_GTK_2_20
+GDK_DEFS += gdk-2.20.defs 
+GTK_DEFS += gtk-2.20.defs 
+GTK_TYPES_DEFS += gtk-2.20-types.defs
+endif
+
+if HAVE_GTK_2_22
+GDK_DEFS += gdk-2.22.defs
+GTK_DEFS += gtk-2.22.defs
+GTK_TYPES_DEFS += gtk-2.22-types.defs
 endif
 
 CREATEDEFS = $(PYTHON) $(CODEGENDIR)/createdefs.py
@@ -154,8 +177,10 @@ EXTRA_DIST += 			\
 	$(GTK_2_10_DEFS)	\
 	$(GTK_2_12_DEFS)	\
 	$(GTK_2_14_DEFS)	\
-        $(GTK_2_16_DEFS)	\
+	$(GTK_2_16_DEFS)	\
 	$(GTK_2_18_DEFS)	\
+	$(GTK_2_20_DEFS)	\
+	$(GTK_2_22_DEFS)	\
 	$(GTK_OVERRIDES)
 
 

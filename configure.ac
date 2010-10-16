@@ -3,8 +3,8 @@ AC_PREREQ(2.52)
 
 dnl the pygtk version number
 m4_define(pygtk_major_version, 2)
-m4_define(pygtk_minor_version, 17)
-m4_define(pygtk_micro_version, 1)
+m4_define(pygtk_minor_version, 23)
+m4_define(pygtk_micro_version, 0)
 m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
 
 dnl versions of packages we require ...
@@ -15,7 +15,7 @@ m4_define(gtk_required_version,        2.8.0)
 m4_define(libglade_required_version,   2.5.0)
 m4_define(gtkunixprint_required_version,  2.9.0)
 m4_define(pycairo_required_version,    1.0.2) dnl or 1.1.7
-m4_define(pygobject_required_version,  2.16.1)
+m4_define(pygobject_required_version,  2.21.3)
 
 AC_INIT(pygtk, pygtk_version,
         [http://bugzilla.gnome.org/enter_bug.cgi?product=pygtk])
@@ -334,6 +334,40 @@ if test "x$have_pycairo" = "xtrue"; then
   AC_SUBST(HAVE_GTK_2_18)
   AC_DEFINE([HAVE_GTK_2_18], [$have_gtk_218], [If Gtk 2.18 was found])
 
+  dnl check for gtk 2.20
+  PKG_CHECK_MODULES(GTK220, gtk+-2.0 >= 2.20.0,
+	  HAVE_GTK_220="yes", HAVE_GTK_220="no")
+
+  if test "x$HAVE_GTK_220" = "xyes"; then
+     gtk_version="2.20"
+     have_gtk_220=true
+     PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DHAVE_GTK_2_20"
+  else
+     AC_MSG_RESULT(no)
+     have_gtk_220=false
+  fi
+
+  AM_CONDITIONAL(HAVE_GTK_2_20, $have_gtk_220)
+  AC_SUBST(HAVE_GTK_2_20)
+  AC_DEFINE([HAVE_GTK_2_20], [$have_gtk_220], [If Gtk 2.20 was found])
+
+  dnl check for gtk 2.22
+  PKG_CHECK_MODULES(GTK222, gtk+-2.0 >= 2.22.0,
+	  HAVE_GTK_222="yes", HAVE_GTK_222="no")
+
+  if test "x$HAVE_GTK_222" = "xyes"; then
+     gtk_version="2.22"
+     have_gtk_222=true
+     PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DHAVE_GTK_2_22"
+  else
+     AC_MSG_RESULT(no)
+     have_gtk_222=false
+  fi
+
+  AM_CONDITIONAL(HAVE_GTK_2_22, $have_gtk_222)
+  AC_SUBST(HAVE_GTK_2_22)
+  AC_DEFINE([HAVE_GTK_2_22], [$have_gtk_222], [If Gtk 2.22 was found])
+
   dnl libglade
   PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= libglade_required_version],
 	  have_libglade=true, have_libglade=false)
@@ -362,6 +396,10 @@ else
   AM_CONDITIONAL(HAVE_GTK_2_10, false)
   AM_CONDITIONAL(HAVE_GTK_2_12, false)
   AM_CONDITIONAL(HAVE_GTK_2_14, false)
+  AM_CONDITIONAL(HAVE_GTK_2_16, false)
+  AM_CONDITIONAL(HAVE_GTK_2_18, false)
+  AM_CONDITIONAL(HAVE_GTK_2_20, false)
+  AM_CONDITIONAL(HAVE_GTK_2_22, false)
   AM_CONDITIONAL(BUILD_LIBGLADE, false)
   AM_CONDITIONAL(BUILD_GTKUNIXPRINT, false)
   have_pangocairo=false

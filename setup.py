@@ -31,7 +31,7 @@ else:
     if not input.startswith('y'):
         raise SystemExit("Aborted")
 
-MIN_PYTHON_VERSION = (2, 3, 5)
+MIN_PYTHON_VERSION = (2, 6, 0)
 
 MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
 MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
@@ -56,7 +56,7 @@ GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('PYGTK_MICRO_VERSION', MICRO_VERSION)]
 
 if sys.platform == 'win32':
-    GLOBAL_MACROS.append(('VERSION', '"""%s"""' % VERSION))
+    GLOBAL_MACROS.append(('VERSION', '\\"%s\\"' % VERSION))
     GLOBAL_MACROS.append(('PLATFORM_WIN32',1))
     GLOBAL_MACROS.append(('HAVE_BIND_TEXTDOMAIN_CODESET',1))
 else:
@@ -119,6 +119,7 @@ PyGtkBuild.user_options.append(('enable-threading', None,
 # FOR A NEW RELEASE, YOU USUALLY ONLY NEED TO CHANGE THE FOLLOWING
 # These defs are registered with many modules...
 gdk_defs = [
+    'gtk/gdk-2.20.defs',
     'gtk/gdk-2.18.defs',
     'gtk/gdk-2.16.defs',
     'gtk/gdk-2.14.defs',
@@ -126,6 +127,7 @@ gdk_defs = [
     'gtk/gdk-2.10.defs',
     'gtk/gdk-base.defs']
 gtk_defs = [
+    'gtk/gtk-2.20.defs',
     'gtk/gtk-2.18.defs',
     'gtk/gtk-2.16.defs',
     'gtk/gtk-2.14.defs',
@@ -133,6 +135,7 @@ gtk_defs = [
     'gtk/gtk-2.10.defs',
     'gtk/gtk-base.defs']
 gtk_types_defs = [
+    'gtk/gtk-2.20-types.defs',
     'gtk/gtk-2.18-types.defs',
     'gtk/gtk-2.16-types.defs',
     'gtk/gtk-2.14-types.defs',

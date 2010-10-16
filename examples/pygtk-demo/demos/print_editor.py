@@ -88,7 +88,7 @@ def load_file(open_filename):
         else:
             set_text(contents)
     if error_dialog is not None:
-        error_dialog.connect("response", gtk.Widget.destroy)
+        error_dialog.connect("response", lambda w,resp: w.destroy())
         error_dialog.show()
 
 
@@ -121,7 +121,7 @@ def save_file(save_filename):
                                          "Error saving to file %s:\n%s" %
                                          (open_filename,
                                           str(ex)))
-        error_dialog.connect("response", gtk.Widget.destroy)
+        error_dialog.connect("response", lambda w,resp: w.destroy())
         error_dialog.show()
     else:
         if save_filename != filename:
@@ -254,7 +254,7 @@ def do_print(action):
                                          gtk._MESSAGE_ERROR,
                                          gtk.BUTTONS_CLOSE,
                                          ("Error printing file:\n%s" % str(ex)))
-        error_dialog.connect("response", gtk.Widget.destroy)
+        error_dialog.connect("response", lambda w,resp: w.destroy())
         error_dialog.show()
     else:
         if res == gtk.PRINT_OPERATION_RESULT_APPLY:

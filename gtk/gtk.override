@@ -1129,7 +1129,7 @@ pygtk_main_watch_prepare(GSource *source,
      * only one thread.
      */
 #ifndef PLATFORM_WIN32
-    if (!pyg_threads_enabled())
+    if (!pyg_threads_enabled)
         return FALSE;
 #endif /* PLATFORM_WIN32 */
 
@@ -7529,7 +7529,8 @@ _wrap_gtk_recent_info_get_application_info(PyGObject *self, PyObject *args,
                                            PyObject *kwargs)
 {
     static char *kwlist[] = { "app_name", NULL };
-    gchar *app_name, *app_exec = NULL;
+    gchar *app_name;
+    const gchar *app_exec = NULL;
     gboolean ret;
     PyObject *py_ret;
     guint count = 0;

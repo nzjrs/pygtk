@@ -37,6 +37,8 @@ headers
 #include <gdk/gdkx.h>
 #elif defined(GDK_WINDOWING_WIN32)
 #include <gdk/gdkwin32.h>
+#elif defined(GDK_WINDOWING_QUARTZ)
+#include <gdk/gdkquartz.h>
 #endif
 
 /* make GDK_DISPLAY() the case macro */
@@ -881,6 +883,32 @@ _wrap_gdk_drawable__get_handle(PyGObject *self, void *closure)
     return PyLong_FromVoidPtr(GDK_WINDOW_HWND(drawable));
 #else
     PyErr_SetString(PyExc_AttributeError, "handle attribute not supported");
+    return NULL;
+#endif
+}
+%%
+override-attr GdkDrawable.nsview
+static PyObject *
+_wrap_gdk_drawable__get_nsview(PyGObject *self, void *closure)
+{
+#if defined(GDK_WINDOWING_QUARTZ)
+    GdkDrawable *drawable = GDK_DRAWABLE(self->obj);
+    return PyLong_FromVoidPtr(gdk_quartz_window_get_nsview(drawable));
+#else
+    PyErr_SetString(PyExc_AttributeError, "nsview attribute not supported");
+    return NULL;
+#endif
+}
+%%
+override-attr GdkDrawable.nswindow
+static PyObject *
+_wrap_gdk_drawable__get_nswindow(PyGObject *self, void *closure)
+{
+#if defined(GDK_WINDOWING_QUARTZ)
+    GdkDrawable *drawable = GDK_DRAWABLE(self->obj);
+    return PyLong_FromVoidPtr(gdk_quartz_window_get_nswindow(drawable));
+#else
+    PyErr_SetString(PyExc_AttributeError, "nsview attribute not supported");
     return NULL;
 #endif
 }

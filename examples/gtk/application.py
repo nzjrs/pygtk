@@ -148,19 +148,19 @@ class Application(gtk.Window):
     # Override in subclass
 
     def new(self):
-        raise NotImplemented("Open")
+        raise NotImplementedError("Open")
 
     def open(self):
-        raise NotImplemented("Open")
+        raise NotImplementedError("Open")
 
     def save(self):
-        raise NotImplemented("Save")
+        raise NotImplementedError("Save")
 
     def close(self):
-        raise NotImplemented("Close")
+        raise NotImplementedError("Close")
 
     def about(self):
-        raise NotImplemented("About")
+        raise NotImplementedError("About")
 
     def run(self):
         self.show()
