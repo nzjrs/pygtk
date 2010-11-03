@@ -304,11 +304,15 @@ if gtk.can_build():
 
     ext_modules.append(gtk)
     data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
-    data_files.append((DEFS_DIR, ["gtk/gdk.defs"] + gdk_defs))
-    data_files.append((DEFS_DIR, ["gtk/gtk.defs"] + gtk_defs))
-    data_files.append((DEFS_DIR, ["gtk/gtk-types.defs"] + gtk_types_defs))
-    data_files.append((DEFS_DIR, ('gtk/gdk-base-types.defs',
-                                  'gtk/gtk-extrafuncs.defs')))
+    data_files.append((DEFS_DIR, ['gtk/gdk.defs']))
+    data_files.append((DEFS_DIR, ['gtk/gdk-types.defs']))
+    data_files.append((DEFS_INCLUDE_DIR, ['gtk/gdk-base-types.defs']))
+    data_files.append((DEFS_INCLUDE_DIR, gdk_defs))
+    data_files.append((DEFS_DIR, ['gtk/gtk.defs']))
+    data_files.append((DEFS_DIR, ['gtk/gtk-types.defs']))
+    data_files.append((DEFS_INCLUDE_DIR, gtk_defs))
+    data_files.append((DEFS_INCLUDE_DIR, gtk_types_defs))
+    data_files.append((DEFS_INCLUDE_DIR, gtk_extra_defs))
     py_modules += ['gtk.compat', 'gtk.deprecation', 'gtk.keysyms',
                    'gtk._lazyutils']
 
