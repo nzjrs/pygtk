@@ -296,6 +296,9 @@ if gtk.can_build():
             import numpy
             numpy # pyflakes
             GLOBAL_MACROS.append(('HAVE_NUMPY', 1))
+            NUMPY_INCLUDE = os.path.join(os.path.dirname(numpy.__file__),
+                                         'core', 'include')
+            gtk.include_dirs.append(NUMPY_INCLUDE)
         except ImportError:
             print '* numpy module could not be found, will build without numpy support.'
 
