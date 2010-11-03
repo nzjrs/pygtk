@@ -52,34 +52,37 @@ if not have_pkgconfig():
     raise SystemExit('ERROR: Could not find pkg-config: '
                      'Please check your PATH environment variable.')
 
-MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
-MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
-MICRO_VERSION = int(get_m4_define('pygtk_micro_version'))
-
-VERSION = "%d.%d.%d" % (MAJOR_VERSION, MINOR_VERSION, MICRO_VERSION)
-
-GOBJECT_REQUIRED  = get_m4_define('glib_required_version')
-ATK_REQUIRED      = get_m4_define('atk_required_version')
-PANGO_REQUIRED    = get_m4_define('pango_required_version')
-GTK_REQUIRED      = get_m4_define('gtk_required_version')
-LIBGLADE_REQUIRED = get_m4_define('libglade_required_version')
-PYCAIRO_REQUIRED  = get_m4_define('pycairo_required_version')
-PYGOBJECT_REQUIRED = get_m4_define('pygobject_required_version')
 
 PYGTK_SUFFIX = '2.0'
 PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
+PYGOBJECT_DEFSDIR = pkgc_get_defs_dir('pygobject-%s' % PYGTK_SUFFIX)
+
+GOBJECT_REQUIRED   = get_m4_define('glib_required_version')
+ATK_REQUIRED       = get_m4_define('atk_required_version')
+PANGO_REQUIRED     = get_m4_define('pango_required_version')
+GTK_REQUIRED       = get_m4_define('gtk_required_version')
+LIBGLADE_REQUIRED  = get_m4_define('libglade_required_version')
+PYCAIRO_REQUIRED   = get_m4_define('pycairo_required_version')
+PYGOBJECT_REQUIRED = get_m4_define('pygobject_required_version')
+
+MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
+MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
+MICRO_VERSION = int(get_m4_define('pygtk_micro_version'))
+VERSION       = '%d.%d.%d' % (MAJOR_VERSION, MINOR_VERSION, MICRO_VERSION)
 
 GLOBAL_INC += ['.', 'gtk']
 GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('PYGTK_MINOR_VERSION', MINOR_VERSION),
                   ('PYGTK_MICRO_VERSION', MICRO_VERSION),
                   ('VERSION', '\\"%s\\"' % VERSION),
-                  ('PLATFORM_WIN32',1),
-                  ('HAVE_BIND_TEXTDOMAIN_CODESET',1)]
+                  ('PLATFORM_WIN32', 1),
+                  ('HAVE_BIND_TEXTDOMAIN_CODESET', 1)]
 
-DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
-INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
-PYGOBJECT_DEFSDIR = getoutput('pkg-config --variable=defsdir pygobject-2.0')
+DEFS_DIR     = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
+DEFS_INCLUDE_DIR = os.path.join(DEFS_DIR, 'gtk')
+INCLUDE_DIR  = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
+HTML_DIR     = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
+
 
 class PyGtkInstallLib(InstallLib):
     def run(self):
@@ -112,7 +115,7 @@ class PyGtkInstallData(InstallData):
         InstallData.run(self)
 
     def install_templates(self):
-        self.install_template('pygtk-2.0.pc.in',
+        self.install_template('pygtk-%s.pc.in' % PYGTK_SUFFIX,
                               os.path.join(self.install_dir,
                                            'lib','pkgconfig'))
 
@@ -157,8 +160,8 @@ gtk_extra_defs = [
 ####################################################################
 
 # Atk
-atk = TemplateExtension(name='atk', 
-                        pkc_name=('pygobject-2.0','atk'),
+atk = TemplateExtension(name='atk',
+                        pkc_name=('pygobject-%s' % PYGTK_SUFFIX, 'atk'),
                         pkc_version=(PYGOBJECT_REQUIRED, ATK_REQUIRED),
                         sources=['atkmodule.c', 'atk.c'],
                         register=['atk-types.defs'],
@@ -166,8 +169,8 @@ atk = TemplateExtension(name='atk',
                         defs='atk.defs',
                         py_ssize_t_clean=True)
 # Pango
-pango = TemplateExtension(name='pango', 
-                          pkc_name=('pygobject-2.0','pango'),
+pango = TemplateExtension(name='pango',
+                          pkc_name=('pygobject-%s' % PYGTK_SUFFIX, 'pango'),
                           pkc_version=(PYGOBJECT_REQUIRED, PANGO_REQUIRED),
                           sources=['pango.c', 'pangomodule.c'],
                           register=['pango-types.defs'],
@@ -203,7 +206,8 @@ libglade_pkc_register=[('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
                        ('gtk/gtk-types.defs',gtk_types_defs),
                        'gtk/libglade.defs']
 
-gtk = TemplateExtension(name='gtk', pkc_name=('gtk+-2.0','pycairo'),
+gtk = TemplateExtension(name='gtk',
+                        pkc_name=('gtk+-%s' % PYGTK_SUFFIX, 'pycairo'),
                         pkc_version=(GTK_REQUIRED, PYCAIRO_REQUIRED),
                         output='gtk._gtk',
                         sources=['gtk/gtkmodule.c',
@@ -220,7 +224,8 @@ gtk = TemplateExtension(name='gtk', pkc_name=('gtk+-2.0','pycairo'),
 gtk.templates.append(gdk_template)
 
 # Libglade
-libglade = TemplateExtension(name='libglade', pkc_name='libglade-2.0',
+libglade = TemplateExtension(name='libglade',
+                             pkc_name='libglade-%s' % PYGTK_SUFFIX,
                              pkc_version=LIBGLADE_REQUIRED,
                              output='gtk.glade',
                              defs='gtk/libglade.defs',
@@ -297,7 +302,8 @@ else:
         enable_threading = True
 
 if enable_threading:
-    name = 'gthread-2.0'
+    name = 'gthread-%s' % PYGTK_SUFFIX
+
     for module in ext_modules:
         raw = getoutput('pkg-config --libs-only-l %s' % name)
         for arg in raw.split():
