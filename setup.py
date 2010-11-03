@@ -26,20 +26,13 @@ from dsextras import get_m4_define, getoutput, have_pkgconfig, \
      PkgConfigExtension, Template, TemplateExtension
 
 
-if '--yes-i-know-its-not-supported' in sys.argv:
-    sys.argv.remove('--yes-i-know-its-not-supported')
-else:
-    print '*'*70
-    print 'Building PyGTK using distutils is NOT SUPPORTED.'
-    print "It's mainly included to be able to easily build win32 installers"
-    print "You may continue, but only if you agree to not ask any questions"
-    print "To build PyGTK in a supported way, read the INSTALL file"
-    print
-    print "Build fixes are of course welcome and should be filed in bugzilla"
-    print '*'*70
-    input = raw_input('Not supported, ok [y/N]? ')
-    if not input.startswith('y'):
-        raise SystemExit("Aborted")
+# Check for windows platform
+if sys.platform != 'win32':
+    msg =  '*' * 68 + '\n'
+    msg += '* Building PyGTK using distutils is only supported on windows. *\n'
+    msg += '* To build PyGTK in a supported way, read the INSTALL file.    *\n'
+    msg += '*' * 68
+    raise SystemExit(msg)
 
 MIN_PYTHON_VERSION = (2, 6, 0)
 
@@ -63,14 +56,10 @@ PYGTK_SUFFIX_LONG = 'gtk-' + PYGTK_SUFFIX
 GLOBAL_INC += ['.', 'gtk']
 GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('PYGTK_MINOR_VERSION', MINOR_VERSION),
-                  ('PYGTK_MICRO_VERSION', MICRO_VERSION)]
-
-if sys.platform == 'win32':
-    GLOBAL_MACROS.append(('VERSION', '\\"%s\\"' % VERSION))
-    GLOBAL_MACROS.append(('PLATFORM_WIN32',1))
-    GLOBAL_MACROS.append(('HAVE_BIND_TEXTDOMAIN_CODESET',1))
-else:
-    raise SystemExit("Error: distutils build only supported on windows")
+                  ('PYGTK_MICRO_VERSION', MICRO_VERSION),
+                  ('VERSION', '\\"%s\\"' % VERSION),
+                  ('PLATFORM_WIN32',1),
+                  ('HAVE_BIND_TEXTDOMAIN_CODESET',1)]
 
 if sys.version_info[:3] < MIN_PYTHON_VERSION:
     raise SystemExit("Python %s or higher is required, %s found" % (
