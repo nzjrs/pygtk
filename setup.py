@@ -20,11 +20,6 @@ import glob
 from distutils.command.build import build
 from distutils.core import setup
 
-from dsextras import get_m4_define, getoutput, have_pkgconfig, \
-     pkgc_version_check, getoutput, \
-     GLOBAL_INC, GLOBAL_MACROS, InstallLib, InstallData, BuildExt, \
-     PkgConfigExtension, Template, TemplateExtension
-
 
 # Check for windows platform
 if sys.platform != 'win32':
@@ -34,7 +29,28 @@ if sys.platform != 'win32':
     msg += '*' * 68
     raise SystemExit(msg)
 
+# Check for python version
 MIN_PYTHON_VERSION = (2, 6, 0)
+
+if sys.version_info[:3] < MIN_PYTHON_VERSION:
+    raise SystemExit('ERROR: Python %s or higher is required, %s found.' % (
+                         '.'.join(map(str,MIN_PYTHON_VERSION)),
+                         '.'.join(map(str,sys.version_info[:3]))))
+
+# Check for pygobject (dsextras)
+try:
+    from dsextras import GLOBAL_MACROS, GLOBAL_INC, get_m4_define, getoutput, \
+                         have_pkgconfig, pkgc_version_check, pkgc_get_defs_dir, \
+                         PkgConfigExtension, Template, TemplateExtension, \
+                         BuildExt, InstallLib, InstallData
+except ImportError:
+    raise SystemExit('ERROR: Could not import dsextras module: '
+                     'Make sure you have installed pygobject.')
+
+# Check for pkgconfig
+if not have_pkgconfig():
+    raise SystemExit('ERROR: Could not find pkg-config: '
+                     'Please check your PATH environment variable.')
 
 MAJOR_VERSION = int(get_m4_define('pygtk_major_version'))
 MINOR_VERSION = int(get_m4_define('pygtk_minor_version'))
@@ -60,14 +76,6 @@ GLOBAL_MACROS += [('PYGTK_MAJOR_VERSION', MAJOR_VERSION),
                   ('VERSION', '\\"%s\\"' % VERSION),
                   ('PLATFORM_WIN32',1),
                   ('HAVE_BIND_TEXTDOMAIN_CODESET',1)]
-
-if sys.version_info[:3] < MIN_PYTHON_VERSION:
-    raise SystemExit("Python %s or higher is required, %s found" % (
-        ".".join(map(str,MIN_PYTHON_VERSION)),
-                     ".".join(map(str,sys.version_info[:3]))))
-
-if not have_pkgconfig():
-    raise SystemExit("Error, could not find pkg-config")
 
 DEFS_DIR    = os.path.join('share', 'pygtk', PYGTK_SUFFIX, 'defs')
 INCLUDE_DIR = os.path.join('include', 'pygtk-%s' % PYGTK_SUFFIX)
