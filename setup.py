@@ -86,7 +86,6 @@ HTML_DIR     = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
 
 class PyGtkInstallLib(InstallLib):
     def run(self):
-
         # Install pygtk.pth, pygtk.py[c] and templates
         self.install_pth()
 
@@ -100,7 +99,7 @@ class PyGtkInstallLib(InstallLib):
         InstallLib.run(self)
 
     def install_pth(self):
-        """Write the pygtk.pth file"""
+        '''Write the pygtk.pth file'''
         file = os.path.join(self.install_dir, 'pygtk.pth')
         self.mkpath(self.install_dir)
         open(file, 'w').write(PYGTK_SUFFIX_LONG)
@@ -165,10 +164,10 @@ class PyGtkInstallData(InstallData):
     def install_templates(self):
         self.install_template('pygtk-%s.pc.in' % PYGTK_SUFFIX,
                               os.path.join(self.install_dir,
-                                           'lib','pkgconfig'))
+                                           'lib', 'pkgconfig'))
 
 class PyGtkBuild(build):
-    enable_threading = 1
+    enable_threading = True
 
 PyGtkBuild.user_options.append(('enable-threading', None,
                                 'enable threading support'))
@@ -211,45 +210,48 @@ gtk_extra_defs = [
 atk = TemplateExtension(name='atk',
                         pkc_name=('pygobject-%s' % PYGTK_SUFFIX, 'atk'),
                         pkc_version=(PYGOBJECT_REQUIRED, ATK_REQUIRED),
-                        sources=['atkmodule.c', 'atk.c'],
+                        defs='atk.defs',
                         register=['atk-types.defs'],
                         override='atk.override',
-                        defs='atk.defs',
+                        sources=['atkmodule.c',
+                                 'atk.c'],
                         py_ssize_t_clean=True)
 # Pango
 pango = TemplateExtension(name='pango',
                           pkc_name=('pygobject-%s' % PYGTK_SUFFIX, 'pango'),
                           pkc_version=(PYGOBJECT_REQUIRED, PANGO_REQUIRED),
-                          sources=['pango.c', 'pangomodule.c'],
+                          defs='pango.defs',
                           register=['pango-types.defs'],
                           override='pango.override',
-                          defs='pango.defs',
+                          sources=['pangomodule.c',
+                                   'pango.c'],
                           py_ssize_t_clean=True)
 # Pangocairo
 pangocairo = TemplateExtension(name='pangocairo',
                                pkc_name=('pycairo', 'pangocairo'),
                                pkc_version=(PYCAIRO_REQUIRED, PANGO_REQUIRED),
-                               sources=['pangocairo.c', 'pangocairomodule.c'],
+                               defs='pangocairo.defs',
                                register=['pango-types.defs'],
                                override='pangocairo.override',
-                               defs='pangocairo.defs',
+                               sources=['pangocairomodule.c',
+                                        'pangocairo.c'],
                                py_ssize_t_clean=True)
 
 # Gdk (template only)
 gdk_template = Template('gtk/gdk.override', 'gtk/gdk.c',
-                        defs=('gtk/gdk.defs',gdk_defs),
+                        defs=('gtk/gdk.defs', gdk_defs),
                         prefix='pygdk',
                         register=['atk-types.defs',
                                   'pango-types.defs',
-                                  ('gtk/gdk-types.defs',gdk_defs)],
+                                  ('gtk/gdk-types.defs', gdk_defs)],
                         py_ssize_t_clean=True)
 # Gtk+
-gtk_pkc_defs=('gtk/gtk.defs',gtk_defs)
+gtk_pkc_defs=('gtk/gtk.defs', gtk_defs)
 gtk_pkc_register=['%s/gio-types.defs' % PYGOBJECT_DEFSDIR,
                   'atk-types.defs',
                   'pango-types.defs',
                   ('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
-                  ('gtk/gtk-types.defs',gtk_types_defs)]
+                  ('gtk/gtk-types.defs', gtk_types_defs)]
 libglade_pkc_register=[('gtk/gdk-types.defs',['gtk/gdk-base-types.defs']),
                        ('gtk/gtk-types.defs',gtk_types_defs),
                        'gtk/libglade.defs']
@@ -258,6 +260,7 @@ gtk = TemplateExtension(name='gtk',
                         pkc_name=('gtk+-%s' % PYGTK_SUFFIX, 'pycairo'),
                         pkc_version=(GTK_REQUIRED, PYCAIRO_REQUIRED),
                         output='gtk._gtk',
+                        defs=gtk_pkc_defs,
                         sources=['gtk/gtkmodule.c',
                                  'gtk/gtkobject-support.c',
                                  'gtk/gtk-types.c',
@@ -267,7 +270,6 @@ gtk = TemplateExtension(name='gtk',
                                  'gtk/gtk.c'],
                         register=gtk_pkc_register,
                         override='gtk/gtk.override',
-                        defs=gtk_pkc_defs,
                         py_ssize_t_clean=True)
 gtk.templates.append(gdk_template)
 
@@ -300,7 +302,7 @@ if gtk.can_build():
                                          'core', 'include')
             gtk.include_dirs.append(NUMPY_INCLUDE)
         except ImportError:
-            print '* numpy module could not be found, will build without numpy support.'
+            print ('* Could not import numpy module, disabling numpy support.')
 
     ext_modules.append(gtk)
     data_files.append((os.path.join(INCLUDE_DIR, 'pygtk'), ('gtk/pygtk.h',)))
@@ -322,7 +324,7 @@ if gtk.can_build():
         ext_modules.append(atk)
         data_files.append((DEFS_DIR, ('atk.defs', 'atk-types.defs')))
     else:
-        raise SystemExit("ERROR: Nothing to do, atk could not be built and is essential.")
+        raise SystemExit('ERROR: Nothing to do, atk could not be built and is essential.')
 
     if pango.can_build():
         ext_modules.append(pango)
@@ -330,17 +332,17 @@ if gtk.can_build():
         if pangocairo.can_build():
             ext_modules.append(pangocairo)
             data_files.append((DEFS_DIR, ('pangocairo.defs',)))
-            GLOBAL_MACROS.append(('HAVE_PYCAIRO',1))
+            GLOBAL_MACROS.append(('HAVE_PYCAIRO', 1))
         else:
-            raise SystemExit("ERROR: Nothing to do, pangocairo could not be built and is essential.")
+            raise SystemExit('ERROR: Nothing to do, pangocairo could not be built and is essential.')
     else:
-        raise SystemExit("ERROR: Nothing to do, pango could not be built and is essential.")
+        raise SystemExit('ERROR: Nothing to do, pango could not be built and is essential.')
 
     if libglade.can_build():
         ext_modules.append(libglade)
         data_files.append((DEFS_DIR, ('gtk/libglade.defs',)))
 else:
-    raise SystemExit("ERROR: Nothing to do, gtk could not be built and is essential.")
+    raise SystemExit('ERROR: Nothing to do, gtk could not be built and is essential.')
 
 # Threading support
 if '--disable-threading' in sys.argv:
@@ -353,7 +355,7 @@ else:
         import thread
         thread # pyflakes
     except ImportError:
-        print "Warning: Could not import thread module, disabling threading"
+        print ('* Could not import thread module, disabling threading.')
         enable_threading = False
     else:
         enable_threading = True
@@ -363,12 +365,15 @@ if enable_threading:
 
     for module in ext_modules:
         raw = getoutput('pkg-config --libs-only-l %s' % name)
+
         for arg in raw.split():
             if arg.startswith('-l'):
                 module.libraries.append(arg[2:])
             else:
                 module.extra_link_args.append(arg)
+
         raw = getoutput('pkg-config --cflags-only-I %s' % name)
+
         for arg in raw.split():
             if arg.startswith('-I'):
                 module.include_dirs.append(arg[2:])
@@ -378,9 +383,8 @@ else:
     GLOBAL_MACROS.append(('DISABLE_THREADING', 1))
 
 
-doclines = __doc__.split("\n")
-
-options = {"bdist_wininst": {"install_script": "pygtk_postinstall.py"}}
+doclines = __doc__.split('\n')
+options = {'bdist_wininst': {'install_script': 'pygtk_postinstall.py'}}
 
 setup(name='pygtk',
       url='http://www.pygtk.org/',
@@ -404,8 +408,3 @@ setup(name='pygtk',
                 'install_data': PyGtkInstallData,
                 'build_ext': BuildExt,
                 'build': PyGtkBuild})
-
-print 
-print "Finished building %s" % (", ".join([m.name for m in ext_modules]))
-print
-
