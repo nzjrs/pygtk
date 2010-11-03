@@ -313,6 +313,8 @@ if gtk.can_build():
     data_files.append((DEFS_INCLUDE_DIR, gtk_defs))
     data_files.append((DEFS_INCLUDE_DIR, gtk_types_defs))
     data_files.append((DEFS_INCLUDE_DIR, gtk_extra_defs))
+    data_files.append((HTML_DIR, glob.glob('docs/html/*.html')))
+
     py_modules += ['gtk.compat', 'gtk.deprecation', 'gtk.keysyms',
                    'gtk._lazyutils']
 
