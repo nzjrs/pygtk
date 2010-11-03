@@ -1,14 +1,24 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
 # setup.py - distutils configuration for pygtk
-#
-"""Python Bindings for the GTK Widget Set."""
+
+
+'''Python Bindings for the GTK+ Widget Set.
+
+PyGTK is a set of bindings for the GTK+ widget set. It provides an object
+oriented interface that is slightly higher level than the C one. It
+automatically does all the type casting and reference counting that you
+would have to do normally with the C API. You can find out more on the
+official homepage, http://www.pygtk.org/'''
+
+
+import os
+import sys
+import glob
 
 from distutils.command.build import build
 from distutils.core import setup
-import glob
-import os
-import sys
 
 from dsextras import get_m4_define, getoutput, have_pkgconfig, \
      pkgc_version_check, getoutput, \
