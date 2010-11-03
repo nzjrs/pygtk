@@ -94,6 +94,9 @@ class PyGtkInstallLib(InstallLib):
         install_dir = os.path.join(self.install_dir, PYGTK_SUFFIX_LONG)
         self.set_install_dir(install_dir)
 
+        # Install tests
+        self.install_tests()
+
         InstallLib.run(self)
 
     def install_pth(self):
@@ -103,6 +106,51 @@ class PyGtkInstallLib(InstallLib):
         open(file, 'w').write(PYGTK_SUFFIX_LONG)
         self.local_outputs.append(file)
         self.local_inputs.append('pygtk.pth')
+
+    def copy_test(self, srcfile, dstfile=None):
+        if dstfile is None:
+            dstfile = os.path.join(self.test_dir, srcfile)
+        else:
+            dstfile = os.path.join(self.test_dir, dstfile)
+
+        srcfile = os.path.join('tests', srcfile)
+
+        self.copy_file(srcfile, os.path.abspath(dstfile))
+        self.local_outputs.append(dstfile)
+        self.local_inputs.append('srcfile')
+
+    def install_tests(self):
+        self.test_dir = os.path.join(self.install_dir, 'tests', 'pygtk')
+        self.mkpath(self.test_dir)
+
+        self.copy_test('runtests-windows.py', 'runtests.py')
+        self.copy_test('common-windows.py', 'common.py')
+        self.copy_test('test_accel_closures.py')
+        self.copy_test('test_actiongroup.py')
+        self.copy_test('test_api.py')
+        self.copy_test('test_bin.py')
+        self.copy_test('test_button.py')
+        self.copy_test('test_color.py')
+        self.copy_test('test_container.py')
+        self.copy_test('test_conversion.py')
+        self.copy_test('test_dialog.py')
+        self.copy_test('test_enum.py')
+        self.copy_test('test_filechooserdialog.py')
+        self.copy_test('test_gdk.py')
+        self.copy_test('test_gdkevent.py')
+        self.copy_test('test_glade.py')
+        self.copy_test('leak.glade')
+        self.copy_test('test_liststore.py')
+        self.copy_test('test_pango.py')
+        self.copy_test('test_plug.py')
+        self.copy_test('test_radiobutton.py')
+        self.copy_test('test_scalebutton.py')
+        self.copy_test('test_rectangle.py')
+        self.copy_test('test_style.py')
+        self.copy_test('test_textview.py')
+        self.copy_test('test_treeview.py')
+        self.copy_test('testmodule.py')
+
 
 class PyGtkInstallData(InstallData):
     def run(self):
