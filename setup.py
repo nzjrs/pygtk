@@ -86,9 +86,6 @@ HTML_DIR     = os.path.join('share', 'gtk-doc', 'html', 'pygtk')
 
 class PyGtkInstallLib(InstallLib):
     def run(self):
-        # Install pygtk.pth, pygtk.py[c] and templates
-        self.install_pth()
-
         # Modify the base installation dir
         install_dir = os.path.join(self.install_dir, PYGTK_SUFFIX_LONG)
         self.set_install_dir(install_dir)
@@ -97,14 +94,6 @@ class PyGtkInstallLib(InstallLib):
         self.install_tests()
 
         InstallLib.run(self)
-
-    def install_pth(self):
-        '''Write the pygtk.pth file'''
-        file = os.path.join(self.install_dir, 'pygtk.pth')
-        self.mkpath(self.install_dir)
-        open(file, 'w').write(PYGTK_SUFFIX_LONG)
-        self.local_outputs.append(file)
-        self.local_inputs.append('pygtk.pth')
 
     def copy_test(self, srcfile, dstfile=None):
         if dstfile is None:
