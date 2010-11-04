@@ -113,31 +113,9 @@ class PyGtkInstallLib(InstallLib):
 
         self.copy_test('runtests-windows.py', 'runtests.py')
         self.copy_test('common-windows.py', 'common.py')
-        self.copy_test('test_accel_closures.py')
-        self.copy_test('test_actiongroup.py')
-        self.copy_test('test_api.py')
-        self.copy_test('test_bin.py')
-        self.copy_test('test_button.py')
-        self.copy_test('test_color.py')
-        self.copy_test('test_container.py')
-        self.copy_test('test_conversion.py')
-        self.copy_test('test_dialog.py')
-        self.copy_test('test_enum.py')
-        self.copy_test('test_filechooserdialog.py')
-        self.copy_test('test_gdk.py')
-        self.copy_test('test_gdkevent.py')
-        self.copy_test('test_glade.py')
-        self.copy_test('leak.glade')
-        self.copy_test('test_liststore.py')
-        self.copy_test('test_pango.py')
-        self.copy_test('test_plug.py')
-        self.copy_test('test_radiobutton.py')
-        self.copy_test('test_scalebutton.py')
-        self.copy_test('test_rectangle.py')
-        self.copy_test('test_style.py')
-        self.copy_test('test_textview.py')
-        self.copy_test('test_treeview.py')
-        self.copy_test('testmodule.py')
+
+        for testfile in glob.glob('tests/test*.py'):
+            self.copy_test(os.path.basename(testfile))
 
 
 class PyGtkInstallData(InstallData):
