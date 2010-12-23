@@ -143,6 +143,7 @@ PyGtkBuild.user_options.append(('enable-threading', None,
 # FOR A NEW RELEASE, YOU USUALLY ONLY NEED TO CHANGE THE FOLLOWING
 # These defs are registered with many modules...
 gdk_defs = [
+    'gtk/gdk-2.24.defs',
     'gtk/gdk-2.22.defs',
     'gtk/gdk-2.20.defs',
     'gtk/gdk-2.18.defs',
@@ -152,6 +153,7 @@ gdk_defs = [
     'gtk/gdk-2.10.defs',
     'gtk/gdk-base.defs']
 gtk_defs = [
+    'gtk/gtk-2.24.defs',
     'gtk/gtk-2.22.defs',
     'gtk/gtk-2.20.defs',
     'gtk/gtk-2.18.defs',
@@ -161,6 +163,7 @@ gtk_defs = [
     'gtk/gtk-2.10.defs',
     'gtk/gtk-base.defs']
 gtk_types_defs = [
+    'gtk/gtk-2.24-types.defs',
     'gtk/gtk-2.22-types.defs',
     'gtk/gtk-2.20-types.defs',
     'gtk/gtk-2.18-types.defs',
