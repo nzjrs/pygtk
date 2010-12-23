@@ -2774,11 +2774,15 @@ _wrap_gtk_tree_view_set_drag_dest_row(PyGObject *self, PyObject *args,
                                      &py_path, &py_pos))
         return NULL;
     
-    path = pygtk_tree_path_from_pyobject(py_path);
-    if (!path) {
-        PyErr_SetString(PyExc_TypeError,
-                        "set_drag_dest_row muts be a TreePath");
-        return NULL;
+    if (py_path == Py_None)
+        path = NULL;
+    else {
+        path = pygtk_tree_path_from_pyobject(py_path);
+        if (!path) {
+            PyErr_SetString(PyExc_TypeError,
+                            "set_drag_dest_row must be a TreePath");
+            return NULL;
+        }
     }
     pos = (GtkTreeViewDropPosition) py_pos;
     gtk_tree_view_set_drag_dest_row(GTK_TREE_VIEW(self->obj), path, pos);
