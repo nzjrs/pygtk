@@ -6950,20 +6950,26 @@ _wrap_gtk_assistant_set_forward_page_func(PyGObject *self, PyObject *args,
                           kwlist, &pyfunc, &pyarg))
         return NULL;
 
-    if (!PyCallable_Check(pyfunc)) {
+    if (pyfunc != Py_None  && !PyCallable_Check(pyfunc)) {
         PyErr_SetString(PyExc_TypeError,
                         "page_func must be a callable object");
         return NULL;
     }
-    cunote = g_new0(PyGtkCustomNotify, 1);
-    cunote->func = pyfunc;
-    cunote->data = pyarg;
-    Py_INCREF(cunote->func);
-    Py_XINCREF(cunote->data);
+
+    if (pyfunc == Py_None) {
+        gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
+                                            NULL, NULL, NULL);
+    } else {
+        cunote = g_new0(PyGtkCustomNotify, 1);
+        cunote->func = pyfunc;
+        cunote->data = pyarg;
+        Py_INCREF(cunote->func);
+        Py_XINCREF(cunote->data);
  
-    gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
-                                        pygtk_assistant_set_forward_page_func_cb,
-                                        cunote, pygtk_custom_destroy_notify);
+        gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
+                                            pygtk_assistant_set_forward_page_func_cb,
+                                            cunote, pygtk_custom_destroy_notify);
+    }
 
     Py_INCREF(Py_None);
     return Py_None;
