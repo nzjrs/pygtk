@@ -123,13 +123,13 @@ def draw_page(operation, context, page_nr):
   cr.stroke()
 
   # Draw some text
-  layout = context.create_layout()
+  layout = cr.create_layout()
   layout.set_text("Hello World! Printing is easy")
   desc = pango.FontDescription("sans 28")
   layout.set_font_description(desc)
 
   cr.move_to(30, 20)
-  layout.layout_path()
+  cr.layout_path(layout)
 
   # Font Outline
   cr.set_source_rgb(0.93, 1.0, 0.47)
