@@ -354,7 +354,8 @@ else:
 
 
 doclines = __doc__.split('\n')
-options = {'bdist_wininst': {'install_script': 'pygtk_postinstall.py'}}
+options = {'bdist_wininst': {'install_script': 'pygtk_postinstall.py',
+                             'user-access-control': 'auto'}}
 
 setup(name='pygtk',
       url='http://www.pygtk.org/',
