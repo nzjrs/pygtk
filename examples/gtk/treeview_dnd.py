@@ -4,6 +4,8 @@
 # This file is based on http://code.google.com/p/quodlibet/source/browse/junk/dndtest.py
 
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 

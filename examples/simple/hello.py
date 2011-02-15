@@ -2,6 +2,8 @@
 
 """ Simple Hello World example similar to the GTK+ Tutorials one """
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 def hello(*args):

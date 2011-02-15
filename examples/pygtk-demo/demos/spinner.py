@@ -5,6 +5,8 @@ GtkSpinner allows to show that background activity is on-going.
 """
 # pygtk version: John Stowers <john.stowers@gmail.com>
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class SpinnerDemo(gtk.Window):

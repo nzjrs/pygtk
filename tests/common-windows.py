@@ -4,6 +4,8 @@
 import os
 import sys
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 
 sys.path.insert(0, os.path.dirname(__file__))

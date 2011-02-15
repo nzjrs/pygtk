@@ -1,4 +1,5 @@
-import pygtk; pygtk.require("2.0")
+import pygtk
+pygtk.require("2.0")
 import gobject
 
 class C(gobject.GObject):

@@ -5,6 +5,8 @@ This example demonstrates how to use the gravity of
 GtkTextMarks to keep a text view scrolled to the bottom
 while appending text."""
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 

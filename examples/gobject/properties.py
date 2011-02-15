@@ -1,3 +1,5 @@
+import pygtk
+pygtk.require('2.0')
 import gobject
 
 class MyObject(gobject.GObject):

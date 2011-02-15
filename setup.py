@@ -39,6 +39,9 @@ if sys.version_info[:3] < MIN_PYTHON_VERSION:
 
 # Check for pygobject (dsextras)
 try:
+    import pygtk
+    pygtk.require('2.0')
+
     from dsextras import GLOBAL_MACROS, GLOBAL_INC, get_m4_define, getoutput, \
                          have_pkgconfig, pkgc_version_check, pkgc_get_defs_dir, \
                          PkgConfigExtension, Template, TemplateExtension, \

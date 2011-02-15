@@ -1,5 +1,7 @@
 # By Jarek Zgoda and Johan Dahlin
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 ui_string = """<ui>

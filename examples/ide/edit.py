@@ -3,9 +3,11 @@
 # This is a sample implementation of an editor.
 
 import os
-import dialogs
 
+import pygtk
+pygtk.require('2.0')
 import gtk
+import dialogs
 
 BLOCK_SIZE = 2048
 RESPONSE_FORWARD = 1

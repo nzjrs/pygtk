@@ -6,6 +6,8 @@ later on by a GtkTreeView to display it. This demo builds a
 simple GtkListStore and displays it. See the Stock Browser
 demo for a more advanced example.'''
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 

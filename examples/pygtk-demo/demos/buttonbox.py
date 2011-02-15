@@ -4,6 +4,8 @@
 This demo shows various button box configurations available.  It also
 uses stock buttons, and use of mnemonics for navigation.'''
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 def create_bbox(horizontal=True, title=None, spacing=0,

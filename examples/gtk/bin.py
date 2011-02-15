@@ -1,4 +1,7 @@
 # A simple gtk.Conatiner subclassing example reimplementing gtk.Bin in python
+
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class Bin(gtk.Container):

@@ -2,6 +2,9 @@
 
 import sys
 import math
+
+import pygtk
+pygtk.require('2.0')
 import cairo
 import pango
 import gtk

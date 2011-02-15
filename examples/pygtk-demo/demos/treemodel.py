@@ -4,6 +4,8 @@
 This test is designed to demonstrate creating a new type of tree model
 in python for use with the new tree widget in gtk 2.0.'''
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 import gobject
 
