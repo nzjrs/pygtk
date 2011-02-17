@@ -2,7 +2,6 @@
 
 
 # This file is based on http://code.google.com/p/quodlibet/source/browse/junk/dndtest.py
-# For this test case, we're interested in the _drag_motion method of the TestTreeView class.
 
 
 import gobject
@@ -11,7 +10,7 @@ import gtk
 
 class TestTreeView(gtk.TreeView):
     __gtype_name__ = 'TestTreeView'
-    
+
     def __init__(self, name):
         gtk.TreeView.__init__(self)
 
@@ -47,17 +46,18 @@ class TestTreeView(gtk.TreeView):
             self.__iters = []
 
     def _drag_motion(self, view, ctx, x, y, time):
-        #try:
-        #    self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
-        #except TypeError:
-        #    self.set_drag_dest_row(len(self.get_model()) - 1, gtk.TREE_VIEW_DROP_AFTER)
         try:
-            print 'Testing set_drag_dest_row(None, pos)'
-            (path, pos) = self.get_dest_row_at_pos(x, y)
-            self.set_drag_dest_row(None, pos)
+            self.set_drag_dest_row(*self.get_dest_row_at_pos(x, y))
         except TypeError:
             self.set_drag_dest_row(len(self.get_model()) - 1, gtk.TREE_VIEW_DROP_AFTER)
 
+        # You can also pass None as the first parameter to set_drag_dest_row
+        #try:
+        #    print 'Testing set_drag_dest_row(None, pos)'
+        #    (path, pos) = self.get_dest_row_at_pos(x, y)
+        #    self.set_drag_dest_row(None, pos)
+        #except TypeError:
+        #    self.set_drag_dest_row(len(self.get_model()) - 1, gtk.TREE_VIEW_DROP_AFTER)
 
         if ctx.get_source_widget() == self:
             kind = gtk.gdk.ACTION_MOVE
@@ -119,6 +119,3 @@ if __name__ == '__main__':
     w.child.pack_start(TestTreeView('Test 2'))
     w.show_all()
     gtk.main()
-
-
-
