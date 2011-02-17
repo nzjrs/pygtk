@@ -130,6 +130,14 @@ item (new in PyGTK 2.4)</refpurpose>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkaction--get-always-show-image">get_always_show_image</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkaction--set-always-show-image">set_always_show_image</link></methodname>
+        <methodparam><parameter role="keyword">always_show</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
         <methodname><link linkend="method-gtkaction--set-accel-group">set_accel_group</link></methodname>
         <methodparam><parameter role="keyword">accel_group</parameter></methodparam>
       </methodsynopsis>
@@ -237,6 +245,15 @@ item (new in PyGTK 2.4)</refpurpose>
               <entry>The <link linkend="class-gtkactiongroup"><classname>gtk.ActionGroup</classname></link>
               this <link linkend="class-gtkaction"><classname>gtk.Action</classname></link> is
               associated with, or <literal>None</literal> (for internal use).</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"always-show-image"</entry>
+              <entry>Read-Write</entry>
+
+              <entry>If <literal>True</literal>, the action's menu item proxies will ignore the "gtk-menu-images"
+              setting and always show their image, if available. Use this if the menu item would be useless or
+              hard to use without their image.</entry>
             </row>
 
             <row valign="top">
@@ -1276,6 +1293,53 @@ accel path for the action to the value of
 <parameter>accel_path</parameter>. All proxy widgets associated with the
 action will have this accel path, so that their accelerators are
 consistent.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaction--get-always-show-image">
+      <title>gtk.Action.get_always_show_image</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>get_always_show_image</methodname>
+          <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>Returns <literal>True</literal> if the action's menu item proxies always show their image, <literal>False</literal> otherwise</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_always_show_image</methodname>() method returns whether the action's
+menu item proxies will ignore the "gtk-menu-images" setting and always show their image, if available.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaction--set-always-show-image">
+      <title>gtk.Action.set_always_show_image</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>set_always_show_image</methodname>
+          <methodparam><parameter role="keyword">always_show</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter>always_show</parameter>&nbsp;:</term>
+          <listitem><simpara>If <literal>True</literal> the action's menu item proxies will always show their image</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_always_show_image</methodname>() method sets whether the action's
+menu item proxies will ignore the "gtk-menu-images" setting and always show their image, if available.
+Use this if the menu item would be useless or hard to use without their image.</para>
 
     </refsect2>
 
