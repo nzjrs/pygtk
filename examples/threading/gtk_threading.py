@@ -39,7 +39,7 @@ class WorkerThread(threading.Thread):
 
 
 class TestWindow(gtk.Window):
-    __gtype_name = 'TestWindow'
+    __gtype_name__ = 'TestWindow'
 
     def __init__(self):
         gtk.Window.__init__(self)
