@@ -27,6 +27,12 @@ linkend="constructor-gtkaboutdialog">gtk.AboutDialog</link></methodname>
     <methodname><link linkend="method-gtkaboutdialog--set-name">set_name</link></methodname>
     <methodparam><parameter role="keyword">name</parameter></methodparam>
   </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="method-gtkaboutdialog--get-program-name">get_program_name</link></methodname>
+    <methodparam></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
+    <methodname><link linkend="method-gtkaboutdialog--set-program-name">set_program_name</link></methodname>
+    <methodparam><parameter role="keyword">name</parameter></methodparam>
+  </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="method-gtkaboutdialog--get-version">get_version</link></methodname>
     <methodparam></methodparam>
   </methodsynopsis><methodsynopsis language="python">
@@ -104,12 +110,6 @@ linkend="constructor-gtkaboutdialog">gtk.AboutDialog</link></methodname>
   </methodsynopsis><methodsynopsis language="python">
     <methodname><link linkend="method-gtkaboutdialog--set-logo-icon-name">set_logo_icon_name</link></methodname>
     <methodparam><parameter role="keyword">icon_name</parameter></methodparam>
-  </methodsynopsis><methodsynopsis language="python">
-    <methodname><link linkend="method-gtkaboutdialog--get-program-name">get_program_name</link></methodname>
-    <methodparam></methodparam>
-  </methodsynopsis><methodsynopsis language="python">
-    <methodname><link linkend="method-gtkaboutdialog--set-program-name">set_program_name</link></methodname>
-    <methodparam><parameter role="keyword">name</parameter></methodparam>
   </methodsynopsis>
 </classsynopsis>
 
@@ -224,12 +224,12 @@ about box. Default value: <literal>None</literal>.
 This property is available in GTK+ 2.6 and above.</entry>
 	    </row>
 	    <row valign="top">
-	      <entry>"name"</entry>
+	      <entry>"program-name"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The name of the program. If this is not set, it
 defaults to g_get_application_name().
 Default value: <literal>None</literal>.
-This property is available in GTK+ 2.6 and above.</entry>
+This property is available in GTK+ 2.12 and above.</entry>
 	    </row>
 	    <row valign="top">
 	      <entry>"translator-credits"</entry>
@@ -327,7 +327,7 @@ This property is available in GTK+ 2.6 and above.</entry>
     logo, name, copyright, website and license. It is also possible to give
     credits to the authors, documenters, translators and artists who have
     worked on the program. An about dialog is typically opened when the user
-    selects the <guimenu>Help</guimenu><guimenuitem>About</guimenuitem>
+    selects the <guimenuitem>About</guimenuitem> option from the <guimenu>Help</guimenu>
     menu. All parts of the dialog are optional.</para>
 
     <para>About dialog often contain links and email addresses. <link
@@ -381,8 +381,7 @@ linkend="class-gtkdialog"><classname>gtk.AboutDialog</classname></link></simpara
       <variablelist>
 	<varlistentry>
 	<term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>The program name or
-<literal>None</literal>.</simpara></listitem>
+	  <listitem><simpara>the program name.</simpara></listitem>
 	</varlistentry>
       </variablelist>
 
@@ -390,10 +389,16 @@ linkend="class-gtkdialog"><classname>gtk.AboutDialog</classname></link></simpara
         <para>This method is available in PyGTK 2.6 and above.</para>
       </note>
 
-      <para>The <methodname>get_name</methodname>() method returns the value
-of the "name" property which is the program name displayed in the about
-dialog. <methodname>get_name</methodname>() returns <literal>None</literal>
-if the name is not set.</para>
+      <warning>
+        <para>
+          This method is deprecated in PyGTK 2.12 and above and should not be
+          used in newly-written code. Use the <link linkend="method-gtkaboutdialog--set-program-name"><methodname>get_program_name</methodname></link>()
+          method instead.
+        </para>
+      </warning>
+
+      <para>The <methodname>get_name</methodname>() method returns the
+      program name displayed in the about dialog.</para>
 
     </refsect2>
 
@@ -417,11 +422,66 @@ name or <literal>None</literal> to use the default name.</simpara></listitem>
         <para>This method is available in PyGTK 2.6 and above.</para>
       </note>
 
-      <para>The <methodname>set_name</methodname>() method sets the "name"
-property to the string contained in <parameter>name</parameter>. The "name"
-property is used as the program name in the about dialog. If
-<parameter>name</parameter> is <literal>None</literal>, it defaults to
-g_get_application_name().</para>
+      <warning>
+        <para>
+          This method is deprecated in PyGTK 2.12 and above and should not be
+          used in newly-written code. Use the <link linkend="method-gtkaboutdialog--set-program-name"><methodname>set_program_name</methodname></link>()
+          method instead.
+        </para>
+      </warning>
+
+      <para>The <methodname>set_name</methodname>() method sets the name
+to display in the about dialog. If <parameter>name</parameter> is <literal>None</literal>,
+it defaults to g_get_application_name().</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaboutdialog--get-program-name">
+      <title>gtk.AboutDialog.get_program_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_program_name</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	<term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>the program name.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>get_program_name</methodname>() method returns the
+      program name displayed in the about dialog.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaboutdialog--set-program-name">
+      <title>gtk.AboutDialog.set_program_name</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_program_name</methodname>
+	  <methodparam><parameter
+			 role="keyword">name</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+	  <listitem><simpara>a string containing the program
+name or <literal>None</literal> to use the default name.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>set_program_name</methodname>() method sets the name
+to display in the about dialog. If <parameter>name</parameter> is <literal>None</literal>,
+it defaults to g_get_application_name().</para>
 
     </refsect2>
 
@@ -1121,53 +1181,6 @@ function will be used.</para>
 
     </refsect2>
     
-    <refsect2 id="method-gtkaboutdialog--get-program-name">
-      <title>gtk.AboutDialog.get_program_name</title>
-
-      <programlisting><methodsynopsis language="python">
-	  <methodname>get_program_name</methodname>
-	  <methodparam></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-	<varlistentry>
-	<term><emphasis>Returns</emphasis>&nbsp;:</term>
-	  <listitem><simpara>The program name.</simpara></listitem>
-	</varlistentry>
-      </variablelist>
-
-      <note>
-        <para>This method is available in PyGTK 2.12 and above.</para>
-      </note>
-
-      <para>The <methodname>get_program_name</methodname>() method returns the
-      program name displayed in the about dialog.</para>
-
-    </refsect2>
-
-    <refsect2 id="method-gtkaboutdialog--set-program-name">
-      <title>gtk.AboutDialog.set_program_name</title>
-
-      <programlisting><methodsynopsis language="python">
-	  <methodname>set_program_name</methodname>
-	  <methodparam><parameter
-			 role="keyword">name</parameter></methodparam>
-	</methodsynopsis></programlisting>
-      <variablelist>
-	<varlistentry>
-	  <term><parameter role="keyword">name</parameter>&nbsp;:</term>
-	  <listitem><simpara>the program name.</simpara></listitem>
-	</varlistentry>
-      </variablelist>
-
-      <note>
-        <para>This method is available in PyGTK 2.12 and above.</para>
-      </note>
-
-      <para>The <methodname>set_program_name</methodname>() method
-sets the name to display in the about dialog.</para>
-
-    </refsect2>
-
   </refsect1>
 
   <refsect1>
