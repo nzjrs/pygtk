@@ -82,9 +82,9 @@ XMLFILES = 						\
 	reference/pygtk-gtkborder.xml			\
 	reference/pygtk-gtkbox.xml			\
 	reference/pygtk-gtkbuttonbox.xml		\
-	reference/pygtk-gtkbutton.xml			\
-	reference/pygtk-gtkbuilder.xml			\
 	reference/pygtk-gtkbuildable.xml		\
+	reference/pygtk-gtkbuilder.xml			\
+	reference/pygtk-gtkbutton.xml			\
 	reference/pygtk-gtkcalendar.xml			\
 	reference/pygtk-gtkcelleditable.xml		\
 	reference/pygtk-gtkcelllayout.xml		\
@@ -366,9 +366,9 @@ HTML_FILES =						\
 	html/class-gtkborder.html			\
 	html/class-gtkbox.html				\
 	html/class-gtkbuttonbox.html			\
-	html/class-gtkbutton.html			\
-	html/class-gtkbuilder.html			\
 	html/class-gtkbuildable.html			\
+	html/class-gtkbuilder.html			\
+	html/class-gtkbutton.html			\
 	html/class-gtkcalendar.html			\
 	html/class-gtkcelleditable.html			\
 	html/class-gtkcelllayout.html			\
