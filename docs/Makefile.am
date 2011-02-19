@@ -93,6 +93,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkcellrendererpixbuf.xml	\
 	reference/pygtk-gtkcellrendererprogress.xml	\
 	reference/pygtk-gtkcellrendererspin.xml		\
+	reference/pygtk-gtkcellrendererspinner.xml		\
 	reference/pygtk-gtkcellrenderertext.xml		\
 	reference/pygtk-gtkcellrenderertoggle.xml	\
 	reference/pygtk-gtkcellrenderer.xml		\
@@ -378,6 +379,7 @@ HTML_FILES =						\
 	html/class-gtkcellrendererpixbuf.html		\
 	html/class-gtkcellrendererprogress.html		\
 	html/class-gtkcellrendererspin.html		\
+	html/class-gtkcellrendererspinner.html		\
 	html/class-gtkcellrenderertext.html		\
 	html/class-gtkcellrenderertoggle.html		\
 	html/class-gtkcellview.html			\
