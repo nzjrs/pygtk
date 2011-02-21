@@ -3,7 +3,7 @@ AC_PREREQ(2.52)
 
 dnl the pygtk version number
 m4_define(pygtk_major_version, 2)
-m4_define(pygtk_minor_version, 23)
+m4_define(pygtk_minor_version, 24)
 m4_define(pygtk_micro_version, 0)
 m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
 
