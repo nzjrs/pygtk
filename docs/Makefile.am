@@ -107,6 +107,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkcolorselection.xml		\
 	reference/pygtk-gtkcomboboxentry.xml		\
 	reference/pygtk-gtkcombobox.xml			\
+	reference/pygtk-gtkcomboboxtext.xml			\
 	reference/pygtk-gtkcombo.xml			\
 	reference/pygtk-gtk-constants.xml		\
 	reference/pygtk-gtkcontainer.xml		\
@@ -391,6 +392,7 @@ HTML_FILES =						\
 	html/class-gtkcolorselection.html		\
 	html/class-gtkcomboboxentry.html		\
 	html/class-gtkcombobox.html			\
+	html/class-gtkcomboboxtext.html			\
 	html/class-gtkcombo.html			\
 	html/class-gtkcontainer.html			\
 	html/class-gtkcurve.html			\
