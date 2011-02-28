@@ -117,6 +117,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkeditable.xml			\
 	reference/pygtk-gtkentrycompletion.xml		\
 	reference/pygtk-gtkentry.xml			\
+	reference/pygtk-gtkentrybuffer.xml			\
 	reference/pygtk-gtkeventbox.xml			\
 	reference/pygtk-gtkexpander.xml			\
 	reference/pygtk-gtkfilechooserbutton.xml	\
@@ -401,6 +402,7 @@ HTML_FILES =						\
 	html/class-gtkeditable.html			\
 	html/class-gtkentrycompletion.html		\
 	html/class-gtkentry.html			\
+	html/class-gtkentrybuffer.html			\
 	html/class-gtkeventbox.html			\
 	html/class-gtkexpander.html			\
 	html/class-gtkfilechooserbutton.html		\
