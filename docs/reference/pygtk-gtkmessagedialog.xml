@@ -52,6 +52,10 @@ linkend="constructor-gtkmessagedialog">gtk.MessageDialog</link></methodname>
         <methodname><link linkend="method-gtkmessagedialog--get-image">get_image</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmessagedialog--get-message-area">get_message_area</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -118,6 +122,13 @@ endterm="gtk-buttons-type-constants-title"></xref>:
 	      <entry>Read-Write</entry>
 	      <entry>The image for this dialog. Available in GTK+
 	      2.10.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"message-area"</entry>
+	      <entry>Read</entry>
+	      <entry>The <link linkend="class-gtkvbox"><classname>gtk.VBox</classname></link>
+        that corresponds to the message area of this dialog. Available in GTK+ 2.22.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -500,6 +511,34 @@ markup.</para>
       <para>
 	The <methodname>get_image</methodname>() method gets the dialog's image.
       </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmessagedialog--get-message-area">
+      <title>gtk.MessageDialog.get_message_area</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_message_area</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>A <link linkend="class-gtkvbox"><classname>gtk.VBox</classname></link> corresponding to the "message area" in the message_dialog.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_message_area</methodname>() method returns the message area of the dialog.
+      This is the box where the dialog's primary and secondary labels are packed. You can add your own
+      extra content to that box and it will appear below those labels, on the right side of the dialog's
+      image (or on the left for right-to-left languages). See
+      <link linkend="method-gtkdialog--get-content-area"><methodname>get_content_area</methodname></link>
+      for the corresponding function in the parent
+      <link linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link>.</para>
 
     </refsect2>
 
