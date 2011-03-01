@@ -34,6 +34,28 @@ linkend="method-gtkimagemenuitem--set-image">set_image</link></methodname>
 	<methodname><link
 linkend="method-gtkimagemenuitem--get-image">get_image</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkimagemenuitem--set-always-show-image">set_always_show_image</link></methodname>
+        <methodparam><parameter role="keyword">always_show</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkimagemenuitem--get-always-show-image">get_always_show_image</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkimagemenuitem--set-use-stock">set_use_stock</link></methodname>
+        <methodparam><parameter role="keyword">use_stock</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkimagemenuitem--get-use-stock">get_use_stock</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkimagemenuitem--set-accel-group">set_accel_group</link></methodname>
+        <methodparam><parameter role="keyword">accel_group</parameter></methodparam>
+      </methodsynopsis>
+
     </classsynopsis>
 
   </refsect1>
@@ -78,10 +100,35 @@ linkend="method-gtkimagemenuitem--get-image">get_image</link></methodname>
 	  <tbody>
 
 	    <row valign="top">
+	      <entry>"accel-group"</entry>
+	      <entry>Write</entry>
+	      <entry>The Accel Group to use for stock accelerator keys.
+Available in GTK+ 2.16 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"always-show-image"</entry>
+	      <entry>Read-Write-Construct</entry>
+	      <entry>If <literal>True</literal>, the menu item will ignore the "gtk-menu-images" setting
+        and always show the image, if available. Use this property if the menuitem would be useless
+        or hard to use without the image.
+Default value: <literal>False</literal>.
+Available in GTK+ 2.16 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"image"</entry>
 	      <entry>Read-Write</entry>
-	      <entry>the child widget that is next to the text in the menu
-item</entry>
+	      <entry>the child widget that is next to the text in the menu item</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"use-stock"</entry>
+	      <entry>Read-Write-Construct</entry>
+	      <entry>If <literal>True</literal>, the label set in the menuitem is used as a stock id
+        to select the stock item for the item.
+Default value: <literal>False</literal>.
+Available in GTK+ 2.16 and above.</entry>
 	    </row>
 
 	  </tbody>
@@ -213,6 +260,131 @@ item</simpara></listitem>
       <para>The <methodname>get_image</methodname>() method gets the widget
 that is currently set as the image of image menu item. See <link
 linkend="method-gtkimagemenuitem--set-image"><methodname>set_image</methodname>()</link>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimagemenuitem--set-always-show-image">
+      <title>gtk.ImageMenuItem.set_always_show_image</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_always_show_image</methodname>
+        <methodparam><parameter role="keyword">always_show</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">always_show</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the menuitem should always show the image, <literal>False</literal> otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_always_show_image</methodname>() method sets whether
+      the menu item will ignore the "gtk-menu-images" setting and always show the image,
+      if available.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimagemenuitem--get-always-show-image">
+      <title>gtk.ImageMenuItem.get_always_show_image</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_always_show_image</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the menuitem will always show the image, <literal>False</literal> otherwise..</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>get_always_show_image</methodname>() method returns whether
+      the menu item will ignore the "gtk-menu-images" setting and always show the image,
+      if available.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimagemenuitem--set-use-stock">
+      <title>gtk.ImageMenuItem.set_use_stock</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_use_stock</methodname>
+        <methodparam><parameter role="keyword">use_stock</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">use_stock</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the menuitem should use a stock item, <literal>False</literal> otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_use_stock</methodname>() method sets whether
+      the label set in the menuitem is used as a stock id to select the stock
+      item for the item.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimagemenuitem--get-use-stock">
+      <title>gtk.ImageMenuItem.get_use_stock</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_use_stock</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the menuitem will use a stock item, <literal>False</literal> otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>get_use_stock</methodname>() method gets whether
+      the label set in the menuitem is used as a stock id to select the stock item for the item.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkimagemenuitem--set-accel-group">
+      <title>gtk.ImageMenuItem.set_accel_group</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_accel_group</methodname>
+        <methodparam><parameter role="keyword">accel_group</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">accel_group</parameter>&nbsp;:</term>
+          <listitem><simpara>The <link linkend="class-gtkaccelgroup"><classname>gtk.AccelGroup</classname></link>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_accel_group</methodname>() method specifies an accel_group to add the menu items accelerator to (this only
+      applies to stock items so a stock item must already be set, make sure to call
+      <link linkend="method-gtkimage-menu-item--set-use-stock"><methodname>get_accel_width</methodname></link>
+      gtk_image_menu_item_set_use_stock()
+      and gtk_menu_item_set_label()
+      with a valid stock item first).</para>
+
+      <para>If you want this menu item to have changeable accelerators then you shouldnt need this (see
+      gtk_image_menu_item_new_from_stock()).</para>
 
     </refsect2>
 
