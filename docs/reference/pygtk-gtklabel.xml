@@ -212,6 +212,27 @@ linkend="method-gtklabel--set-angle">set_angle</link></methodname>
 	<methodparam><parameter
 		       role="keyword">angle</parameter></methodparam>
       </methodsynopsis>
+
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtklabel--get-current-uri">get_current_uri</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtklabel--set-track-visited-links">set_track_visited_links</link></methodname>
+        <methodparam><parameter role="keyword">track_links</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtklabel--get-track-visited-links">get_track_visited_links</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtklabel--set-line-wrap-mode">set_line_wrap_mode</link></methodname>
+        <methodparam><parameter role="keyword">wrap_mode</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtklabel--get-line-wrap-mode">get_line_wrap_mode</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -376,6 +397,15 @@ would be distracting, e.g. in a statusbar. Default value:
 	    </row>
 
 	    <row valign="top">
+	      <entry>"track-visited-links"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>If <literal>True</literal> the label tracks which links have been clicked.
+It will then apply the "visited-link-color" color, instead of "link-color".
+<literal>False</literal>. Available in GTK+ 2.18 and above.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"use-markup"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>True</literal>, the text of the label
@@ -408,6 +438,14 @@ is greater. Allowed values: >= -1. Default value: -1. Available in GTK+
 becomes too wide. Default value: <literal>False</literal></entry>
 	    </row>
 
+	    <row valign="top">
+	      <entry>"wrap-mode"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>If line wrapping is on, this controls how the line wrapping is done.
+The default is <literal>pango.WRAP_WORD</literal>, which means wrap on word boundaries.
+Available in GTK+ 2.10 and above</entry>
+	    </row>
+
 	  </tbody>
 	</tgroup>
       </informaltable>
@@ -430,6 +468,30 @@ becomes too wide. Default value: <literal>False</literal></entry>
     <para><link linkend="signal-prototypes-gtkwidget">gtk.Widget Signal Prototypes</link></para>
 
     <variablelist>
+      <varlistentry>
+        <term>"<link linkend="signal-gtklabel--activate-current-link">activate-current-link</link>"</term>
+        <listitem>
+          <methodsynopsis language="python">
+            <methodname>callback</methodname>
+            <methodparam><parameter>label</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>"<link linkend="signal-gtklabel--activate-link">activate-link</link>"</term>
+        <listitem>
+          <methodsynopsis language="python">
+            <methodname>callback</methodname>
+            <methodparam><parameter>label</parameter></methodparam>
+            <methodparam><parameter>uri</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>"<link
 linkend="signal-gtklabel--copy-clipboard">copy-clipboard</link>"</term>
@@ -1592,10 +1654,189 @@ method for more information.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtklabel--get-current-uri">
+      <title>gtk.Label.get_current_uri</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_current_uri</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_current_uri</methodname>() method returns the URI for the
+      currently active link in the label. The active link is the one under the mouse pointer
+      or, in a selectable label, the link in which the text cursor is currently positioned.</para>
+
+      <para>This function is intended for use in a "activate-link" handler or for use in a
+      "query-tooltip" handler.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--set-track-visited-links">
+      <title>gtk.Label.set_track_visited_links</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_track_visited_links</methodname>
+        <methodparam><parameter role="keyword">track_links</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">track_links</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> to track visited links, <literal>False</literal> otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_track_visited_links</methodname>() method sets
+      whether the label should keep track of clicked links (and use a different color for them).</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--get-track-visited-links">
+      <title>gtk.Label.get_track_visited_links</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_track_visited_links</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if clicked links are remembered, <literal>False</literal> otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_track_visited_links</methodname>() method returns
+      whether the label is currently keeping track of clicked links.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--set-line-wrap-mode">
+      <title>gtk.Label.set_line_wrap_mode</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_line_wrap_mode</methodname>
+        <methodparam><parameter role="keyword">wrap_mode</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">wrap_mode</parameter>&nbsp;:</term>
+          <listitem><simpara>the line wrapping mode.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set_line_wrap_mode</methodname>() method controls how line
+      wrapping is done (if it is enabled, see
+      <link linkend="method-gtklabel--set-line-wrap"><methodname>refetch</methodname></link>()).
+      The default is <literal>pango.WRAP_WORD</literal> which means wrap on word boundaries.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtklabel--get-line-wrap-mode">
+      <title>gtk.Label.get_line_wrap_mode</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_line_wrap_mode</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the lines of the label are automatically wrapped.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_line_wrap_mode</methodname>() method returns
+      the line wrap mode used by the label.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
     <title>Signals</title>
+
+    <refsect2 id="signal-gtklabel--activate-current-link">
+      <title>The "activate-current-link" gtk.Label Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>callback</methodname>
+        <methodparam><parameter>label</parameter></methodparam>
+        <methodparam><parameter>user_param1</parameter></methodparam>
+        <methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>label</parameter>&nbsp;:</term>
+          <listitem><simpara>the label that received the signal</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified with the <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link> method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.18 and above.</para>
+      </note>
+
+      <para>The "activate-current-link" is a "keybinding signal" signal which gets emitted when the user activates a link in the label.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtklabel--activate-link">
+      <title>The "activate-link" gtk.Label Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>callback</methodname>
+        <methodparam><parameter>label</parameter></methodparam>
+        <methodparam><parameter>uri</parameter></methodparam>
+        <methodparam><parameter>user_param1</parameter></methodparam>
+        <methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>label</parameter>&nbsp;:</term>
+          <listitem><simpara>the label that received the signal</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>uri</parameter>&nbsp;:</term>
+          <listitem><simpara>the URI that is activated</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified with the <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link> method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This signal is available in GTK+ 2.18 and above.</para>
+      </note>
+
+      <para>The "activate-link" signal is emitted to activate a URI. Applications may connect to it to override the default behaviour,
+      which is to call <methodname><link linkend="function-gtk--show-uri">gtk.show_uri</link></methodname>().</para>
+
+    </refsect2>
 
     <refsect2 id="signal-gtklabel--copy-clipboard">
       <title>The "copy-clipboard" gtk.Label Signal</title>
