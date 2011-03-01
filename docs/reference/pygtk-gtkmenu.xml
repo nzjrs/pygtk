@@ -149,6 +149,15 @@ linkend="method-gtkmenu--reorder-child">reorder_child</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
 
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmenu--set-reserve-toggle-size">set_reserve_toggle_size</link></methodname>
+        <methodparam><parameter role="keyword">reserve_toggle_size</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmenu--get-reserve-toggle-size">get_reserve_toggle_size</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+
     </classsynopsis>
 
   </refsect1>
@@ -234,6 +243,15 @@ linkend="method-gtkmenu--reorder-child">reorder_child</link></methodname>
 	    </row>
 
 	    <row valign="top">
+	      <entry>"reserve-toggle-size"</entry>
+	      <entry>Read/Write</entry>
+	      <entry>Whether the menu reserves space for toggles and icons, regardless of their actual presence.
+This property should only be changed from its default value for special-purposes such as tabular menus. Regular menus that are connected to a menu bar or context menus should reserve toggle space for consistency.
+Default value: <literal>True</literal>
+Available in GTK+ 2.18.</entry>
+	    </row>
+
+	    <row valign="top">
 	      <entry>"tearoff-state"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>True</literal> the menu is torn-off. Default
@@ -271,17 +289,40 @@ when this menu is torn-off. Default value: "".</entry>
 	  <colspec column="3" colwidth="4in"/>
 	  <tbody>
 
+      <row valign="top">
+	      <entry>"arrow-placement"</entry>
+	      <entry>Read</entry>
+	      <entry>When the menu is a submenu, position it this number of pixels offset horizontally.
+Default value: <literal>gtk.ARROWS_BOTH</literal>.</entry>
+Available in GTK+ 2.16 and above.
+	    </row>
+
+	    <row valign="top">
+	      <entry>"arrow-scaling"</entry>
+	      <entry>Read</entry>
+	      <entry>Arbitrary constant to scale down the size of the scroll arrow.
+Allowed values: [0,1].
+Default value: 0.7</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"double-arrows"</entry>
+	      <entry>Read</entry>
+	      <entry>When scrolling, always show both arrows.
+Default value: <literal>True</literal></entry>
+	    </row>
+
 	    <row valign="top">
 	      <entry>"horizontal-offset"</entry>
 	      <entry>Read</entry>
 	      <entry>When the menu is a submenu, position it this number of pixels offset horizontally. Default value: -2.</entry>
 	    </row>
 
-            <row valign="top">
-              <entry>"horizontal-padding"</entry>
-              <entry>Read</entry>
-              <entry>Extra space at the left and right edges of the menu</entry>
-            </row>
+      <row valign="top">
+        <entry>"horizontal-padding"</entry>
+        <entry>Read</entry>
+        <entry>Extra space at the left and right edges of the menu</entry>
+      </row>
 
 	    <row valign="top">
 	      <entry>"vertical-offset"</entry>
@@ -292,8 +333,7 @@ when this menu is torn-off. Default value: "".</entry>
 	    <row valign="top">
 	      <entry>"vertical-padding"</entry>
 	      <entry>Read</entry>
-	      <entry>Extra space at the top and bottom of the menu. Allowed
-values: >= 0. Default value: 1.</entry>
+	      <entry>Extra space at the top and bottom of the menu. Allowed values: >= 0. Default value: 1.</entry>
 	    </row>
 
 	  </tbody>
@@ -1065,6 +1105,52 @@ extend beyond the monitor boundaries or even the screen boundaries.</para>
 	The <methodname>get_monitor</methodname>() method returns
 	the number of the monitor on which to show the menu.
       </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenu--set-reserve-toggle-size">
+      <title>gtk.Menu.set_reserve_toggle_size</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_reserve_toggle_size</methodname>
+        <methodparam><parameter role="keyword">reserve_toggle_size</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">reserve_toggle_size</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> to reserve size for toggles.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_reserve_toggle_size</methodname>() method sets whether the menu
+      should reserve space for drawing toggles or icons, regardless of their actual presence.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenu--get-reserve-toggle-size">
+      <title>gtk.Menu.get_reserve_toggle_size</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_reserve_toggle_size</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>Whether the menu reserves toggle space.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_reserve_toggle_size</methodname>() method returns whether the menu
+      reserves space for toggles and icons, regardless of their actual presence.</para>
 
     </refsect2>
 
