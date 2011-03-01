@@ -38,16 +38,6 @@
 
     </classsynopsis>
 
-<programlisting>
-<emphasis role="bold">Functions</emphasis>
- 
-<methodsynopsis language="python">
-    <methodname><link linkend="function-gtk--show-uri">gtk.show_uri</link></methodname>
-    <methodparam><parameter role="keyword">screen</parameter></methodparam>
-    <methodparam><parameter role="keyword">uri</parameter></methodparam>
-    <methodparam><parameter role="keyword">timestamp</parameter></methodparam>
-  </methodsynopsis></programlisting>
-
     </refsect1>
 
     <refsect1>
@@ -281,63 +271,6 @@
                 on which windows of the
                 <link linkend="class-gtkmountoperation"><classname>gtk.MountOperation</classname></link>
                 will be shown.
-            </para>
-        </refsect2>
-    </refsect1>
-    <refsect1>
-        <title>Functions</title>
-
-        <refsect2 id="function-gtk--show-uri">
-            <title>gtk.show_uri</title>
-
-            <programlisting><methodsynopsis language="python">
-                <methodname>show_uri</methodname>
-                <methodparam><parameter>screen</parameter></methodparam>
-                <methodparam><parameter>uri</parameter></methodparam>
-                <methodparam><parameter>timestamp</parameter></methodparam>
-            </methodsynopsis></programlisting>
-            
-            <variablelist>
-                <varlistentry>
-                    <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
-                        <listitem><simpara>A
-                            <link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
-                            to show the uri on or <literal>None</literal> for the default screen.
-                        </simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><parameter role="keyword">uri</parameter>&nbsp;:</term>
-                        <listitem><simpara>the uri to show.</simpara></listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><parameter role="keyword">timestamp</parameter>&nbsp;:</term>
-                        <listitem><simpara>a timestamp to prevent focus stealing.
-                        </simpara></listitem>
-                </varlistentry>
-            </variablelist>
-
-            <note>
-                <para>This function is available in PyGTK 2.14 and above.</para>
-            </note>
-
-            <para>
-                The <methodname>show_uri</methodname>() function is a convenience
-                function for launching the default application to show the uri.
-                The uri must be of a form understood by GIO. Typical examples are:
-            </para>
-<programlisting>
-file:///home/gnome/pict.jpg
-http://www.gnome.org
-mailto:me@gnome.org
-</programlisting>
-
-            <para>
-                Ideally the timestamp is taken from the event triggering the
-                <methodname><link linkend="function-gtk--show-uri">gtk.show_uri</link></methodname>()
-                call. If timestamp is not known you can take gtk.gdk.CURRENT_TIME.
-            </para>
-            <para>
-                This function can be used as a replacement for gnome_vfs_url_show() and gnome_url_show().
             </para>
         </refsect2>
     </refsect1>
