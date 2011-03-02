@@ -95,6 +95,59 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
         <methodname><link linkend="method-gtkrange--set-show-fill-level">set_show_fill_level</link></methodname>
         <methodparam><parameter role="keyword">show_fill_level</parameter></methodparam>
     </methodsynopsis>
+
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-round-digits">set_round_digits</link></methodname>
+        <methodparam><parameter role="keyword">round_digits</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-round-digits">get_round_digits</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-min-slider-size">set_min_slider_size</link></methodname>
+        <methodparam><parameter role="keyword">min_size</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-min-slider-size">get_min_slider_size</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-range-rect">get_range_rect</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-slider-size-fixed">set_slider_size_fixed</link></methodname>
+        <methodparam><parameter role="keyword">size_fixed</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-slider-size-fixed">get_slider_size_fixed</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-flippable">set_flippable</link></methodname>
+        <methodparam><parameter role="keyword">flippable</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-flippable">get_flippable</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-lower-stepper-sensitivity">set_lower_stepper_sensitivity</link></methodname>
+        <methodparam><parameter role="keyword">sensitivity</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-lower-stepper-sensitivity">get_lower_stepper_sensitivity</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--set-upper-stepper-sensitivity">set_upper_stepper_sensitivity</link></methodname>
+        <methodparam><parameter role="keyword">sensitivity</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkrange--get-upper-stepper-sensitivity">get_upper_stepper_sensitivity</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -142,7 +195,7 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
 	      that contains the current value of this range object</entry>
 	    </row>
         
-        <row valign="top">
+      <row valign="top">
 	      <entry>"fill-level"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The fill level (e.g. prebuffering of a network stream).
@@ -157,20 +210,39 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
 	      reversed e.g right-to-left instead of left-to-right</entry>
 	    </row>
 
-        <row valign="top">
-          <entry>"lower-stepper-sensitivity"</entry>
-          <entry>Read-Write</entry>
-          <entry>The sensitivity policy for the stepper that points to the
-          adjustment's lower side</entry>
-        </row>
+      <row valign="top">
+        <entry>"lower-stepper-sensitivity"</entry>
+        <entry>Read-Write</entry>
+        <entry>The sensitivity policy for the stepper that points to the
+        adjustment's lower side.
+        Default value: <literal>gtk.SENSITIVITY_AUTO</literal></entry>
+      </row>
         
-        <row valign="top">
+      <row valign="top">
 	      <entry>"restrict-to-fill-level"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>The restrict-to-fill-level property controls whether slider movement is restricted to
           an upper boundary set by the fill level. See
           <methodname><link linkend="method-gtkrange--get-restrict-to-fill-level">gtk.Range.get_restrict_to_fill_level</link></methodname>().
           Default value: True. Available in GTK+ 2.12.</entry>
+	    </row>
+
+      <row valign="top">
+        <entry>"round-digits"</entry>
+        <entry>Read-Write</entry>
+        <entry>The number of digits to round the value to when it changes, or -1.
+        Default value: -1.
+        This property is available in GTK+ 2.24 and above.
+        </entry>
+      </row>
+
+      <row valign="top">
+	      <entry>"show-fill-level"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>The show-fill-level property controls whether fill level indicator graphics are displayed on the trough. See gtk_range_set_show_fill_level().
+          <methodname><link linkend="method-gtkrange--set-show-fill-level">gtk.Range.set_show_fill_level</link></methodname>().
+          Default value: <literal>False</literal>.
+          Available in GTK+ 2.12.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -182,13 +254,13 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
 	      <literal>gtk.UPDATE_DELAYED</literal>.</entry>
 	    </row>
         
-        <row valign="top">
-	      <entry>"show-fill-level"</entry>
-	      <entry>Read-Write</entry>
-	      <entry>The show-fill-level property controls whether fill level indicator graphics are displayed on the trough. See gtk_range_set_show_fill_level().
-          <methodname><link linkend="method-gtkrange--set-show-fill-level">gtk.Range.set_show_fill_level</link></methodname>().
-          Default value: False. Available in GTK+ 2.12.</entry>
-	    </row>
+      <row valign="top">
+        <entry>"upper-stepper-sensitivity"</entry>
+        <entry>Read-Write</entry>
+        <entry>The sensitivity policy for the stepper that points to the
+        adjustment's upper side.
+        Default value: <literal>gtk.SENSITIVITY_AUTO</literal></entry>
+      </row>
 
 	  </tbody>
 	</tgroup>
@@ -210,13 +282,13 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
 	  <colspec column="3" colwidth="4in"/>
 	  <tbody>
 
-            <row valign="top">
-              <entry>"activate-slider"</entry>
-              <entry>Read</entry>
-              <entry>With this option set to <literal>True</literal>,
-              sliders will be drawn <literal>ACTIVE</literal> and with
-              shadow <literal>IN</literal> while they are dragged</entry>
-            </row>
+      <row valign="top">
+        <entry>"activate-slider"</entry>
+        <entry>Read</entry>
+        <entry>With this option set to <literal>True</literal>,
+        sliders will be drawn <literal>ACTIVE</literal> and with
+        shadow <literal>IN</literal> while they are dragged</entry>
+      </row>
 
 	    <row valign="top">
 	      <entry>"arrow-displacement-x"</entry>
@@ -265,22 +337,22 @@ linkend="method-gtkrange--get-value">get_value</link></methodname>
 	      bevel</entry>
 	    </row>
 
-            <row valign="top">
-              <entry>"trough-side-details"</entry>
-              <entry>Read</entry>
-              <entry>This property is available in GTK+ 2.10 and above.</entry>
-            </row>
+      <row valign="top">
+        <entry>"trough-side-details"</entry>
+        <entry>Read</entry>
+        <entry>This property is available in GTK+ 2.10 and above.</entry>
+      </row>
 
-            <row valign="top">
-              <entry>"trough-under-steppers"</entry>
-              <entry>Read</entry>
-              <entry>if <literal>True</literal> draw the trough across the
-              full length of the range or to exclude the steppers and their
-              spacing. Note that setting the "stepper-spacing" style
-              property to any value &gt; 0 will automatically enable
-              "trough-under-steppers" too.  This property is available in
-              GTK+ 2.10 and above.</entry>
-            </row>
+      <row valign="top">
+        <entry>"trough-under-steppers"</entry>
+        <entry>Read</entry>
+        <entry>if <literal>True</literal> draw the trough across the
+        full length of the range or to exclude the steppers and their
+        spacing. Note that setting the "stepper-spacing" style
+        property to any value &gt; 0 will automatically enable
+        "trough-under-steppers" too.  This property is available in
+        GTK+ 2.10 and above.</entry>
+      </row>
 
 	  </tbody>
 	</tgroup>
@@ -311,7 +383,7 @@ linkend="signal-gtkrange--adjust-bounds">adjust-bounds</link>"</term>
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkrange--change-value">change-value</link></term>
+        <term>"<link linkend="signal-gtkrange--change-value">change-value</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>range</parameter></methodparam>
@@ -806,6 +878,302 @@ value of the range.</para>
             The <methodname>get_show_fill_level</methodname>() method gets
             whether the range displays the fill level graphically.
         </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--set-round-digits">
+      <title>gtk.Range.set_round_digits</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_round_digits</methodname>
+        <methodparam><parameter role="keyword">round_digits</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">round_digits</parameter>&nbsp;:</term>
+          <listitem><simpara>the precision in digits, or -1.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.24 and above.</para>
+      </note>
+
+      <para>The <methodname>set_round_digits</methodname>() method sets the number of digits
+      to round the value to when it changes. See "<link linkend="signal-gtkrange--change-value">change-value</link>".</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-round-digits">
+      <title>gtk.Range.get_round_digits</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_round_digits</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the number of digits to round to.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.24 and above.</para>
+      </note>
+
+      <para>The <methodname>get_round_digits</methodname>() method gets the number of digits
+      to round the value to when it changes. See "<link linkend="signal-gtkrange--change-value">change-value</link>".</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--set-min-slider-size">
+      <title>gtk.Range.set_min_slider_size</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_min_slider_size</methodname>
+        <methodparam><parameter role="keyword">min_size</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">min_size</parameter>&nbsp;:</term>
+          <listitem><simpara>The slider's minimum size.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_min_slider_size</methodname>() method sets the minimum size of the range's slider.</para>
+
+      <para>This method is useful mainly for GtkRange subclasses.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-min-slider-size">
+      <title>gtk.Range.get_min_slider_size</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_min_slider_size</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The minimum size of the range's slider.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_min_slider_size</methodname>() method gets the minimum size of the range's slider.</para>
+
+      <para>This method is useful mainly for GtkRange subclasses.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-range-rect">
+      <title>gtk.Range.get_range_rect</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_range_rect</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the range rectangle.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_range_rect</methodname>() method returns the area
+      that contains the range's trough and its steppers.</para>
+
+      <para>This method is useful mainly for GtkRange subclasses.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--set-slider-size-fixed">
+      <title>gtk.Range.set_slider_size_fixed</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_slider_size_fixed</methodname>
+        <methodparam><parameter role="keyword">size_fixed</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">size_fixed</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> to make the slider size constant.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_slider_size_fixed</methodname>() method sets whether the
+      range's slider has a fixed size, or a size that depends on it's adjustment's page
+      size.</para>
+
+      <para>This method is useful mainly for GtkRange subclasses.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-slider-size-fixed">
+      <title>gtk.Range.get_slider_size_fixed</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_slider_size_fixed</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> when the range's slider has a fixed size.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_slider_size_fixed</methodname>() method returns whether the
+      range's slider has a fixed size, or a size that depends on it's adjustment's page
+      size.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--set-flippable">
+      <title>gtk.Range.set_flippable</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_flippable</methodname>
+        <methodparam><parameter role="keyword">flippable</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">flippable</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> to make the range flippable.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_flippable</methodname>() method sets whether the
+      range is flippable. If a range is flippable, it will switch its direction if
+      it is horizontal and its direction is <literal>gtk.TEXT_DIR_RTL</literal>.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-flippable">
+      <title>gtk.Range.get_flippable</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_flippable</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>><literal>True</literal> if the range is flippable.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_flippable</methodname>() method returns whether the
+      range is flippable.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--set-lower-stepper-sensitivity">
+      <title>gtk.Range.set_lower_stepper_sensitivity</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_lower_stepper_sensitivity</methodname>
+        <methodparam><parameter role="keyword">sensitivity</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">sensitivity</parameter>&nbsp;:</term>
+          <listitem><simpara>the lower stepper's sensitivity policy..</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set_lower_stepper_sensitivity</methodname>() method sets the
+      sensitivity policy for the stepper that points to the 'lower' end of the range's
+      adjustment.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-lower-stepper-sensitivity">
+      <title>gtk.Range.get_lower_stepper_sensitivity</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_lower_stepper_sensitivity</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The lower stepper's sensitivity policy.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_lower_stepper_sensitivity</methodname>() method gets the
+      sensitivity policy for the stepper that points to the 'lower' end of the range's
+      adjustment.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--set-upper-stepper-sensitivity">
+      <title>gtk.Range.set_upper_stepper_sensitivity</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_upper_stepper_sensitivity</methodname>
+        <methodparam><parameter role="keyword">sensitivity</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">sensitivity</parameter>&nbsp;:</term>
+          <listitem><simpara>The upper stepper's sensitivity policy.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The <methodname>set_upper_stepper_sensitivity</methodname>() method sets the
+      sensitivity policy for the stepper that points to the 'upper' end of the range's
+      adjustment.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkrange--get-upper-stepper-sensitivity">
+      <title>gtk.Range.get_upper_stepper_sensitivity</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_upper_stepper_sensitivity</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The upper stepper's sensitivity policy.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>The <methodname>get_upper_stepper_sensitivity</methodname>() method gets the
+      sensitivity policy for the stepper that points to the 'upper' end of the range's
+      adjustment.</para>
+
     </refsect2>
 
   </refsect1>
