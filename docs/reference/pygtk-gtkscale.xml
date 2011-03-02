@@ -56,6 +56,17 @@ linkend="method-gtkscale--get-layout">get_layout</link></methodname>
 linkend="method-gtkscale--get-layout-offsets">get_layout_offsets</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkscale--add-mark">add_mark</link></methodname>
+        <methodparam><parameter role="keyword">value</parameter></methodparam>
+        <methodparam><parameter role="keyword">position</parameter></methodparam>
+        <methodparam><parameter role="keyword">markup</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkscale--clear-marks">clear_marks</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -406,6 +417,61 @@ function you need to convert to and from pixels using the <link
 linkend="function-pango--PIXELS"><function>pango.PIXELS</function>()</link>
 function or <literal>pango.SCALE</literal>. If the "draw-value" property is
 <literal>False</literal>, the return values are undefined.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkscale--add-mark">
+      <title>gtk.Scale.add_mark</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>add_mark</methodname>
+        <methodparam><parameter role="keyword">value</parameter></methodparam>
+        <methodparam><parameter role="keyword">position</parameter></methodparam>
+        <methodparam><parameter role="keyword">markup</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">value</parameter>&nbsp;:</term>
+          <listitem><simpara>the value at which the mark is placed, must be between the lower and upper limits of the scales' adjustment.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">position</parameter>&nbsp;:</term>
+          <listitem><simpara>where to draw the mark. For a horizontal scale, <literal>gtk.POS_TOP</literal> is drawn above the scale,
+          anything else below. For a vertical scale, <literal>gtk.POS_LEFT</literal> is drawn to the left of the scale, anything else
+          to the right.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">markup</parameter>&nbsp;:</term>
+          <listitem><simpara>text to be shown at the mark, using <link linkend="pango-markup-language">Pango markup</link>, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>add_mark</methodname>() method adds a mark at value.
+      A mark is indicated visually by drawing a tick mark next to the scale, and GTK+
+      makes it easy for the user to position the scale exactly at the marks value.
+      If markup is not <literal>None</literal>, text is shown next to the tick mark.
+      To remove marks from a scale, use <link linkend="method-gtkscale--clear-marks"><methodname>clear_marks</methodname></link>().</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkscale--clear-marks">
+      <title>gtk.Scale.clear_marks</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>clear_marks</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>clear_marks</methodname>() method removes any marks that have been
+      added with <link linkend="method-gtkscale--add-mark"><methodname>add_mark</methodname></link>().</para>
 
     </refsect2>
 
