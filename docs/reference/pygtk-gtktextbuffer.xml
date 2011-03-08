@@ -720,6 +720,16 @@ associated with the textbuffer.</entry>
         </listitem>
       </varlistentry>
       <varlistentry>
+        <term>"<link linkend="signal-gtktextbuffer--paste-done">paste-done</link>"</term>
+        <listitem>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>textbuffer</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
+          </methodsynopsis>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
         <term>"<link linkend="signal-gtktextbuffer--remove-tag">remove-tag</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
@@ -3918,6 +3928,42 @@ any)</simpara></listitem>
 
       <para>The "modified-changed" signal is emitted when the modification
 flag is changed.</para>
+
+    </refsect2>
+
+    <refsect2 id="signal-gtktextbuffer--paste-done">
+      <title>The "paste-done" gtk.TextBuffer Signal</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>callback</methodname>
+        <methodparam><parameter>textbuffer</parameter></methodparam>
+        <methodparam><parameter>user_param1</parameter></methodparam>
+        <methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis></programlisting>
+
+      <variablelist>
+        <varlistentry>
+          <term><parameter>textbuffer</parameter>&nbsp;:</term>
+          <listitem><simpara>the textbuffer that received the signal</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified with the
+          <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
+          method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+          <para>This signal is available in GTK+ 2.16 and above.</para>
+      </note>
+
+      <para>The "paste-done" signal is emitted after paste operation has been completed.
+      This is useful to properly scroll the view to the end of the pasted text.</para>
 
     </refsect2>
 
