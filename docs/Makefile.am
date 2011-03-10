@@ -152,6 +152,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkimcontextsimple.xml		\
 	reference/pygtk-gtkimcontext.xml		\
 	reference/pygtk-gtkimmulticontext.xml		\
+    reference/pygtk-gtkinfobar.xml		\
 	reference/pygtk-gtkinputdialog.xml		\
 	reference/pygtk-gtkinvisible.xml		\
 	reference/pygtk-gtkitemfactory.xml		\
@@ -170,6 +171,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkmountoperation.xml		\
 	reference/pygtk-gtknotebook.xml			\
 	reference/pygtk-gtkobject.xml			\
+    reference/pygtk-gtkoffscreenwindow.xml			\
 	reference/pygtk-gtkoptionmenu.xml		\
 	reference/pygtk-gtkpagesetupunixdialog.xml	\
 	reference/pygtk-gtkpagesetup.xml		\
@@ -212,6 +214,7 @@ XMLFILES = 						\
 	reference/pygtk-gtksizegroup.xml		\
 	reference/pygtk-gtksocket.xml			\
 	reference/pygtk-gtkspinbutton.xml		\
+    reference/pygtk-gtkspinner.xml		\
 	reference/pygtk-gtkstatusbar.xml		\
 	reference/pygtk-gtkstatusicon.xml		\
 	reference/pygtk-gtk-stock-items.xml		\
@@ -232,6 +235,8 @@ XMLFILES = 						\
 	reference/pygtk-gtktoolbar.xml			\
 	reference/pygtk-gtktoolbutton.xml		\
 	reference/pygtk-gtktoolitem.xml			\
+    reference/pygtk-gtktoolitemgroup.xml	\
+    reference/pygtk-gtktoolpalette.xml	    \
 	reference/pygtk-gtktoolshell.xml		\
 	reference/pygtk-gtktooltip.xml			\
 	reference/pygtk-gtktooltips.xml			\
@@ -436,6 +441,7 @@ HTML_FILES =						\
 	html/class-gtkimcontext.html			\
 	html/class-gtkimcontextsimple.html		\
 	html/class-gtkimmulticontext.html		\
+    html/class-gtkinfobar.html		\
 	html/class-gtkinputdialog.html			\
 	html/class-gtkinvisible.html			\
 	html/class-gtkitemfactory.html			\
@@ -454,6 +460,7 @@ HTML_FILES =						\
 	html/class-gtkmountoperation.html		\
 	html/class-gtknotebook.html			\
 	html/class-gtkobject.html			\
+    html/class-gtkoffscreenwindow.html			\
 	html/class-gtkoptionmenu.html			\
 	html/class-gtkpagesetup.html			\
 	html/class-gtkpagesetupunixdialog.html		\
@@ -496,6 +503,7 @@ HTML_FILES =						\
 	html/class-gtksizegroup.html			\
 	html/class-gtksocket.html			\
 	html/class-gtkspinbutton.html			\
+    html/class-gtkspinner.html			\
 	html/class-gtkstatusbar.html			\
 	html/class-gtkstatusicon.html			\
 	html/class-gtkstyle.html			\
@@ -515,6 +523,8 @@ HTML_FILES =						\
 	html/class-gtktoolbar.html			\
 	html/class-gtktoolbutton.html			\
 	html/class-gtktoolitem.html			\
+    html/class-gtktoolitemgroup.html	\
+    html/class-gtktoolpalette.html	    \
 	html/class-gtktoolshell.html			\
 	html/class-gtktooltip.html			\
 	html/class-gtktooltips.html			\

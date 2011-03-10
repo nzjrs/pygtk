@@ -1,0 +1,128 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+
+<refentry id="class-gtkoffscreenwindow">
+  <refnamediv>
+    <refname>gtk.OffscreenWindow</refname>
+    <refpurpose></refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>Synopsis</title>
+
+    <classsynopsis language="python">
+      <ooclass><classname>gtk.OffscreenWindow</classname></ooclass>
+      <ooclass><classname><link linkend="class-gtkwindow">gtk.Window</link></classname></ooclass>
+      <constructorsynopsis language="python">
+        <methodname><link linkend="constructor-gtkoffscreenwindow">gtk.OffscreenWindow</link></methodname>
+        <methodparam></methodparam>
+      </constructorsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkoffscreenwindow--get-pixmap">get_pixmap</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkoffscreenwindow--get-pixbuf">get_pixbuf</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+    </classsynopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Ancestry</title>
+
+<synopsis>+-- <link linkend="class-gobject">GObject</link>
+  +-- <link linkend="class-gtkobject">gtk.Object</link>
+    +-- <link linkend="class-gtkwidget">gtk.Widget</link>
+      +-- <link linkend="class-gtkcontainer">gtk.Container</link>
+        +-- <link linkend="class-gtkbin">gtk.Bin</link>
+          +-- <link linkend="class-gtkwindow">gtk.Window</link>
+            +-- <link linkend="class-gtkoffscreenwindow">gtk.OffscreenWindow</link>
+</synopsis>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Constructor</title>
+
+    <programlisting>
+      <constructorsynopsis language="python">
+        <methodname><link linkend="constructor-gtkoffscreenwindow">gtk.OffscreenWindow</link></methodname>
+        <methodparam></methodparam>
+      </constructorsynopsis>
+    </programlisting>
+    <variablelist>
+      <varlistentry>
+        <term><emphasis>Returns</emphasis>&nbsp;:</term>
+        <listitem><simpara>A pointer to a <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+      </varlistentry>
+    </variablelist>
+    <note>
+      <para>This constructor is available in PyGTK 2.20 and above.</para>
+    </note>
+
+    <para>Creates a toplevel container widget that is used to retrieve
+snapshots of widgets without showing them on the screen.  For
+widgets that are on the screen and part of a normal widget
+hierarchy, <link linkend="method-gtkwidget--get-snapshot"><methodname>gtk.Widget.get_snapshot</methodname></link> can be used instead.</para>
+
+
+  </refsect1>
+
+  <refsect1>
+    <title>Methods</title>
+
+    <refsect2 id="method-gtkoffscreenwindow--get-pixmap">
+      <title>gtk.OffscreenWindow.get_pixmap</title>
+
+      <programlisting>
+        <methodsynopsis language="python">
+          <methodname>get_pixmap</methodname>
+          <methodparam></methodparam>
+        </methodsynopsis>
+      </programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>A <literal>GdkPixmap</literal> pointer to the offscreen pixmap, or <literal>NULL</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+      <note>
+        <para>This method is available in PyGTK 2.20 and above.</para>
+      </note>
+
+      <para>Retrieves a snapshot of the contained widget in the form of
+a <literal>GdkPixmap</literal>.  If you need to keep this around over window
+resizes then you should add a reference to it.</para>
+    </refsect2>
+
+    <refsect2 id="method-gtkoffscreenwindow--get-pixbuf">
+      <title>gtk.OffscreenWindow.get_pixbuf</title>
+
+      <programlisting>
+        <methodsynopsis language="python">
+          <methodname>get_pixbuf</methodname>
+          <methodparam></methodparam>
+        </methodsynopsis>
+      </programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>A <literal>GdkPixbuf</literal> pointer, or <literal>NULL</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+      <note>
+        <para>This method is available in PyGTK 2.20 and above.</para>
+      </note>
+
+      <para>Retrieves a snapshot of the contained widget in the form of
+a <literal>GdkPixbuf</literal>.  This is a new pixbuf with a reference count of 1,
+and the application should unreference it once it is no longer
+needed.</para>
+    </refsect2>
+
+  </refsect1>
+
+</refentry>
