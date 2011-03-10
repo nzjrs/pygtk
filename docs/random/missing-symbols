@@ -1,33 +1,67 @@
 Symbols, added in gtk+ between our merging with 2.5.x and 2.6.0
 They need to be added to the defs file, probably manually.
 
-gtk_label_get_max_width_chars
-gtk_label_set_max_width_chars
-gtk_label_get_angle
-gtk_label_set_angle
-gtk_label_get_single_line_mode
-gtk_label_set_single_line_mode
-gtk_button_get_image
-gtk_button_set_image
-gtk_progress_bar_get_ellipsize
-gtk_progress_bar_set_ellipsize
-gtk_icon_view_get_column_spacing
-gtk_icon_view_get_columns
-gtk_icon_view_get_item_width
-gtk_icon_view_get_margin
-gtk_icon_view_get_row_spacing
-gtk_icon_view_get_spacing
-gtk_icon_view_set_column_spacing
-gtk_icon_view_set_columns
-gtk_icon_view_set_item_width
-gtk_icon_view_set_margin
-gtk_icon_view_set_row_spacing
-gtk_icon_view_set_spacing
-gtk_cell_renderer_stop_editing
 gtk_list_store_insert_with_values
 gtk_list_store_insert_with_valuesv
 gtk_text_layout_get_iter_at_position (NOT MERGED INTERNAL API)
-gtk_text_view_get_iter_at_position
-gtk_dialog_set_alterantive_button_order_from_array
-gtk_action_get_accel_path
-gtk_file_filter_add_pixbuf_formats
+gtk_dialog_set_alternative_button_order_from_array
+
+
+Symbols, encountered while updating reference docs during the 2.24
+development cycle:
+
+class GtkAccelGroup:
+    def GtkAccelGroup.activate(accel_quark, acceleratable, accel_key, accel_mods)
+    def GtkAccelGroup.find((*find_func)
+    def GtkAccelGroup.query(accel_key, accel_mods, n_entries)
+
+class GtkBuildable:
+    def GtkBuildable.set_buildable_property(builder, name, value)
+    def GtkBuildable.custom_tag_start(builder, child, tagname, parser, data)
+    def GtkBuildable.custom_tag_end(builder, child, tagname, data)
+    def GtkBuildable.custom_finished(builder, child, tagname, data)
+
+class GtkCalendar:
+    def GtkCalendar.set_detail_func(func, data, destroy)
+
+class GtkClipboard:
+    def GtkClipboard.wait_for_uris()
+    def GtkClipboard.request_uris(callback, user_data)
+
+class GtkEntryBuffer:
+    def GtkEntryBuffer(initial_chars, n_initial_chars)
+    def GtkEntryBuffer.set_text(chars, n_chars)
+    def GtkEntryBuffer.insert_text(position, chars, n_chars)
+    def GtkEntryBuffer.delete_text(position, n_chars)
+    def GtkEntryBuffer.emit_inserted_text(position, chars, n_chars)
+    def GtkEntryBuffer.emit_deleted_text(position, n_chars)
+
+class GtkFileChooser:
+    def GtkFileChooser.set_create_folders(create_folders)
+    def GtkFileChooser.get_create_folders()
+
+class GtkPrintContext:
+    def GtkPrintContext.get_hard_margins(top, bottom, left, right)
+
+class GtkRange:
+    def GtkRange.get_slider_range(slider_start, slider_end)
+
+class GtkSelectionData:
+    def GtkSelectionData.get_data()
+    def GtkSelectionData.get_selection()
+
+class GtkSettings:
+    def GtkSettings.set_property_value(name, svalue)
+
+class GtkStyle:
+    def GtkStyle.paint_spinner(style, window, state_type, area, widget, detail, step, x, y, width, height)
+    def GtkStyle.get_style_property(widget_type, property_name, value)
+    def GtkStyle.get_valist(widget_type, first_property_name, var_args)
+    def GtkStyle.get(widget_type, first_property_name)
+
+class GtkTreeSelection:
+    def GtkTreeSelection.get_select_function()
+
+class GtkWindowGroup:
+    def GtkWindowGroup.list_windows()
+    def GtkWindowGroup.get_current_grab() -> undocumented in GTK+
