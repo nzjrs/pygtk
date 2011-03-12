@@ -8001,37 +8001,163 @@ style property.</para>
       <title>gtk.widget_class_install_style_property</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>gtk.widget_class_install_style_property</methodname>
-	  <methodparam><parameter
-			 role="keyword">widget</parameter></methodparam>
-	</methodsynopsis></programlisting>
+        <methodname>gtk.widget_class_install_style_property</methodname>
+        <methodparam><parameter role="keyword">widget</parameter></methodparam>
+        <methodparam><parameter role="keyword">pspec</parameter></methodparam>
+      </methodsynopsis></programlisting>
       <variablelist>
-	<varlistentry>
-	  <term><parameter role="keyword">widget</parameter>&nbsp;:</term>
-	  <listitem><simpara>a <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	<term><parameter role="keyword">pspec</parameter>&nbsp;:</term>
-	  <listitem><simpara>a 4-tuple containing the property spec</simpara></listitem>
-	</varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">widget</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link></simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">pspec</parameter>&nbsp;:</term>
+          <listitem><simpara>a tuple containing a parameter specifications</simpara></listitem>
+        </varlistentry>
       </variablelist>
 
-       <note>
-	<para>This function is available in PyGTK 2.4 and above.</para>
+      <note>
+        <para>This function is available in PyGTK 2.4 and above.</para>
       </note>
 
-     <para>The
-<function>gtk.widget_class_install_style_property</function>() function
-installs the style property specified by <parameter>pspec</parameter> on the
-<link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
-specified by <parameter>widget</parameter>. <parameter>pspec</parameter> is
-a 4-tuple containing the property name, the property type, a nickname (or
-<literal>None</literal>) and a description of the property (or None).</para>
+      <para>The <function>gtk.widget_class_install_style_property</function>() function
+      installs the style property specified by <parameter>pspec</parameter> on the
+      <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>
+      specified by <parameter>widget</parameter>. <parameter>pspec</parameter> is
+      a tuple containing at least 5 items. The first 4 items contain the
+      following parameter specification items:</para>
 
-      <para>This function raises the TypeError exception if
-<parameter>widget</parameter> is not a <link
-linkend="class-gtkwidget"><classname>gtk.Widget</classname></link> or if the
-property is already installed.</para>
+      <itemizedlist>
+        <listitem>
+          <simpara>a string specifying the name of the property</simpara>
+        </listitem>
+        <listitem>
+          <simpara>an object specifying the property type</simpara>
+        </listitem>
+        <listitem>
+          <simpara>a string specifying the nickname for the property or <literal>None</literal></simpara>
+        </listitem>
+        <listitem>
+          <simpara>a string specifying the short description for the property or <literal>None</literal></simpara>
+        </listitem>
+      </itemizedlist>
+
+      <para>The last item must be a integer containing a combination of the
+      <link linkend="gobject-param-constants">GObject Param Flag
+      Constants</link>. Additional tuple items (if needed) are inserted
+      between the fourth item and the last item depending on the property
+      type:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term><literal>gobject.TYPE_CHAR</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_CHAR</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_BOOLEAN</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_INT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_UINT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_LONG</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_ULONG</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_INT64</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_UINT64</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_ENUM</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_FLAGS</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_FLOAT</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_DOUBLE</literal></term>
+          <listitem>
+            <simpara>minimum, maximum and default values</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_STRING</literal></term>
+          <listitem>
+            <simpara>default value</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_PARAM</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_BOXED</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_POINTER</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><literal>gobject.TYPE_OBJECT</literal></term>
+          <listitem>
+            <simpara>Not applicable</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>
 
     </refsect2>
 
