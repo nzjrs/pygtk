@@ -328,6 +328,12 @@
     them clearly from completion strings. When an action is selected, the
     "action-activated" signal is emitted.</para>
 
+    <para>When the user selects a completion, the content of the entry is updated.
+    By default, the content of the entry is replaced by the text column of the model,
+    but this can be overridden by connecting to the "match-selected" signal and
+    updating the entry in the signal handler. Note that you should return
+    <literal>True</literal> from the signal handler to suppress the default behaviour.</para>
+
     <para>A <link
     linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
     (e.g. a <link
