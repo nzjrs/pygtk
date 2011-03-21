@@ -82,9 +82,9 @@ XMLFILES = 						\
 	reference/pygtk-gtkborder.xml			\
 	reference/pygtk-gtkbox.xml			\
 	reference/pygtk-gtkbuttonbox.xml		\
-	reference/pygtk-gtkbutton.xml			\
-	reference/pygtk-gtkbuilder.xml			\
 	reference/pygtk-gtkbuildable.xml		\
+	reference/pygtk-gtkbuilder.xml			\
+	reference/pygtk-gtkbutton.xml			\
 	reference/pygtk-gtkcalendar.xml			\
 	reference/pygtk-gtkcelleditable.xml		\
 	reference/pygtk-gtkcelllayout.xml		\
@@ -93,6 +93,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkcellrendererpixbuf.xml	\
 	reference/pygtk-gtkcellrendererprogress.xml	\
 	reference/pygtk-gtkcellrendererspin.xml		\
+	reference/pygtk-gtkcellrendererspinner.xml		\
 	reference/pygtk-gtkcellrenderertext.xml		\
 	reference/pygtk-gtkcellrenderertoggle.xml	\
 	reference/pygtk-gtkcellrenderer.xml		\
@@ -106,6 +107,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkcolorselection.xml		\
 	reference/pygtk-gtkcomboboxentry.xml		\
 	reference/pygtk-gtkcombobox.xml			\
+	reference/pygtk-gtkcomboboxtext.xml			\
 	reference/pygtk-gtkcombo.xml			\
 	reference/pygtk-gtk-constants.xml		\
 	reference/pygtk-gtkcontainer.xml		\
@@ -115,6 +117,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkeditable.xml			\
 	reference/pygtk-gtkentrycompletion.xml		\
 	reference/pygtk-gtkentry.xml			\
+	reference/pygtk-gtkentrybuffer.xml			\
 	reference/pygtk-gtkeventbox.xml			\
 	reference/pygtk-gtkexpander.xml			\
 	reference/pygtk-gtkfilechooserbutton.xml	\
@@ -149,6 +152,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkimcontextsimple.xml		\
 	reference/pygtk-gtkimcontext.xml		\
 	reference/pygtk-gtkimmulticontext.xml		\
+    reference/pygtk-gtkinfobar.xml		\
 	reference/pygtk-gtkinputdialog.xml		\
 	reference/pygtk-gtkinvisible.xml		\
 	reference/pygtk-gtkitemfactory.xml		\
@@ -167,6 +171,7 @@ XMLFILES = 						\
 	reference/pygtk-gtkmountoperation.xml		\
 	reference/pygtk-gtknotebook.xml			\
 	reference/pygtk-gtkobject.xml			\
+    reference/pygtk-gtkoffscreenwindow.xml			\
 	reference/pygtk-gtkoptionmenu.xml		\
 	reference/pygtk-gtkpagesetupunixdialog.xml	\
 	reference/pygtk-gtkpagesetup.xml		\
@@ -209,6 +214,7 @@ XMLFILES = 						\
 	reference/pygtk-gtksizegroup.xml		\
 	reference/pygtk-gtksocket.xml			\
 	reference/pygtk-gtkspinbutton.xml		\
+    reference/pygtk-gtkspinner.xml		\
 	reference/pygtk-gtkstatusbar.xml		\
 	reference/pygtk-gtkstatusicon.xml		\
 	reference/pygtk-gtk-stock-items.xml		\
@@ -229,6 +235,8 @@ XMLFILES = 						\
 	reference/pygtk-gtktoolbar.xml			\
 	reference/pygtk-gtktoolbutton.xml		\
 	reference/pygtk-gtktoolitem.xml			\
+    reference/pygtk-gtktoolitemgroup.xml	\
+    reference/pygtk-gtktoolpalette.xml	    \
 	reference/pygtk-gtktoolshell.xml		\
 	reference/pygtk-gtktooltip.xml			\
 	reference/pygtk-gtktooltips.xml			\
@@ -366,9 +374,9 @@ HTML_FILES =						\
 	html/class-gtkborder.html			\
 	html/class-gtkbox.html				\
 	html/class-gtkbuttonbox.html			\
-	html/class-gtkbutton.html			\
-	html/class-gtkbuilder.html			\
 	html/class-gtkbuildable.html			\
+	html/class-gtkbuilder.html			\
+	html/class-gtkbutton.html			\
 	html/class-gtkcalendar.html			\
 	html/class-gtkcelleditable.html			\
 	html/class-gtkcelllayout.html			\
@@ -378,6 +386,7 @@ HTML_FILES =						\
 	html/class-gtkcellrendererpixbuf.html		\
 	html/class-gtkcellrendererprogress.html		\
 	html/class-gtkcellrendererspin.html		\
+	html/class-gtkcellrendererspinner.html		\
 	html/class-gtkcellrenderertext.html		\
 	html/class-gtkcellrenderertoggle.html		\
 	html/class-gtkcellview.html			\
@@ -389,6 +398,7 @@ HTML_FILES =						\
 	html/class-gtkcolorselection.html		\
 	html/class-gtkcomboboxentry.html		\
 	html/class-gtkcombobox.html			\
+	html/class-gtkcomboboxtext.html			\
 	html/class-gtkcombo.html			\
 	html/class-gtkcontainer.html			\
 	html/class-gtkcurve.html			\
@@ -397,6 +407,7 @@ HTML_FILES =						\
 	html/class-gtkeditable.html			\
 	html/class-gtkentrycompletion.html		\
 	html/class-gtkentry.html			\
+	html/class-gtkentrybuffer.html			\
 	html/class-gtkeventbox.html			\
 	html/class-gtkexpander.html			\
 	html/class-gtkfilechooserbutton.html		\
@@ -430,6 +441,7 @@ HTML_FILES =						\
 	html/class-gtkimcontext.html			\
 	html/class-gtkimcontextsimple.html		\
 	html/class-gtkimmulticontext.html		\
+    html/class-gtkinfobar.html		\
 	html/class-gtkinputdialog.html			\
 	html/class-gtkinvisible.html			\
 	html/class-gtkitemfactory.html			\
@@ -448,6 +460,7 @@ HTML_FILES =						\
 	html/class-gtkmountoperation.html		\
 	html/class-gtknotebook.html			\
 	html/class-gtkobject.html			\
+    html/class-gtkoffscreenwindow.html			\
 	html/class-gtkoptionmenu.html			\
 	html/class-gtkpagesetup.html			\
 	html/class-gtkpagesetupunixdialog.html		\
@@ -490,6 +503,7 @@ HTML_FILES =						\
 	html/class-gtksizegroup.html			\
 	html/class-gtksocket.html			\
 	html/class-gtkspinbutton.html			\
+    html/class-gtkspinner.html			\
 	html/class-gtkstatusbar.html			\
 	html/class-gtkstatusicon.html			\
 	html/class-gtkstyle.html			\
@@ -509,6 +523,8 @@ HTML_FILES =						\
 	html/class-gtktoolbar.html			\
 	html/class-gtktoolbutton.html			\
 	html/class-gtktoolitem.html			\
+    html/class-gtktoolitemgroup.html	\
+    html/class-gtktoolpalette.html	    \
 	html/class-gtktoolshell.html			\
 	html/class-gtktooltip.html			\
 	html/class-gtktooltips.html			\
@@ -583,7 +599,6 @@ HTML_FILES =						\
 	html/pango-markup-language.html			\
 	html/pygtk.devhelp				\
 	html/pygtk-introduction.html			\
-	html/pygtk-reference-format.html		\
 	html/unixprint-class-reference.html		\
 	html/unixprint-constants.html			\
 	html/unixprint-functions.html

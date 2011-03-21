@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # order is important here (for now)
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 # string taken from pango examples directory and converted from utf8

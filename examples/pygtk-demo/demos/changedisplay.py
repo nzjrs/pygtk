@@ -23,6 +23,8 @@ This is a moderately complex example, and demonstrates:
 - Using GtkListStore and GtkTreeView
 - Using GtkDialog
 '''
+import pygtk
+pygtk.require('2.0')
 import gtk
 import gobject
 

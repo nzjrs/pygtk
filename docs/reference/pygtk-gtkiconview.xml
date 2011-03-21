@@ -248,7 +248,31 @@ PyGTK 2.6)</refpurpose>
         <methodparam><parameter role="keyword">tooltip</parameter></methodparam>
         <methodparam><parameter role="keyword">path</parameter></methodparam>
     </methodsynopsis>
-</classsynopsis>
+    <methodsynopsis language="python">
+      <methodname><link linkend="method-gtkiconview--get-item-row">get_item_row</link></methodname>
+      <methodparam><parameter role="keyword">path</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+      <methodname><link linkend="method-gtkiconview--get-item-column">get_item_column</link></methodname>
+      <methodparam><parameter role="keyword">path</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+      <methodname><link linkend="method-gtkiconview--set-item-orientation">set_item_orientation</link></methodname>
+      <methodparam><parameter role="keyword">orientation</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+      <methodname><link linkend="method-gtkiconview--get-item-orientation">get_item_orientation</link></methodname>
+      <methodparam></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+      <methodname><link linkend="method-gtkiconview--set-item-padding">set_item_padding</link></methodname>
+      <methodparam><parameter role="keyword">item_padding</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+      <methodname><link linkend="method-gtkiconview--get-item-padding">get_item_padding</link></methodname>
+      <methodparam></methodparam>
+    </methodsynopsis>
+  </classsynopsis>
 
 </refsect1>
 
@@ -304,6 +328,24 @@ Available in GTK+ 2.6 and above.</entry>
 of columns will be chosen automatically to fill the available width.
 Allowed values: >= -1. Default value: -1.
 Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"item-orientation"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>Specifies how the cells (i.e. the icon and the text) of the
+item are positioned relative to each other.
+Default value: <literal>gtk.ORIENTATION_VERTICAL</literal>.
+Available in GTK+ 2.22 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"item-padding"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>Specifies the padding around each of the icon view's item. .
+Available in GTK+ 2.22 and above.</entry>
 	    </row>
 
 	    <row valign="top">
@@ -408,6 +450,13 @@ Available in GTK+ 2.6 and above.</entry>
 is displayed. If this property and the "markup-column" property are both set
 to -1, no text is displayed. Allowed values: >= -1. Default value:
 -1. Available in GTK+ 2.6 and above.</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry>"tooltip-column"</entry>
+	      <entry>Read-Write</entry>
+
+	      <entry>The number of the model column containing the tooltip text for the items.</entry>
 	    </row>
 
 	  </tbody>
@@ -2221,6 +2270,153 @@ icon.</para>
             <parameter>path</parameter>. See also
             <methodname><link linkend="method-gtktooltip--set-tip-area">gtk.Tooltip.set_tip_area</link></methodname>().
         </para>
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-item-row">
+      <title>gtk.IconView.get_item_row</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_item_row</methodname>
+        <methodparam><parameter role="keyword">path</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+          <listitem><simpara>The path of the item.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The row in which the item is displayed.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_item_row</methodname>() method gets the row in which the
+      item path is currently displayed. Row numbers start at 0.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-item-column">
+      <title>gtk.IconView.get_item_column</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_item_column</methodname>
+        <methodparam><parameter role="keyword">path</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">path</parameter>&nbsp;:</term>
+          <listitem><simpara>The path of the item.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The column in which the item is displayed.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_item_column</methodname>() method gets the column in which the
+      item path is currently displayed. Column numbers start at 0.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-item-orientation">
+      <title>gtk.IconView.set_item_orientation</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_item_orientation</methodname>
+        <methodparam><parameter role="keyword">orientation</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">orientation</parameter>&nbsp;:</term>
+          <listitem><simpara>The relative position of texts and icons.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_item_orientation</methodname>() method sets the "item-orientation"
+      property which determines whether the labels are drawn beside the icons instead of below.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-item-orientation">
+      <title>gtk.IconView.get_item_orientation</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_item_orientation</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The relative position of texts and icons.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_item_orientation</methodname>() method returns the value of the
+      "item-orientation" property which determines whether the labels are drawn beside the icons
+      instead of below.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--set-item-padding">
+      <title>gtk.IconView.set_item_padding</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_item_padding</methodname>
+        <methodparam><parameter role="keyword">item_padding</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">item_padding</parameter>&nbsp;:</term>
+          <listitem><simpara>The item padding.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_item_padding</methodname>() method sets the "item-padding"
+      property which specifies the padding around each of the icon view's items.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkiconview--get-item-padding">
+      <title>gtk.IconView.get_item_padding</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_item_padding</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The padding around items.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_item_padding</methodname>() method returns the value of
+      the "item-padding" property.</para>
+
     </refsect2>
 
    </refsect1>

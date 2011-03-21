@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 import sys
+
+import pygtk
+pygtk.require('2.0')
 import gtk
 import gtk.glade
 

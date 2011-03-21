@@ -17,7 +17,20 @@
       <ooclass><classname><link linkend="class-gtkcelllayout">gtk.CellLayout</link></classname></ooclass>
       <constructorsynopsis language="python">
 	<methodname><link linkend="constructor-gtkcombobox">gtk.ComboBox</link></methodname>
-	<methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>  </constructorsynopsis>
+	<methodparam><parameter role="keyword">model</parameter><initializer>None</initializer></methodparam>
+      </constructorsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkcombobox--get-has-entry">get_has_entry</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkcombobox--get-entry-text-column">get_entry_text_column</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link linkend="method-gtkcombobox--set-entry-text-column">set_entry_text_column</link></methodname>
+	<methodparam><parameter role="keyword">text_column</parameter></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
 	<methodname><link linkend="method-gtkcombobox--get-wrap-width">get_wrap_width</link></methodname>
 	<methodparam></methodparam>
@@ -224,13 +237,28 @@ END NOT IMPLEMENTED -->
 	      This property is available in GTK+ 2.4 and above</entry>
 	    </row>
 
-            <row valign="top">
-              <entry>"focus-on-click"</entry>
-              <entry>Read-Write</entry>
-              <entry>If <literal>True</literal> the combo box grabs focus
-              when it is clicked with the mouse. Default value:
-              <literal>True</literal></entry>
-            </row>
+      <row valign="top">
+        <entry>"entry-text-column"</entry>
+        <entry>Read-Write</entry>
+        <entry>The column in the combo box's model to associate with strings from
+        the entry if the combo was created with "has-entry" = <literal>True</literal>.
+        This property is available in GTK+ 2.24 and above</entry>
+      </row>
+
+      <row valign="top">
+        <entry>"focus-on-click"</entry>
+        <entry>Read-Write</entry>
+        <entry>If <literal>True</literal> the combo box grabs focus
+        when it is clicked with the mouse. Default value:
+        <literal>True</literal></entry>
+      </row>
+
+      <row valign="top">
+        <entry>"has-entry"</entry>
+        <entry>Read-Write-Construct Only</entry>
+        <entry>Whether the combo box has an entry. Default value: <literal>False</literal>.
+        This property is available in GTK+ 2.24 and above</entry>
+      </row>
 
 	    <row valign="top">
 	      <entry>"has-frame"</entry>
@@ -485,6 +513,77 @@ END NOT IMPLEMENTED -->
 
   <refsect1>
     <title>Methods</title>
+
+    <refsect2 id="method-gtkcombobox--get-has-entry">
+      <title>gtk.ComboBox.get_has_entry</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_has_entry</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>Whether there is an entry in the combo box.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.24 and above.</para>
+      </note>
+
+      <para>The <methodname>get_has_entry</methodname>() method returns
+      whether the combo box has an entry.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcombobox--get-entry-text-column">
+      <title>gtk.ComboBox.get_entry_text_column</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_entry_text_column</methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>A column in the data source model of the combo box.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.24 and above.</para>
+      </note>
+
+      <para>The <methodname>get_entry_text_column</methodname>() method returns
+      the columns which the combo box is using to get the strings
+      from to display in the internal entry.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkcombobox--set-entry-text-column">
+      <title>gtk.ComboBox.set_entry_text_column</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>set_entry_text_column</methodname>
+	  <methodparam><parameter role="keyword">text_column</parameter></methodparam>
+	</methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><parameter role="keyword">text_column</parameter>&nbsp;:</term>
+	  <listitem><simpara>A column in the data source model to get the strings from for the internal entry.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.24 and above.</para>
+      </note>
+
+      <para>The <methodname>set_entry_text_column</methodname>() method sets the model column
+      which the combo box should use to get strings from to be text_column. The column text_column
+      in the model of combo box must be of type G_TYPE_STRING.</para>
+
+    </refsect2>
 
     <refsect2 id="method-gtkcombobox--get-wrap-width">
       <title>gtk.ComboBox.get_wrap_width</title>
@@ -896,8 +995,14 @@ associated with the combo box.</para>
       </variablelist>
 
       <note>
-	<para>This method is available in PyGTK 2.4 and above.</para>
+        <para>This method is available in PyGTK 2.4 and above.</para>
       </note>
+
+      <warning>
+        <para>This method is deprecated since PyGTK 2.24 and should not be used in newly-written code.
+        Use <link linkend="class-gtkcomboboxtext"><classname>gtk.ComboBoxText</classname></link>
+        instead.</para>
+      </warning>
 
       <para>The <methodname>append_text</methodname>() method appends the
 string specified by <parameter>text</parameter> to the list of strings
@@ -932,8 +1037,14 @@ function.</para>
       </variablelist>
 
       <note>
-	<para>This method is available in PyGTK 2.4 and above.</para>
+        <para>This method is available in PyGTK 2.4 and above.</para>
       </note>
+
+      <warning>
+        <para>This method is deprecated since PyGTK 2.24 and should not be used in newly-written code.
+        Use <link linkend="class-gtkcomboboxtext"><classname>gtk.ComboBoxText</classname></link>
+        instead.</para>
+      </warning>
 
       <para>The <methodname>insert_text</methodname>() method inserts the
 string specified by <parameter>text</parameter> in the combo box <link
@@ -960,8 +1071,14 @@ function.</para>
       </variablelist>
 
       <note>
-	<para>This method is available in PyGTK 2.4 and above.</para>
+        <para>This method is available in PyGTK 2.4 and above.</para>
       </note>
+
+      <warning>
+        <para>This method is deprecated since PyGTK 2.24 and should not be used in newly-written code.
+        Use <link linkend="class-gtkcomboboxtext"><classname>gtk.ComboBoxText</classname></link>
+        instead.</para>
+      </warning>
 
       <para>The <methodname>prepend_text</methodname>() method prepends the
 string specified by <parameter>text</parameter> to the list of strings
@@ -989,8 +1106,14 @@ function.</para>
       </variablelist>
 
       <note>
-	<para>This method is available in PyGTK 2.4 and above.</para>
+        <para>This method is available in PyGTK 2.4 and above.</para>
       </note>
+
+      <warning>
+        <para>This method is deprecated since PyGTK 2.24 and should not be used in newly-written code.
+        Use <link linkend="class-gtkcomboboxtext"><classname>gtk.ComboBoxText</classname></link>
+        instead.</para>
+      </warning>
 
       <para>The <methodname>remove_text</methodname>() method removes the
 string at the index specified by <parameter>position</parameter> in the
@@ -1018,8 +1141,14 @@ function.</para>
       </variablelist>
 
       <note>
-	<para>This method is available in PyGTK 2.6 and above.</para>
+        <para>This method is available in PyGTK 2.6 and above.</para>
       </note>
+
+      <warning>
+        <para>This method is deprecated since PyGTK 2.24 and should not be used in newly-written code.
+        Use <link linkend="class-gtkcomboboxtext"><classname>gtk.ComboBoxText</classname></link>
+        instead.</para>
+      </warning>
 
       <para>The <methodname>get_active_text</methodname>() method returns
 the currently active string or <literal>None</literal> if no entry is
@@ -1351,6 +1480,12 @@ box grabs focus when clicked with the mouse.</para>
       <note>
 	<para>This function is available in PyGTK 2.4 and above.</para>
       </note>
+
+      <warning>
+        <para>This function is deprecated since PyGTK 2.24 and should not be used in newly-written code.
+        Use <link linkend="class-gtkcomboboxtext"><classname>gtk.ComboBoxText</classname></link>
+        instead.</para>
+      </warning>
 
       <para>The <function>gtk.combo_box_new_text</function>() function is a
 convenience function that constructs a new text combo box, which is a <link

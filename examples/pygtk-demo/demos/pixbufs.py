@@ -11,6 +11,9 @@ Look at the Image demo for additional pixbuf usage examples.'''
 
 import os
 import math
+
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 

@@ -6,6 +6,8 @@
 #
 # Requires PyGTK 2.8.0 or later
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 from gtk import gdk

@@ -5,6 +5,8 @@ This is a test of the new gtk builder system.  It is a
 fairly straight forward port of the example distributed with gtk.
 '''
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class BuilderDemo(gtk.Window):

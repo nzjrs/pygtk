@@ -4,6 +4,8 @@
 # new() function from gobject (this is an example of creating objects
 # with the properties interface).
 
+import pygtk
+pygtk.require('2.0')
 import gobject, gtk
 
 def hello(*args):

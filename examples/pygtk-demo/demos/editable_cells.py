@@ -6,6 +6,8 @@ If you're new to the GtkTreeView widgets and associates, look into the
 GtkListStore example first.'''
 # pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 

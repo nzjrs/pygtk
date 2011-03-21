@@ -87,6 +87,24 @@ linkend="method-gtkmenuitem--set-accel-path">set_accel_path</link></methodname>
 	<methodname><link linkend="method-gtkmenuitem--get-accel-path">get_accel_path</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmenuitem--set-label">set_label</link></methodname>
+        <methodparam><parameter role="keyword">label</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmenuitem--get-label">get_label</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmenuitem--set-use-underline">set_use_underline</link></methodname>
+        <methodparam><parameter role="keyword">setting</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkmenuitem--get-use-underline">get_use_underline</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+
     </classsynopsis>
 
   </refsect1>
@@ -138,6 +156,13 @@ linkend="method-gtkmenuitem--set-accel-path">set_accel_path</link></methodname>
 			Available in GTK+ 2.14.
 			</entry>
                     </row>
+                    <row valign="top">
+                        <entry>"label"</entry>
+                        <entry>Read-Write</entry>
+                        <entry>The text for the child label.
+			Available in GTK+ 2.16.
+			</entry>
+                    </row>
 		    <row valign="top">
                         <entry>"right-justified"</entry>
                         <entry>Read-Write</entry>
@@ -153,6 +178,14 @@ linkend="method-gtkmenuitem--set-accel-path">set_accel_path</link></methodname>
                         <entry>The submenu attached to the menu item, or
                         <literal>None</literal> if it has none. This
                         property is available in GTK+ 2.12 and above.</entry>
+                    </row>
+		    <row valign="top">
+                        <entry>"use-underline"</entry>
+                        <entry>Read-Write</entry>
+                        <entry><literal>True</literal> if underlines in the text
+      indicate mnemonics.
+      Available in GTK+ 2.16.
+      </entry>
                     </row>
                 </tbody>
             </tgroup>
@@ -173,6 +206,14 @@ linkend="method-gtkmenuitem--set-accel-path">set_accel_path</link></methodname>
 	  <colspec column="2" colwidth="1in"/>
 	  <colspec column="3" colwidth="4in"/>
 	  <tbody>
+
+            <row valign="top">
+              <entry>"arrow-scaling"</entry>
+              <entry>Read</entry>
+              <entry>Amount of space used up by arrow, relative to the menu item's font size.
+              Allowed values: [0,2].
+              Default value: 0.8</entry>
+            </row>
 
             <row valign="top">
               <entry>"arrow-spacing"</entry>
@@ -615,6 +656,97 @@ with the appropriate accelerator group for the menu item.</para>
 	The <methodname>get_accel_path</methodname>() method gets the accelerator
 	path that was previously set on menu_item.
       </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenuitem--set-label">
+      <title>gtk.MenuItem.set_label</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_label</methodname>
+        <methodparam><parameter role="keyword">label</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">label</parameter>&nbsp;:</term>
+          <listitem><simpara>the text you want to set.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_label</methodname>() method sets the text
+      specified by <parameter>label</parameter> on the menu_item label .</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenuitem--get-label">
+      <title>gtk.MenuItem.get_label</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_label</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>The text in the menu_item label.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>get_label</methodname>() method gets the text in the menu_item label.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenuitem--set-use-underline">
+      <title>gtk.MenuItem.set_use_underline</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_use_underline</methodname>
+        <methodparam><parameter role="keyword">setting</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">setting</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if underlines in the text indicate mnemonics.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_use_underline</methodname>() method gets whether an underline in the text
+      indicates the next character should be used for the mnemonic accelerator key.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkmenuitem--get-use-underline">
+      <title>gtk.MenuItem.get_use_underline</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_use_underline</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if an embedded underline in the label indicates the mnemonic accelerator key.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>get_use_underline</methodname>() method checks if an underline in the text indicates
+      the next character should be used for the mnemonic accelerator key.</para>
 
     </refsect2>
 

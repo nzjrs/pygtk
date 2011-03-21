@@ -61,6 +61,10 @@ linkend="method-gtkstatusbar--remove">remove</link></methodname>
 		       role="keyword">message_id</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusbar--remove-all">remove_all</link></methodname>
+        <methodparam><parameter role="keyword">context_id</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
 	<methodname><link
 linkend="method-gtkstatusbar--set-has-resize-grip">set_has_resize_grip</link></methodname>
 	<methodparam><parameter
@@ -70,6 +74,10 @@ linkend="method-gtkstatusbar--set-has-resize-grip">set_has_resize_grip</link></m
 	<methodname><link
 linkend="method-gtkstatusbar--get-has-resize-grip">get_has_resize_grip</link></methodname>
 	<methodparam></methodparam>  </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusbar--get-message-area">get_message_area</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -378,7 +386,7 @@ with the specified <parameter>message_id</parameter> and
       <title>gtk.Statusbar.remove</title>
 
       <warning>
-	<para>This method is deprecated in PyGTK 2.18 and above</para>
+        <para>This method is deprecated in PyGTK 2.22 and above</para>
       </warning>
 
       <para>This method calls either
@@ -389,6 +397,29 @@ with the specified <parameter>message_id</parameter> and
         widgets (as in <literal>gtk.Container</literal> method).  To remove messages, use
         <link linkend="method-gtkstatusbar--remove-message">gtk.Statusbar.remove_message</link>
         directly.</para>
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusbar--remove-all">
+      <title>gtk.StatusBar.remove_all</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>remove_all</methodname>
+        <methodparam><parameter role="keyword">context_id</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">context_id</parameter>&nbsp;:</term>
+          <listitem><simpara>a context identifier.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>remove_all</methodname>() method forces the removal of all messages
+      from a statusbar's stack with the exact <parameter>context_id</parameter>.</para>
+
     </refsect2>
 
     <refsect2 id="method-gtkstatusbar--set-has-resize-grip">
@@ -431,6 +462,29 @@ displayed</simpara></listitem>
       <para>The <methodname>get_has_resize_grip</methodname>() method
 returns the value of the internal "has_resize_grip" property that determines
 if a resize grip is displayed on the statusbar.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusbar--get-message-area">
+      <title>gtk.StatusBar.get_message_area</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_message_area</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gtkbox"><classname>gtk.Box</classname></link>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_message_area</methodname>() method retrieves
+      the box containing the label widget.</para>
 
     </refsect2>
 

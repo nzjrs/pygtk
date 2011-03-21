@@ -11,6 +11,9 @@ depend on loading external files, your application binary can be self-contained.
 # pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
 import os
+
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 

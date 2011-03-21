@@ -272,6 +272,31 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
         <methodparam><parameter role="keyword">child</parameter></methodparam>
         <methodparam><parameter role="keyword">detachable</parameter></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--set-group-name">set_group_name</link></methodname>
+        <methodparam><parameter role="keyword">group_name</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--get-group-name">get_group_name</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--get-tab-hborder">get_tab_hborder</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--get-tab-vborder">get_tab_vborder</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--get-action-widget">get_action_widget</link></methodname>
+        <methodparam><parameter role="keyword">pack_type</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtknotebook--set-action-widget">set_action_widget</link></methodname>
+        <methodparam><parameter role="keyword">widget</parameter></methodparam>
+        <methodparam><parameter role="keyword">pack_type</parameter></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
 <programlisting>
@@ -342,6 +367,13 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
           <entry>Read-Write</entry>
           <entry>Group ID for tabs drag and drop. Allowed values: >=
           -1. Default value: -1.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"group-name"</entry>
+          <entry>Read-Write</entry>
+          <entry>Group name for tabs drag and drop. Default value: <literal>None</literal>.
+          Available in GTK+ 2.24.</entry>
         </row>
 
 	    <row valign="top">
@@ -523,6 +555,12 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
 	      >= -1 Default value: 0.</entry>
 	    </row>
 	    <row valign="top">
+	      <entry>"reorderable"</entry>
+	      <entry>Read-Write</entry>
+	      <entry>Whether the tab is reorderable by user action or not.
+        Default value: <literal>False</literal>.</entry>
+	    </row>
+	    <row valign="top">
 	      <entry>"tab-expand"</entry>
 	      <entry>Read-Write</entry>
 	      <entry>If <literal>True</literal>, expand the child's tabs.
@@ -542,7 +580,7 @@ linkend="method-gtknotebook--reorder-child">reorder_child</link></methodname>
 	      value: <literal>None</literal>.</entry>
 	    </row>
 	    <row valign="top">
-	      <entry>tab-pack""</entry>
+	      <entry>"tab-pack""</entry>
 	      <entry>Read-Write</entry>
 	      <entry>A pack type indicating whether the child is packed with
 	      reference to the start or end of the parent - one of the <xref
@@ -1306,7 +1344,7 @@ in the notebook.</simpara></listitem>
 
       <para>The <methodname>page_num</methodname>() method returns the index
 of the page which contains the widget specified by
-<parameter>child</parameter> or <literal>None</literal> if no page contains
+<parameter>child</parameter> or -1 if no page contains
 <parameter>child</parameter>.</para>
 
     </refsect2>
@@ -2145,6 +2183,153 @@ to the end of the list.</para>
       
       <para>If you want a notebook to accept drags from other widgets, you
       will have to set your own DnD code to do it.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--set-group-name">
+      <title>gtk.Notebook.set_group_name</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_group_name</methodname>
+        <methodparam><parameter role="keyword">group_name</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">group_name</parameter>&nbsp;:</term>
+          <listitem><simpara>the group name, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.24 and above.</para>
+      </note>
+
+      <para>The <methodname>set_group_name</methodname>() method sets a group name for notebook.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-group-name">
+      <title>gtk.Notebook.get_group_name</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_group_name</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the group name, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.24 and above.</para>
+      </note>
+
+      <para>The <methodname>get_group_name</methodname>() method gets the current group name for notebook.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-tab-hborder">
+      <title>gtk.Notebook.get_tab_hborder</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_tab_hborder</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the horizontal width of a tab border.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_tab_hborder</methodname>() method returns the horizontal width of a tab border.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-tab-vborder">
+      <title>gtk.Notebook.get_tab_vborder</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_tab_vborder</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the vertical width of a tab border.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_tab_vborder</methodname>() method returns the vertical width of a tab border.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--get-action-widget">
+      <title>gtk.Notebook.get_action_widget</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_action_widget</methodname>
+        <methodparam><parameter role="keyword">pack_type</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">pack_type</parameter>&nbsp;:</term>
+          <listitem><simpara>pack type of the action widget to receive.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the action widget with the given pack_type or <literal>None</literal>
+          when this action widget has not been set.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_action_widget</methodname>() method gets one of the action widgets.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtknotebook--set-action-widget">
+      <title>gtk.Notebook.set_action_widget</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_action_widget</methodname>
+        <methodparam><parameter role="keyword">widget</parameter></methodparam>
+        <methodparam><parameter role="keyword">pack_type</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">widget</parameter>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gtkwidget"><classname>gtk.Widget</classname></link>.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">pack_type</parameter>&nbsp;:</term>
+          <listitem><simpara>pack type of the action widget.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_action_widget</methodname>() method sets widget as one of the action widgets. Depending on
+      the pack type the widget will be placed before or after the tabs. You can use a <link linkend="class-gtkbox"><classname>gtk.Box</classname></link>
+      if you need to pack more than one widget on the same side.</para>
+
+      <para>Note that action widgets are "internal" children of the notebook and thus not included in the list returned
+      from <link linkend="method-gtkcontainer--foreach"><methodname>foreach</methodname></link>().</para>
 
     </refsect2>
 

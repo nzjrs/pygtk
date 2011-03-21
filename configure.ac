@@ -3,8 +3,8 @@ AC_PREREQ(2.52)
 
 dnl the pygtk version number
 m4_define(pygtk_major_version, 2)
-m4_define(pygtk_minor_version, 22)
-m4_define(pygtk_micro_version, 0)
+m4_define(pygtk_minor_version, 23)
+m4_define(pygtk_micro_version, 2)
 m4_define(pygtk_version, pygtk_major_version.pygtk_minor_version.pygtk_micro_version)
 
 dnl versions of packages we require ...
@@ -168,7 +168,7 @@ AC_SUBST(PYGOBJECT_PYGDOCS)
 
 dnl atk
 PKG_CHECK_MODULES(ATK, atk >= atk_required_version,
-	have_atk=true, have_atk=false)
+    have_atk=true, have_atk=false)
 AC_SUBST(ATK_CFLAGS)
 AC_SUBST(ATK_LIBS)
 AM_CONDITIONAL(BUILD_ATK, $have_atk)
@@ -178,7 +178,7 @@ fi
 
 dnl pango
 PKG_CHECK_MODULES(PANGO, pango >= pango_required_version,
-	have_pango=true, have_pango=false)
+    have_pango=true, have_pango=false)
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
 AM_CONDITIONAL(BUILD_PANGO, $have_pango)
@@ -222,7 +222,7 @@ if test "x$have_pycairo" = "xtrue"; then
   PKG_CHECK_MODULES(PANGOCAIRO,
           [pangocairo >= pango_required_version,
            pycairo >= pycairo_required_version],
-	  have_pangocairo=true, have_pangocairo=false)
+      have_pangocairo=true, have_pangocairo=false)
   if test ! $have_pangocairo
   then
     AC_MSG_RESULT(no)
@@ -252,7 +252,7 @@ if test "x$have_pycairo" = "xtrue"; then
   fi
 
   PKG_CHECK_MODULES(GTK210, gtk+-2.0 >= 2.10.0,
-	  HAVE_GTK_210="yes", HAVE_GTK_210="no")
+      HAVE_GTK_210="yes", HAVE_GTK_210="no")
   if test "x$HAVE_GTK_210" = "xyes"; then
      gtk_version="2.10"
      have_gtk_210=true
@@ -268,7 +268,7 @@ if test "x$have_pycairo" = "xtrue"; then
 
   dnl check for gtk 2.12
   PKG_CHECK_MODULES(GTK212, gtk+-2.0 >= 2.11.6,
-	  HAVE_GTK_212="yes", HAVE_GTK_212="no")
+      HAVE_GTK_212="yes", HAVE_GTK_212="no")
 
   if test "x$HAVE_GTK_212" = "xyes"; then
      gtk_version="2.12"
@@ -285,7 +285,7 @@ if test "x$have_pycairo" = "xtrue"; then
 
   dnl check for gtk 2.14
   PKG_CHECK_MODULES(GTK214, gtk+-2.0 >= 2.13.8,
-	  HAVE_GTK_214="yes", HAVE_GTK_214="no")
+      HAVE_GTK_214="yes", HAVE_GTK_214="no")
 
   if test "x$HAVE_GTK_214" = "xyes"; then
      gtk_version="2.14"
@@ -302,7 +302,7 @@ if test "x$have_pycairo" = "xtrue"; then
 
   dnl check for gtk 2.16
   PKG_CHECK_MODULES(GTK216, gtk+-2.0 >= 2.16.0,
-	  HAVE_GTK_216="yes", HAVE_GTK_216="no")
+      HAVE_GTK_216="yes", HAVE_GTK_216="no")
 
   if test "x$HAVE_GTK_216" = "xyes"; then
      gtk_version="2.16"
@@ -316,10 +316,10 @@ if test "x$have_pycairo" = "xtrue"; then
   AM_CONDITIONAL(HAVE_GTK_2_16, $have_gtk_216)
   AC_SUBST(HAVE_GTK_2_16)
   AC_DEFINE([HAVE_GTK_2_16], [$have_gtk_216], [If Gtk 2.16 was found])
-  
+
   dnl check for gtk 2.18
   PKG_CHECK_MODULES(GTK218, gtk+-2.0 >= 2.18.0,
-	  HAVE_GTK_218="yes", HAVE_GTK_218="no")
+      HAVE_GTK_218="yes", HAVE_GTK_218="no")
 
   if test "x$HAVE_GTK_218" = "xyes"; then
      gtk_version="2.18"
@@ -336,7 +336,7 @@ if test "x$have_pycairo" = "xtrue"; then
 
   dnl check for gtk 2.20
   PKG_CHECK_MODULES(GTK220, gtk+-2.0 >= 2.20.0,
-	  HAVE_GTK_220="yes", HAVE_GTK_220="no")
+      HAVE_GTK_220="yes", HAVE_GTK_220="no")
 
   if test "x$HAVE_GTK_220" = "xyes"; then
      gtk_version="2.20"
@@ -353,7 +353,7 @@ if test "x$have_pycairo" = "xtrue"; then
 
   dnl check for gtk 2.22
   PKG_CHECK_MODULES(GTK222, gtk+-2.0 >= 2.22.0,
-	  HAVE_GTK_222="yes", HAVE_GTK_222="no")
+      HAVE_GTK_222="yes", HAVE_GTK_222="no")
 
   if test "x$HAVE_GTK_222" = "xyes"; then
      gtk_version="2.22"
@@ -368,9 +368,26 @@ if test "x$have_pycairo" = "xtrue"; then
   AC_SUBST(HAVE_GTK_2_22)
   AC_DEFINE([HAVE_GTK_2_22], [$have_gtk_222], [If Gtk 2.22 was found])
 
+  dnl check for gtk 2.24
+  PKG_CHECK_MODULES(GTK224, gtk+-2.0 >= 2.24.0,
+      HAVE_GTK_224="yes", HAVE_GTK_224="no")
+
+  if test "x$HAVE_GTK_224" = "xyes"; then
+     gtk_version="2.24"
+     have_gtk_224=true
+     PYGTK_CODEGEN_DEFINES="$PYGTK_CODEGEN_DEFINES -DHAVE_GTK_2_24"
+  else
+     AC_MSG_RESULT(no)
+     have_gtk_224=false
+  fi
+
+  AM_CONDITIONAL(HAVE_GTK_2_24, $have_gtk_224)
+  AC_SUBST(HAVE_GTK_2_24)
+  AC_DEFINE([HAVE_GTK_2_24], [$have_gtk_224], [If Gtk 2.24 was found])
+
   dnl libglade
   PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= libglade_required_version],
-	  have_libglade=true, have_libglade=false)
+      have_libglade=true, have_libglade=false)
   AC_SUBST(LIBGLADE_CFLAGS)
   AC_SUBST(LIBGLADE_LIBS)
   AM_CONDITIONAL(BUILD_LIBGLADE, $have_libglade)
@@ -380,7 +397,7 @@ if test "x$have_pycairo" = "xtrue"; then
 
   dnl gtkunixprint
   PKG_CHECK_MODULES(GTKUNIXPRINT, [gtk+-unix-print-2.0 >= gtkunixprint_required_version],
-	  have_gtkunixprint=true, have_gtkunixprint=false)
+      have_gtkunixprint=true, have_gtkunixprint=false)
   AC_SUBST(GTKUNIXPRINT_CFLAGS)
   AC_SUBST(GTKUNIXPRINT_LIBS)
   AM_CONDITIONAL(BUILD_GTKUNIXPRINT, $have_gtkunixprint)
@@ -400,6 +417,7 @@ else
   AM_CONDITIONAL(HAVE_GTK_2_18, false)
   AM_CONDITIONAL(HAVE_GTK_2_20, false)
   AM_CONDITIONAL(HAVE_GTK_2_22, false)
+  AM_CONDITIONAL(HAVE_GTK_2_24, false)
   AM_CONDITIONAL(BUILD_LIBGLADE, false)
   AM_CONDITIONAL(BUILD_GTKUNIXPRINT, false)
   have_pangocairo=false

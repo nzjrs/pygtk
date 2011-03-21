@@ -1151,9 +1151,10 @@ pygtk_main_watch_check(GSource *source)
 #ifdef HAVE_PYSIGNAL_SETWAKEUPFD
     PySignalWatchSource *real_source = (PySignalWatchSource *)source;
     GPollFD *poll_fd = &real_source->fd;
-    int data_size = 0;
+    unsigned char dummy;
+    gssize ret;
     if (poll_fd->revents & G_IO_IN)
-        data_size = read(poll_fd->fd, 0, 1);
+        ret = read(poll_fd->fd, &dummy, 1);
 #endif
 
     state = pyg_gil_state_ensure();
@@ -6950,20 +6951,26 @@ _wrap_gtk_assistant_set_forward_page_func(PyGObject *self, PyObject *args,
                           kwlist, &pyfunc, &pyarg))
         return NULL;
 
-    if (!PyCallable_Check(pyfunc)) {
+    if (pyfunc != Py_None  && !PyCallable_Check(pyfunc)) {
         PyErr_SetString(PyExc_TypeError,
                         "page_func must be a callable object");
         return NULL;
     }
-    cunote = g_new0(PyGtkCustomNotify, 1);
-    cunote->func = pyfunc;
-    cunote->data = pyarg;
-    Py_INCREF(cunote->func);
-    Py_XINCREF(cunote->data);
+
+    if (pyfunc == Py_None) {
+        gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
+                                            NULL, NULL, NULL);
+    } else {
+        cunote = g_new0(PyGtkCustomNotify, 1);
+        cunote->func = pyfunc;
+        cunote->data = pyarg;
+        Py_INCREF(cunote->func);
+        Py_XINCREF(cunote->data);
  
-    gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
-                                        pygtk_assistant_set_forward_page_func_cb,
-                                        cunote, pygtk_custom_destroy_notify);
+        gtk_assistant_set_forward_page_func(GTK_ASSISTANT(self->obj),
+                                            pygtk_assistant_set_forward_page_func_cb,
+                                            cunote, pygtk_custom_destroy_notify);
+    }
 
     Py_INCREF(Py_None);
     return Py_None;

@@ -117,6 +117,22 @@
 	<methodname><link linkend="method-gtktoolitem--toolbar-reconfigured">toolbar_reconfigured</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktoolitem--get-ellipsize-mode">get_ellipsize_mode</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktoolitem--get-text-alignment">get_text_alignment</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktoolitem--get-text-orientation">get_text_orientation</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtktoolitem--get-text-size-group">get_text_size_group</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -1050,8 +1066,105 @@ must be called when the tool item changes what it will do in response to the
 	<link linkend="class-gtktoolbar"><classname>gtk.ToolBar</classname></link>
 	and other
 	<link linkend="class-gtktoolshell"><classname>gtk.ToolShell</classname></link>
-	implementations use this function to notify children, when some aspect of their configuration changes.
+	implementations use this method to notify children, when some aspect of their configuration changes.
       </para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolitem--get-ellipsize-mode">
+      <title>gtk.ToolItem.get_ellipsize_mode</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_ellipsize_mode</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>one of the <xref linkend="pango-ellipsize-mode-constants" endterm="pango-ellipsize-mode-constants-title"></xref>
+          indicating how text should be ellipsized.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_ellipsize_mode</methodname>() method returns the ellipsize mode used
+      for the tool item. Custom subclasses of <link linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+      should call this method to find out how text should be ellipsized.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolitem--get-text-alignment">
+      <title>gtk.ToolItem.get_text_alignment</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_text_alignment</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the horizontal text alignment used for the tool item.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_text_alignment</methodname>() method returns the text alignment used
+      for the tool item. Custom subclasses of <link linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+      should call this method to find out how text should be aligned.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolitem--get-text-orientation">
+      <title>gtk.ToolItem.get_text_orientation</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_text_orientation</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the text orientation used for the tool item.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_text_orientation</methodname>() method returns the text orientation used
+      for the tool item. Custom subclasses of <link linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+      should call this method to find out how text should be orientated.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtktoolitem--get-text-size-group">
+      <title>gtk.ToolItem.get_text_size_group</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_text_size_group</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>a <link linkend="class-gtksizegroup"><classname>gtk.SizeGroup</classname></link>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_text_size_group</methodname>() method returns the size group used for labels
+      in the tool item. Custom subclasses of <link linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link>
+      should call this method and use the size group for labels.</para>
 
     </refsect2>
 

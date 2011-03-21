@@ -4,6 +4,8 @@
 GtkColorSelection lets the user choose a color. GtkColorSelectionDialog is a
 prebuilt dialog containing a GtkColorSelection."""
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class ColorSelectorDemo(gtk.Window):

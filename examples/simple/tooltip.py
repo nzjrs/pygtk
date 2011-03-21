@@ -3,6 +3,8 @@
 """ Simple example of creating a basic window and button.
     Also adds a tooltip. """
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 def hello_cb(widget, main_window):

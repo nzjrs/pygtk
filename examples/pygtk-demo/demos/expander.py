@@ -6,6 +6,8 @@ This is also known as "disclosure triangle".
 '''
 # pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class ExpanderDemo(gtk.Dialog):

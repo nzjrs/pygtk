@@ -613,6 +613,61 @@ of the adjustment to the specified <parameter>value</parameter>.</para>
 
     </refsect2>
 
+    <refsect2 id="method-gtkadjustment--configure">
+      <title>gtk.Adjustment.configure</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>configure</methodname>
+        <methodparam><parameter role="keyword">value</parameter></methodparam>
+        <methodparam><parameter role="keyword">lower</parameter></methodparam>
+        <methodparam><parameter role="keyword">upper</parameter></methodparam>
+        <methodparam><parameter role="keyword">step_increment</parameter></methodparam>
+        <methodparam><parameter role="keyword">page_increment</parameter></methodparam>
+        <methodparam><parameter role="keyword">page_size</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">value</parameter>&nbsp;:</term>
+          <listitem><simpara>the new value.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">lower</parameter>&nbsp;:</term>
+          <listitem><simpara>the new minimum value.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">upper</parameter>&nbsp;:</term>
+          <listitem><simpara>the new maximum value.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">step_increment</parameter>&nbsp;:</term>
+          <listitem><simpara>the new step increment.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">page_increment</parameter>&nbsp;:</term>
+          <listitem><simpara>the new page increment.</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">page_size</parameter>&nbsp;:</term>
+          <listitem><simpara>the new page size.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.14 and above.</para>
+      </note>
+
+      <para>The <methodname>configure</methodname>() method sets all properties of the adjustment at once.</para>
+
+      <para>This method is an alternative to avoid multiple emissions of the "changed" signal. When setting multiple
+      adjustment properties via their individual setters, multiple "changed" signals will be emitted. However, since the
+      emission of the "changed" signal is tied to the emission of the "GObject::notify" signals of the changed properties,
+      it's possible to compress the "changed" signals into one by calling
+      <link linkend="method-gobject--freeze-notify"><methodname>gobject.Gobject.freeze_notify</methodname></link>() and
+      <link linkend="method-gobject--thaw-notify"><methodname>gobject.Gobject.thaw_notify</methodname></link>()
+      around the calls to the individual setters.</para>
+
+    </refsect2>
+
     <refsect2 id="method-gtkadjustment--get-lower">
       <title>gtk.Adjustment.get_lower</title>
 

@@ -133,6 +133,11 @@
 	linkend="method-gtkentrycompletion--get-popup-single-match">get_popup_single_match</link></methodname>
 	<methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+	<methodname><link
+	linkend="method-gtkentrycompletion--get-completion-prefix">get_completion_prefix</link></methodname>
+	<methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
   </refsect1>
@@ -259,7 +264,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkentrycompletion--cursor-on-match">cursor_on_match</link>"</term>
+        <term>"<link linkend="signal-gtkentrycompletion--cursor-on-match">cursor-on-match</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>completion</parameter></methodparam>
@@ -322,6 +327,12 @@
     completions. Their appearance is similar to menuitems, to differentiate
     them clearly from completion strings. When an action is selected, the
     "action-activated" signal is emitted.</para>
+
+    <para>When the user selects a completion, the content of the entry is updated.
+    By default, the content of the entry is replaced by the text column of the model,
+    but this can be overridden by connecting to the "match-selected" signal and
+    updating the entry in the signal handler. Note that you should return
+    <literal>True</literal> from the signal handler to suppress the default behaviour.</para>
 
     <para>A <link
     linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>
@@ -1071,6 +1082,30 @@ window should appear even for a single match.</simpara></listitem>
 returns the value of the "popup-single-match" property. If the value of
 "popup-single-match" property is <literal>True</literal> the completions
 popup window should appear even for a single match.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkentrycompletion--get-completion-prefix ">
+      <title>gtk.EntryCompletion.get_completion_prefix </title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname>get_completion_prefix</methodname>
+	  <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+	<varlistentry>
+	  <term><emphasis>Returns</emphasis>&nbsp;:</term>
+	  <listitem><simpara>The prefix for the current completion.</simpara></listitem>
+	</varlistentry>
+      </variablelist>
+
+      <note>
+	<para>This method is available in PyGTK 2.12 and above.</para>
+      </note>
+
+      <para>The <methodname>get_completion_prefix</methodname>() method
+gets the original text entered by the user that triggered the completion or
+<literal>None</literal> if there's no completion ongoing.</para>
 
     </refsect2>
 

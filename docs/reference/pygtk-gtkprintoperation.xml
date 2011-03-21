@@ -101,7 +101,43 @@
         <methodname><link linkend="method-gtkprintoperation--cancel">cancel</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
-</classsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--set-support-selection">set_support_selection</link></methodname>
+        <methodparam><parameter role="keyword">support_selection</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--get-support-selection">get_support_selection</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--set-has-selection">set_has_selection</link></methodname>
+        <methodparam><parameter role="keyword">has_selection</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--get-has-selection">get_has_selection</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--set-embed-page-setup">set_embed_page_setup</link></methodname>
+        <methodparam><parameter role="keyword">embed</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--get-embed-page-setup">get_embed_page_setup</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--get-n-pages-to-print">get_n_pages_to_print</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--draw-page-finish">draw_page_finish</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkprintoperation--set-defer-drawing">set_defer_drawing</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+    </classsynopsis>
 
   </refsect1>
 
@@ -181,6 +217,16 @@
         </row>
 
         <row valign="top">
+          <entry>"has-selection"</entry>
+          <entry>Read-Write</entry>
+          <entry>Determines whether there is a selection in your application.
+          This can allow your application to print the selection. This is
+          typically used to make a "Selection" button sensitive.
+          Default value: <literal>False</literal>
+          This property is available in GTK+ 2.18 and above.</entry>
+        </row>
+
+        <row valign="top">
           <entry>"job-name"</entry>
           <entry>Read-Write</entry>
           <entry>A string used to identify the job (e.g. in monitoring
@@ -200,6 +246,22 @@
           all pages, the last "draw-page" signal will be for page
           <parameter>n_pages</parameter> - 1. This property is available in
           GTK+ 2.10 and above.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"n-pages-to-print"</entry>
+          <entry>Read</entry>
+          <entry>The number of pages that will be printed.
+          Note that this value is set during print preparation phase
+          (<literal>gtk.PRINT_STATUS_PREPARING</literal>), so this value
+          should never be get before the data generation phase
+          (<literal>gtk.PRINT_STATUS_GENERATING_DATA</literal>).
+          You can connect to the "status-changed" signal and call
+          gtk_print_operation_get_n_pages_to_print() when print status is
+          <literal>gtk.PRINT_STATUS_GENERATING_DATA</literal>. This is
+          typically used to track the progress of print operation.
+          Default value: -1
+          This property is available in GTK+ 2.18 and above.</entry>
         </row>
 
         <row valign="top">
@@ -239,6 +301,15 @@
           See the "status" property for a status value that is suitable for
           programmatic use. This property is available in GTK+ 2.10 and
           above.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"support-selection"</entry>
+          <entry>Read-Write</entry>
+          <entry>If <literal>True</literal>, the print operation will support print
+          of selection. This allows the print dialog to show a "Selection" button.
+          Default value: <literal>False</literal>
+          This property is available in GTK+ 2.18 and above.</entry>
         </row>
 
         <row valign="top">
@@ -293,7 +364,7 @@
 
       <variablelist>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--begin-print">begin-print</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--begin-print">begin-print</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -304,7 +375,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--create-custom-widget">create-custom-widget</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--create-custom-widget">create-custom-widget</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -314,7 +385,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--custom-widget-apply">custom-widget-apply</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--custom-widget-apply">custom-widget-apply</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -325,7 +396,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--done">done</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--done">done</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -336,7 +407,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--draw-page">draw-page</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--draw-page">draw-page</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -348,7 +419,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--end-print">end-print</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--end-print">end-print</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -359,7 +430,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--paginate">paginate</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--paginate">paginate</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>printoperation</parameter></methodparam>
@@ -370,7 +441,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--preview">preview</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--preview">preview</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -383,7 +454,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--request-page-setup">request-page-setup</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--request-page-setup">request-page-setup</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -396,7 +467,7 @@
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link linkend="signal-gtkprintoperation--status-changed">status-changed</link></term>
+        <term>"<link linkend="signal-gtkprintoperation--status-changed">status-changed</link>"</term>
         <listitem>
           <methodsynopsis language="python"><methodname>callback</methodname>
             <methodparam><parameter>operation</parameter></methodparam>
@@ -1152,6 +1223,206 @@ def do_print():
       print operation. This method may be called from a "begin-print",
       "paginate" or "draw-page" signal handler to stop the currently running
       print operation.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--set-support-selection">
+      <title>gtk.PrintOperation.set_support_selection</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_support_selection</methodname>
+        <methodparam><parameter role="keyword">support_selection</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">support_selection</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> to support selection.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_support_selection</methodname>() method sets whether "print selection" is supported by the print operation.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--get-support-selection">
+      <title>gtk.PrintOperation.get_support_selection</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_support_selection</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>whether the application supports print of selection.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_support_selection</methodname>() method gets whether "print selection" is supported by the print operation.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--set-has-selection">
+      <title>gtk.PrintOperation.set_has_selection</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_has_selection</methodname>
+        <methodparam><parameter role="keyword">has_selection</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">has_selection</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> indicates that a selection exists.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_has_selection</methodname>() method sets whether there is a selection to print.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--get-has-selection">
+      <title>gtk.PrintOperation.get_has_selection</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_has_selection</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> when a selection exists.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_has_selection</methodname>() method gets whether there is a selection to print.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--set-embed-page-setup">
+      <title>gtk.PrintOperation.set_embed_page_setup</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_embed_page_setup</methodname>
+        <methodparam><parameter role="keyword">embed</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">embed</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> to embed page setup selection in the GtkPrintDialog.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_embed_page_setup</methodname>() method embeds the page size combo box and orientation combo box
+      into the page setup page. Selected page setup is stored as default page setup in the print operation.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--get-embed-page-setup">
+      <title>gtk.PrintOperation.get_embed_page_setup</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_embed_page_setup</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> when page setup selection combos are embedded.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_embed_page_setup</methodname>() method XXX.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--get-n-pages-to-print">
+      <title>gtk.PrintOperation.get_n_pages_to_print</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_n_pages_to_print</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the number of pages that will be printed.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_n_pages_to_print</methodname>() method returns the number of pages that will be printed.</para>
+
+      <para>Note that this value is set during print preparation phase (<literal>gtk.PRINT_STATUS_PREPARING)</literal>, so this
+      function should never be called before the data generation phase (<literal>gtk.PRINT_STATUS_GENERATING_DATA</literal>). You
+      can connect to the "status-changed" signal and call <methodname>get_n_pages_to_print</methodname>() when print status is
+      <literal>gtk.PRINT_STATUS_GENERATING_DATA</literal>. This is typically used to track the progress of print operation.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--draw-page-finish">
+      <title>gtk.PrintOperation.draw_page_finish</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>draw_page_finish</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>draw_page_finish</methodname>() method signals that the drawing of a particular page is complete.</para>
+
+      <para>It is called after completion of page drawing (e.g. drawing in another thread). If
+      <methodname><link linkend="method-gtkprintoperation--set-defer-drawing">set_defer_drawing</link></methodname>()
+      was called before, then this function has to be called by application. In another case it is called by the library itself.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkprintoperation--set-defer-drawing">
+      <title>gtk.PrintOperation.set_defer_drawing</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_defer_drawing</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_defer_drawing</methodname>() method sets up the print operation to wait for calling of
+      <methodname><link linkend="method-gtkprintoperation--draw-page-finish">draw_page_finish</link></methodname>()
+      from application. It can be used for drawing page in another thread.</para>
+
+      <para>This function must be called in the callback of "draw-page" signal. .</para>
 
     </refsect2>
 

@@ -187,6 +187,16 @@ linkend="function-gtk--clipboard-get">gtk.clipboard_get</link></methodname>
 
     </refsect2>
 
+    <refsect2>
+      <title><link linkend="class-gtkcomboboxtext"><classname>gtk.ComboBoxText</classname></link> Functions</title>
+
+      <programlisting><methodsynopsis language="python">
+	  <methodname><link linkend="function-gtk--combo-box-text-new-with-entry">gtk.combo_box_text_new_with_entry</link></methodname>
+	  <methodparam></methodparam>
+	</methodsynopsis></programlisting>
+
+    </refsect2>
+
      <refsect2>
       <title><link linkend="class-gtkcomboboxentry"><classname>gtk.Container</classname></link> Functions</title>
 
@@ -207,7 +217,7 @@ linkend="function-gtk--clipboard-get">gtk.clipboard_get</link></methodname>
 
       <programlisting><methodsynopsis language="python">
         <methodname><link
-linkend="function-gtk- -alternative-dialog-button-order">gtk.alternative_dialog_button_order</link></methodname>
+linkend="function-gtk--alternative-dialog-button-order">gtk.alternative_dialog_button_order</link></methodname>
         <methodparam><parameter role="keyword">screen</parameter><initializer>None</initializer></methodparam>
   </methodsynopsis></programlisting>
 
@@ -758,7 +768,24 @@ linkend="function-gtk--get-current-event-time">gtk.get_current_event_time</link>
 	</methodsynopsis><methodsynopsis language="python">
 	  <methodname><link
 linkend="function-gtk--init-check">gtk.init_check</link></methodname>
-	</methodsynopsis></programlisting>
+	</methodsynopsis><methodsynopsis language="python">
+	  <methodname><link
+linkend="function-gtk--remove-log-handlers">gtk.remove_log_handlers</link></methodname>
+	</methodsynopsis><methodsynopsis language="python">
+	  <methodname><link
+linkend="function-gtk--add-log-handlers">gtk.add_log_handlers</link></methodname>
+	</methodsynopsis><methodsynopsis language="python">
+	  <methodname><link
+linkend="function-gtk--set-interactive">gtk.set_interactive</link></methodname>
+    <methodparam><parameter>interactive</parameter></methodparam>
+	</methodsynopsis><methodsynopsis language="python">
+    <methodname><link
+linkend="function-gtk--show-uri">gtk.show_uri</link></methodname>
+    <methodparam><parameter role="keyword">screen</parameter></methodparam>
+    <methodparam><parameter role="keyword">uri</parameter></methodparam>
+    <methodparam><parameter role="keyword">timestamp</parameter></methodparam>
+  </methodsynopsis>
+</programlisting>
 
     </refsect2>
 
@@ -1379,6 +1406,85 @@ event.</para>
       <para>The <function>gtk.add_log_handlers</function>() function
       installs the default PyGTK log handlers,</para>
 
+    </refsect2>
+
+    <refsect2 id="function-gtk--set-interactive">
+      <title>gtk.set_interactive</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>gtk.set_interactive</methodname>
+        <methodparam><parameter>interactive</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter>interactive</parameter>&nbsp;:</term>
+          <listitem><simpara>If <literal>True</literal> interactive usage is enabled</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This function is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <function>gtk.set_interactive</function>() function can be used to
+enable or disable interactive usage of PyGTK. By default, interactive usage is switched
+on when importing gtk. You can then use PyGTK from the Python command prompt and see the
+results immediately without having to call <function>gtk.main</function>().</para>
+
+    </refsect2>
+
+    <refsect2 id="function-gtk--show-uri">
+        <title>gtk.show_uri</title>
+
+        <programlisting><methodsynopsis language="python">
+            <methodname>show_uri</methodname>
+            <methodparam><parameter>screen</parameter></methodparam>
+            <methodparam><parameter>uri</parameter></methodparam>
+            <methodparam><parameter>timestamp</parameter></methodparam>
+        </methodsynopsis></programlisting>
+        
+        <variablelist>
+            <varlistentry>
+                <term><parameter role="keyword">screen</parameter>&nbsp;:</term>
+                    <listitem><simpara>A
+                        <link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link>
+                        to show the uri on or <literal>None</literal> for the default screen.
+                    </simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">uri</parameter>&nbsp;:</term>
+                    <listitem><simpara>the uri to show.</simpara></listitem>
+            </varlistentry>
+            <varlistentry>
+                <term><parameter role="keyword">timestamp</parameter>&nbsp;:</term>
+                    <listitem><simpara>a timestamp to prevent focus stealing.
+                    </simpara></listitem>
+            </varlistentry>
+        </variablelist>
+
+        <note>
+            <para>This function is available in PyGTK 2.14 and above.</para>
+        </note>
+
+        <para>
+            The <methodname>show_uri</methodname>() function is a convenience
+            function for launching the default application to show the uri.
+            The uri must be of a form understood by GIO. Typical examples are:
+        </para>
+<programlisting>
+file:///home/gnome/pict.jpg
+http://www.gnome.org
+mailto:me@gnome.org
+</programlisting>
+
+        <para>
+            Ideally the timestamp is taken from the event triggering the
+            <methodname><link linkend="function-gtk--show-uri">gtk.show_uri</link></methodname>()
+            call. If timestamp is not known you can take gtk.gdk.CURRENT_TIME.
+        </para>
+        <para>
+            This function can be used as a replacement for gnome_vfs_url_show() and gnome_url_show().
+        </para>
     </refsect2>
 
   </refsect1>

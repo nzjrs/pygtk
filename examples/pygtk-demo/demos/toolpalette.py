@@ -5,6 +5,8 @@ A tool palette widget shows groups of toolbar items as a grid of icons or a list
 """
 # pygtk version: John Stowers <john.stowers@gmail.com>
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class ToolPaletteDemo(gtk.Window):

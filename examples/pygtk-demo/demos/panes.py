@@ -8,6 +8,8 @@ There are a number of options that can be set for each pane. This test contains
 both a horizontal(HPaned) and a vertical(VPaned) widget, and allows you to
 adjust the options for each side of each widget."""
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class PanedWidgetsDemo(gtk.Window):

@@ -6,7 +6,7 @@
   <title>Introduction</title>
 
   <para>This document describes most of the <literal>PyGTK</literal> version
-  2.0 through 2.10 classes and their methods and associated
+  2.0 through 2.24 classes and their methods and associated
   functions. Deprecated classes, functions and methods have been
   specifically left out of this reference though classes that have become
   deprecated since PyGTK 2.0 have been left in but annotated with a
@@ -25,19 +25,16 @@
   </itemizedlist>
 
   <para>This reference describes the API for <literal>PyGTK</literal> as of
-  version 2.9.0+ and assumes that the additional API changes for version
-  2.10 may not be significant. There will undoubtedly be changes that are
-  not reflected in this reference. The differences in the API between
-  version 2.0 and previous versions are denoted in this reference with a
-  Note that describes the availability of the object, constructor, method or
-  function. Any of these that do not have a notation can be assumed to be
-  available in all versions of PyGTK from 2.0 and up. In the case of
-  properties and signals the availability is dependent on the version of the
-  underlying GTK+, GDK or Pango libraries. These will be annotated
-  appropriately in a similar fashion. The source code must be consulted if
-  this reference and your version of <literal>PyGTK</literal> seem to
-  differ. You are encouraged to use the latest version of
-  <literal>PyGTK</literal> that is available. See the <ulink
+  version 2.24. The differences in the API between version 2.24 and previous
+  versions are denoted in this reference with a Note that describes the
+  availability of the object, constructor, method or function. Any of these
+  that do not have a notation can be assumed to be available in all versions
+  of PyGTK from 2.0 and up. In the case of properties and signals the
+  availability is dependent on the version of the underlying GTK+, GDK or Pango
+  libraries. These will be annotated appropriately in a similar fashion. The
+  source code must be consulted if this reference and your version of
+  <literal>PyGTK</literal> seem to differ. You are encouraged to use the latest
+  version of <literal>PyGTK</literal> that is available. See the <ulink
   url="http://www.pygtk.org"><literal>PyGTK</literal> homepage</ulink> for
   more information and more resources on how to use PyGTK as well as help in
   its development.</para>
@@ -107,244 +104,6 @@
 
   <para>The <literal>gobject</literal> module is documented in the <link
   linkend="pygobject-reference">PyGObject Reference Manual</link>.</para>
-
-  <sect1>
-    <title>Major Changes since Version 1.9</title>
-
-    <para>The major changes in this document since version 1.9
-include:</para>
-
-    <itemizedlist>
-      <listitem>
-	<para>descriptions of new GTK+ 2.2 and 2.4 classes:</para>
-
-	<itemizedlist>
-	  <listitem>
-	    <simpara><link linkend="class-gobjectgboxed"><classname>gobject.GBoxed</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gobjectgpointer"><classname>gobject.GPointer</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gobjectginterface"><classname>gobject.GInterface</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gobjectmaincontext"><classname>gobject.MainContext</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gobjectmainloop"><classname>gobject.MainLoop</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkaction"><classname>gtk.Action</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkactiongroup"><classname>gtk.ActionGroup</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkborder"><classname>gtk.Border</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkclipboard"><classname>gtk.Clipboard</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkcolorbutton"><classname>gtk.ColorButton</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkcombobox"><classname>gtk.ComboBox</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkcomboboxentry"><classname>gtk.ComboBoxEntry</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkentrycompletion"><classname>gtk.EntryCompletion</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkexpander"><classname>gtk.Expander</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkfilechooser"><classname>gtk.FileChooser</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkfilechooserdialog"><classname>gtk.FileChooserDialog</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkfilechooserwidget"><classname>gtk.FileChooserWidget</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkfilefilter"><classname>gtk.FileFilter</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkfontbutton"><classname>gtk.FontButton</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkiconinfo"><classname>gtk.IconInfo</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkicontheme"><classname>gtk.IconTheme</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkradioaction"><classname>gtk.RadioAction</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkradiotoolbutton"><classname>gtk.RadioToolButton</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkseparatortoolitem"><classname>gtk.SeparatorToolItem</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtktoggleaction"><classname>gtk.ToggleAction</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtktoggletoolbutton"><classname>gtk.ToggleToolButton</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtktoolbutton"><classname>gtk.ToolButton</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtktoolitem"><classname>gtk.ToolItem</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtktreemodelfilter"><classname>gtk.TreeModelFilter</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtktreerowreference"><classname>gtk.TreeRowReference</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gtkuimanager"><classname>gtk.UIManager</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gdkatom"><classname>gtk.gdk.Atom</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gdkdisplay"><classname>gtk.gdk.Display</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gdkdisplaymanager"><classname>gtk.gdk.DisplayManager</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-gdkscreen"><classname>gtk.gdk.Screen</classname></link></simpara>
-	  </listitem>
-	  <listitem>
-	    <simpara><link linkend="class-pangofontsetsimple"><classname>pango.FontsetSimple</classname></link></simpara>
-	  </listitem>
-	</itemizedlist>
-
-      </listitem>
-      <listitem>
-        <simpara>Descriptions of new GTK+ 2.6 classes:</simpara>
-
-        <itemizedlist>
-          <listitem>
-            <simpara><link linkend="class-gtkaboutdialog"><classname>gtk.AboutDialog</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkcellrenderercombo"><classname>gtk.CellRendererCombo</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkcellrendererprogress"><classname>gtk.CellRendererProgress</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkcellview"><classname>gtk.CellView</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkfilechooserbutton"><classname>gtk.FileChooserButton</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkiconview"><classname>gtk.IconView</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkmenutoolbutton"><classname>gtk.MenuToolButton</classname></link></simpara>
-          </listitem>
-        </itemizedlist>
-
-      </listitem>
-      <listitem>
-	<para>a reference page in each module chapter containing
-descriptions of or links to all of the functions defined in a module.</para>
-      </listitem>
-      <listitem>
-	<para>a reference page in each module chapter containing
-descriptions of all of the constants defined in a module.</para>
-      </listitem>
-      <listitem>
-	<para>additional methods, functions, properties and signals added
-	for GTK+ 2.2, GTK+ 2.4, GTK+ 2.6, PyGTK 2.2, PyGTK 2.4, PyGTK 2.6,
-	PyGTK 2.8 and PyGTK 2.10.</para>
-      </listitem>
-      <listitem>
-        <simpara>Descriptions of new GTK+ 2.10 classes:</simpara>
-
-        <itemizedlist>
-          <listitem>
-            <simpara><link linkend="class-gtkassistant"><classname>gtk.Assistant</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkcellrendereraccel"><classname>gtk.CellRendererAccel</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkcellrendererspin"><classname>gtk.CellRendererSpin</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtklinkbutton"><classname>gtk.LinkButton</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkpagesetup"><classname>gtk.PageSetup</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkpapersize"><classname>gtk.PaperSize</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkprintcontext"><classname>gtk.PrintContext</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkprintoperation"><classname>gtk.PrintOperation</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkprintoperationpreview"><classname>gtk.PrintOperationPreview</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkprintsettings"><classname>gtk.PrintSettings</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkrecentchooserdialog"><classname>gtk.RecentChooserDialog</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkrecentchoosermenu"><classname>gtk.RecentChooserMenu</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkrecentchooserwidget"><classname>gtk.RecentChooserWidget</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkrecentchooser"><classname>gtk.RecentChooser</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkrecentfilter"><classname>gtk.RecentFilter</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkrecentinfo"><classname>gtk.RecentInfo</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkrecentmanager"><classname>gtk.RecentManager</classname></link></simpara>
-          </listitem>
-          <listitem>
-            <simpara><link linkend="class-gtkstatusicon"><classname>gtk.StatusIcon</classname></link></simpara>
-          </listitem>
-        </itemizedlist>
-
-      </listitem>
-      <listitem>
-	<para>new in PyGTK 2.10, the <link
-	linkend="unixprint-class-reference">Unix print module
-	gtkunixprint</link>.</para>
-      </listitem>
-      <listitem>
-	<para>documentation on the <link
-	linkend="atk-class-reference">Accessibilty Tool Kit
-	atk</link>.</para>
-      </listitem>
-    </itemizedlist>
-
-  </sect1>
 
   <sect1 id="pygtk-reference-format">
     <title>Reference Page Format</title>

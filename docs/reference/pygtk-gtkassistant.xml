@@ -110,6 +110,10 @@
         <methodname><link linkend="method-gtkassistant--update-buttons-state">update_buttons_state</link></methodname>
         <methodparam></methodparam>
       </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkassistant--commit">commit</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
 
 </refsect1>
@@ -1012,6 +1016,29 @@ role="keyword"></parameter>&nbsp;:</term>
       <para>One situation where it can be necessary to call this function is
       when changing a value on the current page affects the future page flow
       of the assistant.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkassistant--commit">
+      <title>gtk.Assistant.commit</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>commit</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>commit</methodname>() method erases the visited
+      page history so the back button is not shown on the current page, and
+      removes the cancel button from subsequent pages.</para>
+
+      <para>Use this when the information provided up to the current page is
+      hereafter deemed permanent and cannot be modified or undone. For example,
+      showing a progress page to track a long-running, unreversible operation
+      after the user has clicked apply on a confirmation page.</para>
 
     </refsect2>
 

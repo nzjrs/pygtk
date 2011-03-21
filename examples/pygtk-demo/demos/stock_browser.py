@@ -7,6 +7,8 @@ handy place to browse the available stock icons and stock items.
 '''
 # pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 import gtk
 import re

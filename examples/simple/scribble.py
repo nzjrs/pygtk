@@ -2,6 +2,8 @@
 
 #this is a simple translation of the scribble example that comes with GTK+
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 pixmap = None

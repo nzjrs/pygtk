@@ -6,6 +6,8 @@ dialog. It is often temporarily shown at the top or bottom of a document.
 '''
 # pygtk version: John Stowers <john.stowers@gmail.com>
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class InfoBarDemo(gtk.Window):

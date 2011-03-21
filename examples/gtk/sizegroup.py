@@ -12,6 +12,8 @@ aligned vertically. We can accomplish this by adding a horizontal
 sizegroup to the labels.
 """
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 def create_label(text):

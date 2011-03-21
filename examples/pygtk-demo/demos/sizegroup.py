@@ -12,6 +12,8 @@ actually be the same size, you need to pack them in such a way that they get
 the size they request and not more. For example, if you are packing your
 widgets into a table, you would not include the GTK_FILL flag."""
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class SizeGroupDemo(gtk.Dialog):

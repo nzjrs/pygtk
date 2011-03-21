@@ -15,20 +15,40 @@
       <ooclass><classname>gtk.CellEditable</classname></ooclass>
       <ooclass><classname>gobject.GInterface</classname></ooclass>
       <methodsynopsis language="python">
-	<methodname><link
-linkend="method-gtkcelleditable--start-editing">start_editing</link></methodname>
-	<methodparam><parameter
-		       role="keyword">event</parameter></methodparam>
+        <methodname><link linkend="method-gtkcelleditable--start-editing">start_editing</link></methodname>
+        <methodparam><parameter role="keyword">event</parameter></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
-	<methodname><link
-linkend="method-gtkcelleditable--editing-done">editing_done</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+        <methodname><link linkend="method-gtkcelleditable--editing-done">editing_done</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
       <methodsynopsis language="python">
-	<methodname><link
-linkend="method-gtkcelleditable--remove-widget">remove_widget</link></methodname>
-	<methodparam></methodparam>  </methodsynopsis>
+        <methodname><link linkend="method-gtkcelleditable--remove-widget">remove_widget</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
     </classsynopsis>
+
+  </refsect1>
+
+  <refsect1 id="properties-gtkeditable">
+    <title>gtk.CellEditable Properties</title>
+
+    <blockquote role="properties">
+      <informaltable pgwide="1" frame="none">
+        <tgroup cols="3">
+          <colspec column="1" colwidth="1in"/>
+          <colspec column="2" colwidth="1in"/>
+          <colspec column="3" colwidth="3.5in"/>
+          <tbody>
+            <row valign="top">
+              <entry>"editing-canceled"</entry>
+              <entry>Read/Write</entry>
+              <entry>If <literal>True</literal> the editing on the cell has been canceled. This property is available in PyGTK 2.22 and above.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </blockquote>
 
   </refsect1>
 
@@ -37,32 +57,23 @@ linkend="method-gtkcelleditable--remove-widget">remove_widget</link></methodname
 
     <variablelist>
       <varlistentry>
-        <term>"<link
-linkend="signal-gtkcelleditable--editing-done">editing-done</link>"</term>
+        <term>"<link linkend="signal-gtkcelleditable--editing-done">editing-done</link>"</term>
         <listitem>
-          <methodsynopsis
-	    language="python"><methodname>callback</methodname>
-            <methodparam><parameter>celleditable</parameter>
-            </methodparam>
-            <methodparam><parameter>user_param1</parameter>
-            </methodparam>
-            <methodparam><parameter>...</parameter>
-            </methodparam>
+          <methodsynopsis language="python"><methodname>callback</methodname>
+            <methodparam><parameter>celleditable</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
         </listitem>
       </varlistentry>
       <varlistentry>
-        <term>"<link
-linkend="signal-gtkcelleditable--remove-widget">remove-widget</link>"</term>
+        <term>"<link linkend="signal-gtkcelleditable--remove-widget">remove-widget</link>"</term>
         <listitem>
-          <methodsynopsis
-	    language="python"><methodname>callback</methodname>
-            <methodparam><parameter>celleditable</parameter>
-            </methodparam>
-            <methodparam><parameter>user_param1</parameter>
-            </methodparam>
-            <methodparam><parameter>...</parameter>
-            </methodparam>
+          <methodsynopsis language="python">
+            <methodname>callback</methodname>
+            <methodparam><parameter>celleditable</parameter></methodparam>
+            <methodparam><parameter>user_param1</parameter></methodparam>
+            <methodparam><parameter>...</parameter></methodparam>
           </methodsynopsis>
         </listitem>
       </varlistentry>
@@ -88,17 +99,14 @@ cell.</para>
       <title>gtk.CellEditable.start_editing</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>start_editing</methodname>
-	  <methodparam><parameter
-			 role="keyword">event</parameter></methodparam>
-	</methodsynopsis></programlisting>
+        <methodname>start_editing</methodname>
+        <methodparam><parameter role="keyword">event</parameter></methodparam>
+      </methodsynopsis></programlisting>
       <variablelist>
-	<varlistentry>
-	  <term><parameter role="keyword">event</parameter>&nbsp;:</term>
-	  <listitem><simpara>A <link
-linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>, or
-<literal>None</literal></simpara></listitem>
-	</varlistentry>
+        <varlistentry>
+          <term><parameter role="keyword">event</parameter>&nbsp;:</term>
+          <listitem><simpara>A <link linkend="class-gdkevent"><classname>gtk.gdk.Event</classname></link>, or <literal>None</literal></simpara></listitem>
+        </varlistentry>
       </variablelist>
 
       <para>The <methodname>start_editing</methodname>() method begins the
@@ -116,8 +124,9 @@ programmatic means, <parameter>event</parameter> may be
       <title>gtk.CellEditable.editing_done</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>editing_done</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+        <methodname>editing_done</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
 
       <para>The <methodname>editing_done</methodname>() method emits the
 "editing_done" signal that notifies the cell renderer to update it's value
@@ -129,8 +138,9 @@ from the cell.</para>
       <title>gtk.CellEditable.remove_widget</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>remove_widget</methodname>
-	  <methodparam></methodparam>  </methodsynopsis></programlisting>
+        <methodname>remove_widget</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
 
       <para>The remove_widget() method emits the "remove_widget" signal that
 indicates that the cell is finished editing, and the celleditable widget may
@@ -147,30 +157,25 @@ now be destroyed.</para>
       <title>The "editing-done" gtk.CellEditable Signal</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>callback</methodname>
-	  <methodparam><parameter>celleditable</parameter></methodparam>
-	  <methodparam><parameter>user_param1</parameter></methodparam>
-	  <methodparam><parameter>...</parameter></methodparam>
-	</methodsynopsis></programlisting>
+        <methodname>callback</methodname>
+        <methodparam><parameter>celleditable</parameter></methodparam>
+        <methodparam><parameter>user_param1</parameter></methodparam>
+        <methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis></programlisting>
 
       <variablelist>
-	<varlistentry>
-	  <term><parameter>celleditable</parameter>&nbsp;:</term>
-	  <listitem><simpara>the celleditable that received the
-signal</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter>user_param1</parameter>&nbsp;:</term>
-          <listitem><simpara>the first user parameter (if any) specified
-with the <link
-linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
-method</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter>...</parameter>&nbsp;:</term>
-	  <listitem><simpara>additional user parameters (if
-any)</simpara></listitem>
-	</varlistentry>
+        <varlistentry>
+          <term><parameter>celleditable</parameter>&nbsp;:</term>
+          <listitem><simpara>the celleditable that received the signal</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified with the <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link> method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
       </variablelist>
 
       <para>The "editing-done" signal is emitted when the <link
@@ -183,30 +188,25 @@ method is called.</para>
       <title>The "remove-widget" gtk.CellEditable Signal</title>
 
       <programlisting><methodsynopsis language="python">
-	  <methodname>callback</methodname>
-	  <methodparam><parameter>celleditable</parameter></methodparam>
-	  <methodparam><parameter>user_param1</parameter></methodparam>
-	  <methodparam><parameter>...</parameter></methodparam>
-	</methodsynopsis></programlisting>
+        <methodname>callback</methodname>
+        <methodparam><parameter>celleditable</parameter></methodparam>
+        <methodparam><parameter>user_param1</parameter></methodparam>
+        <methodparam><parameter>...</parameter></methodparam>
+      </methodsynopsis></programlisting>
 
       <variablelist>
-	<varlistentry>
-	  <term><parameter>celleditable</parameter>&nbsp;:</term>
-	  <listitem><simpara>the celleditable that received the
-signal</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter>user_param1</parameter>&nbsp;:</term>
-          <listitem><simpara>the first user parameter (if any) specified
-with the <link
-linkend="method-gobject--connect"><methodname>connect</methodname>()</link>
-method</simpara></listitem>
-	</varlistentry>
-	<varlistentry>
-	  <term><parameter>...</parameter>&nbsp;:</term>
-	  <listitem><simpara>additional user parameters (if
-any)</simpara></listitem>
-	</varlistentry>
+        <varlistentry>
+          <term><parameter>celleditable</parameter>&nbsp;:</term>
+          <listitem><simpara>the celleditable that received the signal</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>user_param1</parameter>&nbsp;:</term>
+          <listitem><simpara>the first user parameter (if any) specified with the <link linkend="method-gobject--connect"><methodname>connect</methodname>()</link> method</simpara></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><parameter>...</parameter>&nbsp;:</term>
+          <listitem><simpara>additional user parameters (if any)</simpara></listitem>
+        </varlistentry>
       </variablelist>
 
       <para>The "remove-widget" signal is emitted when the cellrenderer for

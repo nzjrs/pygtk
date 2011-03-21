@@ -130,6 +130,14 @@ item (new in PyGTK 2.4)</refpurpose>
         <methodparam></methodparam>
       </methodsynopsis>
       <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkaction--get-always-show-image">get_always_show_image</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkaction--set-always-show-image">set_always_show_image</link></methodname>
+        <methodparam><parameter role="keyword">always_show</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
         <methodname><link linkend="method-gtkaction--set-accel-group">set_accel_group</link></methodname>
         <methodparam><parameter role="keyword">accel_group</parameter></methodparam>
       </methodsynopsis>
@@ -240,6 +248,15 @@ item (new in PyGTK 2.4)</refpurpose>
             </row>
 
             <row valign="top">
+              <entry>"always-show-image"</entry>
+              <entry>Read-Write</entry>
+
+              <entry>If <literal>True</literal>, the action's menu item proxies will ignore the "gtk-menu-images"
+              setting and always show their image, if available. Use this if the menu item would be useless or
+              hard to use without their image.</entry>
+            </row>
+
+            <row valign="top">
               <entry>"hide-if-empty"</entry>
               <entry>Read-Write</entry>
               <entry>If <literal>True</literal>, empty menu proxies for this
@@ -255,6 +272,19 @@ action are hidden.</entry>
                 Note that the stock icon is preferred, if the "stock-id" property holds the id of an existing stock icon.
                 This is an appearance property and thus only applies if "use-action-appearance" is <literal>True</literal>.
                 This property is available in GTK+ 2.16 and above.
+              </entry>
+            </row>
+
+            <row valign="top">
+              <entry>"icon-name"</entry>
+              <entry>Read-Write</entry>
+              <entry>
+                The name of the icon from the icon theme.
+                Note that the stock icon is preferred, if the "stock-id" property holds the id of an existing stock icon
+                and the <link linkend="class-gioicon"><classname>gio.Icon</classname></link> is preferred if
+                the "gicon" property is set.
+                This is an appearance property and thus only applies if "use-action-appearance" is <literal>True</literal>.
+                This property is available in GTK+ 2.10 and above.
               </entry>
             </row>
 
@@ -319,6 +349,16 @@ visible.</entry>
               <entry>Read-Write</entry>
               <entry>If <literal>True</literal>, the toolbar item is
 visible when the toolbar is in a horizontal orientation.</entry>
+            </row>
+
+            <row valign="top">
+              <entry>"visible-overflown"</entry>
+              <entry>Read-Write</entry>
+              <entry>
+                If <literal>True</literal>, toolitem proxies for this
+                action are represented in the toolbar overflow menu.
+                This property is available in GTK+ 2.6 and above.
+              </entry>
             </row>
 
             <row valign="top">
@@ -1276,6 +1316,53 @@ accel path for the action to the value of
 <parameter>accel_path</parameter>. All proxy widgets associated with the
 action will have this accel path, so that their accelerators are
 consistent.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaction--get-always-show-image">
+      <title>gtk.Action.get_always_show_image</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>get_always_show_image</methodname>
+          <methodparam></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>Returns <literal>True</literal> if the action's menu item proxies always show their image, <literal>False</literal> otherwise</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_always_show_image</methodname>() method returns whether the action's
+menu item proxies will ignore the "gtk-menu-images" setting and always show their image, if available.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkaction--set-always-show-image">
+      <title>gtk.Action.set_always_show_image</title>
+
+      <programlisting><methodsynopsis language="python">
+          <methodname>set_always_show_image</methodname>
+          <methodparam><parameter role="keyword">always_show</parameter></methodparam>
+        </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter>always_show</parameter>&nbsp;:</term>
+          <listitem><simpara>If <literal>True</literal> the action's menu item proxies will always show their image</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_always_show_image</methodname>() method sets whether the action's
+menu item proxies will ignore the "gtk-menu-images" setting and always show their image, if available.
+Use this if the menu item would be useless or hard to use without their image.</para>
 
     </refsect2>
 

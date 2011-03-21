@@ -28,6 +28,16 @@
         <methodparam><parameter role="keyword">buffer</parameter></methodparam>
     </methodsynopsis>
     <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkbuilder--add-objects-from-file">add_objects_from_file</link></methodname>
+        <methodparam><parameter role="keyword">filename</parameter></methodparam>
+        <methodparam><parameter role="keyword">object_ids</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkbuilder--add-objects-from-string">add_objects_from_string</link></methodname>
+        <methodparam><parameter role="keyword">buffer</parameter></methodparam>
+        <methodparam><parameter role="keyword">object_ids</parameter></methodparam>
+    </methodsynopsis>
+    <methodsynopsis language="python">
         <methodname><link linkend="method-gtkbuilder--connect-signals">connect_signals</link></methodname>
         <methodparam><parameter role="keyword">object</parameter></methodparam>
         <methodparam><parameter role="keyword">user_data</parameter><initializer>None</initializer></methodparam>
@@ -115,9 +125,9 @@
             is an auxiliary object that reads textual descriptions of a user interface and
             instantiates the described objects. To pass a description to a
             <link linkend="class-gtkbuilder"><classname>gtk.Builder</classname></link>, call
-            <methodname><link linkend="method-gtkbuilder--add-from-file">add_from_file</link></methodname> or
-            <methodname><link linkend="method-gtkbuilder--add-from-string">add_from_string</link></methodname>.
-            These functions can be called multiple times; the builder merges the content of all descriptions.
+            <methodname><link linkend="method-gtkbuilder--add-from-file">add_from_file</link></methodname>() or
+            <methodname><link linkend="method-gtkbuilder--add-from-string">add_from_string</link></methodname>().
+            These methods can be called multiple times; the builder merges the content of all descriptions.
         </para>
         <para>
             A <link linkend="class-gtkbuilder"><classname>gtk.Builder</classname></link>
@@ -125,21 +135,21 @@
             when it is finalized. This finalization can cause the destruction of non-widget objects
             or widgets which are not contained in a toplevel window. For toplevel windows constructed
             by a builder, it is the responsibility of the user to call
-            <methodname><link linkend="method-gtkwidget--destroy">gtk.Widget.destroy</link></methodname>
+            <methodname><link linkend="method-gtkwidget--destroy">gtk.Widget.destroy</link></methodname>()
             to get rid of them and all the widgets they contain.
         </para>
         <para>
-            The functions <methodname><link linkend="method-gtkbuilder--get-object">get_object</link></methodname>
-            and <methodname><link linkend="method-gtkbuilder--get-objects">get_objects</link></methodname>
+            The methods <methodname><link linkend="method-gtkbuilder--get-object">get_object</link></methodname>()
+            and <methodname><link linkend="method-gtkbuilder--get-objects">get_objects</link></methodname>()
             can be used to access the widgets in the interface by the names assigned to them inside the UI description.
-            Toplevel windows returned by these functions will stay around until the user explicitly
-            destroys them with gtk_widget_destroy(). Other widgets will either be part of a larger
-            hierarchy constructed by the builder (in which case you should not have to worry about their
-            lifecycle), or without a parent, in which case they have to be added to some container to make
-            use of them.
+            Toplevel windows returned by these methods will stay around until the user explicitly
+            destroys them with <methodname><link linkend="method-gtkwidget--destroy">gtk.Widget.destroy</link></methodname>().
+            Other widgets will either be part of a larger hierarchy constructed by the builder (in which case you
+            should not have to worry about their lifecycle), or without a parent, in which case they have to be added
+            to some container to make use of them.
         </para>
         <para>
-            The function <methodname><link linkend="method-gtkbuilder--connect-signals">connect_signals</link></methodname>
+            The methods <methodname><link linkend="method-gtkbuilder--connect-signals">connect_signals</link></methodname>()
             and variants thereof can be used to connect handlers to the named signals in the description.
         </para>
         <refsect2 id="gtkbuilder-ui-definition">
@@ -153,56 +163,70 @@
             </para>
 <programlisting>
 <![CDATA[
-<!ELEMENT interface object* >
+<!ELEMENT interface (requires|object)* >
 <!ELEMENT object    (property|signal|child|ANY)* >
 <!ELEMENT property  PCDATA >
 <!ELEMENT signal    EMPTY >
+<!ELEMENT requires  EMPTY >
 <!ELEMENT child     (object|ANY*) >
-
-<!ATTLIST interface  domain         	    #IMPLIED >
-<!ATTLIST object     id             	    #REQUIRED
-                     class          	    #IMPLIED
-                     type-func      	    #IMPLIED
-                     constructor    	    #IMPLIED >
-<!ATTLIST property   name           	    #REQUIRED
-                     translatable   	    #IMPLIED 
-                     comments               #IMPLIED
-                     context                #IMPLIED >
-<!ATTLIST signal     name           	    #REQUIRED
-                     handler        	    #REQUIRED
-                     after          	    #IMPLIED
-                     swapped        	    #IMPLIED
-                     object         	    #IMPLIED
-                     last_modification_time #IMPLIED >
-<!ATTLIST child      type           	    #IMPLIED
-                     internal-child 	    #IMPLIED >
+<!ATTLIST interface domain                 #IMPLIED >
+<!ATTLIST object    id                     #REQUIRED
+                    class                  #REQUIRED
+                    type-func              #IMPLIED
+                    constructor            #IMPLIED >
+<!ATTLIST requires  lib                    #REQUIRED
+                    version                #REQUIRED >
+<!ATTLIST property  name                   #REQUIRED
+                    translatable           #IMPLIED 
+                    comments               #IMPLIED
+                    context                #IMPLIED >
+<!ATTLIST signal    name                   #REQUIRED
+                    handler                #REQUIRED
+                    after                  #IMPLIED
+                    swapped                #IMPLIED
+                    object                 #IMPLIED
+                    last_modification_time #IMPLIED >
+<!ATTLIST child     type                   #IMPLIED
+                    internal-child         #IMPLIED >
 ]]>
 </programlisting>
             <para>
                 The toplevel element is &#60;interface&#62;. It optionally takes a "domain" attribute,
                 which will make the builder look for translated strings using dgettext() in the domain
                 specified. This can also be done by calling
-                <methodname><link linkend="method-gtkbuilder--set-translation-domain">set_translation_domain</link></methodname>
+                <methodname><link linkend="method-gtkbuilder--set-translation-domain">set_translation_domain</link></methodname>()
                 on the builder. Objects are described by &#60;object&#62; elements, which can contain &#60;property&#62;
                 elements to set properties, &#60;signal&#62; elements which connect signals to handlers, and &#60;child&#62;
                 elements, which describe child objects (most often widgets inside a container, but also e.g. actions
                 in an action group, or columns in a tree model). A &#60;child&#62; element contains an &#60;object&#62;
-                element which describes the child object.
+                element which describes the child object. The target toolkit version(s) are described by &#60;requires&#62;
+                elements, the "lib" attribute specifies the widget library in question (currently the only supported value
+                is "gtk+") and the "version" attribute specifies the target version in the form "&#60;major&#62;.&#60;minor&#62;".
+                The builder will error out if the version requirements are not met.
             </para>
             <para>
                 Typically, the specific kind of object represented by an &#60;object&#62; element is specified by the
                 "class" attribute. If the type has not been loaded yet, GTK+ tries to find the _get_type() from the
                 class name by applying heuristics. This works in most cases, but if necessary, it is possible to specify
-                the name of the _get_type() explictly with the "type-func" attribute. As a special case, GtkBuilder allows
-                to use an object that has been constructed by a GtkUIManager in another part of the UI definition by
-                specifying the id of the GtkUIManager in the "constructor" attribute and the name of the object
-                in the "id" attribute.
+                the name of the _get_type() explictly with the "type-func" attribute. As a special case,
+                <link linkend="class-gtkbuilder"><classname>gtk.Builder</classname></link> allows to use an object that
+                has been constructed by a <link linkend="class-gtkuimanager"><classname>gtk.UIManager</classname></link>
+                in another part of the UI definition by specifying the id of the
+                <link linkend="class-gtkuimanager"><classname>gtk.UIManager</classname></link> in the "constructor" attribute
+                and the name of the object in the "id" attribute.
             </para>
             <para>
                 Objects must be given a name with the "id" attribute, which allows the application to retrieve them from
-                the builder with gtk_builder_get_object(). An id is also necessary to use the object as property
-                value in other parts of the UI definition.
+                the builder with <methodname><link linkend="method-gtkbuilder--get-object">get_object</link></methodname>().
+                An id is also necessary to use the object as property value in other parts of the UI definition.
             </para>
+            <note>
+                Prior to GTK+ 2.20, <link linkend="class-gtkbuilder"><classname>gtk.Builder</classname></link>
+                was setting the "name" property of constructed widgets to the "id" attribute. In GTK+ 2.20 or newer, you
+                have to use <link linkend="method-gtkbuildable--set-name"><methodname>gtk.Buildable.get_name</methodname></link>()
+                instead of <link linkend="method-gtkwidget--get-name"><methodname>gtk.Widget.get_name</methodname></link>()
+                to obtain the "id", or set the "name" property in your UI definition.
+            </note>
             <para>
                 Setting properties of objects is pretty straightforward with the &#60;property&#62;element: the "name"
                 attribute specifies the name of the property, and the content of the element specifies the value. If the
@@ -218,27 +242,29 @@
                 <literal>True</literal>, strings like "FALSE, "f", "no", "n", "0" are interpreted as <literal>False</literal>),
                 enumerations (can be specified by their name, nick or integer value), flags (can be specified by their
                 name, nick, integer value, optionally combined with "|", e.g. "gtk.VISIBLE|gtk.REALIZED")
-                and colors (in a format understood by gdk_color_parse()). Objects can be referred to by their name.
+                and colors (in a format understood by <link linkend="function-gdk--color-parse"><methodname>gtk.gdk.color_parse</methodname></link>()).
+                Objects can be referred to by their name.
                 Pixbufs can be specified as a filename of an image file to load. In general, GtkBuilder allows
-                forward references to objects — an object doesn't have to constructed before it can be referred to.
+                forward references to objects — an object doesn't have to be constructed before it can be referred to.
                 The exception to this rule is that an object has to be constructed before it can be used as the value
                 of a construct-only property.
             </para>
             <para>
                 Signal handlers are set up with the &#60;signal&#62; element. The "name" attribute specifies the name
                 of the signal, and the "handler" attribute specifies the function to connect to the signal. By default,
-                GTK+ tries to find the handler using g_module_symbol(), but this can be changed by passing a custom
-                GtkBuilderConnectFunc to gtk_builder_connect_signals_full(). The remaining attributes, "after", "swapped"
+                GTK+ tries to find the handler using g_module_symbol()<!--NOT IMPLEMENTED IN PYGTK:, but this can be changed by passing a custom
+                GtkBuilderConnectFunc to gtk_builder_connect_signals_full()-->. The remaining attributes, "after", "swapped"
                 and "object", have the same meaning as the corresponding parameters of the g_signal_connect_object() or
                 g_signal_connect_data() functions. A "last_modification_time" attribute is also allowed, but it does not
                 have a meaning to the builder.
             </para>
             <para>
                 Sometimes it is necessary to refer to widgets which have implicitly been constructed by GTK+ as part of
-                a composite widget, to set properties on them or to add further children (e.g. the vbox of a GtkDialog).
+                a composite widget, to set properties on them or to add further children (e.g. the vbox of a
+                <link linkend="class-gtkdialog"><classname>gtk.Dialog</classname></link>).
                 This can be achieved by setting the "internal-child" propery of the &#60;child&#62; element to a true value.
-                Note that GtkBuilder still requires an &#60;object&#62; element for the internal child, even if it has
-                already been constructed.
+                Note that <link linkend="class-gtkbuilder"><classname>gtk.Builder</classname></link>
+                still requires an &#60;object&#62; element for the internal child, even if it has already been constructed.
             </para>
             <para>
                 A number of widgets have different places where a child can be added (e.g. tabs vs. page content in
@@ -281,6 +307,11 @@
                 custom element in a &#60;child&#62; element gets parsed by the custom tag handler of
                 the parent object, while a custom element in an &#60;object&#62; element gets parsed
                 by the custom tag handler of the object.
+            </para>
+
+            <para>
+              These XML fragments are explained in the documentation of their respective objects in the
+              GTK+ Reference Manual.
             </para>
         </refsect2>
     </refsect1>
@@ -364,6 +395,87 @@
                 The <methodname>add_from_string</methodname>() method parses a string containing a GtkBuilder UI
                 definition and merges it with the current contents of builder.
             </para>
+        </refsect2>
+
+        <refsect2 id="method-gtkbuilder--add-objects-from-file">
+            <title>gtk.Builder.add_objects_from_file</title>
+
+            <programlisting><methodsynopsis language="python">
+                <methodname>add_objects_from_file</methodname>
+                <methodparam><parameter>filename</parameter></methodparam>
+                <methodparam><parameter>object_ids</parameter></methodparam>
+            </methodsynopsis></programlisting>
+
+            <variablelist>
+                <varlistentry>
+                    <term><parameter role="keyword">filename</parameter>&nbsp;:</term>
+                        <listitem><simpara>The name of the file to parse.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><parameter role="keyword">object_ids</parameter>&nbsp;:</term>
+                        <listitem><simpara>A list of objects to build.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>A positive value on success, 0 if an error occurred.</simpara></listitem>
+                </varlistentry>
+            </variablelist>
+
+            <note>
+                <para>This method is available in PyGTK 2.14 and above.</para>
+            </note>
+
+            <para>
+                The <methodname>add_objects_from_file</methodname>() method parses a file containing a GtkBuilder UI
+                definition building only the requested objects and merges it with the current contents of builder.
+            </para>
+            <para>
+                Note that if you are adding an object that depends on an object that is not its child (for instance
+                a <link linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link> that depends on its
+                <link linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>), you have to
+                explicitely list all of them in <parameter>object_ids</parameter>.
+            </para>
+        </refsect2>
+
+        <refsect2 id="method-gtkbuilder--add-objects-from-string">
+            <title>gtk.Builder.add_objects_from_string</title>
+
+            <programlisting><methodsynopsis language="python">
+                <methodname>add_objects_from_string</methodname>
+                <methodparam><parameter>buffer</parameter></methodparam>
+                <methodparam><parameter>object_ids</parameter></methodparam>
+            </methodsynopsis></programlisting>
+
+            <variablelist>
+                <varlistentry>
+                    <term><parameter role="keyword">buffer</parameter>&nbsp;:</term>
+                        <listitem><simpara>The string to parse.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><parameter role="keyword">object_ids</parameter>&nbsp;:</term>
+                        <listitem><simpara>A list of objects to build.</simpara></listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><emphasis>Returns</emphasis>&nbsp;:</term>
+                        <listitem><simpara>A positive value on success, 0 if an error occurred.</simpara></listitem>
+                </varlistentry>
+            </variablelist>
+
+            <note>
+                <para>This method is available in PyGTK 2.14 and above.</para>
+            </note>
+
+            <para>
+                The <methodname>add_objects_from_string</methodname>() method parses a string containing a GtkBuilder UI
+                definition building only the requested objects and merges it with the current contents of builder.
+            </para>
+            <para>
+                Note that if you are adding an object that depends on an object that is not its child (for instance
+                a <link linkend="class-gtktreeview"><classname>gtk.TreeView</classname></link> that depends on its
+                <link linkend="class-gtktreemodel"><classname>gtk.TreeModel</classname></link>), you have to
+                explicitely list all of them in <parameter>object_ids</parameter>.
+            </para>
+
         </refsect2>
 
         <refsect2 id="method-gtkbuilder--connect-signals">

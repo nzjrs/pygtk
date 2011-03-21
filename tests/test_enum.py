@@ -1,21 +1,24 @@
-import pickle
 import unittest
 import warnings
 
-# FIXME: Do not import this
+from gobject import GEnum, GFlags, GObject, GType, PARAM_READWRITE
 from common import gobject, atk, gtk, gdk
 
-
-class PObject(gobject.GObject):
-    enum = gobject.property(type=gtk.WindowType, default=gtk.WINDOW_TOPLEVEL)
-    enum2 = gobject.property(type=gtk.WindowType, default=int(gtk.WINDOW_TOPLEVEL))
-    flags = gobject.property(type=gtk.AttachOptions, default=gtk.EXPAND)
-    flags2 = gobject.property(type=gtk.AttachOptions, default=int(gtk.EXPAND))
-
+class PObject(GObject):
+    __gproperties__ = {
+        'enum': (gtk.WindowType, 'blurb', 'description',
+                 gtk.WINDOW_TOPLEVEL, PARAM_READWRITE),
+        'enum2': (gtk.WindowType, 'blurb', 'description',
+                  int(gtk.WINDOW_TOPLEVEL), PARAM_READWRITE),
+        'flags': (gtk.AttachOptions, 'blurb', 'description',
+                  gtk.EXPAND, PARAM_READWRITE),
+        'flags2': (gtk.AttachOptions, 'blurb', 'description',
+                   int(gtk.EXPAND), PARAM_READWRITE),
+    }
 
 class EnumTest(unittest.TestCase):
     def testEnums(self):
-        self.failUnless(issubclass(gobject.GEnum, int))
+        self.failUnless(issubclass(GEnum, int))
         self.failUnless(isinstance(atk.LAYER_OVERLAY, atk.Layer))
         self.failUnless(isinstance(atk.LAYER_OVERLAY, int))
         self.failUnless('LAYER_OVERLAY' in repr(atk.LAYER_OVERLAY))
@@ -53,24 +56,24 @@ class EnumTest(unittest.TestCase):
         self.failUnless('WINDOW_TOPLEVEL' in repr(wtype))
 
     def testAtkObj(self):
-        obj = atk.NoOpObject(gobject.GObject())
+        obj = atk.NoOpObject(GObject())
         self.assertEquals(obj.get_role(), atk.ROLE_INVALID)
 
     def testGParam(self):
         win = gtk.Window()
-        enums = filter(lambda x: gobject.GType.is_a(x.value_type, gobject.GEnum),
+        enums = filter(lambda x: GType.is_a(x.value_type, GEnum),
                        gobject.list_properties(win))
         self.failUnless(enums)
         enum = enums[0]
         self.failUnless(hasattr(enum, 'enum_class'))
-        self.failUnless(issubclass(enum.enum_class, gobject.GEnum))
+        self.failUnless(issubclass(enum.enum_class, GEnum))
 
     def testWeirdEnumValues(self):
         self.assertEquals(int(gdk.NOTHING), -1)
         self.assertEquals(int(gdk.BUTTON_PRESS), 4)
 
     def testParamSpec(self):
-        props = filter(lambda prop: gobject.GType.is_a(prop.value_type, gobject.GEnum),
+        props = filter(lambda prop: GType.is_a(prop.value_type, GEnum),
                        gobject.list_properties(gtk.Window))
         self.failUnless(len(props)>= 6)
         props = filter(lambda prop: prop.name == 'type', props)
@@ -85,7 +88,7 @@ class EnumTest(unittest.TestCase):
 
     def testOutofBounds(self):
         val = gtk.icon_size_register('fake', 24, 24)
-        self.failUnless(isinstance(val, gobject.gobject.GEnum))
+        self.failUnless(isinstance(val, gobject.GEnum))
         self.assertEquals(int(val), 7)
         self.failUnless('7' in repr(val))
         self.failUnless('GtkIconSize' in repr(val))
@@ -98,17 +101,9 @@ class EnumTest(unittest.TestCase):
         self.failUnless(isinstance(default, gtk.WindowType))
         self.assertEqual(default, gtk.WINDOW_TOPLEVEL)
 
-    def testPickling(self):
-        values = [getattr(gtk, name) for name in dir(gtk)
-                  if isinstance(getattr(gtk, name), gobject.gobject.GEnum)]
-        for protocol in range(0, pickle.HIGHEST_PROTOCOL + 1):
-            for value in values:
-                self.assertEqual(value, pickle.loads(pickle.dumps(value, protocol)))
-
-
 class FlagsTest(unittest.TestCase):
     def testFlags(self):
-        self.failUnless(issubclass(gobject.GFlags, int))
+        self.failUnless(issubclass(GFlags, int))
         self.failUnless(isinstance(gdk.BUTTON_PRESS_MASK, gdk.EventMask))
         self.failUnless(isinstance(gdk.BUTTON_PRESS_MASK, int))
         self.assertEquals(gdk.BUTTON_PRESS_MASK, 256)
@@ -116,7 +111,7 @@ class FlagsTest(unittest.TestCase):
         self.assertNotEquals(gdk.BUTTON_PRESS_MASK, -256)
         self.assertNotEquals(gdk.BUTTON_PRESS_MASK, gdk.BUTTON_RELEASE_MASK)
 
-        self.assertEquals(gdk.EventMask.__bases__[0], gobject.GFlags)
+        self.assertEquals(gdk.EventMask.__bases__[0], GFlags)
         self.assertEquals(len(gdk.EventMask.__flags_values__), 22)
 
     def testComparisionWarning(self):
@@ -131,7 +126,7 @@ class FlagsTest(unittest.TestCase):
 
     def testFlagOperations(self):
         a = gdk.BUTTON_PRESS_MASK
-        self.failUnless(isinstance(a, gobject.GFlags))
+        self.failUnless(isinstance(a, GFlags))
         self.assertEquals(a.first_value_name, 'GDK_BUTTON_PRESS_MASK')
         self.assertEquals(a.first_value_nick, 'button-press-mask')
         self.assertEquals(a.value_names, ['GDK_BUTTON_PRESS_MASK'],
@@ -139,7 +134,7 @@ class FlagsTest(unittest.TestCase):
         self.assertEquals(a.value_nicks, ['button-press-mask'],
                           a.value_names)
         b = gdk.BUTTON_PRESS_MASK | gdk.BUTTON_RELEASE_MASK
-        self.failUnless(isinstance(b, gobject.GFlags))
+        self.failUnless(isinstance(b, GFlags))
         self.assertEquals(b.first_value_name, 'GDK_BUTTON_PRESS_MASK')
         self.assertEquals(b.first_value_nick, 'button-press-mask')
         self.assertEquals(b.value_names, ['GDK_BUTTON_PRESS_MASK',
@@ -149,7 +144,7 @@ class FlagsTest(unittest.TestCase):
         c = (gdk.BUTTON_PRESS_MASK |
              gdk.BUTTON_RELEASE_MASK |
              gdk.ENTER_NOTIFY_MASK)
-        self.failUnless(isinstance(c, gobject.GFlags))
+        self.failUnless(isinstance(c, GFlags))
         self.assertEquals(c.first_value_name, 'GDK_BUTTON_PRESS_MASK')
         self.assertEquals(c.first_value_nick, 'button-press-mask')
         self.assertEquals(c.value_names,
@@ -181,8 +176,8 @@ class FlagsTest(unittest.TestCase):
         warnings.resetwarnings()
 
     def testParamSpec(self):
-        props = filter(lambda x: gobject.GType.is_a(x.value_type, gobject.GFlags),
-                       gtk.container_class_list_child_properties(gtk.Table))
+        props = filter(lambda x: GType.is_a(x.value_type, GFlags),
+                       gtk.Table.list_child_properties())
         self.failUnless(len(props) >= 2)
         pspec = props[0]
         klass = pspec.flags_class

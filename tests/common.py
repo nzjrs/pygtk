@@ -1,6 +1,8 @@
 import os
 import sys
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 
 def importModules(buildDir, srcDir):

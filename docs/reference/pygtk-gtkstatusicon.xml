@@ -106,7 +106,43 @@
         <methodname><link linkend="method-gtkstatusicon--set-from-gicon">set_from_gicon</link></methodname>
         <methodparam><parameter role="keyword">gicon</parameter></methodparam>
       </methodsynopsis>
-</classsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-name">set_name</link></methodname>
+        <methodparam><parameter role="keyword">name</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-title">set_title</link></methodname>
+        <methodparam><parameter role="keyword">title</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--get-title">get_title</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-has-tooltip">set_has_tooltip</link></methodname>
+        <methodparam><parameter role="keyword">has_tooltip</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--get-has-tooltip">get_has_tooltip</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-tooltip-text">set_tooltip_text</link></methodname>
+        <methodparam><parameter role="keyword">text</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--get-tooltip-text">get_tooltip_text</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--set-tooltip-markup">set_tooltip_markup</link></methodname>
+        <methodparam><parameter role="keyword">markup</parameter></methodparam>
+      </methodsynopsis>
+      <methodsynopsis language="python">
+        <methodname><link linkend="method-gtkstatusicon--get-tooltip-markup">get_tooltip_markup</link></methodname>
+        <methodparam></methodparam>
+      </methodsynopsis>
+    </classsynopsis>
 
 <programlisting>
 <emphasis role="bold">Functions</emphasis>
@@ -226,6 +262,32 @@
           <entry>Read</entry>
           <entry>The representation being used for image data. Default
           value: <literal>gtk.IMAGE_EMPTY</literal>.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"title"</entry>
+          <entry>Read-Write</entry>
+          <entry>The title of this tray icon. This should be a short, human-readable,
+          localized string describing the tray icon. It may be used by tools like
+          screen readers to render the tray icon.
+          Default value: <literal>None</literal>.
+          This property is available in GTK+ 2.18 and above.</entry>        </row>
+
+        <row valign="top">
+          <entry>"tooltip-markup"</entry>
+          <entry>Read-Write</entry>
+          <entry>Sets the text of the tooltip to be the given string, which is marked up
+          with the Pango text markup language.
+          Default value: <literal>None</literal>.
+          This property is available in GTK+ 2.16 and above.</entry>
+        </row>
+
+        <row valign="top">
+          <entry>"tooltip-text"</entry>
+          <entry>Read-Write</entry>
+          <entry>Sets the text of tooltip to be the given string.
+          Default value: <literal>None</literal>.
+          This property is available in GTK+ 2.16 and above.</entry>
         </row>
 
         <row valign="top">
@@ -1130,6 +1192,216 @@
 
     </refsect2>
 
+    <refsect2 id="method-gtkstatusicon--set-name">
+      <title>gtk.StatusIcon.set_name</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_name</methodname>
+        <methodparam><parameter role="keyword">name</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">name</parameter>&nbsp;:</term>
+          <listitem><simpara>the name.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_name</methodname>() method sets the name of this tray icon.
+      This should be a string identifying this icon. It is may be used for sorting the icons
+      in the tray and will not be shown to the user.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--set-title">
+      <title>gtk.StatusIcon.set_title</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_title</methodname>
+        <methodparam><parameter role="keyword">title</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">title</parameter>&nbsp;:</term>
+          <listitem><simpara>the title.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>set_title</methodname>() method sets the title of this tray icon.
+      This should be a short, human-readable, localized string describing the tray icon. It
+      may be used by tools like screen readers to render the tray icon.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--get-title">
+      <title>gtk.StatusIcon.get_title</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_title</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the title of the status icon.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.22 and above.</para>
+      </note>
+
+      <para>The <methodname>get_title</methodname>() method gets the title of this tray icon.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--set-has-tooltip">
+      <title>gtk.StatusIcon.set_has_tooltip</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_has_tooltip</methodname>
+        <methodparam><parameter role="keyword">has_tooltip</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">has_tooltip</parameter>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the status icon has a tooltip, <literal>False</literal> otherwise.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_has_tooltip</methodname>() method sets the "has-tooltip" property.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--get-has-tooltip">
+      <title>gtk.StatusIcon.get_has_tooltip</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_has_tooltip</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara><literal>True</literal> if the status icon has a tooltip, <literal>False</literal> otherwise..</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>get_has_tooltip</methodname>() method returns the current value of the "has-tooltip" property.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--set-tooltip-text">
+      <title>gtk.StatusIcon.set_tooltip_text</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_tooltip_text</methodname>
+        <methodparam><parameter role="keyword">text</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">text</parameter>&nbsp;:</term>
+          <listitem><simpara>the contents of the tooltip for the status icon, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_tooltip_text</methodname>() method sets <parameter>text</parameter>
+      as the contents of the tooltip. This function will take care of setting
+      the "has-tooltip" property to <literal>True</literal> and of the default handler
+      for the "query-tooltip" signal.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--get-tooltip-text">
+      <title>gtk.StatusIcon.get_tooltip_text</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_tooltip_text</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the tooltip text, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>get_tooltip_text</methodname>() method gets the
+      contents of the tooltip for the status icon.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--set-tooltip-markup">
+      <title>gtk.StatusIcon.set_tooltip_markup</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>set_tooltip_markup</methodname>
+        <methodparam><parameter role="keyword">markup</parameter></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><parameter role="keyword">markup</parameter>&nbsp;:</term>
+          <listitem><simpara>the contents of the tooltip for widget, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>set_tooltip_markup</methodname>() method sets markup as the
+      contents of the tooltip, which is marked up with the Pango text markup language.
+      This function will take care of setting the "has-tooltip" property to
+      <literal>True</literal> and of the default handler for the "query-tooltip" signal.</para>
+
+    </refsect2>
+
+    <refsect2 id="method-gtkstatusicon--get-tooltip-markup">
+      <title>gtk.StatusIcon.get_tooltip_markup</title>
+
+      <programlisting><methodsynopsis language="python">
+        <methodname>get_tooltip_markup</methodname>
+        <methodparam></methodparam>
+      </methodsynopsis></programlisting>
+      <variablelist>
+        <varlistentry>
+          <term><emphasis>Returns</emphasis>&nbsp;:</term>
+          <listitem><simpara>the tooltip text, or <literal>None</literal>.</simpara></listitem>
+        </varlistentry>
+      </variablelist>
+
+      <note>
+        <para>This method is available in PyGTK 2.16 and above.</para>
+      </note>
+
+      <para>The <methodname>get_tooltip_markup</methodname>() method gets the
+      contents of the tooltip for the status icon.</para>
+
+    </refsect2>
+
   </refsect1>
 
   <refsect1>
@@ -1219,7 +1491,7 @@
       are activated is platform-dependent.</para>
       
       <para>The <parameter>button</parameter> and
-      <parameter>activate_timeout</parameter> parameters should be passed as
+      <parameter>activate_time</parameter> parameters should be passed as
       the last two arguments to the <link
       linkend="method-gtkmenu--popup"><methodname>gtk.Menu.popup()</methodname></link>
       method.</para>

@@ -6,6 +6,8 @@ completion in GtkEntry.
 '''
 # pygtk version: Maik Hertha <maik.hertha@berlin.de>
 
+import pygtk
+pygtk.require('2.0')
 import gtk
 
 class EntryCompletionDemo(gtk.Dialog):

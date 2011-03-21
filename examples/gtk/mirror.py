@@ -3,6 +3,8 @@
 # ctypes to wrap otherwise unexposed GObject API
 # John Stowers
 
+import pygtk
+pygtk.require('2.0')
 import gobject
 import cairo
 import gtk
