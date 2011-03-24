@@ -24,13 +24,13 @@ class ListStoreTest(unittest.TestCase):
 
     def testSetDefaultSortFunc(self):
         store = gtk.ListStore(int)
-        self.failIf(store.has_default_sort_func())
+        self.assertFalse(store.has_default_sort_func())
         store.set_default_sort_func(lambda x: None)
         store.set_sort_column_id(0, gtk.SORT_ASCENDING)
 
-        self.failUnless(store.has_default_sort_func())
+        self.assertTrue(store.has_default_sort_func())
         store.set_default_sort_func(None)
-        self.failIf(store.has_default_sort_func())
+        self.assertFalse(store.has_default_sort_func())
 
     # Two tests for bug 537459.  Since it is a memory corruption, we
     # use a large loop count hoping to trigger a segfault.
