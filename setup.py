@@ -120,6 +120,9 @@ class PyGtkInstallLib(InstallLib):
         for testfile in glob.glob('tests/test*.py'):
             self.copy_test(os.path.basename(testfile))
 
+        for gladefile in glob.glob('tests/*.glade'):
+            self.copy_test(os.path.basename(gladefile))
+
 
 class PyGtkInstallData(InstallData):
     def run(self):
