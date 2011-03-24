@@ -16,11 +16,12 @@ class MessageDialogTest(unittest.TestCase):
     def testSubclass(self):
         # Normal subclassing should not register a type
         sub = type('sub', (gtk.MessageDialog,), {})
+        print sub.__gtype__
+        print sub.__gtype__.name
         self.assertEqual(sub.__gtype__.name, 'GtkMessageDialog')
 
-        # This depends on 311254
-        #type('Sub', (gtk.MessageDialog,), {'__gtype_name__': 'SubDialog'})
-        #self.assertEqual(sub.__gtype__.name, 'SubDialog')
+        type('Sub', (gtk.MessageDialog,), {'__gtype_name__': 'SubDialog'})
+        self.assertEqual(sub.__gtype__.name, 'SubDialog')
 
     def testDialogLeak(self):
         dlg = gtk.Dialog()

@@ -2,7 +2,7 @@ import os
 import sys
 import unittest
 
-from common import gobject, gtk, glade
+from common import gobject, gtk
 
 class APITest(unittest.TestCase):
     def testKeysyms(self):
@@ -26,8 +26,8 @@ class APITest(unittest.TestCase):
         self.assertEqual(ra.get_child().get_text(), 'label')
 
     def testGlade(self):
-        self.failUnless(hasattr(glade, 'XML'))
-        self.failUnless(issubclass(glade.XML, gobject.GObject))
+        self.failUnless(hasattr(gtk.glade, 'XML'))
+        self.failUnless(issubclass(gtk.glade.XML, gobject.GObject))
 
     def testReload(self):
         # test for #349026
