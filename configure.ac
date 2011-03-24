@@ -386,8 +386,12 @@ if test "x$have_pycairo" = "xtrue"; then
   AC_DEFINE([HAVE_GTK_2_24], [$have_gtk_224], [If Gtk 2.24 was found])
 
   dnl libglade
-  PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= libglade_required_version],
+  have_libglade=false
+  AC_ARG_WITH([glade], AS_HELP_STRING([--without-glade], [Build without glade library (default: test)]))
+  if test "x$with_glade" != "xno"; then
+    PKG_CHECK_MODULES(LIBGLADE, [libglade-2.0 >= libglade_required_version],
 	  have_libglade=true, have_libglade=false)
+  fi
   AC_SUBST(LIBGLADE_CFLAGS)
   AC_SUBST(LIBGLADE_LIBS)
   AM_CONDITIONAL(BUILD_LIBGLADE, $have_libglade)
